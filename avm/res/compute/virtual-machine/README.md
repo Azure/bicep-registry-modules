@@ -1,6 +1,6 @@
-# Virtual Machine Scale Sets `[Microsoft.Compute/virtualMachineScaleSets]`
+# Virtual Machines `[Microsoft.Compute/virtualMachines]`
 
-This module deploys a Virtual Machine Scale Set.
+This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.
 
 ## Navigation
 
@@ -8,6 +8,8 @@ This module deploys a Virtual Machine Scale Set.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -16,9 +18,17 @@ This module deploys a Virtual Machine Scale Set.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/virtualMachineScaleSets` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets) |
-| `Microsoft.Compute/virtualMachineScaleSets/extensions` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets/extensions) |
+| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
+| `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
+| `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
+| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
+| `Microsoft.Insights/dataCollectionRuleAssociations` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
+| `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 
 ## Usage examples
 
@@ -26,221 +36,23 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine-scale-set:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine:<version>`.
 
-- [Using only defaults for Linux](#example-1-using-only-defaults-for-linux)
-- [Using large parameter set for Linux](#example-2-using-large-parameter-set-for-linux)
-- [Using disk encryption set for the VM.](#example-3-using-disk-encryption-set-for-the-vm)
-- [Using only defaults for Windows](#example-4-using-only-defaults-for-windows)
-- [Using large parameter set for Windows](#example-5-using-large-parameter-set-for-windows)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using automanage for the VM.](#example-1-using-automanage-for-the-vm)
+- [Using only defaults for Linux](#example-2-using-only-defaults-for-linux)
+- [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
+- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
+- [Using guest configuration for Windows](#example-6-using-guest-configuration-for-windows)
+- [Using a host pool to register the VM](#example-7-using-a-host-pool-to-register-the-vm)
+- [Using large parameter set for Windows](#example-8-using-large-parameter-set-for-windows)
+- [Deploy a VM with nVidia graphic card](#example-9-deploy-a-vm-with-nvidia-graphic-card)
+- [Using disk encryption set for the VM.](#example-10-using-disk-encryption-set-for-the-vm)
+- [Adding the VM to a VMSS.](#example-11-adding-the-vm-to-a-vmss)
 
-### Example 1: _Using only defaults for Linux_
+### Example 1: _Using automanage for the VM._
 
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
-  params: {
-    // Required parameters
-    adminUsername: 'scaleSetAdmin'
-    imageReference: {
-      offer: '0001-com-ubuntu-server-jammy'
-      publisher: 'Canonical'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    name: 'cvmsslinmin001'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              publicIPAddressConfiguration: {
-                name: 'pip-cvmsslinmin'
-              }
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-    }
-    osType: 'Linux'
-    skuName: 'Standard_B12ms'
-    // Non-required parameters
-    disablePasswordAuthentication: true
-    location: '<location>'
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "adminUsername": {
-      "value": "scaleSetAdmin"
-    },
-    "imageReference": {
-      "value": {
-        "offer": "0001-com-ubuntu-server-jammy",
-        "publisher": "Canonical",
-        "sku": "22_04-lts-gen2",
-        "version": "latest"
-      }
-    },
-    "name": {
-      "value": "cvmsslinmin001"
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "publicIPAddressConfiguration": {
-                  "name": "pip-cvmsslinmin"
-                },
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
-    },
-    "osDisk": {
-      "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
-        "managedDisk": {
-          "storageAccountType": "Premium_LRS"
-        }
-      }
-    },
-    "osType": {
-      "value": "Linux"
-    },
-    "skuName": {
-      "value": "Standard_B12ms"
-    },
-    // Non-required parameters
-    "disablePasswordAuthentication": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "publicKeys": {
-      "value": [
-        {
-          "keyData": "<keyData>",
-          "path": "/home/scaleSetAdmin/.ssh/authorized_keys"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
-
-// Required parameters
-param adminUsername = 'scaleSetAdmin'
-param imageReference = {
-  offer: '0001-com-ubuntu-server-jammy'
-  publisher: 'Canonical'
-  sku: '22_04-lts-gen2'
-  version: 'latest'
-}
-param name = 'cvmsslinmin001'
-param nicConfigurations = [
-  {
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          publicIPAddressConfiguration: {
-            name: 'pip-cvmsslinmin'
-          }
-          subnet: {
-            id: '<id>'
-          }
-        }
-      }
-    ]
-    nicSuffix: '-nic01'
-  }
-]
-param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
-  managedDisk: {
-    storageAccountType: 'Premium_LRS'
-  }
-}
-param osType = 'Linux'
-param skuName = 'Standard_B12ms'
-// Non-required parameters
-param disablePasswordAuthentication = true
-param location = '<location>'
-param publicKeys = [
-  {
-    keyData: '<keyData>'
-    path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 2: _Using large parameter set for Linux_
-
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with registering to an automation account.
 
 
 <details>
@@ -248,883 +60,56 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
-  params: {
-    // Required parameters
-    adminUsername: 'scaleSetAdmin'
-    imageReference: {
-      offer: '0001-com-ubuntu-server-jammy'
-      publisher: 'Canonical'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    name: 'cvmsslinmax001'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              publicIPAddressConfiguration: {
-                name: 'pip-cvmsslinmax'
-              }
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-    }
-    osType: 'Linux'
-    skuName: 'Standard_B12ms'
-    // Non-required parameters
-    availabilityZones: [
-      '2'
-    ]
-    bootDiagnosticEnabled: false
-    dataDisks: [
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '256'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '128'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    disablePasswordAuthentication: true
-    encryptionAtHost: false
-    extensionAzureDiskEncryptionConfig: {
-      enabled: true
-      settings: {
-        EncryptionOperation: 'EnableEncryption'
-        KekVaultResourceId: '<KekVaultResourceId>'
-        KeyEncryptionAlgorithm: 'RSA-OAEP'
-        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
-        KeyVaultResourceId: '<KeyVaultResourceId>'
-        KeyVaultURL: '<KeyVaultURL>'
-        ResizeOSDisk: 'false'
-        VolumeType: 'All'
-      }
-    }
-    extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
-      protectedSettings: {
-        commandToExecute: 'sudo apt-get update'
-      }
-    }
-    extensionDependencyAgentConfig: {
-      enabled: true
-    }
-    extensionMonitoringAgentConfig: {
-      enabled: true
-    }
-    extensionNetworkWatcherAgentConfig: {
-      enabled: true
-    }
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-      }
-    ]
-    roleAssignments: [
-      {
-        name: '8abf72f9-e918-4adc-b20b-c783b8799065'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        name: '<name>'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    scaleSetFaultDomain: 1
-    skuCapacity: 1
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-    upgradePolicyMode: 'Manual'
-    vmNamePrefix: 'vmsslinvm'
-    vmPriority: 'Regular'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "adminUsername": {
-      "value": "scaleSetAdmin"
-    },
-    "imageReference": {
-      "value": {
-        "offer": "0001-com-ubuntu-server-jammy",
-        "publisher": "Canonical",
-        "sku": "22_04-lts-gen2",
-        "version": "latest"
-      }
-    },
-    "name": {
-      "value": "cvmsslinmax001"
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "publicIPAddressConfiguration": {
-                  "name": "pip-cvmsslinmax"
-                },
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
-    },
-    "osDisk": {
-      "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
-        "managedDisk": {
-          "storageAccountType": "Premium_LRS"
-        }
-      }
-    },
-    "osType": {
-      "value": "Linux"
-    },
-    "skuName": {
-      "value": "Standard_B12ms"
-    },
-    // Non-required parameters
-    "availabilityZones": {
-      "value": [
-        "2"
-      ]
-    },
-    "bootDiagnosticEnabled": {
-      "value": false
-    },
-    "dataDisks": {
-      "value": [
-        {
-          "caching": "ReadOnly",
-          "createOption": "Empty",
-          "diskSizeGB": "256",
-          "managedDisk": {
-            "storageAccountType": "Premium_LRS"
-          }
-        },
-        {
-          "caching": "ReadOnly",
-          "createOption": "Empty",
-          "diskSizeGB": "128",
-          "managedDisk": {
-            "storageAccountType": "Premium_LRS"
-          }
-        }
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "disablePasswordAuthentication": {
-      "value": true
-    },
-    "encryptionAtHost": {
-      "value": false
-    },
-    "extensionAzureDiskEncryptionConfig": {
-      "value": {
-        "enabled": true,
-        "settings": {
-          "EncryptionOperation": "EnableEncryption",
-          "KekVaultResourceId": "<KekVaultResourceId>",
-          "KeyEncryptionAlgorithm": "RSA-OAEP",
-          "KeyEncryptionKeyURL": "<KeyEncryptionKeyURL>",
-          "KeyVaultResourceId": "<KeyVaultResourceId>",
-          "KeyVaultURL": "<KeyVaultURL>",
-          "ResizeOSDisk": "false",
-          "VolumeType": "All"
-        }
-      }
-    },
-    "extensionCustomScriptConfig": {
-      "value": {
-        "enabled": true,
-        "fileData": [
-          {
-            "storageAccountId": "<storageAccountId>",
-            "uri": "<uri>"
-          }
-        ],
-        "protectedSettings": {
-          "commandToExecute": "sudo apt-get update"
-        }
-      }
-    },
-    "extensionDependencyAgentConfig": {
-      "value": {
-        "enabled": true
-      }
-    },
-    "extensionMonitoringAgentConfig": {
-      "value": {
-        "enabled": true
-      }
-    },
-    "extensionNetworkWatcherAgentConfig": {
-      "value": {
-        "enabled": true
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": false,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "publicKeys": {
-      "value": [
-        {
-          "keyData": "<keyData>",
-          "path": "/home/scaleSetAdmin/.ssh/authorized_keys"
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "name": "8abf72f9-e918-4adc-b20b-c783b8799065",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "name": "<name>",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "scaleSetFaultDomain": {
-      "value": 1
-    },
-    "skuCapacity": {
-      "value": 1
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    },
-    "upgradePolicyMode": {
-      "value": "Manual"
-    },
-    "vmNamePrefix": {
-      "value": "vmsslinvm"
-    },
-    "vmPriority": {
-      "value": "Regular"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
-
-// Required parameters
-param adminUsername = 'scaleSetAdmin'
-param imageReference = {
-  offer: '0001-com-ubuntu-server-jammy'
-  publisher: 'Canonical'
-  sku: '22_04-lts-gen2'
-  version: 'latest'
-}
-param name = 'cvmsslinmax001'
-param nicConfigurations = [
-  {
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          publicIPAddressConfiguration: {
-            name: 'pip-cvmsslinmax'
-          }
-          subnet: {
-            id: '<id>'
-          }
-        }
-      }
-    ]
-    nicSuffix: '-nic01'
-  }
-]
-param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
-  managedDisk: {
-    storageAccountType: 'Premium_LRS'
-  }
-}
-param osType = 'Linux'
-param skuName = 'Standard_B12ms'
-// Non-required parameters
-param availabilityZones = [
-  '2'
-]
-param bootDiagnosticEnabled = false
-param dataDisks = [
-  {
-    caching: 'ReadOnly'
-    createOption: 'Empty'
-    diskSizeGB: '256'
-    managedDisk: {
-      storageAccountType: 'Premium_LRS'
-    }
-  }
-  {
-    caching: 'ReadOnly'
-    createOption: 'Empty'
-    diskSizeGB: '128'
-    managedDisk: {
-      storageAccountType: 'Premium_LRS'
-    }
-  }
-]
-param diagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    name: 'customSetting'
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
-param disablePasswordAuthentication = true
-param encryptionAtHost = false
-param extensionAzureDiskEncryptionConfig = {
-  enabled: true
-  settings: {
-    EncryptionOperation: 'EnableEncryption'
-    KekVaultResourceId: '<KekVaultResourceId>'
-    KeyEncryptionAlgorithm: 'RSA-OAEP'
-    KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
-    KeyVaultResourceId: '<KeyVaultResourceId>'
-    KeyVaultURL: '<KeyVaultURL>'
-    ResizeOSDisk: 'false'
-    VolumeType: 'All'
-  }
-}
-param extensionCustomScriptConfig = {
-  enabled: true
-  fileData: [
-    {
-      storageAccountId: '<storageAccountId>'
-      uri: '<uri>'
-    }
-  ]
-  protectedSettings: {
-    commandToExecute: 'sudo apt-get update'
-  }
-}
-param extensionDependencyAgentConfig = {
-  enabled: true
-}
-param extensionMonitoringAgentConfig = {
-  enabled: true
-}
-param extensionNetworkWatcherAgentConfig = {
-  enabled: true
-}
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
-param managedIdentities = {
-  systemAssigned: false
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param publicKeys = [
-  {
-    keyData: '<keyData>'
-    path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-  }
-]
-param roleAssignments = [
-  {
-    name: '8abf72f9-e918-4adc-b20b-c783b8799065'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
-  {
-    name: '<name>'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-  }
-]
-param scaleSetFaultDomain = 1
-param skuCapacity = 1
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
-param upgradePolicyMode = 'Manual'
-param vmNamePrefix = 'vmsslinvm'
-param vmPriority = 'Regular'
-```
-
-</details>
-<p>
-
-### Example 3: _Using disk encryption set for the VM._
-
-This instance deploys the module with disk enryption set.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
-  params: {
-    // Required parameters
-    adminUsername: 'scaleSetAdmin'
-    imageReference: {
-      offer: '0001-com-ubuntu-server-jammy'
-      publisher: 'Canonical'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    name: 'cvmsslcmk001'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              publicIPAddressConfiguration: {
-                name: 'pip-cvmsslcmk'
-              }
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        diskEncryptionSet: {
-          id: '<id>'
-        }
-        storageAccountType: 'Premium_LRS'
-      }
-    }
-    osType: 'Linux'
-    skuName: 'Standard_B12ms'
-    // Non-required parameters
-    dataDisks: [
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '128'
-        managedDisk: {
-          diskEncryptionSet: {
-            id: '<id>'
-          }
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-    ]
-    disablePasswordAuthentication: true
-    extensionMonitoringAgentConfig: {
-      enabled: true
-    }
-    location: '<location>'
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "adminUsername": {
-      "value": "scaleSetAdmin"
-    },
-    "imageReference": {
-      "value": {
-        "offer": "0001-com-ubuntu-server-jammy",
-        "publisher": "Canonical",
-        "sku": "22_04-lts-gen2",
-        "version": "latest"
-      }
-    },
-    "name": {
-      "value": "cvmsslcmk001"
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "publicIPAddressConfiguration": {
-                  "name": "pip-cvmsslcmk"
-                },
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
-    },
-    "osDisk": {
-      "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
-        "managedDisk": {
-          "diskEncryptionSet": {
-            "id": "<id>"
-          },
-          "storageAccountType": "Premium_LRS"
-        }
-      }
-    },
-    "osType": {
-      "value": "Linux"
-    },
-    "skuName": {
-      "value": "Standard_B12ms"
-    },
-    // Non-required parameters
-    "dataDisks": {
-      "value": [
-        {
-          "caching": "ReadOnly",
-          "createOption": "Empty",
-          "diskSizeGB": "128",
-          "managedDisk": {
-            "diskEncryptionSet": {
-              "id": "<id>"
-            },
-            "storageAccountType": "Premium_LRS"
-          }
-        }
-      ]
-    },
-    "disablePasswordAuthentication": {
-      "value": true
-    },
-    "extensionMonitoringAgentConfig": {
-      "value": {
-        "enabled": true
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "publicKeys": {
-      "value": [
-        {
-          "keyData": "<keyData>",
-          "path": "/home/scaleSetAdmin/.ssh/authorized_keys"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
-
-// Required parameters
-param adminUsername = 'scaleSetAdmin'
-param imageReference = {
-  offer: '0001-com-ubuntu-server-jammy'
-  publisher: 'Canonical'
-  sku: '22_04-lts-gen2'
-  version: 'latest'
-}
-param name = 'cvmsslcmk001'
-param nicConfigurations = [
-  {
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          publicIPAddressConfiguration: {
-            name: 'pip-cvmsslcmk'
-          }
-          subnet: {
-            id: '<id>'
-          }
-        }
-      }
-    ]
-    nicSuffix: '-nic01'
-  }
-]
-param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
-  managedDisk: {
-    diskEncryptionSet: {
-      id: '<id>'
-    }
-    storageAccountType: 'Premium_LRS'
-  }
-}
-param osType = 'Linux'
-param skuName = 'Standard_B12ms'
-// Non-required parameters
-param dataDisks = [
-  {
-    caching: 'ReadOnly'
-    createOption: 'Empty'
-    diskSizeGB: '128'
-    managedDisk: {
-      diskEncryptionSet: {
-        id: '<id>'
-      }
-      storageAccountType: 'Premium_LRS'
-    }
-  }
-]
-param disablePasswordAuthentication = true
-param extensionMonitoringAgentConfig = {
-  enabled: true
-}
-param location = '<location>'
-param publicKeys = [
-  {
-    keyData: '<keyData>'
-    path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 4: _Using only defaults for Windows_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
     imageReference: {
-      offer: 'WindowsServer'
-      publisher: 'MicrosoftWindowsServer'
-      sku: '2022-datacenter-azure-edition'
+      offer: '0001-com-ubuntu-server-jammy'
+      publisher: 'Canonical'
+      sku: '22_04-lts-gen2'
       version: 'latest'
     }
-    name: 'cvmsswinmin001'
+    name: 'cvmlinatmg'
     nicConfigurations: [
       {
         ipConfigurations: [
           {
-            name: 'ipconfig1'
-            properties: {
-              publicIPAddressConfiguration: {
-                name: 'pip-cvmsswinmin'
-              }
-              subnet: {
-                id: '<id>'
-              }
+            name: 'ipconfig01'
+            pipConfiguration: {
+              publicIpNameSuffix: '-pip-01'
+              zones: [
+                1
+                2
+                3
+              ]
             }
+            subnetResourceId: '<subnetResourceId>'
           }
         ]
-        nicSuffix: '-nic01'
+        nicSuffix: '-nic-01'
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
     }
-    osType: 'Windows'
-    skuName: 'Standard_B12ms'
+    osType: 'Linux'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
-    adminPassword: '<adminPassword>'
+    configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
+    disablePasswordAuthentication: true
     location: '<location>'
+    publicKeys: [
+      {
+        keyData: '<keyData>'
+        path: '/home/localAdminUser/.ssh/authorized_keys'
+      }
+    ]
   }
 }
 ```
@@ -1147,56 +132,70 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "imageReference": {
       "value": {
-        "offer": "WindowsServer",
-        "publisher": "MicrosoftWindowsServer",
-        "sku": "2022-datacenter-azure-edition",
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
         "version": "latest"
       }
     },
     "name": {
-      "value": "cvmsswinmin001"
+      "value": "cvmlinatmg"
     },
     "nicConfigurations": {
       "value": [
         {
           "ipConfigurations": [
             {
-              "name": "ipconfig1",
-              "properties": {
-                "publicIPAddressConfiguration": {
-                  "name": "pip-cvmsswinmin"
-                },
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
+              "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIpNameSuffix": "-pip-01",
+                "zones": [
+                  1,
+                  2,
+                  3
+                ]
+              },
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
-          "nicSuffix": "-nic01"
+          "nicSuffix": "-nic-01"
         }
       ]
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
       }
     },
     "osType": {
-      "value": "Windows"
+      "value": "Linux"
     },
-    "skuName": {
-      "value": "Standard_B12ms"
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 0
     },
     // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
+    "configurationProfile": {
+      "value": "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction"
+    },
+    "disablePasswordAuthentication": {
+      "value": true
     },
     "location": {
       "value": "<location>"
+    },
+    "publicKeys": {
+      "value": [
+        {
+          "keyData": "<keyData>",
+          "path": "/home/localAdminUser/.ssh/authorized_keys"
+        }
+      ]
     }
   }
 }
@@ -1210,55 +209,63 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
+using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
 param imageReference = {
-  offer: 'WindowsServer'
-  publisher: 'MicrosoftWindowsServer'
-  sku: '2022-datacenter-azure-edition'
+  offer: '0001-com-ubuntu-server-jammy'
+  publisher: 'Canonical'
+  sku: '22_04-lts-gen2'
   version: 'latest'
 }
-param name = 'cvmsswinmin001'
+param name = 'cvmlinatmg'
 param nicConfigurations = [
   {
     ipConfigurations: [
       {
-        name: 'ipconfig1'
-        properties: {
-          publicIPAddressConfiguration: {
-            name: 'pip-cvmsswinmin'
-          }
-          subnet: {
-            id: '<id>'
-          }
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          zones: [
+            1
+            2
+            3
+          ]
         }
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
-    nicSuffix: '-nic01'
+    nicSuffix: '-nic-01'
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
 }
-param osType = 'Windows'
-param skuName = 'Standard_B12ms'
+param osType = 'Linux'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
 // Non-required parameters
-param adminPassword = '<adminPassword>'
+param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
+param disablePasswordAuthentication = true
 param location = '<location>'
+param publicKeys = [
+  {
+    keyData: '<keyData>'
+    path: '/home/localAdminUser/.ssh/authorized_keys'
+  }
+]
 ```
 
 </details>
 <p>
 
-### Example 5: _Using large parameter set for Windows_
+### Example 2: _Using only defaults for Linux_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -1266,164 +273,51 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
     imageReference: {
-      offer: 'WindowsServer'
-      publisher: 'MicrosoftWindowsServer'
-      sku: '2022-datacenter-azure-edition'
+      offer: '0001-com-ubuntu-server-jammy'
+      publisher: 'Canonical'
+      sku: '22_04-lts-gen2'
       version: 'latest'
     }
-    name: 'cvmsswinmax001'
+    name: 'cvmlinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
           {
-            name: 'ipconfig1'
-            properties: {
-              publicIPAddressConfiguration: {
-                name: 'pip-cvmsswinmax'
-              }
-              subnet: {
-                id: '<id>'
-              }
+            name: 'ipconfig01'
+            pipConfiguration: {
+              name: 'pip-01'
             }
+            subnetResourceId: '<subnetResourceId>'
           }
         ]
-        nicSuffix: '-nic01'
+        nicSuffix: '-nic-01'
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      caching: 'ReadWrite'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
     }
-    osType: 'Windows'
-    skuName: 'Standard_B12ms'
+    osType: 'Linux'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
-    adminPassword: '<adminPassword>'
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    encryptionAtHost: false
-    extensionAntiMalwareConfig: {
-      enabled: true
-      settings: {
-        AntimalwareEnabled: true
-        Exclusions: {
-          Extensions: '.log;.ldf'
-          Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
-          Processes: 'mssence.svc'
-        }
-        RealtimeProtectionEnabled: true
-        ScheduledScanSettings: {
-          day: '7'
-          isEnabled: 'true'
-          scanType: 'Quick'
-          time: '120'
-        }
-      }
-    }
-    extensionAzureDiskEncryptionConfig: {
-      enabled: true
-      settings: {
-        EncryptionOperation: 'EnableEncryption'
-        KekVaultResourceId: '<KekVaultResourceId>'
-        KeyEncryptionAlgorithm: 'RSA-OAEP'
-        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
-        KeyVaultResourceId: '<KeyVaultResourceId>'
-        KeyVaultURL: '<KeyVaultURL>'
-        ResizeOSDisk: 'false'
-        VolumeType: 'All'
-      }
-    }
-    extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
-      protectedSettings: {
-        commandToExecute: '<commandToExecute>'
-      }
-    }
-    extensionDependencyAgentConfig: {
-      enabled: true
-    }
-    extensionDSCConfig: {
-      enabled: true
-    }
-    extensionHealthConfig: {
-      enabled: true
-      settings: {
-        port: 80
-        protocol: 'http'
-        requestPath: '/'
-      }
-    }
-    extensionMonitoringAgentConfig: {
-      enabled: true
-    }
-    extensionNetworkWatcherAgentConfig: {
-      enabled: true
-    }
+    disablePasswordAuthentication: true
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    roleAssignments: [
+    publicKeys: [
       {
-        name: '1910de8c-4dab-4189-96bb-2feb68350fb8'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        name: '<name>'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+        keyData: '<keyData>'
+        path: '/home/localAdminUser/.ssh/authorized_keys'
       }
     ]
-    skuCapacity: 1
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-    upgradePolicyMode: 'Manual'
-    vmNamePrefix: 'vmsswinvm'
-    vmPriority: 'Regular'
   }
 }
 ```
@@ -1446,90 +340,610 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "imageReference": {
       "value": {
-        "offer": "WindowsServer",
-        "publisher": "MicrosoftWindowsServer",
-        "sku": "2022-datacenter-azure-edition",
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
         "version": "latest"
       }
     },
     "name": {
-      "value": "cvmsswinmax001"
+      "value": "cvmlinmin"
     },
     "nicConfigurations": {
       "value": [
         {
           "ipConfigurations": [
             {
-              "name": "ipconfig1",
-              "properties": {
-                "publicIPAddressConfiguration": {
-                  "name": "pip-cvmsswinmax"
-                },
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
+              "name": "ipconfig01",
+              "pipConfiguration": {
+                "name": "pip-01"
+              },
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
-          "nicSuffix": "-nic01"
+          "nicSuffix": "-nic-01"
         }
       ]
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
       }
     },
     "osType": {
-      "value": "Windows"
+      "value": "Linux"
     },
-    "skuName": {
-      "value": "Standard_B12ms"
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 0
     },
     // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
+    "disablePasswordAuthentication": {
+      "value": true
     },
-    "diagnosticSettings": {
+    "location": {
+      "value": "<location>"
+    },
+    "publicKeys": {
       "value": [
         {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
+          "keyData": "<keyData>",
+          "path": "/home/localAdminUser/.ssh/authorized_keys"
         }
       ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: '0001-com-ubuntu-server-jammy'
+  publisher: 'Canonical'
+  sku: '22_04-lts-gen2'
+  version: 'latest'
+}
+param name = 'cvmlinmin'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        pipConfiguration: {
+          name: 'pip-01'
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Linux'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param disablePasswordAuthentication = true
+param location = '<location>'
+param publicKeys = [
+  {
+    keyData: '<keyData>'
+    path: '/home/localAdminUser/.ssh/authorized_keys'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set for Linux_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdministrator'
+    imageReference: {
+      offer: '0001-com-ubuntu-server-focal'
+      publisher: 'Canonical'
+      sku: '<sku>'
+      version: 'latest'
+    }
+    name: 'cvmlinmax'
+    nicConfigurations: [
+      {
+        deleteOption: 'Delete'
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        ipConfigurations: [
+          {
+            applicationSecurityGroups: [
+              {
+                id: '<id>'
+              }
+            ]
+            diagnosticSettings: [
+              {
+                eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+                eventHubName: '<eventHubName>'
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                  }
+                ]
+                name: 'customSetting'
+                storageAccountResourceId: '<storageAccountResourceId>'
+                workspaceResourceId: '<workspaceResourceId>'
+              }
+            ]
+            loadBalancerBackendAddressPools: [
+              {
+                id: '<id>'
+              }
+            ]
+            name: 'ipconfig01'
+            pipConfiguration: {
+              publicIpNameSuffix: '-pip-01'
+              roleAssignments: [
+                {
+                  name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: 'Owner'
+                }
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                }
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+                }
+              ]
+              zones: [
+                1
+                2
+                3
+              ]
+            }
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        name: 'nic-test-01'
+        roleAssignments: [
+          {
+            name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+      }
+    ]
+    osDisk: {
+      caching: 'ReadOnly'
+      createOption: 'FromImage'
+      deleteOption: 'Delete'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+      name: 'osdisk01'
+    }
+    osType: 'Linux'
+    vmSize: 'Standard_D2s_v3'
+    zone: 1
+    // Non-required parameters
+    backupPolicyName: '<backupPolicyName>'
+    backupVaultName: '<backupVaultName>'
+    backupVaultResourceGroup: '<backupVaultResourceGroup>'
+    computerName: 'linvm1'
+    dataDisks: [
+      {
+        caching: 'ReadWrite'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskSizeGB: 128
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+        name: 'datadisk01'
+      }
+      {
+        caching: 'ReadWrite'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskSizeGB: 128
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+        name: 'datadisk02'
+      }
+    ]
+    disablePasswordAuthentication: true
+    enableAutomaticUpdates: true
+    encryptionAtHost: false
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionAzureDiskEncryptionConfig: {
+      enabled: true
+      settings: {
+        EncryptionOperation: 'EnableEncryption'
+        KekVaultResourceId: '<KekVaultResourceId>'
+        KeyEncryptionAlgorithm: 'RSA-OAEP'
+        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+        KeyVaultResourceId: '<KeyVaultResourceId>'
+        KeyVaultURL: '<KeyVaultURL>'
+        ResizeOSDisk: 'false'
+        VolumeType: 'All'
+      }
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionCustomScriptConfig: {
+      enabled: true
+      fileData: [
+        {
+          storageAccountId: '<storageAccountId>'
+          uri: '<uri>'
+        }
+      ]
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionCustomScriptProtectedSetting: {
+      commandToExecute: '<commandToExecute>'
+    }
+    extensionDependencyAgentConfig: {
+      enableAMA: true
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionDSCConfig: {
+      enabled: false
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionMonitoringAgentConfig: {
+      dataCollectionRuleAssociations: [
+        {
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+          name: 'SendMetricsToLAW'
+        }
+      ]
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionNetworkWatcherAgentConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    patchMode: 'AutomaticByPlatform'
+    publicKeys: [
+      {
+        keyData: '<keyData>'
+        path: '/home/localAdministrator/.ssh/authorized_keys'
+      }
+    ]
+    rebootSetting: 'IfRequired'
+    roleAssignments: [
+      {
+        name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdministrator"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "0001-com-ubuntu-server-focal",
+        "publisher": "Canonical",
+        "sku": "<sku>",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmlinmax"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "deleteOption": "Delete",
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "applicationSecurityGroups": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "diagnosticSettings": [
+                {
+                  "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+                  "eventHubName": "<eventHubName>",
+                  "metricCategories": [
+                    {
+                      "category": "AllMetrics"
+                    }
+                  ],
+                  "name": "customSetting",
+                  "storageAccountResourceId": "<storageAccountResourceId>",
+                  "workspaceResourceId": "<workspaceResourceId>"
+                }
+              ],
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIpNameSuffix": "-pip-01",
+                "roleAssignments": [
+                  {
+                    "name": "696e6067-3ddc-4b71-bf97-9caebeba441a",
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "Owner"
+                  },
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+                  },
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+                  }
+                ],
+                "zones": [
+                  1,
+                  2,
+                  3
+                ]
+              },
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "name": "nic-test-01",
+          "roleAssignments": [
+            {
+              "name": "ff72f58d-a3cf-42fd-9c27-c61906bdddfe",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ]
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadOnly",
+        "createOption": "FromImage",
+        "deleteOption": "Delete",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        },
+        "name": "osdisk01"
+      }
+    },
+    "osType": {
+      "value": "Linux"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 1
+    },
+    // Non-required parameters
+    "backupPolicyName": {
+      "value": "<backupPolicyName>"
+    },
+    "backupVaultName": {
+      "value": "<backupVaultName>"
+    },
+    "backupVaultResourceGroup": {
+      "value": "<backupVaultResourceGroup>"
+    },
+    "computerName": {
+      "value": "linvm1"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "ReadWrite",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskSizeGB": 128,
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          },
+          "name": "datadisk01"
+        },
+        {
+          "caching": "ReadWrite",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskSizeGB": 128,
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          },
+          "name": "datadisk02"
+        }
+      ]
+    },
+    "disablePasswordAuthentication": {
+      "value": true
+    },
+    "enableAutomaticUpdates": {
+      "value": true
     },
     "encryptionAtHost": {
       "value": false
     },
-    "extensionAntiMalwareConfig": {
+    "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
-        "settings": {
-          "AntimalwareEnabled": true,
-          "Exclusions": {
-            "Extensions": ".log;.ldf",
-            "Paths": "D:\\IISlogs;D:\\DatabaseLogs",
-            "Processes": "mssence.svc"
-          },
-          "RealtimeProtectionEnabled": true,
-          "ScheduledScanSettings": {
-            "day": "7",
-            "isEnabled": "true",
-            "scanType": "Quick",
-            "time": "120"
-          }
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
         }
       }
     },
@@ -1545,6 +959,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "KeyVaultURL": "<KeyVaultURL>",
           "ResizeOSDisk": "false",
           "VolumeType": "All"
+        },
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
         }
       }
     },
@@ -1557,39 +976,63 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
             "uri": "<uri>"
           }
         ],
-        "protectedSettings": {
-          "commandToExecute": "<commandToExecute>"
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
         }
+      }
+    },
+    "extensionCustomScriptProtectedSetting": {
+      "value": {
+        "commandToExecute": "<commandToExecute>"
       }
     },
     "extensionDependencyAgentConfig": {
       "value": {
-        "enabled": true
+        "enableAMA": true,
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
       }
     },
     "extensionDSCConfig": {
       "value": {
-        "enabled": true
-      }
-    },
-    "extensionHealthConfig": {
-      "value": {
-        "enabled": true,
-        "settings": {
-          "port": 80,
-          "protocol": "http",
-          "requestPath": "/"
+        "enabled": false,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
         }
       }
     },
     "extensionMonitoringAgentConfig": {
       "value": {
-        "enabled": true
+        "dataCollectionRuleAssociations": [
+          {
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
+            "name": "SendMetricsToLAW"
+          }
+        ],
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
       }
     },
     "extensionNetworkWatcherAgentConfig": {
       "value": {
-        "enabled": true
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
       }
     },
     "location": {
@@ -1603,16 +1046,30 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": false,
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
     },
+    "patchMode": {
+      "value": "AutomaticByPlatform"
+    },
+    "publicKeys": {
+      "value": [
+        {
+          "keyData": "<keyData>",
+          "path": "/home/localAdministrator/.ssh/authorized_keys"
+        }
+      ]
+    },
+    "rebootSetting": {
+      "value": "IfRequired"
+    },
     "roleAssignments": {
       "value": [
         {
-          "name": "1910de8c-4dab-4189-96bb-2feb68350fb8",
+          "name": "eb01de52-d2be-4272-a7b9-13de6c399e27",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1630,24 +1087,12 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         }
       ]
     },
-    "skuCapacity": {
-      "value": 1
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "upgradePolicyMode": {
-      "value": "Manual"
-    },
-    "vmNamePrefix": {
-      "value": "vmsswinvm"
-    },
-    "vmPriority": {
-      "value": "Regular"
     }
   }
 }
@@ -1661,77 +1106,160 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
+using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
-param adminUsername = 'localAdminUser'
+param adminUsername = 'localAdministrator'
 param imageReference = {
-  offer: 'WindowsServer'
-  publisher: 'MicrosoftWindowsServer'
-  sku: '2022-datacenter-azure-edition'
+  offer: '0001-com-ubuntu-server-focal'
+  publisher: 'Canonical'
+  sku: '<sku>'
   version: 'latest'
 }
-param name = 'cvmsswinmax001'
+param name = 'cvmlinmax'
 param nicConfigurations = [
   {
-    ipConfigurations: [
+    deleteOption: 'Delete'
+    diagnosticSettings: [
       {
-        name: 'ipconfig1'
-        properties: {
-          publicIPAddressConfiguration: {
-            name: 'pip-cvmsswinmax'
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
           }
-          subnet: {
-            id: '<id>'
-          }
-        }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    nicSuffix: '-nic01'
+    ipConfigurations: [
+      {
+        applicationSecurityGroups: [
+          {
+            id: '<id>'
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        loadBalancerBackendAddressPools: [
+          {
+            id: '<id>'
+          }
+        ]
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          roleAssignments: [
+            {
+              name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          zones: [
+            1
+            2
+            3
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    name: 'nic-test-01'
+    roleAssignments: [
+      {
+        name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  caching: 'ReadOnly'
+  createOption: 'FromImage'
+  deleteOption: 'Delete'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
+  name: 'osdisk01'
 }
-param osType = 'Windows'
-param skuName = 'Standard_B12ms'
+param osType = 'Linux'
+param vmSize = 'Standard_D2s_v3'
+param zone = 1
 // Non-required parameters
-param adminPassword = '<adminPassword>'
-param diagnosticSettings = [
+param backupPolicyName = '<backupPolicyName>'
+param backupVaultName = '<backupVaultName>'
+param backupVaultResourceGroup = '<backupVaultResourceGroup>'
+param computerName = 'linvm1'
+param dataDisks = [
   {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    name: 'customSetting'
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
+    caching: 'ReadWrite'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'datadisk01'
+  }
+  {
+    caching: 'ReadWrite'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'datadisk02'
   }
 ]
+param disablePasswordAuthentication = true
+param enableAutomaticUpdates = true
 param encryptionAtHost = false
-param extensionAntiMalwareConfig = {
+param extensionAadJoinConfig = {
   enabled: true
-  settings: {
-    AntimalwareEnabled: true
-    Exclusions: {
-      Extensions: '.log;.ldf'
-      Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
-      Processes: 'mssence.svc'
-    }
-    RealtimeProtectionEnabled: true
-    ScheduledScanSettings: {
-      day: '7'
-      isEnabled: 'true'
-      scanType: 'Quick'
-      time: '120'
-    }
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
   }
 }
 param extensionAzureDiskEncryptionConfig = {
@@ -1746,6 +1274,11 @@ param extensionAzureDiskEncryptionConfig = {
     ResizeOSDisk: 'false'
     VolumeType: 'All'
   }
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
 }
 param extensionCustomScriptConfig = {
   enabled: true
@@ -1755,29 +1288,53 @@ param extensionCustomScriptConfig = {
       uri: '<uri>'
     }
   ]
-  protectedSettings: {
-    commandToExecute: '<commandToExecute>'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
   }
 }
+param extensionCustomScriptProtectedSetting = {
+  commandToExecute: '<commandToExecute>'
+}
 param extensionDependencyAgentConfig = {
+  enableAMA: true
   enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
 }
 param extensionDSCConfig = {
-  enabled: true
-}
-param extensionHealthConfig = {
-  enabled: true
-  settings: {
-    port: 80
-    protocol: 'http'
-    requestPath: '/'
+  enabled: false
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
   }
 }
 param extensionMonitoringAgentConfig = {
+  dataCollectionRuleAssociations: [
+    {
+      dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+      name: 'SendMetricsToLAW'
+    }
+  ]
   enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
 }
 param extensionNetworkWatcherAgentConfig = {
   enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
 }
 param location = '<location>'
 param lock = {
@@ -1785,14 +1342,22 @@ param lock = {
   name: 'myCustomLockName'
 }
 param managedIdentities = {
-  systemAssigned: false
+  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
+param patchMode = 'AutomaticByPlatform'
+param publicKeys = [
+  {
+    keyData: '<keyData>'
+    path: '/home/localAdministrator/.ssh/authorized_keys'
+  }
+]
+param rebootSetting = 'IfRequired'
 param roleAssignments = [
   {
-    name: '1910de8c-4dab-4189-96bb-2feb68350fb8'
+    name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1809,21 +1374,17 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param skuCapacity = 1
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param upgradePolicyMode = 'Manual'
-param vmNamePrefix = 'vmsswinvm'
-param vmPriority = 'Regular'
 ```
 
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
 
@@ -1833,47 +1394,645 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
-    adminUsername: 'localAdminUser'
+    adminUsername: 'VMAdmin'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2022-datacenter-azure-edition'
+      sku: '2019-datacenter'
       version: 'latest'
     }
-    name: 'cvmsswinwaf001'
+    name: 'cvmwinwaf'
     nicConfigurations: [
       {
-        ipConfigurations: [
+        deleteOption: 'Delete'
+        diagnosticSettings: [
           {
-            name: 'ipconfig1'
-            properties: {
-              publicIPAddressConfiguration: {
-                name: 'pip-cvmsswinwaf'
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
               }
-              subnet: {
-                id: '<id>'
-              }
-            }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
           }
         ]
-        nicSuffix: '-nic01'
+        ipConfigurations: [
+          {
+            applicationSecurityGroups: [
+              {
+                id: '<id>'
+              }
+            ]
+            diagnosticSettings: [
+              {
+                eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+                eventHubName: '<eventHubName>'
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                  }
+                ]
+                name: 'customSetting'
+                storageAccountResourceId: '<storageAccountResourceId>'
+                workspaceResourceId: '<workspaceResourceId>'
+              }
+            ]
+            loadBalancerBackendAddressPools: [
+              {
+                id: '<id>'
+              }
+            ]
+            name: 'ipconfig01'
+            pipConfiguration: {
+              publicIpNameSuffix: '-pip-01'
+              roleAssignments: [
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: 'Reader'
+                }
+              ]
+              zones: [
+                1
+                2
+                3
+              ]
+            }
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      caching: 'ReadWrite'
+      createOption: 'FromImage'
+      deleteOption: 'Delete'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
     }
     osType: 'Windows'
-    skuName: 'Standard_B12ms'
+    vmSize: 'Standard_D2s_v3'
+    zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
+    backupPolicyName: '<backupPolicyName>'
+    backupVaultName: '<backupVaultName>'
+    backupVaultResourceGroup: '<backupVaultResourceGroup>'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    computerName: 'winvm1'
+    dataDisks: [
+      {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskSizeGB: 128
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+      {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskSizeGB: 128
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+    ]
+    enableAutomaticUpdates: true
+    encryptionAtHost: false
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionAntiMalwareConfig: {
+      enabled: true
+      settings: {
+        AntimalwareEnabled: 'true'
+        Exclusions: {
+          Extensions: '.ext1;.ext2'
+          Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
+          Processes: 'excludedproc1.exe;excludedproc2.exe'
+        }
+        RealtimeProtectionEnabled: 'true'
+        ScheduledScanSettings: {
+          day: '7'
+          isEnabled: 'true'
+          scanType: 'Quick'
+          time: '120'
+        }
+      }
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionAzureDiskEncryptionConfig: {
+      enabled: true
+      settings: {
+        EncryptionOperation: 'EnableEncryption'
+        KekVaultResourceId: '<KekVaultResourceId>'
+        KeyEncryptionAlgorithm: 'RSA-OAEP'
+        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+        KeyVaultResourceId: '<KeyVaultResourceId>'
+        KeyVaultURL: '<KeyVaultURL>'
+        ResizeOSDisk: 'false'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+        VolumeType: 'All'
+      }
+    }
+    extensionCustomScriptConfig: {
+      enabled: true
+      fileData: [
+        {
+          storageAccountId: '<storageAccountId>'
+          uri: '<uri>'
+        }
+      ]
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionCustomScriptProtectedSetting: {
+      commandToExecute: '<commandToExecute>'
+    }
+    extensionDependencyAgentConfig: {
+      enableAMA: true
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionDSCConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionMonitoringAgentConfig: {
+      dataCollectionRuleAssociations: [
+        {
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+          name: 'SendMetricsToLAW'
+        }
+      ]
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionNetworkWatcherAgentConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    patchMode: 'AutomaticByPlatform'
+    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "VMAdmin"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2019-datacenter",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinwaf"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "deleteOption": "Delete",
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "applicationSecurityGroups": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "diagnosticSettings": [
+                {
+                  "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+                  "eventHubName": "<eventHubName>",
+                  "metricCategories": [
+                    {
+                      "category": "AllMetrics"
+                    }
+                  ],
+                  "name": "customSetting",
+                  "storageAccountResourceId": "<storageAccountResourceId>",
+                  "workspaceResourceId": "<workspaceResourceId>"
+                }
+              ],
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIpNameSuffix": "-pip-01",
+                "roleAssignments": [
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "Reader"
+                  }
+                ],
+                "zones": [
+                  1,
+                  2,
+                  3
+                ]
+              },
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ]
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "createOption": "FromImage",
+        "deleteOption": "Delete",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 2
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "backupPolicyName": {
+      "value": "<backupPolicyName>"
+    },
+    "backupVaultName": {
+      "value": "<backupVaultName>"
+    },
+    "backupVaultResourceGroup": {
+      "value": "<backupVaultResourceGroup>"
+    },
+    "bypassPlatformSafetyChecksOnUserSchedule": {
+      "value": true
+    },
+    "computerName": {
+      "value": "winvm1"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "ReadOnly",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskSizeGB": 128,
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          }
+        },
+        {
+          "caching": "ReadOnly",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskSizeGB": 128,
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          }
+        }
+      ]
+    },
+    "enableAutomaticUpdates": {
+      "value": true
+    },
+    "encryptionAtHost": {
+      "value": false
+    },
+    "extensionAadJoinConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionAntiMalwareConfig": {
+      "value": {
+        "enabled": true,
+        "settings": {
+          "AntimalwareEnabled": "true",
+          "Exclusions": {
+            "Extensions": ".ext1;.ext2",
+            "Paths": "c:\\excluded-path-1;c:\\excluded-path-2",
+            "Processes": "excludedproc1.exe;excludedproc2.exe"
+          },
+          "RealtimeProtectionEnabled": "true",
+          "ScheduledScanSettings": {
+            "day": "7",
+            "isEnabled": "true",
+            "scanType": "Quick",
+            "time": "120"
+          }
+        },
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionAzureDiskEncryptionConfig": {
+      "value": {
+        "enabled": true,
+        "settings": {
+          "EncryptionOperation": "EnableEncryption",
+          "KekVaultResourceId": "<KekVaultResourceId>",
+          "KeyEncryptionAlgorithm": "RSA-OAEP",
+          "KeyEncryptionKeyURL": "<KeyEncryptionKeyURL>",
+          "KeyVaultResourceId": "<KeyVaultResourceId>",
+          "KeyVaultURL": "<KeyVaultURL>",
+          "ResizeOSDisk": "false",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          },
+          "VolumeType": "All"
+        }
+      }
+    },
+    "extensionCustomScriptConfig": {
+      "value": {
+        "enabled": true,
+        "fileData": [
+          {
+            "storageAccountId": "<storageAccountId>",
+            "uri": "<uri>"
+          }
+        ],
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionCustomScriptProtectedSetting": {
+      "value": {
+        "commandToExecute": "<commandToExecute>"
+      }
+    },
+    "extensionDependencyAgentConfig": {
+      "value": {
+        "enableAMA": true,
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionDSCConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionMonitoringAgentConfig": {
+      "value": {
+        "dataCollectionRuleAssociations": [
+          {
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
+            "name": "SendMetricsToLAW"
+          }
+        ],
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionNetworkWatcherAgentConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "maintenanceConfigurationResourceId": {
+      "value": "<maintenanceConfigurationResourceId>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "patchMode": {
+      "value": "AutomaticByPlatform"
+    },
+    "proximityPlacementGroupResourceId": {
+      "value": "<proximityPlacementGroupResourceId>"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'VMAdmin'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2019-datacenter'
+  version: 'latest'
+}
+param name = 'cvmwinwaf'
+param nicConfigurations = [
+  {
+    deleteOption: 'Delete'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1888,78 +2047,294 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    encryptionAtHost: false
-    extensionAntiMalwareConfig: {
-      enabled: true
-      settings: {
-        AntimalwareEnabled: true
-        Exclusions: {
-          Extensions: '.log;.ldf'
-          Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
-          Processes: 'mssence.svc'
+    ipConfigurations: [
+      {
+        applicationSecurityGroups: [
+          {
+            id: '<id>'
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        loadBalancerBackendAddressPools: [
+          {
+            id: '<id>'
+          }
+        ]
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Reader'
+            }
+          ]
+          zones: [
+            1
+            2
+            3
+          ]
         }
-        RealtimeProtectionEnabled: true
-        ScheduledScanSettings: {
-          day: '7'
-          isEnabled: 'true'
-          scanType: 'Quick'
-          time: '120'
-        }
+        subnetResourceId: '<subnetResourceId>'
       }
-    }
-    extensionAzureDiskEncryptionConfig: {
-      enabled: true
-      settings: {
-        EncryptionOperation: 'EnableEncryption'
-        KekVaultResourceId: '<KekVaultResourceId>'
-        KeyEncryptionAlgorithm: 'RSA-OAEP'
-        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
-        KeyVaultResourceId: '<KeyVaultResourceId>'
-        KeyVaultURL: '<KeyVaultURL>'
-        ResizeOSDisk: 'false'
-        VolumeType: 'All'
+    ]
+    nicSuffix: '-nic-01'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
       }
+    ]
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  createOption: 'FromImage'
+  deleteOption: 'Delete'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 2
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param backupPolicyName = '<backupPolicyName>'
+param backupVaultName = '<backupVaultName>'
+param backupVaultResourceGroup = '<backupVaultResourceGroup>'
+param bypassPlatformSafetyChecksOnUserSchedule = true
+param computerName = 'winvm1'
+param dataDisks = [
+  {
+    caching: 'ReadOnly'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
     }
-    extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
-      protectedSettings: {
-        commandToExecute: '<commandToExecute>'
-      }
+  }
+  {
+    caching: 'ReadOnly'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
     }
-    extensionDependencyAgentConfig: {
-      enabled: true
+  }
+]
+param enableAutomaticUpdates = true
+param encryptionAtHost = false
+param extensionAadJoinConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionAntiMalwareConfig = {
+  enabled: true
+  settings: {
+    AntimalwareEnabled: 'true'
+    Exclusions: {
+      Extensions: '.ext1;.ext2'
+      Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
+      Processes: 'excludedproc1.exe;excludedproc2.exe'
     }
-    extensionDSCConfig: {
-      enabled: true
+    RealtimeProtectionEnabled: 'true'
+    ScheduledScanSettings: {
+      day: '7'
+      isEnabled: 'true'
+      scanType: 'Quick'
+      time: '120'
     }
-    extensionMonitoringAgentConfig: {
-      enabled: true
-    }
-    extensionNetworkWatcherAgentConfig: {
-      enabled: true
-    }
-    location: '<location>'
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    skuCapacity: 1
+  }
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionAzureDiskEncryptionConfig = {
+  enabled: true
+  settings: {
+    EncryptionOperation: 'EnableEncryption'
+    KekVaultResourceId: '<KekVaultResourceId>'
+    KeyEncryptionAlgorithm: 'RSA-OAEP'
+    KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+    KeyVaultResourceId: '<KeyVaultResourceId>'
+    KeyVaultURL: '<KeyVaultURL>'
+    ResizeOSDisk: 'false'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    upgradePolicyMode: 'Manual'
-    vmNamePrefix: 'vmsswinvm'
-    vmPriority: 'Regular'
+    VolumeType: 'All'
+  }
+}
+param extensionCustomScriptConfig = {
+  enabled: true
+  fileData: [
+    {
+      storageAccountId: '<storageAccountId>'
+      uri: '<uri>'
+    }
+  ]
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionCustomScriptProtectedSetting = {
+  commandToExecute: '<commandToExecute>'
+}
+param extensionDependencyAgentConfig = {
+  enableAMA: true
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionDSCConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionMonitoringAgentConfig = {
+  dataCollectionRuleAssociations: [
+    {
+      dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+      name: 'SendMetricsToLAW'
+    }
+  ]
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionNetworkWatcherAgentConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param patchMode = 'AutomaticByPlatform'
+param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using only defaults for Windows_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinmin'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    location: '<location>'
   }
 }
 ```
@@ -1989,32 +2364,25 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     },
     "name": {
-      "value": "cvmsswinwaf001"
+      "value": "cvmwinmin"
     },
     "nicConfigurations": {
       "value": [
         {
           "ipConfigurations": [
             {
-              "name": "ipconfig1",
-              "properties": {
-                "publicIPAddressConfiguration": {
-                  "name": "pip-cvmsswinwaf"
-                },
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
-          "nicSuffix": "-nic01"
+          "nicSuffix": "-nic-01"
         }
       ]
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2023,49 +2391,1129 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osType": {
       "value": "Windows"
     },
-    "skuName": {
-      "value": "Standard_B12ms"
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 0
     },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
     },
-    "diagnosticSettings": {
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinmin'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 6: _Using guest configuration for Windows_
+
+This instance deploys the module with the a guest configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinguest'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            pipConfiguration: {
+              publicIpNameSuffix: '-pip-01'
+              zones: []
+            }
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    extensionGuestConfigurationExtension: {
+      enabled: true
+    }
+    guestConfiguration: {
+      assignmentType: 'ApplyAndMonitor'
+      configurationParameter: [
+        {
+          name: 'Minimum Password Length;ExpectedValue'
+          value: '16'
+        }
+        {
+          name: 'Minimum Password Length;RemediateValue'
+          value: '16'
+        }
+        {
+          name: 'Maximum Password Age;ExpectedValue'
+          value: '75'
+        }
+        {
+          name: 'Maximum Password Age;RemediateValue'
+          value: '75'
+        }
+      ]
+      name: 'AzureWindowsBaseline'
+      version: '1.*'
+    }
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinguest"
+    },
+    "nicConfigurations": {
       "value": [
         {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
+          "ipConfigurations": [
             {
-              "category": "AllMetrics"
+              "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIpNameSuffix": "-pip-01",
+                "zones": []
+              },
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
+          "nicSuffix": "-nic-01"
         }
       ]
     },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 0
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "extensionGuestConfigurationExtension": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "guestConfiguration": {
+      "value": {
+        "assignmentType": "ApplyAndMonitor",
+        "configurationParameter": [
+          {
+            "name": "Minimum Password Length;ExpectedValue",
+            "value": "16"
+          },
+          {
+            "name": "Minimum Password Length;RemediateValue",
+            "value": "16"
+          },
+          {
+            "name": "Maximum Password Age;ExpectedValue",
+            "value": "75"
+          },
+          {
+            "name": "Maximum Password Age;RemediateValue",
+            "value": "75"
+          }
+        ],
+        "name": "AzureWindowsBaseline",
+        "version": "1.*"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinguest'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          zones: []
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param extensionGuestConfigurationExtension = {
+  enabled: true
+}
+param guestConfiguration = {
+  assignmentType: 'ApplyAndMonitor'
+  configurationParameter: [
+    {
+      name: 'Minimum Password Length;ExpectedValue'
+      value: '16'
+    }
+    {
+      name: 'Minimum Password Length;RemediateValue'
+      value: '16'
+    }
+    {
+      name: 'Maximum Password Age;ExpectedValue'
+      value: '75'
+    }
+    {
+      name: 'Maximum Password Age;RemediateValue'
+      value: '75'
+    }
+  ]
+  name: 'AzureWindowsBaseline'
+  version: '1.*'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using a host pool to register the VM_
+
+This instance deploys the module and registers it in a host pool.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinhp'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionHostPoolRegistration: {
+      configurationFunction: 'Configuration.ps1\\AddSessionHost'
+      enabled: true
+      hostPoolName: '<hostPoolName>'
+      modulesUrl: '<modulesUrl>'
+      registrationInfoToken: '<registrationInfoToken>'
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinhp"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 0
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "extensionAadJoinConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionHostPoolRegistration": {
+      "value": {
+        "configurationFunction": "Configuration.ps1\\AddSessionHost",
+        "enabled": true,
+        "hostPoolName": "<hostPoolName>",
+        "modulesUrl": "<modulesUrl>",
+        "registrationInfoToken": "<registrationInfoToken>",
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinhp'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param extensionAadJoinConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionHostPoolRegistration = {
+  configurationFunction: 'Configuration.ps1\\AddSessionHost'
+  enabled: true
+  hostPoolName: '<hostPoolName>'
+  modulesUrl: '<modulesUrl>'
+  registrationInfoToken: '<registrationInfoToken>'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
+### Example 8: _Using large parameter set for Windows_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'VMAdmin'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2019-datacenter'
+      version: 'latest'
+    }
+    name: 'cvmwinmax'
+    nicConfigurations: [
+      {
+        deleteOption: 'Delete'
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        enableIPForwarding: true
+        ipConfigurations: [
+          {
+            applicationSecurityGroups: [
+              {
+                id: '<id>'
+              }
+            ]
+            diagnosticSettings: [
+              {
+                eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+                eventHubName: '<eventHubName>'
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                  }
+                ]
+                name: 'customSetting'
+                storageAccountResourceId: '<storageAccountResourceId>'
+                workspaceResourceId: '<workspaceResourceId>'
+              }
+            ]
+            loadBalancerBackendAddressPools: [
+              {
+                id: '<id>'
+              }
+            ]
+            name: 'ipconfig01'
+            pipConfiguration: {
+              publicIPAddressResourceId: '<publicIPAddressResourceId>'
+              roleAssignments: [
+                {
+                  name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: 'Owner'
+                }
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                }
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+                }
+              ]
+            }
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        name: 'nic-test-01'
+        roleAssignments: [
+          {
+            name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      createOption: 'FromImage'
+      deleteOption: 'Delete'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+      name: 'osdisk01'
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 2
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    autoShutdownConfig: {
+      dailyRecurrenceTime: '19:00'
+      notificationEmail: 'test@contoso.com'
+      notificationLocale: 'en'
+      notificationStatus: 'Enabled'
+      notificationTimeInMinutes: 30
+      status: 'Enabled'
+      timeZone: 'UTC'
+    }
+    backupPolicyName: '<backupPolicyName>'
+    backupVaultName: '<backupVaultName>'
+    backupVaultResourceGroup: '<backupVaultResourceGroup>'
+    computerName: 'winvm1'
+    dataDisks: [
+      {
+        caching: 'None'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskSizeGB: 128
+        lun: 0
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+        name: 'datadisk01'
+      }
+      {
+        caching: 'None'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskSizeGB: 128
+        lun: 1
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+        name: 'datadisk02'
+      }
+    ]
+    enableAutomaticUpdates: true
+    encryptionAtHost: false
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionAntiMalwareConfig: {
+      enabled: true
+      settings: {
+        AntimalwareEnabled: 'true'
+        Exclusions: {
+          Extensions: '.ext1;.ext2'
+          Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
+          Processes: 'excludedproc1.exe;excludedproc2.exe'
+        }
+        RealtimeProtectionEnabled: 'true'
+        ScheduledScanSettings: {
+          day: '7'
+          isEnabled: 'true'
+          scanType: 'Quick'
+          time: '120'
+        }
+      }
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionAzureDiskEncryptionConfig: {
+      enabled: true
+      settings: {
+        EncryptionOperation: 'EnableEncryption'
+        KekVaultResourceId: '<KekVaultResourceId>'
+        KeyEncryptionAlgorithm: 'RSA-OAEP'
+        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+        KeyVaultResourceId: '<KeyVaultResourceId>'
+        KeyVaultURL: '<KeyVaultURL>'
+        ResizeOSDisk: 'false'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+        VolumeType: 'All'
+      }
+    }
+    extensionCustomScriptConfig: {
+      enabled: true
+      fileData: [
+        {
+          storageAccountId: '<storageAccountId>'
+          uri: '<uri>'
+        }
+      ]
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionCustomScriptProtectedSetting: {
+      commandToExecute: '<commandToExecute>'
+    }
+    extensionDependencyAgentConfig: {
+      enableAMA: true
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionDSCConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionMonitoringAgentConfig: {
+      dataCollectionRuleAssociations: [
+        {
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+          name: 'SendMetricsToLAW'
+        }
+      ]
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionNetworkWatcherAgentConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    patchMode: 'AutomaticByPlatform'
+    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
+    rebootSetting: 'IfRequired'
+    roleAssignments: [
+      {
+        name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "VMAdmin"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2019-datacenter",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinmax"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "deleteOption": "Delete",
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "enableIPForwarding": true,
+          "ipConfigurations": [
+            {
+              "applicationSecurityGroups": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "diagnosticSettings": [
+                {
+                  "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+                  "eventHubName": "<eventHubName>",
+                  "metricCategories": [
+                    {
+                      "category": "AllMetrics"
+                    }
+                  ],
+                  "name": "customSetting",
+                  "storageAccountResourceId": "<storageAccountResourceId>",
+                  "workspaceResourceId": "<workspaceResourceId>"
+                }
+              ],
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIPAddressResourceId": "<publicIPAddressResourceId>",
+                "roleAssignments": [
+                  {
+                    "name": "e962e7c1-261a-4afd-b5ad-17a640a0b7bc",
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "Owner"
+                  },
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+                  },
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+                  }
+                ]
+              },
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "name": "nic-test-01",
+          "roleAssignments": [
+            {
+              "name": "95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ]
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "createOption": "FromImage",
+        "deleteOption": "Delete",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        },
+        "name": "osdisk01"
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 2
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "autoShutdownConfig": {
+      "value": {
+        "dailyRecurrenceTime": "19:00",
+        "notificationEmail": "test@contoso.com",
+        "notificationLocale": "en",
+        "notificationStatus": "Enabled",
+        "notificationTimeInMinutes": 30,
+        "status": "Enabled",
+        "timeZone": "UTC"
+      }
+    },
+    "backupPolicyName": {
+      "value": "<backupPolicyName>"
+    },
+    "backupVaultName": {
+      "value": "<backupVaultName>"
+    },
+    "backupVaultResourceGroup": {
+      "value": "<backupVaultResourceGroup>"
+    },
+    "computerName": {
+      "value": "winvm1"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "None",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskSizeGB": 128,
+          "lun": 0,
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          },
+          "name": "datadisk01"
+        },
+        {
+          "caching": "None",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskSizeGB": 128,
+          "lun": 1,
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          },
+          "name": "datadisk02"
+        }
+      ]
+    },
+    "enableAutomaticUpdates": {
+      "value": true
+    },
     "encryptionAtHost": {
       "value": false
+    },
+    "extensionAadJoinConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
     },
     "extensionAntiMalwareConfig": {
       "value": {
         "enabled": true,
         "settings": {
-          "AntimalwareEnabled": true,
+          "AntimalwareEnabled": "true",
           "Exclusions": {
-            "Extensions": ".log;.ldf",
-            "Paths": "D:\\IISlogs;D:\\DatabaseLogs",
-            "Processes": "mssence.svc"
+            "Extensions": ".ext1;.ext2",
+            "Paths": "c:\\excluded-path-1;c:\\excluded-path-2",
+            "Processes": "excludedproc1.exe;excludedproc2.exe"
           },
-          "RealtimeProtectionEnabled": true,
+          "RealtimeProtectionEnabled": "true",
           "ScheduledScanSettings": {
             "day": "7",
             "isEnabled": "true",
             "scanType": "Quick",
             "time": "120"
           }
+        },
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
         }
       }
     },
@@ -2080,6 +3528,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "KeyVaultResourceId": "<KeyVaultResourceId>",
           "KeyVaultURL": "<KeyVaultURL>",
           "ResizeOSDisk": "false",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          },
           "VolumeType": "All"
         }
       }
@@ -2093,44 +3546,111 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
             "uri": "<uri>"
           }
         ],
-        "protectedSettings": {
-          "commandToExecute": "<commandToExecute>"
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
         }
+      }
+    },
+    "extensionCustomScriptProtectedSetting": {
+      "value": {
+        "commandToExecute": "<commandToExecute>"
       }
     },
     "extensionDependencyAgentConfig": {
       "value": {
-        "enabled": true
+        "enableAMA": true,
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
       }
     },
     "extensionDSCConfig": {
       "value": {
-        "enabled": true
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
       }
     },
     "extensionMonitoringAgentConfig": {
       "value": {
-        "enabled": true
+        "dataCollectionRuleAssociations": [
+          {
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
+            "name": "SendMetricsToLAW"
+          }
+        ],
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
       }
     },
     "extensionNetworkWatcherAgentConfig": {
       "value": {
-        "enabled": true
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
       }
     },
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "managedIdentities": {
       "value": {
-        "systemAssigned": false,
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
     },
-    "skuCapacity": {
-      "value": 1
+    "patchMode": {
+      "value": "AutomaticByPlatform"
+    },
+    "proximityPlacementGroupResourceId": {
+      "value": "<proximityPlacementGroupResourceId>"
+    },
+    "rebootSetting": {
+      "value": "IfRequired"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "c70e8c48-6945-4607-9695-1098ba5a86ed",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -2138,15 +3658,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "upgradePolicyMode": {
-      "value": "Manual"
-    },
-    "vmNamePrefix": {
-      "value": "vmsswinvm"
-    },
-    "vmPriority": {
-      "value": "Regular"
     }
   }
 }
@@ -2160,77 +3671,190 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
+using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
-param adminUsername = 'localAdminUser'
+param adminUsername = 'VMAdmin'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
-  sku: '2022-datacenter-azure-edition'
+  sku: '2019-datacenter'
   version: 'latest'
 }
-param name = 'cvmsswinwaf001'
+param name = 'cvmwinmax'
 param nicConfigurations = [
   {
-    ipConfigurations: [
+    deleteOption: 'Delete'
+    diagnosticSettings: [
       {
-        name: 'ipconfig1'
-        properties: {
-          publicIPAddressConfiguration: {
-            name: 'pip-cvmsswinwaf'
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
           }
-          subnet: {
-            id: '<id>'
-          }
-        }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    nicSuffix: '-nic01'
+    enableIPForwarding: true
+    ipConfigurations: [
+      {
+        applicationSecurityGroups: [
+          {
+            id: '<id>'
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        loadBalancerBackendAddressPools: [
+          {
+            id: '<id>'
+          }
+        ]
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIPAddressResourceId: '<publicIPAddressResourceId>'
+          roleAssignments: [
+            {
+              name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    name: 'nic-test-01'
+    roleAssignments: [
+      {
+        name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  caching: 'ReadWrite'
+  createOption: 'FromImage'
+  deleteOption: 'Delete'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
+  name: 'osdisk01'
 }
 param osType = 'Windows'
-param skuName = 'Standard_B12ms'
+param vmSize = 'Standard_D2s_v3'
+param zone = 2
 // Non-required parameters
 param adminPassword = '<adminPassword>'
-param diagnosticSettings = [
+param autoShutdownConfig = {
+  dailyRecurrenceTime: '19:00'
+  notificationEmail: 'test@contoso.com'
+  notificationLocale: 'en'
+  notificationStatus: 'Enabled'
+  notificationTimeInMinutes: 30
+  status: 'Enabled'
+  timeZone: 'UTC'
+}
+param backupPolicyName = '<backupPolicyName>'
+param backupVaultName = '<backupVaultName>'
+param backupVaultResourceGroup = '<backupVaultResourceGroup>'
+param computerName = 'winvm1'
+param dataDisks = [
   {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    name: 'customSetting'
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
+    caching: 'None'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    lun: 0
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'datadisk01'
+  }
+  {
+    caching: 'None'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    lun: 1
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'datadisk02'
   }
 ]
+param enableAutomaticUpdates = true
 param encryptionAtHost = false
+param extensionAadJoinConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
 param extensionAntiMalwareConfig = {
   enabled: true
   settings: {
-    AntimalwareEnabled: true
+    AntimalwareEnabled: 'true'
     Exclusions: {
-      Extensions: '.log;.ldf'
-      Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
-      Processes: 'mssence.svc'
+      Extensions: '.ext1;.ext2'
+      Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
+      Processes: 'excludedproc1.exe;excludedproc2.exe'
     }
-    RealtimeProtectionEnabled: true
+    RealtimeProtectionEnabled: 'true'
     ScheduledScanSettings: {
       day: '7'
       isEnabled: 'true'
       scanType: 'Quick'
       time: '120'
     }
+  }
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
   }
 }
 param extensionAzureDiskEncryptionConfig = {
@@ -2243,6 +3867,11 @@ param extensionAzureDiskEncryptionConfig = {
     KeyVaultResourceId: '<KeyVaultResourceId>'
     KeyVaultURL: '<KeyVaultURL>'
     ResizeOSDisk: 'false'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     VolumeType: 'All'
   }
 }
@@ -2254,38 +3883,650 @@ param extensionCustomScriptConfig = {
       uri: '<uri>'
     }
   ]
-  protectedSettings: {
-    commandToExecute: '<commandToExecute>'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
   }
 }
+param extensionCustomScriptProtectedSetting = {
+  commandToExecute: '<commandToExecute>'
+}
 param extensionDependencyAgentConfig = {
+  enableAMA: true
   enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
 }
 param extensionDSCConfig = {
   enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
 }
 param extensionMonitoringAgentConfig = {
+  dataCollectionRuleAssociations: [
+    {
+      dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+      name: 'SendMetricsToLAW'
+    }
+  ]
   enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
 }
 param extensionNetworkWatcherAgentConfig = {
   enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
 }
 param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param managedIdentities = {
-  systemAssigned: false
+  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
-param skuCapacity = 1
+param patchMode = 'AutomaticByPlatform'
+param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
+param rebootSetting = 'IfRequired'
+param roleAssignments = [
+  {
+    name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param upgradePolicyMode = 'Manual'
-param vmNamePrefix = 'vmsswinvm'
-param vmPriority = 'Regular'
+```
+
+</details>
+<p>
+
+### Example 9: _Deploy a VM with nVidia graphic card_
+
+This instance deploys the module for a VM with dedicated nVidia graphic card.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinnv'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_NV6ads_A10_v5'
+    zone: 0
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    extensionNvidiaGpuDriverWindows: {
+      enabled: true
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinnv"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_NV6ads_A10_v5"
+    },
+    "zone": {
+      "value": 0
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "extensionNvidiaGpuDriverWindows": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinnv'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_NV6ads_A10_v5'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param extensionNvidiaGpuDriverWindows = {
+  enabled: true
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 10: _Using disk encryption set for the VM._
+
+This instance deploys the module with disk enryption set.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'VMAdministrator'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2019-datacenter'
+      version: 'latest'
+    }
+    name: 'cvmwincmk'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      diskSizeGB: 128
+      managedDisk: {
+        diskEncryptionSet: {
+          id: '<id>'
+        }
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    dataDisks: [
+      {
+        diskSizeGB: 128
+        managedDisk: {
+          diskEncryptionSet: {
+            id: '<id>'
+          }
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "VMAdministrator"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2019-datacenter",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwincmk"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "diskEncryptionSet": {
+            "id": "<id>"
+          },
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 0
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "diskSizeGB": 128,
+          "managedDisk": {
+            "diskEncryptionSet": {
+              "id": "<id>"
+            },
+            "storageAccountType": "Premium_LRS"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'VMAdministrator'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2019-datacenter'
+  version: 'latest'
+}
+param name = 'cvmwincmk'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  diskSizeGB: 128
+  managedDisk: {
+    diskEncryptionSet: {
+      id: '<id>'
+    }
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param dataDisks = [
+  {
+    diskSizeGB: 128
+    managedDisk: {
+      diskEncryptionSet: {
+        id: '<id>'
+      }
+      storageAccountType: 'Premium_LRS'
+    }
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 11: _Adding the VM to a VMSS._
+
+This instance deploys the module with the minimum set of required parameters and adds it to a VMSS.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinvmss'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    location: '<location>'
+    virtualMachineScaleSetResourceId: '<virtualMachineScaleSetResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinvmss"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 0
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "virtualMachineScaleSetResourceId": {
+      "value": "<virtualMachineScaleSetResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinvmss'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param location = '<location>'
+param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 ```
 
 </details>
@@ -2299,88 +4540,83 @@ param vmPriority = 'Regular'
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
-| [`name`](#parameter-name) | string | Name of the VMSS. |
+| [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
 | [`nicConfigurations`](#parameter-nicconfigurations) | array | Configures NICs and PIPs. |
-| [`osDisk`](#parameter-osdisk) | object | Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets. |
+| [`osDisk`](#parameter-osdisk) | object | Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`osType`](#parameter-ostype) | string | The chosen OS type. |
-| [`skuName`](#parameter-skuname) | string | The SKU size of the VMs. |
+| [`vmSize`](#parameter-vmsize) | string | Specifies the size for the VMs. |
+| [`zone`](#parameter-zone) | int | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`additionalUnattendContent`](#parameter-additionalunattendcontent) | array | Specifies additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. - AdditionalUnattendContent object. |
+| [`additionalUnattendContent`](#parameter-additionalunattendcontent) | array | Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied. |
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
-| [`automaticRepairsPolicyEnabled`](#parameter-automaticrepairspolicyenabled) | bool | Specifies whether automatic repairs should be enabled on the virtual machine scale set. |
-| [`availabilityZones`](#parameter-availabilityzones) | array | The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set. |
-| [`bootDiagnosticEnabled`](#parameter-bootDiagnosticEnabled) | string | Enable boot diagnostics to use default managed or secure storage. Defaults to false. |
-| [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account..|
+| [`allowExtensionOperations`](#parameter-allowextensionoperations) | bool | Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine. |
+| [`autoShutdownConfig`](#parameter-autoshutdownconfig) | object | The configuration for auto-shutdown. |
+| [`availabilitySetResourceId`](#parameter-availabilitysetresourceid) | string | Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set. |
+| [`backupPolicyName`](#parameter-backuppolicyname) | string | Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault. |
+| [`backupVaultName`](#parameter-backupvaultname) | string | Recovery service vault name to add VMs to backup. |
+| [`backupVaultResourceGroup`](#parameter-backupvaultresourcegroup) | string | Resource group of the backup recovery service vault. If not provided the current resource group name is considered by default. |
+| [`bootDiagnostics`](#parameter-bootdiagnostics) | bool | Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnostics will be enabled with a managed storage account if no bootDiagnosticsStorageAccountName value is provided. If bootDiagnostics and bootDiagnosticsStorageAccountName values are not provided, boot diagnostics will be disabled. |
+| [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | Custom storage account used to store boot diagnostic information. Boot diagnostics will be enabled with a custom storage account if a value is provided. |
 | [`bootDiagnosticStorageAccountUri`](#parameter-bootdiagnosticstorageaccounturi) | string | Storage account boot diagnostic base URI. |
 | [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
+| [`certificatesToBeInstalled`](#parameter-certificatestobeinstalled) | array | Specifies set of certificates that should be installed onto the virtual machine. |
+| [`computerName`](#parameter-computername) | string | Can be used if the computer name needs to be different from the Azure VM resource name. If not used, the resource name will be used as computer name. |
+| [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile. |
 | [`customData`](#parameter-customdata) | string | Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format. |
-| [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableAutomaticRollback`](#parameter-disableautomaticrollback) | bool | Whether OS image rollback feature should be disabled. |
+| [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
+| [`dedicatedHostId`](#parameter-dedicatedhostid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
 | [`disablePasswordAuthentication`](#parameter-disablepasswordauthentication) | bool | Specifies whether password authentication should be disabled. |
-| [`doNotRunExtensionsOnOverprovisionedVMs`](#parameter-donotrunextensionsonoverprovisionedvms) | bool | When Overprovision is enabled, extensions are launched only on the requested number of VMs which are finally kept. This property will hence ensure that the extensions do not run on the extra overprovisioned VMs. |
-| [`enableAutomaticOSUpgrade`](#parameter-enableautomaticosupgrade) | bool | Indicates whether OS upgrades should automatically be applied to scale set instances in a rolling fashion when a newer version of the OS image becomes available. Default value is false. If this is set to true for Windows based scale sets, enableAutomaticUpdates is automatically set to false and cannot be set to true. |
-| [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
-| [`enableCrossZoneUpgrade`](#parameter-enablecrosszoneupgrade) | bool | Allow VMSS to ignore AZ boundaries when constructing upgrade batches. Take into consideration the Update Domain and maxBatchInstancePercent to determine the batch size. |
+| [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
 | [`enableEvictionPolicy`](#parameter-enableevictionpolicy) | bool | Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy. |
+| [`enableHotpatching`](#parameter-enablehotpatching) | bool | Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your virtual machine scale sets. |
+| [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
+| [`extensionAadJoinConfig`](#parameter-extensionaadjoinconfig) | object | The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000". |
 | [`extensionAntiMalwareConfig`](#parameter-extensionantimalwareconfig) | object | The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
 | [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionCustomScriptProtectedSetting`](#parameter-extensioncustomscriptprotectedsetting) | secureObject | An object that contains the extension specific protected settings. |
 | [`extensionDependencyAgentConfig`](#parameter-extensiondependencyagentconfig) | object | The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | secureObject | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
 | [`extensionDSCConfig`](#parameter-extensiondscconfig) | object | The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed. |
-| [`extensionHealthConfig`](#parameter-extensionhealthconfig) | object | Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionGuestConfigurationExtension`](#parameter-extensionguestconfigurationextension) | object | The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
+| [`extensionGuestConfigurationExtensionProtectedSettings`](#parameter-extensionguestconfigurationextensionprotectedsettings) | secureObject | An object that contains the extension specific protected settings. |
+| [`extensionHostPoolRegistration`](#parameter-extensionhostpoolregistration) | object | The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
-| [`gracePeriod`](#parameter-graceperiod) | string | The amount of time for which automatic repairs are suspended due to a state change on VM. The grace time starts after the state change has completed. This helps avoid premature or accidental repairs. The time duration should be specified in ISO 8601 format. The minimum allowed grace period is 30 minutes (PT30M). The maximum allowed grace period is 90 minutes (PT90M). |
-| [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system. |
+| [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`galleryApplications`](#parameter-galleryapplications) | array | Specifies the gallery applications that should be made available to the VM/VMSS. |
+| [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
+| [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`maxBatchInstancePercent`](#parameter-maxbatchinstancepercent) | int | The maximum percent of total virtual machine instances that will be upgraded simultaneously by the rolling upgrade in one batch. As this is a maximum, unhealthy instances in previous or future batches can cause the percentage of instances in a batch to decrease to ensure higher reliability. |
-| [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | int | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
-| [`maxSurge`](#parameter-maxsurge) | bool | Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. Existing virtual machines will be deleted once the new virtual machines are created for each batch. |
-| [`maxUnhealthyInstancePercent`](#parameter-maxunhealthyinstancepercent) | int | The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch. |
-| [`maxUnhealthyUpgradedInstancePercent`](#parameter-maxunhealthyupgradedinstancepercent) | int | The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch. |
-| [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
-| [`orchestrationMode`](#parameter-orchestrationmode) | string | Specifies the orchestration mode for the virtual machine scale set. |
-| [`overprovision`](#parameter-overprovision) | bool | Specifies whether the Virtual Machine Scale Set should be overprovisioned. |
+| [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationresourceid) | string | The resource Id of a maintenance configuration for this VM. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True". |
+| [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | string | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
 | [`patchAssessmentMode`](#parameter-patchassessmentmode) | string | VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours. |
 | [`patchMode`](#parameter-patchmode) | string | VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'. |
-| [`pauseTimeBetweenBatches`](#parameter-pausetimebetweenbatches) | string | The wait time between completing the update for all virtual machines in one batch and starting the next batch. The time duration should be specified in ISO 8601 format. |
 | [`plan`](#parameter-plan) | object | Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use. |
-| [`prioritizeUnhealthyInstances`](#parameter-prioritizeunhealthyinstances) | bool | Upgrade all unhealthy instances in a scale set before any healthy instances. |
+| [`priority`](#parameter-priority) | string | Specifies the priority for the virtual machine. |
 | [`provisionVMAgent`](#parameter-provisionvmagent) | bool | Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | Resource ID of a proximity placement group. |
 | [`publicKeys`](#parameter-publickeys) | array | The list of SSH public keys used to authenticate with linux based VMs. |
 | [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`rollbackFailedInstancesOnPolicyBreach`](#parameter-rollbackfailedinstancesonpolicybreach) | bool | Rollback failed instances to previous model if the Rolling Upgrade policy is violated. |
 | [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
-| [`scaleInPolicy`](#parameter-scaleinpolicy) | object | Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in. |
-| [`scaleSetFaultDomain`](#parameter-scalesetfaultdomain) | int | Fault Domain count for each placement group. |
-| [`scheduledEventsProfile`](#parameter-scheduledeventsprofile) | object | Specifies Scheduled Event related configurations. |
-| [`secrets`](#parameter-secrets) | array | Specifies set of certificates that should be installed onto the virtual machines in the scale set. |
-| [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
-| [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch to enable UefiSettings. |
-| [`singlePlacementGroup`](#parameter-singleplacementgroup) | bool | When true this limits the scale set to a single placement group, of max size 100 virtual machines. NOTE: If singlePlacementGroup is true, it may be modified to false. However, if singlePlacementGroup is false, it may not be modified to true. |
-| [`skuCapacity`](#parameter-skucapacity) | int | The initial instance count of scale set VMs. |
+| [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
+| [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timeZone`](#parameter-timezone) | string | Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`. |
 | [`ultraSSDEnabled`](#parameter-ultrassdenabled) | bool | The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled. |
-| [`upgradePolicyMode`](#parameter-upgradepolicymode) | string | Specifies the mode of an upgrade to virtual machines in the scale set.' Manual - You control the application of updates to virtual machines in the scale set. You do this by using the manualUpgrade action. ; Automatic - All virtual machines in the scale set are automatically updated at the same time. - Automatic, Manual, Rolling. |
-| [`vmNamePrefix`](#parameter-vmnameprefix) | string | Specifies the computer name prefix for all of the virtual machines in the scale set. |
-| [`vmPriority`](#parameter-vmpriority) | string | Specifies the priority for the virtual machine. |
-| [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
-| [`winRM`](#parameter-winrm) | object | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object. |
-| [`zoneBalance`](#parameter-zonebalance) | bool | Whether to force strictly even Virtual Machine distribution cross x-zones in case there is zone outage. |
+| [`userData`](#parameter-userdata) | string | UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here. |
+| [`virtualMachineScaleSetResourceId`](#parameter-virtualmachinescalesetresourceid) | string | Resource ID of a virtual machine scale set, where the VM should be added. |
+| [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
+| [`winRM`](#parameter-winrm) | array | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object. |
 
 **Generated parameters**
 
@@ -2404,7 +4640,7 @@ OS image reference. In case of marketplace images, it's the combination of the p
 
 ### Parameter: `name`
 
-Name of the VMSS.
+The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.
 
 - Required: Yes
 - Type: string
@@ -2418,10 +4654,124 @@ Configures NICs and PIPs.
 
 ### Parameter: `osDisk`
 
-Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.
+Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
 
 - Required: Yes
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedDisk`](#parameter-osdiskmanageddisk) | object | The managed disk parameters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. |
+| [`createOption`](#parameter-osdiskcreateoption) | string | Specifies how the virtual machine should be created. |
+| [`deleteOption`](#parameter-osdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`name`](#parameter-osdiskname) | string | The disk name. |
+
+### Parameter: `osDisk.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `osDisk.caching`
+
+Specifies the caching requirements.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `osDisk.createOption`
+
+Specifies how the virtual machine should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Empty'
+    'FromImage'
+  ]
+  ```
+
+### Parameter: `osDisk.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `osDisk.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `osDisk.name`
+
+The disk name.
+
+- Required: No
+- Type: string
 
 ### Parameter: `osType`
 
@@ -2437,16 +4787,32 @@ The chosen OS type.
   ]
   ```
 
-### Parameter: `skuName`
+### Parameter: `vmSize`
 
-The SKU size of the VMs.
+Specifies the size for the VMs.
 
 - Required: Yes
 - Type: string
 
+### Parameter: `zone`
+
+If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `additionalUnattendContent`
 
-Specifies additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. - AdditionalUnattendContent object.
+Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied.
 
 - Required: No
 - Type: array
@@ -2460,40 +4826,65 @@ When specifying a Windows Virtual Machine, this value should be passed.
 - Type: securestring
 - Default: `''`
 
-### Parameter: `automaticRepairsPolicyEnabled`
+### Parameter: `allowExtensionOperations`
 
-Specifies whether automatic repairs should be enabled on the virtual machine scale set.
+Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine.
 
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `availabilityZones`
+### Parameter: `autoShutdownConfig`
 
-The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
-
-### Parameter: `bootDiagnosticEnabled`
-
-Enable boot diagnostics to use default managed or secure storage.
+The configuration for auto-shutdown.
 
 - Required: No
-- Type: boolen
-- Default: false
+- Type: object
+- Default: `{}`
+
+### Parameter: `availabilitySetResourceId`
+
+Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `backupPolicyName`
+
+Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault.
+
+- Required: No
+- Type: string
+- Default: `'DefaultPolicy'`
+
+### Parameter: `backupVaultName`
+
+Recovery service vault name to add VMs to backup.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `backupVaultResourceGroup`
+
+Resource group of the backup recovery service vault. If not provided the current resource group name is considered by default.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().name]`
+
+### Parameter: `bootDiagnostics`
+
+Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnostics will be enabled with a managed storage account if no bootDiagnosticsStorageAccountName value is provided. If bootDiagnostics and bootDiagnosticsStorageAccountName values are not provided, boot diagnostics will be disabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `bootDiagnosticStorageAccountName`
 
-The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account.
+Custom storage account used to store boot diagnostic information. Boot diagnostics will be enabled with a custom storage account if a value is provided.
 
 - Required: No
 - Type: string
@@ -2515,6 +4906,30 @@ Enables customer to schedule patching without accidental upgrades.
 - Type: bool
 - Default: `True`
 
+### Parameter: `certificatesToBeInstalled`
+
+Specifies set of certificates that should be installed onto the virtual machine.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `computerName`
+
+Can be used if the computer name needs to be different from the Azure VM resource name. If not used, the resource name will be used as computer name.
+
+- Required: No
+- Type: string
+- Default: `[parameters('name')]`
+
+### Parameter: `configurationProfile`
+
+The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `customData`
 
 Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format.
@@ -2525,70 +4940,7 @@ Custom data associated to the VM, this value will be automatically converted int
 
 ### Parameter: `dataDisks`
 
-Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `diagnosticSettings`
-
-The diagnostic settings of the service.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-
-### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
-
-Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.eventHubName`
-
-Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
-
-A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureDiagnostics'
-    'Dedicated'
-  ]
-  ```
-
-### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
-
-The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
 
 - Required: No
 - Type: array
@@ -2597,56 +4949,136 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`managedDisk`](#parameter-datadisksmanageddisk) | object | The managed disk parameters. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. |
+| [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. |
+| [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
+| [`name`](#parameter-datadisksname) | string | The disk name. |
 
-### Parameter: `diagnosticSettings.metricCategories.category`
+### Parameter: `dataDisks.diskSizeGB`
 
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `dataDisks.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+
+### Parameter: `dataDisks.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
 
-### Parameter: `diagnosticSettings.metricCategories.enabled`
+### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
 
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `diagnosticSettings.name`
-
-The name of diagnostic setting.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.storageAccountResourceId`
-
-Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Specifies the customer managed disk encryption set resource id for the managed disk.
 
 - Required: No
 - Type: string
 
-### Parameter: `diagnosticSettings.workspaceResourceId`
+### Parameter: `dataDisks.caching`
 
-Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Specifies the caching requirements.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `dataDisks.createOption`
+
+Specifies how the virtual machine should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Empty'
+    'FromImage'
+  ]
+  ```
+
+### Parameter: `dataDisks.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `dataDisks.lun`
+
+Specifies the logical unit number of the data disk.
+
+- Required: No
+- Type: int
+
+### Parameter: `dataDisks.name`
+
+The disk name.
 
 - Required: No
 - Type: string
 
-### Parameter: `disableAutomaticRollback`
+### Parameter: `dedicatedHostId`
 
-Whether OS image rollback feature should be disabled.
+Specifies resource ID about the dedicated host that the virtual machine resides in.
 
 - Required: No
-- Type: bool
-- Default: `False`
+- Type: string
+- Default: `''`
 
 ### Parameter: `disablePasswordAuthentication`
 
@@ -2656,41 +5088,25 @@ Specifies whether password authentication should be disabled.
 - Type: bool
 - Default: `False`
 
-### Parameter: `doNotRunExtensionsOnOverprovisionedVMs`
-
-When Overprovision is enabled, extensions are launched only on the requested number of VMs which are finally kept. This property will hence ensure that the extensions do not run on the extra overprovisioned VMs.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enableAutomaticOSUpgrade`
-
-Indicates whether OS upgrades should automatically be applied to scale set instances in a rolling fashion when a newer version of the OS image becomes available. Default value is false. If this is set to true for Windows based scale sets, enableAutomaticUpdates is automatically set to false and cannot be set to true.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `enableAutomaticUpdates`
 
-Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning.
+Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning.
 
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableCrossZoneUpgrade`
+### Parameter: `enableEvictionPolicy`
 
-Allow VMSS to ignore AZ boundaries when constructing upgrade batches. Take into consideration the Update Domain and maxBatchInstancePercent to determine the batch size.
+Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy.
 
 - Required: No
 - Type: bool
 - Default: `False`
 
-### Parameter: `enableEvictionPolicy`
+### Parameter: `enableHotpatching`
 
-Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy.
+Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'.
 
 - Required: No
 - Type: bool
@@ -2706,11 +5122,24 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `encryptionAtHost`
 
-This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your virtual machine scale sets.
+This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
 
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `extensionAadJoinConfig`
+
+The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000".
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
 
 ### Parameter: `extensionAntiMalwareConfig`
 
@@ -2752,6 +5181,14 @@ The configuration for the [Custom Script] extension. Must at least contain the [
   }
   ```
 
+### Parameter: `extensionCustomScriptProtectedSetting`
+
+An object that contains the extension specific protected settings.
+
+- Required: No
+- Type: secureObject
+- Default: `{}`
+
 ### Parameter: `extensionDependencyAgentConfig`
 
 The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed.
@@ -2771,12 +5208,7 @@ The configuration for the [Domain Join] extension. Must at least contain the ["e
 
 - Required: No
 - Type: secureObject
-- Default:
-  ```Bicep
-  {
-      enabled: false
-  }
-  ```
+- Default: `{}`
 
 ### Parameter: `extensionDomainJoinPassword`
 
@@ -2799,21 +5231,37 @@ The configuration for the [Desired State Configuration] extension. Must at least
   }
   ```
 
-### Parameter: `extensionHealthConfig`
+### Parameter: `extensionGuestConfigurationExtension`
 
-Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed.
+The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.
 
 - Required: No
 - Type: object
 - Default:
   ```Bicep
   {
-      enabled: true
-      settings: {
-        port: 80
-        protocol: 'http'
-        requestPath: '/'
-      }
+      enabled: false
+  }
+  ```
+
+### Parameter: `extensionGuestConfigurationExtensionProtectedSettings`
+
+An object that contains the extension specific protected settings.
+
+- Required: No
+- Type: secureObject
+- Default: `{}`
+
+### Parameter: `extensionHostPoolRegistration`
+
+The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
   }
   ```
 
@@ -2826,6 +5274,7 @@ The configuration for the [Monitoring Agent] extension. Must at least contain th
 - Default:
   ```Bicep
   {
+      dataCollectionRuleAssociations: []
       enabled: false
   }
   ```
@@ -2843,17 +5292,38 @@ The configuration for the [Network Watcher Agent] extension. Must at least conta
   }
   ```
 
-### Parameter: `gracePeriod`
+### Parameter: `extensionNvidiaGpuDriverWindows`
 
-The amount of time for which automatic repairs are suspended due to a state change on VM. The grace time starts after the state change has completed. This helps avoid premature or accidental repairs. The time duration should be specified in ISO 8601 format. The minimum allowed grace period is 30 minutes (PT30M). The maximum allowed grace period is 90 minutes (PT90M).
+The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed.
 
 - Required: No
-- Type: string
-- Default: `'PT30M'`
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
+
+### Parameter: `galleryApplications`
+
+Specifies the gallery applications that should be made available to the VM/VMSS.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `guestConfiguration`
+
+The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `licenseType`
 
-Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system.
+Specifies that the image or disk that is being used was licensed on-premises.
 
 - Required: No
 - Type: string
@@ -2862,6 +5332,8 @@ Specifies that the image or disk that is being used was licensed on-premises. Th
   ```Bicep
   [
     ''
+    'RHEL_BYOS'
+    'SLES_BYOS'
     'Windows_Client'
     'Windows_Server'
   ]
@@ -2911,9 +5383,17 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `maintenanceConfigurationResourceId`
+
+The resource Id of a maintenance configuration for this VM.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource.
+The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".
 
 - Required: No
 - Type: object
@@ -2939,75 +5419,13 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
-### Parameter: `maxBatchInstancePercent`
-
-The maximum percent of total virtual machine instances that will be upgraded simultaneously by the rolling upgrade in one batch. As this is a maximum, unhealthy instances in previous or future batches can cause the percentage of instances in a batch to decrease to ensure higher reliability.
-
-- Required: No
-- Type: int
-- Default: `20`
-
 ### Parameter: `maxPriceForLowPriorityVm`
 
 Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars.
 
 - Required: No
-- Type: int
-
-### Parameter: `maxSurge`
-
-Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. Existing virtual machines will be deleted once the new virtual machines are created for each batch.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `maxUnhealthyInstancePercent`
-
-The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch.
-
-- Required: No
-- Type: int
-- Default: `20`
-
-### Parameter: `maxUnhealthyUpgradedInstancePercent`
-
-The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch.
-
-- Required: No
-- Type: int
-- Default: `20`
-
-### Parameter: `monitoringWorkspaceResourceId`
-
-Resource ID of the monitoring log analytics workspace.
-
-- Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `orchestrationMode`
-
-Specifies the orchestration mode for the virtual machine scale set.
-
-- Required: No
-- Type: string
-- Default: `'Flexible'`
-- Allowed:
-  ```Bicep
-  [
-    'Flexible'
-    'Uniform'
-  ]
-  ```
-
-### Parameter: `overprovision`
-
-Specifies whether the Virtual Machine Scale Set should be overprovisioned.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `patchAssessmentMode`
 
@@ -3030,7 +5448,7 @@ VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows
 
 - Required: No
 - Type: string
-- Default: `'AutomaticByPlatform'`
+- Default: `''`
 - Allowed:
   ```Bicep
   [
@@ -3042,14 +5460,6 @@ VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows
   ]
   ```
 
-### Parameter: `pauseTimeBetweenBatches`
-
-The wait time between completing the update for all virtual machines in one batch and starting the next batch. The time duration should be specified in ISO 8601 format.
-
-- Required: No
-- Type: string
-- Default: `'PT0S'`
-
 ### Parameter: `plan`
 
 Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.
@@ -3058,13 +5468,21 @@ Specifies information about the marketplace image used to create the virtual mac
 - Type: object
 - Default: `{}`
 
-### Parameter: `prioritizeUnhealthyInstances`
+### Parameter: `priority`
 
-Upgrade all unhealthy instances in a scale set before any healthy instances.
+Specifies the priority for the virtual machine.
 
 - Required: No
-- Type: bool
-- Default: `False`
+- Type: string
+- Default: `'Regular'`
+- Allowed:
+  ```Bicep
+  [
+    'Low'
+    'Regular'
+    'Spot'
+  ]
+  ```
 
 ### Parameter: `provisionVMAgent`
 
@@ -3223,14 +5641,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `rollbackFailedInstancesOnPolicyBreach`
-
-Rollback failed instances to previous model if the Rolling Upgrade policy is violated.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `sasTokenValidityLength`
 
 SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.
@@ -3239,48 +5649,9 @@ SAS token validity length to use to download files from storage accounts. Usage:
 - Type: string
 - Default: `'PT8H'`
 
-### Parameter: `scaleInPolicy`
-
-Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      rules: [
-        'Default'
-      ]
-  }
-  ```
-
-### Parameter: `scaleSetFaultDomain`
-
-Fault Domain count for each placement group.
-
-- Required: No
-- Type: int
-- Default: `1`
-
-### Parameter: `scheduledEventsProfile`
-
-Specifies Scheduled Event related configurations.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `secrets`
-
-Specifies set of certificates that should be installed onto the virtual machines in the scale set.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
 ### Parameter: `secureBootEnabled`
 
-Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.
+Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.
 
 - Required: No
 - Type: bool
@@ -3288,27 +5659,19 @@ Specifies whether secure boot should be enabled on the virtual machine scale set
 
 ### Parameter: `securityType`
 
-Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch to enable UefiSettings.
+Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.
 
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `singlePlacementGroup`
-
-When true this limits the scale set to a single placement group, of max size 100 virtual machines. NOTE: If singlePlacementGroup is true, it may be modified to false. However, if singlePlacementGroup is false, it may not be modified to true.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `skuCapacity`
-
-The initial instance count of scale set VMs.
-
-- Required: No
-- Type: int
-- Default: `1`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'ConfidentialVM'
+    'TrustedLaunch'
+  ]
+  ```
 
 ### Parameter: `tags`
 
@@ -3333,49 +5696,25 @@ The flag that enables or disables a capability to have one or more managed data 
 - Type: bool
 - Default: `False`
 
-### Parameter: `upgradePolicyMode`
+### Parameter: `userData`
 
-Specifies the mode of an upgrade to virtual machines in the scale set.' Manual - You control the application of updates to virtual machines in the scale set. You do this by using the manualUpgrade action. ; Automatic - All virtual machines in the scale set are automatically updated at the same time. - Automatic, Manual, Rolling.
-
-- Required: No
-- Type: string
-- Default: `'Manual'`
-- Allowed:
-  ```Bicep
-  [
-    'Automatic'
-    'Manual'
-    'Rolling'
-  ]
-  ```
-
-### Parameter: `vmNamePrefix`
-
-Specifies the computer name prefix for all of the virtual machines in the scale set.
+UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here.
 
 - Required: No
 - Type: string
-- Default: `'vmssvm'`
+- Default: `''`
 
-### Parameter: `vmPriority`
+### Parameter: `virtualMachineScaleSetResourceId`
 
-Specifies the priority for the virtual machine.
+Resource ID of a virtual machine scale set, where the VM should be added.
 
 - Required: No
 - Type: string
-- Default: `'Regular'`
-- Allowed:
-  ```Bicep
-  [
-    'Low'
-    'Regular'
-    'Spot'
-  ]
-  ```
+- Default: `''`
 
 ### Parameter: `vTpmEnabled`
 
-Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings.
+Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings.
 
 - Required: No
 - Type: bool
@@ -3386,16 +5725,8 @@ Specifies whether vTPM should be enabled on the virtual machine scale set. This 
 Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.
 
 - Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `zoneBalance`
-
-Whether to force strictly even Virtual Machine distribution cross x-zones in case there is zone outage.
-
-- Required: No
-- Type: bool
-- Default: `False`
+- Type: array
+- Default: `[]`
 
 ### Parameter: `baseTime`
 
@@ -3410,10 +5741,781 @@ Do not provide a value! This date value is used to generate a registration token
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the virtual machine scale set. |
-| `resourceGroupName` | string | The resource group of the virtual machine scale set. |
-| `resourceId` | string | The resource ID of the virtual machine scale set. |
+| `name` | string | The name of the VM. |
+| `resourceGroupName` | string | The name of the resource group the VM was created in. |
+| `resourceId` | string | The resource ID of the VM. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/network/network-interface:0.4.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
+
+## Notes
+
+Inside the `nicConfigurations` section and there inside the `ipConfigurations`, a `pipConfiguration` can be defined. For a new puplic IP address, the naming can either be set with the `name` or the `publicIpNameSuffix`. Per default a newly created PIP will have its `zones` parameter set to `[1,2,3]`. You can override it, for example with `[]`. If an existing PIP should be used, only set the `publicIPAddressResourceId`.
+
+### Automanage considerations
+
+Enabling automanage triggers the creation of additional resources outside of the specific virtual machine deployment, such as:
+- an `Automanage-Automate-<timestamp>` in the same Virtual Machine Resource Group and linking to the log analytics workspace leveraged by Azure Security Center.
+- a `DefaultResourceGroup-<locationId>` resource group hosting a recovery services vault `DefaultBackupVault-<location>` where virtual machine backups are stored
+For further details on automanage please refer to [Automanage virtual machines](https://learn.microsoft.com/en-us/azure/automanage/automanage-virtual-machines).
+
+### Parameter Usage: `imageReference`
+
+#### Marketplace images
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"imageReference": {
+    "value": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+    }
+}
+```
+
+</details>
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+imageReference: {
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+}
+```
+
+</details>
+<p>
+
+#### Custom images
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"imageReference": {
+    "value": {
+        "id": "/subscriptions/12345-6789-1011-1213-15161718/resourceGroups/rg-name/providers/Microsoft.Compute/images/imagename"
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+imageReference: {
+    id: '/subscriptions/12345-6789-1011-1213-15161718/resourceGroups/rg-name/providers/Microsoft.Compute/images/imagename'
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `plan`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"plan": {
+    "value": {
+        "name": "qvsa-25",
+        "product": "qualys-virtual-scanner",
+        "publisher": "qualysguard"
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+plan: {
+    name: 'qvsa-25'
+    product: 'qualys-virtual-scanner'
+    publisher: 'qualysguard'
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `osDisk`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"osDisk": {
+    "value": {
+        "createOption": "fromImage",
+        "deleteOption": "Delete", // Optional. Can be 'Delete' or 'Detach'
+        "diskSizeGB": "128",
+        "managedDisk": {
+            "storageAccountType": "Premium_LRS",
+             "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                        "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
+              }
+        }
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+osDisk: {
+    createOption: 'fromImage'
+    deleteOption: 'Delete' // Optional. Can be 'Delete' or 'Detach'
+    diskSizeGB: '128'
+    managedDisk: {
+        storageAccountType: 'Premium_LRS'
+        diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+            id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
+        }
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `dataDisks`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"dataDisks": {
+    "value": [
+        {
+            "caching": "ReadOnly",
+            "createOption": "Empty",
+            "deleteOption": "Delete", // Optional. Can be 'Delete' or 'Detach'
+            "diskSizeGB": "256",
+            "managedDisk": {
+                "storageAccountType": "Premium_LRS",
+                "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                    "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
+                }
+            }
+        },
+        {
+            "caching": "ReadOnly",
+            "createOption": "Empty",
+            "diskSizeGB": "128",
+            "managedDisk": {
+                "storageAccountType": "Premium_LRS",
+                "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                    "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
+                }
+            }
+        }
+    ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+dataDisks: [
+    {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        deleteOption: 'Delete' // Optional. Can be 'Delete' or 'Detach'
+        diskSizeGB: '256'
+        managedDisk: {
+            storageAccountType: 'Premium_LRS'
+            diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
+            }
+        }
+    }
+    {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        diskSizeGB: '128'
+        managedDisk: {
+            storageAccountType: 'Premium_LRS'
+            diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
+            }
+        }
+    }
+]
+```
+
+</details>
+<p>
+
+### Parameter Usage: `nicConfigurations`
+
+Comments:
+- The field `nicSuffix` and `subnetResourceId` are mandatory.
+- If `enablePublicIP` is set to true, then `publicIpNameSuffix` is also mandatory.
+- Each IP config needs to have the mandatory field `name`.
+- If not disabled, `enableAcceleratedNetworking` is considered `true` by default and requires the VM to be deployed with a supported OS and VM size.
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"nicConfigurations": {
+  "value": [
+    {
+      "nicSuffix": "-nic-01",
+      "deleteOption": "Delete", // Optional. Can be 'Delete' or 'Detach'
+      "ipConfigurations": [
+        {
+          "name": "ipconfig1",
+          "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
+          "pipConfiguration": {
+            "publicIpNameSuffix": "-pip-01",
+            "roleAssignments": [
+              {
+                "roleDefinitionIdOrName": "Reader",
+                "principalIds": [
+                  "<principalId>"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "ipconfig2",
+          "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
+        }
+      ],
+      "nsgId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>",
+      "roleAssignments": [
+        {
+          "roleDefinitionIdOrName": "Reader",
+          "principalIds": [
+            "<principalId>"
+          ]
+        }
+      ]
+    },
+    {
+      "nicSuffix": "-nic-02",
+      "ipConfigurations": [
+        {
+          "name": "ipconfig1",
+          "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
+          "pipConfiguration": {
+            "publicIpNameSuffix": "-pip-02"
+          }
+        },
+        {
+          "name": "ipconfig2",
+          "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
+          "privateIPAllocationMethod": "Static",
+          "privateIPAddress": "10.0.0.9"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+nicConfigurations: {
+  value: [
+    {
+      nicSuffix: '-nic-01'
+      deleteOption: 'Delete' // Optional. Can be 'Delete' or 'Detach'
+      ipConfigurations: [
+        {
+          name: 'ipconfig1'
+          subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
+          pipConfiguration: {
+            publicIpNameSuffix: '-pip-01'
+            roleAssignments: [
+              {
+                roleDefinitionIdOrName: 'Reader'
+                principalIds: [
+                  '<principalId>'
+                ]
+              }
+            ]
+          }
+        }
+        {
+          name: 'ipconfig2'
+          subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
+        }
+      ]
+      nsgId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>'
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Reader'
+          principalIds: [
+            '<principalId>'
+          ]
+        }
+      ]
+    }
+    {
+      nicSuffix: '-nic-02'
+      ipConfigurations: [
+        {
+          name: 'ipconfig1'
+          subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
+          pipConfiguration: {
+            publicIpNameSuffix: '-pip-02'
+          }
+        }
+        {
+          name: 'ipconfig2'
+          subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
+          privateIPAllocationMethod: 'Static'
+          privateIPAddress: '10.0.0.9'
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `configurationProfileAssignments`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"configurationProfileAssignments": {
+    "value": [
+        "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction",
+        "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest"
+    ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+configurationProfileAssignments: [
+    '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
+    '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
+]
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionDomainJoinConfig`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionDomainJoinConfig": {
+  "value": {
+    "enabled": true,
+    "settings": {
+      "name": "contoso.com",
+      "user": "test.user@testcompany.com",
+      "ouPath": "OU=testOU; DC=contoso; DC=com",
+      "restart": true,
+      "options": 3
+    }
+  }
+},
+"extensionDomainJoinPassword": {
+  "reference": {
+    "keyVault": {
+      "id": "/subscriptions/<<subscriptionId>/resourceGroups/myRG/providers/Microsoft.KeyVault/vaults/myKvlt"
+    },
+    "secretName": "domainJoinUser02-Password"
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionDomainJoinConfig: {
+    enabled: true
+    settings: {
+      name: 'contoso.com'
+      user: 'test.user@testcompany.com'
+      ouPath: 'OU=testOU; DC=contoso; DC=com'
+      restart: true
+      options: 3
+    }
+}
+resource kv1 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
+  name: 'adp-#_namePrefix_#-az-kv-x-001'
+  scope: resourceGroup('[[subscriptionId]]','validation-rg')
+}
+extensionDomainJoinPassword: kv1.getSecret('domainJoinUser02-Password')
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionAntiMalwareConfig`
+
+Only for OSType Windows
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionAntiMalwareConfig": {
+  "value": {
+    "enabled": true,
+    "settings": {
+      "AntimalwareEnabled": true,
+      "Exclusions": {
+        "Extensions": ".log;.ldf",
+        "Paths": "D:\\IISlogs;D:\\DatabaseLogs",
+        "Processes": "mssence.svc"
+      },
+      "RealtimeProtectionEnabled": true,
+      "ScheduledScanSettings": {
+        "isEnabled": "true",
+        "scanType": "Quick",
+        "day": "7",
+        "time": "120"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionAntiMalwareConfig: {
+    enabled: true
+    settings: {
+        AntimalwareEnabled: true
+        Exclusions: {
+            Extensions: '.log;.ldf'
+            Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
+            Processes: 'mssence.svc'
+        }
+        RealtimeProtectionEnabled: true
+        ScheduledScanSettings: {
+            isEnabled: 'true'
+            scanType: 'Quick'
+            day: '7'
+            time: '120'
+        }
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionAzureDiskEncryptionConfig`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionAzureDiskEncryptionConfig": {
+  // Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys.
+  "value": {
+    "enabled": true,
+    "settings": {
+      "EncryptionOperation": "EnableEncryption",
+      "KeyVaultURL": "https://mykeyvault.vault.azure.net/",
+      "KeyVaultResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001",
+      "KeyEncryptionKeyURL": "https://mykeyvault.vault.azure.net/keys/keyEncryptionKey/bc3bb46d95c64367975d722f473eeae5", // ID must be updated for new keys
+      "KekVaultResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001",
+      "KeyEncryptionAlgorithm": "RSA-OAEP", //'RSA-OAEP'/'RSA-OAEP-256'/'RSA1_5'
+      "VolumeType": "All", //'OS'/'Data'/'All'
+      "ResizeOSDisk": "false"
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionAzureDiskEncryptionConfig: {
+    // Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys.
+    enabled: true
+    settings: {
+        EncryptionOperation: 'EnableEncryption'
+        KeyVaultURL: 'https://mykeyvault.vault.azure.net/'
+        KeyVaultResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001'
+        KeyEncryptionKeyURL: 'https://mykeyvault.vault.azure.net/keys/keyEncryptionKey/bc3bb46d95c64367975d722f473eeae5' // ID must be updated for new keys
+        KekVaultResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001'
+        KeyEncryptionAlgorithm: 'RSA-OAEP' //'RSA-OAEP'/'RSA-OAEP-256'/'RSA1_5'
+        VolumeType: 'All' //'OS'/'Data'/'All'
+        ResizeOSDisk: 'false'
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionDSCConfig`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionDSCConfig": {
+  "value": {
+    {
+      "enabled": true,
+      "settings": {
+        "wmfVersion": "latest",
+        "configuration": {
+          "url": "http://validURLToConfigLocation",
+          "script": "ConfigurationScript.ps1",
+          "function": "ConfigurationFunction"
+        },
+        "configurationArguments": {
+          "argument1": "Value1",
+          "argument2": "Value2"
+        },
+        "configurationData": {
+          "url": "https://foo.psd1"
+        },
+        "privacy": {
+          "dataCollection": "enable"
+        },
+        "advancedOptions": {
+          "forcePullAndApply": false,
+          "downloadMappings": {
+            "specificDependencyKey": "https://myCustomDependencyLocation"
+          }
+        }
+      },
+      "protectedSettings": {
+        "configurationArguments": {
+          "mySecret": "MyPlaceholder"
+        },
+        "configurationUrlSasToken": "MyPlaceholder",
+        "configurationDataUrlSasToken": "MyPlaceholder"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionDSCConfig: {
+    {
+      enabled: true
+      settings: {
+          wmfVersion: 'latest'
+          configuration: {
+            url: 'http://validURLToConfigLocation'
+            script: 'ConfigurationScript.ps1'
+            function: 'ConfigurationFunction'
+          }
+          configurationArguments: {
+            argument1: 'Value1'
+            argument2: 'Value2'
+          }
+          configurationData: {
+            url: 'https://foo.psd1'
+          }
+          privacy: {
+            dataCollection: 'enable'
+          }
+          advancedOptions: {
+            forcePullAndApply: false
+            downloadMappings: {
+              specificDependencyKey: 'https://myCustomDependencyLocation'
+            }
+          }
+        }
+        protectedSettings: {
+          configurationArguments: {
+            mySecret: 'MyPlaceholder'
+          }
+          configurationUrlSasToken: 'MyPlaceholder'
+          configurationDataUrlSasToken: 'MyPlaceholder'
+        }
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionCustomScriptConfig`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionCustomScriptConfig": {
+  "value": {
+    "enabled": true,
+    "fileData": [
+      //storage accounts with SAS token requirement
+      {
+        "uri": "https://mystorageaccount.blob.core.windows.net/avdscripts/File1.ps1",
+        "storageAccountId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName"
+      },
+      {
+        "uri": "https://mystorageaccount.blob.core.windows.net/avdscripts/File2.ps1",
+        "storageAccountId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName"
+      },
+      //storage account with public container (no SAS token is required) OR other public URL (not a storage account)
+      {
+        "uri": "https://github.com/myProject/File3.ps1",
+        "storageAccountId": ""
+      }
+    ],
+    "settings": {
+      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File testscript.ps1"
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionCustomScriptConfig: {
+    enabled: true
+    fileData: [
+      //storage accounts with SAS token requirement
+      {
+        uri: 'https://mystorageaccount.blob.core.windows.net/avdscripts/File1.ps1'
+        storageAccountId: '/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName'
+      }
+      {
+        uri: 'https://mystorageaccount.blob.core.windows.net/avdscripts/File2.ps1'
+        storageAccountId: '/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName'
+      }
+      //storage account with public container (no SAS token is required) OR other public URL (not a storage account)
+      {
+        uri: 'https://github.com/myProject/File3.ps1'
+        storageAccountId: ''
+      }
+    ]
+    settings: {
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File testscript.ps1'
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionCustomScriptProtectedSetting`
+
+This is used if you are going to use secrets or other sensitive information that you don't want to be visible in the deployment and logs.
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionCustomScriptProtectedSetting": {
+  "value": [
+    {
+      "commandToExecute": "mycommandToRun -someParam MYSECRET"
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionCustomScriptProtectedSetting: [
+    {
+        commandToExecute: 'mycommandToRun -someParam MYSECRET'
+    }
+]
+```
+
+</details>
+<p>
 
 ## Data Collection
 
