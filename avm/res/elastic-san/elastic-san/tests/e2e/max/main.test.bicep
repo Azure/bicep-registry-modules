@@ -135,17 +135,33 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
+        /*
+          Encryption with Customer Managed Key (CMK) always requires a managed identity otherwise the deployment will fail with the following error:
+          VolumeGroup XYZ should have EncryptionAtRestWithPlatformKey if it doesn't have an identity.
+
+          NOT Supported Test - Customer Managed Key Encryption - Without Identity, Without Encryption Identity
+          NOT Supported Test - Customer Managed Key Encryption - Without Identity, With Encryption Identity
+          NOT Supported Test - Customer Managed Key Encryption - Without Identity, With Encryption Identity + Key Version
+        */
         {
-          // Test - Customer Managed Key Encryption - Without Encryption Identity -  NOT valid without an Identity ???
+          // Test - Customer Managed Key Encryption - With System Assigned Identity, Without Encryption Identity
           name: 'vol-grp-08'
+          managedIdentities: {
+            systemAssigned: true
+          }
           customerManagedKey: {
             keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
             keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
           }
         }
         {
-          // Test - Customer Managed Key Encryption - With Encryption Identity
+          // Test - Customer Managed Key Encryption - With User Assigned Identity, With Encryption Identity
           name: 'vol-grp-09'
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
           customerManagedKey: {
             keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
             keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
@@ -153,8 +169,14 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          // Test - Customer Managed Key Encryption - With Encryption Identity + Key Version
+          // Test - Customer Managed Key Encryption - With System Assigned + User Assigned, With Encryption Identity + Key Version
           name: 'vol-grp-10'
+          managedIdentities: {
+            systemAssigned: true
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
           customerManagedKey: {
             keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
             keyVersion: nestedDependencies.outputs.keyVaultEncryptionKeyVersion
