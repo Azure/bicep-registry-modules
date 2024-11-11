@@ -123,22 +123,17 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
+        // Test - Managed Identity - System Assigned + Many User Assigned - NOT Supported
+        // Test - Customer Managed Key Encryption - With System Assigned Identity, Without Encryption Identity - NOT Supported (Auth Issue on KV)
+        // Test - Customer Managed Key Encryption - With User Assigned Identity, With Encryption Identity - NOT Supported (Invalid Combination)
+        // Test - Customer Managed Key Encryption - Customer Managed Key Encryption - With System Assigned + User Assigned, With Encryption Identity + Key Version - NOT Supported (Invalid Combination)
         {
-          // Test - Managed Identity - System Assigned + Many User Assigned
+          // Test - Customer Managed Key Encryption - With User Assigned Identity, Without Encryption Identity
           name: 'vol-grp-07'
           managedIdentities: {
-            systemAssigned: true
             userAssignedResourceIds: [
-              nestedDependencies.outputs.managedIdentityResourceId
               nestedDependencies.outputs.cmkManagedIdentityResourceId
             ]
-          }
-        }
-        {
-          // Test - Customer Managed Key Encryption - With System Assigned Identity, Without Encryption Identity
-          name: 'vol-grp-08'
-          managedIdentities: {
-            systemAssigned: true
           }
           customerManagedKey: {
             keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
@@ -147,10 +142,10 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           // Test - Customer Managed Key Encryption - With User Assigned Identity, With Encryption Identity
-          name: 'vol-grp-09'
+          name: 'vol-grp-08'
           managedIdentities: {
             userAssignedResourceIds: [
-              nestedDependencies.outputs.managedIdentityResourceId
+              nestedDependencies.outputs.cmkManagedIdentityResourceId
             ]
           }
           customerManagedKey: {
@@ -161,11 +156,11 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           // Test - Customer Managed Key Encryption - With System Assigned + User Assigned, With Encryption Identity + Key Version
-          name: 'vol-grp-10'
+          name: 'vol-grp-09'
           managedIdentities: {
             systemAssigned: true
             userAssignedResourceIds: [
-              nestedDependencies.outputs.managedIdentityResourceId
+              nestedDependencies.outputs.cmkManagedIdentityResourceId
             ]
           }
           customerManagedKey: {

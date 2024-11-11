@@ -18,6 +18,12 @@ param volumes volumeType[]?
 @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules.')
 param virtualNetworkRules virtualNetworkRuleType[]?
 
+/*
+
+- Too many user-assigned identities specified on the resource. - NOT supported
+
+*/
+
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
@@ -34,6 +40,15 @@ param managedIdentities managedIdentityAllType?
 Encryption with Customer Managed Key (CMK) always requires a managed identity otherwise the deployment will fail with the following error:
           VolumeGroup XYZ should have EncryptionAtRestWithPlatformKey if it doesn't have an identity.
 
+*/
+
+/*
+  Encryption with Customer Managed Key (CMK) always requires a managed identity otherwise the deployment will fail with the following error:
+  VolumeGroup XYZ should have EncryptionAtRestWithPlatformKey if it doesn't have an identity.
+
+  NOT Supported Test - Customer Managed Key Encryption - Without Identity, Without Encryption Identity
+  NOT Supported Test - Customer Managed Key Encryption - Without Identity, With Encryption Identity
+  NOT Supported Test - Customer Managed Key Encryption - Without Identity, With Encryption Identity + Key Version
 */
 
 import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'

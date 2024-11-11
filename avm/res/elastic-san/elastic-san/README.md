@@ -166,24 +166,16 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         name: 'vol-grp-06'
       }
       {
-        managedIdentities: {
-          systemAssigned: true
-          userAssignedResourceIds: [
-            '<cmkManagedIdentityResourceId>'
-            '<managedIdentityResourceId>'
-          ]
-        }
-        name: 'vol-grp-07'
-      }
-      {
         customerManagedKey: {
           keyName: '<keyName>'
           keyVaultResourceId: '<keyVaultResourceId>'
         }
         managedIdentities: {
-          systemAssigned: true
+          userAssignedResourceIds: [
+            '<cmkManagedIdentityResourceId>'
+          ]
         }
-        name: 'vol-grp-08'
+        name: 'vol-grp-07'
       }
       {
         customerManagedKey: {
@@ -193,10 +185,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         }
         managedIdentities: {
           userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
+            '<cmkManagedIdentityResourceId>'
           ]
         }
-        name: 'vol-grp-09'
+        name: 'vol-grp-08'
       }
       {
         customerManagedKey: {
@@ -208,10 +200,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         managedIdentities: {
           systemAssigned: true
           userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
+            '<cmkManagedIdentityResourceId>'
           ]
         }
-        name: 'vol-grp-10'
+        name: 'vol-grp-09'
       }
     ]
   }
@@ -299,24 +291,16 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "name": "vol-grp-06"
         },
         {
-          "managedIdentities": {
-            "systemAssigned": true,
-            "userAssignedResourceIds": [
-              "<cmkManagedIdentityResourceId>",
-              "<managedIdentityResourceId>"
-            ]
-          },
-          "name": "vol-grp-07"
-        },
-        {
           "customerManagedKey": {
             "keyName": "<keyName>",
             "keyVaultResourceId": "<keyVaultResourceId>"
           },
           "managedIdentities": {
-            "systemAssigned": true
+            "userAssignedResourceIds": [
+              "<cmkManagedIdentityResourceId>"
+            ]
           },
-          "name": "vol-grp-08"
+          "name": "vol-grp-07"
         },
         {
           "customerManagedKey": {
@@ -326,10 +310,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           },
           "managedIdentities": {
             "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
+              "<cmkManagedIdentityResourceId>"
             ]
           },
-          "name": "vol-grp-09"
+          "name": "vol-grp-08"
         },
         {
           "customerManagedKey": {
@@ -341,10 +325,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "managedIdentities": {
             "systemAssigned": true,
             "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
+              "<cmkManagedIdentityResourceId>"
             ]
           },
-          "name": "vol-grp-10"
+          "name": "vol-grp-09"
         }
       ]
     }
@@ -426,24 +410,16 @@ param volumeGroups = [
     name: 'vol-grp-06'
   }
   {
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<cmkManagedIdentityResourceId>'
-        '<managedIdentityResourceId>'
-      ]
-    }
-    name: 'vol-grp-07'
-  }
-  {
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
     managedIdentities: {
-      systemAssigned: true
+      userAssignedResourceIds: [
+        '<cmkManagedIdentityResourceId>'
+      ]
     }
-    name: 'vol-grp-08'
+    name: 'vol-grp-07'
   }
   {
     customerManagedKey: {
@@ -453,10 +429,10 @@ param volumeGroups = [
     }
     managedIdentities: {
       userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
+        '<cmkManagedIdentityResourceId>'
       ]
     }
-    name: 'vol-grp-09'
+    name: 'vol-grp-08'
   }
   {
     customerManagedKey: {
@@ -468,10 +444,10 @@ param volumeGroups = [
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
+        '<cmkManagedIdentityResourceId>'
       ]
     }
-    name: 'vol-grp-10'
+    name: 'vol-grp-09'
   }
 ]
 ```
