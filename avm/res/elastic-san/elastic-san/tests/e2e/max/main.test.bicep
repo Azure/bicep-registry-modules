@@ -123,14 +123,10 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
-        // Test - Managed Identity - System Assigned + Many User Assigned - NOT Supported
-        // Test - Customer Managed Key Encryption - With System Assigned Identity, Without Encryption Identity - NOT Supported (Auth Issue on KV)
-        // Test - Customer Managed Key Encryption - With User Assigned Identity, With Encryption Identity - NOT Supported (Invalid Combination)
-        // Test - Customer Managed Key Encryption - Customer Managed Key Encryption - With System Assigned + User Assigned, With Encryption Identity + Key Version - NOT Supported (Invalid Combination)
-        // Test - Customer Managed Key Encryption - With User Assigned Identity, Without Encryption Identity - NOT Supported (A user-assigned identity must be specified.)
-        // Test - Customer Managed Key Encryption - With System Assigned + User Assigned, With Encryption Identity + Key Version - NOT Supported (Invalid Combination)
+        // The only supported configuration is to use the same user-assigned identity for both 'managedIdentities.userAssignedResourceIds' and 'customerManagedKey.userAssignedIdentityResourceId'.
+        // Other configurations such as system-assigned identity are not supported.
         {
-          // Test - Customer Managed Key Encryption - With User Assigned Identity, With Encryption Identity
+          // Test - Encryption with Customer Managed Key
           name: 'vol-grp-07'
           managedIdentities: {
             userAssignedResourceIds: [
@@ -143,26 +139,9 @@ module testDeployment '../../../main.bicep' = [
             userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
           }
         }
-
-        /////////
-
         {
+          // Test - Encryption with Customer Managed Key and explicit Key Version
           name: 'vol-grp-08'
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-          }
-        }
-        {
-          name: 'vol-grp-09'
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-            userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
-          }
-        }
-        {
-          name: 'vol-grp-10'
           managedIdentities: {
             userAssignedResourceIds: [
               nestedDependencies.outputs.cmkManagedIdentityResourceId
@@ -171,75 +150,12 @@ module testDeployment '../../../main.bicep' = [
           customerManagedKey: {
             keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
             keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-          }
-        }
-        {
-          name: 'vol-grp-11'
-          managedIdentities: {
-            userAssignedResourceIds: [
-              nestedDependencies.outputs.cmkManagedIdentityResourceId
-            ]
-          }
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-            userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
-          }
-        }
-        {
-          name: 'vol-grp-12'
-          managedIdentities: {
-            systemAssigned: true
-          }
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-          }
-        }
-        {
-          name: 'vol-grp-13'
-          managedIdentities: {
-            systemAssigned: true
-          }
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-            userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
-          }
-        }
-        {
-          name: 'vol-grp-14'
-          managedIdentities: {
-            systemAssigned: true
-            userAssignedResourceIds: [
-              nestedDependencies.outputs.cmkManagedIdentityResourceId
-            ]
-          }
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-          }
-        }
-        {
-          name: 'vol-grp-15'
-          managedIdentities: {
-            systemAssigned: true
-            userAssignedResourceIds: [
-              nestedDependencies.outputs.cmkManagedIdentityResourceId
-            ]
-          }
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+            keyVersion: nestedDependencies.outputs.keyVaultEncryptionKeyVersion
             userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
           }
         }
 
-        // TODO Combine CMK + Managed Identity
-
-        //managedIdentities
-        //customerManagedKey
-        //privateEndpoints
+        // TODO - !!!!!!!!privateEndpoints
       ]
       tags: {
         Owner: 'Contoso'

@@ -16,7 +16,7 @@ Describe 'Validate Deployment' {
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
         $volumeGroups = $TestInputData.DeploymentOutputs.volumeGroups.Value
 
-        $expectedVolumeGroupsCount = 7
+        $expectedVolumeGroupsCount = 8
     }
 
     Context 'Basic Tests' {
