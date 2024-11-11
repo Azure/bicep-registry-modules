@@ -10,7 +10,7 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if \'disableLocalAuth\' is set to true.')
-param authOptions object = {}
+param authOptions authOptionsType?
 
 @description('Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if \'authOptions\' are defined.')
 param disableLocalAuth bool = true
@@ -192,7 +192,7 @@ resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
   tags: tags
   identity: identity
   properties: {
-    authOptions: !empty(authOptions) ? authOptions : null
+    authOptions: authOptions
     disableLocalAuth: disableLocalAuth
     encryptionWithCmk: {
       enforcement: cmkEnforcement
@@ -405,4 +405,15 @@ import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetType
+}
+
+@export()
+type authOptionsType = {
+  @description('Optional. Indicates that either the API key or an access token from a Microsoft Entra ID tenant can be used for authentication.')
+  aadOrApiKey: {
+    @description('Optional. Describes what response the data plane API of a search service would send for requests that failed authentication.')
+    aadAuthFailureMode: ('http401WithBearerChallenge' | 'http403')?
+  }?
+  @description('Optional. Indicates that only the API key can be used for authentication.')
+  apiKeyOnly: object?
 }
