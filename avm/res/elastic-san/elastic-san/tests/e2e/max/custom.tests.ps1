@@ -66,8 +66,6 @@ Describe 'Validate Deployment' {
                 @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-05
                 @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-06
                 @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-07
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-08
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-09
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check

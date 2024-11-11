@@ -169,6 +169,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         customerManagedKey: {
           keyName: '<keyName>'
           keyVaultResourceId: '<keyVaultResourceId>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
         }
         managedIdentities: {
           userAssignedResourceIds: [
@@ -176,34 +177,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           ]
         }
         name: 'vol-grp-07'
-      }
-      {
-        customerManagedKey: {
-          keyName: '<keyName>'
-          keyVaultResourceId: '<keyVaultResourceId>'
-          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-        }
-        managedIdentities: {
-          userAssignedResourceIds: [
-            '<cmkManagedIdentityResourceId>'
-          ]
-        }
-        name: 'vol-grp-08'
-      }
-      {
-        customerManagedKey: {
-          keyName: '<keyName>'
-          keyVaultResourceId: '<keyVaultResourceId>'
-          keyVersion: '<keyVersion>'
-          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-        }
-        managedIdentities: {
-          systemAssigned: true
-          userAssignedResourceIds: [
-            '<cmkManagedIdentityResourceId>'
-          ]
-        }
-        name: 'vol-grp-09'
       }
     ]
   }
@@ -293,7 +266,8 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         {
           "customerManagedKey": {
             "keyName": "<keyName>",
-            "keyVaultResourceId": "<keyVaultResourceId>"
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
           },
           "managedIdentities": {
             "userAssignedResourceIds": [
@@ -301,34 +275,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
             ]
           },
           "name": "vol-grp-07"
-        },
-        {
-          "customerManagedKey": {
-            "keyName": "<keyName>",
-            "keyVaultResourceId": "<keyVaultResourceId>",
-            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-          },
-          "managedIdentities": {
-            "userAssignedResourceIds": [
-              "<cmkManagedIdentityResourceId>"
-            ]
-          },
-          "name": "vol-grp-08"
-        },
-        {
-          "customerManagedKey": {
-            "keyName": "<keyName>",
-            "keyVaultResourceId": "<keyVaultResourceId>",
-            "keyVersion": "<keyVersion>",
-            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-          },
-          "managedIdentities": {
-            "systemAssigned": true,
-            "userAssignedResourceIds": [
-              "<cmkManagedIdentityResourceId>"
-            ]
-          },
-          "name": "vol-grp-09"
         }
       ]
     }
@@ -413,6 +359,7 @@ param volumeGroups = [
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     managedIdentities: {
       userAssignedResourceIds: [
@@ -420,34 +367,6 @@ param volumeGroups = [
       ]
     }
     name: 'vol-grp-07'
-  }
-  {
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<cmkManagedIdentityResourceId>'
-      ]
-    }
-    name: 'vol-grp-08'
-  }
-  {
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<cmkManagedIdentityResourceId>'
-      ]
-    }
-    name: 'vol-grp-09'
   }
 ]
 ```
