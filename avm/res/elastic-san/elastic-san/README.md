@@ -180,6 +180,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           keyName: '<keyName>'
           keyVaultResourceId: '<keyVaultResourceId>'
         }
+        managedIdentities: {
+          systemAssigned: true
+        }
         name: 'vol-grp-08'
       }
       {
@@ -187,6 +190,11 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           keyName: '<keyName>'
           keyVaultResourceId: '<keyVaultResourceId>'
           userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
         }
         name: 'vol-grp-09'
       }
@@ -196,6 +204,12 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           keyVaultResourceId: '<keyVaultResourceId>'
           keyVersion: '<keyVersion>'
           userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
         }
         name: 'vol-grp-10'
       }
@@ -299,6 +313,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
             "keyName": "<keyName>",
             "keyVaultResourceId": "<keyVaultResourceId>"
           },
+          "managedIdentities": {
+            "systemAssigned": true
+          },
           "name": "vol-grp-08"
         },
         {
@@ -306,6 +323,11 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
             "keyName": "<keyName>",
             "keyVaultResourceId": "<keyVaultResourceId>",
             "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
           },
           "name": "vol-grp-09"
         },
@@ -315,6 +337,12 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
             "keyVaultResourceId": "<keyVaultResourceId>",
             "keyVersion": "<keyVersion>",
             "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "systemAssigned": true,
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
           },
           "name": "vol-grp-10"
         }
@@ -412,6 +440,9 @@ param volumeGroups = [
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
+    managedIdentities: {
+      systemAssigned: true
+    }
     name: 'vol-grp-08'
   }
   {
@@ -419,6 +450,11 @@ param volumeGroups = [
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     name: 'vol-grp-09'
   }
@@ -428,6 +464,12 @@ param volumeGroups = [
       keyVaultResourceId: '<keyVaultResourceId>'
       keyVersion: '<keyVersion>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     name: 'vol-grp-10'
   }

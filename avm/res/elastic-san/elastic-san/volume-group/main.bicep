@@ -28,6 +28,14 @@ param managedIdentities managedIdentityAllType?
 // Azure Elastic SAN uses the managed identity granted permissions in step 1 to authenticate access to the key vault via Microsoft Entra ID.
 // Azure Elastic SAN wraps the data encryption key with the customer-managed key from the key vault.
 // For read/write operations, Azure Elastic SAN sends requests to Azure Key Vault to unwrap the account encryption key to perform encryption and decryption operations.
+
+/*
+
+Encryption with Customer Managed Key (CMK) always requires a managed identity otherwise the deployment will fail with the following error:
+          VolumeGroup XYZ should have EncryptionAtRestWithPlatformKey if it doesn't have an identity.
+
+*/
+
 import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType? // This requires KV with enabled purge protection

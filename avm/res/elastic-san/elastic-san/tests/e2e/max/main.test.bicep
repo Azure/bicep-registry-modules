@@ -135,14 +135,6 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
-        /*
-          Encryption with Customer Managed Key (CMK) always requires a managed identity otherwise the deployment will fail with the following error:
-          VolumeGroup XYZ should have EncryptionAtRestWithPlatformKey if it doesn't have an identity.
-
-          NOT Supported Test - Customer Managed Key Encryption - Without Identity, Without Encryption Identity
-          NOT Supported Test - Customer Managed Key Encryption - Without Identity, With Encryption Identity
-          NOT Supported Test - Customer Managed Key Encryption - Without Identity, With Encryption Identity + Key Version
-        */
         {
           // Test - Customer Managed Key Encryption - With System Assigned Identity, Without Encryption Identity
           name: 'vol-grp-08'
