@@ -105,7 +105,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     if ($CMK) {
 
         $vg.Encryption | Should -Be 'EncryptionAtRestWithCustomerManagedKey'
-        $($vg.EncryptionIdentityEncryptionUserAssignedIdentity | ConvertFrom-Json).PSObject.Properties.Count | Should -Be 1
+        $vg.EncryptionIdentityEncryptionUserAssignedIdentity | Should -Not -BeNullOrEmpty # Contains ResourceId of the MI
 
     } else {
 
