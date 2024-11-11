@@ -18,14 +18,8 @@ param volumes volumeType[]?
 @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules.')
 param virtualNetworkRules virtualNetworkRuleType[]?
 
-/*
-
-- Too many user-assigned identities specified on the resource. - NOT supported
-
-*/
-
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. The managed identity definition for this resource.')
+@sys.description('Optional. The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported.')
 param managedIdentities managedIdentityAllType?
 
 // An Azure Key Vault admin grants permissions to a managed identity to access the key vault that contains the encryption keys.

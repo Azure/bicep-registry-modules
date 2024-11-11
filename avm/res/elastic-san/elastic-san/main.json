@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "15160406626118992670"
+      "templateHash": "1319797408151564862"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN.",
@@ -48,7 +48,7 @@
           "$ref": "#/definitions/managedIdentityAllType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The managed identity definition for this resource."
+            "description": "Optional. The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported."
           }
         },
         "customerManagedKey": {
@@ -878,7 +878,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "11261983917167271074"
+              "templateHash": "17082923253370626514"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group.",
@@ -1502,7 +1502,7 @@
               "$ref": "#/definitions/managedIdentityAllType",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The managed identity definition for this resource."
+                "description": "Optional. The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported."
               }
             },
             "customerManagedKey": {

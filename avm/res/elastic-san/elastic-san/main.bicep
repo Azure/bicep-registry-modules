@@ -193,7 +193,7 @@ type volumeGroupType = {
   @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules.')
   virtualNetworkRules: virtualNetworkRuleType[]?
 
-  @sys.description('Optional. The managed identity definition for this resource.')
+  @sys.description('Optional. The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported.')
   managedIdentities: managedIdentityAllType?
 
   @sys.description('Optional. The customer managed key definition.')
