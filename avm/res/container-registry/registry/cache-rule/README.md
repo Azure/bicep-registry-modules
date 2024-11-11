@@ -20,7 +20,6 @@ Cache for Azure Container Registry (Preview) feature allows users to cache conta
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`credentialSetResourceId`](#parameter-credentialsetresourceid) | string | The resource ID of the credential store which is associated with the cache rule. |
 | [`registryName`](#parameter-registryname) | string | The name of the parent registry. Required if the template is used in a standalone deployment. |
 | [`sourceRepository`](#parameter-sourcerepository) | string | Source repository pulled from upstream. |
 
@@ -28,15 +27,9 @@ Cache for Azure Container Registry (Preview) feature allows users to cache conta
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`credentialSetResourceId`](#parameter-credentialsetresourceid) | string | The resource ID of the credential store which is associated with the cache rule. |
 | [`name`](#parameter-name) | string | The name of the cache rule. Will be derived from the source repository name if not defined. |
 | [`targetRepository`](#parameter-targetrepository) | string | Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}. |
-
-### Parameter: `credentialSetResourceId`
-
-The resource ID of the credential store which is associated with the cache rule.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `registryName`
 
@@ -52,13 +45,20 @@ Source repository pulled from upstream.
 - Required: Yes
 - Type: string
 
+### Parameter: `credentialSetResourceId`
+
+The resource ID of the credential store which is associated with the cache rule.
+
+- Required: No
+- Type: string
+
 ### Parameter: `name`
 
 The name of the cache rule. Will be derived from the source repository name if not defined.
 
 - Required: No
 - Type: string
-- Default: `[replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-')]`
+- Default: `[replace(replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-'), '*', '')]`
 
 ### Parameter: `targetRepository`
 
