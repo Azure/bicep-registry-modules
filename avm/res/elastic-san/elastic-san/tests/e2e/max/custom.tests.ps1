@@ -16,7 +16,7 @@ Describe 'Validate Deployment' {
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
         $volumeGroups = $TestInputData.DeploymentOutputs.volumeGroups.Value
 
-        $expectedVolumeGroupsCount = 3
+        $expectedVolumeGroupsCount = 10
     }
 
     Context 'Basic Tests' {
@@ -62,6 +62,13 @@ Describe 'Validate Deployment' {
                 @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-01
                 @{ VolumeCounts=2;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-02
                 @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=1 }    # vol-grp-03
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-04
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-05
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-06
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-07
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-08
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-09
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-10
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check

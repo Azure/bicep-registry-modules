@@ -21,6 +21,9 @@ param serviceShort string = 'esanmax'
 @sys.description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+//@sys.description('Generated. Used as a basis for unique resource names.')
+//param baseTime string = utcNow('u')
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -31,6 +34,10 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
+    //keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    cmkManagedIdentityName: 'dep-cmk-${namePrefix}-msi-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -91,6 +98,72 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
         }
+        {
+          // Test - Managed Identity - System Assigned Only
+          name: 'vol-grp-04'
+          managedIdentities: {
+            systemAssigned: true
+          }
+        }
+        {
+          // Test - Managed Identity - User Assigned Only
+          name: 'vol-grp-05'
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
+        }
+        {
+          // Test - Managed Identity - System Assigned + User Assigned
+          name: 'vol-grp-06'
+          managedIdentities: {
+            systemAssigned: true
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
+        }
+        {
+          // Test - Managed Identity - System Assigned + Many User Assigned
+          name: 'vol-grp-07'
+          managedIdentities: {
+            systemAssigned: true
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+              nestedDependencies.outputs.cmkManagedIdentityResourceId
+            ]
+          }
+        }
+        {
+          // Test - Customer Managed Key Encryption - Without Encryption Identity -  NOT valid without an Identity ???
+          name: 'vol-grp-08'
+          customerManagedKey: {
+            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+          }
+        }
+        {
+          // Test - Customer Managed Key Encryption - With Encryption Identity
+          name: 'vol-grp-09'
+          customerManagedKey: {
+            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+            userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
+          }
+        }
+        {
+          // Test - Customer Managed Key Encryption - With Encryption Identity + Key Version
+          name: 'vol-grp-10'
+          customerManagedKey: {
+            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+            keyVersion: nestedDependencies.outputs.keyVaultEncryptionKeyVersion
+            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+            userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
+          }
+        }
+
+        // TODO Combine CMK + Managed Identity
 
         //managedIdentities
         //customerManagedKey
