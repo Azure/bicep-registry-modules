@@ -255,6 +255,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       ]
     }
     networkRuleSet: {
+      bypass: 'AzurePortal'
       ipRules: [
         {
           value: '40.74.28.0/23'
@@ -364,6 +365,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "networkRuleSet": {
       "value": {
+        "bypass": "AzurePortal",
         "ipRules": [
           {
             "value": "40.74.28.0/23"
@@ -465,6 +467,7 @@ param managedIdentities = {
   ]
 }
 param networkRuleSet = {
+  bypass: 'AzurePortal'
   ipRules: [
     {
       value: '40.74.28.0/23'
@@ -1311,7 +1314,47 @@ Network specific rules that determine how the Azure Cognitive Search service may
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bypass`](#parameter-networkrulesetbypass) | string | Network specific rules that determine how the Azure AI Search service may be reached. |
+| [`ipRules`](#parameter-networkrulesetiprules) | array | A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the 'publicNetworkAccess' of the search service is 'enabled'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method. |
+
+### Parameter: `networkRuleSet.bypass`
+
+Network specific rules that determine how the Azure AI Search service may be reached.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzurePortal'
+    'None'
+  ]
+  ```
+
+### Parameter: `networkRuleSet.ipRules`
+
+A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the 'publicNetworkAccess' of the search service is 'enabled'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-networkrulesetiprulesvalue) | string | Value corresponding to a single IPv4 address (eg., 123.1.2.3) or an IP range in CIDR format (eg., 123.1.2.3/24) to be allowed. |
+
+### Parameter: `networkRuleSet.ipRules.value`
+
+Value corresponding to a single IPv4 address (eg., 123.1.2.3) or an IP range in CIDR format (eg., 123.1.2.3/24) to be allowed.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `partitionCount`
 

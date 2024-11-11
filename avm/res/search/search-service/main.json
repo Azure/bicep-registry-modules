@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "13395116650895577306"
+      "templateHash": "13439052311737641230"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service.",
@@ -76,6 +76,49 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Indicates that only the API key can be used for authentication."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "networkRuleSetType": {
+      "type": "object",
+      "properties": {
+        "bypass": {
+          "type": "string",
+          "allowedValues": [
+            "AzurePortal",
+            "None"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Network specific rules that determine how the Azure AI Search service may be reached."
+          }
+        },
+        "ipRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ipRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the 'publicNetworkAccess' of the search service is 'enabled'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "ipRuleType": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Value corresponding to a single IPv4 address (eg., 123.1.2.3) or an IP range in CIDR format (eg., 123.1.2.3/24) to be allowed."
           }
         }
       },
@@ -678,8 +721,8 @@
       }
     },
     "networkRuleSet": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/networkRuleSetType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Network specific rules that determine how the Azure Cognitive Search service may be reached."
       }
