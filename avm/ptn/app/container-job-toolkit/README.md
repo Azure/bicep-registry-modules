@@ -1433,16 +1433,16 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.1` | Remote reference |
-| `br/public:avm/ptn/deployment-script/import-image-to-acr:0.4.0` | Remote reference |
+| `br/public:avm/ptn/deployment-script/import-image-to-acr:0.4.1` | Remote reference |
 | `br/public:avm/res/app/job:0.5.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.8.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.8.1` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.6.0` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.10.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.14.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.5.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.14.3` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "4356636356290173138"
+      "version": "0.30.23.60470",
+      "templateHash": "11351051395125066237"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -268,6 +268,7 @@
       },
       "dependsOn": [
         "acr",
+        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]",
         "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]"
       ]
     },

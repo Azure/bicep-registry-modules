@@ -496,7 +496,7 @@ module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.
   }
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (zoneRedundant) {
+module vnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (zoneRedundant) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-vnet'
   params: {
     name: 'vnet-${name}'
@@ -594,7 +594,7 @@ resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/vi
   }
 }
 
-module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.8.0' = if (deployInVnet) {
+module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.9.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-privateEndpoint_KeyVault'
   params: {
     name: 'pe-KeyVault-${name}'
@@ -627,7 +627,7 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.8.
     ]
   }
 }
-module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.8.0' = if (deployInVnet) {
+module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.9.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-privateEndpoint_ContainerRegistry'
   params: {
     name: 'pe-ContainerRegistry-${name}'
@@ -679,7 +679,7 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 
 // supporting resources
 // -----------------
-module vault 'br/public:avm/res/key-vault/vault:0.9.0' = {
+module vault 'br/public:avm/res/key-vault/vault:0.10.2' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName, subscription().subscriptionId)}-vault'
   params: {
     name: keyVaultName
@@ -719,7 +719,7 @@ module vault 'br/public:avm/res/key-vault/vault:0.9.0' = {
   }
 }
 
-module registry 'br/public:avm/res/container-registry/registry:0.5.1' = {
+module registry 'br/public:avm/res/container-registry/registry:0.6.0' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-registry'
   params: {
     #disable-next-line BCP334
@@ -754,7 +754,7 @@ module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0
   }
 ]
 
-module storage 'br/public:avm/res/storage/storage-account:0.14.1' = if (deployInVnet) {
+module storage 'br/public:avm/res/storage/storage-account:0.14.3' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-storage'
   params: {
     name: uniqueString('sa', name, location, resourceGroupName, subscription().subscriptionId)
@@ -797,7 +797,7 @@ resource law 'Microsoft.OperationalInsights/workspaces@2023-09-01' = if (empty(l
 
 // Managed Environment
 // -------------------
-module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
+module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.1' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-managedEnvironment'
   params: {
     name: 'container-apps-environment-${name}'
