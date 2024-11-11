@@ -96,7 +96,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRuleCount, $PrivateEndpointConnection) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMI, $UserAssignedMI, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRuleCount, $PrivateEndpointConnection) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -104,25 +104,71 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     $vg.Encryption | Should -Be 'EncryptionAtRestWithPlatformKey'
     $vg.EncryptionIdentityEncryptionUserAssignedIdentity | Should -BeNullOrEmpty
+
+
     $vg.EnforceDataIntegrityCheckForIscsi | Should -BeNullOrEmpty
     $vg.Id | Should -Be $ResourceId
-    $vg.IdentityPrincipalId | Should -BeNullOrEmpty
-    $vg.IdentityTenantId | Should -BeNullOrEmpty
-    $vg.IdentityType | Should -BeNullOrEmpty
-    $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty
+
+
+
+    if ( $SystemAssignedMI -and $UserAssignedMI ) {
+
+        $vg.IdentityPrincipalId | Should -Be $SystemAssignedMIPrincipalId
+        $vg.IdentityTenantId | Should -Not -BeNullOrEmpty
+        $vg.IdentityType | Should -Be 'SystemAssigned, UserAssigned'
+        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -Be 'TODO'
+
+    } elseif ($SystemAssignedMI) {
+
+        $vg.IdentityPrincipalId | Should -Be $SystemAssignedMIPrincipalId
+        $vg.IdentityTenantId | Should -Not -BeNullOrEmpty
+        $vg.IdentityType | Should -Be 'SystemAssigned'
+        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty
+
+    } elseif ($UserAssignedMI) {
+
+        $vg.IdentityPrincipalId | Should -BeNullOrEmpty
+        $vg.IdentityTenantId | Should -Not -BeNullOrEmpty
+        $vg.IdentityType | Should -Be 'UserAssigned'
+        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -Be 'TODO'
+
+    } else {
+
+        # None Identity Specified
+        $vg.IdentityPrincipalId | Should -BeNullOrEmpty
+        $vg.IdentityTenantId | Should -BeNullOrEmpty
+        $vg.IdentityType | Should -BeNullOrEmpty
+        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty
+
+    }
+
+
+
+
+
+
+
     $vg.KeyVaultPropertyCurrentVersionedKeyExpirationTimestamp | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyCurrentVersionedKeyIdentifier | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyKeyName | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyKeyVaultUri | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyKeyVersion | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyLastKeyRotationTimestamp | Should -BeNullOrEmpty
+
+
     $vg.Name | Should -Be $Name
+
+
     $vg.NetworkAclsVirtualNetworkRule.Count | Should -Be $NetworkAclsVirtualNetworkRuleCount
     if ( $PrivateEndpointConnection ) {
         $vg.PrivateEndpointConnection | Should -Be $PrivateEndpointConnection
     } else {
         $vg.PrivateEndpointConnection | Should -BeNullOrEmpty
     }
+
+
+
+
     $vg.ProtocolType | Should -Be 'iSCSI'
     $vg.ResourceGroupName | Should -Be $ResourceGroupName
     #Skip $vg.SystemData**

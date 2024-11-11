@@ -59,13 +59,13 @@ Describe 'Validate Deployment' {
 
             # Volume Groups
             $expectedData = @(
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-01
-                @{ VolumeCounts=2;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-02
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=1 }    # vol-grp-03
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-04
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-05
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-06
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-07
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-01
+                @{ VolumeCounts=2;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-02
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=1;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-03
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$true;UserAssignedMI=$false }   # vol-grp-04
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$false;UserAssignedMI=$true }   # vol-grp-05
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$true;UserAssignedMI=$true }    # vol-grp-06
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-07
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
@@ -85,6 +85,8 @@ Describe 'Validate Deployment' {
                     -ElasticSanName $name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                     -Name $volumeGroups[$vgrpidx].name `
+                    -SystemAssignedMI $item.SystemAssignedMI `
+                    -UserAssignedMI $item.UserAssignedMI `
                     -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId `
                     -NetworkAclsVirtualNetworkRuleCount $item.NetworkAclsVirtualNetworkRuleCount `
                     -PrivateEndpointConnection $null
