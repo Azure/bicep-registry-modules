@@ -81,8 +81,8 @@ Describe 'Validate Deployment' {
                     -ElasticSanName $name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                     -Name $volumeGroups[$vgrpidx].name `
-                    -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId
-                    -NetworkAclsVirtualNetworkRuleCount $item.NetworkAclsVirtualNetworkRuleCount
+                    -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId `
+                    -NetworkAclsVirtualNetworkRuleCount $item.NetworkAclsVirtualNetworkRuleCount `
                     -PrivateEndpointConnection $null
 
                 if ($item.VolumeCounts -eq 0) {
