@@ -22,31 +22,8 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @sys.description('Optional. The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported.')
 param managedIdentities managedIdentityAllType?
 
-// An Azure Key Vault admin grants permissions to a managed identity to access the key vault that contains the encryption keys.
-// The managed identity can be either a user-assigned identity that you create and manage, or a system-assigned identity that is associated with the volume group.
-// An Azure Elastic SAN Volume Group Owner configures encryption with a customer-managed key for the volume group.
-// Azure Elastic SAN uses the managed identity granted permissions in step 1 to authenticate access to the key vault via Microsoft Entra ID.
-// Azure Elastic SAN wraps the data encryption key with the customer-managed key from the key vault.
-// For read/write operations, Azure Elastic SAN sends requests to Azure Key Vault to unwrap the account encryption key to perform encryption and decryption operations.
-
-/*
-
-Encryption with Customer Managed Key (CMK) always requires a managed identity otherwise the deployment will fail with the following error:
-          VolumeGroup XYZ should have EncryptionAtRestWithPlatformKey if it doesn't have an identity.
-
-*/
-
-/*
-  Encryption with Customer Managed Key (CMK) always requires a managed identity otherwise the deployment will fail with the following error:
-  VolumeGroup XYZ should have EncryptionAtRestWithPlatformKey if it doesn't have an identity.
-
-  NOT Supported Test - Customer Managed Key Encryption - Without Identity, Without Encryption Identity
-  NOT Supported Test - Customer Managed Key Encryption - Without Identity, With Encryption Identity
-  NOT Supported Test - Customer Managed Key Encryption - Without Identity, With Encryption Identity + Key Version
-*/
-
 import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. The customer managed key definition.')
+@sys.description('Optional. The customer managed key definition. This parameter enables the encryption of Elastic SAN Volume Group using a customer-managed key. Currently, the only supported configuration is to use the same user-assigned identity for both \'managedIdentities.userAssignedResourceIds\' and \'customerManagedKey.userAssignedIdentityResourceId\'. Other configurations such as system-assigned identity are not supported. Ensure that the specified user-assigned identity has the \'Key Vault Crypto User\' role access to both the key vault and the key itself. The key vault must also have purge protection enabled.')
 param customerManagedKey customerManagedKeyType? // This requires KV with enabled purge protection
 
 // Private endpoints aren't currently supported for elastic SANs using zone-redundant storage (ZRS).
