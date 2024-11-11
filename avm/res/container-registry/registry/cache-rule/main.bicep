@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param registryName string
 
 @description('Optional. The name of the cache rule. Will be derived from the source repository name if not defined.')
-param name string = replace(replace(sourceRepository, '/', '-'), '.', '-')
+param name string = replace(replace(replace(sourceRepository, '/', '-'), '.', '-'), '*', '')
 
 @description('Required. Source repository pulled from upstream.')
 param sourceRepository string
