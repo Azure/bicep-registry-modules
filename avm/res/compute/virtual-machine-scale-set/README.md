@@ -291,7 +291,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     availabilityZones: [
       '2'
     ]
-    bootDiagnosticStorageAccountName: '<bootDiagnosticStorageAccountName>'
+    bootDiagnosticEnabled: false
     dataDisks: [
       {
         caching: 'ReadOnly'
@@ -478,8 +478,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         "2"
       ]
     },
-    "bootDiagnosticStorageAccountName": {
-      "value": "<bootDiagnosticStorageAccountName>"
+    "bootDiagnosticEnabled": {
+      "value": false
     },
     "dataDisks": {
       "value": [
@@ -689,7 +689,7 @@ param skuName = 'Standard_B12ms'
 param availabilityZones = [
   '2'
 ]
-param bootDiagnosticStorageAccountName = '<bootDiagnosticStorageAccountName>'
+param bootDiagnosticEnabled = false
 param dataDisks = [
   {
     caching: 'ReadOnly'
@@ -2313,7 +2313,8 @@ param vmPriority = 'Regular'
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`automaticRepairsPolicyEnabled`](#parameter-automaticrepairspolicyenabled) | bool | Specifies whether automatic repairs should be enabled on the virtual machine scale set. |
 | [`availabilityZones`](#parameter-availabilityzones) | array | The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set. |
-| [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | Storage account used to store boot diagnostic information. Boot diagnostics will be disabled if no value is provided. |
+| [`bootDiagnosticEnabled`](#parameter-bootDiagnosticEnabled) | string | Enable boot diagnostics to use default managed or secure storage. Defaults to false. |
+| [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account..|
 | [`bootDiagnosticStorageAccountUri`](#parameter-bootdiagnosticstorageaccounturi) | string | Storage account boot diagnostic base URI. |
 | [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
 | [`customData`](#parameter-customdata) | string | Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format. |
@@ -2482,9 +2483,17 @@ The virtual machine scale set zones. NOTE: Availability zones can only be set wh
   ]
   ```
 
+### Parameter: `bootDiagnosticEnabled`
+
+Enable boot diagnostics to use default managed or secure storage.
+
+- Required: No
+- Type: boolen
+- Default: false
+
 ### Parameter: `bootDiagnosticStorageAccountName`
 
-Storage account used to store boot diagnostic information. Boot diagnostics will be disabled if no value is provided.
+The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account.
 
 - Required: No
 - Type: string

@@ -143,8 +143,11 @@ param extensionCustomScriptConfig object = {
 @description('Optional. Storage account boot diagnostic base URI.')
 param bootDiagnosticStorageAccountUri string = '.blob.${environment().suffixes.storage}/'
 
-@description('Optional. Storage account used to store boot diagnostic information. Boot diagnostics will be disabled if no value is provided.')
+@description('Optional. The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account.')
 param bootDiagnosticStorageAccountName string = ''
+
+@description('Optional. Enable boot diagnostics to use default managed or secure storage. Defaults set to false.')
+param bootDiagnosticEnabled bool = false
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -604,7 +607,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
       }
       diagnosticsProfile: {
         bootDiagnostics: {
-          enabled: !empty(bootDiagnosticStorageAccountName)
+          enabled: !empty(bootDiagnosticStorageAccountName) ? true : bootDiagnosticEnabled
           storageUri: !empty(bootDiagnosticStorageAccountName)
             ? 'https://${bootDiagnosticStorageAccountName}${bootDiagnosticStorageAccountUri}'
             : null
