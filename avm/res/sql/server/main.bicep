@@ -49,7 +49,7 @@ param firewallRules firewallRuleType[] = []
 param virtualNetworkRules virtualNetworkRuleType[] = []
 
 @description('Optional. The security alert policies to create in the server.')
-param securityAlertPolicies array = []
+param securityAlertPolicies securityAlerPolicyType[] = []
 
 @description('Optional. The keys to configure.')
 param keys keyType[] = []
@@ -418,13 +418,13 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
     params: {
       name: securityAlertPolicy.name
       serverName: server.name
-      disabledAlerts: securityAlertPolicy.?disabledAlerts ?? []
-      emailAccountAdmins: securityAlertPolicy.?emailAccountAdmins ?? false
-      emailAddresses: securityAlertPolicy.?emailAddresses ?? []
-      retentionDays: securityAlertPolicy.?retentionDays ?? 0
-      state: securityAlertPolicy.?state ?? 'Disabled'
-      storageAccountAccessKey: securityAlertPolicy.?storageAccountAccessKey ?? ''
-      storageEndpoint: securityAlertPolicy.?storageEndpoint ?? ''
+      disabledAlerts: securityAlertPolicy.?disabledAlerts
+      emailAccountAdmins: securityAlertPolicy.?emailAccountAdmins
+      emailAddresses: securityAlertPolicy.?emailAddresses
+      retentionDays: securityAlertPolicy.?retentionDays
+      state: securityAlertPolicy.?state
+      storageAccountAccessKey: securityAlertPolicy.?storageAccountAccessKey
+      storageEndpoint: securityAlertPolicy.?storageEndpoint
     }
   }
 ]
@@ -863,4 +863,31 @@ type virtualNetworkRuleType = {
 
   @description('Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.')
   ignoreMissingVnetServiceEndpoint: bool?
+}
+
+@export()
+type securityAlerPolicyType = {
+  @description('Required. The name of the Security Alert Policy.')
+  name: string
+
+  @description('Optional. Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.')
+  disabledAlerts: string[]?
+
+  @description('Optional. Specifies that the alert is sent to the account administrators.')
+  emailAccountAdmins: bool?
+
+  @description('Optional. Specifies an array of email addresses to which the alert is sent.')
+  emailAddresses: string[]?
+
+  @description('Optional. Specifies the number of days to keep in the Threat Detection audit logs.')
+  retentionDays: int?
+
+  @description('Optional. Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database.')
+  state: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Specifies the identifier key of the Threat Detection audit storage account.')
+  storageAccountAccessKey: string?
+
+  @description('Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.')
+  storageEndpoint: string?
 }

@@ -3863,6 +3863,87 @@ The security alert policies to create in the server.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-securityalertpoliciesname) | string | The name of the Security Alert Policy. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`disabledAlerts`](#parameter-securityalertpoliciesdisabledalerts) | array | Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force. |
+| [`emailAccountAdmins`](#parameter-securityalertpoliciesemailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
+| [`emailAddresses`](#parameter-securityalertpoliciesemailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
+| [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
+| [`state`](#parameter-securityalertpoliciesstate) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
+| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | string | Specifies the identifier key of the Threat Detection audit storage account. |
+| [`storageEndpoint`](#parameter-securityalertpoliciesstorageendpoint) | string | Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs. |
+
+### Parameter: `securityAlertPolicies.name`
+
+The name of the Security Alert Policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAlertPolicies.disabledAlerts`
+
+Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityAlertPolicies.emailAccountAdmins`
+
+Specifies that the alert is sent to the account administrators.
+
+- Required: No
+- Type: bool
+
+### Parameter: `securityAlertPolicies.emailAddresses`
+
+Specifies an array of email addresses to which the alert is sent.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityAlertPolicies.retentionDays`
+
+Specifies the number of days to keep in the Threat Detection audit logs.
+
+- Required: No
+- Type: int
+
+### Parameter: `securityAlertPolicies.state`
+
+Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `securityAlertPolicies.storageAccountAccessKey`
+
+Specifies the identifier key of the Threat Detection audit storage account.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityAlertPolicies.storageEndpoint`
+
+Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
