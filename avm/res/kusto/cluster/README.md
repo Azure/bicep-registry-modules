@@ -589,6 +589,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
+    managedIdentities: {
+      systemAssigned: true
+    }
   }
 }
 ```
@@ -618,6 +621,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     }
   }
 }
@@ -640,6 +648,9 @@ param sku = 'Standard_E2ads_v5'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: true
 }
 ```
 
