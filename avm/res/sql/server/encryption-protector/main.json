@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "11473914706327458055"
+      "templateHash": "11939429086984184951"
     },
     "name": "Azure SQL Server Encryption Protector",
     "description": "This module deploys an Azure SQL Server Encryption Protector.",
@@ -26,9 +26,9 @@
     },
     "autoRotationEnabled": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Key auto rotation opt-in."
+        "description": "Optional. Key auto rotation opt-in flag. Either true or false."
       }
     },
     "serverKeyType": {
@@ -39,7 +39,7 @@
         "ServiceManaged"
       ],
       "metadata": {
-        "description": "Optional. The encryption protector type."
+        "description": "Optional. The encryption protector type like 'ServiceManaged', 'AzureKeyVault'."
       }
     }
   },

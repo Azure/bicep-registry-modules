@@ -118,7 +118,7 @@ var identity = !empty(managedIdentities)
   : null
 
 @description('Optional. The encryption protection configuration.')
-param encryptionProtectorObj object = {}
+param encryptionProtectorObj encryptionProtectorType?
 
 @description('Optional. The vulnerability assessment configuration.')
 param vulnerabilityAssessmentsObj object = {}
@@ -458,13 +458,13 @@ module server_keys 'key/main.bicep' = [
   }
 ]
 
-module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty(encryptionProtectorObj)) {
+module server_encryptionProtector 'encryption-protector/main.bicep' = if (encryptionProtectorObj != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: encryptionProtectorObj.serverKeyName
-    serverKeyType: encryptionProtectorObj.?serverKeyType ?? 'ServiceManaged'
-    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled ?? true
+    serverKeyName: encryptionProtectorObj!.serverKeyName
+    serverKeyType: encryptionProtectorObj.?serverKeyType
+    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled
   }
   dependsOn: [
     server_keys
@@ -798,4 +798,16 @@ type elasticPoolPropertyType = {
 
   @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
   zoneRedundant: bool?
+}
+
+@export()
+type encryptionProtectorType = {
+  @description('Required. The name of the server key.')
+  serverKeyName: string
+
+  @description('Optional. The encryption protector type like \'ServiceManaged\', \'AzureKeyVault\'.')
+  serverKeyType: 'ServiceManaged' | 'AzureKeyVault'?
+
+  @description('Optional. Key auto rotation opt-in flag. Either true or false.')
+  autoRotationEnabled: bool?
 }

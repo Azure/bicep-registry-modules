@@ -2996,7 +2996,47 @@ The encryption protection configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serverKeyName`](#parameter-encryptionprotectorobjserverkeyname) | string | The name of the server key. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-encryptionprotectorobjautorotationenabled) | bool | Key auto rotation opt-in flag. Either true or false. |
+| [`serverKeyType`](#parameter-encryptionprotectorobjserverkeytype) | string | The encryption protector type like 'ServiceManaged', 'AzureKeyVault'. |
+
+### Parameter: `encryptionProtectorObj.serverKeyName`
+
+The name of the server key.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `encryptionProtectorObj.autoRotationEnabled`
+
+Key auto rotation opt-in flag. Either true or false.
+
+- Required: No
+- Type: bool
+
+### Parameter: `encryptionProtectorObj.serverKeyType`
+
+The encryption protector type like 'ServiceManaged', 'AzureKeyVault'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureKeyVault'
+    'ServiceManaged'
+  ]
+  ```
 
 ### Parameter: `federatedClientId`
 
