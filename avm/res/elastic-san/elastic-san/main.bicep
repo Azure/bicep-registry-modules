@@ -69,7 +69,11 @@ var totalVirtualNetworkRules = reduce(
   (cur, next) => cur + next
 )
 
-var totalPrivateEndpoints = 0 // TODO !!!!!!!!!!!!!!!!!!!
+var totalPrivateEndpoints = reduce(
+  map(volumeGroups ?? [], volumeGroup => length(volumeGroup.?privateEndpoints ?? [])),
+  0,
+  (cur, next) => cur + next
+)
 
 // When 'publicNetworkAccess' is explicitly set we need to use that value and not to overrule it
 // If user has set 'publicNetworkAccess' to 'Disabled' and they specified any virtual network rule, the deployment will fail
