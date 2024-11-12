@@ -52,7 +52,7 @@ param virtualNetworkRules array = []
 param securityAlertPolicies array = []
 
 @description('Optional. The keys to configure.')
-param keys array = []
+param keys keyType[] = []
 
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
 param administrators serverExternalAdministratorType?
@@ -448,10 +448,10 @@ module server_keys 'key/main.bicep' = [
   for (key, index) in keys: {
     name: '${uniqueString(deployment().name, location)}-Sql-Key-${index}'
     params: {
-      name: key.?name
       serverName: server.name
-      serverKeyType: key.?serverKeyType ?? 'ServiceManaged'
-      uri: key.?uri ?? ''
+      name: key.?name
+      serverKeyType: key.?serverKeyType
+      uri: key.?uri
     }
   }
 ]
@@ -839,4 +839,16 @@ type firewallRuleType = {
 
   @description('Optional. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
   endIpAddress: string?
+}
+
+@export()
+type keyType = {
+  @description('Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
+  name: string?
+
+  @description('Optional. The server key type like \'ServiceManaged\', \'AzureKeyVault\'.')
+  serverKeyType: 'ServiceManaged' | 'AzureKeyVault'?
+
+  @description('Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: \'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion\'.')
+  uri: string?
 }

@@ -3123,6 +3123,42 @@ The keys to configure.
 - Type: array
 - Default: `[]`
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-keysname) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
+| [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type like 'ServiceManaged', 'AzureKeyVault'. |
+| [`uri`](#parameter-keysuri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
+
+### Parameter: `keys.name`
+
+The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.serverKeyType`
+
+The server key type like 'ServiceManaged', 'AzureKeyVault'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureKeyVault'
+    'ServiceManaged'
+  ]
+  ```
+
+### Parameter: `keys.uri`
+
+The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'.
+
+- Required: No
+- Type: string
+
 ### Parameter: `location`
 
 Location for all resources.
