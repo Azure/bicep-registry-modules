@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       sku: 'Premium_LRS'
+      availabilityZone: 2
       volumeGroups: [
         // The only supported configuration is to use the same user-assigned identity for both 'managedIdentities.userAssignedResourceIds' and 'customerManagedKey.userAssignedIdentityResourceId'.
         // Other configurations such as system-assigned identity are not supported.
