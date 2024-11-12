@@ -87,7 +87,7 @@ Describe 'Validate Deployment' {
                     -SystemAssignedMIPrincipalId $null `
                     -NetworkAclsVirtualNetworkRule $null `
                     -CMK $item.CMK `
-                    -CMKUMIResourceId $TestInputData.DeploymentOutputs.cmkManagedIdentityResourceId.Value `
+                    -CMKUMIResourceId $TestInputData.DeploymentOutputs.managedIdentityResourceId.Value `
                     -CMKKeyVaultKeyUrl $TestInputData.DeploymentOutputs.cmkKeyVaultKeyUrl.Value `
                     -CMKKeyVaultEncryptionKeyName $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyName.Value `
                     -CMKKeyVaultUrl $TestInputData.DeploymentOutputs.cmkKeyVaultUrl.Value `
