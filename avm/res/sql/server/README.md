@@ -3059,6 +3059,40 @@ The firewall rules to create in the server.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-firewallrulesname) | string | The name of the firewall rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+| [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+
+### Parameter: `firewallRules.name`
+
+The name of the firewall rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.endIpAddress`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: No
+- Type: string
+
+### Parameter: `firewallRules.startIpAddress`
+
+The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: No
+- Type: string
+
 ### Parameter: `isIPv6Enabled`
 
 Whether or not to enable IPv6 support for this server.

@@ -43,7 +43,7 @@ param databases databasePropertyType[] = []
 param elasticPools elasticPoolPropertyType[] = []
 
 @description('Optional. The firewall rules to create in the server.')
-param firewallRules array = []
+param firewallRules firewallRuleType[] = []
 
 @description('Optional. The virtual network rules to create in the server.')
 param virtualNetworkRules array = []
@@ -394,8 +394,8 @@ module server_firewallRules 'firewall-rule/main.bicep' = [
     params: {
       name: firewallRule.name
       serverName: server.name
-      endIpAddress: firewallRule.?endIpAddress ?? '0.0.0.0'
-      startIpAddress: firewallRule.?startIpAddress ?? '0.0.0.0'
+      endIpAddress: firewallRule.?endIpAddress
+      startIpAddress: firewallRule.?startIpAddress
     }
   }
 ]
@@ -827,4 +827,16 @@ type vulnerabilityAssessmentType = {
 
   @description('Optional. Specifies whether to create a role assignment for the storage account.')
   createStorageRoleAssignment: bool?
+}
+
+@export()
+type firewallRuleType = {
+  @description('Required. The name of the firewall rule.')
+  name: string
+
+  @description('Optional. The start IP address of the firewall rule. Must be IPv4 format. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  startIpAddress: string?
+
+  @description('Optional. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  endIpAddress: string?
 }
