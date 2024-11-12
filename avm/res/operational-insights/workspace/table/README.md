@@ -90,21 +90,21 @@ Restore parameters.
 
 The timestamp to end the restore by (UTC).
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `restoredLogs.sourceTable`
 
 The table to restore data from.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `restoredLogs.startRestoreTime`
 
 The timestamp to start the restore from (UTC).
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `retentionInDays`
@@ -234,7 +234,7 @@ Table's schema.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`columns`](#parameter-schemacolumns) | array | A list of table custom columns. |
-| [`name`](#parameter-schemaname) | string | The table name |
+| [`name`](#parameter-schemaname) | string | The table name. |
 
 **Optional parameters**
 
@@ -324,7 +324,7 @@ Column display name.
 
 ### Parameter: `schema.name`
 
-The table name
+The table name.
 
 - Required: Yes
 - Type: string

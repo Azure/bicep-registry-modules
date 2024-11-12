@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "4340075834628510269"
+      "templateHash": "5718222527805133829"
     },
     "name": "Log Analytics Workspace Tables",
     "description": "This module deploys a Log Analytics Workspace Table.",
@@ -18,18 +18,21 @@
       "properties": {
         "sourceTable": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The table to restore data from."
           }
         },
         "startRestoreTime": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The timestamp to start the restore from (UTC)."
           }
         },
         "endRestoreTime": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The timestamp to end the restore by (UTC)."
           }
@@ -45,7 +48,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Required. The table name"
+            "description": "Required. The table name."
           }
         },
         "columns": {

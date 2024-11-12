@@ -140,16 +140,16 @@ output resourceGroupName string = resourceGroup().name
 @export()
 type restoredLogsType = {
   @description('Optional. The table to restore data from.')
-  sourceTable: string
+  sourceTable: string?
   @description('Optional. The timestamp to start the restore from (UTC).')
-  startRestoreTime: string
+  startRestoreTime: string?
   @description('Optional. The timestamp to end the restore by (UTC).')
-  endRestoreTime: string
+  endRestoreTime: string?
 }
 
 @export()
 type schemaType = {
-  @description('Required. The table name')
+  @description('Required. The table name.')
   name: string
   @description('Required. A list of table custom columns.')
   columns: columnType[]
