@@ -9,14 +9,13 @@ Describe 'Validate Deployment' {
 
         . $PSScriptRoot/../../common.tests.ps1
         $expectedTags = @{}
+        $expectedVolumeGroupsCount = 2
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
         $location = $TestInputData.DeploymentOutputs.location.Value
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
         $volumeGroups = $TestInputData.DeploymentOutputs.volumeGroups.Value
-
-        $expectedVolumeGroupsCount = 2
     }
 
     Context 'Basic Tests' {
