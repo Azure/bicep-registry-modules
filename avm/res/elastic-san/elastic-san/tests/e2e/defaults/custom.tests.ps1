@@ -46,11 +46,13 @@ Describe 'Validate Deployment' {
                 -name $name `
                 -Location $location `
                 -Tags $expectedTags  `
+                -AvailabilityZone $null `
                 -BaseSizeTiB 1 `
                 -ExtendedCapacitySizeTiB 0 `
                 -PublicNetworkAccess $null `
                 -SkuName 'Premium_ZRS' `
-                -VolumeGroupCount 0
+                -VolumeGroupCount 0 `
+                -GroupIds $null
         }
     }
 }

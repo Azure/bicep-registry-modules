@@ -48,11 +48,13 @@ Describe 'Validate Deployment' {
                 -name $name `
                 -Location $location `
                 -Tags $expectedTags  `
+                -AvailabilityZone $null `
                 -BaseSizeTiB 1 `
                 -ExtendedCapacitySizeTiB 0 `
                 -PublicNetworkAccess $null `
                 -SkuName 'Premium_ZRS' `
-                -VolumeGroupCount $expectedVolumeGroupsCount
+                -VolumeGroupCount $expectedVolumeGroupsCount `
+                -GroupIds $null
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
@@ -92,7 +94,7 @@ Describe 'Validate Deployment' {
                     -CMKKeyVaultEncryptionKeyName $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyName.Value `
                     -CMKKeyVaultUrl $TestInputData.DeploymentOutputs.cmkKeyVaultUrl.Value `
                     -CMKKeyVaultEncryptionKeyVersion $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyVersion.Value `
-                    -PrivateEndpointConnection $null
+                    -GroupIds $null
             }
         }
     }

@@ -9,6 +9,7 @@ Describe 'Validate Deployment' {
 
         . $PSScriptRoot/../../common.tests.ps1
         $expectedTags = @{}
+        $groupIds = @( 'vol-grp-01' )
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
@@ -48,12 +49,13 @@ Describe 'Validate Deployment' {
                 -name $name `
                 -Location $location `
                 -Tags $expectedTags  `
+                -AvailabilityZone 2 `
                 -BaseSizeTiB 1 `
                 -ExtendedCapacitySizeTiB 0 `
                 -PublicNetworkAccess 'Disabled' `
                 -SkuName 'Premium_LRS' `
-                -VolumeGroupCount $expectedVolumeGroupsCount
-                # TODO AV ZONE !!!!!!!!!!!!!!!!!!!!!!
+                -VolumeGroupCount $expectedVolumeGroupsCount `
+                -GroupIds $groupIds
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
@@ -92,7 +94,7 @@ Describe 'Validate Deployment' {
                     -CMKKeyVaultEncryptionKeyName $null `
                     -CMKKeyVaultUrl $null `
                     -CMKKeyVaultEncryptionKeyVersion $null `
-                    -PrivateEndpointConnection $null
+                    -GroupIds $groupIds
             }
         }
     }

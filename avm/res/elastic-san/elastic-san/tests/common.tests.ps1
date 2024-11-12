@@ -57,6 +57,41 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
     for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
 }
 
+function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpoints) {
+
+    if ( $GroupIds ) {
+
+        $PrivateEndpoints | Should -Not -BeNullOrEmpty
+        $PrivateEndpoints | ConvertFrom-Json | Should -Not -BeNullOrEmpty
+
+        $PrivateEndpoints.Count | Should -Be $GroupIds.Count
+        foreach ($item in $PrivateEndpoints) {
+                
+                $i = $PrivateEndpoints.IndexOf($item)
+
+                $item.id | Should -Not -BeNullOrEmpty
+                $item.name | Should -Not -BeNullOrEmpty
+
+                $item.properties.privateEndpoint.id | Should -Not -BeNullOrEmpty
+
+                $item.properties.privateLinkServiceConnectionState.status | Should -Be 'Approved'
+                $item.properties.privateLinkServiceConnectionState.description | Should -Be 'Auto-Approved'
+                $item.properties.privateLinkServiceConnectionState.actionsRequired | Should -Be 'None'
+
+                $item.properties.provisioningState | Should -Be 'Succeeded'
+                $item.properties.groupIds | Should -Not -BeNullOrEmpty
+
+                $item.properties.groupIds.Count | Should -Be 1
+                $item.properties.groupIds[0] | Should -Be $GroupIds[$i]
+        }
+
+    } else {
+
+        $PrivateEndpoints | Should -BeNullOrEmpty
+
+    }
+}
+
 function Test-VerifyElasticSANVolumeSnapshot($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $VolumeName, $Name, $VolumeResourceId, $SourceVolumeSizeGiB) {
 
     $s = Get-AzElasticSanVolumeSnapshot -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -VolumeGroupName $VolumeGroupName -Name $Name
@@ -96,7 +131,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $PrivateEndpointConnection) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -183,22 +218,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     }
 
-
-
-
-
-
-
-
-
-    if ( $PrivateEndpointConnection ) {
-        $vg.PrivateEndpointConnection | Should -Be $PrivateEndpointConnection
-    } else {
-        $vg.PrivateEndpointConnection | Should -BeNullOrEmpty
-    }
-
-
-
+    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpoints $vg.PrivateEndpointConnection
 
     $vg.ProtocolType | Should -Be 'iSCSI'
     $vg.ResourceGroupName | Should -Be $ResourceGroupName
@@ -215,19 +235,38 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
 
 
-function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount) {
+
+
+function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds) {
 
     $esan = Get-AzElasticSan -ResourceGroupName $ResourceGroupName -Name $Name
     $esan | Should -Not -BeNullOrEmpty
     $esan.ProvisioningState | Should -Be 'Succeeded'
 
-    #AvailabilityZone : { 2 }
+    if ( $AvailabilityZone ) {
+
+        $esan.AvailabilityZone | Should -Not -BeNullOrEmpty
+        $esan.AvailabilityZone[0] | Should -Be $AvailabilityZone
+
+    } else {
+
+        $esan.AvailabilityZone | Should -BeNullOrEmpty
+
+    }
+
     $esan.BaseSizeTiB | Should -Be $BaseSizeTiB
     $esan.ExtendedCapacitySizeTiB | Should -Be $ExtendedCapacitySizeTiB
     $esan.Id | Should -Be $ResourceId
     $esan.Location | Should -Be $Location
     $esan.Name | Should -Be $Name
-    #PrivateEndpointConnection
+
+    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpoints $esan.PrivateEndpointConnection
+
+
+
+
+
+
     $esan.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $esan.ResourceGroupName | Should -Be $ResourceGroupName
     $esan.SkuName | Should -Be $SkuName
@@ -254,24 +293,9 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
 
 
 
-    #$esan.PrivateEndpointConnection.Count | Should -Be 2
-
-    #$esan.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
-    #$esan.PrivateEndpointConnection[0].GroupId[0] | Should -Be 'databricks_ui_api'
-    #$esan.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
-    #$esan.PrivateEndpointConnection[0].ProvisioningState | Should -Be 'Succeeded'
-
-    #$esan.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
-    #$esan.PrivateEndpointConnection[1].GroupId[0] | Should -Be 'browser_authentication'
-    #$esan.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
-    #$esan.PrivateEndpointConnection[1].ProvisioningState | Should -Be 'Succeeded'
-
-
-
 
 
     # TODO Logs + Test-VerifyDiagSettings
-    # Test-VerifyPrivateEndpoint -Name "$($baseName)$($PEPName0)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $null -GroupId 'blob'
 
     #if ( $BlobNumberOfRecordSets -ne 0 ) {
     #    Test-VerifyDnsZone -Name 'privatelink.blob.core.windows.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $BlobNumberOfRecordSets
