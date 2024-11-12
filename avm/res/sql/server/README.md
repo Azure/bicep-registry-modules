@@ -702,13 +702,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     ]
     vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
     }
   }
@@ -903,13 +905,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "vulnerabilityAssessmentsObj": {
       "value": {
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>"
       }
     }
@@ -1068,13 +1072,15 @@ param virtualNetworkRules = [
   }
 ]
 param vulnerabilityAssessmentsObj = {
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
 }
 ```
@@ -1514,13 +1520,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     ]
     vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
     }
   }
@@ -1673,13 +1681,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "vulnerabilityAssessmentsObj": {
       "value": {
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>"
       }
     }
@@ -1804,13 +1814,15 @@ param virtualNetworkRules = [
   }
 ]
 param vulnerabilityAssessmentsObj = {
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
 }
 ```
@@ -3865,6 +3877,40 @@ The virtual network rules to create in the server.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworkrulesname) | string | The name of the Server Virtual Network Rule. |
+| [`virtualNetworkSubnetId`](#parameter-virtualnetworkrulesvirtualnetworksubnetid) | string | The resource ID of the virtual network subnet. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-virtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Allow creating a firewall rule before the virtual network has vnet service endpoint enabled. |
+
+### Parameter: `virtualNetworkRules.name`
+
+The name of the Server Virtual Network Rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkRules.virtualNetworkSubnetId`
+
+The resource ID of the virtual network subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `vulnerabilityAssessmentsObj`
 

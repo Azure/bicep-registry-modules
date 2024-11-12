@@ -46,7 +46,7 @@ param elasticPools elasticPoolPropertyType[] = []
 param firewallRules firewallRuleType[] = []
 
 @description('Optional. The virtual network rules to create in the server.')
-param virtualNetworkRules array = []
+param virtualNetworkRules virtualNetworkRuleType[] = []
 
 @description('Optional. The security alert policies to create in the server.')
 param securityAlertPolicies array = []
@@ -404,9 +404,9 @@ module server_virtualNetworkRules 'virtual-network-rule/main.bicep' = [
   for (virtualNetworkRule, index) in virtualNetworkRules: {
     name: '${uniqueString(deployment().name, location)}-Sql-VirtualNetworkRules-${index}'
     params: {
-      name: virtualNetworkRule.name
       serverName: server.name
-      ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint ?? false
+      name: virtualNetworkRule.name
+      ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint
       virtualNetworkSubnetId: virtualNetworkRule.virtualNetworkSubnetId
     }
   }
@@ -851,4 +851,16 @@ type keyType = {
 
   @description('Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: \'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion\'.')
   uri: string?
+}
+
+@export()
+type virtualNetworkRuleType = {
+  @description('Required. The name of the Server Virtual Network Rule.')
+  name: string
+
+  @description('Required. The resource ID of the virtual network subnet.')
+  virtualNetworkSubnetId: string
+
+  @description('Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.')
+  ignoreMissingVnetServiceEndpoint: bool?
 }
