@@ -56,7 +56,45 @@ Destination properties.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-destinationresourceid) | string | The destination resource ID. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metaData`](#parameter-destinationmetadata) | object | The destination metadata. |
+
+### Parameter: `destination.resourceId`
+
+The destination resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `destination.metaData`
+
+The destination metadata.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubName`](#parameter-destinationmetadataeventhubname) | string | Allows to define an Event Hub name. Not applicable when destination is Storage Account. |
+
+### Parameter: `destination.metaData.eventHubName`
+
+Allows to define an Event Hub name. Not applicable when destination is Storage Account.
+
+- Required: No
+- Type: string
 
 ### Parameter: `enable`
 
@@ -72,7 +110,6 @@ An array of tables to export, for example: ['Heartbeat', 'SecurityEvent'].
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ## Outputs
 

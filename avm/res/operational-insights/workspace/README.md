@@ -215,7 +215,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     linkedStorageAccounts: [
       {
         name: 'Query'
-        resourceId: '<resourceId>'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
       }
     ]
     location: '<location>'
@@ -528,7 +530,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "Query",
-          "resourceId": "<resourceId>"
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
         }
       ]
     },
@@ -843,7 +847,9 @@ param linkedServices = [
 param linkedStorageAccounts = [
   {
     name: 'Query'
-    resourceId: '<resourceId>'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
   }
 ]
 param location = '<location>'
@@ -1187,7 +1193,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     linkedStorageAccounts: [
       {
         name: 'Query'
-        resourceId: '<resourceId>'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
       }
     ]
     location: '<location>'
@@ -1226,16 +1234,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         displayName: 'VMSS Instance Count2'
         name: 'VMSSQueries'
         query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
-        tags: [
-          {
-            Name: 'Environment'
-            Value: 'Non-Prod'
-          }
-          {
-            Name: 'Role'
-            Value: 'DeploymentValidation'
-          }
-        ]
+        tags: {
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     ]
     storageInsightsConfigs: [
@@ -1510,7 +1512,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "Query",
-          "resourceId": "<resourceId>"
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
         }
       ]
     },
@@ -1565,16 +1569,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "displayName": "VMSS Instance Count2",
           "name": "VMSSQueries",
           "query": "Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer",
-          "tags": [
-            {
-              "Name": "Environment",
-              "Value": "Non-Prod"
-            },
-            {
-              "Name": "Role",
-              "Value": "DeploymentValidation"
-            }
-          ]
+          "tags": {
+            "Environment": "Non-Prod",
+            "Role": "DeploymentValidation"
+          }
         }
       ]
     },
@@ -1843,7 +1841,9 @@ param linkedServices = [
 param linkedStorageAccounts = [
   {
     name: 'Query'
-    resourceId: '<resourceId>'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
   }
 ]
 param location = '<location>'
@@ -1882,16 +1882,10 @@ param savedSearches = [
     displayName: 'VMSS Instance Count2'
     name: 'VMSSQueries'
     query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
-    tags: [
-      {
-        Name: 'Environment'
-        Value: 'Non-Prod'
-      }
-      {
-        Name: 'Role'
-        Value: 'DeploymentValidation'
-      }
-    ]
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 ]
 param storageInsightsConfigs = [
@@ -2134,7 +2128,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     linkedStorageAccounts: [
       {
         name: 'Query'
-        resourceId: '<resourceId>'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
       }
     ]
     location: '<location>'
@@ -2308,7 +2304,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "Query",
-          "resourceId": "<resourceId>"
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
         }
       ]
     },
@@ -2482,7 +2480,9 @@ param linkedServices = [
 param linkedStorageAccounts = [
   {
     name: 'Query'
-    resourceId: '<resourceId>'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
   }
 ]
 param location = '<location>'
@@ -2568,7 +2568,27 @@ List of Storage Accounts to be linked. Required if 'forceCmkForQuery' is set to 
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-linkedstorageaccountsname) | string | Name of the link. |
+| [`storageAccountIds`](#parameter-linkedstorageaccountsstorageaccountids) | array | Linked storage accounts resources Ids. |
+
+### Parameter: `linkedStorageAccounts.name`
+
+Name of the link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedStorageAccounts.storageAccountIds`
+
+Linked storage accounts resources Ids.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `dailyQuotaGb`
 
@@ -2840,7 +2860,40 @@ List of services to be linked.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-linkedservicesname) | string | Name of the linked service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-linkedservicesresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
+| [`writeAccessResourceId`](#parameter-linkedserviceswriteaccessresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access. |
+
+### Parameter: `linkedServices.name`
+
+Name of the linked service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedServices.resourceId`
+
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
+
+- Required: No
+- Type: string
+
+### Parameter: `linkedServices.writeAccessResourceId`
+
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -3067,7 +3120,88 @@ Kusto Query Language searches to save.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-savedsearchescategory) | string | The category of the saved search. This helps the user to find a saved search faster. |
+| [`displayName`](#parameter-savedsearchesdisplayname) | string | Display name for the search. |
+| [`name`](#parameter-savedsearchesname) | string | Name of the saved search. |
+| [`query`](#parameter-savedsearchesquery) | string | The query expression for the saved search. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`etag`](#parameter-savedsearchesetag) | string | The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag. |
+| [`functionAlias`](#parameter-savedsearchesfunctionalias) | string | The function alias if query serves as a function. |
+| [`functionParameters`](#parameter-savedsearchesfunctionparameters) | string | The optional function parameters if query serves as a function. Value should be in the following format: 'param-name1:type1 = default_value1, param-name2:type2 = default_value2'. For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions. |
+| [`tags`](#parameter-savedsearchestags) | object | The tags attached to the saved search. |
+| [`version`](#parameter-savedsearchesversion) | int | The version number of the query language. The current version is 2 and is the default. |
+
+### Parameter: `savedSearches.category`
+
+The category of the saved search. This helps the user to find a saved search faster.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `savedSearches.displayName`
+
+Display name for the search.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `savedSearches.name`
+
+Name of the saved search.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `savedSearches.query`
+
+The query expression for the saved search.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `savedSearches.etag`
+
+The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag.
+
+- Required: No
+- Type: string
+
+### Parameter: `savedSearches.functionAlias`
+
+The function alias if query serves as a function.
+
+- Required: No
+- Type: string
+
+### Parameter: `savedSearches.functionParameters`
+
+The optional function parameters if query serves as a function. Value should be in the following format: 'param-name1:type1 = default_value1, param-name2:type2 = default_value2'. For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions.
+
+- Required: No
+- Type: string
+
+### Parameter: `savedSearches.tags`
+
+The tags attached to the saved search.
+
+- Required: No
+- Type: object
+
+### Parameter: `savedSearches.version`
+
+The version number of the query language. The current version is 2 and is the default.
+
+- Required: No
+- Type: int
 
 ### Parameter: `skuCapacityReservationLevel`
 
@@ -3104,7 +3238,40 @@ List of storage accounts to be read by the workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAccountResourceId`](#parameter-storageinsightsconfigsstorageaccountresourceid) | string | Resource ID of the storage account to be linked. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containers`](#parameter-storageinsightsconfigscontainers) | array | The names of the blob containers that the workspace should read. |
+| [`tables`](#parameter-storageinsightsconfigstables) | array | List of tables to be read by the workspace. |
+
+### Parameter: `storageInsightsConfigs.storageAccountResourceId`
+
+Resource ID of the storage account to be linked.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageInsightsConfigs.containers`
+
+The names of the blob containers that the workspace should read.
+
+- Required: No
+- Type: array
+
+### Parameter: `storageInsightsConfigs.tables`
+
+List of tables to be read by the workspace.
+
+- Required: No
+- Type: array
 
 ### Parameter: `tables`
 
