@@ -354,7 +354,7 @@ module registry_cacheRules 'cache-rule/main.bicep' = [
     params: {
       registryName: registry.name
       sourceRepository: cacheRule.sourceRepository
-      name: cacheRule.?name ?? replace(replace(cacheRule.sourceRepository, '/', '-'), '.', '-')
+      name: cacheRule.?name ?? replace(replace(replace(cacheRule.sourceRepository, '/', '-'), '.', '-'), '*', '')
       targetRepository: cacheRule.?targetRepository ?? cacheRule.sourceRepository
       credentialSetResourceId: cacheRule.?credentialSetResourceId
     }

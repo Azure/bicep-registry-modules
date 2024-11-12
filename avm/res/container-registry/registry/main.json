@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "1250778163459538921"
+      "templateHash": "6082909570095213134"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -1450,7 +1450,7 @@
             "value": "[coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository]"
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), replace(replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-'), '*', ''))]"
           },
           "targetRepository": {
             "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository)]"
@@ -1467,7 +1467,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "8246864064800210517"
+              "templateHash": "11043524287254213245"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -1482,9 +1482,9 @@
             },
             "name": {
               "type": "string",
-              "defaultValue": "[uniqueString(parameters('sourceRepository'), parameters('targetRepository'))]",
+              "defaultValue": "[replace(replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-'), '*', '')]",
               "metadata": {
-                "description": "Optional. The name of the cache rule. Will be automatically generated if not defined."
+                "description": "Optional. The name of the cache rule. Will be derived from the source repository name if not defined."
               }
             },
             "sourceRepository": {
