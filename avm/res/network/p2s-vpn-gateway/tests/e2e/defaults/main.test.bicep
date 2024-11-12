@@ -57,6 +57,7 @@ module testDeployment '../../../main.bicep' = [
       virtualHubId: nestedDependencies.outputs.virtualHubResourceId
       vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
       p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
+      associatedRouteTableName: 'test'
       vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
       ]
