@@ -20,6 +20,7 @@ param destination destinationType?
 @description('Optional. Active when enabled.')
 param enable bool = false
 
+@minLength(1)
 @description('Required. An array of tables to export, for example: [\'Heartbeat\', \'SecurityEvent\'].')
 param tableNames string[]
 
@@ -37,7 +38,7 @@ resource dataExport 'Microsoft.OperationalInsights/workspaces/dataExports@2020-0
   properties: {
     destination: destination
     enable: enable
-    tableNames: tableNames ?? []
+    tableNames: tableNames
   }
 }
 
