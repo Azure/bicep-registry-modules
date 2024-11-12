@@ -27,16 +27,16 @@ param skuName string = 'PerGB2018'
 param skuCapacityReservationLevel int = 100
 
 @description('Optional. List of storage accounts to be read by the workspace.')
-param storageInsightsConfigs array = []
+param storageInsightsConfigs storageInsightsConfigType[]?
 
 @description('Optional. List of services to be linked.')
-param linkedServices array = []
+param linkedServices linkedServiceType[]?
 
 @description('Conditional. List of Storage Accounts to be linked. Required if \'forceCmkForQuery\' is set to \'true\' and \'savedSearches\' is not empty.')
-param linkedStorageAccounts array = []
+param linkedStorageAccounts linkedStorageAccountType[]?
 
 @description('Optional. Kusto Query Language searches to save.')
-param savedSearches array = []
+param savedSearches savedSearchType[]?
 
 @description('Optional. LAW data export instances to be deployed.')
 param dataExports array = []
@@ -242,7 +242,7 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
 ]
 
 module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.bicep' = [
-  for (storageInsightsConfig, index) in storageInsightsConfigs: {
+  for (storageInsightsConfig, index) in storageInsightsConfigs ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-StorageInsightsConfig-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
@@ -254,7 +254,7 @@ module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.
 ]
 
 module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
-  for (linkedService, index) in linkedServices: {
+  for (linkedService, index) in linkedServices ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-LinkedService-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
@@ -266,18 +266,18 @@ module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
 ]
 
 module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.bicep' = [
-  for (linkedStorageAccount, index) in linkedStorageAccounts: {
+  for (linkedStorageAccount, index) in linkedStorageAccounts ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-LinkedStorageAccount-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedStorageAccount.name
-      resourceId: linkedStorageAccount.resourceId
+      storageAccountIds: linkedStorageAccount.storageAccountIds
     }
   }
 ]
 
 module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
-  for (savedSearch, index) in savedSearches: {
+  for (savedSearch, index) in savedSearches ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-SavedSearch-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
@@ -288,6 +288,7 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
       query: savedSearch.query
       functionAlias: savedSearch.?functionAlias
       functionParameters: savedSearch.?functionParameters
+      tags: savedSearch.?tags
       version: savedSearch.?version
     }
     dependsOn: [
@@ -483,4 +484,68 @@ type gallerySolutionType = {
 
   @description('Required. Plan for solution object supported by the OperationsManagement resource provider.')
   plan: solutionPlanType
+}
+
+@export()
+type storageInsightsConfigType = {
+  @description('Required. Resource ID of the storage account to be linked.')
+  storageAccountResourceId: string
+
+  @description('Optional. The names of the blob containers that the workspace should read.')
+  containers: string[]?
+
+  @description('Optional. List of tables to be read by the workspace.')
+  tables: string[]?
+}
+
+@export()
+type linkedServiceType = {
+  @description('Required. Name of the linked service.')
+  name: string
+
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.')
+  resourceId: string?
+
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.')
+  writeAccessResourceId: string?
+}
+
+@export()
+type linkedStorageAccountType = {
+  @description('Required. Name of the link.')
+  name: string
+
+  @minLength(1)
+  @description('Required. Linked storage accounts resources Ids.')
+  storageAccountIds: string[]
+}
+
+@export()
+type savedSearchType = {
+  @description('Required. Name of the saved search.')
+  name: string
+
+  @description('Optional. The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag.')
+  etag: string?
+
+  @description('Required. The category of the saved search. This helps the user to find a saved search faster.')
+  category: string
+
+  @description('Required. Display name for the search.')
+  displayName: string
+
+  @description('Optional. The function alias if query serves as a function.')
+  functionAlias: string?
+
+  @description('Optional. The optional function parameters if query serves as a function. Value should be in the following format: \'param-name1:type1 = default_value1, param-name2:type2 = default_value2\'. For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions.')
+  functionParameters: string?
+
+  @description('Required. The query expression for the saved search.')
+  query: string
+
+  @description('Optional. The tags attached to the saved search.')
+  tags: object?
+
+  @description('Optional. The version number of the query language. The current version is 2 and is the default.')
+  version: int?
 }

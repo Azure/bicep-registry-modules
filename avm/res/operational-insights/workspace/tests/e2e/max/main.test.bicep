@@ -206,7 +206,9 @@ module testDeployment '../../../main.bicep' = [
       linkedStorageAccounts: [
         {
           name: 'Query'
-          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountIds: [
+            nestedDependencies.outputs.storageAccountResourceId
+          ]
         }
       ]
       tables: [
@@ -313,16 +315,10 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'VMSS Instance Count2'
           name: 'VMSSQueries'
           query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
-          tags: [
-            {
-              Name: 'Environment'
-              Value: 'Non-Prod'
-            }
-            {
-              Name: 'Role'
-              Value: 'DeploymentValidation'
-            }
-          ]
+          tags: {
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
         }
       ]
       storageInsightsConfigs: [

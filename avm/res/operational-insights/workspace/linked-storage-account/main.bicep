@@ -14,8 +14,9 @@ param logAnalyticsWorkspaceName string
 ])
 param name string
 
-@description('Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access.')
-param resourceId string
+@minLength(1)
+@description('Required. Linked storage accounts resources Ids.')
+param storageAccountIds string[]
 
 resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: logAnalyticsWorkspaceName
@@ -25,9 +26,7 @@ resource linkedStorageAccount 'Microsoft.OperationalInsights/workspaces/linkedSt
   name: name
   parent: workspace
   properties: {
-    storageAccountIds: [
-      resourceId
-    ]
+    storageAccountIds: storageAccountIds
   }
 }
 

@@ -201,7 +201,9 @@ module testDeployment '../../../main.bicep' = [
       linkedStorageAccounts: [
         {
           name: 'Query'
-          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountIds: [
+            nestedDependencies.outputs.storageAccountResourceId
+          ]
         }
       ]
       publicNetworkAccessForIngestion: 'Disabled'
