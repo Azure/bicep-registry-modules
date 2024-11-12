@@ -515,7 +515,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
                 }
               ]
             }
-            service: 'blob'
+            service: 'vol-grp-01'
             subnetResourceId: '<subnetResourceId>'
           }
         ]
@@ -561,7 +561,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
                   }
                 ]
               },
-              "service": "blob",
+              "service": "vol-grp-01",
               "subnetResourceId": "<subnetResourceId>"
             }
           ]
@@ -599,7 +599,7 @@ param volumeGroups = [
             }
           ]
         }
-        service: 'blob'
+        service: 'vol-grp-01'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
