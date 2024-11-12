@@ -39,13 +39,13 @@ param linkedStorageAccounts linkedStorageAccountType[]?
 param savedSearches savedSearchType[]?
 
 @description('Optional. LAW data export instances to be deployed.')
-param dataExports array = []
+param dataExports dataExportType[]?
 
 @description('Optional. LAW data sources to configure.')
-param dataSources array = []
+param dataSources dataSourceType[]?
 
 @description('Optional. LAW custom tables to be deployed.')
-param tables array = []
+param tables tableType[]?
 
 @description('Optional. List of gallerySolutions to be created in the log analytics workspace.')
 param gallerySolutions gallerySolutionType[]?
@@ -298,7 +298,7 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
 ]
 
 module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
-  for (dataExport, index) in dataExports: {
+  for (dataExport, index) in dataExports ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-DataExport-${index}'
     params: {
       workspaceName: logAnalyticsWorkspace.name
@@ -311,7 +311,7 @@ module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
 ]
 
 module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
-  for (dataSource, index) in dataSources: {
+  for (dataSource, index) in dataSources ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-DataSource-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
@@ -328,12 +328,13 @@ module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
       syslogName: dataSource.?syslogName
       syslogSeverities: dataSource.?syslogSeverities
       performanceCounters: dataSource.?performanceCounters
+      tags: dataSource.?tags
     }
   }
 ]
 
 module logAnalyticsWorkspace_tables 'table/main.bicep' = [
-  for (table, index) in tables: {
+  for (table, index) in tables ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-Table-${index}'
     params: {
       workspaceName: logAnalyticsWorkspace.name
@@ -548,4 +549,95 @@ type savedSearchType = {
 
   @description('Optional. The version number of the query language. The current version is 2 and is the default.')
   version: int?
+}
+
+import { destinationType } from 'data-export/main.bicep'
+
+@export()
+type dataExportType = {
+  @description('Required. Name of the data export.')
+  name: string
+
+  @description('Optional. The destination of the data export.')
+  destination: destinationType?
+
+  @description('Optional. Enable or disable the data export.')
+  enable: bool?
+
+  @description('Required. The list of table names to export.')
+  tableNames: string[]
+}
+
+@export()
+type dataSourceType = {
+  @description('Required. Name of the data source.')
+  name: string
+
+  @description('Required. The kind of data source.')
+  kind: string
+
+  @description('Optional. The resource id of the resource that will be linked to the workspace.')
+  linkedResourceId: string?
+
+  @description('Optional. The name of the event log to configure when kind is WindowsEvent.')
+  eventLogName: string?
+
+  @description('Optional. The event types to configure when kind is WindowsEvent.')
+  eventTypes: array?
+
+  @description('Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.')
+  objectName: string?
+
+  @description('Optional. Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.')
+  instanceName: string?
+
+  @description('Optional. Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.')
+  intervalSeconds: int?
+
+  @description('Optional. List of counters to configure when the kind is LinuxPerformanceObject.')
+  performanceCounters: array?
+
+  @description('Optional. Counter name to configure when kind is WindowsPerformanceCounter.')
+  counterName: string?
+
+  @description('Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection.')
+  state: string?
+
+  @description('Optional. System log to configure when kind is LinuxSyslog.')
+  syslogName: string?
+
+  @description('Optional. Severities to configure when kind is LinuxSyslog.')
+  syslogSeverities: array?
+
+  @description('Optional. Tags to configure in the resource.')
+  tags: object?
+}
+
+import { schemaType, restoredLogsType, searchResultsType } from 'table/main.bicep'
+
+@export()
+type tableType = {
+  @description('Required. The name of the table.')
+  name: string
+
+  @description('Optional. The plan for the table.')
+  plan: string?
+
+  @description('Optional. The restored logs for the table.')
+  restoredLogs: restoredLogsType?
+
+  @description('Optional. The schema for the table.')
+  schema: schemaType?
+
+  @description('Optional. The search results for the table.')
+  searchResults: searchResultsType?
+
+  @description('Optional. The retention in days for the table.')
+  retentionInDays: int?
+
+  @description('Optional. The total retention in days for the table.')
+  totalRetentionInDays: int?
+
+  @description('Optional. The role assignments for the table.')
+  roleAssignments: roleAssignmentType[]?
 }

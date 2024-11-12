@@ -20,8 +20,8 @@ param destination destinationType?
 @description('Optional. Active when enabled.')
 param enable bool = false
 
-@description('Optional. An array of tables to export, for example: [\'Heartbeat\', \'SecurityEvent\'].')
-param tableNames string[]?
+@description('Required. An array of tables to export, for example: [\'Heartbeat\', \'SecurityEvent\'].')
+param tableNames string[]
 
 // =============== //
 //   Deployments   //
