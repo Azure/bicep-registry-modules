@@ -35,7 +35,8 @@ The following section provides usage examples for the module, which were used to
 - [Using encryption with Customer-Managed-Key](#example-1-using-encryption-with-customer-managed-key)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Private endpoint-enabled deployment](#example-4-private-endpoint-enabled-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using encryption with Customer-Managed-Key_
 
@@ -484,7 +485,108 @@ param volumeGroups = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Private endpoint-enabled deployment_
+
+This instance deploys the module with private endpoints.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
+  name: 'elasticSanDeployment'
+  params: {
+    // Required parameters
+    name: 'esanpe001'
+    // Non-required parameters
+    availabilityZone: 2
+    sku: 'Premium_LRS'
+    volumeGroups: [
+      {
+        name: 'vol-grp-01'
+        privateEndpoints: [
+          {
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "esanpe001"
+    },
+    // Non-required parameters
+    "availabilityZone": {
+      "value": 2
+    },
+    "sku": {
+      "value": "Premium_LRS"
+    },
+    "volumeGroups": {
+      "value": [
+        {
+          "name": "vol-grp-01",
+          "privateEndpoints": [
+            {
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/elastic-san/elastic-san:<version>'
+
+// Required parameters
+param name = 'esanpe001'
+// Non-required parameters
+param availabilityZone = 2
+param sku = 'Premium_LRS'
+param volumeGroups = [
+  {
+    name: 'vol-grp-01'
+    privateEndpoints: [
+      {
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
