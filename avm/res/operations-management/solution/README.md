@@ -46,7 +46,9 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: '<name>'
-    product: 'OMSGallery/Updates'
+    plan: {
+      product: 'OMSGallery/Updates'
+    }
     // Non-required parameters
     location: '<location>'
   }
@@ -72,8 +74,10 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "product": {
-      "value": "OMSGallery/Updates"
+    "plan": {
+      "value": {
+        "product": "OMSGallery/Updates"
+      }
     },
     // Non-required parameters
     "location": {
@@ -96,7 +100,9 @@ using 'br/public:avm/res/operations-management/solution:<version>'
 // Required parameters
 param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
 param name = '<name>'
-param product = 'OMSGallery/Updates'
+param plan = {
+  product: 'OMSGallery/Updates'
+}
 // Non-required parameters
 param location = '<location>'
 ```
@@ -120,10 +126,11 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: '<name>'
-    product: 'OMSGallery/AzureAutomation'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
     // Non-required parameters
     location: '<location>'
-    publisher: 'Microsoft'
   }
 }
 ```
@@ -147,15 +154,14 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "product": {
-      "value": "OMSGallery/AzureAutomation"
+    "plan": {
+      "value": {
+        "product": "OMSGallery/AzureAutomation"
+      }
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "publisher": {
-      "value": "Microsoft"
     }
   }
 }
@@ -174,10 +180,11 @@ using 'br/public:avm/res/operations-management/solution:<version>'
 // Required parameters
 param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
 param name = '<name>'
-param product = 'OMSGallery/AzureAutomation'
+param plan = {
+  product: 'OMSGallery/AzureAutomation'
+}
 // Non-required parameters
 param location = '<location>'
-param publisher = 'Microsoft'
 ```
 
 </details>
@@ -199,10 +206,13 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: 'omsnonms001'
-    product: 'nonmsTestSolutionProduct'
+    plan: {
+      name: 'nonmsTestSolutionPlan'
+      product: 'nonmsTestSolutionProduct'
+      publisher: 'nonmsTestSolutionPublisher'
+    }
     // Non-required parameters
     location: '<location>'
-    publisher: 'nonmsTestSolutionPublisher'
   }
 }
 ```
@@ -226,15 +236,16 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     "name": {
       "value": "omsnonms001"
     },
-    "product": {
-      "value": "nonmsTestSolutionProduct"
+    "plan": {
+      "value": {
+        "name": "nonmsTestSolutionPlan",
+        "product": "nonmsTestSolutionProduct",
+        "publisher": "nonmsTestSolutionPublisher"
+      }
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "publisher": {
-      "value": "nonmsTestSolutionPublisher"
     }
   }
 }
@@ -253,10 +264,13 @@ using 'br/public:avm/res/operations-management/solution:<version>'
 // Required parameters
 param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
 param name = 'omsnonms001'
-param product = 'nonmsTestSolutionProduct'
+param plan = {
+  name: 'nonmsTestSolutionPlan'
+  product: 'nonmsTestSolutionProduct'
+  publisher: 'nonmsTestSolutionPublisher'
+}
 // Non-required parameters
 param location = '<location>'
-param publisher = 'nonmsTestSolutionPublisher'
 ```
 
 </details>
@@ -278,10 +292,12 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: '<name>'
-    product: 'SQLAuditing'
+    plan: {
+      product: 'SQLAuditing'
+      publisher: 'Microsoft'
+    }
     // Non-required parameters
     location: '<location>'
-    publisher: 'Microsoft'
   }
 }
 ```
@@ -305,15 +321,15 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "product": {
-      "value": "SQLAuditing"
+    "plan": {
+      "value": {
+        "product": "SQLAuditing",
+        "publisher": "Microsoft"
+      }
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "publisher": {
-      "value": "Microsoft"
     }
   }
 }
@@ -332,10 +348,12 @@ using 'br/public:avm/res/operations-management/solution:<version>'
 // Required parameters
 param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
 param name = '<name>'
-param product = 'SQLAuditing'
+param plan = {
+  product: 'SQLAuditing'
+  publisher: 'Microsoft'
+}
 // Non-required parameters
 param location = '<location>'
-param publisher = 'Microsoft'
 ```
 
 </details>
@@ -357,10 +375,13 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: '<name>'
-    product: 'OMSGallery/AzureAutomation'
+    plan: {
+      name: '<name>'
+      product: 'OMSGallery/AzureAutomation'
+      publisher: 'Microsoft'
+    }
     // Non-required parameters
     location: '<location>'
-    publisher: 'Microsoft'
   }
 }
 ```
@@ -384,15 +405,16 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "product": {
-      "value": "OMSGallery/AzureAutomation"
+    "plan": {
+      "value": {
+        "name": "<name>",
+        "product": "OMSGallery/AzureAutomation",
+        "publisher": "Microsoft"
+      }
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "publisher": {
-      "value": "Microsoft"
     }
   }
 }
@@ -411,10 +433,13 @@ using 'br/public:avm/res/operations-management/solution:<version>'
 // Required parameters
 param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
 param name = '<name>'
-param product = 'OMSGallery/AzureAutomation'
+param plan = {
+  name: '<name>'
+  product: 'OMSGallery/AzureAutomation'
+  publisher: 'Microsoft'
+}
 // Non-required parameters
 param location = '<location>'
-param publisher = 'Microsoft'
 ```
 
 </details>
@@ -428,7 +453,7 @@ param publisher = 'Microsoft'
 | :-- | :-- | :-- |
 | [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | Name of the Log Analytics workspace where the solution will be deployed/enabled. |
 | [`name`](#parameter-name) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
-| [`product`](#parameter-product) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+| [`plan`](#parameter-plan) | object | Plan for solution object supported by the OperationsManagement resource provider. |
 
 **Optional parameters**
 
@@ -436,7 +461,6 @@ param publisher = 'Microsoft'
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`publisher`](#parameter-publisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`. |
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
@@ -452,11 +476,45 @@ Name of the solution.<p>For solutions authored by Microsoft, the name must be in
 - Required: Yes
 - Type: string
 
-### Parameter: `product`
+### Parameter: `plan`
+
+Plan for solution object supported by the OperationsManagement resource provider.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`product`](#parameter-planproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-planname) | string | Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used. |
+| [`publisher`](#parameter-planpublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `plan.product`
 
 The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `plan.name`
+
+Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `plan.publisher`
+
+The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
+
+- Required: No
 - Type: string
 
 ### Parameter: `enableTelemetry`
@@ -474,14 +532,6 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `publisher`
-
-The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`.
-
-- Required: No
-- Type: string
-- Default: `'Microsoft'`
 
 ## Outputs
 
