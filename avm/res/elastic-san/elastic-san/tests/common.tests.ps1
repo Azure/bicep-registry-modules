@@ -72,7 +72,7 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpoints) {
                 $item.id | Should -Not -BeNullOrEmpty
                 $item.name | Should -Not -BeNullOrEmpty
 
-                $item.properties.ToString() | Should -Be 'DATA'
+                $item.ToString() | Should -Be 'DATA'
 
                 $item.properties.privateEndpoint.id | Should -Not -BeNullOrEmpty
 
