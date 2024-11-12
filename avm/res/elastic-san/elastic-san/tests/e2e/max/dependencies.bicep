@@ -103,6 +103,9 @@ output keyVaultEncryptionKeyName string = keyVault::key.name
 output keyVaultEncryptionKeyVersion string = last(split(keyVault::key.properties.keyUriWithVersion, '/'))
 
 @sys.description('The URL of the created Key Vault.')
+output keyVaultUrl string = keyVault.properties.vaultUri
+
+@sys.description('The URL of the created Key Vault Key with Version.')
 output keyVaultKeyUrl string = keyVault::key.properties.keyUriWithVersion
 
 @sys.description('The resource ID of the created CMK Managed Identity.')

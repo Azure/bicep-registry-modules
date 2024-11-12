@@ -96,7 +96,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMI, $UserAssignedMI, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRuleCount, $CMK, $PrivateEndpointConnection) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $PrivateEndpointConnection) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -105,7 +105,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     if ($CMK) {
 
         $vg.Encryption | Should -Be 'EncryptionAtRestWithCustomerManagedKey'
-        $vg.EncryptionIdentityEncryptionUserAssignedIdentity | Should -Not -BeNullOrEmpty # Contains ResourceId of the MI
+        $vg.EncryptionIdentityEncryptionUserAssignedIdentity | Should -Be $CMKUMIResourceId
 
     } else {
 
@@ -114,32 +114,31 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     }
 
-
     $vg.EnforceDataIntegrityCheckForIscsi | Should -BeNullOrEmpty
     $vg.Id | Should -Be $ResourceId
 
-
-
     if ( $SystemAssignedMI -and $UserAssignedMI ) {
 
-        $vg.IdentityPrincipalId | Should -BeNullOrEmpty                             # ??
-        $vg.IdentityTenantId | Should -BeNullOrEmpty                                # ??
+        $vg.IdentityPrincipalId | Should -BeNullOrEmpty                             # Correct?? Question to PG
+        $vg.IdentityTenantId | Should -BeNullOrEmpty                                # Correct?? Question to PG
         $vg.IdentityType | Should -Be 'SystemAssigned, UserAssigned'
-        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty # ??
+        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty # Correct?? Question to PG
 
     } elseif ($SystemAssignedMI) {
 
         $vg.IdentityPrincipalId | Should -Be $SystemAssignedMIPrincipalId
-        $vg.IdentityTenantId | Should -Not -BeNullOrEmpty
+        $vg.IdentityTenantId | Should -Be $TenantId
         $vg.IdentityType | Should -Be 'SystemAssigned'
         $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty
 
     } elseif ($UserAssignedMI) {
 
         $vg.IdentityPrincipalId | Should -BeNullOrEmpty
-        $vg.IdentityTenantId | Should -BeNullOrEmpty                                # ??
+        $vg.IdentityTenantId | Should -BeNullOrEmpty                                # Correct?? Question to PG
         $vg.IdentityType | Should -Be 'UserAssigned'
-        $($vg.IdentityUserAssignedIdentity | ConvertFrom-Json).PSObject.Properties.Count | Should -Be 1
+
+        $vg.IdentityUserAssignedIdentity | Should -Not -BeNullOrEmpty
+        $($vg.IdentityUserAssignedIdentity.Contains($UserAssignedMIResourceId)) | Should -Be $true
 
     } else {
 
@@ -151,18 +150,13 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     }
 
-
-
-
-
-
     if ($CMK) {
 
         $vg.KeyVaultPropertyCurrentVersionedKeyExpirationTimestamp | Should -Not -BeNullOrEmpty
-        $vg.KeyVaultPropertyCurrentVersionedKeyIdentifier | Should -Not -BeNullOrEmpty
-        $vg.KeyVaultPropertyKeyName | Should -Not -BeNullOrEmpty
-        $vg.KeyVaultPropertyKeyVaultUri | Should -Not -BeNullOrEmpty
-        $vg.KeyVaultPropertyKeyVersion | Should -Not -BeNullOrEmpty
+        $vg.KeyVaultPropertyCurrentVersionedKeyIdentifier | Should -Be $CMKKeyVaultKeyUrl
+        $vg.KeyVaultPropertyKeyName | Should -Be $CMKKeyVaultEncryptionKeyName
+        $vg.KeyVaultPropertyKeyVaultUri | Should -Be $CMKKeyVaultUrl
+        $vg.KeyVaultPropertyKeyVersion | Should -Be $CMKKeyVaultEncryptionKeyVersion
         $vg.KeyVaultPropertyLastKeyRotationTimestamp | Should -Not -BeNullOrEmpty
 
     } else {
@@ -176,14 +170,27 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     }
 
-
-
-
-
     $vg.Name | Should -Be $Name
 
+    if ( $NetworkAclsVirtualNetworkRule ) {
 
-    $vg.NetworkAclsVirtualNetworkRule.Count | Should -Be $NetworkAclsVirtualNetworkRuleCount
+        $vg.NetworkAclsVirtualNetworkRule | Should -Not -BeNullOrEmpty
+        $vg.NetworkAclsVirtualNetworkRule[0].id | Should -Be $NetworkAclsVirtualNetworkRule
+
+    } else {
+
+        $vg.NetworkAclsVirtualNetworkRule | Should -BeNullOrEmpty
+
+    }
+
+
+
+
+
+
+
+
+
     if ( $PrivateEndpointConnection ) {
         $vg.PrivateEndpointConnection | Should -Be $PrivateEndpointConnection
     } else {

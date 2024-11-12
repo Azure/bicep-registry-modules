@@ -183,6 +183,11 @@ output location string = testDeployment[0].outputs.location
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output volumeGroups volumeGroupOutputType[] = testDeployment[0].outputs.volumeGroups
 
-// TODO: Add additional outputs as needed
-
-//
+output tenantId string = tenant().tenantId
+output managedIdentityResourceId string = nestedDependencies.outputs.managedIdentityResourceId
+output cmkManagedIdentityResourceId string = nestedDependencies.outputs.cmkManagedIdentityResourceId
+output cmkKeyVaultKeyUrl string = nestedDependencies.outputs.keyVaultKeyUrl
+output cmkKeyVaultEncryptionKeyName string = nestedDependencies.outputs.keyVaultEncryptionKeyName
+output cmkKeyVaultUrl string = nestedDependencies.outputs.keyVaultUrl
+output cmkKeyVaultEncryptionKeyVersion string = nestedDependencies.outputs.keyVaultEncryptionKeyVersion
+output virtualNetworkRule string = nestedDependencies.outputs.subnetResourceId

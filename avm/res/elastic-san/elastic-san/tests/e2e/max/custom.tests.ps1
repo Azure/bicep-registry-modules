@@ -88,9 +88,16 @@ Describe 'Validate Deployment' {
                     -Name $volumeGroups[$vgrpidx].name `
                     -SystemAssignedMI $item.SystemAssignedMI `
                     -UserAssignedMI $item.UserAssignedMI `
+                    -TenantId $TestInputData.DeploymentOutputs.tenantId.Value `
+                    -UserAssignedMIResourceId $TestInputData.DeploymentOutputs.managedIdentityResourceId.Value `
                     -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId `
-                    -NetworkAclsVirtualNetworkRuleCount $item.NetworkAclsVirtualNetworkRuleCount `
+                    -NetworkAclsVirtualNetworkRule $TestInputData.DeploymentOutputs.virtualNetworkRule.Value `
                     -CMK $item.CMK `
+                    -CMKUMIResourceId $TestInputData.DeploymentOutputs.cmkManagedIdentityResourceId.Value `
+                    -CMKKeyVaultKeyUrl $TestInputData.DeploymentOutputs.cmkKeyVaultKeyUrl.Value `
+                    -CMKKeyVaultEncryptionKeyName $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyName.Value `
+                    -CMKKeyVaultUrl $TestInputData.DeploymentOutputs.cmkKeyVaultUrl.Value `
+                    -CMKKeyVaultEncryptionKeyVersion $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyVersion.Value `
                     -PrivateEndpointConnection $null
 
                 if ($item.VolumeCounts -eq 0) {
