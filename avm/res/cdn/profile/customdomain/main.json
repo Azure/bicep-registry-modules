@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "16996783501766633349"
+      "version": "0.31.34.60546",
+      "templateHash": "10387694873442665915"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains.",
@@ -160,10 +160,7 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/secrets",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]"
     },
     "profile": {
       "existing": true,
@@ -185,10 +182,7 @@
           "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
           "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
         }
-      },
-      "dependsOn": [
-        "profile"
-      ]
+      }
     }
   },
   "outputs": {
