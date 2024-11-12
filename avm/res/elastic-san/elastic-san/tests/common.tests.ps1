@@ -69,6 +69,8 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpoints) {
                 
                 $i = $PrivateEndpoints.IndexOf($item)
 
+                $item = $($item | ConvertFrom-Json)
+
                 $item.id | Should -Not -BeNullOrEmpty
                 $item.name | Should -Not -BeNullOrEmpty
 
