@@ -53,7 +53,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Required parameters
     name: 'esancmk001'
     // Non-required parameters
-    sku: 'Premium_LRS'
     volumeGroups: [
       {
         customerManagedKey: {
@@ -104,9 +103,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "esancmk001"
     },
     // Non-required parameters
-    "sku": {
-      "value": "Premium_LRS"
-    },
     "volumeGroups": {
       "value": [
         {
@@ -155,7 +151,6 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 // Required parameters
 param name = 'esancmk001'
 // Non-required parameters
-param sku = 'Premium_LRS'
 param volumeGroups = [
   {
     customerManagedKey: {

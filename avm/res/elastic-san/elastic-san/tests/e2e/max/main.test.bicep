@@ -146,5 +146,6 @@ output location string = testDeployment[0].outputs.location
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output volumeGroups volumeGroupOutputType[] = testDeployment[0].outputs.volumeGroups
 
+output tenantId string = tenant().tenantId
 output managedIdentityResourceId string = nestedDependencies.outputs.managedIdentityResourceId
 output virtualNetworkRule string = nestedDependencies.outputs.subnetResourceId
