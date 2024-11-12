@@ -175,7 +175,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     if ( $NetworkAclsVirtualNetworkRule ) {
 
         $vg.NetworkAclsVirtualNetworkRule | Should -Not -BeNullOrEmpty
-        $vg.NetworkAclsVirtualNetworkRule[0].id | Should -Be $NetworkAclsVirtualNetworkRule
+        $vg.NetworkAclsVirtualNetworkRule[0].VirtualNetworkResourceId | Should -Be $NetworkAclsVirtualNetworkRule
 
     } else {
 
