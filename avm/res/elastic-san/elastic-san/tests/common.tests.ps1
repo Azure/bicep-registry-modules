@@ -138,7 +138,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
         $vg.IdentityType | Should -Be 'UserAssigned'
 
         $vg.IdentityUserAssignedIdentity | Should -Not -BeNullOrEmpty
-        $($vg.IdentityUserAssignedIdentity.Contains($UserAssignedMIResourceId)) | Should -Be $true
+        $($vg.IdentityUserAssignedIdentity.ToString().Contains($UserAssignedMIResourceId)) | Should -Be $true
 
     } else {
 

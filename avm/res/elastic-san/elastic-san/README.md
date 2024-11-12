@@ -32,64 +32,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/elastic-san/elastic-san:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using large parameter set](#example-1-using-large-parameter-set)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
-  name: 'elasticSanDeployment'
-  params: {
-    name: 'esanmin001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "name": {
-      "value": "esanmin001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/elastic-san/elastic-san:<version>'
-
-param name = 'esanmin001'
-```
-
-</details>
-<p>
-
-### Example 2: _Using large parameter set_
+### Example 1: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -416,7 +364,306 @@ param volumeGroups = [
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
+  name: 'elasticSanDeployment'
+  params: {
+    name: 'esanmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "esanmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/elastic-san/elastic-san:<version>'
+
+param name = 'esanmin001'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
+  name: 'elasticSanDeployment'
+  params: {
+    // Required parameters
+    name: 'esanmax001'
+    // Non-required parameters
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    volumeGroups: [
+      {
+        name: 'vol-grp-01'
+      }
+      {
+        name: 'vol-grp-02'
+        volumes: [
+          {
+            name: 'vol-grp-02-vol-01'
+            sizeGiB: 1
+          }
+          {
+            name: 'vol-grp-02-vol-02'
+            sizeGiB: 2
+            snapshots: [
+              {
+                name: '<name>'
+              }
+              {
+                name: '<name>'
+              }
+            ]
+          }
+        ]
+      }
+      {
+        name: 'vol-grp-03'
+        virtualNetworkRules: [
+          {
+            virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+          }
+        ]
+      }
+      {
+        managedIdentities: {
+          systemAssigned: true
+        }
+        name: 'vol-grp-04'
+      }
+      {
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-05'
+      }
+      {
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-06'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "esanmax001"
+    },
+    // Non-required parameters
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "volumeGroups": {
+      "value": [
+        {
+          "name": "vol-grp-01"
+        },
+        {
+          "name": "vol-grp-02",
+          "volumes": [
+            {
+              "name": "vol-grp-02-vol-01",
+              "sizeGiB": 1
+            },
+            {
+              "name": "vol-grp-02-vol-02",
+              "sizeGiB": 2,
+              "snapshots": [
+                {
+                  "name": "<name>"
+                },
+                {
+                  "name": "<name>"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "vol-grp-03",
+          "virtualNetworkRules": [
+            {
+              "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
+            }
+          ]
+        },
+        {
+          "managedIdentities": {
+            "systemAssigned": true
+          },
+          "name": "vol-grp-04"
+        },
+        {
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-05"
+        },
+        {
+          "managedIdentities": {
+            "systemAssigned": true,
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-06"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/elastic-san/elastic-san:<version>'
+
+// Required parameters
+param name = 'esanmax001'
+// Non-required parameters
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param volumeGroups = [
+  {
+    name: 'vol-grp-01'
+  }
+  {
+    name: 'vol-grp-02'
+    volumes: [
+      {
+        name: 'vol-grp-02-vol-01'
+        sizeGiB: 1
+      }
+      {
+        name: 'vol-grp-02-vol-02'
+        sizeGiB: 2
+        snapshots: [
+          {
+            name: '<name>'
+          }
+          {
+            name: '<name>'
+          }
+        ]
+      }
+    ]
+  }
+  {
+    name: 'vol-grp-03'
+    virtualNetworkRules: [
+      {
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+      }
+    ]
+  }
+  {
+    managedIdentities: {
+      systemAssigned: true
+    }
+    name: 'vol-grp-04'
+  }
+  {
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-05'
+  }
+  {
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-06'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

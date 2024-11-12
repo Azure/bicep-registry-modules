@@ -16,7 +16,7 @@ Describe 'Validate Deployment' {
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
         $volumeGroups = $TestInputData.DeploymentOutputs.volumeGroups.Value
 
-        $expectedVolumeGroupsCount = 8
+        $expectedVolumeGroupsCount = 6
     }
 
     Context 'Basic Tests' {
@@ -60,14 +60,12 @@ Describe 'Validate Deployment' {
             # Volume Groups
             $VNR = $TestInputData.DeploymentOutputs.virtualNetworkRule.Value
             $expectedData = @(
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$false;CMK=$false }   # vol-grp-01
-                @{ VolumeCounts=2;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$false;CMK=$false }   # vol-grp-02
-                @{ VolumeCounts=0;VirtualNetworkRule=$VNR;SystemAssignedMI=$false;UserAssignedMI=$false;CMK=$false }    # vol-grp-03
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$true;UserAssignedMI=$false;CMK=$false }    # vol-grp-04
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$true;CMK=$false }    # vol-grp-05
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$true;UserAssignedMI=$true;CMK=$false }     # vol-grp-06
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$true;CMK=$true }     # vol-grp-07 - CMK
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$true;CMK=$true }     # vol-grp-08 - CMK
+                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-01
+                @{ VolumeCounts=2;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-02
+                @{ VolumeCounts=0;VirtualNetworkRule=$VNR;SystemAssignedMI=$false;UserAssignedMI=$false }   # vol-grp-03
+                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$true;UserAssignedMI=$false }   # vol-grp-04
+                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$true }   # vol-grp-05
+                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$true;UserAssignedMI=$true }    # vol-grp-06
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
@@ -93,12 +91,12 @@ Describe 'Validate Deployment' {
                     -UserAssignedMIResourceId $TestInputData.DeploymentOutputs.managedIdentityResourceId.Value `
                     -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId `
                     -NetworkAclsVirtualNetworkRule $item.VirtualNetworkRule `
-                    -CMK $item.CMK `
-                    -CMKUMIResourceId $TestInputData.DeploymentOutputs.cmkManagedIdentityResourceId.Value `
-                    -CMKKeyVaultKeyUrl $TestInputData.DeploymentOutputs.cmkKeyVaultKeyUrl.Value `
-                    -CMKKeyVaultEncryptionKeyName $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyName.Value `
-                    -CMKKeyVaultUrl $TestInputData.DeploymentOutputs.cmkKeyVaultUrl.Value `
-                    -CMKKeyVaultEncryptionKeyVersion $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyVersion.Value `
+                    -CMK $false `
+                    -CMKUMIResourceId $null `
+                    -CMKKeyVaultKeyUrl $null `
+                    -CMKKeyVaultEncryptionKeyName $null `
+                    -CMKKeyVaultUrl $null `
+                    -CMKKeyVaultEncryptionKeyVersion $null `
                     -PrivateEndpointConnection $null
 
                 if ($item.VolumeCounts -eq 0) {

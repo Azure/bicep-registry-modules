@@ -21,9 +21,6 @@ param serviceShort string = 'esanmax'
 @sys.description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@sys.description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -34,9 +31,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    cmkManagedIdentityName: 'dep-cmk-${namePrefix}-msi-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -123,37 +117,6 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
-        // The only supported configuration is to use the same user-assigned identity for both 'managedIdentities.userAssignedResourceIds' and 'customerManagedKey.userAssignedIdentityResourceId'.
-        // Other configurations such as system-assigned identity are not supported.
-        {
-          // Test - Encryption with Customer Managed Key
-          name: 'vol-grp-07'
-          managedIdentities: {
-            userAssignedResourceIds: [
-              nestedDependencies.outputs.cmkManagedIdentityResourceId
-            ]
-          }
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-            userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
-          }
-        }
-        {
-          // Test - Encryption with Customer Managed Key and explicit Key Version
-          name: 'vol-grp-08'
-          managedIdentities: {
-            userAssignedResourceIds: [
-              nestedDependencies.outputs.cmkManagedIdentityResourceId
-            ]
-          }
-          customerManagedKey: {
-            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-            keyVersion: nestedDependencies.outputs.keyVaultEncryptionKeyVersion
-            userAssignedIdentityResourceId: nestedDependencies.outputs.cmkManagedIdentityResourceId
-          }
-        }
 
         // TODO - !!!!!!!!privateEndpoints
       ]
@@ -183,11 +146,5 @@ output location string = testDeployment[0].outputs.location
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output volumeGroups volumeGroupOutputType[] = testDeployment[0].outputs.volumeGroups
 
-output tenantId string = tenant().tenantId
 output managedIdentityResourceId string = nestedDependencies.outputs.managedIdentityResourceId
-output cmkManagedIdentityResourceId string = nestedDependencies.outputs.cmkManagedIdentityResourceId
-output cmkKeyVaultKeyUrl string = nestedDependencies.outputs.keyVaultKeyUrl
-output cmkKeyVaultEncryptionKeyName string = nestedDependencies.outputs.keyVaultEncryptionKeyName
-output cmkKeyVaultUrl string = nestedDependencies.outputs.keyVaultUrl
-output cmkKeyVaultEncryptionKeyVersion string = nestedDependencies.outputs.keyVaultEncryptionKeyVersion
 output virtualNetworkRule string = nestedDependencies.outputs.subnetResourceId
