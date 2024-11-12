@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "6082909570095213134"
+      "templateHash": "2193958105263938034"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -1455,9 +1455,7 @@
           "targetRepository": {
             "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository)]"
           },
-          "credentialSetResourceId": {
-            "value": "[tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')]"
-          }
+          "credentialSetResourceId": "[if(not(empty(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId'))), createObject('value', tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
