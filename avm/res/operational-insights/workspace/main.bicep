@@ -545,7 +545,7 @@ type savedSearchType = {
   query: string
 
   @description('Optional. The tags attached to the saved search.')
-  tags: object?
+  tags: array?
 
   @description('Optional. The version number of the query language. The current version is 2 and is the default.')
   version: int?

@@ -219,11 +219,11 @@ module testDeployment '../../../main.bicep' = [
             columns: [
               {
                 name: 'TimeGenerated'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'RawData'
-                type: 'String'
+                type: 'string'
               }
             ]
           }
@@ -257,27 +257,27 @@ module testDeployment '../../../main.bicep' = [
             columns: [
               {
                 name: 'TimeGenerated'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'EventTime'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'EventLevel'
-                type: 'String'
+                type: 'string'
               }
               {
                 name: 'EventCode'
-                type: 'Int'
+                type: 'int'
               }
               {
                 name: 'Message'
-                type: 'String'
+                type: 'string'
               }
               {
                 name: 'RawData'
-                type: 'String'
+                type: 'string'
               }
             ]
           }
@@ -315,10 +315,16 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'VMSS Instance Count2'
           name: 'VMSSQueries'
           query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
-          tags: {
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
+          tags: [
+            {
+              Name: 'Environment'
+              Value: 'Non-Prod'
+            }
+            {
+              Name: 'Role'
+              Value: 'DeploymentValidation'
+            }
+          ]
         }
       ]
       storageInsightsConfigs: [

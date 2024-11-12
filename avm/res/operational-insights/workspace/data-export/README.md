@@ -21,6 +21,7 @@ This module deploys a Log Analytics Workspace Data Export.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The data export rule name. |
+| [`tableNames`](#parameter-tablenames) | array | An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']. |
 
 **Conditional parameters**
 
@@ -34,7 +35,6 @@ This module deploys a Log Analytics Workspace Data Export.
 | :-- | :-- | :-- |
 | [`destination`](#parameter-destination) | object | Destination properties. |
 | [`enable`](#parameter-enable) | bool | Active when enabled. |
-| [`tableNames`](#parameter-tablenames) | array | An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']. |
 
 ### Parameter: `name`
 
@@ -42,6 +42,13 @@ The data export rule name.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `tableNames`
+
+An array of tables to export, for example: ['Heartbeat', 'SecurityEvent'].
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `workspaceName`
 
@@ -103,13 +110,6 @@ Active when enabled.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `tableNames`
-
-An array of tables to export, for example: ['Heartbeat', 'SecurityEvent'].
-
-- Required: No
-- Type: array
 
 ## Outputs
 

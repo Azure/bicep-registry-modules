@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "4412654935169016546"
+      "templateHash": "9343625551861125531"
     },
     "name": "Log Analytics Workspace Data Exports",
     "description": "This module deploys a Log Analytics Workspace Data Export.",
@@ -84,9 +84,8 @@
       "items": {
         "type": "string"
       },
-      "nullable": true,
       "metadata": {
-        "description": "Optional. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
+        "description": "Required. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
       }
     }
   },
