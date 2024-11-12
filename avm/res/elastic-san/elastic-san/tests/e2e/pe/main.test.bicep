@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       sku: 'Premium_LRS'
       availabilityZone: 2
+      publicNetworkAccess: 'Enabled' // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       volumeGroups: [
         {
           // Test - Private endpoints

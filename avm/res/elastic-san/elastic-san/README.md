@@ -502,6 +502,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     name: 'esanpe001'
     // Non-required parameters
     availabilityZone: 2
+    publicNetworkAccess: 'Enabled'
     sku: 'Premium_LRS'
     volumeGroups: [
       {
@@ -545,6 +546,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     "availabilityZone": {
       "value": 2
     },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "sku": {
       "value": "Premium_LRS"
     },
@@ -586,6 +590,7 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 param name = 'esanpe001'
 // Non-required parameters
 param availabilityZone = 2
+param publicNetworkAccess = 'Enabled'
 param sku = 'Premium_LRS'
 param volumeGroups = [
   {
