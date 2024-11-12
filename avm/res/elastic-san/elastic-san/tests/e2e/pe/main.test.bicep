@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
               //name: 'private-endpoint-01'
               //location: enforcedLocation
               //privateLinkServiceConnectionName: 'private-link-connection-01'
-              service: 'blob'
+              service: 'vol-grp-01'
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               privateDnsZoneGroup: {
                 privateDnsZoneGroupConfigs: [
