@@ -440,6 +440,13 @@
         "description": "Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \"Private Access\" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29."
       }
     },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "metadata": {
+        "description": "Optional. Specifies whether public network access is allowed for this server. Set to \"Enabled\" to allow public access, or \"Disabled\" (default) when the server has VNet integration."
+      }
+    },
     "privateDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
@@ -701,7 +708,7 @@
           "standbyAvailabilityZone": "[variables('standByAvailabilityZone')]"
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
-        "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')), null())]",
+        "network": "[if(equals(parameters('publicNetworkAccess'), 'Enabled'), if(or(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('publicNetworkAccess', parameters('publicNetworkAccess'), 'delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')), null()), if(not(empty(parameters('delegatedSubnetResourceId'))), createObject('publicNetworkAccess', parameters('publicNetworkAccess'), 'delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')), null()))]",
         "replicationRole": "[parameters('replicationRole')]",
         "restorePointInTime": "[parameters('restorePointInTime')]",
         "sourceServerResourceId": "[if(not(empty(parameters('sourceServerResourceId'))), parameters('sourceServerResourceId'), null())]",

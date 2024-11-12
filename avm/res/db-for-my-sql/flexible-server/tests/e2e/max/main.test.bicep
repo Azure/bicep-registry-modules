@@ -64,6 +64,14 @@ module nestedDependencies2 'dependencies2.bicep' = {
   }
 }
 
+module nestedDependencies3 'dependencies3.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies3'
+  params: {
+    dnsZoneName: 'dnszone${serviceShort}'
+  }
+}
+
 // Diagnostics
 // ===========
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
@@ -121,6 +129,9 @@ module testDeployment '../../../main.bicep' = [
         resourceType: 'MySQL Flexible Server'
         serverName: '${namePrefix}${serviceShort}001'
       }
+      delegatedSubnetResourceId: nestedDependencies3.outputs.mysqlSubnetId
+      privateDnsZoneResourceId: nestedDependencies3.outputs.dnszoneid
+      publicNetworkAccess: 'Disabled'
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       skuName: 'Standard_D2ads_v5'
