@@ -32,14 +32,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/elastic-san/elastic-san:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
+- [Using encryption with Customer-Managed-Key](#example-1-using-encryption-with-customer-managed-key)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using large parameter set_
+### Example 1: _Using encryption with Customer-Managed-Key_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
 
 <details>
@@ -51,68 +51,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   name: 'elasticSanDeployment'
   params: {
     // Required parameters
-    name: 'esanmax001'
+    name: 'esancmk001'
     // Non-required parameters
-    tags: {
-      CostCenter: '123-456-789'
-      Owner: 'Contoso'
-    }
+    sku: 'Premium_LRS'
     volumeGroups: [
-      {
-        name: 'vol-grp-01'
-      }
-      {
-        name: 'vol-grp-02'
-        volumes: [
-          {
-            name: 'vol-grp-02-vol-01'
-            sizeGiB: 1
-          }
-          {
-            name: 'vol-grp-02-vol-02'
-            sizeGiB: 2
-            snapshots: [
-              {
-                name: '<name>'
-              }
-              {
-                name: '<name>'
-              }
-            ]
-          }
-        ]
-      }
-      {
-        name: 'vol-grp-03'
-        virtualNetworkRules: [
-          {
-            virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
-          }
-        ]
-      }
-      {
-        managedIdentities: {
-          systemAssigned: true
-        }
-        name: 'vol-grp-04'
-      }
-      {
-        managedIdentities: {
-          userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
-          ]
-        }
-        name: 'vol-grp-05'
-      }
-      {
-        managedIdentities: {
-          systemAssigned: true
-          userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
-          ]
-        }
-        name: 'vol-grp-06'
-      }
       {
         customerManagedKey: {
           keyName: '<keyName>'
@@ -121,10 +63,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         }
         managedIdentities: {
           userAssignedResourceIds: [
-            '<cmkManagedIdentityResourceId>'
+            '<managedIdentityResourceId>'
           ]
         }
-        name: 'vol-grp-07'
+        name: 'vol-grp-01'
       }
       {
         customerManagedKey: {
@@ -135,10 +77,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         }
         managedIdentities: {
           userAssignedResourceIds: [
-            '<cmkManagedIdentityResourceId>'
+            '<managedIdentityResourceId>'
           ]
         }
-        name: 'vol-grp-08'
+        name: 'vol-grp-02'
       }
     ]
   }
@@ -159,72 +101,14 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "esanmax001"
+      "value": "esancmk001"
     },
     // Non-required parameters
-    "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "Owner": "Contoso"
-      }
+    "sku": {
+      "value": "Premium_LRS"
     },
     "volumeGroups": {
       "value": [
-        {
-          "name": "vol-grp-01"
-        },
-        {
-          "name": "vol-grp-02",
-          "volumes": [
-            {
-              "name": "vol-grp-02-vol-01",
-              "sizeGiB": 1
-            },
-            {
-              "name": "vol-grp-02-vol-02",
-              "sizeGiB": 2,
-              "snapshots": [
-                {
-                  "name": "<name>"
-                },
-                {
-                  "name": "<name>"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "vol-grp-03",
-          "virtualNetworkRules": [
-            {
-              "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
-            }
-          ]
-        },
-        {
-          "managedIdentities": {
-            "systemAssigned": true
-          },
-          "name": "vol-grp-04"
-        },
-        {
-          "managedIdentities": {
-            "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
-            ]
-          },
-          "name": "vol-grp-05"
-        },
-        {
-          "managedIdentities": {
-            "systemAssigned": true,
-            "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
-            ]
-          },
-          "name": "vol-grp-06"
-        },
         {
           "customerManagedKey": {
             "keyName": "<keyName>",
@@ -233,10 +117,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           },
           "managedIdentities": {
             "userAssignedResourceIds": [
-              "<cmkManagedIdentityResourceId>"
+              "<managedIdentityResourceId>"
             ]
           },
-          "name": "vol-grp-07"
+          "name": "vol-grp-01"
         },
         {
           "customerManagedKey": {
@@ -247,10 +131,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           },
           "managedIdentities": {
             "userAssignedResourceIds": [
-              "<cmkManagedIdentityResourceId>"
+              "<managedIdentityResourceId>"
             ]
           },
-          "name": "vol-grp-08"
+          "name": "vol-grp-02"
         }
       ]
     }
@@ -269,68 +153,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
 using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
-param name = 'esanmax001'
+param name = 'esancmk001'
 // Non-required parameters
-param tags = {
-  CostCenter: '123-456-789'
-  Owner: 'Contoso'
-}
+param sku = 'Premium_LRS'
 param volumeGroups = [
-  {
-    name: 'vol-grp-01'
-  }
-  {
-    name: 'vol-grp-02'
-    volumes: [
-      {
-        name: 'vol-grp-02-vol-01'
-        sizeGiB: 1
-      }
-      {
-        name: 'vol-grp-02-vol-02'
-        sizeGiB: 2
-        snapshots: [
-          {
-            name: '<name>'
-          }
-          {
-            name: '<name>'
-          }
-        ]
-      }
-    ]
-  }
-  {
-    name: 'vol-grp-03'
-    virtualNetworkRules: [
-      {
-        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
-      }
-    ]
-  }
-  {
-    managedIdentities: {
-      systemAssigned: true
-    }
-    name: 'vol-grp-04'
-  }
-  {
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    name: 'vol-grp-05'
-  }
-  {
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    name: 'vol-grp-06'
-  }
   {
     customerManagedKey: {
       keyName: '<keyName>'
@@ -339,10 +165,10 @@ param volumeGroups = [
     }
     managedIdentities: {
       userAssignedResourceIds: [
-        '<cmkManagedIdentityResourceId>'
+        '<managedIdentityResourceId>'
       ]
     }
-    name: 'vol-grp-07'
+    name: 'vol-grp-01'
   }
   {
     customerManagedKey: {
@@ -353,10 +179,10 @@ param volumeGroups = [
     }
     managedIdentities: {
       userAssignedResourceIds: [
-        '<cmkManagedIdentityResourceId>'
+        '<managedIdentityResourceId>'
       ]
     }
-    name: 'vol-grp-08'
+    name: 'vol-grp-02'
   }
 ]
 ```
