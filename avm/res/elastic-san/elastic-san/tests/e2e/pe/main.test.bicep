@@ -63,9 +63,15 @@ module testDeployment '../../../main.bicep' = [
               //name: 'private-endpoint-01'
               //location: enforcedLocation
               //privateLinkServiceConnectionName: 'private-link-connection-01'
-              //service: 'vault'
+              service: 'blob'
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              //privateDnsZoneGroup: privateEndpointPrivateDnsZoneGroupType
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
               //isManualConnection: false
               //manualConnectionRequestMessage: 'Please approve the connection'
               //customDnsConfigs: privateEndpointCustomDnsConfigType[]

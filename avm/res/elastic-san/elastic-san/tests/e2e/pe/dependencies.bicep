@@ -26,5 +26,24 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.blob.${environment().suffixes.storage}'
+  location: 'global'
+
+  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+    name: '${virtualNetwork.name}-vnetlink'
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: virtualNetwork.id
+      }
+      registrationEnabled: false
+    }
+  }
+}
+
 @sys.description('The resource ID of the created Virtual Network Default Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The resource ID of the created Private DNS Zone.')
+output privateDNSZoneResourceId string = privateDNSZone.id

@@ -508,6 +508,14 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         name: 'vol-grp-01'
         privateEndpoints: [
           {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+                }
+              ]
+            }
+            service: 'blob'
             subnetResourceId: '<subnetResourceId>'
           }
         ]
@@ -546,6 +554,14 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "name": "vol-grp-01",
           "privateEndpoints": [
             {
+              "privateDnsZoneGroup": {
+                "privateDnsZoneGroupConfigs": [
+                  {
+                    "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+                  }
+                ]
+              },
+              "service": "blob",
               "subnetResourceId": "<subnetResourceId>"
             }
           ]
@@ -576,6 +592,14 @@ param volumeGroups = [
     name: 'vol-grp-01'
     privateEndpoints: [
       {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'blob'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
