@@ -27,7 +27,7 @@ This module deploys an Azure SQL Server Database Short-Term Backup Retention Pol
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diffBackupIntervalInHours`](#parameter-diffbackupintervalinhours) | int | Differential backup interval in hours. |
+| [`diffBackupIntervalInHours`](#parameter-diffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscal tiers this value will be ignored. |
 | [`retentionDays`](#parameter-retentiondays) | int | Poin-in-time retention in days. |
 
 ### Parameter: `databaseName`
@@ -46,7 +46,7 @@ The name of the parent SQL Server.
 
 ### Parameter: `diffBackupIntervalInHours`
 
-Differential backup interval in hours.
+Differential backup interval in hours. For Hyperscal tiers this value will be ignored.
 
 - Required: No
 - Type: int

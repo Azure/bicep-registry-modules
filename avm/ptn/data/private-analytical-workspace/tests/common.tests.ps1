@@ -87,10 +87,10 @@ function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOf
     $Subnet.AddressPrefix[0] | Should -Be $SubnetAddressPrefix
     $Subnet.NetworkSecurityGroup.Count | Should -Be $NumberOfSecurityGroups
 
-    if ( $NumberOfPrivateEndpoints -eq $null ) { $Subnet.PrivateEndpoints | Should -BeNullOrEmpty }
+    if ( $null -eq $NumberOfPrivateEndpoints ) { $Subnet.PrivateEndpoints | Should -BeNullOrEmpty }
     else { $Subnet.PrivateEndpoints.Count | Should -Be $NumberOfPrivateEndpoints }
 
-    if ( $NumberOfIpConfigurations -eq $null ) { $Subnet.IpConfigurations | Should -BeNullOrEmpty }
+    if ( $null -eq $NumberOfIpConfigurations ) { $Subnet.IpConfigurations | Should -BeNullOrEmpty }
     else { $Subnet.IpConfigurations.Count | Should -Be $NumberOfIpConfigurations }
 
     $Subnet.ServiceAssociationLinks | Should -BeNullOrEmpty
@@ -98,7 +98,7 @@ function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOf
     $Subnet.ServiceEndpoints | Should -BeNullOrEmpty
     $Subnet.ServiceEndpointPolicies | Should -BeNullOrEmpty
 
-    if ( $DelegationServiceName -eq $null ) { $Subnet.Delegations | Should -BeNullOrEmpty }
+    if ( $null -eq $DelegationServiceName ) { $Subnet.Delegations | Should -BeNullOrEmpty }
     else {
         $Subnet.Delegations.Count | Should -Be 1
         $Subnet.Delegations[0].ProvisioningState | Should -Be 'Succeeded'
@@ -157,7 +157,7 @@ function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetNam
     $pep.NetworkInterfaces.Count | Should -Be 1
     $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be 'Succeeded'
 
-    if ( $ServiceId -eq $null ) {
+    if ( $null -eq $ServiceId ) {
         # For some services I have no Id - but must be no empty
         $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Not -BeNullOrEmpty
     } else {
@@ -177,7 +177,7 @@ function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetNam
 }
 
 function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupName, $LogAnalyticsWorkspaceName, $Tags, $Sku, $RetentionInDays, $DailyQuotaGb) {
-    $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $LogAnalyticsWorkspaceResourceGroupName -name $LogAnalyticsWorkspaceName
+    $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $LogAnalyticsWorkspaceResourceGroupName -Name $LogAnalyticsWorkspaceName
     $log | Should -Not -BeNullOrEmpty
     $log.ProvisioningState | Should -Be 'Succeeded'
     $log.Sku | Should -Be $Sku
@@ -213,12 +213,12 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     $kv.EnableRbacAuthorization | Should -Be $true
     $kv.EnableSoftDelete | Should -Be $EnableSoftDelete
     $kv.SoftDeleteRetentionInDays | Should -Be $RetentionInDays
-    $kv.EnablePurgeProtection | Should -Be $true
+    $kv.EnablePurgeProtection | Should -BeIn @($false, $null)
     $kv.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $kv.AccessPolicies | Should -BeNullOrEmpty
     $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
     $kv.NetworkAcls.Bypass | Should -Be 'None'
-    if ( $IpAddressRanges -eq $null ) { $kv.NetworkAcls.IpAddressRanges | Should -BeNullOrEmpty }
+    if ( $null -eq $IpAddressRanges ) { $kv.NetworkAcls.IpAddressRanges | Should -BeNullOrEmpty }
     else {
         $kv.NetworkAcls.IpAddressRanges.Count | Should -Be $IpAddressRanges.Count
 

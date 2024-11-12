@@ -288,7 +288,7 @@ type databaseSkuType = {
 @export()
 @description('The short-term backup retention policy for the database.')
 type shortTermBackupRetentionPolicyType = {
-  @description('Optional. Differential backup interval in hours.')
+  @description('Optional. Differential backup interval in hours. For Hyperscale tiers this value will be ignored.')
   diffBackupIntervalInHours: int?
 
   @description('Optional. Point-in-time retention in days.')

@@ -35,9 +35,10 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults and use AKS Automatic mode](#example-1-using-only-defaults-and-use-aks-automatic-mode)
 - [Using Azure CNI Network Plugin.](#example-2-using-azure-cni-network-plugin)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Using Kubenet Network Plugin.](#example-4-using-kubenet-network-plugin)
-- [Using Private Cluster.](#example-5-using-private-cluster)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using Istio Service Mesh add-on](#example-4-using-istio-service-mesh-add-on)
+- [Using Kubenet Network Plugin.](#example-5-using-kubenet-network-plugin)
+- [Using Private Cluster.](#example-6-using-private-cluster)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults and use AKS Automatic mode_
 
@@ -1203,7 +1204,162 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 4: _Using Kubenet Network Plugin._
+### Example 4: _Using Istio Service Mesh add-on_
+
+This instance deploys the module with Istio Service Mesh add-on and plug a Certificate Authority from Key Vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
+  name: 'managedClusterDeployment'
+  params: {
+    // Required parameters
+    name: 'csist001'
+    primaryAgentPoolProfiles: [
+      {
+        count: 3
+        mode: 'System'
+        name: 'systempool'
+        vmSize: 'Standard_DS2_v2'
+      }
+    ]
+    // Non-required parameters
+    enableKeyvaultSecretsProvider: true
+    enableSecretRotation: true
+    istioServiceMeshCertificateAuthority: {
+      certChainObjectName: '<certChainObjectName>'
+      certObjectName: '<certObjectName>'
+      keyObjectName: '<keyObjectName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      rootCertObjectName: '<rootCertObjectName>'
+    }
+    istioServiceMeshEnabled: true
+    istioServiceMeshInternalIngressGatewayEnabled: true
+    istioServiceMeshRevisions: [
+      'asm-1-22'
+    ]
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csist001"
+    },
+    "primaryAgentPoolProfiles": {
+      "value": [
+        {
+          "count": 3,
+          "mode": "System",
+          "name": "systempool",
+          "vmSize": "Standard_DS2_v2"
+        }
+      ]
+    },
+    // Non-required parameters
+    "enableKeyvaultSecretsProvider": {
+      "value": true
+    },
+    "enableSecretRotation": {
+      "value": true
+    },
+    "istioServiceMeshCertificateAuthority": {
+      "value": {
+        "certChainObjectName": "<certChainObjectName>",
+        "certObjectName": "<certObjectName>",
+        "keyObjectName": "<keyObjectName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "rootCertObjectName": "<rootCertObjectName>"
+      }
+    },
+    "istioServiceMeshEnabled": {
+      "value": true
+    },
+    "istioServiceMeshInternalIngressGatewayEnabled": {
+      "value": true
+    },
+    "istioServiceMeshRevisions": {
+      "value": [
+        "asm-1-22"
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csist001'
+param primaryAgentPoolProfiles = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param enableKeyvaultSecretsProvider = true
+param enableSecretRotation = true
+param istioServiceMeshCertificateAuthority = {
+  certChainObjectName: '<certChainObjectName>'
+  certObjectName: '<certObjectName>'
+  keyObjectName: '<keyObjectName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  rootCertObjectName: '<rootCertObjectName>'
+}
+param istioServiceMeshEnabled = true
+param istioServiceMeshInternalIngressGatewayEnabled = true
+param istioServiceMeshRevisions = [
+  'asm-1-22'
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Kubenet Network Plugin._
 
 This instance deploys the module with Kubenet network plugin .
 
@@ -1602,7 +1758,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Using Private Cluster._
+### Example 6: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
 
@@ -1912,7 +2068,7 @@ param skuTier = 'Standard'
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -2552,6 +2708,11 @@ param tags = {
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
 | [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | The interval in hours Image Cleaner will run. The maximum value is three months. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
+| [`istioServiceMeshCertificateAuthority`](#parameter-istioservicemeshcertificateauthority) | object | The Istio Certificate Authority definition. |
+| [`istioServiceMeshEnabled`](#parameter-istioservicemeshenabled) | bool | Specifies whether the Istio ServiceMesh add-on is enabled or not. |
+| [`istioServiceMeshExternalIngressGatewayEnabled`](#parameter-istioservicemeshexternalingressgatewayenabled) | bool | Specifies whether the External Istio Ingress Gateway is enabled or not. |
+| [`istioServiceMeshInternalIngressGatewayEnabled`](#parameter-istioservicemeshinternalingressgatewayenabled) | bool | Specifies whether the Internal Istio Ingress Gateway is enabled or not. |
+| [`istioServiceMeshRevisions`](#parameter-istioservicemeshrevisions) | array | The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values. |
 | [`kedaAddon`](#parameter-kedaaddon) | bool | Enables Kubernetes Event-driven Autoscaling (KEDA). |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Version of Kubernetes specified when creating the managed cluster. |
@@ -4172,6 +4333,89 @@ Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `istioServiceMeshCertificateAuthority`
+
+The Istio Certificate Authority definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certChainObjectName`](#parameter-istioservicemeshcertificateauthoritycertchainobjectname) | string | The Certificate chain object name in Azure Key Vault. |
+| [`certObjectName`](#parameter-istioservicemeshcertificateauthoritycertobjectname) | string | The Intermediate certificate object name in Azure Key Vault. |
+| [`keyObjectName`](#parameter-istioservicemeshcertificateauthoritykeyobjectname) | string | The Intermediate certificate private key object name in Azure Key Vault. |
+| [`keyVaultResourceId`](#parameter-istioservicemeshcertificateauthoritykeyvaultresourceid) | string | The resource ID of a key vault to reference a Certificate Authority from. |
+| [`rootCertObjectName`](#parameter-istioservicemeshcertificateauthorityrootcertobjectname) | string | Root certificate object name in Azure Key Vault. |
+
+### Parameter: `istioServiceMeshCertificateAuthority.certChainObjectName`
+
+The Certificate chain object name in Azure Key Vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `istioServiceMeshCertificateAuthority.certObjectName`
+
+The Intermediate certificate object name in Azure Key Vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `istioServiceMeshCertificateAuthority.keyObjectName`
+
+The Intermediate certificate private key object name in Azure Key Vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `istioServiceMeshCertificateAuthority.keyVaultResourceId`
+
+The resource ID of a key vault to reference a Certificate Authority from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `istioServiceMeshCertificateAuthority.rootCertObjectName`
+
+Root certificate object name in Azure Key Vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `istioServiceMeshEnabled`
+
+Specifies whether the Istio ServiceMesh add-on is enabled or not.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `istioServiceMeshExternalIngressGatewayEnabled`
+
+Specifies whether the External Istio Ingress Gateway is enabled or not.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `istioServiceMeshInternalIngressGatewayEnabled`
+
+Specifies whether the Internal Istio Ingress Gateway is enabled or not.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `istioServiceMeshRevisions`
+
+The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values.
+
+- Required: No
+- Type: array
 
 ### Parameter: `kedaAddon`
 

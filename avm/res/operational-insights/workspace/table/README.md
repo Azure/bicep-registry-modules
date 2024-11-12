@@ -7,6 +7,7 @@ This module deploys a Log Analytics Workspace Table.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -224,3 +225,11 @@ The table total retention in days, between 4 and 2555. Setting this property to 
 | `name` | string | The name of the table. |
 | `resourceGroupName` | string | The name of the resource group the table was created in. |
 | `resourceId` | string | The resource ID of the table. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |

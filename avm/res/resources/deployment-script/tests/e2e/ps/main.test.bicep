@@ -51,14 +51,14 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    azPowerShellVersion: '9.7'
+    azPowerShellVersion: '12.3'
     kind: 'AzurePowerShell'
     retentionInterval: 'P1D'
     arguments: '-var1 \\"AVM Deployment Script test!\\"'
     scriptContent: 'param([string] $var1);Write-Host \'Argument var1 value is:\' $var1'
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }

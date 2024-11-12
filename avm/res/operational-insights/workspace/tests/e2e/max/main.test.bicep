@@ -175,11 +175,28 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'AzureAutomation'
-          product: 'OMSGallery'
-          publisher: 'Microsoft'
+          name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
+          plan: {
+            product: 'OMSGallery/AzureAutomation'
+          }
+        }
+        {
+          name: 'SecurityInsights(${namePrefix}${serviceShort}001)'
+          plan: {
+            product: 'OMSGallery/SecurityInsights'
+            publisher: 'Microsoft'
+          }
+        }
+        {
+          name: 'SQLAuditing(${namePrefix}${serviceShort}001)'
+          plan: {
+            name: 'SQLAuditing(${namePrefix}${serviceShort}001)'
+            product: 'SQLAuditing'
+            publisher: 'Microsoft'
+          }
         }
       ]
+      onboardWorkspaceToSentinel: true
       linkedServices: [
         {
           name: 'Automation'

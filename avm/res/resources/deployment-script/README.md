@@ -8,6 +8,7 @@ This module deploys Deployment Scripts.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -51,7 +52,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     kind: 'AzureCLI'
     name: 'rdscli001'
     // Non-required parameters
-    azCliVersion: '2.9.1'
+    azCliVersion: '2.52.0'
     environmentVariables: [
       {
         name: 'var1'
@@ -60,7 +61,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     ]
     location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -92,7 +93,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     // Non-required parameters
     "azCliVersion": {
-      "value": "2.9.1"
+      "value": "2.52.0"
     },
     "environmentVariables": {
       "value": [
@@ -107,7 +108,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -139,7 +140,7 @@ using 'br/public:avm/res/resources/deployment-script:<version>'
 param kind = 'AzureCLI'
 param name = 'rdscli001'
 // Non-required parameters
-param azCliVersion = '2.9.1'
+param azCliVersion = '2.52.0'
 param environmentVariables = [
   {
     name: 'var1'
@@ -148,7 +149,7 @@ param environmentVariables = [
 ]
 param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -177,10 +178,10 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     kind: 'AzurePowerShell'
     name: 'rdsmin001'
     // Non-required parameters
-    azPowerShellVersion: '9.7'
+    azPowerShellVersion: '12.3'
     location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -210,14 +211,14 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     // Non-required parameters
     "azPowerShellVersion": {
-      "value": "9.7"
+      "value": "12.3"
     },
     "location": {
       "value": "<location>"
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -243,10 +244,10 @@ using 'br/public:avm/res/resources/deployment-script:<version>'
 param kind = 'AzurePowerShell'
 param name = 'rdsmin001'
 // Non-required parameters
-param azPowerShellVersion = '9.7'
+param azPowerShellVersion = '12.3'
 param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -274,7 +275,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     name: 'rdsmax001'
     // Non-required parameters
     arguments: '-argument1 \\\'test\\\''
-    azCliVersion: '2.9.1'
+    azCliVersion: '2.52.0'
     cleanupPreference: 'Always'
     containerGroupName: 'dep-cg-rdsmax'
     environmentVariables: [
@@ -292,7 +293,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       kind: 'None'
     }
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -353,7 +354,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "-argument1 \\\"test\\\""
     },
     "azCliVersion": {
-      "value": "2.9.1"
+      "value": "2.52.0"
     },
     "cleanupPreference": {
       "value": "Always"
@@ -383,7 +384,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -450,7 +451,7 @@ param kind = 'AzureCLI'
 param name = 'rdsmax001'
 // Non-required parameters
 param arguments = '-argument1 \\\'test\\\''
-param azCliVersion = '2.9.1'
+param azCliVersion = '2.52.0'
 param cleanupPreference = 'Always'
 param containerGroupName = 'dep-cg-rdsmax'
 param environmentVariables = [
@@ -468,7 +469,7 @@ param lock = {
   kind: 'None'
 }
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -523,11 +524,11 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     kind: 'AzureCLI'
     name: 'rdspe001'
     // Non-required parameters
-    azCliVersion: '2.9.1'
+    azCliVersion: '2.52.0'
     cleanupPreference: 'Always'
     location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -564,7 +565,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     // Non-required parameters
     "azCliVersion": {
-      "value": "2.9.1"
+      "value": "2.52.0"
     },
     "cleanupPreference": {
       "value": "Always"
@@ -574,7 +575,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -617,11 +618,11 @@ using 'br/public:avm/res/resources/deployment-script:<version>'
 param kind = 'AzureCLI'
 param name = 'rdspe001'
 // Non-required parameters
-param azCliVersion = '2.9.1'
+param azCliVersion = '2.52.0'
 param cleanupPreference = 'Always'
 param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -655,11 +656,11 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     kind: 'AzureCLI'
     name: 'rdsnet001'
     // Non-required parameters
-    azCliVersion: '2.9.1'
+    azCliVersion: '2.52.0'
     cleanupPreference: 'Always'
     location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -696,7 +697,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     // Non-required parameters
     "azCliVersion": {
-      "value": "2.9.1"
+      "value": "2.52.0"
     },
     "cleanupPreference": {
       "value": "Always"
@@ -706,7 +707,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -749,11 +750,11 @@ using 'br/public:avm/res/resources/deployment-script:<version>'
 param kind = 'AzureCLI'
 param name = 'rdsnet001'
 // Non-required parameters
-param azCliVersion = '2.9.1'
+param azCliVersion = '2.52.0'
 param cleanupPreference = 'Always'
 param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -788,10 +789,10 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     name: 'rdsps001'
     // Non-required parameters
     arguments: '-var1 \\\'AVM Deployment Script test!\\\''
-    azPowerShellVersion: '9.7'
+    azPowerShellVersion: '12.3'
     location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -826,14 +827,14 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "-var1 \\\"AVM Deployment Script test!\\\""
     },
     "azPowerShellVersion": {
-      "value": "9.7"
+      "value": "12.3"
     },
     "location": {
       "value": "<location>"
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -866,10 +867,10 @@ param kind = 'AzurePowerShell'
 param name = 'rdsps001'
 // Non-required parameters
 param arguments = '-var1 \\\'AVM Deployment Script test!\\\''
-param azPowerShellVersion = '9.7'
+param azPowerShellVersion = '12.3'
 param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -898,14 +899,14 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     kind: 'AzureCLI'
     name: 'rdswaf001'
     // Non-required parameters
-    azCliVersion: '2.9.1'
+    azCliVersion: '2.52.0'
     cleanupPreference: 'Always'
     location: '<location>'
     lock: {
       kind: 'None'
     }
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -944,7 +945,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     // Non-required parameters
     "azCliVersion": {
-      "value": "2.9.1"
+      "value": "2.52.0"
     },
     "cleanupPreference": {
       "value": "Always"
@@ -959,7 +960,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -1004,14 +1005,14 @@ using 'br/public:avm/res/resources/deployment-script:<version>'
 param kind = 'AzureCLI'
 param name = 'rdswaf001'
 // Non-required parameters
-param azCliVersion = '2.9.1'
+param azCliVersion = '2.52.0'
 param cleanupPreference = 'Always'
 param location = '<location>'
 param lock = {
   kind: 'None'
 }
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -1155,8 +1156,13 @@ The environment variables to pass over to the script.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-environmentvariablesname) | string | The name of the environment variable. |
-| [`secureValue`](#parameter-environmentvariablessecurevalue) | securestring | The value of the secure environment variable. |
-| [`value`](#parameter-environmentvariablesvalue) | string | The value of the environment variable. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secureValue`](#parameter-environmentvariablessecurevalue) | securestring | The value of the secure environment variable. Required if `value` is null. |
+| [`value`](#parameter-environmentvariablesvalue) | string | The value of the environment variable. Required if `secureValue` is null. |
 
 ### Parameter: `environmentVariables.name`
 
@@ -1167,14 +1173,14 @@ The name of the environment variable.
 
 ### Parameter: `environmentVariables.secureValue`
 
-The value of the secure environment variable.
+The value of the secure environment variable. Required if `value` is null.
 
 - Required: No
 - Type: securestring
 
 ### Parameter: `environmentVariables.value`
 
-The value of the environment variable.
+The value of the environment variable. Required if `secureValue` is null.
 
 - Required: No
 - Type: string
@@ -1234,13 +1240,13 @@ The managed identity definition for this resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
-### Parameter: `managedIdentities.userAssignedResourcesIds`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `primaryScriptUri`
@@ -1430,6 +1436,14 @@ Do not provide a value! This date value is used to make sure the script run ever
 | `outputs` | object | The output of the deployment script. |
 | `resourceGroupName` | string | The resource group the deployment script was deployed into. |
 | `resourceId` | string | The resource ID of the deployment script. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 

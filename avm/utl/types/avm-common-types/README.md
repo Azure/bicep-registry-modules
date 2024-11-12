@@ -54,6 +54,7 @@ Note: In your module you would import only the types you need.
 
 import {
   customerManagedKeyType
+  customerManagedKeyWithAutoRotateType
   diagnosticSettingFullType
   diagnosticSettingLogsOnlyType
   diagnosticSettingMetricsOnlyType
@@ -296,6 +297,14 @@ param customerManagedKeyDefaults customerManagedKeyType = {
   keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
 }
 output customerManagedKeyDefaultsOutput customerManagedKeyType = customerManagedKeyDefaults
+
+param customerManagedKeyWithAutoRotate customerManagedKeyWithAutoRotateType = {
+  keyName: 'myKey'
+  keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
+  autoRotationDisabled: true
+  userAssignedIdentityResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
+}
+output customerManagedKeyWithAutoRotateOutput customerManagedKeyWithAutoRotateType = customerManagedKeyWithAutoRotate
 
 // ================== //
 //   Secrets Export   //

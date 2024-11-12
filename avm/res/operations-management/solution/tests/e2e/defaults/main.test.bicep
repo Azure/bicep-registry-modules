@@ -49,7 +49,9 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: 'Updates(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
-    product: 'OMSGallery/Updates'
+    plan: {
+      product: 'OMSGallery/Updates'
+    }
     location: resourceLocation
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
   }

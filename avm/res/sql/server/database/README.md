@@ -193,12 +193,12 @@ The short term backup retention policy to create for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diffBackupIntervalInHours`](#parameter-backupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. |
+| [`diffBackupIntervalInHours`](#parameter-backupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscale tiers this value will be ignored. |
 | [`retentionDays`](#parameter-backupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
 
 ### Parameter: `backupShortTermRetentionPolicy.diffBackupIntervalInHours`
 
-Differential backup interval in hours.
+Differential backup interval in hours. For Hyperscale tiers this value will be ignored.
 
 - Required: No
 - Type: int

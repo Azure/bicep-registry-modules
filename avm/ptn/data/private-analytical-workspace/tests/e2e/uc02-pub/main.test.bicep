@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-data-privateanalyticalworksp
 var enforcedLocation = 'northeurope'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dpawuc02pub'
+param serviceShort string = 'dpawu2pu'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       tags: {
         Owner: 'Contoso'
         CostCenter: '123-456-789'
@@ -66,6 +66,9 @@ module testDeployment '../../../main.bicep' = [
         databricks: {
           subnetNameFrontend: last(split(nestedDependencies.outputs.subnetResourceIds[1], '/'))
           subnetNameBackend: last(split(nestedDependencies.outputs.subnetResourceIds[2], '/'))
+        }
+        keyVault: {
+          enablePurgeProtection: false // For the purposes of the test, we disable purge protection
         }
       }
     }

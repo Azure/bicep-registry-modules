@@ -27,6 +27,7 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
 | `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
+| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/onboardingStates) |
 
 ## Usage examples
 
@@ -199,9 +200,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwadv001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
     ]
     linkedServices: [
@@ -507,9 +509,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwadv001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         }
       ]
     },
@@ -825,9 +828,10 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+    name: 'AzureAutomation(oiwadv001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
   }
 ]
 param linkedServices = [
@@ -1153,9 +1157,25 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwmax001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
+      }
+      {
+        name: 'SecurityInsights(oiwmax001)'
+        plan: {
+          product: 'OMSGallery/SecurityInsights'
+          publisher: 'Microsoft'
+        }
+      }
+      {
+        name: 'SQLAuditing(oiwmax001)'
+        plan: {
+          name: 'SQLAuditing(oiwmax001)'
+          product: 'SQLAuditing'
+          publisher: 'Microsoft'
+        }
       }
     ]
     linkedServices: [
@@ -1178,6 +1198,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     managedIdentities: {
       systemAssigned: true
     }
+    onboardWorkspaceToSentinel: true
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
     roleAssignments: [
@@ -1455,9 +1476,25 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwmax001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
+        },
+        {
+          "name": "SecurityInsights(oiwmax001)",
+          "plan": {
+            "product": "OMSGallery/SecurityInsights",
+            "publisher": "Microsoft"
+          }
+        },
+        {
+          "name": "SQLAuditing(oiwmax001)",
+          "plan": {
+            "name": "SQLAuditing(oiwmax001)",
+            "product": "SQLAuditing",
+            "publisher": "Microsoft"
+          }
         }
       ]
     },
@@ -1490,6 +1527,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": {
         "systemAssigned": true
       }
+    },
+    "onboardWorkspaceToSentinel": {
+      "value": true
     },
     "publicNetworkAccessForIngestion": {
       "value": "Disabled"
@@ -1773,9 +1813,25 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+    name: 'AzureAutomation(oiwmax001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
+  }
+  {
+    name: 'SecurityInsights(oiwmax001)'
+    plan: {
+      product: 'OMSGallery/SecurityInsights'
+      publisher: 'Microsoft'
+    }
+  }
+  {
+    name: 'SQLAuditing(oiwmax001)'
+    plan: {
+      name: 'SQLAuditing(oiwmax001)'
+      product: 'SQLAuditing'
+      publisher: 'Microsoft'
+    }
   }
 ]
 param linkedServices = [
@@ -1798,6 +1854,7 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
 }
+param onboardWorkspaceToSentinel = true
 param publicNetworkAccessForIngestion = 'Disabled'
 param publicNetworkAccessForQuery = 'Disabled'
 param roleAssignments = [
@@ -2062,9 +2119,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwwaf001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
     ]
     linkedServices: [
@@ -2231,9 +2289,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwwaf001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         }
       ]
     },
@@ -2408,9 +2467,10 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+    name: 'AzureAutomation(oiwwaf001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
   }
 ]
 param linkedServices = [
@@ -2483,6 +2543,7 @@ param useResourcePermissions = true
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
+| [`onboardWorkspaceToSentinel`](#parameter-onboardworkspacetosentinel) | bool | Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Log Analytics ingestion. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Log Analytics query. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -2717,7 +2778,61 @@ List of gallerySolutions to be created in the log analytics workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsname) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`plan`](#parameter-gallerysolutionsplan) | object | Plan for solution object supported by the OperationsManagement resource provider. |
+
+### Parameter: `gallerySolutions.name`
+
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan`
+
+Plan for solution object supported by the OperationsManagement resource provider.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`product`](#parameter-gallerysolutionsplanproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsplanname) | string | Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used. |
+| [`publisher`](#parameter-gallerysolutionsplanpublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `gallerySolutions.plan.product`
+
+The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan.name`
+
+Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `gallerySolutions.plan.publisher`
+
+The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
+
+- Required: No
+- Type: string
 
 ### Parameter: `linkedServices`
 
@@ -2783,7 +2898,7 @@ The managed identity definition for this resource. Only one type of identity is 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2794,10 +2909,18 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
+
+### Parameter: `onboardWorkspaceToSentinel`
+
+Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `publicNetworkAccessForIngestion`
 
@@ -3023,7 +3146,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 

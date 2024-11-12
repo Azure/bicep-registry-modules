@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-data-privateanalyticalworksp
 var enforcedLocation = 'northeurope'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dpawuc01priv'
+param serviceShort string = 'dpawu1pr'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -42,10 +42,15 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       tags: {
         Owner: 'Contoso'
         CostCenter: '123-456-789'
+      }
+      advancedOptions: {
+        keyVault: {
+          enablePurgeProtection: false // For the purposes of the test, we disable purge protection
+        }
       }
       enableDatabricks: true
     }

@@ -237,6 +237,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.7.0' = {
     name: keyVaultName
     // Non-required parameters
     location: location
+    enablePurgeProtection: false // For the purposes of the test, we disable purge protection
   }
 }
 

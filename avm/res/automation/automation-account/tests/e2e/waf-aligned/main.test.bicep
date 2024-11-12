@@ -76,9 +76,10 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'Updates'
-          product: 'OMSGallery'
-          publisher: 'Microsoft'
+          name: 'Updates(${last(split(diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId, '/'))})'
+          plan: {
+            product: 'OMSGallery/Updates'
+          }
         }
       ]
       jobSchedules: [

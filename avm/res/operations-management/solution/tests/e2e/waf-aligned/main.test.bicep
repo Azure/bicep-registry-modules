@@ -53,8 +53,11 @@ module testDeployment '../../../main.bicep' = [
       name: 'AzureAutomation(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
       location: resourceLocation
       logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
-      product: 'OMSGallery/AzureAutomation'
-      publisher: 'Microsoft'
+      plan: {
+        name: 'AzureAutomation(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
+        product: 'OMSGallery/AzureAutomation'
+        publisher: 'Microsoft'
+      }
     }
   }
 ]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "17374623663141250391"
+      "templateHash": "543007463534644066"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -705,9 +705,46 @@
           }
         }
       },
+      "nullable": true,
       "metadata": {
         "__bicep_export!": true
       }
+    },
+    "istioServiceMeshCertificateAuthorityType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a Certificate Authority from."
+          }
+        },
+        "certChainObjectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Certificate chain object name in Azure Key Vault."
+          }
+        },
+        "certObjectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Intermediate certificate object name in Azure Key Vault."
+          }
+        },
+        "keyObjectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Intermediate certificate private key object name in Azure Key Vault."
+          }
+        },
+        "rootCertObjectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Root certificate object name in Azure Key Vault."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -1564,6 +1601,40 @@
       "metadata": {
         "description": "Optional. A comma-separated list of Kubernetes cluster metrics annotations."
       }
+    },
+    "istioServiceMeshEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the Istio ServiceMesh add-on is enabled or not."
+      }
+    },
+    "istioServiceMeshRevisions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values."
+      }
+    },
+    "istioServiceMeshInternalIngressGatewayEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the Internal Istio Ingress Gateway is enabled or not."
+      }
+    },
+    "istioServiceMeshExternalIngressGatewayEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the External Istio Ingress Gateway is enabled or not."
+      }
+    },
+    "istioServiceMeshCertificateAuthority": {
+      "$ref": "#/definitions/istioServiceMeshCertificateAuthorityType",
+      "metadata": {
+        "description": "Optional. The Istio Certificate Authority definition."
+      }
     }
   },
   "variables": {
@@ -1802,7 +1873,8 @@
             "enabled": "[parameters('enableStorageProfileSnapshotController')]"
           }
         },
-        "supportPlan": "[parameters('supportPlan')]"
+        "supportPlan": "[parameters('supportPlan')]",
+        "serviceMeshProfile": "[if(parameters('istioServiceMeshEnabled'), createObject('istio', createObject('revisions', if(not(empty(parameters('istioServiceMeshRevisions'))), parameters('istioServiceMeshRevisions'), null()), 'components', createObject('ingressGateways', createArray(createObject('enabled', parameters('istioServiceMeshInternalIngressGatewayEnabled'), 'mode', 'Internal'), createObject('enabled', parameters('istioServiceMeshExternalIngressGatewayEnabled'), 'mode', 'External'))), 'certificateAuthority', if(not(empty(parameters('istioServiceMeshCertificateAuthority'))), createObject('plugin', createObject('certChainObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certChainObjectName'), 'certObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certObjectName'), 'keyObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyObjectName'), 'keyVaultId', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyVaultResourceId'), 'rootCertObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'rootCertObjectName'))), null())), 'mode', 'Istio'), null())]"
       }
     },
     "managedCluster_lock": {
@@ -1935,8 +2007,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "14041521425406296021"
+              "version": "0.30.23.60470",
+              "templateHash": "2505380725266419010"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -2132,8 +2204,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "9210340338669366768"
+              "version": "0.30.23.60470",
+              "templateHash": "13856766172443517827"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
