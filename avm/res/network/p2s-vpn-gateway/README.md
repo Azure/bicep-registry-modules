@@ -47,7 +47,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     virtualHubId: '<virtualHubId>'
     vpnServerConfigurationId: '<vpnServerConfigurationId>'
     // Non-required parameters
-    associatedRouteTableName: 'test'
+    associatedRouteTableName: 'defaultRouteTable'
     location: '<location>'
     p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     vpnClientAddressPoolAddressPrefixes: [
@@ -81,7 +81,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     },
     // Non-required parameters
     "associatedRouteTableName": {
-      "value": "test"
+      "value": "defaultRouteTable"
     },
     "location": {
       "value": "<location>"
@@ -113,7 +113,7 @@ param name = 'vscminp2sVpnGw'
 param virtualHubId = '<virtualHubId>'
 param vpnServerConfigurationId = '<vpnServerConfigurationId>'
 // Non-required parameters
-param associatedRouteTableName = 'test'
+param associatedRouteTableName = 'defaultRouteTable'
 param location = '<location>'
 p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param vpnClientAddressPoolAddressPrefixes = [
