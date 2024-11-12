@@ -1251,13 +1251,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
     vulnerabilityAssessmentsObj: {
       createStorageRoleAssignment: true
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
       useStorageAccountAccessKey: false
     }
@@ -1321,13 +1323,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "vulnerabilityAssessmentsObj": {
       "value": {
         "createStorageRoleAssignment": true,
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>",
         "useStorageAccountAccessKey": false
       }
@@ -1373,13 +1377,15 @@ param tags = {
 }
 param vulnerabilityAssessmentsObj = {
   createStorageRoleAssignment: true
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
   useStorageAccountAccessKey: false
 }
@@ -3796,7 +3802,90 @@ The vulnerability assessment configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-vulnerabilityassessmentsobjname) | string | The name of the vulnerability assessment. |
+| [`storageAccountResourceId`](#parameter-vulnerabilityassessmentsobjstorageaccountresourceid) | string | The resource ID of the storage account to store the scan reports. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`createStorageRoleAssignment`](#parameter-vulnerabilityassessmentsobjcreatestorageroleassignment) | bool | Specifies whether to create a role assignment for the storage account. |
+| [`recurringScans`](#parameter-vulnerabilityassessmentsobjrecurringscans) | object | The recurring scans settings. |
+| [`useStorageAccountAccessKey`](#parameter-vulnerabilityassessmentsobjusestorageaccountaccesskey) | bool | Specifies whether to use the storage account access key to access the storage account. |
+
+### Parameter: `vulnerabilityAssessmentsObj.name`
+
+The name of the vulnerability assessment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vulnerabilityAssessmentsObj.storageAccountResourceId`
+
+The resource ID of the storage account to store the scan reports.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vulnerabilityAssessmentsObj.createStorageRoleAssignment`
+
+Specifies whether to create a role assignment for the storage account.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans`
+
+The recurring scans settings.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emails`](#parameter-vulnerabilityassessmentsobjrecurringscansemails) | array | Specifies an array of e-mail addresses to which the scan notification is sent. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emailSubscriptionAdmins`](#parameter-vulnerabilityassessmentsobjrecurringscansemailsubscriptionadmins) | bool | Specifies that the schedule scan notification will be sent to the subscription administrators. |
+| [`isEnabled`](#parameter-vulnerabilityassessmentsobjrecurringscansisenabled) | bool | Recurring scans state. |
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.emails`
+
+Specifies an array of e-mail addresses to which the scan notification is sent.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.emailSubscriptionAdmins`
+
+Specifies that the schedule scan notification will be sent to the subscription administrators.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.isEnabled`
+
+Recurring scans state.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.useStorageAccountAccessKey`
+
+Specifies whether to use the storage account access key to access the storage account.
+
+- Required: No
+- Type: bool
 
 ## Outputs
 

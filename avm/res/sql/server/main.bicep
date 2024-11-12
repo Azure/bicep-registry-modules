@@ -121,7 +121,7 @@ var identity = !empty(managedIdentities)
 param encryptionProtectorObj encryptionProtectorType?
 
 @description('Optional. The vulnerability assessment configuration.')
-param vulnerabilityAssessmentsObj object = {}
+param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
 
 @description('Optional. The audit settings configuration.')
 param auditSettings auditSettingsType = {} //Use the defaults from the child module
@@ -429,17 +429,15 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
   }
 ]
 
-module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (!empty(vulnerabilityAssessmentsObj)) {
+module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (vulnerabilityAssessmentsObj != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-VulnAssessm'
   params: {
     serverName: server.name
-    name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: vulnerabilityAssessmentsObj.?recurringScansEmails ?? []
-    recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?recurringScansEmailSubscriptionAdmins ?? false
-    recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled ?? false
-    storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey ?? false
-    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment ?? true
+    name: vulnerabilityAssessmentsObj!.name
+    recurringScans: vulnerabilityAssessmentsObj.?recurringScans
+    storageAccountResourceId: vulnerabilityAssessmentsObj!.storageAccountResourceId
+    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey
+    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment
   }
   dependsOn: [
     server_securityAlertPolicies
@@ -557,6 +555,7 @@ output privateEndpoints array = [
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
+import { recurringScansType } from 'vulnerability-assessment/main.bicep'
 
 @export()
 type auditSettingsType = {
@@ -810,4 +809,22 @@ type encryptionProtectorType = {
 
   @description('Optional. Key auto rotation opt-in flag. Either true or false.')
   autoRotationEnabled: bool?
+}
+
+@export()
+type vulnerabilityAssessmentType = {
+  @description('Required. The name of the vulnerability assessment.')
+  name: string
+
+  @description('Optional. The recurring scans settings.')
+  recurringScans: recurringScansType?
+
+  @description('Required. The resource ID of the storage account to store the scan reports.')
+  storageAccountResourceId: string
+
+  @description('Optional. Specifies whether to use the storage account access key to access the storage account.')
+  useStorageAccountAccessKey: bool?
+
+  @description('Optional. Specifies whether to create a role assignment for the storage account.')
+  createStorageRoleAssignment: bool?
 }
