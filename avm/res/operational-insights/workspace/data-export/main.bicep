@@ -60,6 +60,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@description('A type for a data export destination.')
 type destinationType = {
   @description('Required. The destination resource ID.')
   resourceId: string
