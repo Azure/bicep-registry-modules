@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "1342690797398622979"
+      "version": "0.31.34.60546",
+      "templateHash": "11902978823059118045"
     },
     "name": "API Management Service Identity Providers",
     "description": "This module deploys an API Management Service Identity Provider.",
@@ -141,10 +141,7 @@
         "clientId": "[parameters('clientId')]",
         "clientLibrary": "[parameters('clientLibrary')]",
         "clientSecret": "[parameters('clientSecret')]"
-      },
-      "dependsOn": [
-        "service"
-      ]
+      }
     }
   },
   "outputs": {
