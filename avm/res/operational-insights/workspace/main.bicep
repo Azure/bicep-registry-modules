@@ -476,6 +476,7 @@ type diagnosticSettingType = {
 import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.0'
 
 @export()
+@description('Properties of the gallery solutions to be created in the log analytics workspace.')
 type gallerySolutionType = {
   @description('''Required. Name of the solution.
   For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
@@ -488,6 +489,7 @@ type gallerySolutionType = {
 }
 
 @export()
+@description('Properties of the storage insights configuration.')
 type storageInsightsConfigType = {
   @description('Required. Resource ID of the storage account to be linked.')
   storageAccountResourceId: string
@@ -500,6 +502,7 @@ type storageInsightsConfigType = {
 }
 
 @export()
+@description('Properties of the linked service.')
 type linkedServiceType = {
   @description('Required. Name of the linked service.')
   name: string
@@ -512,6 +515,7 @@ type linkedServiceType = {
 }
 
 @export()
+@description('Properties of the linked storage account.')
 type linkedStorageAccountType = {
   @description('Required. Name of the link.')
   name: string
@@ -522,6 +526,7 @@ type linkedStorageAccountType = {
 }
 
 @export()
+@description('Properties of the saved search.')
 type savedSearchType = {
   @description('Required. Name of the saved search.')
   name: string
@@ -554,6 +559,7 @@ type savedSearchType = {
 import { destinationType } from 'data-export/main.bicep'
 
 @export()
+@description('Properties of the data export.')
 type dataExportType = {
   @description('Required. Name of the data export.')
   name: string
@@ -569,6 +575,7 @@ type dataExportType = {
 }
 
 @export()
+@description('Properties of the data source.')
 type dataSourceType = {
   @description('Required. Name of the data source.')
   name: string
@@ -616,6 +623,7 @@ type dataSourceType = {
 import { schemaType, restoredLogsType, searchResultsType } from 'table/main.bicep'
 
 @export()
+@description('Properties of the custom table.')
 type tableType = {
   @description('Required. The name of the table.')
   name: string

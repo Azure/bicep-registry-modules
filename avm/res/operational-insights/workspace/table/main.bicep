@@ -138,6 +138,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@description('The parameters of the restore operation that initiated the table.')
 type restoredLogsType = {
   @description('Optional. The table to restore data from.')
   sourceTable: string?
@@ -148,6 +149,7 @@ type restoredLogsType = {
 }
 
 @export()
+@description('The table schema.')
 type schemaType = {
   @description('Required. The table name.')
   name: string
@@ -160,6 +162,7 @@ type schemaType = {
 }
 
 @export()
+@description('The parameters of the table column.')
 type columnType = {
   @description('Required. The column name.')
   name: string
@@ -174,6 +177,7 @@ type columnType = {
 }
 
 @export()
+@description('The parameters of the search job that initiated the table.')
 type searchResultsType = {
   @description('Required. The search job query.')
   query: string

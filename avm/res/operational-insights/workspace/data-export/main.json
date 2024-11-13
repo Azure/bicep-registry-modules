@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "14838667668201096886"
+      "templateHash": "13295382809892048069"
     },
     "name": "Log Analytics Workspace Data Exports",
     "description": "This module deploys a Log Analytics Workspace Data Export.",
@@ -23,7 +23,16 @@
           }
         },
         "metaData": {
-          "$ref": "#/definitions/destinationMetaDataType",
+          "type": "object",
+          "properties": {
+            "eventHubName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
+              }
+            }
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. The destination metadata."
@@ -31,22 +40,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "destinationMetaDataType": {
-      "type": "object",
-      "properties": {
-        "eventHubName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The data export destination properties."
       }
     }
   },

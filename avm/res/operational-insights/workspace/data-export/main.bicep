@@ -60,16 +60,13 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
-@description('A type for a data export destination.')
+@description('The data export destination properties.')
 type destinationType = {
   @description('Required. The destination resource ID.')
   resourceId: string
   @description('Optional. The destination metadata.')
-  metaData: destinationMetaDataType?
-}
-
-@export()
-type destinationMetaDataType = {
-  @description('Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account.')
-  eventHubName: string?
+  metaData: {
+    @description('Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account.')
+    eventHubName: string?
+  }?
 }

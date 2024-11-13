@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "5718222527805133829"
+      "templateHash": "14715697753606145945"
     },
     "name": "Log Analytics Workspace Tables",
     "description": "This module deploys a Log Analytics Workspace Table.",
@@ -39,7 +39,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The parameters of the restore operation that initiated the table."
       }
     },
     "schemaType": {
@@ -76,7 +77,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The table schema."
       }
     },
     "columnType": {
@@ -133,7 +135,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The parameters of the table column."
       }
     },
     "searchResultsType": {
@@ -175,7 +178,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The parameters of the search job that initiated the table."
       }
     },
     "roleAssignmentType": {

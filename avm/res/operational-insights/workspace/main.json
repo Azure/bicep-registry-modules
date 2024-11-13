@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "6079455607982002898"
+      "templateHash": "2704441076937127791"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -153,7 +153,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the gallery solutions to be created in the log analytics workspace."
       }
     },
     "storageInsightsConfigType": {
@@ -187,7 +188,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the storage insights configuration."
       }
     },
     "linkedServiceType": {
@@ -215,7 +217,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the linked service."
       }
     },
     "linkedStorageAccountType": {
@@ -239,7 +242,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the linked storage account."
       }
     },
     "savedSearchType": {
@@ -306,7 +310,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the saved search."
       }
     },
     "dataExportType": {
@@ -343,7 +348,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the data export."
       }
     },
     "dataSourceType": {
@@ -447,7 +453,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the data source."
       }
     },
     "tableType": {
@@ -513,27 +520,11 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the custom table."
       }
     },
-    "_1.destinationMetaDataType": {
-      "type": "object",
-      "properties": {
-        "eventHubName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "data-export/main.bicep"
-        }
-      }
-    },
-    "_2.columnType": {
+    "_1.columnType": {
       "type": "object",
       "properties": {
         "name": {
@@ -587,6 +578,7 @@
         }
       },
       "metadata": {
+        "description": "The parameters of the table column.",
         "__bicep_imported_from!": {
           "sourceTemplate": "table/main.bicep"
         }
@@ -602,7 +594,16 @@
           }
         },
         "metaData": {
-          "$ref": "#/definitions/_1.destinationMetaDataType",
+          "type": "object",
+          "properties": {
+            "eventHubName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
+              }
+            }
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. The destination metadata."
@@ -610,6 +611,7 @@
         }
       },
       "metadata": {
+        "description": "The data export destination properties.",
         "__bicep_imported_from!": {
           "sourceTemplate": "data-export/main.bicep"
         }
@@ -699,6 +701,7 @@
         }
       },
       "metadata": {
+        "description": "The parameters of the restore operation that initiated the table.",
         "__bicep_imported_from!": {
           "sourceTemplate": "table/main.bicep"
         }
@@ -791,7 +794,7 @@
         "columns": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_2.columnType"
+            "$ref": "#/definitions/_1.columnType"
           },
           "metadata": {
             "description": "Required. A list of table custom columns."
@@ -813,6 +816,7 @@
         }
       },
       "metadata": {
+        "description": "The table schema.",
         "__bicep_imported_from!": {
           "sourceTemplate": "table/main.bicep"
         }
@@ -857,6 +861,7 @@
         }
       },
       "metadata": {
+        "description": "The parameters of the search job that initiated the table.",
         "__bicep_imported_from!": {
           "sourceTemplate": "table/main.bicep"
         }
@@ -1879,7 +1884,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "14838667668201096886"
+              "templateHash": "13295382809892048069"
             },
             "name": "Log Analytics Workspace Data Exports",
             "description": "This module deploys a Log Analytics Workspace Data Export.",
@@ -1896,7 +1901,16 @@
                   }
                 },
                 "metaData": {
-                  "$ref": "#/definitions/destinationMetaDataType",
+                  "type": "object",
+                  "properties": {
+                    "eventHubName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
+                      }
+                    }
+                  },
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The destination metadata."
@@ -1904,22 +1918,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "destinationMetaDataType": {
-              "type": "object",
-              "properties": {
-                "eventHubName": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The data export destination properties."
               }
             }
           },
@@ -2306,7 +2306,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "5718222527805133829"
+              "templateHash": "14715697753606145945"
             },
             "name": "Log Analytics Workspace Tables",
             "description": "This module deploys a Log Analytics Workspace Table.",
@@ -2339,7 +2339,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The parameters of the restore operation that initiated the table."
               }
             },
             "schemaType": {
@@ -2376,7 +2377,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The table schema."
               }
             },
             "columnType": {
@@ -2433,7 +2435,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The parameters of the table column."
               }
             },
             "searchResultsType": {
@@ -2475,7 +2478,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The parameters of the search job that initiated the table."
               }
             },
             "roleAssignmentType": {
