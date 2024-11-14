@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "5647574015243372031"
+      "templateHash": "13236500116916645585"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -561,7 +561,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The administrator login name of a server. Can only be specified when the PostgreSQL server is being created."
+        "description": "Optional. The administrator login name for the server. Can only be specified when the PostgreSQL server is being created."
       }
     },
     "administratorLoginPassword": {
