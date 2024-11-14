@@ -1067,7 +1067,7 @@ Enable/disable disk encryption.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableDoubleEncryption`
 
