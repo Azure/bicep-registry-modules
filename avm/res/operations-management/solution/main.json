@@ -1,21 +1,58 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13605710277319315849"
+      "version": "0.30.23.60470",
+      "templateHash": "787568686333677059"
     },
     "name": "Operations Management Solutions",
     "description": "This module deploys an Operations Management Solution.",
     "owner": "Azure/module-maintainers"
   },
+  "definitions": {
+    "solutionPlanType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the solution to be created.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, it can be anything.\nThe solution type is case-sensitive.\nIf not provided, the value of the `name` parameter will be used."
+          }
+        },
+        "product": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The product name of the deployed solution.\nFor Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.\nFor a third party solution, it can be anything.\nThis is case sensitive."
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the solution. For Microsoft published gallery solution the target solution resource name will be composed as `{name}({logAnalyticsWorkspaceName})`."
+        "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.\nThe solution type is case-sensitive."
+      }
+    },
+    "plan": {
+      "$ref": "#/definitions/solutionPlanType",
+      "metadata": {
+        "description": "Required. Plan for solution object supported by the OperationsManagement resource provider."
       }
     },
     "logAnalyticsWorkspaceName": {
@@ -31,20 +68,6 @@
         "description": "Optional. Location for all resources."
       }
     },
-    "product": {
-      "type": "string",
-      "defaultValue": "OMSGallery",
-      "metadata": {
-        "description": "Optional. The product of the deployed solution. For Microsoft published gallery solution it should be `OMSGallery` and the target solution resource product will be composed as `OMSGallery/{name}`. For third party solution, it can be anything. This is case sensitive."
-      }
-    },
-    "publisher": {
-      "type": "string",
-      "defaultValue": "Microsoft",
-      "metadata": {
-        "description": "Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`."
-      }
-    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -53,12 +76,8 @@
       }
     }
   },
-  "variables": {
-    "solutionName": "[if(equals(parameters('publisher'), 'Microsoft'), format('{0}({1})', parameters('name'), parameters('logAnalyticsWorkspaceName')), parameters('name'))]",
-    "solutionProduct": "[if(equals(parameters('publisher'), 'Microsoft'), format('OMSGallery/{0}', parameters('name')), parameters('product'))]"
-  },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
@@ -78,36 +97,45 @@
         }
       }
     },
-    {
+    "logAnalyticsWorkspace": {
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2021-06-01",
+      "name": "[parameters('logAnalyticsWorkspaceName')]"
+    },
+    "solution": {
       "type": "Microsoft.OperationsManagement/solutions",
       "apiVersion": "2015-11-01-preview",
-      "name": "[variables('solutionName')]",
+      "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "properties": {
         "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
       },
       "plan": {
-        "name": "[variables('solutionName')]",
+        "name": "[coalesce(tryGet(parameters('plan'), 'name'), parameters('name'))]",
         "promotionCode": "",
-        "product": "[variables('solutionProduct')]",
-        "publisher": "[parameters('publisher')]"
-      }
+        "product": "[parameters('plan').product]",
+        "publisher": "[coalesce(tryGet(parameters('plan'), 'publisher'), 'Microsoft')]"
+      },
+      "dependsOn": [
+        "logAnalyticsWorkspace"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the deployed solution."
       },
-      "value": "[variables('solutionName')]"
+      "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the deployed solution."
       },
-      "value": "[resourceId('Microsoft.OperationsManagement/solutions', variables('solutionName'))]"
+      "value": "[resourceId('Microsoft.OperationsManagement/solutions', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -121,7 +149,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference(resourceId('Microsoft.OperationsManagement/solutions', variables('solutionName')), '2015-11-01-preview', 'full').location]"
+      "value": "[reference('solution', '2015-11-01-preview', 'full').location]"
     }
   }
 }
