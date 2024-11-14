@@ -54,6 +54,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
   }
 }
 ```
@@ -80,6 +85,13 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -100,6 +112,11 @@ param name = 'akcmin0001'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 ```
 
 </details>

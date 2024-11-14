@@ -24,6 +24,15 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
+  params: {
+    location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+  }
+}
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
@@ -44,6 +53,11 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}0001'
       location: resourceLocation
       sku: 'Standard_E2ads_v5'
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
     }
   }
 ]
