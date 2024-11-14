@@ -180,6 +180,7 @@ output volumeGroups volumeGroupOutputType[] = [
     resourceGroupName: elasticSan_volumeGroups[i].outputs.resourceGroupName
     systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
+    privateEndpoints: elasticSan_volumeGroups[i].outputs.privateEndpoints
   }
 ]
 
@@ -233,7 +234,8 @@ type volumeGroupOutputType = {
   @sys.description('Details on the deployed Elastic SAN Volumes.')
   volumes: volumeOutputType[]
 
-  // TODO privateEndpoints
+  @sys.description('The private endpoints of the Elastic SAN Volume Group.')
+  privateEndpoints: array
 }
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'

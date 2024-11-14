@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "6579097614124918195"
+      "templateHash": "7508927969730008980"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN.",
@@ -113,6 +113,12 @@
           },
           "metadata": {
             "description": "Details on the deployed Elastic SAN Volumes."
+          }
+        },
+        "privateEndpoints": {
+          "type": "array",
+          "metadata": {
+            "description": "The private endpoints of the Elastic SAN Volume Group."
           }
         }
       },
@@ -3000,7 +3006,8 @@
           "location": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.location.value]",
           "resourceGroupName": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.resourceGroupName.value]",
           "systemAssignedMIPrincipalId": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.systemAssignedMIPrincipalId.value]",
-          "volumes": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.volumes.value]"
+          "volumes": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.volumes.value]",
+          "privateEndpoints": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.privateEndpoints.value]"
         }
       }
     }
