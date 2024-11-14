@@ -135,21 +135,21 @@ module volumeGroup_volumes 'volume/main.bicep' = [
   }
 ]
 
-module elasticSan_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
+module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    ////////////////////name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
+    //name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
     name: '${uniqueString(deployment().name)}-ElasticSan-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? 'elasticSan'}-${index}'
+      name: privateEndpoint.?name ?? 'pep-${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? name}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? 'elasticSan'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? name}-${index}'
               properties: {
                 privateLinkServiceId: elasticSan.id
                 groupIds: [
-                  privateEndpoint.?service ?? volumeGroup.name // ????????????????????????
+                  privateEndpoint.?service ?? name
                 ]
               }
             }
@@ -158,11 +158,11 @@ module elasticSan_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? 'elasticSan'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? name}-${index}'
               properties: {
                 privateLinkServiceId: elasticSan.id
                 groupIds: [
-                  privateEndpoint.?service ?? volumeGroup.name // ????????????????????????
+                  privateEndpoint.?service ?? name
                 ]
                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
               }
@@ -170,16 +170,16 @@ module elasticSan_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      ////////////////////enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      ///enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
-      ////////////////////lock: privateEndpoint.?lock ?? lock
+      //lock: privateEndpoint.?lock ?? lock
       privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
-      ////////////////////tags: privateEndpoint.?tags ?? tags
+      //tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
       ipConfigurations: privateEndpoint.?ipConfigurations
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -221,11 +221,11 @@ output volumes volumeOutputType[] = [
 @sys.description('The private endpoints of the Elastic SAN Volume Group.')
 output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: elasticSan_privateEndpoints[i].outputs.name
-    resourceId: elasticSan_privateEndpoints[i].outputs.resourceId
-    groupId: elasticSan_privateEndpoints[i].outputs.groupId
-    customDnsConfig: elasticSan_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceResourceIds: elasticSan_privateEndpoints[i].outputs.networkInterfaceResourceIds
+    name: volumeGroup_privateEndpoints[i].outputs.name
+    resourceId: volumeGroup_privateEndpoints[i].outputs.resourceId
+    groupId: volumeGroup_privateEndpoints[i].outputs.groupId
+    customDnsConfig: volumeGroup_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceResourceIds: volumeGroup_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
