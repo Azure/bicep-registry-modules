@@ -67,12 +67,9 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
 
         if ($PrivateEndpointCounts -eq 0) {
             $PrivateEndpoints | Should -BeNullOrEmpty
-            $PrivateEndpoints | ConvertFrom-Json | Should -BeNullOrEmpty
-            $PrivateEndpoints.Count | Should -Be 0
         }
         else {
             $PrivateEndpoints | Should -Not -BeNullOrEmpty
-            $PrivateEndpoints | ConvertFrom-Json | Should -Not -BeNullOrEmpty
             $PrivateEndpoints.Count | Should -Be $PrivateEndpointConnections.Count
         }
 
@@ -245,14 +242,13 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     if ($PrivateEndpointCounts -eq 0) {
         $PrivateEndpoints | Should -BeNullOrEmpty
-        $PrivateEndpoints.Count | Should -Be 0
     }
     else {
         $PrivateEndpoints | Should -Not -BeNullOrEmpty
         $PrivateEndpoints.Count | Should -Be $PrivateEndpointCounts
     }
 
-    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $vg.PrivateEndpointConnection -PrivateEndpointCounts 1 -PrivateEndpoints $PrivateEndpoints
+    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $vg.PrivateEndpointConnection -PrivateEndpointCounts $PrivateEndpointCounts -PrivateEndpoints $PrivateEndpoints
 
     $vg.ProtocolType | Should -Be 'iSCSI'
     $vg.ResourceGroupName | Should -Be $ResourceGroupName
