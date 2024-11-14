@@ -23,7 +23,7 @@ param tier kustoTierType = 'Standard'
 param managedIdentities managedIdentitiesType
 
 @description('Optional. The Kusto Cluster\'s accepted audiences.')
-param acceptedAudiences acceptedAudienceType[] = []
+param acceptedAudiences acceptedAudienceType
 
 @description('Optional. List of allowed fully-qulified domain names (FQDNs) for egress from the Kusto Cluster.')
 param allowedFqdnList string[] = []
@@ -57,7 +57,7 @@ param engineType string = 'V3'
 param customerManagedKey customerManagedKeyType
 
 @description('Optional. List of the language extensions of the Kusto Cluster.')
-param languageExtensions languageExtensionType[] = []
+param languageExtensions languageExtensionType
 
 @description('Optional. Enable/disable auto-scale.')
 param enableAutoScale bool = false
@@ -87,7 +87,7 @@ param enablePublicNetworkAccess bool = true
 param enableRestrictOutboundNetworkAccess bool = false
 
 @description('Optional. The external tenants trusted by the Kusto Cluster.')
-param trustedExternalTenants trustedExternalTenantType[] = []
+param trustedExternalTenants trustedExternalTenantType
 
 @secure()
 @description('Optional. The virtual cluster graduation properties of the Kusto Cluster.')
@@ -393,7 +393,7 @@ output privateEndpoints array = [
 type acceptedAudienceType = {
   @description('Required. GUID or valid URL representing an accepted audience.')
   value: string
-}?
+}[]?
 
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
@@ -440,17 +440,17 @@ type diagnosticSettingType = {
 }[]?
 
 type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
   @description('Required. The name of the customer managed key to use for encryption.')
   keyName: string
+
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultUri: string
 
   @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
   keyVersion: string?
 
   @description('Required. User assigned identity to use when fetching the customer managed key.')
-  userAssignedIdentityResourceId: string
+  userIdentity: string
 }?
 
 type kustoTierType = 'Basic' | 'Standard'
@@ -473,7 +473,7 @@ type languageExtensionType = {
 
   @description('Required. The name of the language extension.')
   languageExtensionName: languageExtensionNameType
-}?
+}[]?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')
@@ -607,17 +607,17 @@ type roleAssignmentType = {
 type trustedExternalTenantType = {
   @description('Required. GUID representing an external tenant.')
   value: string
-}?
+}[]?
 
 type virtualNetworkConfigurationType = {
   @description('Required. The public IP address resource id of the data management service..')
   dataManagementPublicIpId: string
 
-  @description('Required. Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet.')
-  enableVirtualNetworkInjection: bool
-
   @description('Required. The public IP address resource id of the engine service.')
   enginePublicIpId: string
+
+  @description('Required. When enabled, the cluster is deployed into the configured subnet, when disabled it will be removed from the subnet.')
+  state: ('Enabled' | 'Disabled')
 
   @description('Required. The resource ID of the subnet to which to deploy the Kusto Cluster.')
   subnetId: string

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "8362793153324787983"
+      "version": "0.31.34.60546",
+      "templateHash": "843462992981904678"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -14,12 +14,15 @@
   },
   "definitions": {
     "acceptedAudienceType": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. GUID or valid URL representing an accepted audience."
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. GUID or valid URL representing an accepted audience."
+            }
           }
         }
       },
@@ -148,16 +151,16 @@
     "customerManagedKeyType": {
       "type": "object",
       "properties": {
-        "keyVaultResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
-          }
-        },
         "keyName": {
           "type": "string",
           "metadata": {
             "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVaultUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
           }
         },
         "keyVersion": {
@@ -167,7 +170,7 @@
             "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
           }
         },
-        "userAssignedIdentityResourceId": {
+        "userIdentity": {
           "type": "string",
           "metadata": {
             "description": "Required. User assigned identity to use when fetching the customer managed key."
@@ -201,24 +204,27 @@
       ]
     },
     "languageExtensionType": {
-      "type": "object",
-      "properties": {
-        "languageExtensionCustomImageName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the language extension custom image."
-          }
-        },
-        "languageExtensionImageName": {
-          "$ref": "#/definitions/languageExtensionCustomImageNameType",
-          "metadata": {
-            "description": "Required. The name of the language extension image."
-          }
-        },
-        "languageExtensionName": {
-          "$ref": "#/definitions/languageExtensionNameType",
-          "metadata": {
-            "description": "Required. The name of the language extension."
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "languageExtensionCustomImageName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the language extension custom image."
+            }
+          },
+          "languageExtensionImageName": {
+            "$ref": "#/definitions/languageExtensionCustomImageNameType",
+            "metadata": {
+              "description": "Required. The name of the language extension image."
+            }
+          },
+          "languageExtensionName": {
+            "$ref": "#/definitions/languageExtensionNameType",
+            "metadata": {
+              "description": "Required. The name of the language extension."
+            }
           }
         }
       },
@@ -565,12 +571,15 @@
       "nullable": true
     },
     "trustedExternalTenantType": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. GUID representing an external tenant."
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. GUID representing an external tenant."
+            }
           }
         }
       },
@@ -585,16 +594,20 @@
             "description": "Required. The public IP address resource id of the data management service.."
           }
         },
-        "enableVirtualNetworkInjection": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet."
-          }
-        },
         "enginePublicIpId": {
           "type": "string",
           "metadata": {
             "description": "Required. The public IP address resource id of the engine service."
+          }
+        },
+        "state": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. When enabled, the cluster is deployed into the configured subnet, when disabled it will be removed from the subnet."
           }
         },
         "subnetId": {
@@ -650,11 +663,7 @@
       }
     },
     "acceptedAudiences": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/acceptedAudienceType"
-      },
-      "defaultValue": [],
+      "$ref": "#/definitions/acceptedAudienceType",
       "metadata": {
         "description": "Optional. The Kusto Cluster's accepted audiences."
       }
@@ -732,11 +741,7 @@
       }
     },
     "languageExtensions": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/languageExtensionType"
-      },
-      "defaultValue": [],
+      "$ref": "#/definitions/languageExtensionType",
       "metadata": {
         "description": "Optional. List of the language extensions of the Kusto Cluster."
       }
@@ -793,11 +798,7 @@
       }
     },
     "trustedExternalTenants": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/trustedExternalTenantType"
-      },
-      "defaultValue": [],
+      "$ref": "#/definitions/trustedExternalTenantType",
       "metadata": {
         "description": "Optional. The external tenants trusted by the Kusto Cluster."
       }
@@ -892,10 +893,7 @@
       "apiVersion": "2023-07-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1080,8 +1078,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "157221949480329840"
+              "version": "0.31.34.60546",
+              "templateHash": "2020706178910686237"
             },
             "name": "Kusto Cluster Principal Assignments",
             "description": "This module deploys a Kusto Cluster Principal Assignment.",

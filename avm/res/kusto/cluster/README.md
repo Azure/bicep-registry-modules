@@ -796,7 +796,6 @@ The Kusto Cluster's accepted audiences.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -863,8 +862,8 @@ The customer managed key definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. |
+| [`keyVaultUri`](#parameter-customermanagedkeykeyvaulturi) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+| [`userIdentity`](#parameter-customermanagedkeyuseridentity) | string | User assigned identity to use when fetching the customer managed key. |
 
 **Optional parameters**
 
@@ -879,14 +878,14 @@ The name of the customer managed key to use for encryption.
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey.keyVaultResourceId`
+### Parameter: `customerManagedKey.keyVaultUri`
 
 The resource ID of a key vault to reference a customer managed key for encryption from.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+### Parameter: `customerManagedKey.userIdentity`
 
 User assigned identity to use when fetching the customer managed key.
 
@@ -1147,7 +1146,6 @@ List of the language extensions of the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1831,7 +1829,6 @@ The external tenants trusted by the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1865,8 +1862,8 @@ The virtual network configuration of the Kusto Cluster.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`dataManagementPublicIpId`](#parameter-virtualnetworkconfigurationdatamanagementpublicipid) | string | The public IP address resource id of the data management service.. |
-| [`enableVirtualNetworkInjection`](#parameter-virtualnetworkconfigurationenablevirtualnetworkinjection) | bool | Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet. |
 | [`enginePublicIpId`](#parameter-virtualnetworkconfigurationenginepublicipid) | string | The public IP address resource id of the engine service. |
+| [`state`](#parameter-virtualnetworkconfigurationstate) | string | When enabled, the cluster is deployed into the configured subnet, when disabled it will be removed from the subnet. |
 | [`subnetId`](#parameter-virtualnetworkconfigurationsubnetid) | string | The resource ID of the subnet to which to deploy the Kusto Cluster. |
 
 ### Parameter: `virtualNetworkConfiguration.dataManagementPublicIpId`
@@ -1876,19 +1873,26 @@ The public IP address resource id of the data management service..
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualNetworkConfiguration.enableVirtualNetworkInjection`
-
-Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet.
-
-- Required: Yes
-- Type: bool
-
 ### Parameter: `virtualNetworkConfiguration.enginePublicIpId`
 
 The public IP address resource id of the engine service.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `virtualNetworkConfiguration.state`
+
+When enabled, the cluster is deployed into the configured subnet, when disabled it will be removed from the subnet.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `virtualNetworkConfiguration.subnetId`
 
