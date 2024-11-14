@@ -122,3 +122,66 @@ output resourceId string = route.id
 
 @description('The name of the resource group the route was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type routeType = {
+  @description('Required. The name of the route.')
+  name: string
+
+  @description('Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object.')
+  cacheConfiguration: afdRoutecacheConfigurationType?
+
+  @description('Optional. The names of the custom domains.')
+  customDomainNames: string[]?
+
+  @description('Optional. Whether to enable use of this rule.')
+  enabledState: 'Enabled' | 'Disabled' | null
+
+  @description('Optional. The protocol this rule will use when forwarding traffic to backends.')
+  forwardingProtocol: 'HttpOnly' | 'HttpsOnly' | 'MatchRequest' | null
+
+  @description('Optional. Whether to automatically redirect HTTP traffic to HTTPS traffic.')
+  httpsRedirect: 'Enabled' | 'Disabled' | null
+
+  @description('Optional. Whether this route will be linked to the default endpoint domain.')
+  linkToDefaultDomain: 'Enabled' | 'Disabled' | null
+
+  @description('Required. The name of the origin group.')
+  originGroupName: string
+
+  @description('Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath.')
+  originPath: string?
+
+  @description('Optional. The route patterns of the rule.')
+  patternsToMatch: array?
+
+  @description('Optional. The rule sets of the rule.')
+  ruleSets: object[]?
+
+  @description('Optional. The supported protocols of the rule.')
+  supportedProtocols: array?
+}
+
+type afdRoutecacheConfigurationType = {
+  @description('Required. Compression settings.')
+  compressionSettings: {
+    @description('Required. List of content types on which compression applies. The value should be a valid MIME type.')
+    contentTypesToCompress: string[]
+
+    @description('Optional. Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won\'t be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.')
+    iscontentTypeToCompressAll: bool?
+  }
+  @description('Required. Query parameters to include or exclude (comma separated).')
+  queryParameters: string
+
+  @description('Required. Defines how Frontdoor caches requests that include query strings.')
+  queryStringCachingBehavior:
+    | 'IgnoreQueryString'
+    | 'IgnoreSpecifiedQueryStrings'
+    | 'IncludeSpecifiedQueryStrings'
+    | 'UseQueryString'
+}
