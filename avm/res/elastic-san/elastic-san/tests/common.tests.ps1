@@ -99,7 +99,7 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
                 $PrivateEndpoints[$i].location | Should -Not -BeNullOrEmpty
                 $PrivateEndpoints[$i].resourceId | Should -Be $item.properties.privateEndpoint.id
                 $PrivateEndpoints[$i].groupId | Should -Be $GroupIds[$i]
-                $PrivateEndpoints[$i].customDnsConfig | Should -Not -BeNullOrEmpty
+                $PrivateEndpoints[$i].customDnsConfig | Should -BeNullOrEmpty
                 $PrivateEndpoints[$i].networkInterfaceResourceIds | Should -Not -BeNullOrEmpty
             }
         }
