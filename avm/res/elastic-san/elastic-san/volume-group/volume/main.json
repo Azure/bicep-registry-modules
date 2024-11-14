@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "4231143642371232283"
+      "version": "0.31.92.45157",
+      "templateHash": "4851931093205806817"
     },
     "name": "Elastic SAN Volumes",
     "description": "This module deploys an Elastic SAN Volume.",
@@ -119,7 +119,10 @@
       "existing": true,
       "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
       "apiVersion": "2023-01-01",
-      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]"
+      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]",
+      "dependsOn": [
+        "elasticSan"
+      ]
     },
     "elasticSan": {
       "existing": true,
@@ -133,7 +136,10 @@
       "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
       "properties": {
         "sizeGiB": "[parameters('sizeGiB')]"
-      }
+      },
+      "dependsOn": [
+        "elasticSan::volumeGroup"
+      ]
     },
     "volume_snapshots": {
       "copy": {
@@ -171,8 +177,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "9664450837675896747"
+              "version": "0.31.92.45157",
+              "templateHash": "8047134197145152020"
             },
             "name": "Elastic SAN Volume Snapshots",
             "description": "This module deploys an Elastic SAN Volume Snapshot.",
@@ -265,6 +271,7 @@
         }
       },
       "dependsOn": [
+        "elasticSan",
         "volume"
       ]
     }
