@@ -51,7 +51,7 @@ Describe 'Validate Deployment' {
                 -AvailabilityZone 2 `
                 -BaseSizeTiB 1 `
                 -ExtendedCapacitySizeTiB 0 `
-                -PublicNetworkAccess 'Enabled' `
+                -PublicNetworkAccess 'Disabled' `
                 -SkuName 'Premium_LRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
                 -GroupIds $groupIds

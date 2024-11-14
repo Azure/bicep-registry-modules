@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       sku: 'Premium_LRS'
       availabilityZone: 2
-      publicNetworkAccess: 'Enabled' // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      publicNetworkAccess: 'Disabled'
       volumeGroups: [
         {
           // Test - Private endpoints
@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = [
               //name: 'private-endpoint-01'
               //location: enforcedLocation
               //privateLinkServiceConnectionName: 'private-link-connection-01'
-              service: 'vol-grp-01'
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               privateDnsZoneGroup: {
                 privateDnsZoneGroupConfigs: [

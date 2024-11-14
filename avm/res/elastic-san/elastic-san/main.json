@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "17839070031207774983"
+      "templateHash": "2346674061212773359"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN.",
@@ -878,7 +878,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "12205416704885290683"
+              "templateHash": "3198950838054615950"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group.",
@@ -1579,9 +1579,7 @@
               "properties": {
                 "encryption": "[if(not(empty(parameters('customerManagedKey'))), 'EncryptionAtRestWithCustomerManagedKey', 'EncryptionAtRestWithPlatformKey')]",
                 "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyVaultProperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())), null())]",
-                "networkAcls": {
-                  "virtualNetworkRules": "[variables('networkRules')]"
-                },
+                "networkAcls": "[if(not(empty(variables('networkRules'))), createObject('virtualNetworkRules', variables('networkRules')), null())]",
                 "protocolType": "Iscsi"
               },
               "dependsOn": [
@@ -2722,7 +2720,10 @@
                     }
                   }
                 }
-              }
+              },
+              "dependsOn": [
+                "volumeGroup"
+              ]
             }
           },
           "outputs": {

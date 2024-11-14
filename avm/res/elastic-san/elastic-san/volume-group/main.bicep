@@ -115,9 +115,7 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
             : null
         }
       : null
-    networkAcls: {
-      virtualNetworkRules: networkRules
-    }
+    networkAcls: !empty(networkRules) ? { virtualNetworkRules: networkRules } : null
     protocolType: 'Iscsi'
   }
 }
@@ -141,15 +139,15 @@ module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:
     name: '${uniqueString(deployment().name)}-ElasticSan-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? name}-${index}'
+      name: privateEndpoint.?name ?? 'pep-${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? volumeGroup.name}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? name}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? volumeGroup.name}-${index}'
               properties: {
                 privateLinkServiceId: elasticSan.id
                 groupIds: [
-                  privateEndpoint.?service ?? name
+                  privateEndpoint.?service ?? volumeGroup.name
                 ]
               }
             }
@@ -158,11 +156,11 @@ module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? name}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? volumeGroup.name}-${index}'
               properties: {
                 privateLinkServiceId: elasticSan.id
                 groupIds: [
-                  privateEndpoint.?service ?? name
+                  privateEndpoint.?service ?? volumeGroup.name
                 ]
                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
               }
