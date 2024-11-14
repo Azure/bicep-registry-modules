@@ -983,7 +983,6 @@ An object of resource providers and resource providers features to register. If 
       'Microsoft.Sql': []
       'Microsoft.Storage': []
       'Microsoft.StreamAnalytics': []
-      'Microsoft.TimeSeriesInsights': []
       'Microsoft.Web': []
   }
   ```
