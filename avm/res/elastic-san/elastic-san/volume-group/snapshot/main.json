@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "12294155080231981173"
+      "templateHash": "9664450837675896747"
     },
     "name": "Elastic SAN Volume Snapshots",
     "description": "This module deploys an Elastic SAN Volume Snapshot.",
@@ -43,6 +43,14 @@
       "metadata": {
         "description": "Required. The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long."
       }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "minLength": 1,
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
     }
   },
   "resources": [
@@ -71,6 +79,13 @@
         "description": "The name of the deployed Elastic SAN Volume Snapshot."
       },
       "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the deployed Elastic SAN Volume Snapshot."
+      },
+      "value": "[parameters('location')]"
     },
     "resourceGroupName": {
       "type": "string",

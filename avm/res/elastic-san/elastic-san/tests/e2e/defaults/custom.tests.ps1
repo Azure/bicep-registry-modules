@@ -26,7 +26,7 @@ Describe 'Validate Deployment' {
 
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                 -ResourceId $resourceId `
-                -name $name `
+                -Name $name `
                 -Location $location `
                 -ResourceGroupName $resourceGroupName
             $volumeGroups | Should -BeNullOrEmpty

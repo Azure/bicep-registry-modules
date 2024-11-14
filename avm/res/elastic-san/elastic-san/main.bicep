@@ -7,6 +7,7 @@ metadata owner = 'Azure/module-maintainers'
 @sys.description('Required. Name of the Elastic SAN. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must be between 3 and 24 characters long.')
 param name string
 
+@sys.minLength(1)
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -164,7 +165,7 @@ output resourceId string = elasticSan.id
 @sys.description('The name of the deployed Elastic SAN.')
 output name string = elasticSan.name
 
-@sys.description('The location the resource was deployed into.')
+@sys.description('The location of the deployed Elastic SAN.')
 output location string = elasticSan.location
 
 @sys.description('The resource group of the deployed Elastic SAN.')
@@ -175,6 +176,7 @@ output volumeGroups volumeGroupOutputType[] = [
   for (volumeGroup, i) in (volumeGroups ?? []): {
     resourceId: elasticSan_volumeGroups[i].outputs.resourceId
     name: elasticSan_volumeGroups[i].outputs.name
+    location: elasticSan_volumeGroups[i].outputs.location
     resourceGroupName: elasticSan_volumeGroups[i].outputs.resourceGroupName
     systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
@@ -218,6 +220,9 @@ type volumeGroupOutputType = {
 
   @sys.description('The name of the deployed Elastic SAN Volume Group.')
   name: string
+
+  @sys.description('The location of the deployed Elastic SAN Volume Group.')
+  location: string
 
   @sys.description('The resource group of the deployed Elastic SAN Volume Group.')
   resourceGroupName: string

@@ -1404,7 +1404,7 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
+| `location` | string | The location of the deployed Elastic SAN. |
 | `name` | string | The name of the deployed Elastic SAN. |
 | `resourceGroupName` | string | The resource group of the deployed Elastic SAN. |
 | `resourceId` | string | The resource ID of the deployed Elastic SAN. |

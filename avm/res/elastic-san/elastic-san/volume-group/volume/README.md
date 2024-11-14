@@ -35,6 +35,7 @@ This module deploys an Elastic SAN Volume.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`location`](#parameter-location) | string | Location for all resources. |
 | [`snapshots`](#parameter-snapshots) | array | List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume. |
 
 ### Parameter: `name`
@@ -65,6 +66,14 @@ The name of the parent Elastic SAN Volume Group. Required if the template is use
 - Required: Yes
 - Type: string
 
+### Parameter: `location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `snapshots`
 
 List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
@@ -89,6 +98,7 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the deployed Elastic SAN Volume. |
 | `name` | string | The name of the deployed Elastic SAN Volume. |
 | `resourceGroupName` | string | The resource group of the deployed Elastic SAN Volume. |
 | `resourceId` | string | The resource ID of the deployed Elastic SAN Volume. |

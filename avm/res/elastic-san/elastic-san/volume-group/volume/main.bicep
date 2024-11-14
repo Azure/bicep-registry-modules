@@ -17,6 +17,10 @@ param volumeGroupName string
 @sys.description('Required. The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.')
 param name string
 
+@sys.minLength(1)
+@sys.description('Optional. Location for all resources.')
+param location string = resourceGroup().location
+
 @sys.minValue(1) // 1 GiB
 @sys.maxValue(65536) // 64 TiB
 @sys.description('Required. Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges from 1 Gibibyte (GiB) to 64 Tebibyte (TiB), equating to 65536 Gibibytes (GiB).')
@@ -55,12 +59,13 @@ resource volume 'Microsoft.ElasticSan/elasticSans/volumegroups/volumes@2023-01-0
 
 module volume_snapshots '../snapshot/main.bicep' = [
   for (snapshot, index) in (snapshots ?? []): {
-    name: '${uniqueString(deployment().name)}-Volume-Snapshot-${index}'
+    name: '${uniqueString(deployment().name, location)}-Volume-Snapshot-${index}'
     params: {
       elasticSanName: elasticSan.name
       volumeGroupName: elasticSan::volumeGroup.name
       volumeName: volume.name
       name: snapshot.name
+      location: location
     }
   }
 ]
@@ -74,6 +79,9 @@ output resourceId string = volume.id
 
 @sys.description('The name of the deployed Elastic SAN Volume.')
 output name string = volume.name
+
+@sys.description('The location of the deployed Elastic SAN Volume.')
+output location string = location
 
 @sys.description('The resource group of the deployed Elastic SAN Volume.')
 output resourceGroupName string = resourceGroup().name
@@ -95,6 +103,7 @@ output snapshots volumeSnapshotOutputType[] = [
   for (snapshot, i) in (snapshots ?? []): {
     resourceId: volume_snapshots[i].outputs.resourceId
     name: volume_snapshots[i].outputs.name
+    location: volume_snapshots[i].outputs.location
     resourceGroupName: volume_snapshots[i].outputs.resourceGroupName
   }
 ]
@@ -118,6 +127,9 @@ type volumeSnapshotOutputType = {
 
   @sys.description('The name of the deployed Elastic SAN Volume Snapshot.')
   name: string
+
+  @sys.description('The location of the deployed Elastic SAN Volume Snapshot.')
+  location: string
 
   @sys.description('The resource group of the deployed Elastic SAN Volume Snapshot.')
   resourceGroupName: string

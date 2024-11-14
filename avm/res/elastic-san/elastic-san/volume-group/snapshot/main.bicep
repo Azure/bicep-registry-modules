@@ -70,7 +70,7 @@ output resourceId string = volumeSnapshot.id
 @sys.description('The name of the deployed Elastic SAN Volume Snapshot.')
 output name string = volumeSnapshot.name
 
-@sys.description('The location the resource was deployed into.')
+@sys.description('The location of the deployed Elastic SAN Volume Snapshot.')
 output location string = location
 
 @sys.description('The resource group of the deployed Elastic SAN Volume Snapshot.')

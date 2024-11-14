@@ -677,6 +677,7 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the deployed Elastic SAN Volume Group. |
 | `name` | string | The name of the deployed Elastic SAN Volume Group. |
 | `privateEndpoints` | array | The private endpoints of the Elastic SAN Volume Group. |
 | `resourceGroupName` | string | The resource group of the deployed Elastic SAN Volume Group. |

@@ -12,6 +12,7 @@ param elasticSanName string
 @sys.description('Required. The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long.')
 param name string
 
+@sys.minLength(1)
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -135,11 +136,12 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
 
 module volumeGroup_volumes 'volume/main.bicep' = [
   for (volume, index) in (volumes ?? []): {
-    name: '${uniqueString(deployment().name)}-VolumeGroup-Volume-${index}'
+    name: '${uniqueString(deployment().name, location)}-VolumeGroup-Volume-${index}'
     params: {
       elasticSanName: elasticSan.name
       volumeGroupName: volumeGroup.name
       name: volume.name
+      location: location
       sizeGiB: volume.sizeGiB
       snapshots: volume.?snapshots
     }
@@ -208,6 +210,9 @@ output resourceId string = volumeGroup.id
 @sys.description('The name of the deployed Elastic SAN Volume Group.')
 output name string = volumeGroup.name
 
+@sys.description('The location of the deployed Elastic SAN Volume Group.')
+output location string = location
+
 @sys.description('The resource group of the deployed Elastic SAN Volume Group.')
 output resourceGroupName string = resourceGroup().name
 
@@ -219,6 +224,7 @@ output volumes volumeOutputType[] = [
   for (volume, i) in (volumes ?? []): {
     resourceId: volumeGroup_volumes[i].outputs.resourceId
     name: volumeGroup_volumes[i].outputs.name
+    location: volumeGroup_volumes[i].outputs.location
     resourceGroupName: volumeGroup_volumes[i].outputs.resourceGroupName
     targetIqn: volumeGroup_volumes[i].outputs.targetIqn
     targetPortalHostname: volumeGroup_volumes[i].outputs.targetPortalHostname
@@ -232,6 +238,7 @@ output volumes volumeOutputType[] = [
 output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: volumeGroup_privateEndpoints[i].outputs.name
+    location: volumeGroup_privateEndpoints[i].outputs.location
     resourceId: volumeGroup_privateEndpoints[i].outputs.resourceId
     groupId: volumeGroup_privateEndpoints[i].outputs.groupId
     customDnsConfig: volumeGroup_privateEndpoints[i].outputs.customDnsConfig
@@ -275,6 +282,9 @@ type volumeOutputType = {
 
   @sys.description('The name of the deployed Elastic SAN Volume.')
   name: string
+
+  @sys.description('The location of the deployed Elastic SAN Volume.')
+  location: string
 
   @sys.description('The resource group of the deployed Elastic SAN Volume.')
   resourceGroupName: string

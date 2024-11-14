@@ -30,6 +30,12 @@ This module deploys an Elastic SAN Volume Snapshot.
 | [`volumeGroupName`](#parameter-volumegroupname) | string | The name of the parent Elastic SAN Volume Group. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long. |
 | [`volumeName`](#parameter-volumename) | string | The name of the parent Elastic SAN Volume. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-location) | string | Location for all resources. |
+
 ### Parameter: `name`
 
 The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.
@@ -58,10 +64,19 @@ The name of the parent Elastic SAN Volume. Required if the template is used in a
 - Required: Yes
 - Type: string
 
+### Parameter: `location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the deployed Elastic SAN Volume Snapshot. |
 | `name` | string | The name of the deployed Elastic SAN Volume Snapshot. |
 | `resourceGroupName` | string | The resource group of the deployed Elastic SAN Volume Snapshot. |
 | `resourceId` | string | The resource ID of the deployed Elastic SAN Volume Snapshot. |

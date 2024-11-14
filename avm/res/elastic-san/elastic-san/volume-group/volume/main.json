@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "11704403810228663372"
+      "templateHash": "4231143642371232283"
     },
     "name": "Elastic SAN Volumes",
     "description": "This module deploys an Elastic SAN Volume.",
@@ -44,6 +44,12 @@
             "description": "The name of the deployed Elastic SAN Volume Snapshot."
           }
         },
+        "location": {
+          "type": "string",
+          "metadata": {
+            "description": "The location of the deployed Elastic SAN Volume Snapshot."
+          }
+        },
         "resourceGroupName": {
           "type": "string",
           "metadata": {
@@ -79,6 +85,14 @@
       "maxLength": 63,
       "metadata": {
         "description": "Required. The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "minLength": 1,
+      "metadata": {
+        "description": "Optional. Location for all resources."
       }
     },
     "sizeGiB": {
@@ -128,7 +142,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Volume-Snapshot-{1}', uniqueString(deployment().name), copyIndex())]",
+      "name": "[format('{0}-Volume-Snapshot-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -146,6 +160,9 @@
           },
           "name": {
             "value": "[coalesce(parameters('snapshots'), createArray())[copyIndex()].name]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -155,7 +172,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "12294155080231981173"
+              "templateHash": "9664450837675896747"
             },
             "name": "Elastic SAN Volume Snapshots",
             "description": "This module deploys an Elastic SAN Volume Snapshot.",
@@ -193,6 +210,14 @@
               "metadata": {
                 "description": "Required. The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long."
               }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "minLength": 1,
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
             }
           },
           "resources": [
@@ -221,6 +246,13 @@
                 "description": "The name of the deployed Elastic SAN Volume Snapshot."
               },
               "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the deployed Elastic SAN Volume Snapshot."
+              },
+              "value": "[parameters('location')]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -251,6 +283,13 @@
         "description": "The name of the deployed Elastic SAN Volume."
       },
       "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the deployed Elastic SAN Volume."
+      },
+      "value": "[parameters('location')]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -300,6 +339,7 @@
         "input": {
           "resourceId": "[reference(format('volume_snapshots[{0}]', copyIndex())).outputs.resourceId.value]",
           "name": "[reference(format('volume_snapshots[{0}]', copyIndex())).outputs.name.value]",
+          "location": "[reference(format('volume_snapshots[{0}]', copyIndex())).outputs.location.value]",
           "resourceGroupName": "[reference(format('volume_snapshots[{0}]', copyIndex())).outputs.resourceGroupName.value]"
         }
       }
