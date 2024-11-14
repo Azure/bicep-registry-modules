@@ -67,24 +67,24 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpoints) {
         $PrivateEndpoints.Count | Should -Be $GroupIds.Count
         foreach ($item in $PrivateEndpoints) {
 
-                $i = $PrivateEndpoints.IndexOf($item)
+            $i = $PrivateEndpoints.IndexOf($item)
 
-                $item = $($item | ConvertFrom-Json)
+            $item = $($item | ConvertFrom-Json)
 
-                $item.id | Should -Not -BeNullOrEmpty
-                $item.name | Should -Not -BeNullOrEmpty
+            $item.id | Should -Not -BeNullOrEmpty
+            $item.name | Should -Not -BeNullOrEmpty
 
-                $item.properties.privateEndpoint.id | Should -Not -BeNullOrEmpty
+            $item.properties.privateEndpoint.id | Should -Not -BeNullOrEmpty
 
-                $item.properties.privateLinkServiceConnectionState.status | Should -Be 'Approved'
-                $item.properties.privateLinkServiceConnectionState.description | Should -Be 'Auto-Approved'
-                $item.properties.privateLinkServiceConnectionState.actionsRequired | Should -Be 'None'
+            $item.properties.privateLinkServiceConnectionState.status | Should -Be 'Approved'
+            $item.properties.privateLinkServiceConnectionState.description | Should -Be 'Auto-Approved'
+            $item.properties.privateLinkServiceConnectionState.actionsRequired | Should -Be 'None'
 
-                $item.properties.provisioningState | Should -Be 'Succeeded'
-                $item.properties.groupIds | Should -Not -BeNullOrEmpty
+            $item.properties.provisioningState | Should -Be 'Succeeded'
+            $item.properties.groupIds | Should -Not -BeNullOrEmpty
 
-                $item.properties.groupIds.Count | Should -Be 1
-                $item.properties.groupIds[0] | Should -Be $GroupIds[$i]
+            $item.properties.groupIds.Count | Should -Be 1
+            $item.properties.groupIds[0] | Should -Be $GroupIds[$i]
         }
 
     } else {
@@ -94,7 +94,7 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpoints) {
     }
 }
 
-function Test-VerifyElasticSANVolumeSnapshot($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $VolumeName, $Name, $VolumeResourceId, $SourceVolumeSizeGiB) {
+function Test-VerifyElasticSANVolumeSnapshot($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $VolumeName, $Name, $ExpectedLocation, $Location, $VolumeResourceId, $SourceVolumeSizeGiB) {
 
     $s = Get-AzElasticSanVolumeSnapshot -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -VolumeGroupName $VolumeGroupName -Name $Name
     $s | Should -Not -BeNullOrEmpty
@@ -103,6 +103,7 @@ function Test-VerifyElasticSANVolumeSnapshot($ResourceId, $ElasticSanName, $Reso
     $s.CreationDataSourceId | Should -Be $VolumeResourceId
     $s.Id | Should -Be $ResourceId
     $s.Name | Should -Be $Name
+    $Location | Should -Be $ExpectedLocation
     $s.ResourceGroupName | Should -Be $ResourceGroupName
     $s.SourceVolumeSizeGiB | Should -Be $SourceVolumeSizeGiB
     #Skip $s.SystemData**
@@ -110,7 +111,7 @@ function Test-VerifyElasticSANVolumeSnapshot($ResourceId, $ElasticSanName, $Reso
     $s.VolumeName | Should -Be $VolumeName
 }
 
-function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $Name, $TargetIqn, $TargetPortalHostname, $TargetPortalPort, $VolumeId, $SizeGiB) {
+function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $Name, $ExpectedLocation, $Location, $TargetIqn, $TargetPortalHostname, $TargetPortalPort, $VolumeId, $SizeGiB) {
 
     $v = Get-AzElasticSanVolume -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -VolumeGroupName $VolumeGroupName -Name $Name
     $v | Should -Not -BeNullOrEmpty
@@ -121,6 +122,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.Id | Should -Be $ResourceId
     $v.ManagedByResourceId | Should -Be 'None'
     $v.Name | Should -Be $Name
+    $Location | Should -Be $ExpectedLocation
     $v.ResourceGroupName | Should -Be $ResourceGroupName
     $v.SizeGiB | Should -Be $SizeGiB
     $v.StorageTargetIqn | Should -Be $TargetIqn
@@ -133,7 +135,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -208,6 +210,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     }
 
     $vg.Name | Should -Be $Name
+    $Location | Should -Be $ExpectedLocation
 
     if ( $NetworkAclsVirtualNetworkRule ) {
 

@@ -81,6 +81,8 @@ Describe 'Validate Deployment' {
                     -ElasticSanName $name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                     -Name $volumeGroups[$vgrpidx].name `
+                    -ExpectedLocation $location `
+                    -Location $volumeGroups[$vgrpidx].location `
                     -SystemAssignedMI $false `
                     -UserAssignedMI $false `
                     -TenantId $null `

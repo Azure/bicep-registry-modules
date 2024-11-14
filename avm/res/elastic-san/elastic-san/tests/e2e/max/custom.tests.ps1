@@ -86,6 +86,8 @@ Describe 'Validate Deployment' {
                     -ElasticSanName $name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                     -Name $volumeGroups[$vgrpidx].name `
+                    -ExpectedLocation $location `
+                    -Location $volumeGroups[$vgrpidx].location `
                     -SystemAssignedMI $item.SystemAssignedMI `
                     -UserAssignedMI $item.UserAssignedMI `
                     -TenantId $TestInputData.DeploymentOutputs.tenantId.Value `
@@ -141,6 +143,8 @@ Describe 'Validate Deployment' {
                     -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
                     -VolumeGroupName $volumeGroups[$vgrpidx].name `
                     -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
+                    -ExpectedLocation $location `
+                    -Location $volumeGroups[$vgrpidx].volumes[$volidx].location `
                     -TargetIqn $volumeGroups[$vgrpidx].volumes[$volidx].targetIqn `
                     -TargetPortalHostname $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalHostname `
                     -TargetPortalPort $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalPort `
@@ -188,6 +192,8 @@ Describe 'Validate Deployment' {
                     -VolumeGroupName $volumeGroups[$vgrpidx].name `
                     -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
                     -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
+                    -ExpectedLocation $location `
+                    -Location $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].location `
                     -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                     -SourceVolumeSizeGiB $item.SourceVolumeSizeGiB
             }
