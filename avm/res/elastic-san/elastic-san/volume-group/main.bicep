@@ -12,6 +12,9 @@ param elasticSanName string
 @sys.description('Required. The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long.')
 param name string
 
+@sys.description('Optional. Location for all resources.')
+param location string = resourceGroup().location
+
 @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes.')
 param volumes volumeType[]?
 
@@ -30,6 +33,16 @@ param customerManagedKey customerManagedKeyType? // This requires KV with enable
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS).')
 param privateEndpoints privateEndpointSingleServiceType[]?
+
+@sys.description('Optional. Tags of the Elastic SAN Volume Group resource.')
+param tags object?
+
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+@sys.description('Optional. The lock settings of the service.')
+param lock lockType?
 
 // ============== //
 // Variables      //
@@ -135,8 +148,7 @@ module volumeGroup_volumes 'volume/main.bicep' = [
 
 module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    //name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
-    name: '${uniqueString(deployment().name)}-ElasticSan-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? volumeGroup.name}-${index}'
@@ -168,16 +180,16 @@ module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      ///enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
-      //lock: privateEndpoint.?lock ?? lock
+      lock: privateEndpoint.?lock ?? lock
       privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
-      //tags: privateEndpoint.?tags ?? tags
+      tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
       ipConfigurations: privateEndpoint.?ipConfigurations
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds

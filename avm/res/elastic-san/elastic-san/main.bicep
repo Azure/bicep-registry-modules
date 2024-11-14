@@ -141,11 +141,15 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
     params: {
       elasticSanName: elasticSan.name
       name: volumeGroup.name
+      location: location
       volumes: volumeGroup.?volumes
       virtualNetworkRules: volumeGroup.?virtualNetworkRules
       managedIdentities: volumeGroup.?managedIdentities
       customerManagedKey: volumeGroup.?customerManagedKey
       privateEndpoints: volumeGroup.?privateEndpoints
+      tags: tags
+      enableTelemetry: enableTelemetry
+      lock: lock
     }
   }
 ]
@@ -227,6 +231,10 @@ type volumeGroupOutputType = {
   // TODO privateEndpoints
 }
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+@sys.description('Optional. The lock settings of the service.')
+param lock lockType?
+
 /*
 
 TODO:
@@ -276,9 +284,7 @@ Audit - All resource logs that record customer interactions with data or the set
 
 
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
-@sys.description('Optional. The lock settings of the service.')
-param lock lockType?
+
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @sys.description('Optional. Array of role assignments to create.')
