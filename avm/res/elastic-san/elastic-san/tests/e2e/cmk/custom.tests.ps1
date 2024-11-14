@@ -73,8 +73,8 @@ Describe 'Validate Deployment' {
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
                     -Name $volumeGroups[$vgrpidx].name `
-                    -Location $volumeGroups[$vgrpidx].location `
-                    -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName
+                    -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
+                    -Location $null # Location is NOT Supported on this resource
 
                 Test-VerifyElasticSANVolumeGroup `
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `

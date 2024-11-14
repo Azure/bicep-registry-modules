@@ -78,8 +78,8 @@ Describe 'Validate Deployment' {
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
                     -Name $volumeGroups[$vgrpidx].name `
-                    -Location $volumeGroups[$vgrpidx].location `
-                    -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName
+                    -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
+                    -Location $null # Location is NOT Supported on this resource
 
                 Test-VerifyElasticSANVolumeGroup `
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
@@ -132,8 +132,8 @@ Describe 'Validate Deployment' {
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                     -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
-                    -Location $volumeGroups[$vgrpidx].volumes[$volidx].location `
-                    -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName
+                    -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName`
+                    -Location $null # Location is NOT Supported on this resource
 
                 Test-VerifyElasticSANVolume `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
@@ -178,8 +178,8 @@ Describe 'Validate Deployment' {
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
                     -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
-                    -Location $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].location `
-                    -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName
+                    -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
+                    -Location $null # Location is NOT Supported on this resource
 
                 Test-VerifyElasticSANVolumeSnapshot `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
