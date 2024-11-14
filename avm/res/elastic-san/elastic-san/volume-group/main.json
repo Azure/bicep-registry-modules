@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "11655312930792180008"
+      "templateHash": "5699756391427510168"
     },
     "name": "Elastic SAN Volume Groups",
     "description": "This module deploys an Elastic SAN Volume Group.",
@@ -681,7 +681,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module.."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "lock": {

@@ -38,7 +38,7 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 @sys.description('Optional. Tags of the Elastic SAN Volume Group resource.')
 param tags object?
 
-@sys.description('Optional. Enable/Disable usage telemetry for module..')
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
