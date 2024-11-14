@@ -285,7 +285,7 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     $esan.Location | Should -Be $Location
     $esan.Name | Should -Be $Name
 
-    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpoints $esan.PrivateEndpointConnection -PrivateEndpoints $null
+    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $esan.PrivateEndpointConnection -PrivateEndpoints $null
 
 
 
