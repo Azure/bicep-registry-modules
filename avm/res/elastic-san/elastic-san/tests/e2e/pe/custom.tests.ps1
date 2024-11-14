@@ -61,7 +61,7 @@ Describe 'Validate Deployment' {
 
             # Volume Groups
             $expectedData = @(
-                @{ PrivateEndpoint=$true }  # vol-grp-01
+                @{ PrivateEndpointCounts=1 } # vol-grp-01
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
@@ -95,7 +95,9 @@ Describe 'Validate Deployment' {
                     -CMKKeyVaultEncryptionKeyName $null `
                     -CMKKeyVaultUrl $null `
                     -CMKKeyVaultEncryptionKeyVersion $null `
-                    -GroupIds $groupIds
+                    -GroupIds $groupIds `
+                    -PrivateEndpointCounts $item.PrivateEndpointCounts `
+                    -PrivateEndpoints $volumeGroups[$vgrpidx].privateEndpoints
             }
         }
     }

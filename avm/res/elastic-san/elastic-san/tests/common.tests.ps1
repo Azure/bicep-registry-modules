@@ -57,17 +57,21 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
     for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
 }
 
-function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpoints) {
+function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnections, $PrivateEndpoints) {
 
     if ( $GroupIds ) {
 
+        $PrivateEndpointConnections | Should -Not -BeNullOrEmpty
+        $PrivateEndpointConnections | ConvertFrom-Json | Should -Not -BeNullOrEmpty
+        $PrivateEndpointConnections.Count | Should -Be $GroupIds.Count
+
         $PrivateEndpoints | Should -Not -BeNullOrEmpty
         $PrivateEndpoints | ConvertFrom-Json | Should -Not -BeNullOrEmpty
+        $PrivateEndpoints.Count | Should -Be $PrivateEndpointConnections.Count
 
-        $PrivateEndpoints.Count | Should -Be $GroupIds.Count
-        foreach ($item in $PrivateEndpoints) {
+        foreach ($item in $PrivateEndpointConnections) {
 
-            $i = $PrivateEndpoints.IndexOf($item)
+            $i = $PrivateEndpointConnections.IndexOf($item)
 
             $item = $($item | ConvertFrom-Json)
 
@@ -85,11 +89,18 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpoints) {
 
             $item.properties.groupIds.Count | Should -Be 1
             $item.properties.groupIds[0] | Should -Be $GroupIds[$i]
+
+            $PrivateEndpoints[$i].name | Should -Not -BeNullOrEmpty
+            $PrivateEndpoints[$i].location | Should -Not -BeNullOrEmpty
+            $PrivateEndpoints[$i].resourceId | Should -Be $item.properties.privateEndpoint.id
+            $PrivateEndpoints[$i].groupId | Should -Be $GroupIds[$i]
+            $PrivateEndpoints[$i].customDnsConfig | Should -Not -BeNullOrEmpty
+            $PrivateEndpoints[$i].networkInterfaceResourceIds | Should -Not -BeNullOrEmpty
         }
 
     } else {
 
-        $PrivateEndpoints | Should -BeNullOrEmpty
+        $PrivateEndpointConnections | Should -BeNullOrEmpty
 
     }
 }
@@ -135,7 +146,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds, $PrivateEndpointCounts, $PrivateEndpoints) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -223,7 +234,16 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     }
 
-    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpoints $vg.PrivateEndpointConnection
+    if ($PrivateEndpointCounts -eq 0) {
+        $PrivateEndpoints | Should -BeNullOrEmpty
+        $PrivateEndpoints.Count | Should -Be 0
+    }
+    else {
+        $PrivateEndpoints | Should -Not -BeNullOrEmpty
+        $PrivateEndpoints.Count | Should -Be $PrivateEndpointCounts
+    }
+
+    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $vg.PrivateEndpointConnection -PrivateEndpoints $PrivateEndpoints
 
     $vg.ProtocolType | Should -Be 'iSCSI'
     $vg.ResourceGroupName | Should -Be $ResourceGroupName
@@ -265,7 +285,7 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     $esan.Location | Should -Be $Location
     $esan.Name | Should -Be $Name
 
-    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpoints $esan.PrivateEndpointConnection
+    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpoints $esan.PrivateEndpointConnection -PrivateEndpoints $null
 
 
 

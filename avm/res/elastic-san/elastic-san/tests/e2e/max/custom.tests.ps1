@@ -100,7 +100,9 @@ Describe 'Validate Deployment' {
                     -CMKKeyVaultEncryptionKeyName $null `
                     -CMKKeyVaultUrl $null `
                     -CMKKeyVaultEncryptionKeyVersion $null `
-                    -GroupIds $null
+                    -GroupIds $null `
+                    -PrivateEndpointCounts 0 `
+                    -PrivateEndpoints $null
 
                 if ($item.VolumeCounts -eq 0) {
                     $volumeGroups[$vgrpidx].volumes | Should -BeNullOrEmpty
@@ -110,9 +112,6 @@ Describe 'Validate Deployment' {
                     $volumeGroups[$vgrpidx].volumes | Should -Not -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes.Count | Should -Be $item.VolumeCounts
                 }
-
-                # TODO: $volumeGroups[$vgrpidx].privateEndpoints | Should -Not -BeNullOrEmpty
-                # TODO: $volumeGroups[$vgrpidx].privateEndpoints.Count | Should -Be 2
             }
         }
 

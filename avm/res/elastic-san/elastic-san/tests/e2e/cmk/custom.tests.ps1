@@ -95,7 +95,9 @@ Describe 'Validate Deployment' {
                     -CMKKeyVaultEncryptionKeyName $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyName.Value `
                     -CMKKeyVaultUrl $TestInputData.DeploymentOutputs.cmkKeyVaultUrl.Value `
                     -CMKKeyVaultEncryptionKeyVersion $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyVersion.Value `
-                    -GroupIds $null
+                    -GroupIds $null `
+                    -PrivateEndpointCounts 0 `
+                    -PrivateEndpoints $null
             }
         }
     }
