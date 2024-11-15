@@ -96,6 +96,8 @@ output assignmentResourceId string = empty(resourceGroupName)
 // Definitions      //
 // ================ //
 
+@export()
+@description('Authorization object describing the access Azure Active Directory principals in the managedBy tenant will receive on the delegated resource in the managed tenant.')
 type authorizationType = {
   @description('Conditional. The list of role definition ids which define all the permissions that the user in the authorization can assign to other principals. Required if the `roleDefinitionId` refers to the User Access Administrator Role.')
   delegatedRoleDefinitionIds: string[]?
