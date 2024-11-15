@@ -482,6 +482,13 @@
         "description": "Optional. The configuration for the [Custom Script] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
     },
+    "bootDiagnosticEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnostics will be enabled with a managed storage account if no bootDiagnosticsStorageAccountName value is provided. If bootDiagnostics and bootDiagnosticsStorageAccountName values are not provided, boot diagnostics will be disabled."
+      }
+    },
     "bootDiagnosticStorageAccountUri": {
       "type": "string",
       "defaultValue": "[format('.blob.{0}/', environment().suffixes.storage)]",
@@ -1017,7 +1024,7 @@
           },
           "diagnosticsProfile": {
             "bootDiagnostics": {
-              "enabled": "[not(empty(parameters('bootDiagnosticStorageAccountName')))]",
+              "enabled": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), true(), parameters('bootDiagnosticEnabled'))]",
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
