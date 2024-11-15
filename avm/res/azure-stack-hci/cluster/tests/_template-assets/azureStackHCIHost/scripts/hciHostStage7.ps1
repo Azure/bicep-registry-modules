@@ -153,4 +153,16 @@ $vmNicLocalNamingOut = Invoke-Command -VMName (Get-VM).Name -Credential $adminCr
     }
 }
 
+# change dynamically assigned mgmt IP addresses to static IPs as required by validation
+Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
+    $ErrorActionPreference = 'Stop'
+
+    $dhcpIpConfig = Get-NetIPConfiguration -InterfaceAlias 'mgmt'
+    $prefixLength = Get-NetIPAddress -InterfaceAlias 'mgmt' | Select-Object -ExpandProperty PrefixLength
+
+    Set-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Disabled
+
+    New-NetIPAddress -InterfaceAlias 'mgmt' -IPAddress $dhcpIpConfig.IPAddress -DefaultGateway $dhcpIpConfig.DefaultGateway -AddressFamily IPv4 -PrefixLength $prefixLength
+}
+
 log "VM NIC local naming output: $vmNicLocalNamingOut"
