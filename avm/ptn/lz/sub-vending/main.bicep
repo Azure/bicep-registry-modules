@@ -40,7 +40,7 @@ param subscriptionAliasName string = ''
 
 @description('''Optional. The Billing Scope for the new Subscription alias, that will be created by this module.
 
-A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.
+A valid Billing Scope looks like `/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/enrollmentAccounts/{enrollmentAccountName}` and is case sensitive.
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
@@ -122,10 +122,11 @@ param virtualNetworkResourceGroupLockEnabled bool = true
 ''')
 param virtualNetworkLocation string = deployment().location
 
+@minLength(2)
 @maxLength(64)
 @description('''Optional. The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.
 ''')
-param virtualNetworkName string = ''
+param virtualNetworkName string?
 
 @description('''Optional. An object of tag key/value pairs to be set on the Virtual Network that is created.
 
@@ -199,6 +200,24 @@ Each object must contain the following `keys`:
     1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
     2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
 ''')
+@metadata({
+  example: '''
+  [
+    {
+      // Contributor role assignment at subscription scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/Contributor'
+      relativeScope: ''
+    }
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  '''
+})
 param roleAssignments roleAssignmentType = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -296,7 +315,6 @@ param resourceProviders object = {
   'Microsoft.Sql': []
   'Microsoft.Storage': []
   'Microsoft.StreamAnalytics': []
-  'Microsoft.TimeSeriesInsights': []
   'Microsoft.Web': []
 }
 

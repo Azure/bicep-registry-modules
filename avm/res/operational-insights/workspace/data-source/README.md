@@ -20,7 +20,6 @@ This module deploys a Log Analytics Workspace Data Source.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-kind) | string | The kind of the DataSource. |
 | [`name`](#parameter-name) | string | Name of the solution. |
 
 **Conditional parameters**
@@ -38,6 +37,7 @@ This module deploys a Log Analytics Workspace Data Source.
 | [`eventTypes`](#parameter-eventtypes) | array | Windows event types to configure when kind is WindowsEvent. |
 | [`instanceName`](#parameter-instancename) | string | Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
 | [`intervalSeconds`](#parameter-intervalseconds) | int | Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
+| [`kind`](#parameter-kind) | string | The kind of the DataSource. |
 | [`linkedResourceId`](#parameter-linkedresourceid) | string | Resource ID of the resource to be linked. |
 | [`objectName`](#parameter-objectname) | string | Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
 | [`performanceCounters`](#parameter-performancecounters) | array | List of counters to configure when the kind is LinuxPerformanceObject. |
@@ -45,27 +45,6 @@ This module deploys a Log Analytics Workspace Data Source.
 | [`syslogName`](#parameter-syslogname) | string | System log to configure when kind is LinuxSyslog. |
 | [`syslogSeverities`](#parameter-syslogseverities) | array | Severities to configure when kind is LinuxSyslog. |
 | [`tags`](#parameter-tags) | object | Tags to configure in the resource. |
-
-### Parameter: `kind`
-
-The kind of the DataSource.
-
-- Required: No
-- Type: string
-- Default: `'AzureActivityLog'`
-- Allowed:
-  ```Bicep
-  [
-    'AzureActivityLog'
-    'IISLogs'
-    'LinuxPerformanceCollection'
-    'LinuxPerformanceObject'
-    'LinuxSyslog'
-    'LinuxSyslogCollection'
-    'WindowsEvent'
-    'WindowsPerformanceCounter'
-  ]
-  ```
 
 ### Parameter: `name`
 
@@ -120,6 +99,27 @@ Interval in seconds to configure when kind is WindowsPerformanceCounter or Linux
 - Required: No
 - Type: int
 - Default: `60`
+
+### Parameter: `kind`
+
+The kind of the DataSource.
+
+- Required: No
+- Type: string
+- Default: `'AzureActivityLog'`
+- Allowed:
+  ```Bicep
+  [
+    'AzureActivityLog'
+    'IISLogs'
+    'LinuxPerformanceCollection'
+    'LinuxPerformanceObject'
+    'LinuxSyslog'
+    'LinuxSyslogCollection'
+    'WindowsEvent'
+    'WindowsPerformanceCounter'
+  ]
+  ```
 
 ### Parameter: `linkedResourceId`
 

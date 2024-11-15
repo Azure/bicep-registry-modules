@@ -124,8 +124,8 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
-#disable-next-line no-deployments-resources
 
+#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.netapp-netappaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
@@ -256,7 +256,7 @@ output volumeResourceId string = (capacityPools != []) ? netAppAccount_capacityP
 
 type managedIdentitiesType = {
   @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
+  userAssignedResourceIds: string[]?
 }?
 
 type lockType = {

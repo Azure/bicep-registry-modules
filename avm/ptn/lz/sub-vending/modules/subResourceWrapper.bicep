@@ -178,7 +178,6 @@ param resourceProviders object = {
   'Microsoft.Sql': []
   'Microsoft.Storage': []
   'Microsoft.StreamAnalytics': []
-  'Microsoft.TimeSeriesInsights': []
   'Microsoft.Web': []
 }
 
@@ -575,6 +574,7 @@ module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/ro
     principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
     roleDefinitionIdOrName: 'Contributor'
     subscriptionId: subscriptionId
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -586,6 +586,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/69566ab7-960f-475b-8e7c-b3118f30c6bd'
     subscriptionId: subscriptionId
     resourceGroupName: deploymentScriptResourceGroupName
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -767,7 +768,7 @@ type constrainedDelegationTemplatesType =
 // Role Assignment Condition type
 @export()
 type roleAssignmentConditionType = {
-  @description('Required. The type of template for the role assignment condition.')
+  @description('Optional. The type of template for the role assignment condition.')
   roleConditionType: constrainedDelegationTemplatesType?
 
   @description('Optional. The version of the condition template.')
