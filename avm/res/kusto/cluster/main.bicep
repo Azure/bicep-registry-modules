@@ -35,7 +35,7 @@ param allowedIpRangeList string[] = []
 param enableAutoStop bool = true
 
 @description('Optional. Enable/disable disk encryption.')
-param enableDiskEncryption bool = true
+param enableDiskEncryption bool = false
 
 @description('Optional. Enable/disable double encryption.')
 param enableDoubleEncryption bool = false

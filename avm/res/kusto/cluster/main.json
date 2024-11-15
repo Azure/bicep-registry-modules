@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "12095802384414367695"
+      "version": "0.31.92.45157",
+      "templateHash": "7102233301977548502"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -697,7 +697,7 @@
     },
     "enableDiskEncryption": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Enable/disable disk encryption."
       }
@@ -893,7 +893,10 @@
       "apiVersion": "2023-07-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
+      "dependsOn": [
+        "cMKKeyVault"
+      ]
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1078,8 +1081,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "2020706178910686237"
+              "version": "0.31.92.45157",
+              "templateHash": "8181427043902078904"
             },
             "name": "Kusto Cluster Principal Assignments",
             "description": "This module deploys a Kusto Cluster Principal Assignment.",
