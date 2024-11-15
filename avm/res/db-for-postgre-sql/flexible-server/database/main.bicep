@@ -9,10 +9,10 @@ param name string
 param flexibleServerName string
 
 @description('Optional. The collation of the database.')
-param collation string = ''
+param collation string?
 
 @description('Optional. The charset of the database.')
-param charset string = ''
+param charset string?
 
 resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
   name: flexibleServerName

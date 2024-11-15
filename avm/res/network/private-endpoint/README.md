@@ -8,6 +8,7 @@ This module deploys a Private Endpoint.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -70,7 +71,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -103,6 +104,34 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-endpoint:<version>'
+
+// Required parameters
+param name = 'npemin001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param privateLinkServiceConnections = [
+  {
+    name: 'npemin001'
+    properties: {
+      groupIds: [
+        'vault'
+      ]
+      privateLinkServiceId: '<privateLinkServiceId>'
+    }
+  }
+]
 ```
 
 </details>
@@ -206,7 +235,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -320,6 +349,94 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-endpoint:<version>'
+
+// Required parameters
+param name = 'npemax001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param applicationSecurityGroupResourceIds = [
+  '<applicationSecurityGroupResourceId>'
+]
+param customDnsConfigs = [
+  {
+    fqdn: 'abc.keyvault.com'
+    ipAddresses: [
+      '10.0.0.10'
+    ]
+  }
+]
+param customNetworkInterfaceName = 'npemax001nic'
+param ipConfigurations = [
+  {
+    name: 'myIPconfig'
+    properties: {
+      groupId: 'vault'
+      memberName: 'default'
+      privateIPAddress: '10.0.0.10'
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateDnsZoneGroup = {
+  name: 'default'
+  privateDnsZoneGroupConfigs: [
+    {
+      name: 'config'
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+    }
+  ]
+}
+param privateLinkServiceConnections = [
+  {
+    name: 'npemax001'
+    properties: {
+      groupIds: [
+        'vault'
+      ]
+      privateLinkServiceId: '<privateLinkServiceId>'
+      requestMessage: 'Hey there'
+    }
+  }
+]
+param roleAssignments = [
+  {
+    name: '6804f270-b4e9-455f-a11b-7f2a64e38f7c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using private link service_
 
 This instance deploys the module with a private link service to test the application of an empty list of string for `groupIds`.
@@ -366,7 +483,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -409,6 +526,42 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-endpoint:<version>'
+
+// Required parameters
+param name = 'npepls001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param ipConfigurations = [
+  {
+    name: 'myIPconfig'
+    properties: {
+      groupId: ''
+      memberName: ''
+      privateIPAddress: '10.0.0.10'
+    }
+  }
+]
+param location = '<location>'
+param privateLinkServiceConnections = [
+  {
+    name: 'npepls001'
+    properties: {
+      groupIds: []
+      privateLinkServiceId: '<privateLinkServiceId>'
+    }
+  }
+]
 ```
 
 </details>
@@ -482,7 +635,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -562,6 +715,64 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-endpoint:<version>'
+
+// Required parameters
+param name = 'npewaf001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param applicationSecurityGroupResourceIds = [
+  '<applicationSecurityGroupResourceId>'
+]
+param customNetworkInterfaceName = 'npewaf001nic'
+param ipConfigurations = [
+  {
+    name: 'myIPconfig'
+    properties: {
+      groupId: 'vault'
+      memberName: 'default'
+      privateIPAddress: '10.0.0.10'
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateDnsZoneGroup = {
+  privateDnsZoneGroupConfigs: [
+    {
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+    }
+  ]
+}
+param privateLinkServiceConnections = [
+  {
+    name: 'npewaf001'
+    properties: {
+      groupIds: [
+        'vault'
+      ]
+      privateLinkServiceId: '<privateLinkServiceId>'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -620,15 +831,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-customdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-customdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: Yes
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-customdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `customDnsConfigs.ipAddresses`
 
@@ -636,6 +845,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `customNetworkInterfaceName`
 
@@ -812,7 +1028,7 @@ The resource id of private link service.
 
 A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `privateDnsZoneGroup`
@@ -1055,13 +1271,21 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `customDnsConfig` |  | The custom DNS configurations of the private endpoint. |
+| `customDnsConfig` | array | The custom DNS configurations of the private endpoint. |
 | `groupId` | string | The group Id for the private endpoint Group. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the private endpoint. |
-| `networkInterfaceIds` | array | The IDs of the network interfaces associated with the private endpoint. |
+| `networkInterfaceResourceIds` | array | The resource IDs of the network interfaces associated with the private endpoint. |
 | `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
 | `resourceId` | string | The resource ID of the private endpoint. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 

@@ -17,7 +17,7 @@ This module deploys the Managed DevOps Pool resource.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DevOpsInfrastructure/pools` | [2024-04-04-preview](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.DevOpsInfrastructure/pools` | [2024-10-19](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2024-10-19/pools) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -77,7 +77,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -130,6 +130,41 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_DS2_v2'
+param images = [
+  {
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpmin001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      url: '<url>'
+    }
+  ]
+}
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -147,26 +182,24 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     agentProfile: {
       kind: 'Stateless'
       resourcePredictions: {
-        daysData: [
-          {
-            '09:00:00': 1
-            '17:00:00': 0
+        daysData: {
+          friday: {
+            endAgentCount: 0
+            endTime: '17:00:00'
+            startAgentCount: 1
+            startTime: '09:00:00'
           }
-          {}
-          {}
-          {}
-          {
-            '09:00:00': 1
-            '17:00:00': 0
+          monday: {
+            endAgentCount: 0
+            endTime: '17:00:00'
+            startAgentCount: 1
+            startTime: '09:00:00'
           }
-          {}
-          {}
-        ]
-        timeZone: 'Central Europe Standard Time'
+        }
+        timeZone: 'UTC'
       }
       resourcePredictionsProfile: {
-        kind: 'Automatic'
-        predictionPreference: 'Balanced'
+        kind: 'Manual'
       }
     }
     concurrency: 1
@@ -246,7 +279,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -258,26 +291,24 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": {
         "kind": "Stateless",
         "resourcePredictions": {
-          "daysData": [
-            {
-              "09:00:00": 1,
-              "17:00:00": 0
+          "daysData": {
+            "friday": {
+              "endAgentCount": 0,
+              "endTime": "17:00:00",
+              "startAgentCount": 1,
+              "startTime": "09:00:00"
             },
-            {},
-            {},
-            {},
-            {
-              "09:00:00": 1,
-              "17:00:00": 0
-            },
-            {},
-            {}
-          ],
-          "timeZone": "Central Europe Standard Time"
+            "monday": {
+              "endAgentCount": 0,
+              "endTime": "17:00:00",
+              "startAgentCount": 1,
+              "startTime": "09:00:00"
+            }
+          },
+          "timeZone": "UTC"
         },
         "resourcePredictionsProfile": {
-          "kind": "Automatic",
-          "predictionPreference": "Balanced"
+          "kind": "Manual"
         }
       }
     },
@@ -380,6 +411,110 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+  resourcePredictions: {
+    daysData: {
+      friday: {
+        endAgentCount: 0
+        endTime: '17:00:00'
+        startAgentCount: 1
+        startTime: '09:00:00'
+      }
+      monday: {
+        endAgentCount: 0
+        endTime: '17:00:00'
+        startAgentCount: 1
+        startTime: '09:00:00'
+      }
+    }
+    timeZone: 'UTC'
+  }
+  resourcePredictionsProfile: {
+    kind: 'Manual'
+  }
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_D2_v2'
+param images = [
+  {
+    aliases: [
+      'windows-2022'
+    ]
+    buffer: '*'
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpmax001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      parallelism: 1
+      projects: [
+        '<azureDevOpsProjectName>'
+      ]
+      url: '<url>'
+    }
+  ]
+  permissionProfile: {
+    kind: 'CreatorOnly'
+  }
+}
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+]
+param storageProfile = {
+  dataDisks: [
+    {
+      caching: 'ReadWrite'
+      diskSizeGiB: 100
+      driveLetter: 'B'
+      storageAccountType: 'Standard_LRS'
+    }
+  ]
+  osDiskStorageAccountType: 'Standard'
+}
+param subnetResourceId = '<subnetResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -396,24 +531,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     // Required parameters
     agentProfile: {
       kind: 'Stateless'
-      resourcePredictions: {
-        daysData: [
-          {
-            '09:00:00': 1
-            '17:00:00': 0
-          }
-          {}
-          {}
-          {}
-          {
-            '09:00:00': 1
-            '17:00:00': 0
-          }
-          {}
-          {}
-        ]
-        timeZone: 'Central Europe Standard Time'
-      }
       resourcePredictionsProfile: {
         kind: 'Automatic'
         predictionPreference: 'Balanced'
@@ -455,7 +572,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -466,24 +583,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     "agentProfile": {
       "value": {
         "kind": "Stateless",
-        "resourcePredictions": {
-          "daysData": [
-            {
-              "09:00:00": 1,
-              "17:00:00": 0
-            },
-            {},
-            {},
-            {},
-            {
-              "09:00:00": 1,
-              "17:00:00": 0
-            },
-            {},
-            {}
-          ],
-          "timeZone": "Central Europe Standard Time"
-        },
         "resourcePredictionsProfile": {
           "kind": "Automatic",
           "predictionPreference": "Balanced"
@@ -535,6 +634,53 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+  resourcePredictionsProfile: {
+    kind: 'Automatic'
+    predictionPreference: 'Balanced'
+  }
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_D2_v2'
+param images = [
+  {
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpwaf001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      parallelism: 1
+      projects: [
+        '<azureDevOpsProjectName>'
+      ]
+      url: '<url>'
+    }
+  ]
+  permissionProfile: {
+    kind: 'CreatorOnly'
+  }
+}
+// Non-required parameters
+param location = '<location>'
+param subnetResourceId = '<subnetResourceId>'
 ```
 
 </details>
@@ -604,11 +750,12 @@ The VM images of the machines in the pool.
 - Required: Yes
 - Type: array
 
-**Required parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`wellKnownImageName`](#parameter-imageswellknownimagename) | string | The image to use from a well-known set of images made available to customers. |
+| [`resourceId`](#parameter-imagesresourceid) | string | The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set. |
+| [`wellKnownImageName`](#parameter-imageswellknownimagename) | string | The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set. |
 
 **Optional parameters**
 
@@ -616,13 +763,19 @@ The VM images of the machines in the pool.
 | :-- | :-- | :-- |
 | [`aliases`](#parameter-imagesaliases) | array | List of aliases to reference the image by. |
 | [`buffer`](#parameter-imagesbuffer) | string | The percentage of the buffer to be allocated to this image. |
-| [`resourceId`](#parameter-imagesresourceid) | string | The resource id of the image. |
+
+### Parameter: `images.resourceId`
+
+The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set.
+
+- Required: No
+- Type: string
 
 ### Parameter: `images.wellKnownImageName`
 
-The image to use from a well-known set of images made available to customers.
+The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `images.aliases`
@@ -635,13 +788,6 @@ List of aliases to reference the image by.
 ### Parameter: `images.buffer`
 
 The percentage of the buffer to be allocated to this image.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.resourceId`
-
-The resource id of the image.
 
 - Required: No
 - Type: string

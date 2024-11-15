@@ -61,7 +61,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -87,6 +87,25 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk:<version>'
+
+// Required parameters
+param availabilityZone = 0
+param name = 'cdmin001'
+param sku = 'Standard_LRS'
+// Non-required parameters
+param diskSizeGB = 1
+param location = '<location>'
 ```
 
 </details>
@@ -122,7 +141,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -151,6 +170,26 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk:<version>'
+
+// Required parameters
+param availabilityZone = 0
+param name = 'cdimg001'
+param sku = 'Standard_LRS'
+// Non-required parameters
+param createOption = 'FromImage'
+param imageReferenceId = '<imageReferenceId>'
+param location = '<location>'
 ```
 
 </details>
@@ -187,7 +226,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -219,6 +258,27 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk:<version>'
+
+// Required parameters
+param availabilityZone = 0
+param name = 'cdimp001'
+param sku = 'Standard_LRS'
+// Non-required parameters
+param createOption = 'Import'
+param location = '<location>'
+param sourceUri = '<sourceUri>'
+param storageAccountId = '<storageAccountId>'
 ```
 
 </details>
@@ -286,7 +346,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -366,6 +426,58 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk:<version>'
+
+// Required parameters
+param availabilityZone = 2
+param name = 'cdmax001'
+param sku = 'Premium_LRS'
+// Non-required parameters
+param diskIOPSReadWrite = 500
+param diskMBpsReadWrite = 60
+param diskSizeGB = 128
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param logicalSectorSize = 512
+param osType = 'Windows'
+param publicNetworkAccess = 'Enabled'
+param roleAssignments = [
+  {
+    name: '89cc419c-8383-461d-9a70-5cfae4045a8d'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -409,7 +521,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -462,6 +574,39 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk:<version>'
+
+// Required parameters
+param availabilityZone = 2
+param name = 'cdwaf001'
+param sku = 'Premium_LRS'
+// Non-required parameters
+param diskIOPSReadWrite = 500
+param diskMBpsReadWrite = 60
+param diskSizeGB = 128
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param logicalSectorSize = 512
+param osType = 'Windows'
+param publicNetworkAccess = 'Enabled'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

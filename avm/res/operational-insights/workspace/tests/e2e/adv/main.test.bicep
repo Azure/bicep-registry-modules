@@ -186,9 +186,10 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'AzureAutomation'
-          product: 'OMSGallery'
-          publisher: 'Microsoft'
+          name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
+          plan: {
+            product: 'OMSGallery/AzureAutomation'
+          }
         }
       ]
       linkedServices: [

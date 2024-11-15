@@ -1,0 +1,125 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.31.34.60546",
+      "templateHash": "3914917842985483427"
+    },
+    "name": "CDN Profiles Security Policy",
+    "description": "This module deploys a CDN Profile Security Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "associationsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "domains": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. ResourceID to domain that will be associated."
+                  }
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. List of domain resource id to associate with this resource."
+            }
+          },
+          "patternsToMatch": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. List of patterns to match with this association."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource name."
+      }
+    },
+    "profileName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent CDN profile. Required if the template is used in a standalone deployment."
+      }
+    },
+    "wafPolicyResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of WAF Policy."
+      }
+    },
+    "associations": {
+      "$ref": "#/definitions/associationsType",
+      "metadata": {
+        "description": "Required. Waf associations (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies?pivots=deployment-language-bicep#securitypolicywebapplicationfirewallassociation for details)."
+      }
+    }
+  },
+  "resources": {
+    "profile": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('profileName')]"
+    },
+    "securityPolicies": {
+      "type": "Microsoft.Cdn/profiles/securityPolicies",
+      "apiVersion": "2024-02-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+      "properties": {
+        "parameters": {
+          "type": "WebApplicationFirewall",
+          "wafPolicy": {
+            "id": "[parameters('wafPolicyResourceId')]"
+          },
+          "associations": "[parameters('associations')]"
+        }
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the secrect."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the secrect."
+      },
+      "value": "[resourceId('Microsoft.Cdn/profiles/securityPolicies', parameters('profileName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the secret was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

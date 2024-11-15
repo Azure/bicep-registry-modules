@@ -14,7 +14,7 @@ param tags object?
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
-@description('Optional. Default to Standard. The offer type for the Cosmos DB database account.')
+@description('Optional. Default to Standard. The offer type for the Azure Cosmos DB database account.')
 @allowed([
   'Standard'
 ])
@@ -49,7 +49,7 @@ param enableFreeTier bool = false
 param enableMultipleWriteLocations bool = false
 
 @description('Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
-param disableKeyBasedMetadataWriteAccess bool = false
+param disableKeyBasedMetadataWriteAccess bool = true
 
 @minValue(1)
 @maxValue(2147483647)
@@ -84,6 +84,9 @@ param mongodbDatabases array = []
 
 @description('Optional. Gremlin Databases configurations.')
 param gremlinDatabases array = []
+
+@description('Optional. Table configurations.')
+param tables array = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -146,8 +149,20 @@ param privateEndpoints privateEndpointType
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. The network configuration of this module.')
-param networkRestrictions networkRestrictionsType?
+@description('Optional. The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: \'Disabled\' }`.')
+param networkRestrictions networkRestrictionsType = {
+  ipRules: []
+  virtualNetworkRules: []
+  publicNetworkAccess: 'Disabled'
+}
+
+@allowed([
+  'Tls'
+  'Tls11'
+  'Tls12'
+])
+@description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
+param minimumTlsVersion string = 'Tls12'
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -243,10 +258,11 @@ var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
+    minimalTlsVersion: minimumTlsVersion
   },
-  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
+  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
     ? {
-        // Common properties
+        // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
         consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
         enableMultipleWriteLocations: enableMultipleWriteLocations
         locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
@@ -263,16 +279,16 @@ var databaseAccountProperties = union(
         enableAnalyticalStorage: enableAnalyticalStorage
       }
     : {}),
-  (!empty(sqlDatabases)
+  ((!empty(sqlDatabases) || !empty(tables))
     ? {
-        // SQLDB properties
+        // NoSQL and Table properties
         disableLocalAuth: disableLocalAuth
         disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
       }
     : {}),
   (!empty(mongodbDatabases)
     ? {
-        // MongoDb properties
+        // MongoDB RU properties
         apiProperties: {
           serverVersion: serverVersion
         }
@@ -459,6 +475,19 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
       graphs: gremlinDatabase.?graphs
       maxThroughput: gremlinDatabase.?maxThroughput
       throughput: gremlinDatabase.?throughput
+    }
+  }
+]
+
+module databaseAccount_tables 'table/main.bicep' = [
+  for table in tables: {
+    name: '${uniqueString(deployment().name, location)}-table-${table.name}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      name: table.name
+      tags: table.?tags ?? tags
+      maxThroughput: table.?maxThroughput
+      throughput: table.?throughput
     }
   }
 ]
@@ -713,7 +742,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private ip addresses of the private endpoint.')
@@ -929,7 +958,7 @@ type secretsOutputType = {
 }
 
 type networkRestrictionsType = {
-  @description('Optional. Default to []. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
+  @description('Required. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
   ipRules: string[]
 
   @description('Optional. Default to AzureServices. Specifies the network ACL bypass for Azure services.')
@@ -938,7 +967,7 @@ type networkRestrictionsType = {
   @description('Optional. Default to Enabled. Whether requests from Public Network are allowed.')
   publicNetworkAccess: ('Enabled' | 'Disabled')?
 
-  @description('Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account..')
+  @description('Required. List of Virtual Network ACL rules configured for the Cosmos DB account..')
   virtualNetworkRules: {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string

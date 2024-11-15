@@ -70,7 +70,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -87,6 +87,22 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/automation/automation-account:<version>'
+
+// Required parameters
+param name = 'aamin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -128,7 +144,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -158,6 +174,32 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/automation/automation-account:<version>'
+
+// Required parameters
+param name = 'aaencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
@@ -204,9 +246,11 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     disableLocalAuth: true
     gallerySolutions: [
       {
-        name: 'Updates'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: '<name>'
+        plan: {
+          product: 'OMSGallery/Updates'
+          publisher: 'Microsoft'
+        }
       }
     ]
     jobSchedules: [
@@ -422,7 +466,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -465,9 +509,11 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "gallerySolutions": {
       "value": [
         {
-          "name": "Updates",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "<name>",
+          "plan": {
+            "product": "OMSGallery/Updates",
+            "publisher": "Microsoft"
+          }
         }
       ]
     },
@@ -708,6 +754,256 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/automation/automation-account:<version>'
+
+// Required parameters
+param name = 'aamax001'
+// Non-required parameters
+param credentials = [
+  {
+    description: 'Description of Credential01'
+    name: 'Credential01'
+    password: '<password>'
+    userName: 'userName01'
+  }
+  {
+    name: 'Credential02'
+    password: '<password>'
+    userName: 'username02'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param gallerySolutions = [
+  {
+    name: '<name>'
+    plan: {
+      product: 'OMSGallery/Updates'
+      publisher: 'Microsoft'
+    }
+  }
+]
+param jobSchedules = [
+  {
+    runbookName: 'TestRunbook'
+    scheduleName: 'TestSchedule'
+  }
+]
+param linkedWorkspaceResourceId = '<linkedWorkspaceResourceId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param modules = [
+  {
+    name: 'PSWindowsUpdate'
+    uri: 'https://www.powershellgallery.com/api/v2/package'
+    version: 'latest'
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Webhook'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Webhook'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'DSCAndHybridWorker'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param roleAssignments = [
+  {
+    name: 'de334944-f952-4273-8ab3-bd523380034c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param runbooks = [
+  {
+    description: 'Test runbook'
+    name: 'TestRunbook'
+    type: 'PowerShell'
+    uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
+    version: '1.0.0.0'
+  }
+]
+param schedules = [
+  {
+    advancedSchedule: {}
+    expiryTime: '9999-12-31T13:00'
+    frequency: 'Hour'
+    interval: 12
+    name: 'TestSchedule'
+    startTime: ''
+    timeZone: 'Europe/Berlin'
+  }
+]
+param softwareUpdateConfigurations = [
+  {
+    excludeUpdates: [
+      '123456'
+    ]
+    frequency: 'Month'
+    includeUpdates: [
+      '654321'
+    ]
+    interval: 1
+    maintenanceWindow: 'PT4H'
+    monthlyOccurrences: [
+      {
+        day: 'Friday'
+        occurrence: 3
+      }
+    ]
+    name: 'Windows_ZeroDay'
+    operatingSystem: 'Windows'
+    rebootSetting: 'IfRequired'
+    scopeByTags: {
+      Update: [
+        'Automatic-Wave1'
+      ]
+    }
+    startTime: '22:00'
+    updateClassifications: [
+      'Critical'
+      'Definition'
+      'FeaturePack'
+      'Security'
+      'ServicePack'
+      'Tools'
+      'UpdateRollup'
+      'Updates'
+    ]
+  }
+  {
+    excludeUpdates: [
+      'icacls'
+    ]
+    frequency: 'OneTime'
+    includeUpdates: [
+      'kernel'
+    ]
+    maintenanceWindow: 'PT4H'
+    name: 'Linux_ZeroDay'
+    operatingSystem: 'Linux'
+    rebootSetting: 'IfRequired'
+    startTime: '22:00'
+    updateClassifications: [
+      'Critical'
+      'Other'
+      'Security'
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param variables = [
+  {
+    description: 'TestStringDescription'
+    name: 'TestString'
+    value: '\'TestString\''
+  }
+  {
+    description: 'TestIntegerDescription'
+    name: 'TestInteger'
+    value: '500'
+  }
+  {
+    description: 'TestBooleanDescription'
+    name: 'TestBoolean'
+    value: 'false'
+  }
+  {
+    description: 'TestDateTimeDescription'
+    isEncrypted: false
+    name: 'TestDateTime'
+    value: '\'\\/Date(1637934042656)\\/\''
+  }
+  {
+    description: 'TestEncryptedDescription'
+    name: 'TestEncryptedVariable'
+    value: '\'TestEncryptedValue\''
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -735,9 +1031,10 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     disableLocalAuth: true
     gallerySolutions: [
       {
-        name: 'Updates'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: '<name>'
+        plan: {
+          product: 'OMSGallery/Updates'
+        }
       }
     ]
     jobSchedules: [
@@ -917,7 +1214,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -945,9 +1242,10 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "gallerySolutions": {
       "value": [
         {
-          "name": "Updates",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "<name>",
+          "plan": {
+            "product": "OMSGallery/Updates"
+          }
         }
       ]
     },
@@ -1150,6 +1448,206 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/automation/automation-account:<version>'
+
+// Required parameters
+param name = 'aawaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param gallerySolutions = [
+  {
+    name: '<name>'
+    plan: {
+      product: 'OMSGallery/Updates'
+    }
+  }
+]
+param jobSchedules = [
+  {
+    runbookName: 'TestRunbook'
+    scheduleName: 'TestSchedule'
+  }
+]
+param linkedWorkspaceResourceId = '<linkedWorkspaceResourceId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param modules = [
+  {
+    name: 'PSWindowsUpdate'
+    uri: 'https://www.powershellgallery.com/api/v2/package'
+    version: 'latest'
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Webhook'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'DSCAndHybridWorker'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param runbooks = [
+  {
+    description: 'Test runbook'
+    name: 'TestRunbook'
+    type: 'PowerShell'
+    uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
+    version: '1.0.0.0'
+  }
+]
+param schedules = [
+  {
+    advancedSchedule: {}
+    expiryTime: '9999-12-31T13:00'
+    frequency: 'Hour'
+    interval: 12
+    name: 'TestSchedule'
+    startTime: ''
+    timeZone: 'Europe/Berlin'
+  }
+]
+param softwareUpdateConfigurations = [
+  {
+    excludeUpdates: [
+      '123456'
+    ]
+    frequency: 'Month'
+    includeUpdates: [
+      '654321'
+    ]
+    interval: 1
+    maintenanceWindow: 'PT4H'
+    monthlyOccurrences: [
+      {
+        day: 'Friday'
+        occurrence: 3
+      }
+    ]
+    name: 'Windows_ZeroDay'
+    operatingSystem: 'Windows'
+    rebootSetting: 'IfRequired'
+    scopeByTags: {
+      Update: [
+        'Automatic-Wave1'
+      ]
+    }
+    startTime: '22:00'
+    updateClassifications: [
+      'Critical'
+      'Definition'
+      'FeaturePack'
+      'Security'
+      'ServicePack'
+      'Tools'
+      'UpdateRollup'
+      'Updates'
+    ]
+  }
+  {
+    excludeUpdates: [
+      'icacls'
+    ]
+    frequency: 'OneTime'
+    includeUpdates: [
+      'kernel'
+    ]
+    maintenanceWindow: 'PT4H'
+    name: 'Linux_ZeroDay'
+    operatingSystem: 'Linux'
+    rebootSetting: 'IfRequired'
+    startTime: '22:00'
+    updateClassifications: [
+      'Critical'
+      'Other'
+      'Security'
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param variables = [
+  {
+    description: 'TestStringDescription'
+    name: 'TestString'
+    value: '\'TestString\''
+  }
+  {
+    description: 'TestIntegerDescription'
+    name: 'TestInteger'
+    value: '500'
+  }
+  {
+    description: 'TestBooleanDescription'
+    name: 'TestBoolean'
+    value: 'false'
+  }
+  {
+    description: 'TestDateTimeDescription'
+    name: 'TestDateTime'
+    value: '\'\\/Date(1637934042656)\\/\''
+  }
+  {
+    description: 'TestEncryptedDescription'
+    name: 'TestEncryptedVariable'
+    value: '\'TestEncryptedValue\''
+  }
+]
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1197,7 +1695,6 @@ List of credentials to be created in the automation account.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1307,7 +1804,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -1417,7 +1914,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -1458,7 +1955,61 @@ List of gallerySolutions to be created in the linked log analytics workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsname) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`plan`](#parameter-gallerysolutionsplan) | object | Plan for solution object supported by the OperationsManagement resource provider. |
+
+### Parameter: `gallerySolutions.name`
+
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan`
+
+Plan for solution object supported by the OperationsManagement resource provider.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`product`](#parameter-gallerysolutionsplanproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsplanname) | string | Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used. |
+| [`publisher`](#parameter-gallerysolutionsplanpublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `gallerySolutions.plan.product`
+
+The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan.name`
+
+Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `gallerySolutions.plan.publisher`
+
+The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
+
+- Required: No
+- Type: string
 
 ### Parameter: `jobSchedules`
 
@@ -1532,7 +2083,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1543,7 +2094,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -1567,7 +2118,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1592,7 +2143,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
@@ -1622,15 +2173,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -1638,6 +2187,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1785,7 +2341,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -1795,7 +2351,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -1810,7 +2366,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -1821,7 +2377,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -2157,7 +2713,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "4541932168440754260"
+      "version": "0.30.23.60470",
+      "templateHash": "14261370383859328082"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -536,6 +536,9 @@
     },
     "dnsNameServers": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. List of dns servers used by the containers for lookups."

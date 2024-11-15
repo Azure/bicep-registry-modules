@@ -14,7 +14,7 @@ param fabricProfileSkuName string
 param concurrency int
 
 @description('Required. The VM images of the machines in the pool.')
-param images imageType
+param images imageType[]
 
 @description('Optional. The geo-location where the resource lives.')
 param location string = resourceGroup().location
@@ -114,6 +114,19 @@ var identity = !empty(managedIdentities)
     }
   : null
 
+var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
+  ? map(
+      ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      day =>
+        contains(agentProfile.resourcePredictions.daysData, day)
+          ? {
+              '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
+              '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
+            }
+          : {}
+    )
+  : null
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.devopsinfrastructure-pool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -133,13 +146,36 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-04-04-preview' = {
+resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-10-19' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
-    agentProfile: agentProfile
+    // agentProfile: agentProfile
+    agentProfile: agentProfile.kind == 'Stateful'
+      ? {
+          kind: 'Stateful'
+          maxAgentLifetime: agentProfile.maxAgentLifetime
+          gracePeriodTimeSpan: agentProfile.gracePeriodTimeSpan
+          resourcePredictions: !empty(agentProfile.?resourcePredictions)
+            ? {
+                timeZone: agentProfile.?resourcePredictions.timeZone
+                daysData: formattedDaysData
+              }
+            : null
+          resourcePredictionsProfile: agentProfile.?resourcePredictionsProfile
+        }
+      : {
+          kind: 'Stateless'
+          resourcePredictions: !empty(agentProfile.?resourcePredictions)
+            ? {
+                timeZone: agentProfile.?resourcePredictions.timeZone
+                daysData: formattedDaysData
+              }
+            : null
+          resourcePredictionsProfile: agentProfile.?resourcePredictionsProfile
+        }
     devCenterProjectResourceId: devCenterProjectResourceId
     fabricProfile: {
       sku: {
@@ -235,6 +271,7 @@ output location string = managedDevOpsPool.location
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?principalId
 
+@export()
 type osProfileType = {
   @description('Required. The logon type of the machine.')
   logonType: ('Interactive' | 'Service')
@@ -252,6 +289,7 @@ type osProfileType = {
   }?
 }
 
+@export()
 type storageProfileType = {
   @description('Optional. The Azure SKU name of the machines in the pool.')
   osDiskStorageAccountType: ('Premium' | 'StandardSSD' | 'Standard')?
@@ -272,6 +310,7 @@ type storageProfileType = {
   }[]?
 }?
 
+@export()
 type imageType = {
   @description('Optional. List of aliases to reference the image by.')
   aliases: string[]?
@@ -279,13 +318,14 @@ type imageType = {
   @description('Optional. The percentage of the buffer to be allocated to this image.')
   buffer: string?
 
-  @description('Required. The image to use from a well-known set of images made available to customers.')
-  wellKnownImageName: string
+  @description('Conditional. The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set.')
+  wellKnownImageName: string?
 
-  @description('Optional. The resource id of the image.')
+  @description('Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set.')
   resourceId: string?
-}[]
+}
 
+@export()
 type organizationProfileType = {
   @description('Required. Azure DevOps organization profile.')
   kind: 'AzureDevOps'
@@ -317,6 +357,7 @@ type organizationProfileType = {
   }[]
 }
 
+@export()
 type dataDiskType = {
   @description('Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.')
   caching: ('None' | 'ReadOnly' | 'ReadWrite')?
@@ -331,6 +372,7 @@ type dataDiskType = {
   storageAccountType: ('Premium_LRS' | 'Premium_ZRS' | 'StandardSSD_LRS' | 'StandardSSD_ZRS' | 'Standard_LRS')?
 }[]?
 
+@export()
 type resourcePredictionsProfileAutomaticType = {
   @description('Required. The stand-by agent scheme is determined based on historical demand.')
   kind: 'Automatic'
@@ -339,11 +381,13 @@ type resourcePredictionsProfileAutomaticType = {
   predictionPreference: 'Balanced' | 'MostCostEffective' | 'MoreCostEffective' | 'MorePerformance' | 'BestPerformance'
 }
 
+@export()
 type resourcePredictionsProfileManualType = {
   @description('Required. Customer provides the stand-by agent scheme.')
   kind: 'Manual'
 }
 
+@export()
 type agentStatefulType = {
   @description('Required. Stateful profile meaning that the machines will be returned to the pool after running a job.')
   kind: 'Stateful'
@@ -355,13 +399,20 @@ type agentStatefulType = {
   gracePeriodTimeSpan: string
 
   @description('Optional. Defines pool buffer/stand-by agents.')
-  resourcePredictions: object?
+  resourcePredictions: {
+    @description('Required. The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`.')
+    timeZone: string
+
+    @description('Optional. The number of agents needed at a specific time.')
+    daysData: daysDataType
+  }?
 
   @discriminator('kind')
   @description('Optional. Determines how the stand-by scheme should be provided.')
   resourcePredictionsProfile: (resourcePredictionsProfileAutomaticType | resourcePredictionsProfileManualType)?
 }
 
+@export()
 type agentStatelessType = {
   @description('Required. Stateless profile meaning that the machines will be cleaned up after running a job.')
   kind: 'Stateless'
@@ -372,26 +423,7 @@ type agentStatelessType = {
     timeZone: string
 
     @description('Optional. The number of agents needed at a specific time.')
-    @metadata({
-      example: '''
-      [
-        { // Monday
-          '09:00': 5
-          '22:00': 0
-        }
-        {} // Tuesday
-        {} // Wednesday
-        {} // Thursday
-        { // Friday
-          '09:00': 5
-          '22:00': 0
-        }
-        {} // Saturday
-        {} // Sunday
-      ]
-      '''
-    })
-    daysData: object[]?
+    daysData: daysDataType
   }?
 
   @discriminator('kind')
@@ -400,8 +432,10 @@ type agentStatelessType = {
 }
 
 @discriminator('kind')
+@export()
 type agentProfileType = agentStatefulType | agentStatelessType
 
+@export()
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
   name: string?
@@ -428,6 +462,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
+@export()
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?
@@ -436,6 +471,7 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+@export()
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -480,10 +516,50 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
+@export()
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
+}?
+
+@export()
+type standbyAgentsConfigType = {
+  @description('Required. The time at which the agents are needed.')
+  startTime: string
+
+  @description('Required. The time at which the agents are no longer needed.')
+  endTime: string
+
+  @description('Required. The number of agents needed at the start time.')
+  startAgentCount: int
+
+  @description('Required. The number of agents needed at the end time.')
+  endAgentCount: int
+}?
+
+@export()
+type daysDataType = {
+  @description('Optional. The number of agents needed at a specific time for Monday.')
+  monday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Tuesday.')
+  tuesday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Wednesday.')
+  wednesday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Thursday.')
+  thursday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Friday.')
+  friday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Saturday.')
+  saturday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Sunday.')
+  sunday: standbyAgentsConfigType
 }?

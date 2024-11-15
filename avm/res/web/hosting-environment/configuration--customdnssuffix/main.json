@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "12791869385776671140"
+      "version": "0.30.3.12046",
+      "templateHash": "8555887239478847203"
     },
     "name": "Hosting Environment Custom DNS Suffix Configuration",
     "description": "This module deploys a Hosting Environment Custom DNS Suffix Configuration.",
@@ -40,7 +40,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/hostingEnvironments/configurations",
-      "apiVersion": "2022-03-01",
+      "apiVersion": "2023-12-01",
       "name": "[format('{0}/{1}', parameters('hostingEnvironmentName'), 'customdnssuffix')]",
       "properties": {
         "certificateUrl": "[parameters('certificateUrl')]",

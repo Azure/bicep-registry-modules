@@ -71,7 +71,7 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -107,6 +107,37 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-link-service:<version>'
+
+// Required parameters
+param ipConfigurations = [
+  {
+    name: 'nplsmin01'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param loadBalancerFrontendIpConfigurations = [
+  {
+    id: '<id>'
+  }
+]
+param name = 'nplsmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -198,7 +229,7 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -298,6 +329,82 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-link-service:<version>'
+
+// Required parameters
+param ipConfigurations = [
+  {
+    name: 'nplsmax01'
+    properties: {
+      primary: true
+      privateIPAllocationMethod: 'Dynamic'
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param loadBalancerFrontendIpConfigurations = [
+  {
+    id: '<id>'
+  }
+]
+param name = 'nplsmax001'
+// Non-required parameters
+param autoApproval = {
+  subscriptions: [
+    '*'
+  ]
+}
+param enableProxyProtocol = true
+param fqdns = [
+  'nplsmax.plsfqdn01.azure.privatelinkservice'
+  'nplsmax.plsfqdn02.azure.privatelinkservice'
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'fec82bb5-8552-4c4b-a3f6-65bdae54d7f4'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param visibility = {
+  subscriptions: [
+    '<subscriptionId>'
+  ]
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -361,7 +468,7 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -428,6 +535,59 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-link-service:<version>'
+
+// Required parameters
+param ipConfigurations = [
+  {
+    name: 'nplswaf01'
+    properties: {
+      primary: true
+      privateIPAllocationMethod: 'Dynamic'
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param loadBalancerFrontendIpConfigurations = [
+  {
+    id: '<id>'
+  }
+]
+param name = 'nplswaf001'
+// Non-required parameters
+param autoApproval = {
+  subscriptions: [
+    '*'
+  ]
+}
+param enableProxyProtocol = true
+param fqdns = [
+  'nplswaf.plsfqdn01.azure.privatelinkservice'
+  'nplswaf.plsfqdn02.azure.privatelinkservice'
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param visibility = {
+  subscriptions: [
+    '<subscriptionId>'
+  ]
 }
 ```
 

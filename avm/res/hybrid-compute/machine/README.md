@@ -59,7 +59,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -79,6 +79,23 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-compute/machine:<version>'
+
+// Required parameters
+param kind = 'HCI'
+param name = 'arcmachcimin'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -143,7 +160,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -212,6 +229,55 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-compute/machine:<version>'
+
+// Required parameters
+param kind = 'HCI'
+param name = 'arcmachcimx'
+// Non-required parameters
+param guestConfiguration = {
+  assignmentType: 'ApplyAndMonitor'
+  configurationParameter: [
+    {
+      name: 'Minimum Password Length;ExpectedValue'
+      value: '16'
+    }
+    {
+      name: 'Minimum Password Length;RemediateValue'
+      value: '16'
+    }
+    {
+      name: 'Maximum Password Age;ExpectedValue'
+      value: '75'
+    }
+    {
+      name: 'Maximum Password Age;RemediateValue'
+      value: '75'
+    }
+  ]
+  name: 'AzureWindowsBaseline'
+  version: '1.*'
+}
+param location = '<location>'
+param osType = 'Windows'
+param patchAssessmentMode = 'AutomaticByPlatform'
+param patchMode = 'AutomaticByPlatform'
+param privateLinkScopeResourceId = '<privateLinkScopeResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Creates an VMWare machine using only the defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -239,7 +305,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -259,6 +325,23 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-compute/machine:<version>'
+
+// Required parameters
+param kind = 'VMware'
+param name = 'arcmacvmwmin'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -296,7 +379,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -322,6 +405,28 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-compute/machine:<version>'
+
+// Required parameters
+param kind = 'HCI'
+param name = 'arcmacwaf'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

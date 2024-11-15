@@ -62,7 +62,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -88,6 +88,25 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitamin001'
+// Non-required parameters
+param location = '<location>'
+param overwriteExistingImage = true
 ```
 
 </details>
@@ -132,7 +151,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -187,6 +206,35 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitamax001'
+// Non-required parameters
+param assignRbacRole = true
+param cleanupPreference = 'OnExpiration'
+param location = '<location>'
+param managedIdentities = '<managedIdentities>'
+param newImageName = 'application/your-image-name:tag'
+param overwriteExistingImage = true
+param storageAccountResourceId = '<storageAccountResourceId>'
+param subnetResourceIds = '<subnetResourceIds>'
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -217,7 +265,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -246,6 +294,26 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitawaf001'
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = '<managedIdentities>'
+param overwriteExistingImage = true
 ```
 
 </details>
@@ -325,13 +393,13 @@ The managed identity definition for this resource. Required if `assignRbacRole` 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
-### Parameter: `managedIdentities.userAssignedResourcesIds`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `managedIdentityName`
@@ -429,6 +497,7 @@ The password for the source registry. Required if the source registry is private
 - Required: No
 - Type: securestring
 - Default: `''`
+- Example: `keyVault.getSecret("keyVaultSecretName")`
 
 ### Parameter: `sourceRegistryUsername`
 
@@ -481,7 +550,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/resources/deployment-script:0.4.0` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 

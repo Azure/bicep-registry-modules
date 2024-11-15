@@ -74,7 +74,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -96,6 +96,26 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnmin001'
+// Non-required parameters
+param location = '<location>'
+param skuObject = {
+  capacity: 2
+  name: 'Premium'
 }
 ```
 
@@ -126,7 +146,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     location: '<location>'
     managedIdentities: {
       systemAssigned: false
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -143,7 +163,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -168,7 +188,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -180,6 +200,37 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param skuObject = {
+  capacity: 1
+  name: 'Premium'
 }
 ```
 
@@ -246,7 +297,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     }
     managedIdentities: {
       systemAssigned: true
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -442,7 +493,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -509,7 +560,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -724,6 +775,252 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnmax001'
+// Non-required parameters
+param authorizationRules = [
+  {
+    name: 'RootManageSharedAccessKey'
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+  {
+    name: 'AnotherKey'
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'RuntimeAuditLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'diagnosticsetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param minimumTlsVersion = '1.2'
+param networkRuleSets = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      ipMask: '10.0.1.0/32'
+    }
+    {
+      action: 'Allow'
+      ipMask: '10.0.2.0/32'
+    }
+  ]
+  trustedServiceAccessEnabled: true
+  virtualNetworkRules: [
+    {
+      ignoreMissingVnetServiceEndpoint: true
+      subnetResourceId: '<subnetResourceId>'
+    }
+  ]
+}
+param premiumMessagingPartitions = 1
+param privateEndpoints = [
+  {
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.namespace.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: 'namespace'
+          memberName: 'namespace'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
+    name: 'myPrivateEndpoint'
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    privateLinkServiceConnectionName: 'customLinkName'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Enabled'
+param queues = [
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    autoDeleteOnIdle: 'PT5M'
+    maxMessageSizeInKilobytes: 2048
+    name: 'sbnmaxq001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+  }
+]
+param roleAssignments = [
+  {
+    name: '2c42f915-20bf-4094-ba42-fee1f811d374'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuObject = {
+  capacity: 16
+  name: 'Premium'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param topics = [
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    name: 'sbnmaxt001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    subscriptions: [
+      {
+        name: 'subscription001'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -765,19 +1062,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    disableLocalAuth: true
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourcesIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    minimumTlsVersion: '1.2'
     networkRuleSets: {
       defaultAction: 'Deny'
       ipRules: [
@@ -798,7 +1083,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     }
-    premiumMessagingPartitions: 1
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -843,11 +1127,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         roleAssignments: []
       }
     ]
-    roleAssignments: []
-    skuObject: {
-      capacity: 2
-      name: 'Premium'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -885,7 +1164,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -926,28 +1205,8 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     },
-    "disableLocalAuth": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourcesIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "minimumTlsVersion": {
-      "value": "1.2"
     },
     "networkRuleSets": {
       "value": {
@@ -970,9 +1229,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           }
         ]
       }
-    },
-    "premiumMessagingPartitions": {
-      "value": 1
     },
     "privateEndpoints": {
       "value": [
@@ -1024,15 +1280,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     },
-    "roleAssignments": {
-      "value": []
-    },
-    "skuObject": {
-      "value": {
-        "capacity": 2,
-        "name": "Premium"
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1072,6 +1319,139 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnwaf001'
+// Non-required parameters
+param authorizationRules = [
+  {
+    name: 'RootManageSharedAccessKey'
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+  {
+    name: 'AnotherKey'
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param networkRuleSets = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      ipMask: '10.0.1.0/32'
+    }
+    {
+      action: 'Allow'
+      ipMask: '10.0.2.0/32'
+    }
+  ]
+  trustedServiceAccessEnabled: true
+  virtualNetworkRules: [
+    {
+      ignoreMissingVnetServiceEndpoint: true
+      subnetResourceId: '<subnetResourceId>'
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'namespace'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param publicNetworkAccess = 'Enabled'
+param queues = [
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    autoDeleteOnIdle: 'PT5M'
+    maxMessageSizeInKilobytes: 2048
+    name: 'sbnwafq001'
+    roleAssignments: []
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param topics = [
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    name: 'sbnwaft001'
+    roleAssignments: []
+  }
+]
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1079,7 +1459,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Service Bus Namespace. |
-| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 
 **Optional parameters**
 
@@ -1104,6 +1483,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 | [`queues`](#parameter-queues) | array | The queues to create in the service bus namespace. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`topics`](#parameter-topics) | array | The topics to create in the service bus namespace. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Enabled by default in order to align with resiliency best practices, thus requires Premium SKU. |
@@ -1114,54 +1494,6 @@ Name of the Service Bus Namespace.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `skuObject`
-
-The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      capacity: 2
-      name: 'Premium'
-  }
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-skuobjectname) | string | Name of this SKU. - Basic, Standard, Premium. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`capacity`](#parameter-skuobjectcapacity) | int | The specified messaging units for the tier. Only used for Premium Sku tier. |
-
-### Parameter: `skuObject.name`
-
-Name of this SKU. - Basic, Standard, Premium.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Premium'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `skuObject.capacity`
-
-The specified messaging units for the tier. Only used for Premium Sku tier.
-
-- Required: No
-- Type: int
 
 ### Parameter: `alternateName`
 
@@ -1290,7 +1622,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -1400,7 +1732,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -1527,7 +1859,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1536,9 +1868,9 @@ Enables system assigned managed identity on the resource.
 - Required: No
 - Type: bool
 
-### Parameter: `managedIdentities.userAssignedResourcesIds`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -1727,22 +2059,22 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
+| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the Private Endpoint IP configuration is included. |
 | [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | array | Custom DNS configurations. |
-| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
+| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the Private Endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints. |
 | [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
-| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
+| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the Private Endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
-| [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
+| [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
-| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
+| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -1753,7 +2085,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
-Application security groups in which the private endpoint IP configuration is included.
+Application security groups in which the Private Endpoint IP configuration is included.
 
 - Required: No
 - Type: array
@@ -1769,15 +2101,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -1786,9 +2116,16 @@ A list of private IP addresses of the private endpoint.
 - Required: Yes
 - Type: array
 
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
-The custom name of the network interface attached to the private endpoint.
+The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
@@ -1802,7 +2139,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
-A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
+A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints.
 
 - Required: No
 - Type: array
@@ -1866,7 +2203,7 @@ If Manual Private Link Connection is required.
 
 ### Parameter: `privateEndpoints.location`
 
-The location to deploy the private endpoint to.
+The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
@@ -1916,14 +2253,14 @@ A message passed to the owner of the remote resource with the manual connection 
 
 ### Parameter: `privateEndpoints.name`
 
-The name of the private endpoint.
+The name of the Private Endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The private DNS zone group to configure for the private endpoint.
+The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
@@ -1932,7 +2269,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -1942,7 +2279,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -1957,7 +2294,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -1968,7 +2305,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -1989,7 +2326,7 @@ The name of the private link connection to create.
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
 
 - Required: No
 - Type: string
@@ -2104,14 +2441,14 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
-Tags to be applied on all resources/resource groups in this deployment.
+Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
@@ -2599,6 +2936,54 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `skuObject`
+
+The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      capacity: 2
+      name: 'Premium'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-skuobjectname) | string | Name of this SKU. - Basic, Standard, Premium. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-skuobjectcapacity) | int | The specified messaging units for the tier. Only used for Premium Sku tier. |
+
+### Parameter: `skuObject.name`
+
+Name of this SKU. - Basic, Standard, Premium.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `skuObject.capacity`
+
+The specified messaging units for the tier. Only used for Premium Sku tier.
+
+- Required: No
+- Type: int
 
 ### Parameter: `tags`
 
@@ -3132,6 +3517,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 

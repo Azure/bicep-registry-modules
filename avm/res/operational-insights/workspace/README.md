@@ -27,6 +27,7 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
 | `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
+| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/onboardingStates) |
 
 ## Usage examples
 
@@ -199,9 +200,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwadv001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
     ]
     linkedServices: [
@@ -344,7 +346,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -507,9 +509,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwadv001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         }
       ]
     },
@@ -673,6 +676,300 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwadv001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param dataExports = [
+  {
+    destination: {
+      metaData: {
+        eventHubName: '<eventHubName>'
+      }
+      resourceId: '<resourceId>'
+    }
+    enable: true
+    name: 'eventHubExport'
+    tableNames: [
+      'Alert'
+      'InsightsMetrics'
+    ]
+  }
+  {
+    destination: {
+      resourceId: '<resourceId>'
+    }
+    enable: true
+    name: 'storageAccountExport'
+    tableNames: [
+      'Operation'
+    ]
+  }
+]
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+  {
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'sendingDiagnosticSettingsToSelf'
+    useThisWorkspace: true
+  }
+]
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation(oiwadv001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    resourceId: '<resourceId>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Disabled'
+param savedSearches = [
+  {
+    category: 'VDC Saved Searches'
+    displayName: 'VMSS Instance Count2'
+    name: 'VMSSQueries'
+    query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+  }
+]
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tables = [
+  {
+    name: 'CustomTableBasic_CL'
+    retentionInDays: 60
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'DateTime'
+        }
+        {
+          name: 'RawData'
+          type: 'String'
+        }
+      ]
+      name: 'CustomTableBasic_CL'
+    }
+    totalRetentionInDays: 90
+  }
+  {
+    name: 'CustomTableAdvanced_CL'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'DateTime'
+        }
+        {
+          name: 'EventTime'
+          type: 'DateTime'
+        }
+        {
+          name: 'EventLevel'
+          type: 'String'
+        }
+        {
+          name: 'EventCode'
+          type: 'Int'
+        }
+        {
+          name: 'Message'
+          type: 'String'
+        }
+        {
+          name: 'RawData'
+          type: 'String'
+        }
+      ]
+      name: 'CustomTableAdvanced_CL'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param useResourcePermissions = true
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -699,7 +996,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -716,6 +1013,22 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -844,9 +1157,25 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwmax001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
+      }
+      {
+        name: 'SecurityInsights(oiwmax001)'
+        plan: {
+          product: 'OMSGallery/SecurityInsights'
+          publisher: 'Microsoft'
+        }
+      }
+      {
+        name: 'SQLAuditing(oiwmax001)'
+        plan: {
+          name: 'SQLAuditing(oiwmax001)'
+          product: 'SQLAuditing'
+          publisher: 'Microsoft'
+        }
       }
     ]
     linkedServices: [
@@ -869,6 +1198,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     managedIdentities: {
       systemAssigned: true
     }
+    onboardWorkspaceToSentinel: true
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
     roleAssignments: [
@@ -1020,7 +1350,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1146,9 +1476,25 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwmax001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
+        },
+        {
+          "name": "SecurityInsights(oiwmax001)",
+          "plan": {
+            "product": "OMSGallery/SecurityInsights",
+            "publisher": "Microsoft"
+          }
+        },
+        {
+          "name": "SQLAuditing(oiwmax001)",
+          "plan": {
+            "name": "SQLAuditing(oiwmax001)",
+            "product": "SQLAuditing",
+            "publisher": "Microsoft"
+          }
         }
       ]
     },
@@ -1181,6 +1527,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": {
         "systemAssigned": true
       }
+    },
+    "onboardWorkspaceToSentinel": {
+      "value": true
     },
     "publicNetworkAccessForIngestion": {
       "value": "Disabled"
@@ -1347,6 +1696,312 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmax001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation(oiwmax001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
+  }
+  {
+    name: 'SecurityInsights(oiwmax001)'
+    plan: {
+      product: 'OMSGallery/SecurityInsights'
+      publisher: 'Microsoft'
+    }
+  }
+  {
+    name: 'SQLAuditing(oiwmax001)'
+    plan: {
+      name: 'SQLAuditing(oiwmax001)'
+      product: 'SQLAuditing'
+      publisher: 'Microsoft'
+    }
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    resourceId: '<resourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param onboardWorkspaceToSentinel = true
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Disabled'
+param roleAssignments = [
+  {
+    name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param savedSearches = [
+  {
+    category: 'VDC Saved Searches'
+    displayName: 'VMSS Instance Count2'
+    name: 'VMSSQueries'
+    query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+    tags: [
+      {
+        Name: 'Environment'
+        Value: 'Non-Prod'
+      }
+      {
+        Name: 'Role'
+        Value: 'DeploymentValidation'
+      }
+    ]
+  }
+]
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tables = [
+  {
+    name: 'CustomTableBasic_CL'
+    retentionInDays: 60
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'DateTime'
+        }
+        {
+          name: 'RawData'
+          type: 'String'
+        }
+      ]
+      name: 'CustomTableBasic_CL'
+    }
+    totalRetentionInDays: 90
+  }
+  {
+    name: 'CustomTableAdvanced_CL'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'DateTime'
+        }
+        {
+          name: 'EventTime'
+          type: 'DateTime'
+        }
+        {
+          name: 'EventLevel'
+          type: 'String'
+        }
+        {
+          name: 'EventCode'
+          type: 'Int'
+        }
+        {
+          name: 'Message'
+          type: 'String'
+        }
+        {
+          name: 'RawData'
+          type: 'String'
+        }
+      ]
+      name: 'CustomTableAdvanced_CL'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param useResourcePermissions = true
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -1464,9 +2119,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwwaf001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
     ]
     linkedServices: [
@@ -1513,7 +2169,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1633,9 +2289,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwwaf001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         }
       ]
     },
@@ -1699,6 +2356,163 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwwaf001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation(oiwwaf001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    resourceId: '<resourceId>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Disabled'
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param useResourcePermissions = true
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1729,6 +2543,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
+| [`onboardWorkspaceToSentinel`](#parameter-onboardworkspacetosentinel) | bool | Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Log Analytics ingestion. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Log Analytics query. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1963,7 +2778,61 @@ List of gallerySolutions to be created in the log analytics workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsname) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`plan`](#parameter-gallerysolutionsplan) | object | Plan for solution object supported by the OperationsManagement resource provider. |
+
+### Parameter: `gallerySolutions.name`
+
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan`
+
+Plan for solution object supported by the OperationsManagement resource provider.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`product`](#parameter-gallerysolutionsplanproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsplanname) | string | Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used. |
+| [`publisher`](#parameter-gallerysolutionsplanpublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `gallerySolutions.plan.product`
+
+The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan.name`
+
+Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `gallerySolutions.plan.publisher`
+
+The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
+
+- Required: No
+- Type: string
 
 ### Parameter: `linkedServices`
 
@@ -2029,7 +2898,7 @@ The managed identity definition for this resource. Only one type of identity is 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2040,10 +2909,18 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
+
+### Parameter: `onboardWorkspaceToSentinel`
+
+Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `publicNetworkAccessForIngestion`
 
@@ -2269,7 +3146,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 

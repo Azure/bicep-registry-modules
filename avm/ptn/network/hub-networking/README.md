@@ -18,15 +18,15 @@ This module is designed to simplify the creation of multi-region hub networks in
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/azureFirewalls` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/azureFirewalls) |
+| `Microsoft.Network/azureFirewalls` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/azureFirewalls) |
 | `Microsoft.Network/bastionHosts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/bastionHosts) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
-| `Microsoft.Network/routeTables/routes` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/routeTables/routes) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
+| `Microsoft.Network/routeTables/routes` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/routeTables/routes) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 
 ## Usage examples
 
@@ -64,7 +64,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +76,19 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/hub-networking:<version>'
+
+param location = '<location>'
 ```
 
 </details>
@@ -267,7 +280,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -449,6 +462,182 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/hub-networking:<version>'
+
+param hubVirtualNetworks = {
+  hub1: {
+    addressPrefixes: '<addressPrefixes>'
+    azureFirewallSettings: {
+      azureSkuTier: 'Standard'
+      enableTelemetry: true
+      location: '<location>'
+      publicIPAddressObject: {
+        name: 'hub1-waf-pip'
+      }
+      threatIntelMode: 'Alert'
+    }
+    bastionHost: {
+      disableCopyPaste: true
+      enableFileCopy: false
+      enableIpConnect: false
+      enableShareableLink: false
+      scaleUnits: 2
+      skuName: 'Standard'
+    }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsServers: [
+      '10.0.1.4'
+      '10.0.1.5'
+    ]
+    enableAzureFirewall: true
+    enableBastion: true
+    enablePeering: false
+    enableTelemetry: true
+    flowTimeoutInMinutes: 30
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'hub1Lock'
+    }
+    peeringSettings: [
+      {
+        allowForwardedTraffic: true
+        allowGatewayTransit: false
+        allowVirtualNetworkAccess: true
+        remoteVirtualNetworkName: 'hub2'
+        useRemoteGateways: false
+      }
+    ]
+    routes: [
+      {
+        name: 'defaultRoute'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'Internet'
+        }
+      }
+    ]
+    subnets: [
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'GatewaySubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureFirewallSubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureBastionSubnet'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    vnetEncryption: false
+    vnetEncryptionEnforcement: 'AllowUnencrypted'
+  }
+  hub2: {
+    addressPrefixes: '<addressPrefixes>'
+    azureFirewallSettings: {
+      azureSkuTier: 'Standard'
+      enableTelemetry: true
+      location: '<location>'
+      publicIPAddressObject: {
+        name: 'hub2-waf-pip'
+      }
+      threatIntelMode: 'Alert'
+      zones: [
+        1
+        2
+        3
+      ]
+    }
+    bastionHost: {
+      disableCopyPaste: true
+      enableFileCopy: false
+      enableIpConnect: false
+      enableShareableLink: false
+      scaleUnits: 2
+      skuName: 'Standard'
+    }
+    enableAzureFirewall: true
+    enableBastion: true
+    enablePeering: false
+    enableTelemetry: false
+    flowTimeoutInMinutes: 10
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'hub2Lock'
+    }
+    peeringSettings: [
+      {
+        allowForwardedTraffic: true
+        allowGatewayTransit: false
+        allowVirtualNetworkAccess: true
+        remoteVirtualNetworkName: 'hub1'
+        useRemoteGateways: false
+      }
+    ]
+    routes: [
+      {
+        name: 'defaultRoute'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'Internet'
+        }
+      }
+    ]
+    subnets: [
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'GatewaySubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureFirewallSubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureBastionSubnet'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    vnetEncryption: false
+    vnetEncryptionEnforcement: 'AllowUnencrypted'
+  }
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 3: _No Addons_
 
 This instance deploys the module with no add-ons (Firewall / Bastion) enabled.
@@ -535,7 +724,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -612,6 +801,82 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/hub-networking:<version>'
+
+param hubVirtualNetworks = {
+  hub1: {
+    addressPrefixes: '<addressPrefixes>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsServers: [
+      '10.0.1.6'
+      '10.0.1.7'
+    ]
+    enableAzureFirewall: false
+    enableBastion: false
+    enablePeering: false
+    enableTelemetry: true
+    flowTimeoutInMinutes: 30
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'hub1Lock'
+    }
+    routes: [
+      {
+        name: 'defaultRoute'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'Internet'
+        }
+      }
+    ]
+    subnets: [
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'GatewaySubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureFirewallSubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureBastionSubnet'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    vnetEncryption: false
+    vnetEncryptionEnforcement: 'AllowUnencrypted'
+  }
+}
+param location = '<location>'
 ```
 
 </details>
@@ -725,7 +990,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -824,6 +1089,104 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/hub-networking:<version>'
+
+param hubVirtualNetworks = {
+  hub1: {
+    addressPrefixes: '<addressPrefixes>'
+    azureFirewallSettings: {
+      azureSkuTier: 'Standard'
+      enableTelemetry: true
+      location: '<location>'
+      publicIPAddressObject: {
+        name: 'hub1PublicIp'
+      }
+      threatIntelMode: 'Alert'
+      zones: [
+        1
+        2
+        3
+      ]
+    }
+    bastionHost: {
+      disableCopyPaste: true
+      enableFileCopy: false
+      enableIpConnect: false
+      enableShareableLink: false
+      scaleUnits: 2
+      skuName: 'Standard'
+    }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsServers: [
+      '10.0.1.6'
+      '10.0.1.7'
+    ]
+    enableAzureFirewall: true
+    enableBastion: true
+    enablePeering: false
+    enableTelemetry: true
+    flowTimeoutInMinutes: 30
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'hub1Lock'
+    }
+    routes: [
+      {
+        name: 'defaultRoute'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'Internet'
+        }
+      }
+    ]
+    subnets: [
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'GatewaySubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureFirewallSubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureBastionSubnet'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    vnetEncryption: false
+    vnetEncryptionEnforcement: 'AllowUnencrypted'
+  }
+}
+param location = '<location>'
 ```
 
 </details>
@@ -1840,10 +2203,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/azure-firewall:0.5.0` | Remote reference |
+| `br/public:avm/res/network/azure-firewall:0.5.1` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.4.0` | Remote reference |
 | `br/public:avm/res/network/route-table:0.4.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
 
 ## Data Collection
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14190804454906731332"
+      "templateHash": "2870627868590310174"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
@@ -24,7 +24,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "keyVaultConfigurationType": {
       "type": "object",
@@ -44,7 +46,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "storageAccountConfigurationType": {
       "type": "object",
@@ -81,7 +85,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "containerRegistryConfigurationType": {
       "type": "object",
@@ -105,7 +111,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "applicationInsightsConfigurationType": {
       "type": "object",
@@ -118,7 +126,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "workspaceConfigurationType": {
       "type": "object",
@@ -157,12 +167,15 @@
         },
         "networkOutboundRules": {
           "$ref": "#/definitions/networkOutboundRuleType",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The outbound rules for the managed network of the workspace hub."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "virtualNetworkSubnetConfigurationType": {
       "type": "object",
@@ -188,8 +201,7 @@
             "description": "Optional. The resource ID of an existing network security group to associate with the subnet."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "virtualNetworkConfigurationType": {
       "type": "object",
@@ -217,12 +229,15 @@
         },
         "subnet": {
           "$ref": "#/definitions/virtualNetworkSubnetConfigurationType",
+          "nullable": true,
           "metadata": {
             "description": "Optional. Configuration for the virual network subnet."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "bastionConfigurationType": {
       "type": "object",
@@ -309,7 +324,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "nicConfigurationConfigurationType": {
       "type": "object",
@@ -346,8 +363,7 @@
             "description": "Optional. The resource ID of an existing network security group to associate with the network interface."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "osDiskType": {
       "type": "object",
@@ -432,11 +448,10 @@
             "description": "Required. The managed disk parameters."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "virtualMachineConfigurationType": {
-      "type": "secureObject",
+      "type": "object",
       "properties": {
         "enabled": {
           "type": "bool",
@@ -470,7 +485,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The virtual machine size. Defaults to 'Standard_D2s_v3'."
+            "description": "Optional. The virtual machine size. Defaults to 'Standard_D2s_v3'."
           }
         },
         "adminUsername": {
@@ -481,7 +496,7 @@
           }
         },
         "adminPassword": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "metadata": {
             "description": "Conditional. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module."
@@ -489,6 +504,7 @@
         },
         "nicConfigurationConfiguration": {
           "$ref": "#/definitions/nicConfigurationConfigurationType",
+          "nullable": true,
           "metadata": {
             "description": "Optional. Configuration for the virtual machine network interface."
           }
@@ -502,6 +518,7 @@
         },
         "osDisk": {
           "$ref": "#/definitions/osDiskType",
+          "nullable": true,
           "metadata": {
             "description": "Optional. Specifies the OS disk."
           }
@@ -547,7 +564,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "OutboundRuleType": {
       "type": "object",
@@ -721,7 +740,6 @@
           "description": "Required. The outbound rule. The name of the rule is the object key."
         }
       },
-      "nullable": true,
       "metadata": {
         "description": "Optional. Outbound rules for the managed network of the workspace hub."
       }
@@ -760,59 +778,68 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The name of the user assigned identity for the AI Studio hub. If not provided, the hub will use a system assigned identity."
+        "description": "Optional. The name of the user-assigned identity for the AI Studio hub. If not provided, the hub will use a system-assigned identity."
       }
     },
     "logAnalyticsConfiguration": {
       "$ref": "#/definitions/logAnalyticsConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for the Log Analytics workspace."
       }
     },
     "keyVaultConfiguration": {
       "$ref": "#/definitions/keyVaultConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for the key vault."
       }
     },
     "storageAccountConfiguration": {
       "$ref": "#/definitions/storageAccountConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for the storage account."
       }
     },
     "containerRegistryConfiguration": {
       "$ref": "#/definitions/containerRegistryConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for the container registry."
       }
     },
     "applicationInsightsConfiguration": {
       "$ref": "#/definitions/applicationInsightsConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for Application Insights."
       }
     },
     "workspaceConfiguration": {
       "$ref": "#/definitions/workspaceConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for the AI Studio workspace."
       }
     },
     "virtualNetworkConfiguration": {
       "$ref": "#/definitions/virtualNetworkConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for the virtual network."
       }
     },
     "bastionConfiguration": {
       "$ref": "#/definitions/bastionConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for the Azure Bastion host."
       }
     },
     "virtualMachineConfiguration": {
       "$ref": "#/definitions/virtualMachineConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for the virtual machine."
       }
