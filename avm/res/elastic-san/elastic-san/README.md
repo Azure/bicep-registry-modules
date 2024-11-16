@@ -521,7 +521,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Required parameters
     name: 'esanpe001'
     // Non-required parameters
-    availabilityZone: 2
+    availabilityZone: 1
     sku: 'Premium_LRS'
     tags: '<tags>'
     volumeGroups: [
@@ -564,7 +564,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     },
     // Non-required parameters
     "availabilityZone": {
-      "value": 2
+      "value": 1
     },
     "sku": {
       "value": "Premium_LRS"
@@ -609,7 +609,7 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 // Required parameters
 param name = 'esanpe001'
 // Non-required parameters
-param availabilityZone = 2
+param availabilityZone = 1
 param sku = 'Premium_LRS'
 param tags = '<tags>'
 param volumeGroups = [

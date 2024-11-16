@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       sku: 'Premium_LRS'
       availabilityZone: 3
+      // publicNetworkAccess: 'Enabled' // virtualNetworkRules should enforce this to be 'Enabled'
       volumeGroups: [
         {
           // Test - No Volumes

@@ -11,9 +11,8 @@ metadata description = 'This instance deploys the module with private endpoints.
 @sys.maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-microsoft.elasticsan-${serviceShort}-rg'
 
-// enforcing location due to ESAN ZRS availability
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 @sys.description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'esanpe'
@@ -27,10 +26,10 @@ param namePrefix string = '#_namePrefix_#'
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: enforcedLocation
+    location: resourceLocation
   }
 }
 
@@ -38,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 // ============== //
@@ -54,12 +53,12 @@ var tags = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
       sku: 'Premium_LRS'
-      availabilityZone: 2
-      // publicNetworkAccess: 'Disabled' // Private Endpoints should enforce this to be disabled
+      availabilityZone: 1
+      // publicNetworkAccess: 'Disabled' // Private Endpoints should enforce this to be 'Disbled'
       tags: tags
       volumeGroups: [
         {

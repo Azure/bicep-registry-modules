@@ -70,6 +70,7 @@ var totalVirtualNetworkRules = reduce(
   (cur, next) => cur + next
 )
 
+// Summarize the total number of private endpoints across all volume groups.
 var totalPrivateEndpoints = reduce(
   map(volumeGroups ?? [], volumeGroup => length(volumeGroup.?privateEndpoints ?? [])),
   0,
@@ -81,7 +82,7 @@ var totalPrivateEndpoints = reduce(
 // (Virtual Network Rules require 'Enabled' public network access)
 //
 // When 'publicNetworkAccess' is NOT explicitly set and virtual network rules are NOT set and private endpoints are NOT set,
-// public network access must be 'Enabled'.
+// public network access must be null.
 // When 'publicNetworkAccess' is NOT explicitly set and any virtual network rules are set (regardless of the presence of private endpoints),
 // public network access must be 'Enabled'.
 // When 'publicNetworkAccess' is NOT explicitly set and virtual network rules are NOT set and private endpoints are set,
