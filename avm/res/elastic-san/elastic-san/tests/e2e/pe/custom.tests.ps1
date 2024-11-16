@@ -8,7 +8,7 @@ Describe 'Validate Deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
-        $expectedTags = @{}
+        $expectedTags = @{Owner = 'Contoso'; CostCenter = '123-456-789' }
         $groupIds = @( 'vol-grp-01' )
         $expectedVolumeGroupsCount = 1
 
@@ -97,7 +97,8 @@ Describe 'Validate Deployment' {
                     -CMKKeyVaultEncryptionKeyVersion $null `
                     -GroupIds $groupIds `
                     -PrivateEndpointCounts $item.PrivateEndpointCounts `
-                    -PrivateEndpoints $volumeGroups[$vgrpidx].privateEndpoints
+                    -PrivateEndpoints $volumeGroups[$vgrpidx].privateEndpoints `
+                    -Tags $expectedTags
             }
         }
     }

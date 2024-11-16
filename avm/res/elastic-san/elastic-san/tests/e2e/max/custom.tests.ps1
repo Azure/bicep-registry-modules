@@ -102,7 +102,8 @@ Describe 'Validate Deployment' {
                     -CMKKeyVaultEncryptionKeyVersion $null `
                     -GroupIds $null `
                     -PrivateEndpointCounts 0 `
-                    -PrivateEndpoints $null
+                    -PrivateEndpoints $null `
+                    -Tags $expectedTags
 
                 if ($item.VolumeCounts -eq 0) {
                     $volumeGroups[$vgrpidx].volumes | Should -BeNullOrEmpty

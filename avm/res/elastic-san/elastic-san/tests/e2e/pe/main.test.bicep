@@ -45,6 +45,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
+var tags = {
+  Owner: 'Contoso'
+  CostCenter: '123-456-789'
+}
+
 @sys.batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -55,6 +60,7 @@ module testDeployment '../../../main.bicep' = [
       sku: 'Premium_LRS'
       availabilityZone: 2
       publicNetworkAccess: 'Disabled'
+      tags: tags
       volumeGroups: [
         {
           // Test - Private endpoints
@@ -72,6 +78,7 @@ module testDeployment '../../../main.bicep' = [
                   }
                 ]
               }
+              tags: tags
               //isManualConnection: false
               //manualConnectionRequestMessage: 'Please approve the connection'
               //customDnsConfigs: privateEndpointCustomDnsConfigType[]

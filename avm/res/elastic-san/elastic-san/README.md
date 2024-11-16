@@ -504,6 +504,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     availabilityZone: 2
     publicNetworkAccess: 'Disabled'
     sku: 'Premium_LRS'
+    tags: '<tags>'
     volumeGroups: [
       {
         name: 'vol-grp-01'
@@ -517,6 +518,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
               ]
             }
             subnetResourceId: '<subnetResourceId>'
+            tags: '<tags>'
           }
         ]
       }
@@ -551,6 +553,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     "sku": {
       "value": "Premium_LRS"
     },
+    "tags": {
+      "value": "<tags>"
+    },
     "volumeGroups": {
       "value": [
         {
@@ -564,7 +569,8 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
                   }
                 ]
               },
-              "subnetResourceId": "<subnetResourceId>"
+              "subnetResourceId": "<subnetResourceId>",
+              "tags": "<tags>"
             }
           ]
         }
@@ -590,6 +596,7 @@ param name = 'esanpe001'
 param availabilityZone = 2
 param publicNetworkAccess = 'Disabled'
 param sku = 'Premium_LRS'
+param tags = '<tags>'
 param volumeGroups = [
   {
     name: 'vol-grp-01'
@@ -603,6 +610,7 @@ param volumeGroups = [
           ]
         }
         subnetResourceId: '<subnetResourceId>'
+        tags: '<tags>'
       }
     ]
   }
