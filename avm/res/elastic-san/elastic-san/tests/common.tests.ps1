@@ -1,5 +1,24 @@
-function Test-VerifyLock($ResourceId) {
-    # TODO: Not Implemented Yet - How to test it?
+function Test-VerifyLock($LockName, $ResourceId) {
+
+    if ( $LockName ) {
+
+        $r = Get-AzResource -ResourceId $ResourceId
+        $r | Should -Not -BeNullOrEmpty
+
+        $l = Get-AzResourceLock -LockName $LockName -Scope $ResourceId
+        $l | Should -Not -BeNullOrEmpty
+
+        $l.Name | Should -Be $LockName
+        $l.ResourceId | Should -Not -BeNullOrEmpty # ****/Microsoft.Authorization/locks/myCustomLockName
+        $l.ResourceName | Should -Be $r.Name
+        $l.ResourceType | Should -Be $r.ResourceType
+        $l.ExtensionResourceName | Should -Be $LockName
+        $l.ExtensionResourceType | Should -Be 'Microsoft.Authorization/locks'
+        $l.ResourceGroupName | Should -Be $r.ResourceGroupName
+        $l.SubscriptionId | Should -Not -BeNullOrEmpty
+        $l.Properties | Should -Not -BeNullOrEmpty
+        $l.LockId | Should -Not -BeNullOrEmpty
+    }
 }
 
 function Test-VerifyRoleAssignment($ResourceId) {
@@ -99,11 +118,12 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
                 $PrivateEndpoints[$i].location | Should -Not -BeNullOrEmpty
                 $PrivateEndpoints[$i].resourceId | Should -Be $item.properties.privateEndpoint.id
                 $PrivateEndpoints[$i].groupId | Should -Be $GroupIds[$i]
-                $PrivateEndpoints[$i].customDnsConfig | Should -BeNullOrEmpty
+                #$PrivateEndpoints[$i].customDnsConfig | Should -BeNullOrEmpty
+                $null  | Should -Be $PrivateEndpoints[$i].customDnsConfig
                 $PrivateEndpoints[$i].networkInterfaceResourceIds | Should -Not -BeNullOrEmpty
 
                 Test-VerifyTagsForResource -ResourceId $PrivateEndpoints[$i].resourceId -Tags $Tags
-                Test-VerifyLock -ResourceId $PrivateEndpoints[$i].resourceId
+                Test-VerifyLock -LockName 'myCustomLockName' -ResourceId $PrivateEndpoints[$i].resourceId
             }
         }
 
@@ -301,7 +321,7 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
 
     Test-VerifyTagsForResource -ResourceId $esan.Id -Tags $Tags
 
-    Test-VerifyLock -ResourceId $esan.Id
+    Test-VerifyLock -LockName $null -ResourceId $esan.Id # ESAN Doesn't have Locks
     Test-VerifyRoleAssignment -ResourceId $esan.Id
 
     return $esan

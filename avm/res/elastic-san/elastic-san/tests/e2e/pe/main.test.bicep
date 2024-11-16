@@ -75,6 +75,10 @@ module testDeployment '../../../main.bicep' = [
                 ]
               }
               tags: tags
+              lock: {
+                kind: 'CanNotDelete'
+                name: 'myCustomLockName'
+              }
             }
           ]
         }

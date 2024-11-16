@@ -544,6 +544,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         name: 'vol-grp-01'
         privateEndpoints: [
           {
+            lock: {
+              kind: 'CanNotDelete'
+              name: 'myCustomLockName'
+            }
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
@@ -593,6 +597,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "name": "vol-grp-01",
           "privateEndpoints": [
             {
+              "lock": {
+                "kind": "CanNotDelete",
+                "name": "myCustomLockName"
+              },
               "privateDnsZoneGroup": {
                 "privateDnsZoneGroupConfigs": [
                   {
@@ -632,6 +640,10 @@ param volumeGroups = [
     name: 'vol-grp-01'
     privateEndpoints: [
       {
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
             {
@@ -688,10 +700,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         name: 'vol-grp-01'
         privateEndpoints: [
           {
-            lock: {
-              kind: 'CanNotDelete'
-              name: 'myCustomLockName'
-            }
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
@@ -763,10 +771,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "name": "vol-grp-01",
           "privateEndpoints": [
             {
-              "lock": {
-                "kind": "CanNotDelete",
-                "name": "myCustomLockName"
-              },
               "privateDnsZoneGroup": {
                 "privateDnsZoneGroupConfigs": [
                   {
@@ -826,10 +830,6 @@ param volumeGroups = [
     name: 'vol-grp-01'
     privateEndpoints: [
       {
-        lock: {
-          kind: 'CanNotDelete'
-          name: 'myCustomLockName'
-        }
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
             {
