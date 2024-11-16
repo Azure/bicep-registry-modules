@@ -65,7 +65,7 @@ jobs:
         with:
           inlineScript: |
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'tests' 'Test-CI.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'Test-CI.ps1')
 
             $functionInput = @{
               RepoRootPath      = $env:GITHUB_WORKSPACE

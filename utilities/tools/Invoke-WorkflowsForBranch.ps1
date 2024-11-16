@@ -273,7 +273,7 @@ function Invoke-WorkflowsForBranch {
         [string] $RepositoryName = 'bicep-registry-modules',
 
         [Parameter(Mandatory = $false)]
-        [string] $RepoRoot = (Get-Item $PSScriptRoot).Parent.Parent.FullName,
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).Parent.FullName,
 
         [Parameter(Mandatory = $false)]
         [hashtable] $WorkflowInputs = @{

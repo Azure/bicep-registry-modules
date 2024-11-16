@@ -322,7 +322,7 @@ Describe 'Module tests' -Tag 'Module' {
             $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
 
             # Load function
-            . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+            . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
             # Apply update with already compiled template content
             Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{ TemplateFileContent = $templateFileContent }

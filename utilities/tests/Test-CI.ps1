@@ -53,9 +53,9 @@ function Test-CI {
     )
 
     # Load used functions
-    . (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
 
-    $testFiles = (Get-ChildItem -Path (Join-Path $RepoRootPath 'avm' 'utilities' 'tests') -Recurse -File -Filter '*.tests.ps1').FullName | Where-Object {
+    $testFiles = (Get-ChildItem -Path (Join-Path $RepoRootPath 'utilities' 'tests') -Recurse -File -Filter '*.tests.ps1').FullName | Where-Object {
         $_ -match $TestFileRegex
     }
 
@@ -92,7 +92,7 @@ function Test-CI {
         $functionInput = @{
             RepoRootPath      = $RepoRootPath
             PesterTestResults = $testResults
-            OutputFilePath    = Join-Path $RepoRootPath 'avm' 'utilities' 'tests' 'Pester-output.md'
+            OutputFilePath    = Join-Path $RepoRootPath 'utilities' 'tests' 'Pester-output.md'
             GitHubRepository  = $GitHubRepository
             BranchName        = $BranchName
         }

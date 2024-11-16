@@ -82,8 +82,8 @@ jobs:
             Write-Output '::group::Replace tokens in relevant files'
 
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
 
             $targetPath = Join-Path $env:GITHUB_WORKSPACE '${{ env.targetPath }}'
             $psRuleFilterRegex = '${{ env.psRuleFilterRegex }}'
@@ -163,7 +163,7 @@ jobs:
             Write-Output '::group::Parse CSV content'
 
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Set-PSRuleGitHubOutput.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Set-PSRuleGitHubOutput.ps1')
 
             # Populate parameter input
             $ParameterInput = @{

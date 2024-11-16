@@ -30,7 +30,7 @@ function Get-AvailableResourceLocation {
     param (
 
         [Parameter(Mandatory = $false)]
-        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.parent.FullName,
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName,
 
         [Parameter(Mandatory = $false)]
         [array] $AllowedRegionsList = @(
@@ -63,7 +63,7 @@ function Get-AvailableResourceLocation {
     )
 
     # Load used functions
-    . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-SpecsAlignedResourceName.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-SpecsAlignedResourceName.ps1')
 
     # Configure Resource Type
     $fullModuleIdentifier = ($ModuleRoot -split '[\/|\\]{0,1}avm[\/|\\]{1}(res|ptn|utl)[\/|\\]{1}')[2] -replace '\\', '/'
