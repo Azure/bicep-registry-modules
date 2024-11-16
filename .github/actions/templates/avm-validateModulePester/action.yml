@@ -30,7 +30,7 @@ inputs:
   moduleTestFilePath:
     description: "The path to the test file"
     required: true
-    default: "avm/utilities/pipelines/staticValidation/compliance/module.tests.ps1"
+    default: "utilities/pipelines/staticValidation/compliance/module.tests.ps1"
 
 runs:
   using: "composite"
