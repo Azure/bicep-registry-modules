@@ -51,6 +51,10 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+@sys.description('Optional. The lock settings of the service.')
+param lock lockType?
+
 // ============== //
 // Variables      //
 // ============== //
@@ -238,91 +242,3 @@ type volumeGroupOutputType = {
   @sys.description('The private endpoints of the Elastic SAN Volume Group.')
   privateEndpoints: array
 }
-
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
-@sys.description('Optional. The lock settings of the service.')
-param lock lockType?
-
-/*
-
-TODO:
-out elasticSan_volumeGroups
-
-
-
-
-
-@description('The private endpoints of the app configuration.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: configurationStore_privateEndpoints[i].outputs.name
-    resourceId: configurationStore_privateEndpoints[i].outputs.resourceId
-    groupId: configurationStore_privateEndpoints[i].outputs.groupId
-    customDnsConfig: configurationStore_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: configurationStore_privateEndpoints[i].outputs.networkInterfaceIds
-  }
-]
-
-####################################
-
-
-
-
-
-
-
-
-
-*/
-
-// TODO: Your module should support the following optional parameters. However, please review and remove any parameters that are unnecessary.
-
-/*
-
-
-
-
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
-@sys.description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingFullType[]?
-
-https://learn.microsoft.com/en-us/azure/storage/elastic-san/elastic-san-metrics
-All - Every resource log offered by the resource.
-Audit - All resource logs that record customer interactions with data or the settings of the service.
-
-
-
-
-
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
-@sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType[]?
-
-
-
-
-*/
-
-// @sys.description('The resource ids of the deployed Elastic SAN Volume Groups.')
-// output volumeGroupResourceIds array = [
-//   for index in range(0, length(elasticSan.?volumeGroups ?? [])): elasticSan_volumeGroups[index].outputs.resourceId
-// ]
-
-// TODO: Add additional outputs as needed
-
-/*
-
-
-
-@sys.export()
-type elasticSanType = {
-  @sys.description('Required. The name of the Elastic SAN Volume Group.')
-  @minLength(3)
-  name: string
-
-  @sys.description('Optional. Elastic SAN Volume Groups to create.')
-  volumeGroups: volumeGroupType[]?
-}
-
-
-*/

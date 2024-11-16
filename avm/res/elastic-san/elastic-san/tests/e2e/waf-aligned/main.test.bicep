@@ -64,18 +64,11 @@ module testDeployment '../../../main.bicep' = [
       publicNetworkAccess: 'Disabled'
       volumeGroups: [
         {
-          // Test - Multiple Volumes
           name: 'vol-grp-01'
           volumes: [
             {
-              // Test - Multiple Snapshots
               name: 'vol-grp-01-vol-01'
               sizeGiB: 1
-              snapshots: [
-                {
-                  name: 'vol-grp-01-vol-01-snap-01-${iteration}'
-                }
-              ]
             }
           ]
           privateEndpoints:[
