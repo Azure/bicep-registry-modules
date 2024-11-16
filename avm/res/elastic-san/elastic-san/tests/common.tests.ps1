@@ -119,7 +119,7 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
                 $PrivateEndpoints[$i].resourceId | Should -Be $item.properties.privateEndpoint.id
                 $PrivateEndpoints[$i].groupId | Should -Be $GroupIds[$i]
                 #$PrivateEndpoints[$i].customDnsConfig | Should -BeNullOrEmpty
-                $null  | Should -Be $PrivateEndpoints[$i].customDnsConfig
+                $null  | Should -Be $($PrivateEndpoints[$i].customDnsConfig | ConvertTo-Json -Depth 20).ToString()
                 $PrivateEndpoints[$i].networkInterfaceResourceIds | Should -Not -BeNullOrEmpty
 
                 Test-VerifyTagsForResource -ResourceId $PrivateEndpoints[$i].resourceId -Tags $Tags
