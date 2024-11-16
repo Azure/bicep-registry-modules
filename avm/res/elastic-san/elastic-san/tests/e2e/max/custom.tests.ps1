@@ -48,8 +48,8 @@ Describe 'Validate Deployment' {
                 -Location $location `
                 -Tags $expectedTags  `
                 -AvailabilityZone 3 `
-                -BaseSizeTiB 1 `
-                -ExtendedCapacitySizeTiB 0 `
+                -BaseSizeTiB 2 `
+                -ExtendedCapacitySizeTiB 1 `
                 -PublicNetworkAccess 'Enabled' `
                 -SkuName 'Premium_LRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `

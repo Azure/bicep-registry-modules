@@ -52,7 +52,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      sku: 'Premium_LRS'
+      location: resourceLocation
+      sku: 'Premium_LRS'      
+      baseSizeTiB: 2
+      extendedCapacitySizeTiB: 1
       availabilityZone: 3
       // publicNetworkAccess: 'Enabled' // virtualNetworkRules should enforce this to be 'Enabled'
       volumeGroups: [
@@ -126,16 +129,6 @@ module testDeployment '../../../main.bicep' = [
         Owner: 'Contoso'
         CostCenter: '123-456-789'
       }
-
-      //location
-      //sku
-      //availabilityZone
-      //baseSizeTiB
-      //extendedCapacitySizeTiB
-      //publicNetworkAccess
-      //enableTelemetry
-
-      // TODO: Include as many additional parameters as possible. Ideally all.
     }
   }
 ]

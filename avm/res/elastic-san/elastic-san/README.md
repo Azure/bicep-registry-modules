@@ -266,6 +266,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     name: 'esanmax001'
     // Non-required parameters
     availabilityZone: 3
+    baseSizeTiB: 2
+    extendedCapacitySizeTiB: 1
+    location: '<location>'
     sku: 'Premium_LRS'
     tags: {
       CostCenter: '123-456-789'
@@ -351,6 +354,15 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Non-required parameters
     "availabilityZone": {
       "value": 3
+    },
+    "baseSizeTiB": {
+      "value": 2
+    },
+    "extendedCapacitySizeTiB": {
+      "value": 1
+    },
+    "location": {
+      "value": "<location>"
     },
     "sku": {
       "value": "Premium_LRS"
@@ -438,6 +450,9 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 param name = 'esanmax001'
 // Non-required parameters
 param availabilityZone = 3
+param baseSizeTiB = 2
+param extendedCapacitySizeTiB = 1
+param location = '<location>'
 param sku = 'Premium_LRS'
 param tags = {
   CostCenter: '123-456-789'
