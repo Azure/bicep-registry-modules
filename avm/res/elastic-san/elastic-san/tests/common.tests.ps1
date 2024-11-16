@@ -280,10 +280,12 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
 
         $esan.AvailabilityZone | Should -Not -BeNullOrEmpty
         $esan.AvailabilityZone[0] | Should -Be $AvailabilityZone
+        $esan.SkuName | Should -Be 'Premium_LRS'
 
     } else {
 
         $esan.AvailabilityZone | Should -BeNullOrEmpty
+        $esan.SkuName | Should -Be 'Premium_ZRS'
 
     }
 

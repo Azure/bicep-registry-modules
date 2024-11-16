@@ -652,6 +652,17 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
             subnetResourceId: '<subnetResourceId>'
           }
         ]
+        volumes: [
+          {
+            name: 'vol-grp-01-vol-01'
+            sizeGiB: 1
+            snapshots: [
+              {
+                name: '<name>'
+              }
+            ]
+          }
+        ]
       }
     ]
   }
@@ -702,6 +713,17 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
               },
               "subnetResourceId": "<subnetResourceId>"
             }
+          ],
+          "volumes": [
+            {
+              "name": "vol-grp-01-vol-01",
+              "sizeGiB": 1,
+              "snapshots": [
+                {
+                  "name": "<name>"
+                }
+              ]
+            }
           ]
         }
       ]
@@ -742,6 +764,17 @@ param volumeGroups = [
           ]
         }
         subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    volumes: [
+      {
+        name: 'vol-grp-01-vol-01'
+        sizeGiB: 1
+        snapshots: [
+          {
+            name: '<name>'
+          }
+        ]
       }
     ]
   }

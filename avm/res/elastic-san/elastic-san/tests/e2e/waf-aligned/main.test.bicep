@@ -34,6 +34,14 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
+// TODO: 
+// managed identity
+// CMK
+// private endpoints
+// zrs
+// Virtual Network Rules
+
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -56,8 +64,20 @@ module testDeployment '../../../main.bicep' = [
       publicNetworkAccess: 'Disabled'
       volumeGroups: [
         {
-          // Test - Private endpoints
+          // Test - Multiple Volumes
           name: 'vol-grp-01'
+          volumes: [
+            {
+              // Test - Multiple Snapshots
+              name: 'vol-grp-01-vol-01'
+              sizeGiB: 1
+              snapshots: [
+                {
+                  name: 'vol-grp-01-vol-01-snap-01-${iteration}'
+                }
+              ]
+            }
+          ]
           privateEndpoints:[
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
