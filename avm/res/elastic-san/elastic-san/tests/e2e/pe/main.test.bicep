@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       sku: 'Premium_LRS'
       availabilityZone: 2
-      publicNetworkAccess: 'Disabled'
+      // publicNetworkAccess: 'Disabled' // Private Endpoints should enforce this to be disabled
       tags: tags
       volumeGroups: [
         {
@@ -67,9 +67,6 @@ module testDeployment '../../../main.bicep' = [
           name: 'vol-grp-01'
           privateEndpoints:[
             {
-              //name: 'private-endpoint-01'
-              //location: enforcedLocation
-              //privateLinkServiceConnectionName: 'private-link-connection-01'
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               privateDnsZoneGroup: {
                 privateDnsZoneGroupConfigs: [
@@ -79,17 +76,6 @@ module testDeployment '../../../main.bicep' = [
                 ]
               }
               tags: tags
-              //isManualConnection: false
-              //manualConnectionRequestMessage: 'Please approve the connection'
-              //customDnsConfigs: privateEndpointCustomDnsConfigType[]
-              //ipConfigurations: privateEndpointIpConfigurationType[]
-              //applicationSecurityGroupResourceIds: string[]
-              //customNetworkInterfaceName: 'custom-nic-01'
-              //lock: lockType
-              //roleAssignments: roleAssignmentType[]
-              //tags: object?
-              //enableTelemetry: false
-              //resourceGroupName: string
             }
           ]
         }
