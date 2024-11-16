@@ -628,7 +628,32 @@ This instance deploys the module in alignment with the best-practices of the Azu
 module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   name: 'elasticSanDeployment'
   params: {
+    // Required parameters
     name: 'esanwaf001'
+    // Non-required parameters
+    publicNetworkAccess: 'Disabled'
+    sku: 'Premium_ZRS'
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    volumeGroups: [
+      {
+        name: 'vol-grp-01'
+        privateEndpoints: [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+                }
+              ]
+            }
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -645,8 +670,41 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "esanwaf001"
+    },
+    // Non-required parameters
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "sku": {
+      "value": "Premium_ZRS"
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "volumeGroups": {
+      "value": [
+        {
+          "name": "vol-grp-01",
+          "privateEndpoints": [
+            {
+              "privateDnsZoneGroup": {
+                "privateDnsZoneGroupConfigs": [
+                  {
+                    "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+                  }
+                ]
+              },
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ]
+        }
+      ]
     }
   }
 }
@@ -662,7 +720,32 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
+// Required parameters
 param name = 'esanwaf001'
+// Non-required parameters
+param publicNetworkAccess = 'Disabled'
+param sku = 'Premium_ZRS'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param volumeGroups = [
+  {
+    name: 'vol-grp-01'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+  }
+]
 ```
 
 </details>

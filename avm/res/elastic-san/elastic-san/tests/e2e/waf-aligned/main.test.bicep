@@ -25,6 +25,15 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: enforcedLocation
+  }
+}
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -43,7 +52,30 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      // TODO: Include additional parameters as needed - Required, Conditional, Optional parameters BUT only those to ensure compliance with the Azure Well-Architected Framework.
+      sku: 'Premium_ZRS'
+      publicNetworkAccess: 'Disabled'
+      volumeGroups: [
+        {
+          // Test - Private endpoints
+          name: 'vol-grp-01'
+          privateEndpoints:[
+            {
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+      tags: {
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
+      }
     }
   }
 ]
@@ -55,7 +87,3 @@ output name string = testDeployment[0].outputs.name
 output location string = testDeployment[0].outputs.location
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output volumeGroups volumeGroupOutputType[] = testDeployment[0].outputs.volumeGroups
-
-// TODO: Add additional outputs as needed
-
-//

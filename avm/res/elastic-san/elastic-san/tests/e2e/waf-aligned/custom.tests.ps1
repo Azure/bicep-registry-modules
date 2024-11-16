@@ -7,13 +7,16 @@ Describe 'Validate Deployment' {
 
     BeforeAll {
 
+        . $PSScriptRoot/../../common.tests.ps1
+        $expectedTags = @{Owner = 'Contoso'; CostCenter = '123-456-789' }
+        $groupIds = @( 'vol-grp-01' )
+        $expectedVolumeGroupsCount = 1
+
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
         $location = $TestInputData.DeploymentOutputs.location.Value
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
         $volumeGroups = $TestInputData.DeploymentOutputs.volumeGroups.Value
-
-        # TODO: Add additional outputs as needed
     }
 
     Context 'Basic Tests' {
@@ -23,18 +26,80 @@ Describe 'Validate Deployment' {
 
         It 'Check Output Variables' {
 
-            $resourceId | Should -Not -BeNullOrEmpty
-            $name | Should -Not -BeNullOrEmpty
-            $location | Should -Not -BeNullOrEmpty
-            $resourceGroupName | Should -Not -BeNullOrEmpty
+            Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
+                -ResourceId $resourceId `
+                -Name $name `
+                -Location $location `
+                -ResourceGroupName $resourceGroupName
             $volumeGroups | Should -Not -BeNullOrEmpty
-
-            # TODO: Add additional outputs as needed
         }
-
-        # TODO: Add additional Basic Checks as needed
     }
 
-    # TODO: Add additional Context Checks as needed
-}
+    Context 'Azure Elastic SAN Tests' {
 
+        BeforeAll {
+        }
+
+        It 'Check Azure Elastic SAN' {
+
+            Test-VerifyElasticSAN `
+                -ResourceId $resourceId `
+                -ResourceGroupName $resourceGroupName `
+                -name $name `
+                -Location $location `
+                -Tags $expectedTags  `
+                -AvailabilityZone 2 ` # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                -BaseSizeTiB 1 `
+                -ExtendedCapacitySizeTiB 0 `
+                -PublicNetworkAccess 'Disabled' `
+                -SkuName 'Premium_LRS' ` # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                -VolumeGroupCount $expectedVolumeGroupsCount `
+                -GroupIds $groupIds
+        }
+
+        It 'Check Azure Elastic SAN Volume Groups' {
+
+            # Volume Groups
+            $expectedData = @(
+                @{ PrivateEndpointCounts=1 } # vol-grp-01
+            )
+
+            $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
+
+            foreach ($item in $expectedData) {
+
+                $vgrpidx = $expectedData.IndexOf($item)
+
+                Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
+                    -ResourceId $volumeGroups[$vgrpidx].resourceId `
+                    -Name $volumeGroups[$vgrpidx].name `
+                    -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
+                    -Location $null # Location is NOT Supported on this resource
+
+                Test-VerifyElasticSANVolumeGroup `
+                    -ResourceId $volumeGroups[$vgrpidx].resourceId `
+                    -ElasticSanName $name `
+                    -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
+                    -Name $volumeGroups[$vgrpidx].name `
+                    -ExpectedLocation $location `
+                    -Location $volumeGroups[$vgrpidx].location `
+                    -SystemAssignedMI $false `
+                    -UserAssignedMI $false `
+                    -TenantId $null `
+                    -UserAssignedMIResourceId $null `
+                    -SystemAssignedMIPrincipalId $null `
+                    -NetworkAclsVirtualNetworkRule $null `
+                    -CMK $false `
+                    -CMKUMIResourceId $null `
+                    -CMKKeyVaultKeyUrl $null `
+                    -CMKKeyVaultEncryptionKeyName $null `
+                    -CMKKeyVaultUrl $null `
+                    -CMKKeyVaultEncryptionKeyVersion $null `
+                    -GroupIds $groupIds `
+                    -PrivateEndpointCounts $item.PrivateEndpointCounts `
+                    -PrivateEndpoints $volumeGroups[$vgrpidx].privateEndpoints `
+                    -Tags $expectedTags
+            }
+        }
+    }
+}
