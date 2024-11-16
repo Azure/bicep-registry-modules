@@ -54,6 +54,8 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Required parameters
     name: 'esancmk001'
     // Non-required parameters
+    availabilityZone: 2
+    sku: 'Premium_LRS'
     volumeGroups: [
       {
         customerManagedKey: {
@@ -104,6 +106,12 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "esancmk001"
     },
     // Non-required parameters
+    "availabilityZone": {
+      "value": 2
+    },
+    "sku": {
+      "value": "Premium_LRS"
+    },
     "volumeGroups": {
       "value": [
         {
@@ -152,6 +160,8 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 // Required parameters
 param name = 'esancmk001'
 // Non-required parameters
+param availabilityZone = 2
+param sku = 'Premium_LRS'
 param volumeGroups = [
   {
     customerManagedKey: {
@@ -255,6 +265,8 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Required parameters
     name: 'esanmax001'
     // Non-required parameters
+    availabilityZone: 3
+    sku: 'Premium_LRS'
     tags: {
       CostCenter: '123-456-789'
       Owner: 'Contoso'
@@ -337,6 +349,12 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "esanmax001"
     },
     // Non-required parameters
+    "availabilityZone": {
+      "value": 3
+    },
+    "sku": {
+      "value": "Premium_LRS"
+    },
     "tags": {
       "value": {
         "CostCenter": "123-456-789",
@@ -419,6 +437,8 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 // Required parameters
 param name = 'esanmax001'
 // Non-required parameters
+param availabilityZone = 3
+param sku = 'Premium_LRS'
 param tags = {
   CostCenter: '123-456-789'
   Owner: 'Contoso'
