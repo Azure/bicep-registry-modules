@@ -103,6 +103,7 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
                 $PrivateEndpoints[$i].networkInterfaceResourceIds | Should -Not -BeNullOrEmpty
 
                 Test-VerifyTagsForResource -ResourceId $PrivateEndpoints[$i].resourceId -Tags $Tags
+                Test-VerifyLock -ResourceId $PrivateEndpoints[$i].resourceId
             }
         }
 
