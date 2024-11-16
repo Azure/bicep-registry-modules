@@ -37,6 +37,7 @@ param roleAssignments roleAssignmentType[]?
 @allowed([
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccess string = 'Disabled'
 
