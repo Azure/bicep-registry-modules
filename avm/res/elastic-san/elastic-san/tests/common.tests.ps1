@@ -259,17 +259,6 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     $vg.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups'
 }
 
-
-
-
-
-
-
-
-
-
-
-
 function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds) {
 
     $esan = Get-AzElasticSan -ResourceGroupName $ResourceGroupName -Name $Name
@@ -297,17 +286,12 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
 
     Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $esan.PrivateEndpointConnection -PrivateEndpointCounts 0 -PrivateEndpoints $null -Tags $null
 
-
-
-
-
-
     $esan.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $esan.ResourceGroupName | Should -Be $ResourceGroupName
     $esan.SkuName | Should -Be $SkuName
     $esan.SkuTier | Should -Be 'Premium'
     #Skip $esan.SystemData**
-    #Skip $esan.Tag
+    #Skip $esan.Tag - It is tested below
     #Skip $esan.TotalIops
     #Skip $esan.TotalMBps
     #Skip $esan.TotalSizeTiB | Should -Be $TotalSizeTiB
@@ -316,25 +300,6 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     $esan.VolumeGroupCount | Should -Be $VolumeGroupCount
 
     Test-VerifyTagsForResource -ResourceId $esan.Id -Tags $Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # TODO Logs + Test-VerifyDiagSettings
-
-    #if ( $BlobNumberOfRecordSets -ne 0 ) {
-    #    Test-VerifyDnsZone -Name 'privatelink.blob.core.windows.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $BlobNumberOfRecordSets
-    #}
 
     Test-VerifyLock -ResourceId $esan.Id
     Test-VerifyRoleAssignment -ResourceId $esan.Id

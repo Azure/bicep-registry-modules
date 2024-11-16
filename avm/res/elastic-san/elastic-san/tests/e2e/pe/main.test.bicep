@@ -11,7 +11,7 @@ metadata description = 'This instance deploys the module with private endpoints.
 @sys.maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-microsoft.elasticsan-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
+@sys.description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @sys.description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
