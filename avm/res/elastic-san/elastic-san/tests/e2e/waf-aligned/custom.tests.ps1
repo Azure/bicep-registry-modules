@@ -61,7 +61,7 @@ Describe 'Validate Deployment' {
 
             # Volume Groups
             $expectedData = @(
-                @{ PrivateEndpointCounts=1 } # vol-grp-01
+                @{ PrivateEndpointCounts=1;CMK=$true }  # vol-grp-01
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
@@ -84,17 +84,17 @@ Describe 'Validate Deployment' {
                     -ExpectedLocation $location `
                     -Location $volumeGroups[$vgrpidx].location `
                     -SystemAssignedMI $false `
-                    -UserAssignedMI $false `
-                    -TenantId $null `
-                    -UserAssignedMIResourceId $null `
+                    -UserAssignedMI $true `
+                    -TenantId $TestInputData.DeploymentOutputs.tenantId.Value `
+                    -UserAssignedMIResourceId $TestInputData.DeploymentOutputs.managedIdentityResourceId.Value `
                     -SystemAssignedMIPrincipalId $null `
                     -NetworkAclsVirtualNetworkRule $null `
-                    -CMK $false `
-                    -CMKUMIResourceId $null `
-                    -CMKKeyVaultKeyUrl $null `
-                    -CMKKeyVaultEncryptionKeyName $null `
-                    -CMKKeyVaultUrl $null `
-                    -CMKKeyVaultEncryptionKeyVersion $null `
+                    -CMK $item.CMK `
+                    -CMKUMIResourceId $TestInputData.DeploymentOutputs.managedIdentityResourceId.Value `
+                    -CMKKeyVaultKeyUrl $TestInputData.DeploymentOutputs.cmkKeyVaultKeyUrl.Value `
+                    -CMKKeyVaultEncryptionKeyName $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyName.Value `
+                    -CMKKeyVaultUrl $TestInputData.DeploymentOutputs.cmkKeyVaultUrl.Value `
+                    -CMKKeyVaultEncryptionKeyVersion $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyVersion.Value `
                     -GroupIds $groupIds `
                     -PrivateEndpointCounts $item.PrivateEndpointCounts `
                     -PrivateEndpoints $volumeGroups[$vgrpidx].privateEndpoints `

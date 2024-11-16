@@ -21,6 +21,9 @@ param serviceShort string = 'esanwaf'
 @sys.description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@sys.description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -30,17 +33,12 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     location: enforcedLocation
   }
 }
-
-// TODO: 
-// managed identity
-// CMK
-// private endpoints
-// zrs
-// Virtual Network Rules
-
 
 // General resources
 // =================
@@ -52,6 +50,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 // Test Execution //
 // ============== //
+
+var tags = {
+  Owner: 'Contoso'
+  CostCenter: '123-456-789'
+}
 
 @sys.batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -71,6 +74,16 @@ module testDeployment '../../../main.bicep' = [
               sizeGiB: 1
             }
           ]
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
+          customerManagedKey: {
+            keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+            userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          }
           privateEndpoints:[
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
@@ -81,13 +94,19 @@ module testDeployment '../../../main.bicep' = [
                   }
                 ]
               }
+              tags: tags
+              lock: {
+                kind: 'CanNotDelete'
+                name: 'myCustomLockName'
+              }
             }
           ]
         }
       ]
-      tags: {
-        Owner: 'Contoso'
-        CostCenter: '123-456-789'
+      tags: tags
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
     }
   }
@@ -100,3 +119,10 @@ output name string = testDeployment[0].outputs.name
 output location string = testDeployment[0].outputs.location
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output volumeGroups volumeGroupOutputType[] = testDeployment[0].outputs.volumeGroups
+
+output tenantId string = tenant().tenantId
+output managedIdentityResourceId string = nestedDependencies.outputs.managedIdentityResourceId
+output cmkKeyVaultKeyUrl string = nestedDependencies.outputs.keyVaultKeyUrl
+output cmkKeyVaultEncryptionKeyName string = nestedDependencies.outputs.keyVaultEncryptionKeyName
+output cmkKeyVaultUrl string = nestedDependencies.outputs.keyVaultUrl
+output cmkKeyVaultEncryptionKeyVersion string = nestedDependencies.outputs.keyVaultEncryptionKeyVersion

@@ -666,17 +666,32 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Required parameters
     name: 'esanwaf001'
     // Non-required parameters
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     publicNetworkAccess: 'Disabled'
     sku: 'Premium_ZRS'
-    tags: {
-      CostCenter: '123-456-789'
-      Owner: 'Contoso'
-    }
+    tags: '<tags>'
     volumeGroups: [
       {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
         name: 'vol-grp-01'
         privateEndpoints: [
           {
+            lock: {
+              kind: 'CanNotDelete'
+              name: 'myCustomLockName'
+            }
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
@@ -685,6 +700,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
               ]
             }
             subnetResourceId: '<subnetResourceId>'
+            tags: '<tags>'
           }
         ]
         volumes: [
@@ -716,6 +732,12 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "esanwaf001"
     },
     // Non-required parameters
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "publicNetworkAccess": {
       "value": "Disabled"
     },
@@ -723,17 +745,28 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "Premium_ZRS"
     },
     "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "Owner": "Contoso"
-      }
+      "value": "<tags>"
     },
     "volumeGroups": {
       "value": [
         {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
           "name": "vol-grp-01",
           "privateEndpoints": [
             {
+              "lock": {
+                "kind": "CanNotDelete",
+                "name": "myCustomLockName"
+              },
               "privateDnsZoneGroup": {
                 "privateDnsZoneGroupConfigs": [
                   {
@@ -741,7 +774,8 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
                   }
                 ]
               },
-              "subnetResourceId": "<subnetResourceId>"
+              "subnetResourceId": "<subnetResourceId>",
+              "tags": "<tags>"
             }
           ],
           "volumes": [
@@ -770,17 +804,32 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 // Required parameters
 param name = 'esanwaf001'
 // Non-required parameters
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param publicNetworkAccess = 'Disabled'
 param sku = 'Premium_ZRS'
-param tags = {
-  CostCenter: '123-456-789'
-  Owner: 'Contoso'
-}
+param tags = '<tags>'
 param volumeGroups = [
   {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     name: 'vol-grp-01'
     privateEndpoints: [
       {
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
             {
@@ -789,6 +838,7 @@ param volumeGroups = [
           ]
         }
         subnetResourceId: '<subnetResourceId>'
+        tags: '<tags>'
       }
     ]
     volumes: [
