@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "7508927969730008980"
+      "templateHash": "10873998523141028892"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN.",
@@ -65,7 +65,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS)."
+            "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
           }
         }
       },
@@ -922,7 +922,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "5699756391427510168"
+              "templateHash": "11373273073856879974"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group.",
@@ -1583,7 +1583,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS)."
+                "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
               }
             },
             "tags": {

@@ -957,7 +957,7 @@ List of Elastic SAN Volume Groups to be created in the Elastic SAN. An Elastic S
 | :-- | :-- | :-- |
 | [`customerManagedKey`](#parameter-volumegroupscustomermanagedkey) | object | The customer managed key definition. This parameter enables the encryption of Elastic SAN Volume Group using a customer-managed key. Currently, the only supported configuration is to use the same user-assigned identity for both 'managedIdentities.userAssignedResourceIds' and 'customerManagedKey.userAssignedIdentityResourceId'. Other configurations such as system-assigned identity are not supported. Ensure that the specified user-assigned identity has the 'Key Vault Crypto Service Encryption User' role access to both the key vault and the key itself. The key vault must also have purge protection enabled. |
 | [`managedIdentities`](#parameter-volumegroupsmanagedidentities) | object | The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported. |
-| [`privateEndpoints`](#parameter-volumegroupsprivateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS). |
+| [`privateEndpoints`](#parameter-volumegroupsprivateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`virtualNetworkRules`](#parameter-volumegroupsvirtualnetworkrules) | array | List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules. |
 | [`volumes`](#parameter-volumegroupsvolumes) | array | List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes. |
 
@@ -1047,7 +1047,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `volumeGroups.privateEndpoints`
 
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS).
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array

@@ -44,7 +44,7 @@ This module deploys an Elastic SAN Volume Group.
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS). |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`tags`](#parameter-tags) | object | Tags of the Elastic SAN Volume Group resource. |
 | [`virtualNetworkRules`](#parameter-virtualnetworkrules) | array | List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules. |
 | [`volumes`](#parameter-volumes) | array | List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes. |
@@ -194,7 +194,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS).
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array

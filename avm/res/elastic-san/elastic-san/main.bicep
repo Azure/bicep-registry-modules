@@ -210,7 +210,7 @@ type volumeGroupType = {
   @sys.description('Optional. The customer managed key definition. This parameter enables the encryption of Elastic SAN Volume Group using a customer-managed key. Currently, the only supported configuration is to use the same user-assigned identity for both \'managedIdentities.userAssignedResourceIds\' and \'customerManagedKey.userAssignedIdentityResourceId\'. Other configurations such as system-assigned identity are not supported. Ensure that the specified user-assigned identity has the \'Key Vault Crypto Service Encryption User\' role access to both the key vault and the key itself. The key vault must also have purge protection enabled.')
   customerManagedKey: customerManagedKeyType?
 
-  @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS).')
+  @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
   privateEndpoints: privateEndpointSingleServiceType[]?
 }
 
