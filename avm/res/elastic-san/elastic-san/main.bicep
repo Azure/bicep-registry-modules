@@ -191,7 +191,7 @@ output volumeGroups volumeGroupOutputType[] = [
 import { managedIdentityAllType, customerManagedKeyType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 import { volumeType, virtualNetworkRuleType, volumeOutputType } from './volume-group/main.bicep'
 
-@export()
+@sys.export()
 type volumeGroupType = {
   @sys.minLength(3)
   @sys.maxLength(63)
@@ -214,7 +214,7 @@ type volumeGroupType = {
   privateEndpoints: privateEndpointSingleServiceType[]?
 }
 
-@export()
+@sys.export()
 type volumeGroupOutputType = {
   @sys.description('The resource ID of the deployed Elastic SAN Volume Group.')
   resourceId: string
@@ -313,7 +313,7 @@ param roleAssignments roleAssignmentType[]?
 
 
 
-@export()
+@sys.export()
 type elasticSanType = {
   @sys.description('Required. The name of the Elastic SAN Volume Group.')
   @minLength(3)

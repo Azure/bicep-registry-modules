@@ -252,7 +252,7 @@ output privateEndpoints array = [
 
 import { volumeSnapshotType, volumeSnapshotOutputType } from 'volume/main.bicep'
 
-@export()
+@sys.export()
 type volumeType = {
   @sys.minLength(3)
   @sys.maxLength(63)
@@ -268,14 +268,14 @@ type volumeType = {
   snapshots: volumeSnapshotType[]?
 }
 
-@export()
+@sys.export()
 type virtualNetworkRuleType = {
   @sys.minLength(1)
   @sys.description('Required. The resource ID of the subnet in the virtual network.')
   virtualNetworkSubnetResourceId: string
 }
 
-@export()
+@sys.export()
 type volumeOutputType = {
   @sys.description('The resource ID of the deployed Elastic SAN Volume.')
   resourceId: string

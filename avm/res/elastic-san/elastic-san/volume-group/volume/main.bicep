@@ -112,7 +112,7 @@ output snapshots volumeSnapshotOutputType[] = [
 // Definitions      //
 // ================ //
 
-@export()
+@sys.export()
 type volumeSnapshotType = {
   @sys.minLength(3)
   @sys.maxLength(63)
@@ -120,7 +120,7 @@ type volumeSnapshotType = {
   name: string
 }
 
-@export()
+@sys.export()
 type volumeSnapshotOutputType = {
   @sys.description('The resource ID of the deployed Elastic SAN Volume Snapshot.')
   resourceId: string
