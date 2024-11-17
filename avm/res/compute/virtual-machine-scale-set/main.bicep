@@ -99,6 +99,7 @@ param extensionAntiMalwareConfig object = {
 @description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionMonitoringAgentConfig object = {
   enabled: false
+  autoUpgradeMinorVersion: true
 }
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')

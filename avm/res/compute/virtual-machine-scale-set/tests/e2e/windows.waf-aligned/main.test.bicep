@@ -7,6 +7,12 @@ metadata description = 'This instance deploys the module in alignment with the b
 // Parameters //
 // ========== //
 
+@description('Optional. Configuration for the extension monitoring agent.')
+param extensionMonitoringAgentConfig object = {
+  enabled: true
+  autoUpgradeMinorVersion: true
+}
+
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescalesets-${serviceShort}-rg'
