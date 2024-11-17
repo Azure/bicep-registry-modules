@@ -1959,6 +1959,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       enabled: true
     }
     extensionMonitoringAgentConfig: {
+      autoUpgradeMinorVersion: true
       enabled: true
     }
     extensionNetworkWatcherAgentConfig: {
@@ -2130,6 +2131,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "extensionMonitoringAgentConfig": {
       "value": {
+        "autoUpgradeMinorVersion": true,
         "enabled": true
       }
     },
@@ -2285,6 +2287,7 @@ param extensionDSCConfig = {
   enabled: true
 }
 param extensionMonitoringAgentConfig = {
+  autoUpgradeMinorVersion: true
   enabled: true
 }
 param extensionNetworkWatcherAgentConfig = {
@@ -2317,6 +2320,7 @@ param vmPriority = 'Regular'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
 | [`name`](#parameter-name) | string | Name of the VMSS. |
@@ -2330,7 +2334,6 @@ param vmPriority = 'Regular'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalUnattendContent`](#parameter-additionalunattendcontent) | array | Specifies additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. - AdditionalUnattendContent object. |
-| [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`automaticRepairsPolicyEnabled`](#parameter-automaticrepairspolicyenabled) | bool | Specifies whether automatic repairs should be enabled on the virtual machine scale set. |
 | [`availabilityZones`](#parameter-availabilityzones) | array | The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set. |
 | [`bootDiagnosticEnabled`](#parameter-bootdiagnosticenabled) | bool | Enable boot diagnostics to use default managed or secure storage. Defaults set to false. |
@@ -2408,6 +2411,13 @@ param vmPriority = 'Regular'
 | :-- | :-- | :-- |
 | [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a registration token. |
 
+### Parameter: `adminPassword`
+
+When specifying a Windows Virtual Machine, this value should be passed.
+
+- Required: Yes
+- Type: securestring
+
 ### Parameter: `adminUsername`
 
 Administrator username.
@@ -2471,13 +2481,6 @@ Specifies additional base-64 encoded XML formatted information that can be inclu
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `adminPassword`
-
-When specifying a Windows Virtual Machine, this value should be passed.
-
-- Required: Yes
-- Type: securestring
 
 ### Parameter: `automaticRepairsPolicyEnabled`
 
@@ -2845,6 +2848,7 @@ The configuration for the [Monitoring Agent] extension. Must at least contain th
 - Default:
   ```Bicep
   {
+      autoUpgradeMinorVersion: true
       enabled: false
   }
   ```

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "11541738173219902243"
+      "templateHash": "5570232042557896838"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -306,7 +306,7 @@
     "adminPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "Optional. When specifying a Windows Virtual Machine, this value should be passed."
+        "description": "Required. When specifying a Windows Virtual Machine, this value should be passed."
       }
     },
     "customData": {
