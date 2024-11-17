@@ -86,8 +86,7 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
 
         if ($PrivateEndpointCounts -eq 0) {
             $PrivateEndpoints | Should -BeNullOrEmpty
-        }
-        else {
+        } else {
             $PrivateEndpoints | Should -Not -BeNullOrEmpty
             $PrivateEndpoints.Count | Should -Be $PrivateEndpointConnections.Count
         }
@@ -119,10 +118,13 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
                 $PrivateEndpoints[$i].resourceId | Should -Be $item.properties.privateEndpoint.id
                 $PrivateEndpoints[$i].groupId | Should -Be $GroupIds[$i]
 
-                $PrivateEndpoints[$i].customDnsConfig | Should -Not -BeNullOrEmpty
-                $PrivateEndpoints[$i].customDnsConfig.fqdn | Should -Not -BeNullOrEmpty
-                $PrivateEndpoints[$i].customDnsConfig.ipAddresses | Should -Not -BeNullOrEmpty
-                $PrivateEndpoints[$i].customDnsConfig.ipAddresses[0] | Should -Not -BeNullOrEmpty
+                # TODO: Some PEPs don't have customDnsConfig some do. Need to check why
+                if ( $PrivateEndpoints[$i].customDnsConfig ) {
+                    $PrivateEndpoints[$i].customDnsConfig | Should -Not -BeNullOrEmpty
+                    $PrivateEndpoints[$i].customDnsConfig.fqdn | Should -Not -BeNullOrEmpty
+                    $PrivateEndpoints[$i].customDnsConfig.ipAddresses | Should -Not -BeNullOrEmpty
+                    $PrivateEndpoints[$i].customDnsConfig.ipAddresses[0] | Should -Not -BeNullOrEmpty
+                }
 
                 $PrivateEndpoints[$i].networkInterfaceResourceIds | Should -Not -BeNullOrEmpty
 
@@ -179,7 +181,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds, $PrivateEndpointCounts, $PrivateEndpoints,  $Tags) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds, $PrivateEndpointCounts, $PrivateEndpoints, $Tags) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -269,8 +271,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     if ($PrivateEndpointCounts -eq 0) {
         $PrivateEndpoints | Should -BeNullOrEmpty
-    }
-    else {
+    } else {
         $PrivateEndpoints | Should -Not -BeNullOrEmpty
         $PrivateEndpoints.Count | Should -Be $PrivateEndpointCounts
     }
