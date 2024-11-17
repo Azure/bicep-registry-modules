@@ -40,7 +40,7 @@ param subscriptionAliasName string = ''
 
 @description('''Optional. The Billing Scope for the new Subscription alias, that will be created by this module.
 
-A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.
+A valid Billing Scope looks like `/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/enrollmentAccounts/{enrollmentAccountName}` and is case sensitive.
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
@@ -200,6 +200,24 @@ Each object must contain the following `keys`:
     1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
     2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
 ''')
+@metadata({
+  example: '''
+  [
+    {
+      // Contributor role assignment at subscription scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/Contributor'
+      relativeScope: ''
+    }
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  '''
+})
 param roleAssignments roleAssignmentType = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -297,7 +315,6 @@ param resourceProviders object = {
   'Microsoft.Sql': []
   'Microsoft.Storage': []
   'Microsoft.StreamAnalytics': []
-  'Microsoft.TimeSeriesInsights': []
   'Microsoft.Web': []
 }
 

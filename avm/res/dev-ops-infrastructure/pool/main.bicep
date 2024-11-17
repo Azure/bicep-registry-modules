@@ -114,6 +114,19 @@ var identity = !empty(managedIdentities)
     }
   : null
 
+var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
+  ? map(
+      ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      day =>
+        contains(agentProfile.resourcePredictions.daysData, day)
+          ? {
+              '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
+              '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
+            }
+          : {}
+    )
+  : null
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.devopsinfrastructure-pool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -133,13 +146,36 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-04-04-preview' = {
+resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-10-19' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
-    agentProfile: agentProfile
+    // agentProfile: agentProfile
+    agentProfile: agentProfile.kind == 'Stateful'
+      ? {
+          kind: 'Stateful'
+          maxAgentLifetime: agentProfile.maxAgentLifetime
+          gracePeriodTimeSpan: agentProfile.gracePeriodTimeSpan
+          resourcePredictions: !empty(agentProfile.?resourcePredictions)
+            ? {
+                timeZone: agentProfile.?resourcePredictions.timeZone
+                daysData: formattedDaysData
+              }
+            : null
+          resourcePredictionsProfile: agentProfile.?resourcePredictionsProfile
+        }
+      : {
+          kind: 'Stateless'
+          resourcePredictions: !empty(agentProfile.?resourcePredictions)
+            ? {
+                timeZone: agentProfile.?resourcePredictions.timeZone
+                daysData: formattedDaysData
+              }
+            : null
+          resourcePredictionsProfile: agentProfile.?resourcePredictionsProfile
+        }
     devCenterProjectResourceId: devCenterProjectResourceId
     fabricProfile: {
       sku: {
@@ -363,7 +399,13 @@ type agentStatefulType = {
   gracePeriodTimeSpan: string
 
   @description('Optional. Defines pool buffer/stand-by agents.')
-  resourcePredictions: object?
+  resourcePredictions: {
+    @description('Required. The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`.')
+    timeZone: string
+
+    @description('Optional. The number of agents needed at a specific time.')
+    daysData: daysDataType
+  }?
 
   @discriminator('kind')
   @description('Optional. Determines how the stand-by scheme should be provided.')
@@ -381,26 +423,7 @@ type agentStatelessType = {
     timeZone: string
 
     @description('Optional. The number of agents needed at a specific time.')
-    @metadata({
-      example: '''
-      [
-        { // Monday
-          '09:00': 5
-          '22:00': 0
-        }
-        {} // Tuesday
-        {} // Wednesday
-        {} // Thursday
-        { // Friday
-          '09:00': 5
-          '22:00': 0
-        }
-        {} // Saturday
-        {} // Sunday
-      ]
-      '''
-    })
-    daysData: object[]?
+    daysData: daysDataType
   }?
 
   @discriminator('kind')
@@ -500,4 +523,43 @@ type managedIdentitiesType = {
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
+}?
+
+@export()
+type standbyAgentsConfigType = {
+  @description('Required. The time at which the agents are needed.')
+  startTime: string
+
+  @description('Required. The time at which the agents are no longer needed.')
+  endTime: string
+
+  @description('Required. The number of agents needed at the start time.')
+  startAgentCount: int
+
+  @description('Required. The number of agents needed at the end time.')
+  endAgentCount: int
+}?
+
+@export()
+type daysDataType = {
+  @description('Optional. The number of agents needed at a specific time for Monday.')
+  monday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Tuesday.')
+  tuesday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Wednesday.')
+  wednesday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Thursday.')
+  thursday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Friday.')
+  friday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Saturday.')
+  saturday: standbyAgentsConfigType
+
+  @description('Optional. The number of agents needed at a specific time for Sunday.')
+  sunday: standbyAgentsConfigType
 }?
