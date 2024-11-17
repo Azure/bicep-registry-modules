@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "543007463534644066"
+      "version": "0.31.34.60546",
+      "templateHash": "178765084464759811"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -812,7 +812,8 @@
       "nullable": true,
       "allowedValues": [
         "azure",
-        "calico"
+        "calico",
+        "cilium"
       ],
       "metadata": {
         "description": "Optional. Specifies the network policy used for building Kubernetes network. - calico or azure."
@@ -1677,10 +1678,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1791,8 +1789,8 @@
         "networkProfile": {
           "networkDataplane": "[parameters('networkDataplane')]",
           "networkPlugin": "[parameters('networkPlugin')]",
-          "networkPluginMode": "[parameters('networkPluginMode')]",
-          "networkPolicy": "[parameters('networkPolicy')]",
+          "networkPluginMode": "[if(equals(parameters('networkDataplane'), 'cilium'), 'overlay', parameters('networkPluginMode'))]",
+          "networkPolicy": "[if(equals(parameters('networkDataplane'), 'cilium'), 'cilium', parameters('networkPolicy'))]",
           "podCidr": "[parameters('podCidr')]",
           "serviceCidr": "[parameters('serviceCidr')]",
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
@@ -2007,8 +2005,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "2505380725266419010"
+              "version": "0.31.34.60546",
+              "templateHash": "3191846535289543816"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -2204,8 +2202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "13856766172443517827"
+              "version": "0.31.34.60546",
+              "templateHash": "13504241837980660061"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -2554,10 +2552,7 @@
                 "vmSize": "[parameters('vmSize')]",
                 "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
                 "workloadRuntime": "[parameters('workloadRuntime')]"
-              },
-              "dependsOn": [
-                "managedCluster"
-              ]
+              }
             }
           },
           "outputs": {
