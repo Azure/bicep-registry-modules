@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "14560645908978883645"
+      "version": "0.31.34.60546",
+      "templateHash": "14164073542984791131"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -392,6 +392,20 @@
         },
         "resourcePredictions": {
           "type": "object",
+          "properties": {
+            "timeZone": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`."
+              }
+            },
+            "daysData": {
+              "$ref": "#/definitions/daysDataType",
+              "metadata": {
+                "description": "Optional. The number of agents needed at a specific time."
+              }
+            }
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. Defines pool buffer/stand-by agents."
@@ -442,13 +456,8 @@
               }
             },
             "daysData": {
-              "type": "array",
-              "items": {
-                "type": "object"
-              },
-              "nullable": true,
+              "$ref": "#/definitions/daysDataType",
               "metadata": {
-                "example": "      [\n        { // Monday\n          '09:00': 5\n          '22:00': 0\n        }\n        {} // Tuesday\n        {} // Wednesday\n        {} // Thursday\n        { // Friday\n          '09:00': 5\n          '22:00': 0\n        }\n        {} // Saturday\n        {} // Sunday\n      ]\n      ",
                 "description": "Optional. The number of agents needed at a specific time."
               }
             }
@@ -750,6 +759,90 @@
       "metadata": {
         "__bicep_export!": true
       }
+    },
+    "standbyAgentsConfigType": {
+      "type": "object",
+      "properties": {
+        "startTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time at which the agents are needed."
+          }
+        },
+        "endTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time at which the agents are no longer needed."
+          }
+        },
+        "startAgentCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of agents needed at the start time."
+          }
+        },
+        "endAgentCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of agents needed at the end time."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "daysDataType": {
+      "type": "object",
+      "properties": {
+        "monday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Monday."
+          }
+        },
+        "tuesday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Tuesday."
+          }
+        },
+        "wednesday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Wednesday."
+          }
+        },
+        "thursday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Thursday."
+          }
+        },
+        "friday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Friday."
+          }
+        },
+        "saturday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Saturday."
+          }
+        },
+        "sunday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Sunday."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
@@ -889,7 +982,8 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject()))), null())]"
   },
   "resources": {
     "avmTelemetry": {
@@ -914,13 +1008,13 @@
     },
     "managedDevOpsPool": {
       "type": "Microsoft.DevOpsInfrastructure/pools",
-      "apiVersion": "2024-04-04-preview",
+      "apiVersion": "2024-10-19",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "agentProfile": "[parameters('agentProfile')]",
+        "agentProfile": "[if(equals(parameters('agentProfile').kind, 'Stateful'), createObject('kind', 'Stateful', 'maxAgentLifetime', parameters('agentProfile').maxAgentLifetime, 'gracePeriodTimeSpan', parameters('agentProfile').gracePeriodTimeSpan, 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')), createObject('kind', 'Stateless', 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')))]",
         "devCenterProjectResourceId": "[parameters('devCenterProjectResourceId')]",
         "fabricProfile": {
           "sku": {
@@ -1041,7 +1135,7 @@
       "metadata": {
         "description": "The location the Managed DevOps Pool resource was deployed into."
       },
-      "value": "[reference('managedDevOpsPool', '2024-04-04-preview', 'full').location]"
+      "value": "[reference('managedDevOpsPool', '2024-10-19', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1049,7 +1143,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2024-04-04-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2024-10-19', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
