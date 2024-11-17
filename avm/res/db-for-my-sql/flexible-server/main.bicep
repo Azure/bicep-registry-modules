@@ -91,6 +91,9 @@ param maintenanceWindow object = {}
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29.')
 param delegatedSubnetResourceId string = ''
 
+@description('Optional. Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration.')
+param publicNetworkAccess string = 'Disabled'
+
 @description('Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access". Required if "delegatedSubnetResourceId" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server.')
 param privateDnsZoneResourceId string = ''
 
@@ -319,12 +322,21 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
           startMinute: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startMinute : 0
         }
       : null
-    network: !empty(delegatedSubnetResourceId) && empty(firewallRules)
-      ? {
-          delegatedSubnetResourceId: delegatedSubnetResourceId
-          privateDnsZoneResourceId: privateDnsZoneResourceId
-        }
-      : null
+    network: publicNetworkAccess == 'Enabled'
+      ? (!empty(delegatedSubnetResourceId) || empty(firewallRules)
+          ? {
+              publicNetworkAccess: publicNetworkAccess
+              delegatedSubnetResourceId: delegatedSubnetResourceId
+              privateDnsZoneResourceId: privateDnsZoneResourceId
+            }
+          : null)
+      : (!empty(delegatedSubnetResourceId)
+          ? {
+              publicNetworkAccess: publicNetworkAccess
+              delegatedSubnetResourceId: delegatedSubnetResourceId
+              privateDnsZoneResourceId: privateDnsZoneResourceId
+            }
+          : null)
     replicationRole: replicationRole
     restorePointInTime: restorePointInTime
     sourceServerResourceId: !empty(sourceServerResourceId) ? sourceServerResourceId : null

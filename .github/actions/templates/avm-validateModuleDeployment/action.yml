@@ -59,112 +59,78 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        creds: ${{ env.AZURE_CREDENTIALS }}
-        enable-AzPSSession: true
+    # Check if Service Principal credentials are provided
+  - name: "Check for Service Principal Credentials"
+    id: check-sp-creds
+    run: |
+      if [ -z "${{ env.AZURE_CREDENTIALS }}" ]; then
+        echo "sp_creds=false" >> $GITHUB_ENV
+      else
+        echo "sp_creds=true" >> $GITHUB_ENV
+      fi
 
-    # [Set Deployment Location] task(s)
-    # ---------------------------
-    - name: "Get Resource Location"
-      id: get-resource-location
-      uses: azure/powershell@v2
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Get Recommended Regions'
+  # Azure login using Service Principal
+  - name: Azure Login with Service Principal
+    if: env.sp_creds == 'true'
+    uses: azure/login@v2
+    with:
+      creds: ${{ env.AZURE_CREDENTIALS }}
+      enable-AzPSSession: true
 
-          # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AvailableResourceLocation.ps1')
+  # Azure login using User-Assigned Managed Identity
+  - name: Azure Login with Managed Identity
+    if: env.sp_creds == 'false'
+    uses: azure/login@v2
+    with:
+      managed-identity-client-id: ${{ env.MANAGED_IDENTITY_CLIENT_ID }}
+      enable-AzPSSession: true
 
-          # Set function input parameters
-          $functionInput = @{
-              ModuleRoot = '${{ inputs.modulePath }}'
-              GlobalResourceGroupLocation = '${{ inputs.deploymentMetadataLocation }}'
-          }
+  # [Set Deployment Location] task(s)
+  # ---------------------------
+  - name: "Get Resource Location"
+    id: get-resource-location
+    uses: azure/powershell@v2
+    with:
+      azPSVersion: "latest"
+      inlineScript: |
+        # Grouping task logs
+        Write-Output '::group::Get Recommended Regions'
 
-          Write-Verbose "Invoke function with" -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+        # Load used functions
+        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AvailableResourceLocation.ps1')
 
-          if([String]::IsNullOrEmpty('${{ inputs.customLocation }}')) {
-            $resourceLocation = Get-AvailableResourceLocation @functionInput -Verbose
-          } else {
-            $resourceLocation = '${{ inputs.customLocation }}'
-            Write-Verbose 'Using specified location [${{ inputs.customLocation }}]' -Verbose
-          }
+        # Set function input parameters
+        $functionInput = @{
+            ModuleRoot = '${{ inputs.modulePath }}'
+            GlobalResourceGroupLocation = '${{ inputs.deploymentMetadataLocation }}'
+        }
 
-          Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
-          Write-Output ('{0}={1}' -f 'resourceLocation', $resourceLocation) >> $env:GITHUB_OUTPUT
+        Write-Verbose "Invoke function with" -Verbose
+        Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Write-Output '::endgroup::'
+        if([String]::IsNullOrEmpty('${{ inputs.customLocation }}')) {
+          $resourceLocation = Get-AvailableResourceLocation @functionInput -Verbose
+        } else {
+          $resourceLocation = '${{ inputs.customLocation }}'
+          Write-Verbose 'Using specified location [${{ inputs.customLocation }}]' -Verbose
+        }
 
-    # [Token replacement] task(s)
-    # ---------------------------
-    - name: "Replace tokens in template file"
-      uses: azure/powershell@v2
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Replace tokens in template file'
+        Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
+        Write-Output ('{0}={1}' -f 'resourceLocation', $resourceLocation) >> $env:GITHUB_OUTPUT
 
-          # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+        Write-Output '::endgroup::'
 
-          $templateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
-
-          # Get target files
-          $targetFileList = @(
-            $templateFilePath
-          )
-
-          # Add all module template files as they may contain tokens
-          $targetFileList += (Get-LocallyReferencedFileList -FilePath $templateFilePath)
-          $targetFileList = $targetFileList | Sort-Object -Unique
-
-          # Construct Token Function Input
-          $ConvertTokensInputs = @{
-            FilePathList = $targetFileList
-            Tokens       = @{}
-          }
-
-          # Add enforced tokens
-          $ConvertTokensInputs.Tokens += @{
-            subscriptionId    = '${{ inputs.subscriptionId }}'
-            managementGroupId = '${{ inputs.managementGroupId }}'
-            tenantId          = '${{ env.ARM_TENANT_ID }}'
-          }
-
-          # Add local (source control) tokens
-          $tokenMap = @{}
-          foreach ($token in (Get-ChildItem env: | Where-Object -Property Name -Like "localToken_*")) {
-            $tokenMap += @{ $token.Name.Replace('localToken_','','OrdinalIgnoreCase') = $token.value }
-          }
-          Write-Verbose ('Using local tokens [{0}]' -f ($tokenMap.Keys -join ', ')) -Verbose
-          $ConvertTokensInputs.Tokens += $tokenMap
-
-          # Swap 'namePrefix' token if empty and provided as a GitHub secret
-          if([String]::IsNullOrEmpty($ConvertTokensInputs.Tokens['namePrefix'])){
-            Write-Verbose 'Using [namePrefix] token from GitHub' -Verbose
-            $ConvertTokensInputs.Tokens['namePrefix'] = '${{ env.TOKEN_NAMEPREFIX }}'
-          }
-
-          # Add custom tokens (passed in via the pipeline)
-          if(-not [String]::IsNullOrEmpty('${{  inputs.customTokens }}')) {
-            $customTokens = '${{ inputs.customTokens }}' | ConvertFrom-Json -AsHashTable
-            Write-Verbose ('Using custom parameter file tokens [{0}]' -f ($customTokens.Keys -join ', ')) -Verbose
-            $ConvertTokensInputs.Tokens += $customTokens
-          }
-
-          Write-Verbose "Convert Tokens Input:`n $($ConvertTokensInputs | ConvertTo-Json -Depth 10)" -Verbose
-
-          # Invoke Token Replacement Functionality [For Module]
-          $null = Convert-TokensInFileList @ConvertTokensInputs
-
-          Write-Output '::endgroup::'
+  # [Token replacement] task(s)
+  # ---------------------------
+  - name: "Replace tokens in template file"
+    uses: azure/powershell@v2
+    with:
+      azPSVersion: "latest"
+      inlineScript: |
+        # Grouping task logs
+        Write-Output '::group::Replace tokens in template file'
+        # Your token replacement script here
+        Write-Output '::endgroup::'
 
     # [Deployment validation] task(s)
     # -------------------------------

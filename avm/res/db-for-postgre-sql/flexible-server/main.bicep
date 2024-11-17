@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the PostgreSQL flexible server.')
 param name string
 
-@description('Optional. The administrator login name of a server. Can only be specified when the PostgreSQL server is being created.')
+@description('Optional. The administrator login name for the server. Can only be specified when the PostgreSQL server is being created.')
 param administratorLogin string?
 
 @description('Optional. The administrator login password.')

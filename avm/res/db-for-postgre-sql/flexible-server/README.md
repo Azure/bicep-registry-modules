@@ -147,7 +147,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsfsmax001'
+    name: 'dfpfmax001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -1317,7 +1317,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of a server. Can only be specified when the PostgreSQL server is being created. |
+| [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name for the server. Can only be specified when the PostgreSQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
 | [`availabilityZone`](#parameter-availabilityzone) | string | Availability zone information of the server. Default will have no preference set. |
@@ -1410,7 +1410,7 @@ Required if 'createMode' is set to 'PointInTimeRestore'.
 
 ### Parameter: `administratorLogin`
 
-The administrator login name of a server. Can only be specified when the PostgreSQL server is being created.
+The administrator login name for the server. Can only be specified when the PostgreSQL server is being created.
 
 - Required: No
 - Type: string
