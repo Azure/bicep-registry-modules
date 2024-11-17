@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "1443306495474212036"
+      "version": "0.31.34.60546",
+      "templateHash": "8773273774920281983"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -279,6 +279,20 @@
               "description": "Optional. Specifies the caching requirements."
             }
           },
+          "diskIOPSReadWrite": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes."
+            }
+          },
+          "diskMBpsReadWrite": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10."
+            }
+          },
           "managedDisk": {
             "type": "object",
             "properties": {
@@ -302,6 +316,13 @@
                 "nullable": true,
                 "metadata": {
                   "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
+                }
+              },
+              "id": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Specifies the customer managed disk id for the managed disk."
                 }
               }
             },
@@ -410,6 +431,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. When specifying a Windows Virtual Machine, this value should be passed."
+      }
+    },
+    "userData": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here."
       }
     },
     "customData": {
@@ -973,6 +1001,28 @@
         }
       }
     },
+    "managedDataDisks": {
+      "copy": {
+        "name": "managedDataDisks",
+        "count": "[length(coalesce(parameters('dataDisks'), createArray()))]"
+      },
+      "type": "Microsoft.Compute/disks",
+      "apiVersion": "2024-03-02",
+      "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex(), 1), 2, '0')))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk.storageAccountType]"
+      },
+      "properties": {
+        "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].diskSizeGB]",
+        "creationData": {
+          "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'createoption'), 'Empty')]"
+        },
+        "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
+        "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]"
+      },
+      "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]"
+    },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2024-07-01",
@@ -1000,11 +1050,12 @@
                 "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
                 "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))]",
                 "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].diskSizeGB]",
-                "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty')]",
+                "createOption": "[if(not(equals(resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null())), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
                 "deleteOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete')]",
                 "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
                 "managedDisk": {
                   "storageAccountType": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.storageAccountType]",
+                  "id": "[resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
                   "diskEncryptionSet": {
                     "id": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId')]"
                   }
@@ -1069,9 +1120,11 @@
         "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
         "billingProfile": "[if(and(not(empty(parameters('priority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', json(parameters('maxPriceForLowPriorityVm'))), null())]",
         "host": "[if(not(empty(parameters('dedicatedHostId'))), createObject('id', parameters('dedicatedHostId')), null())]",
-        "licenseType": "[if(not(empty(parameters('licenseType'))), parameters('licenseType'), null())]"
+        "licenseType": "[if(not(empty(parameters('licenseType'))), parameters('licenseType'), null())]",
+        "userData": "[if(not(empty(parameters('userData'))), base64(parameters('userData')), null())]"
       },
       "dependsOn": [
+        "managedDataDisks",
         "vm_nic"
       ]
     },
@@ -1251,8 +1304,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "191716886366421622"
+              "version": "0.31.34.60546",
+              "templateHash": "4400762038950491974"
             }
           },
           "definitions": {
@@ -2855,8 +2908,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2971,10 +3024,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3070,8 +3120,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3186,10 +3236,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3281,8 +3328,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3397,10 +3444,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3487,8 +3531,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3603,10 +3647,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3698,8 +3739,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3814,10 +3855,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3904,8 +3942,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4020,10 +4058,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4118,8 +4153,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4234,10 +4269,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4336,8 +4368,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4452,10 +4484,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4548,8 +4577,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4664,10 +4693,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4756,8 +4782,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4872,10 +4898,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4973,8 +4996,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -5089,10 +5112,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5186,8 +5206,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "1742015474710386242"
+              "version": "0.31.34.60546",
+              "templateHash": "1194243367873711347"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -5302,10 +5322,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5385,8 +5402,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "18427642917647797213"
+              "version": "0.31.34.60546",
+              "templateHash": "7575343013066166436"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
