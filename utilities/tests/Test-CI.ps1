@@ -37,7 +37,7 @@ function Test-CI {
     [CmdletBinding()]
     param (
         [Parameter()]
-        [string] $RepoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName,
+        [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.FullName,
 
         [Parameter()]
         [string] $BranchName = (git branch --show-current),

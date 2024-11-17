@@ -149,7 +149,7 @@ function Test-ModuleLocally {
     )
 
     begin {
-        $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName
+        $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.FullName
         $ModuleName = Split-Path (Split-Path $TemplateFilePath -Parent) -Leaf
         $utilitiesFolderPath = Split-Path $PSScriptRoot -Parent
         $moduleRoot = Split-Path $TemplateFilePath

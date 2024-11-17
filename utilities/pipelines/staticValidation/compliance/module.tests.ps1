@@ -7,7 +7,7 @@ param (
         }),
 
     [Parameter(Mandatory = $false)]
-    [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName,
+    [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.Parent.FullName,
 
     [Parameter(Mandatory = $false)]
     [bool] $AllowPreviewVersionsInAPITests = $true
