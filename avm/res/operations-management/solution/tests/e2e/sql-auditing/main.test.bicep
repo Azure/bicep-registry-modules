@@ -51,7 +51,9 @@ module testDeployment '../../../main.bicep' = {
     name: 'SQLAuditing(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
     location: resourceLocation
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
-    product: 'SQLAuditing'
-    publisher: 'Microsoft'
+    plan: {
+      product: 'SQLAuditing'
+      publisher: 'Microsoft'
+    }
   }
 }
