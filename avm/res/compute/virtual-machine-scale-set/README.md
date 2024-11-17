@@ -49,6 +49,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
+    adminPassword: '<adminPassword>'
     adminUsername: 'scaleSetAdmin'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
@@ -110,6 +111,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "adminUsername": {
       "value": "scaleSetAdmin"
     },
@@ -189,6 +193,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
 
 // Required parameters
+param adminPassword = '<adminPassword>'
 param adminUsername = 'scaleSetAdmin'
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
@@ -252,6 +257,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
+    adminPassword: '<adminPassword>'
     adminUsername: 'scaleSetAdmin'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
@@ -291,7 +297,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     availabilityZones: [
       '2'
     ]
-    bootDiagnosticEnabled: false
+    bootDiagnosticEnabled: true
+    bootDiagnosticStorageAccountName: '<bootDiagnosticStorageAccountName>'
     dataDisks: [
       {
         caching: 'ReadOnly'
@@ -423,6 +430,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "adminUsername": {
       "value": "scaleSetAdmin"
     },
@@ -479,7 +489,10 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       ]
     },
     "bootDiagnosticEnabled": {
-      "value": false
+      "value": true
+    },
+    "bootDiagnosticStorageAccountName": {
+      "value": "<bootDiagnosticStorageAccountName>"
     },
     "dataDisks": {
       "value": [
@@ -650,6 +663,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
 
 // Required parameters
+param adminPassword = '<adminPassword>'
 param adminUsername = 'scaleSetAdmin'
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
@@ -689,7 +703,8 @@ param skuName = 'Standard_B12ms'
 param availabilityZones = [
   '2'
 ]
-param bootDiagnosticEnabled = false
+param bootDiagnosticEnabled = true
+param bootDiagnosticStorageAccountName = '<bootDiagnosticStorageAccountName>'
 param dataDisks = [
   {
     caching: 'ReadOnly'
@@ -823,6 +838,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
+    adminPassword: '<adminPassword>'
     adminUsername: 'scaleSetAdmin'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
@@ -903,6 +919,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "adminUsername": {
       "value": "scaleSetAdmin"
     },
@@ -1005,6 +1024,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
 
 // Required parameters
+param adminPassword = '<adminPassword>'
 param adminUsername = 'scaleSetAdmin'
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
@@ -1087,6 +1107,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
+    adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
     imageReference: {
       offer: 'WindowsServer'
@@ -1123,7 +1144,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     osType: 'Windows'
     skuName: 'Standard_B12ms'
     // Non-required parameters
-    adminPassword: '<adminPassword>'
     location: '<location>'
   }
 }
@@ -1142,6 +1162,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "adminUsername": {
       "value": "localAdminUser"
     },
@@ -1192,9 +1215,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Standard_B12ms"
     },
     // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
-    },
     "location": {
       "value": "<location>"
     }
@@ -1213,6 +1233,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
 
 // Required parameters
+param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
 param imageReference = {
   offer: 'WindowsServer'
@@ -1249,7 +1270,6 @@ param osDisk = {
 param osType = 'Windows'
 param skuName = 'Standard_B12ms'
 // Non-required parameters
-param adminPassword = '<adminPassword>'
 param location = '<location>'
 ```
 
@@ -1270,6 +1290,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
+    adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
     imageReference: {
       offer: 'WindowsServer'
@@ -1306,7 +1327,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     osType: 'Windows'
     skuName: 'Standard_B12ms'
     // Non-required parameters
-    adminPassword: '<adminPassword>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1441,6 +1461,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "adminUsername": {
       "value": "localAdminUser"
     },
@@ -1491,9 +1514,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Standard_B12ms"
     },
     // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1664,6 +1684,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
 
 // Required parameters
+param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
 param imageReference = {
   offer: 'WindowsServer'
@@ -1700,7 +1721,6 @@ param osDisk = {
 param osType = 'Windows'
 param skuName = 'Standard_B12ms'
 // Non-required parameters
-param adminPassword = '<adminPassword>'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1837,6 +1857,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
+    adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
     imageReference: {
       offer: 'WindowsServer'
@@ -1873,7 +1894,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     osType: 'Windows'
     skuName: 'Standard_B12ms'
     // Non-required parameters
-    adminPassword: '<adminPassword>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1977,6 +1997,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "adminUsername": {
       "value": "localAdminUser"
     },
@@ -2027,9 +2050,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Standard_B12ms"
     },
     // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -2163,6 +2183,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
 
 // Required parameters
+param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
 param imageReference = {
   offer: 'WindowsServer'
@@ -2199,7 +2220,6 @@ param osDisk = {
 param osType = 'Windows'
 param skuName = 'Standard_B12ms'
 // Non-required parameters
-param adminPassword = '<adminPassword>'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2313,8 +2333,8 @@ param vmPriority = 'Regular'
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`automaticRepairsPolicyEnabled`](#parameter-automaticrepairspolicyenabled) | bool | Specifies whether automatic repairs should be enabled on the virtual machine scale set. |
 | [`availabilityZones`](#parameter-availabilityzones) | array | The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set. |
-| [`bootDiagnosticEnabled`](#parameter-bootDiagnosticEnabled) | string | Enable boot diagnostics to use default managed or secure storage. Defaults to false. |
-| [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account..|
+| [`bootDiagnosticEnabled`](#parameter-bootdiagnosticenabled) | bool | Enable boot diagnostics to use default managed or secure storage. Defaults set to false. |
+| [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account. |
 | [`bootDiagnosticStorageAccountUri`](#parameter-bootdiagnosticstorageaccounturi) | string | Storage account boot diagnostic base URI. |
 | [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
 | [`customData`](#parameter-customdata) | string | Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format. |
@@ -2456,9 +2476,8 @@ Specifies additional base-64 encoded XML formatted information that can be inclu
 
 When specifying a Windows Virtual Machine, this value should be passed.
 
-- Required: No
+- Required: Yes
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `automaticRepairsPolicyEnabled`
 
@@ -2485,11 +2504,11 @@ The virtual machine scale set zones. NOTE: Availability zones can only be set wh
 
 ### Parameter: `bootDiagnosticEnabled`
 
-Enable boot diagnostics to use default managed or secure storage.
+Enable boot diagnostics to use default managed or secure storage. Defaults set to false.
 
 - Required: No
-- Type: boolen
-- Default: false
+- Type: bool
+- Default: `False`
 
 ### Parameter: `bootDiagnosticStorageAccountName`
 
