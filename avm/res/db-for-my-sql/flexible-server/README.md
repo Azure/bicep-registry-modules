@@ -180,9 +180,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    delegatedSubnetResourceId: <mysqlSubnetId>
-    privateDnsZoneResourceId: <dnszoneid>
-    publicNetworkAccess: 'Enabled'
     firewallRules: [
       {
         endIpAddress: '0.0.0.0'
@@ -944,23 +941,6 @@ The resource ID(s) to assign to the resource.
 
 - Required: Yes
 - Type: array
-
-### Parameter: `publicNetworkAccess`
-
-Public Network Access determines whether a resource can be accessed over the public internet.
-Enabled: The resource is accessible from the internet.
-Disabled: The resource is only accessible within a private network, enhancing security.
-
-- Required: No
-- Type: string
-- Default: `'Disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `privateDnsZoneResourceId`
 
