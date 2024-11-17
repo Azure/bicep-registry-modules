@@ -39,7 +39,7 @@ param ultraSSDEnabled bool = false
 @secure()
 param adminUsername string
 
-@description('Optional. When specifying a Windows Virtual Machine, this value should be passed.')
+@description('Required. When specifying a Windows Virtual Machine, this value should be passed.')
 @secure()
 param adminPassword string
 

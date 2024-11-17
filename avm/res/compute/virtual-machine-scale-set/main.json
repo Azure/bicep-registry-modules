@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "7915489647265046739"
+      "templateHash": "11541738173219902243"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -408,7 +408,8 @@
     "extensionMonitoringAgentConfig": {
       "type": "object",
       "defaultValue": {
-        "enabled": false
+        "enabled": false,
+        "autoUpgradeMinorVersion": true
       },
       "metadata": {
         "description": "Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
@@ -479,13 +480,6 @@
       },
       "metadata": {
         "description": "Optional. The configuration for the [Custom Script] extension. Must at least contain the [\"enabled\": true] property to be executed."
-      }
-    },
-    "bootDiagnosticEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnostics will be enabled with a managed storage account if no bootDiagnosticsStorageAccountName value is provided. If bootDiagnostics and bootDiagnosticsStorageAccountName values are not provided, boot diagnostics will be disabled."
       }
     },
     "bootDiagnosticStorageAccountUri": {
