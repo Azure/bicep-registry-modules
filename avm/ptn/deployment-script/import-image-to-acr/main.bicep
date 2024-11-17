@@ -160,7 +160,7 @@ resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssign
   }
 }
 
-module imageImport 'br/public:avm/res/resources/deployment-script:0.4.0' = {
+module imageImport 'br/public:avm/res/resources/deployment-script:0.5.0' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
@@ -168,9 +168,8 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.4.0' = {
     location: location
     tags: tags
     managedIdentities: useExistingManagedIdentity
-      // ? managedIdentities // once the referenced module is using the common type
-      ? { userAssignedResourcesIds: managedIdentities.?userAssignedResourceIds! }
-      : { userAssignedResourcesIds: [newManagedIdentity.id] }
+      ? managedIdentities
+      : { userAssignedResourceIds: [newManagedIdentity.id] }
     kind: 'AzureCLI'
     runOnce: runOnce
     azCliVersion: '2.63.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
