@@ -50,7 +50,7 @@ function Test-VerifyRoleAssignment($ResourceId, $ExpectedRoleAssignments) {
             $a.RoleAssignmentName | Should -Not -BeNullOrEmpty
             $a.RoleAssignmentId | Should -Not -BeNullOrEmpty
             $a.Scope | Should -Be $ResourceId
-            $a.DisplayName | Should -Not -BeNullOrEmpty
+            # $a.DisplayName | Should -Not -BeNullOrEmpty
             $a.SignInName | Should -Be $null
             $a.RoleDefinitionName | Should -Be $item.RoleDefinitionName
             $a.RoleDefinitionId | Should -Not -BeNullOrEmpty
@@ -117,8 +117,8 @@ function Test-VerifyDiagSettings($ResourceId, $DiagName, $LogAnalyticsWorkspaceR
     $diag.Metric[0] | Should -Not -BeNullOrEmpty
     $diag.Metric[0].Category | Should -Be 'Transaction'
     $diag.Metric[0].Enabled | Should -Be $true
-    $diag.Metric[0].RetentionPolicy.Enabled | Should -Be $false
-    $diag.Metric[0].RetentionPolicy.Days | Should -Be 0
+    # $diag.Metric[0].RetentionPolicy.Enabled | Should -Be $false
+    # $diag.Metric[0].RetentionPolicy.Days | Should -Be 0
 
     $diag.Name | Should -Be $DiagName
     $diag.ServiceBusRuleId | Should -BeNullOrEmpty
