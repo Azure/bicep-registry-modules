@@ -101,18 +101,44 @@ function Test-VerifyTagsForResource($ResourceId, $Tags) {
     }
 }
 
-function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, $Logs) {
-    $diag = Get-AzDiagnosticSetting -ResourceId $ResourceId -Name avm-diagnostic-settings
+function Test-VerifyDiagSettings($ResourceId, $DiagName, $LogAnalyticsWorkspaceResourceId) {
+    $diag = Get-AzDiagnosticSetting -ResourceId $ResourceId -Name $DiagName
     $diag | Should -Not -BeNullOrEmpty
     #$diag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+
+    $diag.EventHubAuthorizationRuleId | Should -Not -BeNullOrEmpty
+    $diag.EventHubName | Should -Not -BeNullOrEmpty
+    $diag.Id | Should -Not -BeNullOrEmpty
+    $diag.Log | ConvertFrom-Json | Should -BeNullOrEmpty
+    $diag.LogAnalyticsDestinationType | Should -BeNullOrEmpty
+    $diag.MarketplacePartnerId | Should -BeNullOrEmpty
+
+    $diag.Metric.Count | Should -Be 1
+    $diag.Metric[0] | Should -Not -BeNullOrEmpty
+    $diag.Metric[0].Category | Should -Be 'Transaction'
+    $diag.Metric[0].Enabled | Should -Be $true
+    $diag.Metric[0].RetentionPolicy.Enabled | Should -Be $false
+    $diag.Metric[0].RetentionPolicy.Days | Should -Be 0
+
+    $diag.Name | Should -Be $DiagName
+    $diag.ServiceBusRuleId | Should -BeNullOrEmpty
+    $diag.StorageAccountId | Should -Not -BeNullOrEmpty
+    #Skip $diag.SystemData**
     $diag.Type | Should -Be 'Microsoft.Insights/diagnosticSettings'
     $diag.WorkspaceId | Should -Be $LogAnalyticsWorkspaceResourceId
+
+    # ===
 
     $diagCat = Get-AzDiagnosticSettingCategory -ResourceId $ResourceId
     $diagCat | Should -Not -BeNullOrEmpty
     #$diagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-    $diagCat.Count | Should -Be $Logs.Count
-    for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
+
+    $diagCat.CategoryGroup | Should -BeNullOrEmpty
+    $diagCat.CategoryType | Should -Be 'Metrics'
+    $diagCat.Id | Should -Not -BeNullOrEmpty
+    $diagCat.Name | Should -Be 'Transaction'
+    #Skip $diagCat.SystemData**
+    $diagCat.Type | Should -Be 'microsoft.insights/diagnosticSettingsCategories'
 }
 
 function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnections, $PrivateEndpointCounts, $PrivateEndpoints, $Tags) {
@@ -323,7 +349,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     $vg.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups'
 }
 
-function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds, $ExpectedRoleAssignments) {
+function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds, $ExpectedRoleAssignments, $LogAnalyticsWorkspaceResourceId) {
 
     $esan = Get-AzElasticSan -ResourceGroupName $ResourceGroupName -Name $Name
     $esan | Should -Not -BeNullOrEmpty
@@ -367,6 +393,10 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
 
     Test-VerifyLock -LockName $null -ResourceId $esan.Id # ESAN Doesn't have Locks
     Test-VerifyRoleAssignment -ResourceId $esan.Id -ExpectedRoleAssignments $ExpectedRoleAssignments
+
+    if ($LogAnalyticsWorkspaceResourceId) {
+        Test-VerifyDiagSettings -ResourceId $esan.Id -DiagName 'customSetting' -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId
+    }
 
     return $esan
 }

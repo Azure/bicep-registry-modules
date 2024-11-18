@@ -223,3 +223,5 @@ output volumeGroups volumeGroupOutputType[] = testDeployment[0].outputs.volumeGr
 output tenantId string = tenant().tenantId
 output managedIdentityResourceId string = nestedDependencies.outputs.managedIdentityResourceId
 output virtualNetworkRule string = nestedDependencies.outputs.subnetResourceId
+
+output logAnalyticsWorkspaceResourceId string = diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId

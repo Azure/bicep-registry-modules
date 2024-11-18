@@ -55,7 +55,8 @@ Describe 'Validate Deployment' {
                 -SkuName 'Premium_ZRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
                 -GroupIds $groupIds `
-                -ExpectedRoleAssignments $null
+                -ExpectedRoleAssignments $null `
+                -LogAnalyticsWorkspaceResourceId $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceResourceId.Value
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {

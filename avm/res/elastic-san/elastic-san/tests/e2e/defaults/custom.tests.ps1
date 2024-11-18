@@ -53,7 +53,8 @@ Describe 'Validate Deployment' {
                 -SkuName 'Premium_ZRS' `
                 -VolumeGroupCount 0 `
                 -GroupIds $null `
-                -ExpectedRoleAssignments $null
+                -ExpectedRoleAssignments $null `
+                -LogAnalyticsWorkspaceResourceId $null
         }
     }
 }

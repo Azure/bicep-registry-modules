@@ -150,3 +150,5 @@ output cmkKeyVaultKeyUrl string = nestedDependencies.outputs.keyVaultKeyUrl
 output cmkKeyVaultEncryptionKeyName string = nestedDependencies.outputs.keyVaultEncryptionKeyName
 output cmkKeyVaultUrl string = nestedDependencies.outputs.keyVaultUrl
 output cmkKeyVaultEncryptionKeyVersion string = nestedDependencies.outputs.keyVaultEncryptionKeyVersion
+
+output logAnalyticsWorkspaceResourceId string = diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
