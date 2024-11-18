@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "6434598529291924522"
+      "templateHash": "13946388819897175743"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -404,7 +404,7 @@
                   ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Specifies the type of the custom action parameter."
+                    "description": "Optional. Specifies the type of the custom action parameter."
                   }
                 },
                 "description": {

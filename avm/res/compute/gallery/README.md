@@ -1089,7 +1089,6 @@ The parameters that this custom action uses.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-applicationscustomactionsparametersname) | string | The name of the parameter. |
-| [`type`](#parameter-applicationscustomactionsparameterstype) | string | Specifies the type of the custom action parameter. |
 
 **Optional parameters**
 
@@ -1098,6 +1097,7 @@ The parameters that this custom action uses.
 | [`defaultValue`](#parameter-applicationscustomactionsparametersdefaultvalue) | string | The default value of the parameter. Only applies to string types. |
 | [`description`](#parameter-applicationscustomactionsparametersdescription) | string | A description to help users understand what this parameter means. |
 | [`required`](#parameter-applicationscustomactionsparametersrequired) | bool | Indicates whether this parameter must be passed when running the custom action. |
+| [`type`](#parameter-applicationscustomactionsparameterstype) | string | Specifies the type of the custom action parameter. |
 
 ### Parameter: `applications.customActions.parameters.name`
 
@@ -1105,21 +1105,6 @@ The name of the parameter.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `applications.customActions.parameters.type`
-
-Specifies the type of the custom action parameter.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ConfigurationDataBlob'
-    'LogOutputBlob'
-    'String'
-  ]
-  ```
 
 ### Parameter: `applications.customActions.parameters.defaultValue`
 
@@ -1141,6 +1126,21 @@ Indicates whether this parameter must be passed when running the custom action.
 
 - Required: No
 - Type: bool
+
+### Parameter: `applications.customActions.parameters.type`
+
+Specifies the type of the custom action parameter.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ConfigurationDataBlob'
+    'LogOutputBlob'
+    'String'
+  ]
+  ```
 
 ### Parameter: `applications.description`
 

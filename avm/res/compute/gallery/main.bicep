@@ -376,7 +376,7 @@ type customActionType = {
     @sys.description('Required. The name of the parameter.')
     name: string
 
-    @sys.description('Required. Specifies the type of the custom action parameter.')
+    @sys.description('Optional. Specifies the type of the custom action parameter.')
     type: ('ConfigurationDataBlob' | 'LogOutputBlob' | 'String')?
 
     @sys.description('Optional. A description to help users understand what this parameter means.')
