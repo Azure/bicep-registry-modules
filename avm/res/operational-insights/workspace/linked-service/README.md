@@ -21,7 +21,6 @@ This module deploys a Log Analytics Workspace Linked Service.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the link. |
-| [`resourceId`](#parameter-resourceid) | string | The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
 
 **Conditional parameters**
 
@@ -33,6 +32,7 @@ This module deploys a Log Analytics Workspace Linked Service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`resourceId`](#parameter-resourceid) | string | The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
 | [`tags`](#parameter-tags) | object | Tags to configure in the resource. |
 | [`writeAccessResourceId`](#parameter-writeaccessresourceid) | string | The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require write access. |
 
@@ -43,19 +43,18 @@ Name of the link.
 - Required: Yes
 - Type: string
 
-### Parameter: `resourceId`
-
-The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `logAnalyticsWorkspaceName`
 
 The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `resourceId`
+
+The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
+
+- Required: No
 - Type: string
 
 ### Parameter: `tags`
@@ -71,7 +70,6 @@ The resource ID of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 
