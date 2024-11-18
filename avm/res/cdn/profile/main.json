@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "7471897206847484652"
+      "version": "0.31.34.60546",
+      "templateHash": "10761375864597089825"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -1134,8 +1134,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "10963194836019535201"
+              "version": "0.31.34.60546",
+              "templateHash": "5709530270456479127"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint.",
@@ -1188,10 +1188,7 @@
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": "[parameters('properties')]",
-              "tags": "[parameters('tags')]",
-              "dependsOn": [
-                "profile"
-              ]
+              "tags": "[parameters('tags')]"
             },
             "endpoint_origins": {
               "copy": {
@@ -1254,8 +1251,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "11497360667926217808"
+                      "version": "0.31.34.60546",
+                      "templateHash": "12416203553821456162"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -1362,19 +1359,13 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/endpoints",
                       "apiVersion": "2021-06-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]"
                     },
                     "origin": {
                       "type": "Microsoft.Cdn/profiles/endpoints/origins",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
-                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]",
-                      "dependsOn": [
-                        "endpoint"
-                      ]
+                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]"
                     }
                   },
                   "outputs": {
@@ -1410,8 +1401,7 @@
                 }
               },
               "dependsOn": [
-                "endpoint",
-                "profile"
+                "endpoint"
               ]
             }
           },
@@ -1507,8 +1497,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "4792421994565335139"
+              "version": "0.31.34.60546",
+              "templateHash": "135211401759640973"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret.",
@@ -1657,8 +1647,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "420872064438039619"
+              "version": "0.31.34.60546",
+              "templateHash": "10387694873442665915"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains.",
@@ -1812,10 +1802,7 @@
               "existing": true,
               "type": "Microsoft.Cdn/profiles/secrets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]"
             },
             "profile": {
               "existing": true,
@@ -1837,10 +1824,7 @@
                   "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
                   "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
                 }
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1916,8 +1900,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "13972056376134412662"
+              "version": "0.31.34.60546",
+              "templateHash": "15886213526918072525"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group.",
@@ -2200,10 +2184,7 @@
                 "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
                 "sessionAffinityState": "[parameters('sessionAffinityState')]",
                 "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             },
             "originGroup_origins": {
               "copy": {
@@ -2263,8 +2244,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "7808954044639543840"
+                      "version": "0.31.34.60546",
+                      "templateHash": "3615112055594041997"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin.",
@@ -2443,10 +2424,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/originGroups",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
                     },
                     "profile": {
                       "existing": true,
@@ -2468,10 +2446,7 @@
                         "priority": "[parameters('priority')]",
                         "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
                         "weight": "[parameters('weight')]"
-                      },
-                      "dependsOn": [
-                        "profile::originGroup"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -2571,8 +2546,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "6799234533111360012"
+              "version": "0.31.34.60546",
+              "templateHash": "4753233857701337613"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set.",
@@ -2685,10 +2660,7 @@
             "ruleSet": {
               "type": "Microsoft.Cdn/profiles/ruleSets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]"
             },
             "ruleSet_rules": {
               "copy": {
@@ -2733,8 +2705,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "5961518761760139272"
+                      "version": "0.31.34.60546",
+                      "templateHash": "11756620080021514486"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule.",
@@ -2843,10 +2815,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/ruleSets",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]"
                     },
                     "profile": {
                       "existing": true,
@@ -2863,10 +2832,7 @@
                         "actions": "[parameters('actions')]",
                         "conditions": "[parameters('conditions')]",
                         "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
-                      },
-                      "dependsOn": [
-                        "profile::ruleSet"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -2968,8 +2934,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "8817136365913068133"
+              "version": "0.31.34.60546",
+              "templateHash": "16899001110062450573"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -3277,10 +3243,7 @@
               "properties": {
                 "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
                 "enabledState": "[parameters('enabledState')]"
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             },
             "afdEndpoint_routes": {
               "copy": {
@@ -3346,8 +3309,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "17863230728556651506"
+                      "version": "0.31.34.60546",
+                      "templateHash": "15873678240851060540"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -3640,10 +3603,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/afdEndpoints",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]"
                     },
                     "profile::customDomains": {
                       "copy": {
@@ -3653,19 +3613,13 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/customDomains",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]"
                     },
                     "profile::originGroup": {
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/originGroups",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
                     },
                     "profile::ruleSet": {
                       "copy": {
@@ -3675,10 +3629,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/ruleSets",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]"
                     },
                     "profile": {
                       "existing": true,
@@ -3718,10 +3669,7 @@
                         "originPath": "[parameters('originPath')]",
                         "patternsToMatch": "[parameters('patternsToMatch')]",
                         "supportedProtocols": "[parameters('supportedProtocols')]"
-                      },
-                      "dependsOn": [
-                        "profile::afdEndpoint"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3750,8 +3698,7 @@
                 }
               },
               "dependsOn": [
-                "afdEndpoint",
-                "profile"
+                "afdEndpoint"
               ]
             }
           },
@@ -3835,8 +3782,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3967677433883074947"
+              "version": "0.31.34.60546",
+              "templateHash": "3914917842985483427"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy.",
@@ -3926,10 +3873,7 @@
                   },
                   "associations": "[parameters('associations')]"
                 }
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             }
           },
           "outputs": {
