@@ -41,6 +41,18 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN' {
 
+            $expectedRoleAssignments = @(
+                @{ RoleDefinitionName = 'Owner' }
+                @{ RoleDefinitionName = 'Contributor' }
+                @{ RoleDefinitionName = 'Reader' }
+                @{ RoleDefinitionName = 'Role Based Access Control Administrator' }
+                @{ RoleDefinitionName = 'User Access Administrator' }
+                @{ RoleDefinitionName = 'Elastic SAN Network Admin' }
+                @{ RoleDefinitionName = 'Elastic SAN Owner' }
+                @{ RoleDefinitionName = 'Elastic SAN Reader' }
+                @{ RoleDefinitionName = 'Elastic SAN Volume Group Owner' }
+            )
+
             Test-VerifyElasticSAN `
                 -ResourceId $resourceId `
                 -ResourceGroupName $resourceGroupName `
@@ -54,7 +66,7 @@ Describe 'Validate Deployment' {
                 -SkuName 'Premium_LRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
                 -GroupIds $null `
-                -ExpectedRoleAssignments $null
+                -ExpectedRoleAssignments $expectedRoleAssignments
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
