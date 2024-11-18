@@ -152,18 +152,43 @@ $vmNicLocalNamingOut = Invoke-Command -VMName (Get-VM).Name -Credential $adminCr
         }
     }
 }
+log "VM NIC local naming output: $vmNicLocalNamingOut"
 
 # change dynamically assigned mgmt IP addresses to static IPs as required by validation
 log 'Changing dynamically assigned mgmt IP addresses to static IPs on HCI nodes...'
-Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
+$ipChangeOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
 
     $dhcpIpConfig = Get-NetIPConfiguration -InterfaceAlias 'mgmt'
     $prefixLength = Get-NetIPAddress -InterfaceAlias 'mgmt' -AddressFamily IPv4 | Select-Object -ExpandProperty PrefixLength
+    $dnsClientConfig = Get-DnsClientServerAddress -InterfaceAlias 'mgmt' -AddressFamily IPv4 | Select-Object -ExpandProperty ServerAddresses
 
-    Set-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Disabled
+    try {
+        Write-Output "[$env:computerName]Disabling DHCP on network interface 'mgmt'..."
+        Set-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Disabled
+    } catch {
+        Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'mgmt'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
 
-    New-NetIPAddress -InterfaceAlias 'mgmt' -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -DefaultGateway $dhcpIpConfig.Ipv4DefaultGateway.NextHop -AddressFamily IPv4 -PrefixLength $prefixLength
+    try {
+        Write-Output "[$env:computerName]Setting static IP address on network interface 'mgmt'..."
+        New-NetIPAddress -InterfaceAlias 'mgmt' -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -DefaultGateway $dhcpIpConfig.Ipv4DefaultGateway.NextHop -AddressFamily IPv4 -PrefixLength $prefixLength
+    } catch {
+        Write-Output "[$env:computerName]Failed to set static IP address on network interface 'mgmt'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set static IP address on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
+
+    try {
+        Write-Output "[$env:computerName]Setting DNS server addresses on network interface 'mgmt' to '$dnsClientConfig'..."
+        Set-DnsClientServerAddress -InterfaceAlias 'mgmt' -ResetServerAddresses
+        Set-DnsClientServerAddress -InterfaceAlias 'mgmt' -ServerAddresses $dnsClientConfig
+    } catch {
+        Write-Output "[$env:computerName]Failed to set DNS server addresses on network interface 'mgmt'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set DNS server addresses on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
 }
-
-log "VM NIC local naming output: $vmNicLocalNamingOut"
+log "IP change output: $ipChangeOutput"
