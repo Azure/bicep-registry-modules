@@ -52,8 +52,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}p2sVpnGw'
+      location: resourceLocation
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -62,10 +62,7 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      customDnsServers: [
-        '10.50.10.50'
-        '10.50.50.50'
-      ]
+      p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
       isRoutingPreferenceInternet: false
       enableInternetSecurity: true
       associatedRouteTableName: 'defaultRouteTable'
@@ -73,9 +70,7 @@ module testDeployment '../../../main.bicep' = [
         '10.0.2.0/24'
       ]
       virtualHubId: nestedDependencies.outputs.virtualHubResourceId
-      vpnGatewayScaleUnit: 1
       vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
-      p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     }
   }
 ]
