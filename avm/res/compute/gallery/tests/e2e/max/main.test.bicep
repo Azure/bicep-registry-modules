@@ -56,6 +56,15 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      description: 'This is a test deployment.'
+      sharingProfile: {
+        eula: 'test Eula'
+        permissions: 'Private'
+        publicNamePrefix: 'avmtest'
+        publisherContact: 'avmtest@contoso.com'
+        publisherUri: 'https://aka.ms/avm'
+      }
+      softDeletePolicy: false
       applications: [
         {
           name: '${namePrefix}-${serviceShort}-appd-001'

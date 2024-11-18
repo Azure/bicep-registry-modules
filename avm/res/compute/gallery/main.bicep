@@ -20,7 +20,7 @@ param enableTelemetry bool = true
 param description string?
 
 @sys.description('Optional. Applications to create.')
-param applications array?
+param applications applicationsType
 
 @sys.description('Optional. Images to create.')
 param images imageType[]? // use a UDT here to not overload the main module, as it has images and applications parameters
@@ -43,10 +43,10 @@ param roleAssignments roleAssignmentType?
 param tags object?
 
 @sys.description('Optional. Profile for gallery sharing to subscription or tenant.')
-param sharingProfile object?
+param sharingProfile sharingProfileType?
 
-@sys.description('Optional. Soft deletion policy of the gallery.')
-param softDeletePolicy object?
+@sys.description('Optional. Enables soft-deletion for resources in this gallery, allowing them to be recovered within retention time.')
+param softDeletePolicy bool?
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId(
@@ -107,8 +107,18 @@ resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
   properties: {
     description: description
     // identifier: {} // Contains only read-only properties
-    sharingProfile: sharingProfile
-    softDeletePolicy: softDeletePolicy
+    sharingProfile: {
+      communityGalleryInfo: {
+        eula: sharingProfile.?eula
+        publicNamePrefix: sharingProfile.?publicNamePrefix
+        publisherContact: sharingProfile.?publisherContact
+        publisherUri: sharingProfile.?publisherUri
+      }
+      permissions: sharingProfile.?permissions
+    }
+    softDeletePolicy: {
+      isSoftDeleteEnabled: softDeletePolicy
+    }
   }
 }
 
@@ -315,4 +325,84 @@ type imageType = {
 
   @sys.description('Optional. Describes the disallowed disk types.')
   excludedDiskTypes: string[]?
+}
+
+type applicationsType = {
+  @sys.description('Required. Name of the application definition.')
+  @minLength(1)
+  @maxLength(80)
+  name: string
+
+  @sys.description('Required. The OS type of the application.')
+  supportedOSType: 'Linux' | 'Windows'
+
+  @sys.description('Optional. The description of this gallery application definition resource. This property is updatable.')
+  description: string?
+
+  @sys.description('Optional. The Eula agreement for the gallery application definition.')
+  eula: string?
+
+  @sys.description('Optional. The privacy statement uri.')
+  privacyStatementUri: string?
+
+  @sys.description('Optional. The release note uri. Has to be a valid URL.')
+  releaseNoteUri: string?
+
+  @sys.description('Optional. The end of life date of the gallery application definition. This property can be used for decommissioning purposes. This property is updatable.')
+  endOfLifeDate: string?
+
+  @sys.description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
+
+  @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
+  customActions: customActionType[]?
+
+  @sys.description('Optional. Tags for all resources.')
+  tags: object?
+}[]?
+
+type customActionType = {
+  @sys.description('Required. The name of the custom action. Must be unique within the Gallery Application Version.')
+  name: string
+
+  @sys.description('Required. The script to run when executing this custom action.')
+  script: string
+
+  @sys.description('Optional. Description to help the users understand what this custom action does.')
+  description: string?
+
+  @sys.description('Optional. The parameters that this custom action uses.')
+  parameters: {
+    @sys.description('Required. The name of the parameter.')
+    name: string
+
+    @sys.description('Required. Specifies the type of the custom action parameter.')
+    type: ('ConfigurationDataBlob' | 'LogOutputBlob' | 'String')?
+
+    @sys.description('Optional. A description to help users understand what this parameter means.')
+    description: string?
+
+    @sys.description('Optional. The default value of the parameter. Only applies to string types.')
+    defaultValue: string?
+
+    @sys.description('Optional. Indicates whether this parameter must be passed when running the custom action.')
+    required: bool?
+  }[]?
+}[]
+
+type sharingProfileType = {
+  @sys.description('Optional. End-user license agreement for community gallery image.')
+  eula: string?
+
+  @sys.description('Optional. The prefix of the gallery name that will be displayed publicly. Visible to all users.')
+  publicNamePrefix: string?
+
+  @sys.description('Optional. Community gallery publisher support email. The email address of the publisher. Visible to all users.')
+  publisherContact: string?
+
+  @sys.description('Optional. The link to the publisher website. Visible to all users.')
+  publisherUri: string?
+
+  @sys.description('Optional. This property allows you to specify the permission of sharing gallery.')
+  permissions: ('Community' | 'Groups' | 'Private')?
 }
