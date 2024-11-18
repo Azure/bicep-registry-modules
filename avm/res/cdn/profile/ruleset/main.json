@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "4753233857701337613"
+      "version": "0.31.92.45157",
+      "templateHash": "6799234533111360012"
     },
     "name": "CDN Profiles Rule Sets",
     "description": "This module deploys a CDN Profile rule set.",
@@ -119,7 +119,10 @@
     "ruleSet": {
       "type": "Microsoft.Cdn/profiles/ruleSets",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]"
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+      "dependsOn": [
+        "profile"
+      ]
     },
     "ruleSet_rules": {
       "copy": {
@@ -164,8 +167,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "11756620080021514486"
+              "version": "0.31.92.45157",
+              "templateHash": "5961518761760139272"
             },
             "name": "CDN Profiles Rules",
             "description": "This module deploys a CDN Profile rule.",
@@ -274,7 +277,10 @@
               "existing": true,
               "type": "Microsoft.Cdn/profiles/ruleSets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]"
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
+              "dependsOn": [
+                "profile"
+              ]
             },
             "profile": {
               "existing": true,
@@ -291,7 +297,10 @@
                 "actions": "[parameters('actions')]",
                 "conditions": "[parameters('conditions')]",
                 "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
-              }
+              },
+              "dependsOn": [
+                "profile::ruleSet"
+              ]
             }
           },
           "outputs": {
