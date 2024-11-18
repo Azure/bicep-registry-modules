@@ -296,10 +296,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     vpnServerConfigurationId: '<vpnServerConfigurationId>'
     // Non-required parameters
     associatedRouteTableName: 'defaultRouteTable'
-    customDnsServers: [
-      '10.50.10.50'
-      '10.50.50.50'
-    ]
     enableInternetSecurity: true
     isRoutingPreferenceInternet: false
     location: '<location>'
@@ -315,7 +311,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     vpnClientAddressPoolAddressPrefixes: [
       '10.0.2.0/24'
     ]
-    vpnGatewayScaleUnit: 1
   }
 }
 ```
@@ -346,12 +341,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "associatedRouteTableName": {
       "value": "defaultRouteTable"
     },
-    "customDnsServers": {
-      "value": [
-        "10.50.10.50",
-        "10.50.50.50"
-      ]
-    },
     "enableInternetSecurity": {
       "value": true
     },
@@ -380,9 +369,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
       "value": [
         "10.0.2.0/24"
       ]
-    },
-    "vpnGatewayScaleUnit": {
-      "value": 1
     }
   }
 }
@@ -404,10 +390,6 @@ param virtualHubId = '<virtualHubId>'
 param vpnServerConfigurationId = '<vpnServerConfigurationId>'
 // Non-required parameters
 param associatedRouteTableName = 'defaultRouteTable'
-param customDnsServers = [
-  '10.50.10.50'
-  '10.50.50.50'
-]
 param enableInternetSecurity = true
 param isRoutingPreferenceInternet = false
 param location = '<location>'
@@ -423,7 +405,6 @@ param tags = {
 param vpnClientAddressPoolAddressPrefixes = [
   '10.0.2.0/24'
 ]
-param vpnGatewayScaleUnit = 1
 ```
 
 </details>
