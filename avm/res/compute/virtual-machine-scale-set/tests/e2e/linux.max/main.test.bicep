@@ -162,6 +162,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionMonitoringAgentConfig: {
         enabled: true
+        autoUpgradeMinorVersion: true
       }
       extensionNetworkWatcherAgentConfig: {
         enabled: true
