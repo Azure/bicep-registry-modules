@@ -72,22 +72,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         targetRepository: 'cached-mcr/*'
       }
     ]
-    credentialSets: [
-      {
-        authCredentials: [
-          {
-            name: 'Credential1'
-            passwordSecretIdentifier: '<passwordSecretIdentifier>'
-            usernameSecretIdentifier: '<usernameSecretIdentifier>'
-          }
-        ]
-        loginServer: 'docker.io'
-        managedIdentities: {
-          systemAssigned: true
-        }
-        name: 'default'
-      }
-    ]
     location: '<location>'
   }
 }
@@ -130,24 +114,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "credentialSets": {
-      "value": [
-        {
-          "authCredentials": [
-            {
-              "name": "Credential1",
-              "passwordSecretIdentifier": "<passwordSecretIdentifier>",
-              "usernameSecretIdentifier": "<usernameSecretIdentifier>"
-            }
-          ],
-          "loginServer": "docker.io",
-          "managedIdentities": {
-            "systemAssigned": true
-          },
-          "name": "default"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     }
@@ -180,22 +146,6 @@ param cacheRules = [
   {
     sourceRepository: 'mcr.microsoft.com/*'
     targetRepository: 'cached-mcr/*'
-  }
-]
-param credentialSets = [
-  {
-    authCredentials: [
-      {
-        name: 'Credential1'
-        passwordSecretIdentifier: '<passwordSecretIdentifier>'
-        usernameSecretIdentifier: '<usernameSecretIdentifier>'
-      }
-    ]
-    loginServer: 'docker.io'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    name: 'default'
   }
 ]
 param location = '<location>'

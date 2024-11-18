@@ -56,22 +56,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       acrAdminUserEnabled: false
       acrSku: 'Standard'
-      credentialSets: [
-        {
-          name: 'default'
-          managedIdentities: {
-            systemAssigned: true
-          }
-          authCredentials: [
-            {
-              name: 'Credential1'
-              usernameSecretIdentifier: nestedDependencies.outputs.userNameSecretURI
-              passwordSecretIdentifier: nestedDependencies.outputs.pwdSecretURI
-            }
-          ]
-          loginServer: 'docker.io'
-        }
-      ]
       cacheRules: [
         {
           name: 'customRule'
