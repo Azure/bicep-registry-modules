@@ -1211,6 +1211,250 @@ Array of origin group objects. Required if the afdEndpoints is specified.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loadBalancingSettings`](#parameter-origingroupsloadbalancingsettings) | object | Load balancing settings for a backend pool. |
+| [`name`](#parameter-origingroupsname) | string | The name of the origin group. |
+| [`origins`](#parameter-origingroupsorigins) | array | The list of origins within the origin group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`healthProbeSettings`](#parameter-origingroupshealthprobesettings) | object | Health probe settings to the origin that is used to determine the health of the origin. |
+| [`sessionAffinityState`](#parameter-origingroupssessionaffinitystate) | string | Whether to allow session affinity on this host. |
+| [`trafficRestorationTimeToHealedOrNewEndpointsInMinutes`](#parameter-origingroupstrafficrestorationtimetohealedornewendpointsinminutes) | int | Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins. |
+
+### Parameter: `originGroups.loadBalancingSettings`
+
+Load balancing settings for a backend pool.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`additionalLatencyInMilliseconds`](#parameter-origingroupsloadbalancingsettingsadditionallatencyinmilliseconds) | int | Additional latency in milliseconds for probes to the backend. Must be between 0 and 1000. |
+| [`sampleSize`](#parameter-origingroupsloadbalancingsettingssamplesize) | int | Number of samples to consider for load balancing decisions. |
+| [`successfulSamplesRequired`](#parameter-origingroupsloadbalancingsettingssuccessfulsamplesrequired) | int | Number of samples within the sample window that must be successful to mark the backend as healthy. |
+
+### Parameter: `originGroups.loadBalancingSettings.additionalLatencyInMilliseconds`
+
+Additional latency in milliseconds for probes to the backend. Must be between 0 and 1000.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `originGroups.loadBalancingSettings.sampleSize`
+
+Number of samples to consider for load balancing decisions.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `originGroups.loadBalancingSettings.successfulSamplesRequired`
+
+Number of samples within the sample window that must be successful to mark the backend as healthy.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `originGroups.name`
+
+The name of the origin group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `originGroups.origins`
+
+The list of origins within the origin group.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hostName`](#parameter-origingroupsoriginshostname) | string | The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint. |
+| [`name`](#parameter-origingroupsoriginsname) | string | The name of the origion. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabledState`](#parameter-origingroupsoriginsenabledstate) | string | Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool. |
+| [`enforceCertificateNameCheck`](#parameter-origingroupsoriginsenforcecertificatenamecheck) | bool | Whether to enable certificate name check at origin level. |
+| [`httpPort`](#parameter-origingroupsoriginshttpport) | int | The value of the HTTP port. Must be between 1 and 65535. |
+| [`httpsPort`](#parameter-origingroupsoriginshttpsport) | int | The value of the HTTPS port. Must be between 1 and 65535. |
+| [`originHostHeader`](#parameter-origingroupsoriginsoriginhostheader) | string | The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint. |
+| [`priority`](#parameter-origingroupsoriginspriority) | int | Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5. |
+| [`sharedPrivateLinkResource`](#parameter-origingroupsoriginssharedprivatelinkresource) | object | The properties of the private link resource for private origin. |
+| [`weight`](#parameter-origingroupsoriginsweight) | int | Weight of the origin in given origin group for load balancing. Must be between 1 and 1000. |
+
+### Parameter: `originGroups.origins.hostName`
+
+The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `originGroups.origins.name`
+
+The name of the origion.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `originGroups.origins.enabledState`
+
+Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `originGroups.origins.enforceCertificateNameCheck`
+
+Whether to enable certificate name check at origin level.
+
+- Required: No
+- Type: bool
+
+### Parameter: `originGroups.origins.httpPort`
+
+The value of the HTTP port. Must be between 1 and 65535.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.origins.httpsPort`
+
+The value of the HTTPS port. Must be between 1 and 65535.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.origins.originHostHeader`
+
+The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `originGroups.origins.priority`
+
+Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.origins.sharedPrivateLinkResource`
+
+The properties of the private link resource for private origin.
+
+- Required: No
+- Type: object
+
+### Parameter: `originGroups.origins.weight`
+
+Weight of the origin in given origin group for load balancing. Must be between 1 and 1000.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.healthProbeSettings`
+
+Health probe settings to the origin that is used to determine the health of the origin.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`probeIntervalInSeconds`](#parameter-origingroupshealthprobesettingsprobeintervalinseconds) | int | The number of seconds between health probes.Default is 240sec. |
+| [`probePath`](#parameter-origingroupshealthprobesettingsprobepath) | string | The path relative to the origin that is used to determine the health of the origin. |
+| [`probeProtocol`](#parameter-origingroupshealthprobesettingsprobeprotocol) | string | Protocol to use for health probe. |
+| [`probeRequestType`](#parameter-origingroupshealthprobesettingsproberequesttype) | string | The request type to probe. |
+
+### Parameter: `originGroups.healthProbeSettings.probeIntervalInSeconds`
+
+The number of seconds between health probes.Default is 240sec.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.healthProbeSettings.probePath`
+
+The path relative to the origin that is used to determine the health of the origin.
+
+- Required: No
+- Type: string
+
+### Parameter: `originGroups.healthProbeSettings.probeProtocol`
+
+Protocol to use for health probe.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Http'
+    'Https'
+    'NotSet'
+  ]
+  ```
+
+### Parameter: `originGroups.healthProbeSettings.probeRequestType`
+
+The request type to probe.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GET'
+    'HEAD'
+    'NotSet'
+  ]
+  ```
+
+### Parameter: `originGroups.sessionAffinityState`
+
+Whether to allow session affinity on this host.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `originGroups.trafficRestorationTimeToHealedOrNewEndpointsInMinutes`
+
+Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins.
+
+- Required: No
+- Type: int
+
 ### Parameter: `afdEndpoints`
 
 Array of AFD endpoint objects.
@@ -1219,6 +1463,271 @@ Array of AFD endpoint objects.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-afdendpointsname) | string | The name of the AFD Endpoint. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoGeneratedDomainNameLabelScope`](#parameter-afdendpointsautogenerateddomainnamelabelscope) | string | The scope of the auto-generated domain name label. |
+| [`enabledState`](#parameter-afdendpointsenabledstate) | string | The state of the AFD Endpoint. |
+| [`routes`](#parameter-afdendpointsroutes) | array | The list of routes for this AFD Endpoint. |
+| [`tags`](#parameter-afdendpointstags) | object | The tags for the AFD Endpoint. |
+
+### Parameter: `afdEndpoints.name`
+
+The name of the AFD Endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `afdEndpoints.autoGeneratedDomainNameLabelScope`
+
+The scope of the auto-generated domain name label.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoReuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+  ]
+  ```
+
+### Parameter: `afdEndpoints.enabledState`
+
+The state of the AFD Endpoint.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `afdEndpoints.routes`
+
+The list of routes for this AFD Endpoint.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-afdendpointsroutesname) | string | The name of the route. |
+| [`originGroupName`](#parameter-afdendpointsroutesorigingroupname) | string | The name of the origin group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cacheConfiguration`](#parameter-afdendpointsroutescacheconfiguration) | object | The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object. |
+| [`customDomainNames`](#parameter-afdendpointsroutescustomdomainnames) | array | The names of the custom domains. |
+| [`enabledState`](#parameter-afdendpointsroutesenabledstate) | string | Whether to enable use of this rule. |
+| [`forwardingProtocol`](#parameter-afdendpointsroutesforwardingprotocol) | string | The protocol this rule will use when forwarding traffic to backends. |
+| [`httpsRedirect`](#parameter-afdendpointsrouteshttpsredirect) | string | Whether to automatically redirect HTTP traffic to HTTPS traffic. |
+| [`linkToDefaultDomain`](#parameter-afdendpointsrouteslinktodefaultdomain) | string | Whether this route will be linked to the default endpoint domain. |
+| [`originPath`](#parameter-afdendpointsroutesoriginpath) | string | A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath. |
+| [`patternsToMatch`](#parameter-afdendpointsroutespatternstomatch) | array | The route patterns of the rule. |
+| [`ruleSets`](#parameter-afdendpointsroutesrulesets) | array | The rule sets of the rule. |
+| [`supportedProtocols`](#parameter-afdendpointsroutessupportedprotocols) | array | The supported protocols of the rule. |
+
+### Parameter: `afdEndpoints.routes.name`
+
+The name of the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `afdEndpoints.routes.originGroupName`
+
+The name of the origin group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `afdEndpoints.routes.cacheConfiguration`
+
+The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`compressionSettings`](#parameter-afdendpointsroutescacheconfigurationcompressionsettings) | object | Compression settings. |
+| [`queryParameters`](#parameter-afdendpointsroutescacheconfigurationqueryparameters) | string | Query parameters to include or exclude (comma separated). |
+| [`queryStringCachingBehavior`](#parameter-afdendpointsroutescacheconfigurationquerystringcachingbehavior) | string | Defines how Frontdoor caches requests that include query strings. |
+
+### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings`
+
+Compression settings.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentTypesToCompress`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingscontenttypestocompress) | array | List of content types on which compression applies. The value should be a valid MIME type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`iscontentTypeToCompressAll`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingsiscontenttypetocompressall) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
+
+### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.contentTypesToCompress`
+
+List of content types on which compression applies. The value should be a valid MIME type.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.iscontentTypeToCompressAll`
+
+Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.
+
+- Required: No
+- Type: bool
+
+### Parameter: `afdEndpoints.routes.cacheConfiguration.queryParameters`
+
+Query parameters to include or exclude (comma separated).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `afdEndpoints.routes.cacheConfiguration.queryStringCachingBehavior`
+
+Defines how Frontdoor caches requests that include query strings.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IgnoreQueryString'
+    'IgnoreSpecifiedQueryStrings'
+    'IncludeSpecifiedQueryStrings'
+    'UseQueryString'
+  ]
+  ```
+
+### Parameter: `afdEndpoints.routes.customDomainNames`
+
+The names of the custom domains.
+
+- Required: No
+- Type: array
+
+### Parameter: `afdEndpoints.routes.enabledState`
+
+Whether to enable use of this rule.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `afdEndpoints.routes.forwardingProtocol`
+
+The protocol this rule will use when forwarding traffic to backends.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HttpOnly'
+    'HttpsOnly'
+    'MatchRequest'
+  ]
+  ```
+
+### Parameter: `afdEndpoints.routes.httpsRedirect`
+
+Whether to automatically redirect HTTP traffic to HTTPS traffic.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `afdEndpoints.routes.linkToDefaultDomain`
+
+Whether this route will be linked to the default endpoint domain.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `afdEndpoints.routes.originPath`
+
+A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath.
+
+- Required: No
+- Type: string
+
+### Parameter: `afdEndpoints.routes.patternsToMatch`
+
+The route patterns of the rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `afdEndpoints.routes.ruleSets`
+
+The rule sets of the rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `afdEndpoints.routes.supportedProtocols`
+
+The supported protocols of the rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `afdEndpoints.tags`
+
+The tags for the AFD Endpoint.
+
+- Required: No
+- Type: object
+
 ### Parameter: `customDomains`
 
 Array of custom domain objects.
@@ -1226,6 +1735,95 @@ Array of custom domain objects.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateType`](#parameter-customdomainscertificatetype) | string | The type of the certificate. |
+| [`hostName`](#parameter-customdomainshostname) | string | The host name of the custom domain. |
+| [`name`](#parameter-customdomainsname) | string | The name of the custom domain. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureDnsZoneResourceId`](#parameter-customdomainsazurednszoneresourceid) | string | The resource ID of the Azure DNS zone. |
+| [`extendedProperties`](#parameter-customdomainsextendedproperties) | object | Extended properties. |
+| [`minimumTlsVersion`](#parameter-customdomainsminimumtlsversion) | string | The minimum TLS version. |
+| [`preValidatedCustomDomainResourceId`](#parameter-customdomainsprevalidatedcustomdomainresourceid) | string | The resource ID of the pre-validated custom domain. |
+| [`secretName`](#parameter-customdomainssecretname) | string | The name of the secret. |
+
+### Parameter: `customDomains.certificateType`
+
+The type of the certificate.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureFirstPartyManagedCertificate'
+    'CustomerCertificate'
+    'ManagedCertificate'
+  ]
+  ```
+
+### Parameter: `customDomains.hostName`
+
+The host name of the custom domain.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customDomains.name`
+
+The name of the custom domain.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customDomains.azureDnsZoneResourceId`
+
+The resource ID of the Azure DNS zone.
+
+- Required: No
+- Type: string
+
+### Parameter: `customDomains.extendedProperties`
+
+Extended properties.
+
+- Required: No
+- Type: object
+
+### Parameter: `customDomains.minimumTlsVersion`
+
+The minimum TLS version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'TLS10'
+    'TLS12'
+  ]
+  ```
+
+### Parameter: `customDomains.preValidatedCustomDomainResourceId`
+
+The resource ID of the pre-validated custom domain.
+
+- Required: No
+- Type: string
+
+### Parameter: `customDomains.secretName`
+
+The name of the secret.
+
+- Required: No
+- Type: string
 
 ### Parameter: `enableTelemetry`
 
@@ -1443,6 +2041,89 @@ Array of rule set objects.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-rulesetsname) | string | Name of the rule set. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rules`](#parameter-rulesetsrules) | array | Array of rules. |
+
+### Parameter: `ruleSets.name`
+
+Name of the rule set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ruleSets.rules`
+
+Array of rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-rulesetsrulesname) | string | The name of the rule. |
+| [`order`](#parameter-rulesetsrulesorder) | int | The order in which the rules are applied for the endpoint. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actions`](#parameter-rulesetsrulesactions) | array | A list of actions that are executed when all the conditions of a rule are satisfied.. |
+| [`conditions`](#parameter-rulesetsrulesconditions) | array | A list of conditions that must be matched for the actions to be executed. |
+| [`matchProcessingBehavior`](#parameter-rulesetsrulesmatchprocessingbehavior) | string | If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue. |
+
+### Parameter: `ruleSets.rules.name`
+
+The name of the rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ruleSets.rules.order`
+
+The order in which the rules are applied for the endpoint.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `ruleSets.rules.actions`
+
+A list of actions that are executed when all the conditions of a rule are satisfied..
+
+- Required: No
+- Type: array
+
+### Parameter: `ruleSets.rules.conditions`
+
+A list of conditions that must be matched for the actions to be executed.
+
+- Required: No
+- Type: array
+
+### Parameter: `ruleSets.rules.matchProcessingBehavior`
+
+If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Continue'
+    'Stop'
+  ]
+  ```
 
 ### Parameter: `secrets`
 

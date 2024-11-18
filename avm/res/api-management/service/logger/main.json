@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "12834599511984803283"
+      "version": "0.31.34.60546",
+      "templateHash": "11518344218995825129"
     },
     "name": "API Management Service Loggers",
     "description": "This module deploys an API Management Service Logger.",
@@ -24,8 +24,9 @@
         "description": "Required. Resource Name."
       }
     },
-    "loggerDescription": {
+    "description": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. Logger description."
       }
@@ -37,7 +38,7 @@
         "description": "Optional. Whether records are buffered in the logger before publishing."
       }
     },
-    "loggerType": {
+    "type": {
       "type": "string",
       "allowedValues": [
         "applicationInsights",
@@ -68,9 +69,9 @@
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "credentials": "[parameters('credentials')]",
-        "description": "[parameters('loggerDescription')]",
+        "description": "[parameters('description')]",
         "isBuffered": "[parameters('isBuffered')]",
-        "loggerType": "[parameters('loggerType')]",
+        "loggerType": "[parameters('type')]",
         "resourceId": "[parameters('targetResourceId')]"
       }
     }

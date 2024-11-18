@@ -12,10 +12,10 @@ param name string = '${last(split(storageAccountResourceId, '/'))}-stinsconfig'
 param storageAccountResourceId string
 
 @description('Optional. The names of the blob containers that the workspace should read.')
-param containers array = []
+param containers string[]?
 
 @description('Optional. The names of the Azure tables that the workspace should read.')
-param tables array = []
+param tables string[]?
 
 @description('Optional. Tags to configure in the resource.')
 param tags object?

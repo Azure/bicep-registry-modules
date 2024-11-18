@@ -57,7 +57,6 @@ The names of the blob containers that the workspace should read.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `name`
 
@@ -73,7 +72,6 @@ The names of the Azure tables that the workspace should read.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 

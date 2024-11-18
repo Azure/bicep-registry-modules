@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "423999171457325305"
+      "version": "0.31.34.60546",
+      "templateHash": "5769743851515501504"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -257,7 +257,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The Billing Scope for the new Subscription alias, that will be created by this module.\n\nA valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.\n"
+        "description": "Optional. The Billing Scope for the new Subscription alias, that will be created by this module.\n\nA valid Billing Scope looks like `/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/enrollmentAccounts/{enrollmentAccountName}` and is case sensitive.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.\n"
       }
     },
     "subscriptionWorkload": {
@@ -456,6 +456,7 @@
       "$ref": "#/definitions/roleAssignmentType",
       "defaultValue": [],
       "metadata": {
+        "example": "  [\n    {\n      // Contributor role assignment at subscription scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/Contributor'\n      relativeScope: ''\n    }\n    {\n      // Owner role assignment at resource group scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'\n      relativeScope: '/resourceGroups/{resourceGroupName}'\n    }\n  ]\n  ",
         "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.\n"
       }
     },
@@ -589,7 +590,6 @@
         "Microsoft.Sql": [],
         "Microsoft.Storage": [],
         "Microsoft.StreamAnalytics": [],
-        "Microsoft.TimeSeriesInsights": [],
         "Microsoft.Web": []
       },
       "metadata": {
@@ -670,8 +670,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1611270751895734589"
+              "version": "0.31.34.60546",
+              "templateHash": "3457070988046201960"
             }
           },
           "parameters": {
@@ -881,8 +881,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6797720849193671192"
+              "version": "0.31.34.60546",
+              "templateHash": "15704136472131684900"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1474,7 +1474,6 @@
                 "Microsoft.Sql": [],
                 "Microsoft.Storage": [],
                 "Microsoft.StreamAnalytics": [],
-                "Microsoft.TimeSeriesInsights": [],
                 "Microsoft.Web": []
               },
               "metadata": {
@@ -1589,8 +1588,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "15074465703139369012"
+                      "version": "0.31.34.60546",
+                      "templateHash": "17907165258968798055"
                     }
                   },
                   "parameters": {
@@ -1650,8 +1649,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "15410141635305926698"
+                      "version": "0.31.34.60546",
+                      "templateHash": "3960537387423914398"
                     }
                   },
                   "parameters": {
@@ -1710,8 +1709,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.30.23.60470",
-                              "templateHash": "5472979603320584709"
+                              "version": "0.31.34.60546",
+                              "templateHash": "4908789287090218941"
                             }
                           },
                           "parameters": {
@@ -1766,8 +1765,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.30.23.60470",
-                                      "templateHash": "11343593259864722989"
+                                      "version": "0.31.34.60546",
+                                      "templateHash": "12493928637555451452"
                                     }
                                   },
                                   "parameters": {
@@ -1844,8 +1843,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.30.23.60470",
-                              "templateHash": "13884963778440627255"
+                              "version": "0.31.34.60546",
+                              "templateHash": "12602325500495654095"
                             }
                           },
                           "parameters": {
@@ -1899,8 +1898,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.30.23.60470",
-                                      "templateHash": "4428652978548820109"
+                                      "version": "0.31.34.60546",
+                                      "templateHash": "7409476431103411951"
                                     }
                                   },
                                   "parameters": {
@@ -2479,8 +2478,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "15410141635305926698"
+                      "version": "0.31.34.60546",
+                      "templateHash": "3960537387423914398"
                     }
                   },
                   "parameters": {
@@ -2539,8 +2538,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.30.23.60470",
-                              "templateHash": "5472979603320584709"
+                              "version": "0.31.34.60546",
+                              "templateHash": "4908789287090218941"
                             }
                           },
                           "parameters": {
@@ -2595,8 +2594,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.30.23.60470",
-                                      "templateHash": "11343593259864722989"
+                                      "version": "0.31.34.60546",
+                                      "templateHash": "12493928637555451452"
                                     }
                                   },
                                   "parameters": {
@@ -2673,8 +2672,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.30.23.60470",
-                              "templateHash": "13884963778440627255"
+                              "version": "0.31.34.60546",
+                              "templateHash": "12602325500495654095"
                             }
                           },
                           "parameters": {
@@ -2728,8 +2727,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.30.23.60470",
-                                      "templateHash": "4428652978548820109"
+                                      "version": "0.31.34.60546",
+                                      "templateHash": "7409476431103411951"
                                     }
                                   },
                                   "parameters": {
@@ -4425,8 +4424,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "15250207882926040999"
+                      "version": "0.31.34.60546",
+                      "templateHash": "11117025288711367178"
                     }
                   },
                   "parameters": {

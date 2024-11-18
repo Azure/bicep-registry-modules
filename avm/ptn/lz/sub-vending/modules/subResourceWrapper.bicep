@@ -178,7 +178,6 @@ param resourceProviders object = {
   'Microsoft.Sql': []
   'Microsoft.Storage': []
   'Microsoft.StreamAnalytics': []
-  'Microsoft.TimeSeriesInsights': []
   'Microsoft.Web': []
 }
 

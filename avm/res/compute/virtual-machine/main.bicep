@@ -500,6 +500,25 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
+resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
+  for (dataDisk, index) in dataDisks ?? []: {
+    location: location
+    name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+    sku: {
+      name: dataDisk.managedDisk.storageAccountType
+    }
+    properties: {
+      diskSizeGB: dataDisk.diskSizeGB
+      creationData: {
+        createOption: dataDisk.?createoption ?? 'Empty'
+      }
+      diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
+      diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
+    }
+    zones: zone != 0 ? array(string(zone)) : null
+  }
+]
+
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: name
   location: location
@@ -541,11 +560,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           lun: dataDisk.?lun ?? index
           name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
           diskSizeGB: dataDisk.diskSizeGB
-          createOption: dataDisk.?createoption ?? 'Empty'
+          createOption: (managedDataDisks[index].?id != null) ? 'Attach' : dataDisk.?createoption ?? 'Empty'
           deleteOption: dataDisk.?deleteOption ?? 'Delete'
           caching: dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             storageAccountType: dataDisk.managedDisk.storageAccountType
+            id: managedDataDisks[index].?id
             diskEncryptionSet: {
               id: dataDisk.managedDisk.?diskEncryptionSetResourceId
             }
@@ -1111,6 +1131,12 @@ type dataDisksType = {
   @description('Optional. Specifies the caching requirements.')
   caching: 'None' | 'ReadOnly' | 'ReadWrite'?
 
+  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes.')
+  diskIOPSReadWrite: int?
+
+  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10.')
+  diskMBpsReadWrite: int?
+
   @description('Required. The managed disk parameters.')
   managedDisk: {
     @description('Required. Specifies the storage account type for the managed disk.')
@@ -1125,5 +1151,8 @@ type dataDisksType = {
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
+
+    @description('Optional. Specifies the customer managed disk id for the managed disk.')
+    id: string?
   }
 }[]?

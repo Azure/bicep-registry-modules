@@ -20,7 +20,7 @@ param workspaceName string
 param plan string = 'Analytics'
 
 @description('Optional. Restore parameters.')
-param restoredLogs object = {}
+param restoredLogs restoredLogsType?
 
 @description('Optional. The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention.')
 @minValue(-1)
@@ -28,10 +28,10 @@ param restoredLogs object = {}
 param retentionInDays int = -1
 
 @description('Optional. Table\'s schema.')
-param schema object = {}
+param schema schemaType?
 
 @description('Optional. Parameters of the search job that initiated this table.')
-param searchResults object = {}
+param searchResults searchResultsType?
 
 @description('Optional. The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention.')
 @minValue(-1)
@@ -136,3 +136,57 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('The parameters of the restore operation that initiated the table.')
+type restoredLogsType = {
+  @description('Optional. The table to restore data from.')
+  sourceTable: string?
+  @description('Optional. The timestamp to start the restore from (UTC).')
+  startRestoreTime: string?
+  @description('Optional. The timestamp to end the restore by (UTC).')
+  endRestoreTime: string?
+}
+
+@export()
+@description('The table schema.')
+type schemaType = {
+  @description('Required. The table name.')
+  name: string
+  @description('Required. A list of table custom columns.')
+  columns: columnType[]
+  @description('Optional. The table description.')
+  description: string?
+  @description('Optional. The table display name.')
+  displayName: string?
+}
+
+@export()
+@description('The parameters of the table column.')
+type columnType = {
+  @description('Required. The column name.')
+  name: string
+  @description('Required. The column type.')
+  type: 'boolean' | 'dateTime' | 'dynamic' | 'guid' | 'int' | 'long' | 'real' | 'string'
+  @description('Optional. The column data type logical hint.')
+  dataTypeHint: 'armPath' | 'guid' | 'ip' | 'uri'?
+  @description('Optional. The column description.')
+  description: string?
+  @description('Optional. Column display name.')
+  displayName: string?
+}
+
+@export()
+@description('The parameters of the search job that initiated the table.')
+type searchResultsType = {
+  @description('Required. The search job query.')
+  query: string
+  @description('Optional. The search description.')
+  description: string?
+  @description('Optional. Limit the search job to return up to specified number of rows.')
+  limit: int?
+  @description('Optional. The timestamp to start the search from (UTC).')
+  startSearchTime: string?
+  @description('Optional. The timestamp to end the search by (UTC).')
+  endSearchTime: string?
+}

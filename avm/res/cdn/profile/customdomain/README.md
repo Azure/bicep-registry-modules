@@ -49,6 +49,7 @@ The type of the certificate used for secure delivery.
 - Allowed:
   ```Bicep
   [
+    'AzureFirstPartyManagedCertificate'
     'CustomerCertificate'
     'ManagedCertificate'
   ]

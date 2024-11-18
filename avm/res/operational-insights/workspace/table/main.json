@@ -5,14 +5,183 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "7459975468074908308"
+      "version": "0.31.92.45157",
+      "templateHash": "13277383761731431931"
     },
     "name": "Log Analytics Workspace Tables",
     "description": "This module deploys a Log Analytics Workspace Table.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "restoredLogsType": {
+      "type": "object",
+      "properties": {
+        "sourceTable": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table to restore data from."
+          }
+        },
+        "startRestoreTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to start the restore from (UTC)."
+          }
+        },
+        "endRestoreTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to end the restore by (UTC)."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The parameters of the restore operation that initiated the table."
+      }
+    },
+    "schemaType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The table name."
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/columnType"
+          },
+          "metadata": {
+            "description": "Required. A list of table custom columns."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table description."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table display name."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The table schema."
+      }
+    },
+    "columnType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The column name."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "boolean",
+            "dateTime",
+            "dynamic",
+            "guid",
+            "int",
+            "long",
+            "real",
+            "string"
+          ],
+          "metadata": {
+            "description": "Required. The column type."
+          }
+        },
+        "dataTypeHint": {
+          "type": "string",
+          "allowedValues": [
+            "armPath",
+            "guid",
+            "ip",
+            "uri"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The column data type logical hint."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The column description."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Column display name."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The parameters of the table column."
+      }
+    },
+    "searchResultsType": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The search job query."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The search description."
+          }
+        },
+        "limit": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Limit the search job to return up to specified number of rows."
+          }
+        },
+        "startSearchTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to start the search from (UTC)."
+          }
+        },
+        "endSearchTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to end the search by (UTC)."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The parameters of the search job that initiated the table."
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -114,8 +283,8 @@
       }
     },
     "restoredLogs": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/restoredLogsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Restore parameters."
       }
@@ -130,15 +299,15 @@
       }
     },
     "schema": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/schemaType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Table's schema."
       }
     },
     "searchResults": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/searchResultsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Parameters of the search job that initiated this table."
       }
@@ -201,7 +370,10 @@
         "schema": "[parameters('schema')]",
         "searchResults": "[parameters('searchResults')]",
         "totalRetentionInDays": "[parameters('totalRetentionInDays')]"
-      }
+      },
+      "dependsOn": [
+        "workspace"
+      ]
     },
     "table_roleAssignments": {
       "copy": {

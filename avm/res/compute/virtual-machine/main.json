@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "15583840681812853598"
+      "templateHash": "8773273774920281983"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -279,6 +279,20 @@
               "description": "Optional. Specifies the caching requirements."
             }
           },
+          "diskIOPSReadWrite": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes."
+            }
+          },
+          "diskMBpsReadWrite": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10."
+            }
+          },
           "managedDisk": {
             "type": "object",
             "properties": {
@@ -302,6 +316,13 @@
                 "nullable": true,
                 "metadata": {
                   "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
+                }
+              },
+              "id": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Specifies the customer managed disk id for the managed disk."
                 }
               }
             },
@@ -980,6 +1001,28 @@
         }
       }
     },
+    "managedDataDisks": {
+      "copy": {
+        "name": "managedDataDisks",
+        "count": "[length(coalesce(parameters('dataDisks'), createArray()))]"
+      },
+      "type": "Microsoft.Compute/disks",
+      "apiVersion": "2024-03-02",
+      "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex(), 1), 2, '0')))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk.storageAccountType]"
+      },
+      "properties": {
+        "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].diskSizeGB]",
+        "creationData": {
+          "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'createoption'), 'Empty')]"
+        },
+        "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
+        "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]"
+      },
+      "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]"
+    },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2024-07-01",
@@ -1007,11 +1050,12 @@
                 "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
                 "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))]",
                 "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].diskSizeGB]",
-                "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty')]",
+                "createOption": "[if(not(equals(resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null())), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
                 "deleteOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete')]",
                 "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
                 "managedDisk": {
                   "storageAccountType": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.storageAccountType]",
+                  "id": "[resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
                   "diskEncryptionSet": {
                     "id": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId')]"
                   }
@@ -1080,6 +1124,7 @@
         "userData": "[if(not(empty(parameters('userData'))), base64(parameters('userData')), null())]"
       },
       "dependsOn": [
+        "managedDataDisks",
         "vm_nic"
       ]
     },

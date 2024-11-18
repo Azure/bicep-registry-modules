@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "13803826230764856157"
+      "version": "0.31.92.45157",
+      "templateHash": "4016402011070477200"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -153,7 +153,468 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "Properties of the gallery solutions to be created in the log analytics workspace."
+      }
+    },
+    "storageInsightsConfigType": {
+      "type": "object",
+      "properties": {
+        "storageAccountResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the storage account to be linked."
+          }
+        },
+        "containers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The names of the blob containers that the workspace should read."
+          }
+        },
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of tables to be read by the workspace."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the storage insights configuration."
+      }
+    },
+    "linkedServiceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the linked service."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+          }
+        },
+        "writeAccessResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the linked service."
+      }
+    },
+    "linkedStorageAccountType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the link."
+          }
+        },
+        "storageAccountIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1,
+          "metadata": {
+            "description": "Required. Linked storage accounts resources Ids."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the linked storage account."
+      }
+    },
+    "savedSearchType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the saved search."
+          }
+        },
+        "etag": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ETag of the saved search. To override an existing saved search, use \"*\" or specify the current Etag."
+          }
+        },
+        "category": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The category of the saved search. This helps the user to find a saved search faster."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Display name for the search."
+          }
+        },
+        "functionAlias": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The function alias if query serves as a function."
+          }
+        },
+        "functionParameters": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The optional function parameters if query serves as a function. Value should be in the following format: 'param-name1:type1 = default_value1, param-name2:type2 = default_value2'. For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions."
+          }
+        },
+        "query": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The query expression for the saved search."
+          }
+        },
+        "tags": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags attached to the saved search."
+          }
+        },
+        "version": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version number of the query language. The current version is 2 and is the default."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the saved search."
+      }
+    },
+    "dataExportType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the data export."
+          }
+        },
+        "destination": {
+          "$ref": "#/definitions/destinationType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The destination of the data export."
+          }
+        },
+        "enable": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable the data export."
+          }
+        },
+        "tableNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The list of table names to export."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the data export."
+      }
+    },
+    "dataSourceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the data source."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The kind of data source."
+          }
+        },
+        "linkedResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource id of the resource that will be linked to the workspace."
+          }
+        },
+        "eventLogName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the event log to configure when kind is WindowsEvent."
+          }
+        },
+        "eventTypes": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The event types to configure when kind is WindowsEvent."
+          }
+        },
+        "objectName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+          }
+        },
+        "instanceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+          }
+        },
+        "intervalSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+          }
+        },
+        "performanceCounters": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of counters to configure when the kind is LinuxPerformanceObject."
+          }
+        },
+        "counterName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
+          }
+        },
+        "state": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
+          }
+        },
+        "syslogName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. System log to configure when kind is LinuxSyslog."
+          }
+        },
+        "syslogSeverities": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Severities to configure when kind is LinuxSyslog."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to configure in the resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the data source."
+      }
+    },
+    "tableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the table."
+          }
+        },
+        "plan": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The plan for the table."
+          }
+        },
+        "restoredLogs": {
+          "$ref": "#/definitions/restoredLogsType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The restored logs for the table."
+          }
+        },
+        "schema": {
+          "$ref": "#/definitions/schemaType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The schema for the table."
+          }
+        },
+        "searchResults": {
+          "$ref": "#/definitions/searchResultsType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The search results for the table."
+          }
+        },
+        "retentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The retention in days for the table."
+          }
+        },
+        "totalRetentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The total retention in days for the table."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The role assignments for the table."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the custom table."
+      }
+    },
+    "_1.columnType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The column name."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "boolean",
+            "dateTime",
+            "dynamic",
+            "guid",
+            "int",
+            "long",
+            "real",
+            "string"
+          ],
+          "metadata": {
+            "description": "Required. The column type."
+          }
+        },
+        "dataTypeHint": {
+          "type": "string",
+          "allowedValues": [
+            "armPath",
+            "guid",
+            "ip",
+            "uri"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The column data type logical hint."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The column description."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Column display name."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The parameters of the table column.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table/main.bicep"
+        }
+      }
+    },
+    "destinationType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The destination resource ID."
+          }
+        },
+        "metaData": {
+          "type": "object",
+          "properties": {
+            "eventHubName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The destination metadata."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The data export destination properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "data-export/main.bicep"
+        }
       }
     },
     "lockType": {
@@ -211,6 +672,38 @@
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    },
+    "restoredLogsType": {
+      "type": "object",
+      "properties": {
+        "sourceTable": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table to restore data from."
+          }
+        },
+        "startRestoreTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to start the restore from (UTC)."
+          }
+        },
+        "endRestoreTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to end the restore by (UTC)."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The parameters of the restore operation that initiated the table.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table/main.bicep"
         }
       }
     },
@@ -289,6 +782,91 @@
         }
       }
     },
+    "schemaType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The table name."
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.columnType"
+          },
+          "metadata": {
+            "description": "Required. A list of table custom columns."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table description."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table display name."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The table schema.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table/main.bicep"
+        }
+      }
+    },
+    "searchResultsType": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The search job query."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The search description."
+          }
+        },
+        "limit": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Limit the search job to return up to specified number of rows."
+          }
+        },
+        "startSearchTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to start the search from (UTC)."
+          }
+        },
+        "endSearchTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to end the search by (UTC)."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The parameters of the search job that initiated the table.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table/main.bicep"
+        }
+      }
+    },
     "solutionPlanType": {
       "type": "object",
       "properties": {
@@ -362,49 +940,70 @@
     },
     "storageInsightsConfigs": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/storageInsightsConfigType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of storage accounts to be read by the workspace."
       }
     },
     "linkedServices": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/linkedServiceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of services to be linked."
       }
     },
     "linkedStorageAccounts": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/linkedStorageAccountType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Conditional. List of Storage Accounts to be linked. Required if 'forceCmkForQuery' is set to 'true' and 'savedSearches' is not empty."
       }
     },
     "savedSearches": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/savedSearchType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Kusto Query Language searches to save."
       }
     },
     "dataExports": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/dataExportType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. LAW data export instances to be deployed."
       }
     },
     "dataSources": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/dataSourceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. LAW data sources to configure."
       }
     },
     "tables": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/tableType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. LAW custom tables to be deployed."
       }
@@ -689,7 +1288,7 @@
     "logAnalyticsWorkspace_storageInsightConfigs": {
       "copy": {
         "name": "logAnalyticsWorkspace_storageInsightConfigs",
-        "count": "[length(parameters('storageInsightsConfigs'))]"
+        "count": "[length(coalesce(parameters('storageInsightsConfigs'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -704,13 +1303,13 @@
             "value": "[parameters('name')]"
           },
           "containers": {
-            "value": "[tryGet(parameters('storageInsightsConfigs')[copyIndex()], 'containers')]"
+            "value": "[tryGet(coalesce(parameters('storageInsightsConfigs'), createArray())[copyIndex()], 'containers')]"
           },
           "tables": {
-            "value": "[tryGet(parameters('storageInsightsConfigs')[copyIndex()], 'tables')]"
+            "value": "[tryGet(coalesce(parameters('storageInsightsConfigs'), createArray())[copyIndex()], 'tables')]"
           },
           "storageAccountResourceId": {
-            "value": "[parameters('storageInsightsConfigs')[copyIndex()].storageAccountResourceId]"
+            "value": "[coalesce(parameters('storageInsightsConfigs'), createArray())[copyIndex()].storageAccountResourceId]"
           }
         },
         "template": {
@@ -720,8 +1319,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "4634762044709818669"
+              "version": "0.31.92.45157",
+              "templateHash": "156138954055342275"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
             "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -749,14 +1348,20 @@
             },
             "containers": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The names of the blob containers that the workspace should read."
               }
             },
             "tables": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The names of the Azure tables that the workspace should read."
               }
@@ -794,7 +1399,11 @@
                   "id": "[parameters('storageAccountResourceId')]",
                   "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2022-09-01').keys[0].value]"
                 }
-              }
+              },
+              "dependsOn": [
+                "storageAccount",
+                "workspace"
+              ]
             }
           },
           "outputs": {
@@ -829,7 +1438,7 @@
     "logAnalyticsWorkspace_linkedServices": {
       "copy": {
         "name": "logAnalyticsWorkspace_linkedServices",
-        "count": "[length(parameters('linkedServices'))]"
+        "count": "[length(coalesce(parameters('linkedServices'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -844,13 +1453,13 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('linkedServices')[copyIndex()].name]"
+            "value": "[coalesce(parameters('linkedServices'), createArray())[copyIndex()].name]"
           },
           "resourceId": {
-            "value": "[tryGet(parameters('linkedServices')[copyIndex()], 'resourceId')]"
+            "value": "[tryGet(coalesce(parameters('linkedServices'), createArray())[copyIndex()], 'resourceId')]"
           },
           "writeAccessResourceId": {
-            "value": "[tryGet(parameters('linkedServices')[copyIndex()], 'writeAccessResourceId')]"
+            "value": "[tryGet(coalesce(parameters('linkedServices'), createArray())[copyIndex()], 'writeAccessResourceId')]"
           }
         },
         "template": {
@@ -860,8 +1469,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "13253888384545811424"
+              "version": "0.31.92.45157",
+              "templateHash": "815879010072595898"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -882,14 +1491,14 @@
             },
             "resourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
               }
             },
             "writeAccessResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require write access."
               }
@@ -916,8 +1525,11 @@
               "tags": "[parameters('tags')]",
               "properties": {
                 "resourceId": "[parameters('resourceId')]",
-                "writeAccessResourceId": "[if(empty(parameters('writeAccessResourceId')), null(), parameters('writeAccessResourceId'))]"
-              }
+                "writeAccessResourceId": "[parameters('writeAccessResourceId')]"
+              },
+              "dependsOn": [
+                "workspace"
+              ]
             }
           },
           "outputs": {
@@ -952,7 +1564,7 @@
     "logAnalyticsWorkspace_linkedStorageAccounts": {
       "copy": {
         "name": "logAnalyticsWorkspace_linkedStorageAccounts",
-        "count": "[length(parameters('linkedStorageAccounts'))]"
+        "count": "[length(coalesce(parameters('linkedStorageAccounts'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -967,20 +1579,21 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('linkedStorageAccounts')[copyIndex()].name]"
+            "value": "[coalesce(parameters('linkedStorageAccounts'), createArray())[copyIndex()].name]"
           },
-          "resourceId": {
-            "value": "[parameters('linkedStorageAccounts')[copyIndex()].resourceId]"
+          "storageAccountIds": {
+            "value": "[coalesce(parameters('linkedStorageAccounts'), createArray())[copyIndex()].storageAccountIds]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "14472959311832661205"
+              "version": "0.31.92.45157",
+              "templateHash": "15129623170213660788"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
             "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
@@ -1005,25 +1618,36 @@
                 "description": "Required. Name of the link."
               }
             },
-            "resourceId": {
-              "type": "string",
+            "storageAccountIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minLength": 1,
               "metadata": {
-                "description": "Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+                "description": "Required. Linked storage accounts resources Ids."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2022-10-01",
+              "name": "[parameters('logAnalyticsWorkspaceName')]"
+            },
+            "linkedStorageAccount": {
               "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
               "apiVersion": "2020-08-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "properties": {
-                "storageAccountIds": [
-                  "[parameters('resourceId')]"
-                ]
-              }
+                "storageAccountIds": "[parameters('storageAccountIds')]"
+              },
+              "dependsOn": [
+                "workspace"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1056,7 +1680,7 @@
     "logAnalyticsWorkspace_savedSearches": {
       "copy": {
         "name": "logAnalyticsWorkspace_savedSearches",
-        "count": "[length(parameters('savedSearches'))]"
+        "count": "[length(coalesce(parameters('savedSearches'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1071,28 +1695,31 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[format('{0}{1}', parameters('savedSearches')[copyIndex()].name, uniqueString(deployment().name))]"
+            "value": "[format('{0}{1}', coalesce(parameters('savedSearches'), createArray())[copyIndex()].name, uniqueString(deployment().name))]"
           },
           "etag": {
-            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'etag')]"
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'etag')]"
           },
           "displayName": {
-            "value": "[parameters('savedSearches')[copyIndex()].displayName]"
+            "value": "[coalesce(parameters('savedSearches'), createArray())[copyIndex()].displayName]"
           },
           "category": {
-            "value": "[parameters('savedSearches')[copyIndex()].category]"
+            "value": "[coalesce(parameters('savedSearches'), createArray())[copyIndex()].category]"
           },
           "query": {
-            "value": "[parameters('savedSearches')[copyIndex()].query]"
+            "value": "[coalesce(parameters('savedSearches'), createArray())[copyIndex()].query]"
           },
           "functionAlias": {
-            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'functionAlias')]"
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'functionAlias')]"
           },
           "functionParameters": {
-            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'functionParameters')]"
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'functionParameters')]"
+          },
+          "tags": {
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'tags')]"
           },
           "version": {
-            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'version')]"
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'version')]"
           }
         },
         "template": {
@@ -1102,8 +1729,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "1097692446107685243"
+              "version": "0.31.92.45157",
+              "templateHash": "15600200446151630277"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -1196,7 +1823,10 @@
                 "functionAlias": "[parameters('functionAlias')]",
                 "functionParameters": "[parameters('functionParameters')]",
                 "version": "[parameters('version')]"
-              }
+              },
+              "dependsOn": [
+                "workspace"
+              ]
             }
           },
           "outputs": {
@@ -1232,7 +1862,7 @@
     "logAnalyticsWorkspace_dataExports": {
       "copy": {
         "name": "logAnalyticsWorkspace_dataExports",
-        "count": "[length(parameters('dataExports'))]"
+        "count": "[length(coalesce(parameters('dataExports'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1247,30 +1877,64 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('dataExports')[copyIndex()].name]"
+            "value": "[coalesce(parameters('dataExports'), createArray())[copyIndex()].name]"
           },
           "destination": {
-            "value": "[tryGet(parameters('dataExports')[copyIndex()], 'destination')]"
+            "value": "[tryGet(coalesce(parameters('dataExports'), createArray())[copyIndex()], 'destination')]"
           },
           "enable": {
-            "value": "[tryGet(parameters('dataExports')[copyIndex()], 'enable')]"
+            "value": "[tryGet(coalesce(parameters('dataExports'), createArray())[copyIndex()], 'enable')]"
           },
           "tableNames": {
-            "value": "[tryGet(parameters('dataExports')[copyIndex()], 'tableNames')]"
+            "value": "[tryGet(coalesce(parameters('dataExports'), createArray())[copyIndex()], 'tableNames')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "6471227851268955186"
+              "version": "0.31.92.45157",
+              "templateHash": "8392467222383128491"
             },
             "name": "Log Analytics Workspace Data Exports",
             "description": "This module deploys a Log Analytics Workspace Data Export.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "destinationType": {
+              "type": "object",
+              "properties": {
+                "resourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The destination resource ID."
+                  }
+                },
+                "metaData": {
+                  "type": "object",
+                  "properties": {
+                    "eventHubName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The destination metadata."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The data export destination properties."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -1288,8 +1952,8 @@
               }
             },
             "destination": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/destinationType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Destination properties."
               }
@@ -1303,14 +1967,23 @@
             },
             "tableNames": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "minLength": 1,
               "metadata": {
-                "description": "Optional. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
+                "description": "Required. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2022-10-01",
+              "name": "[parameters('workspaceName')]"
+            },
+            "dataExport": {
               "type": "Microsoft.OperationalInsights/workspaces/dataExports",
               "apiVersion": "2020-08-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
@@ -1318,9 +1991,12 @@
                 "destination": "[parameters('destination')]",
                 "enable": "[parameters('enable')]",
                 "tableNames": "[parameters('tableNames')]"
-              }
+              },
+              "dependsOn": [
+                "workspace"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1353,7 +2029,7 @@
     "logAnalyticsWorkspace_dataSources": {
       "copy": {
         "name": "logAnalyticsWorkspace_dataSources",
-        "count": "[length(parameters('dataSources'))]"
+        "count": "[length(coalesce(parameters('dataSources'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1368,43 +2044,46 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('dataSources')[copyIndex()].name]"
+            "value": "[coalesce(parameters('dataSources'), createArray())[copyIndex()].name]"
           },
           "kind": {
-            "value": "[parameters('dataSources')[copyIndex()].kind]"
+            "value": "[coalesce(parameters('dataSources'), createArray())[copyIndex()].kind]"
           },
           "linkedResourceId": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'linkedResourceId')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'linkedResourceId')]"
           },
           "eventLogName": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'eventLogName')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'eventLogName')]"
           },
           "eventTypes": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'eventTypes')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'eventTypes')]"
           },
           "objectName": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'objectName')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'objectName')]"
           },
           "instanceName": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'instanceName')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'instanceName')]"
           },
           "intervalSeconds": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'intervalSeconds')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'intervalSeconds')]"
           },
           "counterName": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'counterName')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'counterName')]"
           },
           "state": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'state')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'state')]"
           },
           "syslogName": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'syslogName')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'syslogName')]"
           },
           "syslogSeverities": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'syslogSeverities')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'syslogSeverities')]"
           },
           "performanceCounters": {
-            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'performanceCounters')]"
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'performanceCounters')]"
+          },
+          "tags": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'tags')]"
           }
         },
         "template": {
@@ -1414,8 +2093,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "8463454444688288974"
+              "version": "0.31.92.45157",
+              "templateHash": "3019400626196043317"
             },
             "name": "Log Analytics Workspace Datasources",
             "description": "This module deploys a Log Analytics Workspace Data Source.",
@@ -1431,7 +2110,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. Name of the solution."
+                "description": "Required. Name of the data source."
               }
             },
             "kind": {
@@ -1448,7 +2127,7 @@
                 "LinuxPerformanceCollection"
               ],
               "metadata": {
-                "description": "Optional. The kind of the DataSource."
+                "description": "Optional. The kind of the data source."
               }
             },
             "tags": {
@@ -1460,14 +2139,14 @@
             },
             "linkedResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Resource ID of the resource to be linked."
               }
             },
             "eventLogName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Windows event log name to configure when kind is WindowsEvent."
               }
@@ -1481,7 +2160,7 @@
             },
             "objectName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
               }
@@ -1509,21 +2188,21 @@
             },
             "counterName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
               }
             },
             "state": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
               }
             },
             "syslogName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. System log to configure when kind is LinuxSyslog."
               }
@@ -1561,7 +2240,10 @@
                 "syslogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxSyslog')), parameters('syslogName'), null())]",
                 "syslogSeverities": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'LinuxSyslog'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('syslogSeverities'), null())]",
                 "performanceCounters": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxPerformanceObject')), parameters('performanceCounters'), null())]"
-              }
+              },
+              "dependsOn": [
+                "workspace"
+              ]
             }
           },
           "outputs": {
@@ -1596,7 +2278,7 @@
     "logAnalyticsWorkspace_tables": {
       "copy": {
         "name": "logAnalyticsWorkspace_tables",
-        "count": "[length(parameters('tables'))]"
+        "count": "[length(coalesce(parameters('tables'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1611,28 +2293,28 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('tables')[copyIndex()].name]"
+            "value": "[coalesce(parameters('tables'), createArray())[copyIndex()].name]"
           },
           "plan": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'plan')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'plan')]"
           },
           "schema": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'schema')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'schema')]"
           },
           "retentionInDays": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'retentionInDays')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'retentionInDays')]"
           },
           "totalRetentionInDays": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'totalRetentionInDays')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'totalRetentionInDays')]"
           },
           "restoredLogs": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'restoredLogs')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'restoredLogs')]"
           },
           "searchResults": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'searchResults')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'searchResults')]"
           },
           "roleAssignments": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'roleAssignments')]"
           }
         },
         "template": {
@@ -1642,14 +2324,183 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "7459975468074908308"
+              "version": "0.31.92.45157",
+              "templateHash": "13277383761731431931"
             },
             "name": "Log Analytics Workspace Tables",
             "description": "This module deploys a Log Analytics Workspace Table.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
+            "restoredLogsType": {
+              "type": "object",
+              "properties": {
+                "sourceTable": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The table to restore data from."
+                  }
+                },
+                "startRestoreTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The timestamp to start the restore from (UTC)."
+                  }
+                },
+                "endRestoreTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The timestamp to end the restore by (UTC)."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The parameters of the restore operation that initiated the table."
+              }
+            },
+            "schemaType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The table name."
+                  }
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/columnType"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of table custom columns."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The table description."
+                  }
+                },
+                "displayName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The table display name."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The table schema."
+              }
+            },
+            "columnType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The column name."
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "boolean",
+                    "dateTime",
+                    "dynamic",
+                    "guid",
+                    "int",
+                    "long",
+                    "real",
+                    "string"
+                  ],
+                  "metadata": {
+                    "description": "Required. The column type."
+                  }
+                },
+                "dataTypeHint": {
+                  "type": "string",
+                  "allowedValues": [
+                    "armPath",
+                    "guid",
+                    "ip",
+                    "uri"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The column data type logical hint."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The column description."
+                  }
+                },
+                "displayName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Column display name."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The parameters of the table column."
+              }
+            },
+            "searchResultsType": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The search job query."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The search description."
+                  }
+                },
+                "limit": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Limit the search job to return up to specified number of rows."
+                  }
+                },
+                "startSearchTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The timestamp to start the search from (UTC)."
+                  }
+                },
+                "endSearchTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The timestamp to end the search by (UTC)."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The parameters of the search job that initiated the table."
+              }
+            },
             "roleAssignmentType": {
               "type": "object",
               "properties": {
@@ -1751,8 +2602,8 @@
               }
             },
             "restoredLogs": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/restoredLogsType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Restore parameters."
               }
@@ -1767,15 +2618,15 @@
               }
             },
             "schema": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/schemaType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Table's schema."
               }
             },
             "searchResults": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/searchResultsType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Parameters of the search job that initiated this table."
               }
@@ -1838,7 +2689,10 @@
                 "schema": "[parameters('schema')]",
                 "searchResults": "[parameters('searchResults')]",
                 "totalRetentionInDays": "[parameters('totalRetentionInDays')]"
-              }
+              },
+              "dependsOn": [
+                "workspace"
+              ]
             },
             "table_roleAssignments": {
               "copy": {

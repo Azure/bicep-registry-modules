@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "4674728695659998649"
+      "version": "0.31.34.60546",
+      "templateHash": "13236500116916645585"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -20,7 +20,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. Fqdn that resolves to private endpoint IP address."
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
           }
         },
         "ipAddresses": {
@@ -35,7 +35,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     },
@@ -77,7 +77,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     },
@@ -118,7 +118,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     },
@@ -155,7 +155,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     },
@@ -277,7 +277,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     },
@@ -307,7 +307,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     },
@@ -328,7 +328,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     },
@@ -470,7 +470,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     },
@@ -545,7 +545,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     }
@@ -561,7 +561,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The administrator login name of a server. Can only be specified when the PostgreSQL server is being created."
+        "description": "Optional. The administrator login name for the server. Can only be specified when the PostgreSQL server is being created."
       }
     },
     "administratorLoginPassword": {
@@ -856,10 +856,7 @@
       "apiVersion": "2023-07-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -937,11 +934,7 @@
           "storageSizeGB": "[parameters('storageSizeGB')]"
         },
         "version": "[parameters('version')]"
-      },
-      "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
-      ]
+      }
     },
     "flexibleServer_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1054,8 +1047,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "8538777017463575324"
+              "version": "0.31.34.60546",
+              "templateHash": "5925943942284222024"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -1103,10 +1096,7 @@
               "properties": {
                 "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
                 "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
-              },
-              "dependsOn": [
-                "flexibleServer"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1171,8 +1161,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "3950185975907365475"
+              "version": "0.31.34.60546",
+              "templateHash": "9983440066171652627"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
@@ -1281,8 +1271,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "11184980891224869481"
+              "version": "0.31.34.60546",
+              "templateHash": "4744350024962623928"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -1330,10 +1320,7 @@
               "properties": {
                 "source": "[if(not(empty(parameters('source'))), parameters('source'), null())]",
                 "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
-              },
-              "dependsOn": [
-                "flexibleServer"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1402,8 +1389,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "17167767529180811297"
+              "version": "0.31.34.60546",
+              "templateHash": "16481538210870485841"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",

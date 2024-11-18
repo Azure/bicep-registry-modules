@@ -38,16 +38,16 @@ param endpointProperties object?
 param secrets array = []
 
 @description('Optional. Array of custom domain objects.')
-param customDomains array = []
+param customDomains customDomainType[] = []
 
 @description('Conditional. Array of origin group objects. Required if the afdEndpoints is specified.')
-param originGroups array = []
+param originGroups originGroupType[] = []
 
 @description('Optional. Array of rule set objects.')
-param ruleSets array = []
+param ruleSets ruleSetType[] = []
 
 @description('Optional. Array of AFD endpoint objects.')
-param afdEndpoints array = []
+param afdEndpoints afdEndpointType[] = []
 
 @description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
 param securityPolicies securityPolicyType = []
@@ -320,6 +320,14 @@ output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
 //   Definitions   //
 // =============== //
 
+import { afdEndpointType } from 'afdEndpoint/main.bicep'
+import { customDomainType } from 'customdomain/main.bicep'
+import { originGroupType } from 'origingroup/main.bicep'
+import { originType } from 'origingroup//origin/main.bicep'
+import { associationsType } from 'securityPolicies/main.bicep'
+import { ruleSetType } from 'ruleset/main.bicep'
+import { ruleType } from 'ruleset/rule/main.bicep'
+
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
@@ -328,7 +336,7 @@ type managedIdentitiesType = {
   userAssignedResourceIds: string[]?
 }?
 
-import { associationsType } from 'securityPolicies/main.bicep'
+@export()
 type securityPolicyType = {
   @description('Required. Name of the security policy.')
   name: string

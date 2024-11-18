@@ -21,7 +21,7 @@ This module deploys a Log Analytics Workspace Linked Storage Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the link. |
-| [`resourceId`](#parameter-resourceid) | string | The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
+| [`storageAccountIds`](#parameter-storageaccountids) | array | Linked storage accounts resources Ids. |
 
 **Conditional parameters**
 
@@ -45,12 +45,12 @@ Name of the link.
   ]
   ```
 
-### Parameter: `resourceId`
+### Parameter: `storageAccountIds`
 
-The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
+Linked storage accounts resources Ids.
 
 - Required: Yes
-- Type: string
+- Type: array
 
 ### Parameter: `logAnalyticsWorkspaceName`
 

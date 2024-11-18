@@ -20,7 +20,7 @@ This module deploys a Log Analytics Workspace Data Source.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the solution. |
+| [`name`](#parameter-name) | string | Name of the data source. |
 
 **Conditional parameters**
 
@@ -37,7 +37,7 @@ This module deploys a Log Analytics Workspace Data Source.
 | [`eventTypes`](#parameter-eventtypes) | array | Windows event types to configure when kind is WindowsEvent. |
 | [`instanceName`](#parameter-instancename) | string | Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
 | [`intervalSeconds`](#parameter-intervalseconds) | int | Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
-| [`kind`](#parameter-kind) | string | The kind of the DataSource. |
+| [`kind`](#parameter-kind) | string | The kind of the data source. |
 | [`linkedResourceId`](#parameter-linkedresourceid) | string | Resource ID of the resource to be linked. |
 | [`objectName`](#parameter-objectname) | string | Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
 | [`performanceCounters`](#parameter-performancecounters) | array | List of counters to configure when the kind is LinuxPerformanceObject. |
@@ -48,7 +48,7 @@ This module deploys a Log Analytics Workspace Data Source.
 
 ### Parameter: `name`
 
-Name of the solution.
+Name of the data source.
 
 - Required: Yes
 - Type: string
@@ -66,7 +66,6 @@ Counter name to configure when kind is WindowsPerformanceCounter.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `eventLogName`
 
@@ -74,7 +73,6 @@ Windows event log name to configure when kind is WindowsEvent.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `eventTypes`
 
@@ -102,7 +100,7 @@ Interval in seconds to configure when kind is WindowsPerformanceCounter or Linux
 
 ### Parameter: `kind`
 
-The kind of the DataSource.
+The kind of the data source.
 
 - Required: No
 - Type: string
@@ -127,7 +125,6 @@ Resource ID of the resource to be linked.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `objectName`
 
@@ -135,7 +132,6 @@ Name of the object to configure when kind is WindowsPerformanceCounter or LinuxP
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `performanceCounters`
 
@@ -151,7 +147,6 @@ State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerform
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `syslogName`
 
@@ -159,7 +154,6 @@ System log to configure when kind is LinuxSyslog.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `syslogSeverities`
 

@@ -20,8 +20,8 @@ This module deploys an API Management Service Logger.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerType`](#parameter-loggertype) | string | Logger type. |
 | [`name`](#parameter-name) | string | Resource Name. |
+| [`type`](#parameter-type) | string | Logger type. |
 
 **Conditional parameters**
 
@@ -35,10 +35,17 @@ This module deploys an API Management Service Logger.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`description`](#parameter-description) | string | Logger description. |
 | [`isBuffered`](#parameter-isbuffered) | bool | Whether records are buffered in the logger before publishing. |
-| [`loggerDescription`](#parameter-loggerdescription) | string | Logger description. |
 
-### Parameter: `loggerType`
+### Parameter: `name`
+
+Resource Name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `type`
 
 Logger type.
 
@@ -52,13 +59,6 @@ Logger type.
     'azureMonitor'
   ]
   ```
-
-### Parameter: `name`
-
-Resource Name.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `apiManagementServiceName`
 
@@ -81,6 +81,14 @@ Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id
 - Required: Yes
 - Type: string
 
+### Parameter: `description`
+
+Logger description.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `isBuffered`
 
 Whether records are buffered in the logger before publishing.
@@ -88,13 +96,6 @@ Whether records are buffered in the logger before publishing.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `loggerDescription`
-
-Logger description.
-
-- Required: Yes
-- Type: string
 
 ## Outputs
 

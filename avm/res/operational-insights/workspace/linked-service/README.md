@@ -56,7 +56,6 @@ The resource ID of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
@@ -71,7 +70,6 @@ The resource ID of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

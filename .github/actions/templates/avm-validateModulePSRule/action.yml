@@ -131,6 +131,35 @@ runs:
         source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
         summary: false # Disabling as taken care in customized task
 
+    - name: Run PSRule analysis - Security Pillar Only (Custom Security Pillar)
+      uses: microsoft/ps-rule@v2.9.0
+      if: ${{ inputs.psruleBaseline == 'CB.AVM.WAF.Security' }}
+      with:
+        modules: "PSRule.Rules.Azure"
+        prerelease: true
+        baseline: "${{ inputs.psruleBaseline }}"
+        inputPath: "${{ inputs.templateFilePath}}"
+        outputFormat: Csv
+        outputPath: "${{ inputs.templateFilePath}}-PSRule-output.csv"
+        option: "${{ github.workspace }}/${{ inputs.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
+        source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
+        summary: false # Disabling as taken care in customized task
+
+    - name: Run PSRule analysis - Security Pillar Only (Azure.Pillar.Security)
+      uses: microsoft/ps-rule@v2.9.0
+      if: ${{ inputs.psruleBaseline == 'Azure.Pillar.Security' }}
+      continue-on-error: true
+      with:
+        modules: "PSRule.Rules.Azure"
+        prerelease: true
+        baseline: "${{ inputs.psruleBaseline }}"
+        inputPath: "${{ inputs.templateFilePath}}"
+        outputFormat: Csv
+        outputPath: "${{ inputs.templateFilePath}}-PSRule-output.csv"
+        option: "${{ github.workspace }}/${{ inputs.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
+        source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
+        summary: false # Disabling as taken care in customized task
+
     - name: "Parse CSV content"
       if: always()
       uses: azure/powershell@v2
