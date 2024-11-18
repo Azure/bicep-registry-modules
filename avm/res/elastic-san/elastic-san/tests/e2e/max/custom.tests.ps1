@@ -44,7 +44,7 @@ Describe 'Validate Deployment' {
             Test-VerifyElasticSAN `
                 -ResourceId $resourceId `
                 -ResourceGroupName $resourceGroupName `
-                -name $name `
+                -Name $name `
                 -Location $location `
                 -Tags $expectedTags  `
                 -AvailabilityZone 3 `
@@ -53,7 +53,8 @@ Describe 'Validate Deployment' {
                 -PublicNetworkAccess 'Enabled' `
                 -SkuName 'Premium_LRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
-                -GroupIds $null
+                -GroupIds $null `
+                -ExpectedRoleAssignments $null
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
@@ -61,12 +62,12 @@ Describe 'Validate Deployment' {
             # Volume Groups
             $VNR = $TestInputData.DeploymentOutputs.virtualNetworkRule.Value
             $expectedData = @(
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-01
-                @{ VolumeCounts=2;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-02
-                @{ VolumeCounts=0;VirtualNetworkRule=$VNR;SystemAssignedMI=$false;UserAssignedMI=$false }   # vol-grp-03
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$true;UserAssignedMI=$false }   # vol-grp-04
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$false;UserAssignedMI=$true }   # vol-grp-05
-                @{ VolumeCounts=0;VirtualNetworkRule=$null;SystemAssignedMI=$true;UserAssignedMI=$true }    # vol-grp-06
+                @{ VolumeCounts = 0; VirtualNetworkRule = $null; SystemAssignedMI = $false; UserAssignedMI = $false }  # vol-grp-01
+                @{ VolumeCounts = 2; VirtualNetworkRule = $null; SystemAssignedMI = $false; UserAssignedMI = $false }  # vol-grp-02
+                @{ VolumeCounts = 0; VirtualNetworkRule = $VNR; SystemAssignedMI = $false; UserAssignedMI = $false }   # vol-grp-03
+                @{ VolumeCounts = 0; VirtualNetworkRule = $null; SystemAssignedMI = $true; UserAssignedMI = $false }   # vol-grp-04
+                @{ VolumeCounts = 0; VirtualNetworkRule = $null; SystemAssignedMI = $false; UserAssignedMI = $true }   # vol-grp-05
+                @{ VolumeCounts = 0; VirtualNetworkRule = $null; SystemAssignedMI = $true; UserAssignedMI = $true }    # vol-grp-06
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
@@ -108,8 +109,7 @@ Describe 'Validate Deployment' {
                 if ($item.VolumeCounts -eq 0) {
                     $volumeGroups[$vgrpidx].volumes | Should -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes.Count | Should -Be 0
-                }
-                else {
+                } else {
                     $volumeGroups[$vgrpidx].volumes | Should -Not -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes.Count | Should -Be $item.VolumeCounts
                 }
@@ -120,8 +120,8 @@ Describe 'Validate Deployment' {
 
             # Volumes
             $expectedData = @(
-                @{ SizeGiB=1;SnapshotCount=0 }  # vol-grp-02-vol-01
-                @{ SizeGiB=2;SnapshotCount=2 }  # vol-grp-02-vol-02
+                @{ SizeGiB = 1; SnapshotCount = 0 }  # vol-grp-02-vol-01
+                @{ SizeGiB = 2; SnapshotCount = 2 }  # vol-grp-02-vol-02
             )
 
             $vgrpidx = 1
@@ -154,8 +154,7 @@ Describe 'Validate Deployment' {
                 if ($item.SnapshotCount -eq 0) {
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be 0
-                }
-                else {
+                } else {
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -Not -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $item.SnapshotCount
                 }
@@ -166,8 +165,8 @@ Describe 'Validate Deployment' {
 
             # Snapshots
             $expectedData = @(
-                @{ SourceVolumeSizeGiB=2 }  # vol-grp-02-vol-02-snap-01
-                @{ SourceVolumeSizeGiB=2 }  # vol-grp-02-vol-02-snap-02
+                @{ SourceVolumeSizeGiB = 2 }  # vol-grp-02-vol-02-snap-01
+                @{ SourceVolumeSizeGiB = 2 }  # vol-grp-02-vol-02-snap-02
             )
 
             $vgrpidx = 1

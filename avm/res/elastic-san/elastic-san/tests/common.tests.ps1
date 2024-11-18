@@ -21,8 +21,47 @@ function Test-VerifyLock($LockName, $ResourceId) {
     }
 }
 
-function Test-VerifyRoleAssignment($ResourceId) {
-    # TODO: Not Implemented Yet - How to test it?
+function Test-VerifyRoleAssignment($ResourceId, $ExpectedRoleAssignments) {
+
+    if ( $ExpectedRoleAssignments ) {
+
+        $r = Get-AzRoleAssignment -Scope $ResourceId
+        $r | Should -Not -BeNullOrEmpty
+
+        # Convert received role assignments to a dictionary for easy lookup
+        $assignedRoles = @{}
+        foreach ($item in $r) {
+
+            # We are only interested in the roles assigned to the resource directly
+            if ($item.Scope -ne $ResourceId) {
+                continue
+            }
+
+            $assignedRoles.add( $item.RoleDefinitionName, $item)
+        }
+
+        $assignedRoles.Count | Should -Be $ExpectedRoleAssignments.Count
+
+        foreach ($item in $ExpectedRoleAssignments) {
+
+            $a = $assignedRoles[$item.RoleDefinitionName]
+            $a | Should -Not -BeNullOrEmpty
+
+            $a.RoleAssignmentName | Should -Not -BeNullOrEmpty
+            $a.RoleAssignmentId | Should -Not -BeNullOrEmpty
+            $a.Scope | Should -Be $ResourceId
+            $a.DisplayName | Should -Not -BeNullOrEmpty
+            $a.SignInName | Should -Be $null
+            $a.RoleDefinitionName | Should -Be $item.RoleDefinitionName
+            $a.RoleDefinitionId | Should -Not -BeNullOrEmpty
+            $a.ObjectId | Should -Not -BeNullOrEmpty
+            $a.ObjectType | Should -Be 'ServicePrincipal'
+            $a.CanDelegate | Should -Be $false
+            $a.Description | Should -BeNullOrEmpty
+            $a.ConditionVersion | Should -BeNullOrEmpty
+            $a.Condition | Should -BeNullOrEmpty
+        }
+    }
 }
 
 function Test-VerifyOutputVariables($MustBeNullOrEmpty, $ResourceId, $Name, $Location, $ResourceGroupName) {
@@ -284,7 +323,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     $vg.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups'
 }
 
-function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds) {
+function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds, $ExpectedRoleAssignments) {
 
     $esan = Get-AzElasticSan -ResourceGroupName $ResourceGroupName -Name $Name
     $esan | Should -Not -BeNullOrEmpty
@@ -327,7 +366,7 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     Test-VerifyTagsForResource -ResourceId $esan.Id -Tags $Tags
 
     Test-VerifyLock -LockName $null -ResourceId $esan.Id # ESAN Doesn't have Locks
-    Test-VerifyRoleAssignment -ResourceId $esan.Id
+    Test-VerifyRoleAssignment -ResourceId $esan.Id -ExpectedRoleAssignments $ExpectedRoleAssignments
 
     return $esan
 }

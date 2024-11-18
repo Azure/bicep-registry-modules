@@ -42,10 +42,22 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN' {
 
+            $expectedRoleAssignments = @(
+                @{ RoleDefinitionName = 'Owner' }
+                @{ RoleDefinitionName = 'Contributor' }
+                @{ RoleDefinitionName = 'Reader' }
+                @{ RoleDefinitionName = 'Role Based Access Control Administrator' }
+                @{ RoleDefinitionName = 'User Access Administrator' }
+                @{ RoleDefinitionName = 'Elastic SAN Network Admin' }
+                @{ RoleDefinitionName = 'Elastic SAN Owner' }
+                @{ RoleDefinitionName = 'Elastic SAN Reader' }
+                @{ RoleDefinitionName = 'Elastic SAN Volume Group Owner' }
+            )
+
             Test-VerifyElasticSAN `
                 -ResourceId $resourceId `
                 -ResourceGroupName $resourceGroupName `
-                -name $name `
+                -Name $name `
                 -Location $location `
                 -Tags $expectedTags  `
                 -AvailabilityZone $null `
@@ -54,14 +66,15 @@ Describe 'Validate Deployment' {
                 -PublicNetworkAccess 'Disabled' `
                 -SkuName 'Premium_ZRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
-                -GroupIds $groupIds
+                -GroupIds $groupIds `
+                -ExpectedRoleAssignments $expectedRoleAssignments
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
 
             # Volume Groups
             $expectedData = @(
-                @{ PrivateEndpointCounts=1;CMK=$true }  # vol-grp-01
+                @{ PrivateEndpointCounts = 1; CMK = $true }  # vol-grp-01
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check

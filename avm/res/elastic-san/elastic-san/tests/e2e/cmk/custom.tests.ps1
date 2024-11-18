@@ -44,7 +44,7 @@ Describe 'Validate Deployment' {
             Test-VerifyElasticSAN `
                 -ResourceId $resourceId `
                 -ResourceGroupName $resourceGroupName `
-                -name $name `
+                -Name $name `
                 -Location $location `
                 -Tags $expectedTags  `
                 -AvailabilityZone 2 `
@@ -53,15 +53,16 @@ Describe 'Validate Deployment' {
                 -PublicNetworkAccess $null `
                 -SkuName 'Premium_LRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
-                -GroupIds $null
+                -GroupIds $null `
+                -ExpectedRoleAssignments $null
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
 
             # Volume Groups
             $expectedData = @(
-                @{ CMK=$true }  # vol-grp-01
-                @{ CMK=$true }  # vol-grp-02
+                @{ CMK = $true }  # vol-grp-01
+                @{ CMK = $true }  # vol-grp-02
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
