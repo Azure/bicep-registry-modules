@@ -268,6 +268,20 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Non-required parameters
     availabilityZone: 3
     baseSizeTiB: 2
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     extendedCapacitySizeTiB: 1
     location: '<location>'
     roleAssignments: [
@@ -405,6 +419,22 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     },
     "baseSizeTiB": {
       "value": 2
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     },
     "extendedCapacitySizeTiB": {
       "value": 1
@@ -548,6 +578,20 @@ param name = 'esanmax001'
 // Non-required parameters
 param availabilityZone = 3
 param baseSizeTiB = 2
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param extendedCapacitySizeTiB = 1
 param location = '<location>'
 param roleAssignments = [
@@ -822,6 +866,20 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Required parameters
     name: 'esanwaf001'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -884,6 +942,22 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "esanwaf001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
@@ -952,6 +1026,20 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 // Required parameters
 param name = 'esanwaf001'
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
