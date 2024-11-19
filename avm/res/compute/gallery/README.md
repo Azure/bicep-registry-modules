@@ -316,7 +316,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     ]
     sharingProfile: {
       eula: 'test Eula'
-      permissions: 'Private'
+      permissions: 'Community'
       publicNamePrefix: 'avmtest'
       publisherContact: 'avmtest@contoso.com'
       publisherUri: 'https://aka.ms/avm'
@@ -565,7 +565,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "sharingProfile": {
       "value": {
         "eula": "test Eula",
-        "permissions": "Private",
+        "permissions": "Community",
         "publicNamePrefix": "avmtest",
         "publisherContact": "avmtest@contoso.com",
         "publisherUri": "https://aka.ms/avm"
@@ -802,7 +802,7 @@ param roleAssignments = [
 ]
 param sharingProfile = {
   eula: 'test Eula'
-  permissions: 'Private'
+  permissions: 'Community'
   publicNamePrefix: 'avmtest'
   publisherContact: 'avmtest@contoso.com'
   publisherUri: 'https://aka.ms/avm'
