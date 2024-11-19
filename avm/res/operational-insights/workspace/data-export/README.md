@@ -21,6 +21,7 @@ This module deploys a Log Analytics Workspace Data Export.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The data export rule name. |
+| [`tableNames`](#parameter-tablenames) | array | An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']. |
 
 **Conditional parameters**
 
@@ -34,7 +35,6 @@ This module deploys a Log Analytics Workspace Data Export.
 | :-- | :-- | :-- |
 | [`destination`](#parameter-destination) | object | Destination properties. |
 | [`enable`](#parameter-enable) | bool | Active when enabled. |
-| [`tableNames`](#parameter-tablenames) | array | An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']. |
 
 ### Parameter: `name`
 
@@ -42,6 +42,13 @@ The data export rule name.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `tableNames`
+
+An array of tables to export, for example: ['Heartbeat', 'SecurityEvent'].
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `workspaceName`
 
@@ -56,7 +63,45 @@ Destination properties.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-destinationresourceid) | string | The destination resource ID. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metaData`](#parameter-destinationmetadata) | object | The destination metadata. |
+
+### Parameter: `destination.resourceId`
+
+The destination resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `destination.metaData`
+
+The destination metadata.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubName`](#parameter-destinationmetadataeventhubname) | string | Allows to define an Event Hub name. Not applicable when destination is Storage Account. |
+
+### Parameter: `destination.metaData.eventHubName`
+
+Allows to define an Event Hub name. Not applicable when destination is Storage Account.
+
+- Required: No
+- Type: string
 
 ### Parameter: `enable`
 
@@ -65,14 +110,6 @@ Active when enabled.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `tableNames`
-
-An array of tables to export, for example: ['Heartbeat', 'SecurityEvent'].
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ## Outputs
 
