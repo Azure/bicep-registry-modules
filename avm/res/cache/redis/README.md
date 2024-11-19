@@ -122,6 +122,13 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     redisConfiguration: {
       'aad-enabled': 'true'
     }
+    accessPolicyAssignments: [
+      {
+        accessPolicyName: 'Data Contributor'
+        objectId: '<managedIdentityPrincipalId>'
+        objectIdAlias: '<managedIdentityName>'
+      }
+    ]
   }
 }
 ```

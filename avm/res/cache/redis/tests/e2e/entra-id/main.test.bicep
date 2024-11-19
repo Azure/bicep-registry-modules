@@ -31,6 +31,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module dependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-dependencies'
+  params: {
+    location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -46,6 +55,22 @@ module testDeployment '../../../main.bicep' = [
       redisConfiguration: {
         'aad-enabled': 'true'
       }
+      accessPolicyAssignments: [
+        {
+          accessPolicyName: 'Data Contributor'
+          objectId: dependencies.outputs.managedIdentityPrincipalId
+          objectIdAlias: dependencies.outputs.managedIdentityName
+        }
+      ]
+      accessPolicies: [
+        {
+          name: 'Prefixed Contributor'
+          permissions: '+@read +set ~Az*'
+        }
+      ]
     }
+    dependsOn: [
+      dependencies
+    ]
   }
 ]
