@@ -390,7 +390,7 @@ function New-TemplateDeploymentInner {
                             $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -AsJob
 
                             Write-Verbose ('Starting monitoring of deployment [{0}] on subscription [{1}]' -f $deploymentName, $SubscriptionId)
-                            Start-MonitorDeploymentForScope @DeploymentInputs -DeploymentScope $deploymentScope
+                            Start-MonitorDeploymentForScope -DeploymentName $deploymentName -DeploymentScope $deploymentScope
                         }
                         break
                     }
