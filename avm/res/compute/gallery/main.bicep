@@ -107,18 +107,22 @@ resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
   properties: {
     description: description
     // identifier: {} // Contains only read-only properties
-    sharingProfile: {
-      communityGalleryInfo: {
-        eula: sharingProfile.?eula
-        publicNamePrefix: sharingProfile.?publicNamePrefix
-        publisherContact: sharingProfile.?publisherContact
-        publisherUri: sharingProfile.?publisherUri
-      }
-      permissions: sharingProfile.?permissions
-    }
-    softDeletePolicy: {
-      isSoftDeleteEnabled: softDeletePolicy
-    }
+    sharingProfile: null
+    softDeletePolicy: null
+    // sharingProfile: !empty(sharingProfile)
+    //   ? {
+    //       communityGalleryInfo: {
+    //         eula: sharingProfile.?eula
+    //         publicNamePrefix: sharingProfile.?publicNamePrefix
+    //         publisherContact: sharingProfile.?publisherContact
+    //         publisherUri: sharingProfile.?publisherUri
+    //       }
+    //       permissions: sharingProfile.?permissions
+    //     }
+    //   : null
+    // softDeletePolicy: {
+    //   isSoftDeleteEnabled: softDeletePolicy
+    // }
   }
 }
 
