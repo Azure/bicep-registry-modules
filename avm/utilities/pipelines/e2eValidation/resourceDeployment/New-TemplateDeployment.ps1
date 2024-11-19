@@ -144,7 +144,37 @@ function Start-MonitorDeploymentForScope {
             break
         }
         'subscription' {
-            $deployments = Get-AzDeploymentOperation -DeploymentName $deploymentName
+            do {
+                try {
+                    Write-Verbose ('Retriving deployment status for [{0}] on subscription' -f $deploymentName)
+                    $deployments = Get-AzDeploymentOperation -DeploymentName $deploymentName -ErrorAction Stop
+
+                    If ($?) { $retryCheckDeploymentCount = 0 }
+                } catch {
+                    Write-Verbose ('An error occured while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
+                    If ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
+                        Write-Warning "The error 'An error occurred while sending the request' occured while checking the state of the deployment. Retrying in 5 seconds.."
+                        $retryCheckDeploymentCount++
+                        Start-Sleep -Seconds 5
+                    } ElseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
+                        Write-Warning "The error '$($PSitem.Exception.Message)' occured while checking the state of the deployment. Retrying in 5 seconds.."
+                        $retryCheckDeploymentCount++
+                        Start-Sleep -Seconds 5
+                    } ElseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
+                        Write-Error "The error '$($PSitem.Exception.Message)' occured while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
+                        break
+                    }
+                    continue
+                }
+
+                Write-Verbose ('Deployment status for [{0}] on resource group [{1}] is [{2}]' -f $deploymentName, $ResourceGroupName, $deployments.ProvisioningState)
+                if ($deployments.ProvisioningState -in $unhealthyDeploymentStates) {
+                    Write-Error "Deployment failed with provisioning state [$($deployments.ProvisioningState)]. Error Message: [$($deployments.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
+                    break
+                }
+
+                Start-Sleep -Seconds 5
+            } while ($deployments.ProvisioningState -in $healthyDeploymentStates)
             break
         }
         'managementgroup' {
@@ -357,7 +387,10 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
-                            $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
+                            $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -AsJob
+
+                            Write-Verbose ('Starting monitoring of deployment [{0}] on subscription [{1}]' -f $deploymentName, $SubscriptionId)
+                            Start-MonitorDeploymentForScope @DeploymentInputs -DeploymentScope $deploymentScope
                         }
                         break
                     }
