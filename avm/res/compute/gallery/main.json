@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "13946388819897175743"
+      "templateHash": "9991159892229520493"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -694,18 +694,8 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "description": "[parameters('description')]",
-        "sharingProfile": {
-          "communityGalleryInfo": {
-            "eula": "[tryGet(parameters('sharingProfile'), 'eula')]",
-            "publicNamePrefix": "[tryGet(parameters('sharingProfile'), 'publicNamePrefix')]",
-            "publisherContact": "[tryGet(parameters('sharingProfile'), 'publisherContact')]",
-            "publisherUri": "[tryGet(parameters('sharingProfile'), 'publisherUri')]"
-          },
-          "permissions": "[tryGet(parameters('sharingProfile'), 'permissions')]"
-        },
-        "softDeletePolicy": {
-          "isSoftDeleteEnabled": "[parameters('softDeletePolicy')]"
-        }
+        "sharingProfile": "[if(not(empty(parameters('sharingProfile'))), createObject('communityGalleryInfo', createObject('eula', tryGet(parameters('sharingProfile'), 'eula'), 'publicNamePrefix', tryGet(parameters('sharingProfile'), 'publicNamePrefix'), 'publisherContact', tryGet(parameters('sharingProfile'), 'publisherContact'), 'publisherUri', tryGet(parameters('sharingProfile'), 'publisherUri')), 'permissions', tryGet(parameters('sharingProfile'), 'permissions')), null())]",
+        "softDeletePolicy": "[if(not(equals(parameters('softDeletePolicy'), null())), createObject('isSoftDeleteEnabled', parameters('softDeletePolicy')), null())]"
       }
     },
     "gallery_lock": {
