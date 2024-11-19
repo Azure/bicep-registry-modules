@@ -23,9 +23,6 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
-@description('Required. Network features available to the volume, or current state of update (Basic/Standard).')
-param networkFeatures string = 'Standard'
-
 @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
 param size int
 
@@ -56,7 +53,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -122,7 +119,6 @@ module capacityPool_volumes 'volume/main.bicep' = [
       remoteVolumeRegion: volume.?remoteVolumeRegion ?? ''
       remoteVolumeResourceId: volume.?remoteVolumeResourceId ?? ''
       replicationSchedule: volume.?replicationSchedule ?? ''
-      snapshotPolicyId: volume.?snapshotPolicyId ?? ''
       snapshotPolicyName: volume.?snapshotPolicyName ?? 'snapshotPolicy'
       snapshotPolicyLocation: volume.?snapshotPolicyLocation ?? ''
       snapEnabled: volume.?snapEnabled ?? false
@@ -157,6 +153,8 @@ module capacityPool_volumes 'volume/main.bicep' = [
       useExistingSnapshot: volume.?useExistingSnapshot ?? false
       volumeResourceId: volume.?volumeResourceId ?? ''
       volumeType: volume.?volumeType ?? ''
+      backupVaultId: volume.?backupVaultId ?? ''
+      replicationEnabled: volume.?replicationEnabled ?? false
     }
   }
 ]

@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 
 @description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDatabricksEnterpriseApplicationObjectId\'.')
 @secure()
-param azureDatabricksEnterpriseApplicationObjectId string
+param azureDatabricksEnterpriseApplicationObjectId string = ''
 
 // ============ //
 // Dependencies //
@@ -158,9 +158,13 @@ module testDeployment '../../../main.bicep' = [
       customVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'databricks_ui_api'
           subnetResourceId: nestedDependencies.outputs.primarySubnetResourceId
           tags: {
@@ -169,9 +173,13 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.secondarySubnetResourceId
           service: 'browser_authentication'
         }
@@ -180,6 +188,14 @@ module testDeployment '../../../main.bicep' = [
       managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
       requireInfrastructureEncryption: true
       vnetAddressPrefix: '10.100'
+      defaultCatalog: {
+        //initialName: '' Cannot be set to anything other than an empty string. {"code":"InvalidInitialCatalogName","message":"Currently custom initial catalog name is not supported. This capability will be added in future."}
+        initialType: 'UnityCatalog' // Choose between 'HiveCatalog' OR 'UnityCatalog'
+      }
+      complianceSecurityProfileValue: 'Enabled' // If this is set to 'Enabled', then the complianceStandards must be set to 'HIPAA', 'NONE' or 'PCI_DSS' and the enhancedSecurityMonitoring must be set to 'Enabled' as well as the automaticClusterUpdate
+      complianceStandards: ['HIPAA', 'PCI_DSS'] // Options are HIPAA, PCI_DSS or NONE. However NONE cannot be selected in addition to other compliance standards
+      enhancedSecurityMonitoring: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
+      automaticClusterUpdate: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
     }
     dependsOn: [
       nestedDependencies

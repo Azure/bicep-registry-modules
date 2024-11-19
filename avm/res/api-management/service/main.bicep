@@ -181,7 +181,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -310,6 +310,7 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: authorizationServer.name
+      displayName: authorizationServer.displayName
       authorizationEndpoint: authorizationServer.authorizationEndpoint
       authorizationMethods: authorizationServer.?authorizationMethods ?? ['GET']
       bearerTokenSendingMethods: authorizationServer.?bearerTokenSendingMethods ?? ['authorizationHeader']
@@ -408,16 +409,16 @@ module service_identityProviders 'identity-provider/main.bicep' = [
   }
 ]
 
-module service_loggers 'loggers/main.bicep' = [
+module service_loggers 'logger/main.bicep' = [
   for (logger, index) in loggers: {
     name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
     params: {
       name: logger.name
       apiManagementServiceName: service.name
       credentials: logger.?credentials ?? {}
-      isBuffered: logger.?isBuffered ?? true
-      loggerDescription: logger.?loggerDescription ?? ''
-      loggerType: logger.?loggerType ?? 'azureMonitor'
+      isBuffered: logger.?isBuffered
+      description: logger.?loggerDescription
+      type: logger.?loggerType ?? 'azureMonitor'
       targetResourceId: logger.?targetResourceId ?? ''
     }
     dependsOn: [
@@ -467,6 +468,7 @@ module service_products 'product/main.bicep' = [
   for (product, index) in products: {
     name: '${uniqueString(deployment().name, location)}-Apim-Product-${index}'
     params: {
+      displayName: product.displayName
       apiManagementServiceName: service.name
       apis: product.?apis ?? []
       approvalRequired: product.?approvalRequired ?? false
@@ -490,6 +492,7 @@ module service_subscriptions 'subscription/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: subscription.name
+      displayName: subscription.displayName
       allowTracing: subscription.?allowTracing
       ownerId: subscription.?ownerId
       primaryKey: subscription.?primaryKey

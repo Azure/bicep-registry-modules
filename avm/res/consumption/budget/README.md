@@ -8,7 +8,6 @@ This module deploys a Consumption Budget for Subscriptions.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -60,7 +59,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -85,6 +84,26 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'cbmin001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
 ```
 
 </details>
@@ -121,7 +140,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -149,6 +168,27 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'cbfcst001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
+param thresholdType = 'Forecasted'
 ```
 
 </details>
@@ -195,7 +235,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -240,6 +280,37 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'cbmax001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
+param resourceGroupFilter = [
+  'rg-group1'
+  'rg-group2'
+]
+param thresholds = [
+  50
+  75
+  90
+  100
+  110
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -277,7 +348,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -316,6 +387,32 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'cbwaf001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
+param thresholds = [
+  50
+  75
+  90
+  100
+  110
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -325,8 +422,6 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 | :-- | :-- | :-- |
 | [`amount`](#parameter-amount) | int | The total amount of cost or usage to track with the budget. |
 | [`name`](#parameter-name) | string | The name of the budget. |
-| [`operator`](#parameter-operator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
-| [`thresholdType`](#parameter-thresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
 
 **Conditional parameters**
 
@@ -345,10 +440,12 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 | [`endDate`](#parameter-enddate) | string | The end date for the budget. If not provided, it will default to 10 years from the start date. |
 | [`filter`](#parameter-filter) | object | The filter to use for restricting which resources are considered within the budget. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
+| [`operator`](#parameter-operator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
 | [`resetPeriod`](#parameter-resetperiod) | string | The time covered by a budget. Tracking of the amount will be reset based on the time grain. BillingMonth, BillingQuarter, and BillingAnnual are only supported by WD customers. |
 | [`resourceGroupFilter`](#parameter-resourcegroupfilter) | array | The list of resource groups that contain the resources that are to be considered within the budget. |
 | [`startDate`](#parameter-startdate) | string | The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month). |
 | [`thresholds`](#parameter-thresholds) | array | Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
+| [`thresholdType`](#parameter-thresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
 
 ### Parameter: `amount`
 
@@ -363,37 +460,6 @@ The name of the budget.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `operator`
-
-The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
-
-- Required: No
-- Type: string
-- Default: `'GreaterThan'`
-- Allowed:
-  ```Bicep
-  [
-    'EqualTo'
-    'GreaterThan'
-    'GreaterThanOrEqualTo'
-  ]
-  ```
-
-### Parameter: `thresholdType`
-
-The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
-
-- Required: No
-- Type: string
-- Default: `'Actual'`
-- Allowed:
-  ```Bicep
-  [
-    'Actual'
-    'Forecasted'
-  ]
-  ```
 
 ### Parameter: `actionGroups`
 
@@ -462,6 +528,22 @@ Location deployment metadata.
 - Type: string
 - Default: `[deployment().location]`
 
+### Parameter: `operator`
+
+The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
+
+- Required: No
+- Type: string
+- Default: `'GreaterThan'`
+- Allowed:
+  ```Bicep
+  [
+    'EqualTo'
+    'GreaterThan'
+    'GreaterThanOrEqualTo'
+  ]
+  ```
+
 ### Parameter: `resetPeriod`
 
 The time covered by a budget. Tracking of the amount will be reset based on the time grain. BillingMonth, BillingQuarter, and BillingAnnual are only supported by WD customers.
@@ -514,6 +596,20 @@ Percent thresholds of budget for when to get a notification. Can be up to 5 thre
   ]
   ```
 
+### Parameter: `thresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+
+- Required: No
+- Type: string
+- Default: `'Actual'`
+- Allowed:
+  ```Bicep
+  [
+    'Actual'
+    'Forecasted'
+  ]
+  ```
 
 ## Outputs
 
@@ -522,10 +618,6 @@ Percent thresholds of budget for when to get a notification. Can be up to 5 thre
 | `name` | string | The name of the budget. |
 | `resourceId` | string | The resource ID of the budget. |
 | `subscriptionName` | string | The subscription the budget was deployed into. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -39,35 +39,54 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      maintenanceConfiguration: {
-        maintenanceWindow: {
-          schedule: {
-            daily: null
-            weekly: {
-              intervalWeeks: 1
-              dayOfWeek: 'Sunday'
+      autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
+      disableLocalAccounts: true
+      enableKeyvaultSecretsProvider: true
+      enableSecretRotation: true
+      kedaAddon: true
+      kubernetesVersion: '1.28'
+      maintenanceConfigurations: [
+        {
+          name: 'aksManagedAutoUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              daily: null
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+              absoluteMonthly: null
+              relativeMonthly: null
             }
-            absoluteMonthly: null
-            relativeMonthly: null
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-03'
+            startTime: '00:00'
           }
-          durationHours: 4
-          utcOffset: '+00:00'
-          startDate: '2024-07-03'
-          startTime: '00:00'
         }
-      }
+      ]
       managedIdentities: {
         systemAssigned: true
       }
-
-      primaryAgentPoolProfile: [
+      nodeProvisioningProfile: {
+        mode: 'Auto'
+      }
+      nodeResourceGroupProfile: {
+        restrictionLevel: 'ReadOnly'
+      }
+      outboundType: 'managedNATGateway'
+      primaryAgentPoolProfiles: [
         {
           name: 'systempool'
           count: 3
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
           mode: 'System'
         }
       ]
+      publicNetworkAccess: 'Enabled'
+      skuName: 'Automatic'
+      vpaAddon: true
+      webApplicationRoutingEnabled: true
     }
   }
 ]

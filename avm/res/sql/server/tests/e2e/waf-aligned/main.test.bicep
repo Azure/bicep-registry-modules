@@ -11,14 +11,18 @@ metadata description = 'This instance deploys the module in alignment with the b
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+// Enforce uksouth to avoid restrictions around zone redundancy in certain regions
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sqlswaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
 
 // ============ //
 // Dependencies //
@@ -28,17 +32,18 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -46,13 +51,13 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -62,7 +67,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-${serviceShort}'
     primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
@@ -73,7 +78,7 @@ module testDeployment '../../../main.bicep' = {
       principalType: 'Application'
       tenantId: tenant().tenantId
     }
-    location: resourceLocation
+    location: enforcedLocation
     vulnerabilityAssessmentsObj: {
       name: 'default'
       emailSubscriptionAdmins: true
@@ -87,20 +92,23 @@ module testDeployment '../../../main.bicep' = {
     elasticPools: [
       {
         name: '${namePrefix}-${serviceShort}-ep-001'
-        skuName: 'GP_Gen5'
-        skuTier: 'GeneralPurpose'
-        skuCapacity: 10
-        // Pre-existing 'public' configuration
-        maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${resourceLocation}_DB_1'
+        sku: {
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+          capacity: 10
+        }
+        maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${enforcedLocation}_DB_1'
       }
     ]
     databases: [
       {
         name: '${namePrefix}-${serviceShort}db-001'
         collation: 'SQL_Latin1_General_CP1_CI_AS'
-        skuTier: 'GeneralPurpose'
-        skuName: 'ElasticPool'
-        capacity: 0
+        sku: {
+          name: 'ElasticPool'
+          tier: 'GeneralPurpose'
+          capacity: 0
+        }
         maxSizeBytes: 34359738368
         licenseType: 'LicenseIncluded'
         diagnosticSettings: [
@@ -112,11 +120,7 @@ module testDeployment '../../../main.bicep' = {
             workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
           }
         ]
-        elasticPoolId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
-        encryptionProtectorObj: {
-          serverKeyType: 'AzureKeyVault'
-          serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
-        }
+        elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
         backupShortTermRetentionPolicy: {
           retentionDays: 14
         }
@@ -125,6 +129,10 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
+    encryptionProtectorObj: {
+      serverKeyType: 'AzureKeyVault'
+      serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
+    }
     securityAlertPolicies: [
       {
         name: 'Default'
@@ -148,9 +156,13 @@ module testDeployment '../../../main.bicep' = {
       {
         subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
         service: 'sqlServer'
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

@@ -7,8 +7,6 @@ This module deploys a CDN Profile AFD Endpoint.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -102,13 +100,211 @@ The list of routes for this AFD Endpoint.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-routesname) | string | The name of the route. |
+| [`originGroupName`](#parameter-routesorigingroupname) | string | The name of the origin group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cacheConfiguration`](#parameter-routescacheconfiguration) | object | The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object. |
+| [`customDomainNames`](#parameter-routescustomdomainnames) | array | The names of the custom domains. |
+| [`enabledState`](#parameter-routesenabledstate) | string | Whether to enable use of this rule. |
+| [`forwardingProtocol`](#parameter-routesforwardingprotocol) | string | The protocol this rule will use when forwarding traffic to backends. |
+| [`httpsRedirect`](#parameter-routeshttpsredirect) | string | Whether to automatically redirect HTTP traffic to HTTPS traffic. |
+| [`linkToDefaultDomain`](#parameter-routeslinktodefaultdomain) | string | Whether this route will be linked to the default endpoint domain. |
+| [`originPath`](#parameter-routesoriginpath) | string | A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath. |
+| [`patternsToMatch`](#parameter-routespatternstomatch) | array | The route patterns of the rule. |
+| [`ruleSets`](#parameter-routesrulesets) | array | The rule sets of the rule. |
+| [`supportedProtocols`](#parameter-routessupportedprotocols) | array | The supported protocols of the rule. |
+
+### Parameter: `routes.name`
+
+The name of the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routes.originGroupName`
+
+The name of the origin group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routes.cacheConfiguration`
+
+The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`compressionSettings`](#parameter-routescacheconfigurationcompressionsettings) | object | Compression settings. |
+| [`queryParameters`](#parameter-routescacheconfigurationqueryparameters) | string | Query parameters to include or exclude (comma separated). |
+| [`queryStringCachingBehavior`](#parameter-routescacheconfigurationquerystringcachingbehavior) | string | Defines how Frontdoor caches requests that include query strings. |
+
+### Parameter: `routes.cacheConfiguration.compressionSettings`
+
+Compression settings.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentTypesToCompress`](#parameter-routescacheconfigurationcompressionsettingscontenttypestocompress) | array | List of content types on which compression applies. The value should be a valid MIME type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`iscontentTypeToCompressAll`](#parameter-routescacheconfigurationcompressionsettingsiscontenttypetocompressall) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
+
+### Parameter: `routes.cacheConfiguration.compressionSettings.contentTypesToCompress`
+
+List of content types on which compression applies. The value should be a valid MIME type.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `routes.cacheConfiguration.compressionSettings.iscontentTypeToCompressAll`
+
+Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.
+
+- Required: No
+- Type: bool
+
+### Parameter: `routes.cacheConfiguration.queryParameters`
+
+Query parameters to include or exclude (comma separated).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routes.cacheConfiguration.queryStringCachingBehavior`
+
+Defines how Frontdoor caches requests that include query strings.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IgnoreQueryString'
+    'IgnoreSpecifiedQueryStrings'
+    'IncludeSpecifiedQueryStrings'
+    'UseQueryString'
+  ]
+  ```
+
+### Parameter: `routes.customDomainNames`
+
+The names of the custom domains.
+
+- Required: No
+- Type: array
+
+### Parameter: `routes.enabledState`
+
+Whether to enable use of this rule.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `routes.forwardingProtocol`
+
+The protocol this rule will use when forwarding traffic to backends.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HttpOnly'
+    'HttpsOnly'
+    'MatchRequest'
+  ]
+  ```
+
+### Parameter: `routes.httpsRedirect`
+
+Whether to automatically redirect HTTP traffic to HTTPS traffic.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `routes.linkToDefaultDomain`
+
+Whether this route will be linked to the default endpoint domain.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `routes.originPath`
+
+A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath.
+
+- Required: No
+- Type: string
+
+### Parameter: `routes.patternsToMatch`
+
+The route patterns of the rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `routes.ruleSets`
+
+The rule sets of the rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `routes.supportedProtocols`
+
+The supported protocols of the rule.
+
+- Required: No
+- Type: array
+
 ### Parameter: `tags`
 
 The tags of the AFD Endpoint.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 
@@ -119,11 +315,3 @@ The tags of the AFD Endpoint.
 | `resourceGroupName` | string | The name of the resource group the endpoint was created in. |
 | `resourceId` | string | The resource id of the AFD Endpoint. |
 | `routes` | array | The list of routes assigned to the AFD endpoint. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

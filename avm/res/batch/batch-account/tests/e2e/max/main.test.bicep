@@ -85,9 +85,13 @@ module testDeployment '../../../main.bicep' = [
       poolAllocationMode: 'BatchService'
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'batchAccount'
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           tags: {
@@ -136,9 +140,13 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'batchAccount'
           subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
           tags: {
@@ -148,9 +156,13 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'nodeManagement'
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           tags: {

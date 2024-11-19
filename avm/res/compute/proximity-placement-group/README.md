@@ -8,7 +8,6 @@ This module deploys a Proximity Placement Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -57,7 +56,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +73,22 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/proximity-placement-group:<version>'
+
+// Required parameters
+param name = 'cppgmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -149,7 +164,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -229,6 +244,66 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/proximity-placement-group:<version>'
+
+// Required parameters
+param name = 'cppgmax001'
+// Non-required parameters
+param colocationStatus = {
+  code: 'ColocationStatus/Aligned'
+  displayStatus: 'Aligned'
+  level: 'Info'
+  message: 'I\'m a default error message'
+}
+param intent = {
+  vmSizes: [
+    'Standard_B1ms'
+    'Standard_B4ms'
+  ]
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '9e0b6b99-ff4b-4c99-a2ce-3a2a1a880874'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  TagA: 'Would you kindly...'
+  TagB: 'Tags for sale'
+}
+param type = 'Standard'
+param zones = [
+  '1'
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -276,7 +351,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -329,6 +404,42 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/proximity-placement-group:<version>'
+
+// Required parameters
+param name = 'cppgwaf001'
+// Non-required parameters
+param colocationStatus = {
+  code: 'ColocationStatus/Aligned'
+  displayStatus: 'Aligned'
+  level: 'Info'
+  message: 'I\'m a default error message'
+}
+param intent = {
+  vmSizes: [
+    'Standard_B1ms'
+    'Standard_B4ms'
+  ]
+}
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  TagA: 'Would you kindly...'
+  TagB: 'Tags for sale'
+}
+param type = 'Standard'
+param zones = [
+  '1'
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -431,6 +542,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -551,7 +668,6 @@ Specifies the Availability Zone where virtual machine, virtual machine scale set
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -560,10 +676,6 @@ Specifies the Availability Zone where virtual machine, virtual machine scale set
 | `name` | string | The name of the proximity placement group. |
 | `resourceGroupName` | string | The resource group the proximity placement group was deployed into. |
 | `resourceId` | string | The resourceId the proximity placement group. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

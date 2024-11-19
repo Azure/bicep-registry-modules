@@ -67,6 +67,9 @@ param certificatePassword string = ''
 @secure()
 param certificateValue string = ''
 
+@description('Optional. A key vault reference to the certificate to use for the custom domain.')
+param certificateKeyVaultProperties certificateKeyVaultPropertiesType
+
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
@@ -104,7 +107,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -171,6 +174,12 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-02-02-previe
       certificatePassword: certificatePassword
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
+      certificateKeyVaultProperties: !empty(certificateKeyVaultProperties)
+        ? {
+            identity: certificateKeyVaultProperties!.identityResourceId
+            keyVaultUrl: certificateKeyVaultProperties!.keyVaultUrl
+          }
+        : null
     }
     openTelemetryConfiguration: !empty(openTelemetryConfiguration) ? openTelemetryConfiguration : null
     peerTrafficConfiguration: {
@@ -314,6 +323,14 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type certificateKeyVaultPropertiesType = {
+  @description('Required. The resource ID of the identity. This is the identity that will be used to access the key vault.')
+  identityResourceId: string
+
+  @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
+  keyVaultUrl: string
+}?
 
 type storageType = {
   @description('Required. Access mode for storage: "ReadOnly" or "ReadWrite".')

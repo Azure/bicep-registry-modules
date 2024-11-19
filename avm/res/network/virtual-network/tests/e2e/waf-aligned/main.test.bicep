@@ -91,10 +91,6 @@ module testDeployment '../../../main.bicep' = [
         '10.0.1.4'
         '10.0.1.5'
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       flowTimeoutInMinutes: 20
       subnets: [
         {
@@ -114,24 +110,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           routeTableResourceId: nestedDependencies.outputs.routeTableResourceId
           serviceEndpoints: [
-            {
-              service: 'Microsoft.Storage'
-            }
-            {
-              service: 'Microsoft.Sql'
-            }
+            'Microsoft.Storage'
+            'Microsoft.Sql'
           ]
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 2)
-          delegations: [
-            {
-              name: 'netappDel'
-              properties: {
-                serviceName: 'Microsoft.Netapp/volumes'
-              }
-            }
-          ]
+          delegation: 'Microsoft.Netapp/volumes'
           name: '${namePrefix}-az-subnet-x-002'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
         }
@@ -158,9 +143,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

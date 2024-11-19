@@ -123,8 +123,10 @@ module testDeployment '../../../main.bicep' = [
       enableRbacAuthorization: false
       keys: [
         {
-          attributesExp: 1725109032
-          attributesNbf: 10000
+          attributes: {
+            exp: 1725109032
+            nbf: 10000
+          }
           name: 'keyName'
           roleAssignments: [
             {
@@ -192,9 +194,13 @@ module testDeployment '../../../main.bicep' = [
       }
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
             'hidden-title': 'This is visible in the resource name'
@@ -236,9 +242,13 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
@@ -266,8 +276,10 @@ module testDeployment '../../../main.bicep' = [
       ]
       secrets: [
         {
-          attributesExp: 1702648632
-          attributesNbf: 10000
+          attributes: {
+            exp: 1725109032
+            nbf: 10000
+          }
           contentType: 'Something'
           name: 'secretName'
           roleAssignments: [

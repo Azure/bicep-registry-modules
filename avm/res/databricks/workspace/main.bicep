@@ -113,11 +113,41 @@ param storageAccountPrivateEndpoints privateEndpointType
 @description('Conditional. The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled.')
 param accessConnectorResourceId string = ''
 
+@description('Optional. The default catalog configuration for the Databricks workspace.')
+param defaultCatalog defaultCatalogType?
+
+@description('Optional. The value for enabling automatic cluster updates in enhanced security compliance.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param automaticClusterUpdate string = ''
+
+@description('Optional. The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS".')
+param complianceStandards array = []
+
+@description('Optional. The value to Enable or Disable for the compliance security profile.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param complianceSecurityProfileValue string = ''
+
+@description('Optional. The value for enabling or configuring enhanced security monitoring.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param enhancedSecurityMonitoring string = ''
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -188,139 +218,132 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   sku: {
     name: skuName
   }
-  // This union is required because the defaultStorageFirewall property is optional and cannot be null or ''
-  properties: union(
-    {
-      managedResourceGroupId: !empty(managedResourceGroupResourceId)
-        ? managedResourceGroupResourceId
-        : '${subscription().id}/resourceGroups/rg-${name}-managed'
-      parameters: union(
-        // Always added parameters
-        {
-          enableNoPublicIp: {
-            value: disablePublicIp
-          }
-          prepareEncryption: {
-            value: prepareEncryption
-          }
-          vnetAddressPrefix: {
-            value: vnetAddressPrefix
-          }
-          requireInfrastructureEncryption: {
-            value: requireInfrastructureEncryption
-          }
-        },
-        // Parameters only added if not empty
-        !empty(customVirtualNetworkResourceId)
-          ? {
-              customVirtualNetworkId: {
-                value: customVirtualNetworkResourceId
-              }
-            }
-          : {},
-        !empty(amlWorkspaceResourceId)
-          ? {
-              amlWorkspaceId: {
-                value: amlWorkspaceResourceId
-              }
-            }
-          : {},
-        !empty(customPrivateSubnetName)
-          ? {
-              customPrivateSubnetName: {
-                value: customPrivateSubnetName
-              }
-            }
-          : {},
-        !empty(customPublicSubnetName)
-          ? {
-              customPublicSubnetName: {
-                value: customPublicSubnetName
-              }
-            }
-          : {},
-        !empty(loadBalancerBackendPoolName)
-          ? {
-              loadBalancerBackendPoolName: {
-                value: loadBalancerBackendPoolName
-              }
-            }
-          : {},
-        !empty(loadBalancerResourceId)
-          ? {
-              loadBalancerId: {
-                value: loadBalancerResourceId
-              }
-            }
-          : {},
-        !empty(natGatewayName)
-          ? {
-              natGatewayName: {
-                value: natGatewayName
-              }
-            }
-          : {},
-        !empty(publicIpName)
-          ? {
-              publicIpName: {
-                value: publicIpName
-              }
-            }
-          : {},
-        !empty(storageAccountName)
-          ? {
-              storageAccountName: {
-                value: storageAccountName
-              }
-            }
-          : {},
-        !empty(storageAccountSkuName)
-          ? {
-              storageAccountSkuName: {
-                value: storageAccountSkuName
-              }
-            }
-          : {}
-      )
-      // createdBy: {} // This is a read-only property
-      // managedDiskIdentity: {} // This is a read-only property
-      // storageAccountIdentity: {} // This is a read-only property
-      // updatedBy: {} // This is a read-only property
-      publicNetworkAccess: publicNetworkAccess
-      requiredNsgRules: requiredNsgRules
-      encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
+  properties: {
+    managedResourceGroupId: !empty(managedResourceGroupResourceId)
+      ? managedResourceGroupResourceId
+      : '${subscription().id}/resourceGroups/rg-${name}-managed'
+    parameters: {
+      enableNoPublicIp: {
+        value: disablePublicIp
+      }
+      prepareEncryption: {
+        value: prepareEncryption
+      }
+      vnetAddressPrefix: {
+        value: vnetAddressPrefix
+      }
+      requireInfrastructureEncryption: {
+        value: requireInfrastructureEncryption
+      }
+      ...(!empty(customVirtualNetworkResourceId)
         ? {
-            entities: {
-              managedServices: !empty(customerManagedKey)
-                ? {
-                    keySource: 'Microsoft.Keyvault'
-                    keyVaultProperties: {
-                      keyVaultUri: cMKKeyVault.properties.vaultUri
-                      keyName: customerManagedKey!.keyName
-                      keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                        ? customerManagedKey!.keyVersion!
-                        : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-                    }
-                  }
-                : null
-              managedDisk: !empty(customerManagedKeyManagedDisk)
-                ? {
-                    keySource: 'Microsoft.Keyvault'
-                    keyVaultProperties: {
-                      keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
-                      keyName: customerManagedKeyManagedDisk!.keyName
-                      keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
-                        ? customerManagedKeyManagedDisk!.keyVersion!
-                        : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-                    }
-                    rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
-                  }
-                : null
+            customVirtualNetworkId: {
+              value: customVirtualNetworkResourceId
             }
           }
-        : null
-    },
-    !empty(privateStorageAccount)
+        : {})
+      ...(!empty(amlWorkspaceResourceId)
+        ? {
+            amlWorkspaceId: {
+              value: amlWorkspaceResourceId
+            }
+          }
+        : {})
+      ...(!empty(customPrivateSubnetName)
+        ? {
+            customPrivateSubnetName: {
+              value: customPrivateSubnetName
+            }
+          }
+        : {})
+      ...(!empty(customPublicSubnetName)
+        ? {
+            customPublicSubnetName: {
+              value: customPublicSubnetName
+            }
+          }
+        : {})
+      ...(!empty(loadBalancerBackendPoolName)
+        ? {
+            loadBalancerBackendPoolName: {
+              value: loadBalancerBackendPoolName
+            }
+          }
+        : {})
+      ...(!empty(loadBalancerResourceId)
+        ? {
+            loadBalancerId: {
+              value: loadBalancerResourceId
+            }
+          }
+        : {})
+      ...(!empty(natGatewayName)
+        ? {
+            natGatewayName: {
+              value: natGatewayName
+            }
+          }
+        : {})
+      ...(!empty(publicIpName)
+        ? {
+            publicIpName: {
+              value: publicIpName
+            }
+          }
+        : {})
+      ...(!empty(storageAccountName)
+        ? {
+            storageAccountName: {
+              value: storageAccountName
+            }
+          }
+        : {})
+      ...(!empty(storageAccountSkuName)
+        ? {
+            storageAccountSkuName: {
+              value: storageAccountSkuName
+            }
+          }
+        : {})
+    }
+    // createdBy: {} // This is a read-only property
+    // managedDiskIdentity: {} // This is a read-only property
+    // storageAccountIdentity: {} // This is a read-only property
+    // updatedBy: {} // This is a read-only property
+    publicNetworkAccess: publicNetworkAccess
+    requiredNsgRules: requiredNsgRules
+    encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
+      ? {
+          entities: {
+            managedServices: !empty(customerManagedKey)
+              ? {
+                  keySource: 'Microsoft.Keyvault'
+                  keyVaultProperties: {
+                    keyVaultUri: cMKKeyVault.properties.vaultUri
+                    keyName: customerManagedKey!.keyName
+                    keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+                      ? customerManagedKey!.keyVersion!
+                      : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                  }
+                }
+              : null
+            managedDisk: !empty(customerManagedKeyManagedDisk)
+              ? {
+                  keySource: 'Microsoft.Keyvault'
+                  keyVaultProperties: {
+                    keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
+                    keyName: customerManagedKeyManagedDisk!.keyName
+                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
+                      ? customerManagedKeyManagedDisk!.keyVersion!
+                      : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                  }
+                  rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
+                }
+              : null
+          }
+        }
+      : null
+    ...(!empty(privateStorageAccount)
       ? {
           defaultStorageFirewall: privateStorageAccount
           accessConnector: {
@@ -328,8 +351,32 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
             identityType: 'SystemAssigned'
           }
         }
-      : {}
-  )
+      : {})
+    ...(!empty(defaultCatalog)
+      ? {
+          defaultCatalog: {
+            initialName: ''
+            initialType: defaultCatalog.?initialType
+          }
+        }
+      : {})
+    ...(!empty(automaticClusterUpdate) || !empty(complianceStandards) || !empty(enhancedSecurityMonitoring)
+      ? {
+          enhancedSecurityCompliance: {
+            automaticClusterUpdate: {
+              value: automaticClusterUpdate
+            }
+            complianceSecurityProfile: {
+              complianceStandards: complianceStandards
+              value: complianceSecurityProfileValue
+            }
+            enhancedSecurityMonitoring: {
+              value: enhancedSecurityMonitoring
+            }
+          }
+        }
+      : {})
+  }
 }
 
 resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -383,7 +430,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -424,8 +471,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -445,7 +491,7 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -486,8 +532,7 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -528,11 +573,27 @@ output workspaceUrl string = workspace.properties.workspaceUrl
 @description('The unique identifier of the databricks workspace in databricks control plane.')
 output workspaceId string = workspace.properties.workspaceId
 
-@description('The private endpoints for the Databricks Workspace.')
+@description('The private endpoints of the Databricks Workspace.')
 output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: workspace_privateEndpoints[i].outputs.name
     resourceId: workspace_privateEndpoints[i].outputs.resourceId
+    groupId: workspace_privateEndpoints[i].outputs.groupId
+    customDnsConfig: workspace_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: workspace_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
+@description('The private endpoints of the Databricks Workspace Storage.')
+output storagePrivateEndpoints array = [
+  for (pe, i) in ((!empty(storageAccountPrivateEndpoints) && privateStorageAccount == 'Enabled')
+    ? array(storageAccountPrivateEndpoints)
+    : []): {
+    name: storageAccount_storageAccountPrivateEndpoints[i].outputs.name
+    resourceId: storageAccount_storageAccountPrivateEndpoints[i].outputs.resourceId
+    groupId: storageAccount_storageAccountPrivateEndpoints[i].outputs.groupId
+    customDnsConfig: storageAccount_storageAccountPrivateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: storageAccount_storageAccountPrivateEndpoints[i].outputs.networkInterfaceIds
   }
 ]
 
@@ -564,11 +625,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -579,7 +649,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')
@@ -717,3 +787,12 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type defaultCatalogType = {
+  //This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
+  //@description('Optional. Set the name of the Catalog.')
+  //initialName: ''
+
+  @description('Required. Choose between HiveMetastore or UnityCatalog.')
+  initialType: 'HiveMetastore' | 'UnityCatalog'
+}

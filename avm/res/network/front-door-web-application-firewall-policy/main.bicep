@@ -24,7 +24,7 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. Describes the managedRules structure.')
-param managedRules object = {
+param managedRules managedRulesType = {
   managedRuleSets: [
     {
       ruleSetType: 'Microsoft_DefaultRuleSet'
@@ -43,7 +43,7 @@ param managedRules object = {
 }
 
 @description('Optional. The custom rules inside the policy.')
-param customRules object = {
+param customRules customRulesType = {
   rules: [
     {
       name: 'ApplyGeoFilter'
@@ -79,7 +79,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -119,7 +119,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource frontDoorWAFPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2022-05-01' = {
+resource frontDoorWAFPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2024-02-01' = {
   name: name
   location: location
   sku: {
@@ -212,4 +212,57 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type managedRulesType = {
+  @description('Optional. List of rule sets.')
+  managedRuleSets: managedRuleSetsType
+}
+
+type managedRuleSetsType = {
+  @description('Required. Defines the rule set type to use.')
+  ruleSetType: string
+
+  @description('Required. Defines the version of the rule set to use.')
+  ruleSetVersion: string
+
+  @description('Optional. Defines the rule group overrides to apply to the rule set.')
+  ruleGroupOverrides: array?
+
+  @description('Optional. Describes the exclusions that are applied to all rules in the set.')
+  exclusions: array?
+
+  @description('Optional. Defines the rule set action.')
+  ruleSetAction: 'Block' | 'Log' | 'Redirect' | null
+}[]?
+
+type customRulesType = {
+  @description('Optional. List of rules.')
+  rules: customRulesRuleType
+}
+
+type customRulesRuleType = {
+  @description('Required. Describes what action to be applied when rule matches.')
+  action: 'Allow' | 'Block' | 'Log' | 'Redirect'
+
+  @description('Required. Describes if the custom rule is in enabled or disabled state.')
+  enabledState: 'Enabled' | 'Disabled'
+
+  @description('Required. List of match conditions. See https://learn.microsoft.com/en-us/azure/templates/microsoft.network/frontdoorwebapplicationfirewallpolicies#matchcondition for details.')
+  matchConditions: array
+
+  @description('Required. Describes the name of the rule.')
+  name: string
+
+  @description('Required. Describes priority of the rule. Rules with a lower value will be evaluated before rules with a higher value.')
+  priority: int
+
+  @description('Optional. Time window for resetting the rate limit count. Default is 1 minute.')
+  rateLimitDurationInMinutes: int?
+
+  @description('Optional. Number of allowed requests per client within the time window.')
+  rateLimitThreshold: int?
+
+  @description('Required. Describes type of rule.')
+  ruleType: 'MatchRule' | 'RateLimitRule'
 }[]?
