@@ -4,13 +4,9 @@ apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:
   name: "SuppressAdHoc"
-spec:
-  rule:
-    - Azure.Deployment.SecureParameter
-  if:
-    name: "."
-    endsWith:
-      - "test-sqlswaf"
+
+# module: avm/ptn/virtual-machine-images/azure-image-builder
+# reason: Image Templates do not currently support firewall enabled storage accounts
 spec:
   rule:
     - Azure.Storage.Firewall
@@ -18,3 +14,15 @@ spec:
     name: "."
     endsWith:
       - "apvmiaibmin"
+---
+
+# module: avm/res/sql/server
+# reason: This module includes an input parameter object named keys, as per child module parameters naming convention and with no sensitive information in it
+spec:
+  rule:
+    - Azure.Deployment.SecureParameter
+  if:
+    name: "."
+    endsWith:
+      - "test-sqlswaf"
+
