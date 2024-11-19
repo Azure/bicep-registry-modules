@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = [
       description: 'This is a test deployment.'
       sharingProfile: {
         eula: 'test Eula'
-        permissions: 'Private'
+        permissions: 'Community'
         publicNamePrefix: 'avmtest'
         publisherContact: 'avmtest@contoso.com'
         publisherUri: 'https://aka.ms/avm'
