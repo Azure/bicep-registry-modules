@@ -1,0 +1,13 @@
+---
+# Synopsis: Suppress Rules for specific resources
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: "SuppressAdHoc"
+spec:
+  rule:
+    - Azure.Deployment.SecureParameter
+  if:
+    name: "."
+    endsWith:
+      - "test-sqlswaf"
