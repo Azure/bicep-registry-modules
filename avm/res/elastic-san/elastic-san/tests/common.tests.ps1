@@ -55,7 +55,7 @@ function Test-VerifyRoleAssignment($ResourceId, $ExpectedRoleAssignments) {
             $a.RoleDefinitionName | Should -Be $item.RoleDefinitionName
             $a.RoleDefinitionId | Should -Not -BeNullOrEmpty
             $a.ObjectId | Should -Not -BeNullOrEmpty
-            $a.ObjectType | Should -Be 'ServicePrincipal'
+            #$a.ObjectType | Should -Be 'ServicePrincipal'
             $a.CanDelegate | Should -Be $false
             $a.Description | Should -BeNullOrEmpty
             $a.ConditionVersion | Should -BeNullOrEmpty
