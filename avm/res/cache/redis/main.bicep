@@ -570,17 +570,17 @@ type diagnosticSettingType = {
 }[]?
 
 type accessPolicyType = {
-  @description('Name of the access policy.')
+  @description('Required. Name of the access policy.')
   name: string
-  @description('Permissions associated with the access policy.')
+  @description('Required. Permissions associated with the access policy.')
   permissions: string
 }
 
 type accessPolicyAssignmentType = {
-  @description('Object id to which the access policy will be assigned.')
+  @description('Required. Object id to which the access policy will be assigned.')
   objectId: string
-  @description('Human-friendly alias for the target object id.')
+  @description('Required. Alias for the target object id.')
   objectIdAlias: string
-  @description('Name of the access policy to be assigned.')
+  @description('Required. Name of the access policy to be assigned.')
   accessPolicyName: string
 }
