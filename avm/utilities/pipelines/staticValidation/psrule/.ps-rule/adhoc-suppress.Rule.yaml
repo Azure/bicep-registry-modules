@@ -11,3 +11,10 @@ spec:
     name: "."
     endsWith:
       - "test-sqlswaf"
+spec:
+  rule:
+    - Azure.Storage.Firewall
+  if:
+    name: "."
+    endsWith:
+      - "apvmiaibmin"
