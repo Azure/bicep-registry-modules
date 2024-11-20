@@ -2728,7 +2728,6 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`monitoringSettings`](#parameter-monitoringsettings) | object | Monitoring Settings of the vault. |
-| [`moveDetails`](#parameter-movedetails) | object | The move details of the vault. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`protectionContainers`](#parameter-protectioncontainers) | array | List of all protection containers. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
@@ -2740,7 +2739,6 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securitySettings`](#parameter-securitysettings) | object | Security Settings of the vault. |
 | [`tags`](#parameter-tags) | object | Tags of the Recovery Service Vault resource. |
-| [`upgradeDetails`](#parameter-upgradedetails) | object | The upgrade details of the vault. |
 
 ### Parameter: `name`
 
@@ -3010,14 +3008,6 @@ The resource ID(s) to assign to the resource.
 ### Parameter: `monitoringSettings`
 
 Monitoring Settings of the vault.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `moveDetails`
-
-The move details of the vault.
 
 - Required: No
 - Type: object
@@ -3620,14 +3610,6 @@ Tags of the Recovery Service Vault resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `upgradeDetails`
-
-The upgrade details of the vault.
-
-- Required: No
-- Type: object
-- Default: `{}`
 
 ## Outputs
 

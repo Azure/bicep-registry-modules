@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "227975048578616288"
+      "templateHash": "15686079263029970844"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -614,13 +614,6 @@
         "description": "Optional. The encryption settings for the vault."
       }
     },
-    "moveDetails": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. The move details of the vault."
-      }
-    },
     "redundancySettings": {
       "type": "object",
       "defaultValue": {},
@@ -633,13 +626,6 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. The restore settings of the vault."
-      }
-    },
-    "upgradeDetails": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. The upgrade details of the vault."
       }
     }
   },
@@ -704,10 +690,8 @@
         "securitySettings": "[if(not(empty(parameters('securitySettings'))), parameters('securitySettings'), null())]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "encryption": "[if(not(empty(parameters('encryption'))), parameters('encryption'), null())]",
-        "moveDetails": "[if(not(empty(parameters('moveDetails'))), parameters('moveDetails'), null())]",
         "redundancySettings": "[if(not(empty(parameters('redundancySettings'))), parameters('redundancySettings'), null())]",
-        "restoreSettings": "[if(not(empty(parameters('restoreSettings'))), parameters('restoreSettings'), null())]",
-        "upgradeDetails": "[if(not(empty(parameters('upgradeDetails'))), parameters('upgradeDetails'), null())]"
+        "restoreSettings": "[if(not(empty(parameters('restoreSettings'))), parameters('restoreSettings'), null())]"
       }
     },
     "rsv_lock": {

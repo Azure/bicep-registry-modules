@@ -66,17 +66,11 @@ param publicNetworkAccess string = 'Disabled'
 @description('Optional. The encryption settings for the vault.')
 param encryption object = {}
 
-@description('Optional. The move details of the vault.')
-param moveDetails object = {}
-
 @description('Optional. The redundancy settings of the vault.')
 param redundancySettings object = {}
 
 @description('Optional. The restore settings of the vault.')
 param restoreSettings object = {}
-
-@description('Optional. The upgrade details of the vault.')
-param upgradeDetails object = {}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -175,10 +169,8 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
     securitySettings: !empty(securitySettings) ? securitySettings : null
     publicNetworkAccess: publicNetworkAccess
     encryption: !empty(encryption) ? encryption : null
-    moveDetails: !empty(moveDetails) ? moveDetails : null
     redundancySettings: !empty(redundancySettings) ? redundancySettings : null
     restoreSettings: !empty(restoreSettings) ? restoreSettings : null
-    upgradeDetails: !empty(upgradeDetails) ? upgradeDetails : null
   }
 }
 
