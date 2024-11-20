@@ -52,15 +52,18 @@ param tags object?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType?
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
 @description('Optional. The managed service identities assigned to this resource.')
 @metadata({
@@ -77,6 +80,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
   '''
 })
 param managedIdentities managedIdentityAllType?
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -286,8 +290,6 @@ output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?princi
 // =============== //
 //   Definitions   //
 // =============== //
-
-import { managedIdentityAllType, diagnosticSettingFullType, lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
 @export()
 type osProfileType = {
