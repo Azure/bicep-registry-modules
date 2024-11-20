@@ -56,20 +56,40 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   name: 'registryDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'crrcach001'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Standard'
     cacheRules: [
       {
         credentialSetResourceId: '<credentialSetResourceId>'
-        name: 'customRule'
+        name: 'docker-rule-with-credentials'
         sourceRepository: 'docker.io/library/hello-world'
         targetRepository: 'cached-docker-hub/hello-world'
       }
       {
+        name: 'mcr-rule-anonymous'
         sourceRepository: 'mcr.microsoft.com/*'
         targetRepository: 'cached-mcr/*'
+      }
+    ]
+    credentialSets: [
+      {
+        authCredentials: [
+          {
+            name: 'Credential1'
+            passwordSecretIdentifier: '<passwordSecretIdentifier>'
+            usernameSecretIdentifier: '<usernameSecretIdentifier>'
+          }
+        ]
+        loginServer: 'docker.io'
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'docker-credential-set'
       }
     ]
     location: '<location>'
@@ -91,7 +111,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "crrcach001"
     },
     // Non-required parameters
     "acrAdminUserEnabled": {
@@ -104,13 +124,35 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "credentialSetResourceId": "<credentialSetResourceId>",
-          "name": "customRule",
+          "name": "docker-rule-with-credentials",
           "sourceRepository": "docker.io/library/hello-world",
           "targetRepository": "cached-docker-hub/hello-world"
         },
         {
+          "name": "mcr-rule-anonymous",
           "sourceRepository": "mcr.microsoft.com/*",
           "targetRepository": "cached-mcr/*"
+        }
+      ]
+    },
+    "credentialSets": {
+      "value": [
+        {
+          "authCredentials": [
+            {
+              "name": "Credential1",
+              "passwordSecretIdentifier": "<passwordSecretIdentifier>",
+              "usernameSecretIdentifier": "<usernameSecretIdentifier>"
+            }
+          ],
+          "loginServer": "docker.io",
+          "managedIdentities": {
+            "systemAssigned": true,
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "docker-credential-set"
         }
       ]
     },
@@ -132,20 +174,40 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = '<name>'
+param name = 'crrcach001'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Standard'
 param cacheRules = [
   {
     credentialSetResourceId: '<credentialSetResourceId>'
-    name: 'customRule'
+    name: 'docker-rule-with-credentials'
     sourceRepository: 'docker.io/library/hello-world'
     targetRepository: 'cached-docker-hub/hello-world'
   }
   {
+    name: 'mcr-rule-anonymous'
     sourceRepository: 'mcr.microsoft.com/*'
     targetRepository: 'cached-mcr/*'
+  }
+]
+param credentialSets = [
+  {
+    authCredentials: [
+      {
+        name: 'Credential1'
+        passwordSecretIdentifier: '<passwordSecretIdentifier>'
+        usernameSecretIdentifier: '<usernameSecretIdentifier>'
+      }
+    ]
+    loginServer: 'docker.io'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'docker-credential-set'
   }
 ]
 param location = '<location>'

@@ -38,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     location: resourceLocation
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    acrName: '${namePrefix}${serviceShort}001'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -52,18 +52,44 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: nestedDependencies.outputs.acrName
+      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       acrAdminUserEnabled: false
       acrSku: 'Standard'
+      credentialSets: [
+        {
+          name: 'docker-credential-set'
+          authCredentials: [
+            {
+              name: 'Credential1'
+              passwordSecretIdentifier: nestedDependencies.outputs.pwdSecretURI
+              usernameSecretIdentifier: nestedDependencies.outputs.userNameSecretURI
+            }
+          ]
+          loginServer: 'docker.io'
+          managedIdentities: {
+            systemAssigned: true
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
+        }
+      ]
       cacheRules: [
         {
-          name: 'customRule'
+          name: 'docker-rule-with-credentials'
           sourceRepository: 'docker.io/library/hello-world'
           targetRepository: 'cached-docker-hub/hello-world'
-          credentialSetResourceId: nestedDependencies.outputs.acrCredentialSetResourceId
+          credentialSetResourceId: resourceId(
+            subscription().subscriptionId,
+            resourceGroup.name,
+            'Microsoft.ContainerRegistry/registries/credentialSets',
+            '${namePrefix}${serviceShort}001',
+            'docker-credential-set'
+          )
         }
         {
+          name: 'mcr-rule-anonymous'
           sourceRepository: 'mcr.microsoft.com/*'
           targetRepository: 'cached-mcr/*'
         }
