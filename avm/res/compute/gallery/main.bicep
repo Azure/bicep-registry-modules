@@ -27,9 +27,11 @@ param images imageType[]? // use a UDT here to not overload the main module, as 
 
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
 @sys.description('Optional. Tags for all resources.')
 @metadata({
@@ -214,10 +216,6 @@ output imageResourceIds array = [
 //   Definitions   //
 // =============== //
 
-import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
-import { customActionType } from './application/main.bicep'
-import { roleAssignmentType, lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
-
 @export()
 type imageType = {
   @sys.description('Required. Name of the image definition.')
@@ -282,6 +280,7 @@ type imageType = {
   @sys.description('Optional. Describes the disallowed disk types.')
   excludedDiskTypes: string[]?
 }
+import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
 
 type applicationsType = {
   @sys.description('Required. Name of the application definition.')
@@ -316,3 +315,4 @@ type applicationsType = {
   @sys.description('Optional. Tags for all resources.')
   tags: object?
 }
+import { customActionType } from './application/main.bicep'
