@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "14640945051471611128"
+      "templateHash": "5769743851515501504"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -590,7 +590,6 @@
         "Microsoft.Sql": [],
         "Microsoft.Storage": [],
         "Microsoft.StreamAnalytics": [],
-        "Microsoft.TimeSeriesInsights": [],
         "Microsoft.Web": []
       },
       "metadata": {
