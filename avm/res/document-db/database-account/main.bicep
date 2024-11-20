@@ -259,6 +259,7 @@ var databaseAccountProperties = union(
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
     minimalTlsVersion: minimumTlsVersion
+    publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
     ? {
@@ -270,7 +271,6 @@ var databaseAccountProperties = union(
         ipRules: ipRules
         virtualNetworkRules: virtualNetworkRules
         networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
-        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
         isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
 
         capabilities: capabilities
