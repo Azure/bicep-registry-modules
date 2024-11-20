@@ -649,6 +649,10 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
+    backupStorageConfig: {
+      crossRegionRestoreFlag: true
+      storageModelType: 'GeoRedundant'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1038,6 +1042,12 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           }
         }
       ]
+    },
+    "backupStorageConfig": {
+      "value": {
+        "crossRegionRestoreFlag": true,
+        "storageModelType": "GeoRedundant"
+      }
     },
     "diagnosticSettings": {
       "value": [
@@ -1441,6 +1451,10 @@ param backupPolicies = [
     }
   }
 ]
+param backupStorageConfig = {
+  crossRegionRestoreFlag: true
+  storageModelType: 'GeoRedundant'
+}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'

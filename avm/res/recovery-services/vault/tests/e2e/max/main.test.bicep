@@ -301,6 +301,10 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      backupStorageConfig: {
+        crossRegionRestoreFlag: true
+        storageModelType: 'GeoRedundant'
+      }
       replicationAlertSettings: {
         customEmailAddresses: [
           'test.user@testcompany.com'
