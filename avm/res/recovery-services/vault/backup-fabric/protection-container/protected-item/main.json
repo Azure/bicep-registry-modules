@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "12193073774274736616"
+      "version": "0.31.92.45157",
+      "templateHash": "17378339479808033328"
     },
     "name": "Recovery Service Vaults Protection Container Protected Item",
     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
