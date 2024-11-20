@@ -43,10 +43,10 @@ param roleAssignments roleAssignmentType?
 param tags object?
 
 @sys.description('Optional. Profile for gallery sharing to subscription or tenant.')
-param sharingProfile sharingProfileType?
+param sharingProfile object?
 
-@sys.description('Optional. Enables soft-deletion for resources in this gallery, allowing them to be recovered within retention time.')
-param softDeletePolicy bool?
+@sys.description('Optional. Soft deletion policy of the gallery.')
+param softDeletePolicy object?
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId(
@@ -107,22 +107,8 @@ resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
   properties: {
     description: description
     // identifier: {} // Contains only read-only properties
-    sharingProfile: !empty(sharingProfile)
-      ? {
-          communityGalleryInfo: {
-            eula: sharingProfile.?eula
-            publicNamePrefix: sharingProfile.?publicNamePrefix
-            publisherContact: sharingProfile.?publisherContact
-            publisherUri: sharingProfile.?publisherUri
-          }
-          permissions: sharingProfile.?permissions
-        }
-      : null
-    softDeletePolicy: softDeletePolicy != null
-      ? {
-          isSoftDeleteEnabled: softDeletePolicy
-        }
-      : null
+    sharingProfile: sharingProfile
+    softDeletePolicy: softDeletePolicy
   }
 }
 
@@ -265,6 +251,7 @@ type roleAssignmentType = {
 }[]
 
 import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
+import { customActionType } from './application/main.bicep'
 
 @export()
 type imageType = {
@@ -359,54 +346,8 @@ type applicationsType = {
   roleAssignments: roleAssignmentType?
 
   @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
-  customActions: customActionType[]?
+  customActions: customActionType
 
   @sys.description('Optional. Tags for all resources.')
   tags: object?
 }[]?
-
-type customActionType = {
-  @sys.description('Required. The name of the custom action. Must be unique within the Gallery Application Version.')
-  name: string
-
-  @sys.description('Required. The script to run when executing this custom action.')
-  script: string
-
-  @sys.description('Optional. Description to help the users understand what this custom action does.')
-  description: string?
-
-  @sys.description('Optional. The parameters that this custom action uses.')
-  parameters: {
-    @sys.description('Required. The name of the parameter.')
-    name: string
-
-    @sys.description('Optional. Specifies the type of the custom action parameter.')
-    type: ('ConfigurationDataBlob' | 'LogOutputBlob' | 'String')?
-
-    @sys.description('Optional. A description to help users understand what this parameter means.')
-    description: string?
-
-    @sys.description('Optional. The default value of the parameter. Only applies to string types.')
-    defaultValue: string?
-
-    @sys.description('Optional. Indicates whether this parameter must be passed when running the custom action.')
-    required: bool?
-  }[]?
-}[]
-
-type sharingProfileType = {
-  @sys.description('Optional. End-user license agreement for community gallery image.')
-  eula: string?
-
-  @sys.description('Optional. The prefix of the gallery name that will be displayed publicly. Visible to all users.')
-  publicNamePrefix: string?
-
-  @sys.description('Optional. Community gallery publisher support email. The email address of the publisher. Visible to all users.')
-  publisherContact: string?
-
-  @sys.description('Optional. The link to the publisher website. Visible to all users.')
-  publisherUri: string?
-
-  @sys.description('Optional. This property allows you to specify the permission of sharing gallery.')
-  permissions: ('Community' | 'Groups' | 'Private')?
-}

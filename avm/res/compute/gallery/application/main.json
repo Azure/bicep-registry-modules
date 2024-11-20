@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "12025997665546901388"
+      "templateHash": "3840736055128275990"
     },
     "name": "Compute Galleries Applications",
     "description": "This module deploys an Azure Compute Gallery Application.",
@@ -85,6 +85,88 @@
         }
       },
       "nullable": true
+    },
+    "customActionType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the custom action. Must be unique within the Gallery Application Version."
+            }
+          },
+          "script": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The script to run when executing this custom action."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Description to help the users understand what this custom action does."
+            }
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the parameter."
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ConfigurationDataBlob",
+                    "LogOutputBlob",
+                    "String"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the type of the custom action parameter."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A description to help users understand what this parameter means."
+                  }
+                },
+                "defaultValue": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The default value of the parameter. Only applies to string types."
+                  }
+                },
+                "required": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Indicates whether this parameter must be passed when running the custom action."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The parameters that this custom action uses."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
@@ -167,8 +249,7 @@
       }
     },
     "customActions": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/customActionType",
       "metadata": {
         "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
       }

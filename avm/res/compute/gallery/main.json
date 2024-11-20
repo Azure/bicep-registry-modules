@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "9991159892229520493"
+      "templateHash": "6141616962265242947"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -340,11 +340,7 @@
             }
           },
           "customActions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/customActionType"
-            },
-            "nullable": true,
+            "$ref": "#/definitions/customActionType",
             "metadata": {
               "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
             }
@@ -436,50 +432,11 @@
             }
           }
         }
-      }
-    },
-    "sharingProfileType": {
-      "type": "object",
-      "properties": {
-        "eula": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. End-user license agreement for community gallery image."
-          }
-        },
-        "publicNamePrefix": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The prefix of the gallery name that will be displayed publicly. Visible to all users."
-          }
-        },
-        "publisherContact": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Community gallery publisher support email. The email address of the publisher. Visible to all users."
-          }
-        },
-        "publisherUri": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The link to the publisher website. Visible to all users."
-          }
-        },
-        "permissions": {
-          "type": "string",
-          "allowedValues": [
-            "Community",
-            "Groups",
-            "Private"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. This property allows you to specify the permission of sharing gallery."
-          }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "application/main.bicep"
         }
       }
     },
@@ -634,17 +591,17 @@
       }
     },
     "sharingProfile": {
-      "$ref": "#/definitions/sharingProfileType",
+      "type": "object",
       "nullable": true,
       "metadata": {
         "description": "Optional. Profile for gallery sharing to subscription or tenant."
       }
     },
     "softDeletePolicy": {
-      "type": "bool",
+      "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Enables soft-deletion for resources in this gallery, allowing them to be recovered within retention time."
+        "description": "Optional. Soft deletion policy of the gallery."
       }
     }
   },
@@ -694,8 +651,8 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "description": "[parameters('description')]",
-        "sharingProfile": "[if(not(empty(parameters('sharingProfile'))), createObject('communityGalleryInfo', createObject('eula', tryGet(parameters('sharingProfile'), 'eula'), 'publicNamePrefix', tryGet(parameters('sharingProfile'), 'publicNamePrefix'), 'publisherContact', tryGet(parameters('sharingProfile'), 'publisherContact'), 'publisherUri', tryGet(parameters('sharingProfile'), 'publisherUri')), 'permissions', tryGet(parameters('sharingProfile'), 'permissions')), null())]",
-        "softDeletePolicy": "[if(not(equals(parameters('softDeletePolicy'), null())), createObject('isSoftDeleteEnabled', parameters('softDeletePolicy')), null())]"
+        "sharingProfile": "[parameters('sharingProfile')]",
+        "softDeletePolicy": "[parameters('softDeletePolicy')]"
       }
     },
     "gallery_lock": {
@@ -793,7 +750,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "12025997665546901388"
+              "templateHash": "3840736055128275990"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -872,6 +829,88 @@
                 }
               },
               "nullable": true
+            },
+            "customActionType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the custom action. Must be unique within the Gallery Application Version."
+                    }
+                  },
+                  "script": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The script to run when executing this custom action."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Description to help the users understand what this custom action does."
+                    }
+                  },
+                  "parameters": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the parameter."
+                          }
+                        },
+                        "type": {
+                          "type": "string",
+                          "allowedValues": [
+                            "ConfigurationDataBlob",
+                            "LogOutputBlob",
+                            "String"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specifies the type of the custom action parameter."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A description to help users understand what this parameter means."
+                          }
+                        },
+                        "defaultValue": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The default value of the parameter. Only applies to string types."
+                          }
+                        },
+                        "required": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Indicates whether this parameter must be passed when running the custom action."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The parameters that this custom action uses."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
             }
           },
           "parameters": {
@@ -954,8 +993,7 @@
               }
             },
             "customActions": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/customActionType",
               "metadata": {
                 "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
               }

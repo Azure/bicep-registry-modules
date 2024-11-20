@@ -57,13 +57,6 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       description: 'This is a test deployment.'
-      sharingProfile: {
-        eula: 'test Eula'
-        permissions: 'Community'
-        publicNamePrefix: 'avmtest'
-        publisherContact: 'avmtest@contoso.com'
-        publisherUri: 'https://aka.ms/avm'
-      }
       applications: [
         {
           name: '${namePrefix}-${serviceShort}-appd-001'

@@ -41,7 +41,7 @@ param roleAssignments roleAssignmentType
 param tags object?
 
 @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
-param customActions array?
+param customActions customActionType
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId(
@@ -148,4 +148,34 @@ type roleAssignmentType = {
 
   @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+@export()
+type customActionType = {
+  @sys.description('Required. The name of the custom action. Must be unique within the Gallery Application Version.')
+  name: string
+
+  @sys.description('Required. The script to run when executing this custom action.')
+  script: string
+
+  @sys.description('Optional. Description to help the users understand what this custom action does.')
+  description: string?
+
+  @sys.description('Optional. The parameters that this custom action uses.')
+  parameters: {
+    @sys.description('Required. The name of the parameter.')
+    name: string
+
+    @sys.description('Optional. Specifies the type of the custom action parameter.')
+    type: ('ConfigurationDataBlob' | 'LogOutputBlob' | 'String')?
+
+    @sys.description('Optional. A description to help users understand what this parameter means.')
+    description: string?
+
+    @sys.description('Optional. The default value of the parameter. Only applies to string types.')
+    defaultValue: string?
+
+    @sys.description('Optional. Indicates whether this parameter must be passed when running the custom action.')
+    required: bool?
+  }[]?
 }[]?

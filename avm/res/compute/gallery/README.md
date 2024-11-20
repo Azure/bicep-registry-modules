@@ -314,14 +314,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    sharingProfile: {
-      eula: 'test Eula'
-      permissions: 'Community'
-      publicNamePrefix: 'avmtest'
-      publisherContact: 'avmtest@contoso.com'
-      publisherUri: 'https://aka.ms/avm'
-    }
-    softDeletePolicy: false
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -562,18 +554,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         }
       ]
     },
-    "sharingProfile": {
-      "value": {
-        "eula": "test Eula",
-        "permissions": "Community",
-        "publicNamePrefix": "avmtest",
-        "publisherContact": "avmtest@contoso.com",
-        "publisherUri": "https://aka.ms/avm"
-      }
-    },
-    "softDeletePolicy": {
-      "value": false
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -800,14 +780,6 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param sharingProfile = {
-  eula: 'test Eula'
-  permissions: 'Community'
-  publicNamePrefix: 'avmtest'
-  publisherContact: 'avmtest@contoso.com'
-  publisherUri: 'https://aka.ms/avm'
-}
-param softDeletePolicy = false
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -977,7 +949,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sharingProfile`](#parameter-sharingprofile) | object | Profile for gallery sharing to subscription or tenant. |
-| [`softDeletePolicy`](#parameter-softdeletepolicy) | bool | Enables soft-deletion for resources in this gallery, allowing them to be recovered within retention time. |
+| [`softDeletePolicy`](#parameter-softdeletepolicy) | object | Soft deletion policy of the gallery. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
 ### Parameter: `name`
@@ -1758,65 +1730,12 @@ Profile for gallery sharing to subscription or tenant.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`eula`](#parameter-sharingprofileeula) | string | End-user license agreement for community gallery image. |
-| [`permissions`](#parameter-sharingprofilepermissions) | string | This property allows you to specify the permission of sharing gallery. |
-| [`publicNamePrefix`](#parameter-sharingprofilepublicnameprefix) | string | The prefix of the gallery name that will be displayed publicly. Visible to all users. |
-| [`publisherContact`](#parameter-sharingprofilepublishercontact) | string | Community gallery publisher support email. The email address of the publisher. Visible to all users. |
-| [`publisherUri`](#parameter-sharingprofilepublisheruri) | string | The link to the publisher website. Visible to all users. |
-
-### Parameter: `sharingProfile.eula`
-
-End-user license agreement for community gallery image.
-
-- Required: No
-- Type: string
-
-### Parameter: `sharingProfile.permissions`
-
-This property allows you to specify the permission of sharing gallery.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Community'
-    'Groups'
-    'Private'
-  ]
-  ```
-
-### Parameter: `sharingProfile.publicNamePrefix`
-
-The prefix of the gallery name that will be displayed publicly. Visible to all users.
-
-- Required: No
-- Type: string
-
-### Parameter: `sharingProfile.publisherContact`
-
-Community gallery publisher support email. The email address of the publisher. Visible to all users.
-
-- Required: No
-- Type: string
-
-### Parameter: `sharingProfile.publisherUri`
-
-The link to the publisher website. Visible to all users.
-
-- Required: No
-- Type: string
-
 ### Parameter: `softDeletePolicy`
 
-Enables soft-deletion for resources in this gallery, allowing them to be recovered within retention time.
+Soft deletion policy of the gallery.
 
 - Required: No
-- Type: bool
+- Type: object
 
 ### Parameter: `tags`
 
