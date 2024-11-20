@@ -107,7 +107,7 @@ function Start-MonitorDeploymentForScope {
     $maxRetryCheckDeployment = 5
     $retryCheckDeploymentCount = 0
     $unhealthyDeploymentStates = ('Canceled', 'Failed', 'Deleted', 'Deleting')
-    $healthyDeploymentStates = ('Succeeded', 'Creating', 'Created', 'Accepted', 'Running', 'Ready', 'Updating')
+    $healthyDeploymentStates = ('Creating', 'Created', 'Accepted', 'Running', 'Ready', 'Updating')
     switch ($deploymentScope) {
         'resourcegroup' {
             do {
@@ -135,14 +135,14 @@ function Start-MonitorDeploymentForScope {
                     continue
                 }
 
-                Write-Verbose ('Deployment status for [{0}] on resource group [{1}] is [{2}]' -f $deploymentName, $ResourceGroupName, $deployments.ProvisioningState)
-                if ($deployments.ProvisioningState -in $unhealthyDeploymentStates) {
-                    Write-Error "Deployment failed with provisioning state [$($deployments.ProvisioningState)]. Error Message: [$($deployments.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
+                Write-Verbose ('Deployment statuses for [{0}] and sub-operations on resource group [{1}] are [{2}]' -f $deploymentName, $ResourceGroupName, ($deployments.ProvisioningState -join ','))
+                if ($deployments | ForEach-Object { $_.ProvisioningState } -in $unhealthyDeploymentStates) {
+                    Write-Error "Deployment failed with provisioning state [$($deployments.ProvisioningState -join ',')]. Error Message: [$($deployments.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                     break
                 }
 
                 Start-Sleep -Seconds 5
-            } while ($deployments.ProvisioningState -in $healthyDeploymentStates -or $retryCheck)
+            } while (($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates) -or $retryCheck)
             break
         }
         'subscription' {
@@ -171,14 +171,16 @@ function Start-MonitorDeploymentForScope {
                     continue
                 }
 
-                Write-Verbose ('Deployment status for [{0}] on resource group [{1}] is [{2}]' -f $deploymentName, $ResourceGroupName, $deployments.ProvisioningState)
-                if ($deployments.ProvisioningState -in $unhealthyDeploymentStates) {
-                    Write-Error "Deployment failed with provisioning state [$($deployments.ProvisioningState)]. Error Message: [$($deployments.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
-                    break
+                Write-Verbose ('Deployment status for [{0}] and sub-operations on subscription are: [{1}]' -f $deploymentName, $ResourceGroupName, ($deployments.ProvisioningState -join ','))
+                foreach ($deployment in $deployments) {
+                    if ($deployment.ProvisioningState -in $unhealthyDeploymentStates) {
+                        Write-Error "Deployment failed with provisioning state [$($deployment.ProvisioningState -join ',')]. Error Message: [$($deployment.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
+                        break
+                    }
                 }
 
                 Start-Sleep -Seconds 5
-            } while ($deployments.ProvisioningState -in $healthyDeploymentStates -or $retryCheck)
+            } while (($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates) -or $retryCheck)
             break
         }
         'managementgroup' {
