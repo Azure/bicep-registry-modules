@@ -2,20 +2,20 @@ metadata name = 'Operations Management Solutions'
 metadata description = 'This module deploys an Operations Management Solution.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the solution. For Microsoft published gallery solution the target solution resource name will be composed as `{name}({logAnalyticsWorkspaceName})`.')
+@description('''Required. Name of the solution.
+For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
+For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.
+The solution type is case-sensitive.''')
 param name string
+
+@description('Required. Plan for solution object supported by the OperationsManagement resource provider.')
+param plan solutionPlanType
 
 @description('Required. Name of the Log Analytics workspace where the solution will be deployed/enabled.')
 param logAnalyticsWorkspaceName string
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
-
-@description('Optional. The product of the deployed solution. For Microsoft published gallery solution it should be `OMSGallery` and the target solution resource product will be composed as `OMSGallery/{name}`. For third party solution, it can be anything. This is case sensitive.')
-param product string = 'OMSGallery'
-
-@description('Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`.')
-param publisher string = 'Microsoft'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -43,21 +43,17 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06
   name: logAnalyticsWorkspaceName
 }
 
-var solutionName = publisher == 'Microsoft' ? '${name}(${logAnalyticsWorkspace.name})' : name
-
-var solutionProduct = publisher == 'Microsoft' ? 'OMSGallery/${name}' : product
-
 resource solution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
-  name: solutionName
+  name: name
   location: location
   properties: {
     workspaceResourceId: logAnalyticsWorkspace.id
   }
   plan: {
-    name: solutionName
+    name: plan.?name ?? name
     promotionCode: ''
-    product: solutionProduct
-    publisher: publisher
+    product: plan.product
+    publisher: plan.?publisher ?? 'Microsoft'
   }
 }
 
@@ -72,3 +68,26 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = solution.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type solutionPlanType = {
+  @description('''Optional. Name of the solution to be created.
+  For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
+  For solutions authored by third parties, it can be anything.
+  The solution type is case-sensitive.
+  If not provided, the value of the `name` parameter will be used.''')
+  name: string?
+
+  @description('''Required. The product name of the deployed solution.
+  For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.
+  For a third party solution, it can be anything.
+  This is case sensitive.''')
+  product: string
+
+  @description('Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.')
+  publisher: string?
+}

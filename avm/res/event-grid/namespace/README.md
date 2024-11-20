@@ -40,7 +40,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [MQTT Broker with routing to a namespace topic](#example-3-mqtt-broker-with-routing-to-a-namespace-topic)
-- [MQTT Broker with routing to a namespace topic](#example-4-mqtt-broker-with-routing-to-a-namespace-topic)
+- [MQTT Broker with routing to a custom topic](#example-4-mqtt-broker-with-routing-to-a-custom-topic)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -1214,9 +1214,9 @@ param topicSpacesState = 'Enabled'
 </details>
 <p>
 
-### Example 4: _MQTT Broker with routing to a namespace topic_
+### Example 4: _MQTT Broker with routing to a custom topic_
 
-This instance deploys the module as a MQTT Broker with routing to a topic within the same Eventgrid namespace.
+This instance deploys the module as a MQTT Broker with routing to a custom topic.
 
 
 <details>
@@ -2356,15 +2356,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -2372,6 +2370,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 

@@ -21,7 +21,6 @@ This module deploys a CDN Profile Secret.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the secrect. |
-| [`type`](#parameter-type) | string | The type of the secrect. |
 
 **Conditional parameters**
 
@@ -36,6 +35,7 @@ This module deploys a CDN Profile Secret.
 | :-- | :-- | :-- |
 | [`secretVersion`](#parameter-secretversion) | string | The version of the secret. |
 | [`subjectAlternativeNames`](#parameter-subjectalternativenames) | array | The subject alternative names of the secrect. |
+| [`type`](#parameter-type) | string | The type of the secrect. |
 | [`useLatestVersion`](#parameter-uselatestversion) | bool | Indicates whether to use the latest version of the secrect. |
 
 ### Parameter: `name`
@@ -44,23 +44,6 @@ The name of the secrect.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `type`
-
-The type of the secrect.
-
-- Required: No
-- Type: string
-- Default: `'AzureFirstPartyManagedCertificate'`
-- Allowed:
-  ```Bicep
-  [
-    'AzureFirstPartyManagedCertificate'
-    'CustomerCertificate'
-    'ManagedCertificate'
-    'UrlSigningKey'
-  ]
-  ```
 
 ### Parameter: `profileName`
 
@@ -92,6 +75,23 @@ The subject alternative names of the secrect.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `type`
+
+The type of the secrect.
+
+- Required: No
+- Type: string
+- Default: `'AzureFirstPartyManagedCertificate'`
+- Allowed:
+  ```Bicep
+  [
+    'AzureFirstPartyManagedCertificate'
+    'CustomerCertificate'
+    'ManagedCertificate'
+    'UrlSigningKey'
+  ]
+  ```
 
 ### Parameter: `useLatestVersion`
 

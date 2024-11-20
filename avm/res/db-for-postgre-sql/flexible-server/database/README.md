@@ -55,7 +55,6 @@ The charset of the database.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `collation`
 
@@ -63,7 +62,6 @@ The collation of the database.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

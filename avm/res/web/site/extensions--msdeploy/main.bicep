@@ -5,10 +5,10 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the parent site resource.')
 param appName string
 
-@description('Required. Sets the MSDeployment Properties.')
+@description('Optional. Sets the MSDeployment Properties.')
 param msDeployConfiguration object?
 
-resource app 'Microsoft.Web/sites@2022-09-01' existing = {
+resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   name: appName
 }
 resource msdeploy 'Microsoft.Web/sites/extensions@2023-12-01' = {
