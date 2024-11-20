@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "17941721932056607182"
+      "templateHash": "2270335166910547426"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -173,93 +173,89 @@
       }
     },
     "applicationsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 80,
-            "metadata": {
-              "description": "Required. Name of the application definition."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "metadata": {
+            "description": "Required. Name of the application definition."
+          }
+        },
+        "supportedOSType": {
+          "type": "string",
+          "allowedValues": [
+            "Linux",
+            "Windows"
+          ],
+          "metadata": {
+            "description": "Required. The OS type of the application."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of this gallery application definition resource. This property is updatable."
+          }
+        },
+        "eula": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Eula agreement for the gallery application definition."
+          }
+        },
+        "privacyStatementUri": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The privacy statement uri."
+          }
+        },
+        "releaseNoteUri": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The release note uri. Has to be a valid URL."
+          }
+        },
+        "endOfLifeDate": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The end of life date of the gallery application definition. This property can be used for decommissioning purposes. This property is updatable."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
           },
-          "supportedOSType": {
-            "type": "string",
-            "allowedValues": [
-              "Linux",
-              "Windows"
-            ],
-            "metadata": {
-              "description": "Required. The OS type of the application."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "customActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customActionType"
           },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of this gallery application definition resource. This property is updatable."
-            }
-          },
-          "eula": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Eula agreement for the gallery application definition."
-            }
-          },
-          "privacyStatementUri": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The privacy statement uri."
-            }
-          },
-          "releaseNoteUri": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The release note uri. Has to be a valid URL."
-            }
-          },
-          "endOfLifeDate": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The end of life date of the gallery application definition. This property can be used for decommissioning purposes. This property is updatable."
-            }
-          },
-          "roleAssignments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/roleAssignmentType"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Array of role assignments to create."
-            }
-          },
-          "customActions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/customActionType"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Tags for all resources."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags for all resources."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "customActionType": {
       "type": "object",
@@ -559,7 +555,11 @@
       }
     },
     "applications": {
-      "$ref": "#/definitions/applicationsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/applicationsType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Applications to create."
       }

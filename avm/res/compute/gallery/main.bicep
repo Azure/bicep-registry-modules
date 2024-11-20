@@ -20,7 +20,7 @@ param enableTelemetry bool = true
 param description string?
 
 @sys.description('Optional. Applications to create.')
-param applications applicationsType
+param applications applicationsType[]?
 
 @sys.description('Optional. Images to create.')
 param images imageType[]? // use a UDT here to not overload the main module, as it has images and applications parameters
@@ -315,4 +315,4 @@ type applicationsType = {
 
   @sys.description('Optional. Tags for all resources.')
   tags: object?
-}[]?
+}
