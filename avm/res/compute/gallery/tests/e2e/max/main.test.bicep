@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = [
         publisherContact: 'avmtest@contoso.com'
         publisherUri: 'https://aka.ms/avm'
       }
-      softDeletePolicy: true
       applications: [
         {
           name: '${namePrefix}-${serviceShort}-appd-001'
