@@ -1858,10 +1858,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     }
     monitoringSettings: {
       azureMonitorAlertSettings: {
+        alertsForAllFailoverIssues: 'Enabled'
         alertsForAllJobFailures: 'Enabled'
+        alertsForAllReplicationIssues: 'Enabled'
       }
       classicAlertSettings: {
         alertsForCriticalOperations: 'Enabled'
+        emailNotificationsForSiteRecovery: 'Enabled'
       }
     }
     privateEndpoints: [
@@ -2241,10 +2244,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "monitoringSettings": {
       "value": {
         "azureMonitorAlertSettings": {
-          "alertsForAllJobFailures": "Enabled"
+          "alertsForAllFailoverIssues": "Enabled",
+          "alertsForAllJobFailures": "Enabled",
+          "alertsForAllReplicationIssues": "Enabled"
         },
         "classicAlertSettings": {
-          "alertsForCriticalOperations": "Enabled"
+          "alertsForCriticalOperations": "Enabled",
+          "emailNotificationsForSiteRecovery": "Enabled"
         }
       }
     },
@@ -2614,10 +2620,13 @@ param managedIdentities = {
 }
 param monitoringSettings = {
   azureMonitorAlertSettings: {
+    alertsForAllFailoverIssues: 'Enabled'
     alertsForAllJobFailures: 'Enabled'
+    alertsForAllReplicationIssues: 'Enabled'
   }
   classicAlertSettings: {
     alertsForCriticalOperations: 'Enabled'
+    emailNotificationsForSiteRecovery: 'Enabled'
   }
 }
 param privateEndpoints = [

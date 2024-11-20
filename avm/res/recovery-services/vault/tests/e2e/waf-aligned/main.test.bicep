@@ -398,9 +398,12 @@ module testDeployment '../../../main.bicep' = [
       monitoringSettings: {
         azureMonitorAlertSettings: {
           alertsForAllJobFailures: 'Enabled'
+          alertsForAllFailoverIssues: 'Enabled'
+          alertsForAllReplicationIssues: 'Enabled'
         }
         classicAlertSettings: {
           alertsForCriticalOperations: 'Enabled'
+          emailNotificationsForSiteRecovery: 'Enabled'
         }
       }
       securitySettings: {
