@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "13300542630733457081"
+      "version": "0.31.92.45157",
+      "templateHash": "4830493204251716155"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1237,7 +1237,7 @@
     ],
     "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB'))]",
     "backupPolicy": "[if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('type', parameters('backupPolicyType'), 'continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject('type', parameters('backupPolicyType'), 'periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))))]",
-    "databaseAccountProperties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', variables('backupPolicy'), 'minimalTlsVersion', parameters('minimumTlsVersion')), if(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'AzureServices'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Enabled'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'capabilities', variables('capabilities'), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('tables')))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
+    "databaseAccountProperties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', variables('backupPolicy'), 'minimalTlsVersion', parameters('minimumTlsVersion'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Enabled')), if(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'AzureServices'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'capabilities', variables('capabilities'), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('tables')))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Cosmos DB Account Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')]",
@@ -1396,8 +1396,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10274585444287252550"
+              "version": "0.31.92.45157",
+              "templateHash": "14039021912249335209"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1529,8 +1529,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "165408036680070575"
+                      "version": "0.31.92.45157",
+                      "templateHash": "1471754747460263407"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1786,8 +1786,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "13088569006752107887"
+              "version": "0.31.92.45157",
+              "templateHash": "3860121931480041680"
             },
             "name": "DocumentDB Database Account SQL Role.",
             "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
@@ -1873,8 +1873,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "5054354703268051893"
+                      "version": "0.31.92.45157",
+                      "templateHash": "2222650596260487600"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
                     "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
@@ -1994,8 +1994,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "4561927123418147924"
+                      "version": "0.31.92.45157",
+                      "templateHash": "12993275952067538651"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
@@ -2108,8 +2108,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1169635175830874795"
+              "version": "0.31.92.45157",
+              "templateHash": "18295016247574474595"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -2211,8 +2211,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "1358778299011674509"
+                      "version": "0.31.92.45157",
+                      "templateHash": "9799909568020880663"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -2371,8 +2371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "14612267479855031826"
+              "version": "0.31.92.45157",
+              "templateHash": "6528096364275148764"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -2477,8 +2477,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "5396990720772518636"
+                      "version": "0.31.92.45157",
+                      "templateHash": "16994331830326213766"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
@@ -2656,8 +2656,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "15712676324433329983"
+              "version": "0.31.92.45157",
+              "templateHash": "6722170581524078621"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account.",
@@ -3543,8 +3543,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "12263717469683062316"
+              "version": "0.31.92.45157",
+              "templateHash": "7954388693868310378"
             }
           },
           "definitions": {
