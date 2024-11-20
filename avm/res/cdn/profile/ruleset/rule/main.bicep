@@ -54,3 +54,21 @@ output resourceId string = rule.id
 
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name
+
+@export()
+type ruleType = {
+  @description('Required. The name of the rule.')
+  name: string
+
+  @description('Required. The order in which the rules are applied for the endpoint.')
+  order: int
+
+  @description('Optional. A list of actions that are executed when all the conditions of a rule are satisfied..')
+  actions: array?
+
+  @description('Optional. A list of conditions that must be matched for the actions to be executed.')
+  conditions: array?
+
+  @description('Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.')
+  matchProcessingBehavior: 'Continue' | 'Stop' | null
+}
