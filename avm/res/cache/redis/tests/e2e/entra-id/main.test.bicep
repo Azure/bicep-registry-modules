@@ -31,9 +31,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-module dependencies 'dependencies.bicep' = {
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-dependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
@@ -58,8 +58,8 @@ module testDeployment '../../../main.bicep' = [
       accessPolicyAssignments: [
         {
           accessPolicyName: 'Data Contributor'
-          objectId: dependencies.outputs.managedIdentityPrincipalId
-          objectIdAlias: dependencies.outputs.managedIdentityName
+          objectId: nestedDependencies.outputs.managedIdentityPrincipalId
+          objectIdAlias: nestedDependencies.outputs.managedIdentityName
         }
       ]
       accessPolicies: [
@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
       ]
     }
     dependsOn: [
-      dependencies
+      nestedDependencies
     ]
   }
 ]
