@@ -85,14 +85,23 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         loginServer: 'docker.io'
         managedIdentities: {
           systemAssigned: true
-          userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
-          ]
         }
         name: 'docker-credential-set'
       }
     ]
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6'
+      }
+    ]
   }
 }
 ```
@@ -147,10 +156,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           ],
           "loginServer": "docker.io",
           "managedIdentities": {
-            "systemAssigned": true,
-            "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
-            ]
+            "systemAssigned": true
           },
           "name": "docker-credential-set"
         }
@@ -158,6 +164,22 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "4633458b-17de-408a-b874-0445c86b69e6"
+        }
+      ]
     }
   }
 }
@@ -203,14 +225,23 @@ param credentialSets = [
     loginServer: 'docker.io'
     managedIdentities: {
       systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
     }
     name: 'docker-credential-set'
   }
 ]
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6'
+  }
+]
 ```
 
 </details>

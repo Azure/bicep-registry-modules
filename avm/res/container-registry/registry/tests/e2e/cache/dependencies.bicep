@@ -50,21 +50,11 @@ resource keyVaulSecretPwd 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   }
 }
 
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${location}-${managedIdentity.id}-KeyVaultSecretsUser-RoleAssignment')
-  scope: keyVault
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '4633458b-17de-408a-b874-0445c86b69e6'
-    ) // Key Vault Secrets User
-    principalType: 'ServicePrincipal'
-  }
-}
-
 @description('The managed identity resource ID.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The managed identity principal ID.')
+output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
 @description('The username key vault secret URI.')
 output userNameSecretURI string = keyVaultSecretUserName.properties.secretUri

@@ -20,9 +20,6 @@ param serviceShort string = 'crrcach'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -39,8 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-${resourceLocation}-msi-${serviceShort}'
   }
 }
@@ -59,6 +55,18 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       acrAdminUserEnabled: false
       acrSku: 'Standard'
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      roleAssignments: [
+        {
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6' // Key Vault Secrets User
+        }
+      ]
       credentialSets: [
         {
           name: 'docker-credential-set'
@@ -72,9 +80,6 @@ module testDeployment '../../../main.bicep' = [
           loginServer: 'docker.io'
           managedIdentities: {
             systemAssigned: true
-            userAssignedResourceIds: [
-              nestedDependencies.outputs.managedIdentityResourceId
-            ]
           }
         }
       ]
