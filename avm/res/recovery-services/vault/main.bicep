@@ -64,13 +64,13 @@ param securitySettings object = {}
 param publicNetworkAccess string = 'Disabled'
 
 @description('Optional. The encryption settings for the vault.')
-param encryption object = {}
+param encryption encryptionType
 
 @description('Optional. The redundancy settings of the vault.')
-param redundancySettings object = {}
+param redundancySettings redundancySettingsType
 
 @description('Optional. The restore settings of the vault.')
-param restoreSettings object = {}
+param restoreSettings restoreSettingsType
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -402,6 +402,41 @@ output privateEndpoints array = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+type encryptionType = {
+  @description('Optional. The encryption settings for the vault.')
+  infrastructureEncryption: string?
+
+  @description('Optional. The user assigned identity to be used.')
+  kekIdentity: {
+    @description('Optional. The user assigned identity to be used.')
+    userAssignedIdentity: string?
+
+    @description('Optional. Indicate that system assigned identity should be used.')
+    useSystemAssignedIdentity: bool?
+  }
+  @description('Optional. The key vault URI.')
+  keyVaultProperties: {
+    @description('Optional. The key vault URI.')
+    keyUri: string?
+  }
+}?
+
+type redundancySettingsType = {
+  @description('Optional. Flag to show if Cross Region Restore is enabled on the Vault or not.')
+  crossRegionRestore: string?
+
+  @description('Optional. The storage redundancy setting of a vault.')
+  standardTierStorageRedundancy: string?
+}?
+
+type restoreSettingsType = {
+  @description('Optional. The restore settings of the vault.')
+  crossSubscriptionRestoreSettings: {
+    @description('Optional. The restore settings of the vault.')
+    crossSubscriptionRestoreState: string?
+  }
+}?
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')

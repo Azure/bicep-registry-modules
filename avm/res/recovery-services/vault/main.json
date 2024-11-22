@@ -6,13 +6,104 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "15686079263029970844"
+      "templateHash": "14800957207343530226"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "encryptionType": {
+      "type": "object",
+      "properties": {
+        "infrastructureEncryption": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The encryption settings for the vault."
+          }
+        },
+        "kekIdentity": {
+          "type": "object",
+          "properties": {
+            "userAssignedIdentity": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The user assigned identity to be used."
+              }
+            },
+            "useSystemAssignedIdentity": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Indicate that system assigned identity should be used."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Optional. The user assigned identity to be used."
+          }
+        },
+        "keyVaultProperties": {
+          "type": "object",
+          "properties": {
+            "keyUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The key vault URI."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Optional. The key vault URI."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "redundancySettingsType": {
+      "type": "object",
+      "properties": {
+        "crossRegionRestore": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to show if Cross Region Restore is enabled on the Vault or not."
+          }
+        },
+        "standardTierStorageRedundancy": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The storage redundancy setting of a vault."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "restoreSettingsType": {
+      "type": "object",
+      "properties": {
+        "crossSubscriptionRestoreSettings": {
+          "type": "object",
+          "properties": {
+            "crossSubscriptionRestoreState": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The restore settings of the vault."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Optional. The restore settings of the vault."
+          }
+        }
+      },
+      "nullable": true
+    },
     "managedIdentitiesType": {
       "type": "object",
       "properties": {
@@ -608,22 +699,19 @@
       }
     },
     "encryption": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/encryptionType",
       "metadata": {
         "description": "Optional. The encryption settings for the vault."
       }
     },
     "redundancySettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/redundancySettingsType",
       "metadata": {
         "description": "Optional. The redundancy settings of the vault."
       }
     },
     "restoreSettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/restoreSettingsType",
       "metadata": {
         "description": "Optional. The restore settings of the vault."
       }

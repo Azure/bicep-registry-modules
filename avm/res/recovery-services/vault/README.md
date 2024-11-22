@@ -2921,7 +2921,69 @@ The encryption settings for the vault.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`infrastructureEncryption`](#parameter-encryptioninfrastructureencryption) | string | The encryption settings for the vault. |
+| [`kekIdentity`](#parameter-encryptionkekidentity) | object | The user assigned identity to be used. |
+| [`keyVaultProperties`](#parameter-encryptionkeyvaultproperties) | object | The key vault URI. |
+
+### Parameter: `encryption.infrastructureEncryption`
+
+The encryption settings for the vault.
+
+- Required: No
+- Type: string
+
+### Parameter: `encryption.kekIdentity`
+
+The user assigned identity to be used.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentity`](#parameter-encryptionkekidentityuserassignedidentity) | string | The user assigned identity to be used. |
+| [`useSystemAssignedIdentity`](#parameter-encryptionkekidentityusesystemassignedidentity) | bool | Indicate that system assigned identity should be used. |
+
+### Parameter: `encryption.kekIdentity.userAssignedIdentity`
+
+The user assigned identity to be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `encryption.kekIdentity.useSystemAssignedIdentity`
+
+Indicate that system assigned identity should be used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `encryption.keyVaultProperties`
+
+The key vault URI.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyUri`](#parameter-encryptionkeyvaultpropertieskeyuri) | string | The key vault URI. |
+
+### Parameter: `encryption.keyVaultProperties.keyUri`
+
+The key vault URI.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -3443,7 +3505,27 @@ The redundancy settings of the vault.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossRegionRestore`](#parameter-redundancysettingscrossregionrestore) | string | Flag to show if Cross Region Restore is enabled on the Vault or not. |
+| [`standardTierStorageRedundancy`](#parameter-redundancysettingsstandardtierstorageredundancy) | string | The storage redundancy setting of a vault. |
+
+### Parameter: `redundancySettings.crossRegionRestore`
+
+Flag to show if Cross Region Restore is enabled on the Vault or not.
+
+- Required: No
+- Type: string
+
+### Parameter: `redundancySettings.standardTierStorageRedundancy`
+
+The storage redundancy setting of a vault.
+
+- Required: No
+- Type: string
 
 ### Parameter: `replicationAlertSettings`
 
@@ -3475,7 +3557,32 @@ The restore settings of the vault.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossSubscriptionRestoreSettings`](#parameter-restoresettingscrosssubscriptionrestoresettings) | object | The restore settings of the vault. |
+
+### Parameter: `restoreSettings.crossSubscriptionRestoreSettings`
+
+The restore settings of the vault.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossSubscriptionRestoreState`](#parameter-restoresettingscrosssubscriptionrestoresettingscrosssubscriptionrestorestate) | string | The restore settings of the vault. |
+
+### Parameter: `restoreSettings.crossSubscriptionRestoreSettings.crossSubscriptionRestoreState`
+
+The restore settings of the vault.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 
