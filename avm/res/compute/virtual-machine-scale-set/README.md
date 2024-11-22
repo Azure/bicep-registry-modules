@@ -362,6 +362,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       enabled: true
     }
     extensionMonitoringAgentConfig: {
+      autoUpgradeMinorVersion: true
       enabled: true
     }
     extensionNetworkWatcherAgentConfig: {
@@ -572,6 +573,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "extensionMonitoringAgentConfig": {
       "value": {
+        "autoUpgradeMinorVersion": true,
         "enabled": true
       }
     },
@@ -768,6 +770,7 @@ param extensionDependencyAgentConfig = {
   enabled: true
 }
 param extensionMonitoringAgentConfig = {
+  autoUpgradeMinorVersion: true
   enabled: true
 }
 param extensionNetworkWatcherAgentConfig = {
@@ -893,6 +896,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     disablePasswordAuthentication: true
     extensionMonitoringAgentConfig: {
+      autoUpgradeMinorVersion: true
       enabled: true
     }
     location: '<location>'
@@ -995,6 +999,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "extensionMonitoringAgentConfig": {
       "value": {
+        "autoUpgradeMinorVersion": true,
         "enabled": true
       }
     },
@@ -1079,6 +1084,7 @@ param dataDisks = [
 ]
 param disablePasswordAuthentication = true
 param extensionMonitoringAgentConfig = {
+  autoUpgradeMinorVersion: true
   enabled: true
 }
 param location = '<location>'
@@ -1400,6 +1406,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     extensionMonitoringAgentConfig: {
+      autoUpgradeMinorVersion: true
       enabled: true
     }
     extensionNetworkWatcherAgentConfig: {
@@ -1604,6 +1611,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "extensionMonitoringAgentConfig": {
       "value": {
+        "autoUpgradeMinorVersion": true,
         "enabled": true
       }
     },
@@ -1794,6 +1802,7 @@ param extensionHealthConfig = {
   }
 }
 param extensionMonitoringAgentConfig = {
+  autoUpgradeMinorVersion: true
   enabled: true
 }
 param extensionNetworkWatcherAgentConfig = {
