@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "178765084464759811"
+      "version": "0.30.23.60470",
+      "templateHash": "13500053223041210958"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -926,6 +926,13 @@
         "description": "Optional. Specifies the SSH RSA public key string for the Linux nodes."
       }
     },
+    "enableAad": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable Azure Active Directory integration."
+      }
+    },
     "aksServicePrincipalProfile": {
       "type": "object",
       "nullable": true,
@@ -1678,7 +1685,10 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
+      "dependsOn": [
+        "cMKKeyVault"
+      ]
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1803,15 +1813,7 @@
           }
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "aadProfile": {
-          "clientAppID": "[parameters('aadProfileClientAppID')]",
-          "serverAppID": "[parameters('aadProfileServerAppID')]",
-          "serverAppSecret": "[parameters('aadProfileServerAppSecret')]",
-          "managed": "[parameters('aadProfileManaged')]",
-          "enableAzureRBAC": "[parameters('aadProfileEnableAzureRBAC')]",
-          "adminGroupObjectIDs": "[parameters('aadProfileAdminGroupObjectIDs')]",
-          "tenantID": "[parameters('aadProfileTenantId')]"
-        },
+        "aadProfile": "[if(parameters('enableAad'), createObject('clientAppID', parameters('aadProfileClientAppID'), 'serverAppID', parameters('aadProfileServerAppID'), 'serverAppSecret', parameters('aadProfileServerAppSecret'), 'managed', parameters('aadProfileManaged'), 'enableAzureRBAC', parameters('aadProfileEnableAzureRBAC'), 'adminGroupObjectIDs', parameters('aadProfileAdminGroupObjectIDs'), 'tenantID', parameters('aadProfileTenantId')), null())]",
         "autoScalerProfile": {
           "balance-similar-node-groups": "[toLower(string(parameters('autoScalerProfileBalanceSimilarNodeGroups')))]",
           "expander": "[parameters('autoScalerProfileExpander')]",
@@ -2005,8 +2007,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "3191846535289543816"
+              "version": "0.30.23.60470",
+              "templateHash": "2505380725266419010"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -2202,8 +2204,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "13504241837980660061"
+              "version": "0.30.23.60470",
+              "templateHash": "13856766172443517827"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -2552,7 +2554,10 @@
                 "vmSize": "[parameters('vmSize')]",
                 "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
                 "workloadRuntime": "[parameters('workloadRuntime')]"
-              }
+              },
+              "dependsOn": [
+                "managedCluster"
+              ]
             }
           },
           "outputs": {

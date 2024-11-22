@@ -2684,6 +2684,7 @@ param tags = {
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`dnsZoneResourceId`](#parameter-dnszoneresourceid) | string | Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
+| [`enableAad`](#parameter-enableaad) | bool | Enable Azure Active Directory integration. |
 | [`enableAzureDefender`](#parameter-enableazuredefender) | bool | Whether to enable Azure Defender. |
 | [`enableAzureMonitorProfileMetrics`](#parameter-enableazuremonitorprofilemetrics) | bool | Whether the metric state of the kubenetes cluster is enabled. |
 | [`enableContainerInsights`](#parameter-enablecontainerinsights) | bool | Indicates if Azure Monitor Container Insights Logs Addon is enabled. |
@@ -4062,6 +4063,14 @@ Specifies the resource ID of connected DNS zone. It will be ignored if `webAppli
 
 - Required: No
 - Type: string
+
+### Parameter: `enableAad`
+
+Enable Azure Active Directory integration.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableAzureDefender`
 

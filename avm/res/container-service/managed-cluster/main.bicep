@@ -101,6 +101,9 @@ param adminUsername string = 'azureuser'
 @description('Optional. Specifies the SSH RSA public key string for the Linux nodes.')
 param sshPublicKey string?
 
+@description('Optional. Enable Azure Active Directory integration.')
+param enableAad bool = false
+
 @description('Conditional. Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster.')
 param aksServicePrincipalProfile object?
 
@@ -739,7 +742,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     publicNetworkAccess: publicNetworkAccess
-    aadProfile: {
+    aadProfile: enableAad ? {
       clientAppID: aadProfileClientAppID
       serverAppID: aadProfileServerAppID
       serverAppSecret: aadProfileServerAppSecret
@@ -747,7 +750,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       enableAzureRBAC: aadProfileEnableAzureRBAC
       adminGroupObjectIDs: aadProfileAdminGroupObjectIDs
       tenantID: aadProfileTenantId
-    }
+    } : null
     autoScalerProfile: {
       'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
       expander: autoScalerProfileExpander
