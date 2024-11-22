@@ -66,6 +66,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
     disableLocalAccounts: true
+    enableAad: true
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
     kedaAddon: true
@@ -140,6 +141,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": "NodeImage"
     },
     "disableLocalAccounts": {
+      "value": true
+    },
+    "enableAad": {
       "value": true
     },
     "enableKeyvaultSecretsProvider": {
@@ -236,6 +240,7 @@ param primaryAgentPoolProfiles = [
 // Non-required parameters
 param autoNodeOsUpgradeProfileUpgradeChannel = 'NodeImage'
 param disableLocalAccounts = true
+param enableAad = true
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
 param kedaAddon = true
@@ -385,6 +390,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+    enableAad: true
     enableAzureDefender: true
     enableAzureMonitorProfileMetrics: true
     enableKeyvaultSecretsProvider: true
@@ -653,6 +659,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "diskEncryptionSetResourceId": {
       "value": "<diskEncryptionSetResourceId>"
+    },
+    "enableAad": {
+      "value": true
     },
     "enableAzureDefender": {
       "value": true
@@ -953,6 +962,7 @@ param diagnosticSettings = [
   }
 ]
 param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param enableAad = true
 param enableAzureDefender = true
 param enableAzureMonitorProfileMetrics = true
 param enableKeyvaultSecretsProvider = true
@@ -1127,6 +1137,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    enableAad: true
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -1162,6 +1173,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "enableAad": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -1195,6 +1209,7 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param enableAad = true
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
@@ -1228,6 +1243,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    enableAad: true
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
     istioServiceMeshCertificateAuthority: {
@@ -1277,6 +1293,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "enableAad": {
+      "value": true
+    },
     "enableKeyvaultSecretsProvider": {
       "value": true
     },
@@ -1336,6 +1355,7 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param enableAad = true
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
 param istioServiceMeshCertificateAuthority = {
@@ -1452,6 +1472,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enableAad: true
     location: '<location>'
     managedIdentities: {
       userAssignedResourcesIds: [
@@ -1586,6 +1607,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "enableAad": {
+      "value": true
     },
     "location": {
       "value": "<location>"
@@ -1722,6 +1746,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param enableAad = true
 param location = '<location>'
 param managedIdentities = {
   userAssignedResourcesIds: [
@@ -1840,6 +1865,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     dnsServiceIP: '10.10.200.10'
+    enableAad: true
     enablePrivateCluster: true
     location: '<location>'
     managedIdentities: {
@@ -1943,6 +1969,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "dnsServiceIP": {
       "value": "10.10.200.10"
+    },
+    "enableAad": {
+      "value": true
     },
     "enablePrivateCluster": {
       "value": true
@@ -2052,6 +2081,7 @@ param agentPools = [
   }
 ]
 param dnsServiceIP = '10.10.200.10'
+param enableAad = true
 param enablePrivateCluster = true
 param location = '<location>'
 param managedIdentities = {
@@ -2183,6 +2213,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     disableLocalAccounts: true
     dnsServiceIP: '10.10.200.10'
+    enableAad: true
     enableAzureDefender: true
     enablePrivateCluster: true
     location: '<location>'
@@ -2368,6 +2399,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "dnsServiceIP": {
       "value": "10.10.200.10"
+    },
+    "enableAad": {
+      "value": true
     },
     "enableAzureDefender": {
       "value": true
@@ -2563,6 +2597,7 @@ param diagnosticSettings = [
 ]
 param disableLocalAccounts = true
 param dnsServiceIP = '10.10.200.10'
+param enableAad = true
 param enableAzureDefender = true
 param enablePrivateCluster = true
 param location = '<location>'

@@ -220,6 +220,7 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      enableAad: true
     }
     dependsOn: [
       nestedDependencies

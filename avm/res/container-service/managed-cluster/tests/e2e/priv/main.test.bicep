@@ -55,6 +55,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       enablePrivateCluster: true
+      enableAad: true
       primaryAgentPoolProfiles: [
         {
           availabilityZones: [

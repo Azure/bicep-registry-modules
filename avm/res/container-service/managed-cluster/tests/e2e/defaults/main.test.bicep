@@ -50,6 +50,7 @@ module testDeployment '../../../main.bicep' = [
           mode: 'System'
         }
       ]
+      enableAad: true
     }
   }
 ]
