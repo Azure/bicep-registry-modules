@@ -18,14 +18,17 @@ param enableTelemetry bool = true
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
-@description('Optional. The managed identity definition for this resource. Only one type of, and up to one managed identity is supported.')
-param managedIdentities managedIdentitiesType
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityAllType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
 param tags object?
@@ -159,16 +162,7 @@ output systemAssignedMIPrincipalId string = dataCollectionRuleProperties.kind ==
 //   Definitions   //
 // =============== //
 
-import { roleAssignmentType, lockType } from 'modules/nested_conditionalScope.bicep'
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
-  userAssignedResourceIds: string[]?
-}?
-
+@export()
 @discriminator('kind')
 type dataCollectionRulePropertiesType =
   | linuxDcrPropertiesType
