@@ -37,6 +37,8 @@ spec:
       - Azure.Defender.Storage
       - Azure.Firewall.Mode
       - Azure.Firewall.PolicyMode
+      - Azure.Redis.MinTLS
+      - Azure.Redis.NonSslPort
       - Azure.Storage.DefenderCloud
       - Azure.Storage.Defender.MalwareScan
       - Azure.Storage.SecureTransfer
