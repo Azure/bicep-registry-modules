@@ -68,9 +68,6 @@ param geoRedundantBackup string = 'Enabled'
 @description('Optional. The mode to create a new MySQL server.')
 param createMode string = 'Default'
 
-// @description('Category. Optional. The managed identity definition for this resource. Required if \'customerManagedKey\' is not empty.')
-// param managedIdentities managedIdentitiesType
-
 @description('Optional. The managed identity definition for this resource.')
 param userAssignedIdentities object = {}
 
