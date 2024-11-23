@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleserv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dfpsfse'
+param serviceShort string = 'dfpfmax'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
