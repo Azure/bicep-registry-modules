@@ -56,8 +56,11 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: 'mysql${namePrefix}${serviceShort}001'
       location: enforcedLocation
+      userAssignedIdentities: {
+        '${nestedDependencies.outputs.managedIdentityResourceId}': {}
+      }
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       skuName: 'Standard_D2ds_v4'
@@ -75,11 +78,6 @@ module testDeployment '../../../main.bicep' = [
       ]
       highAvailability: 'SameZone'
       storageAutoGrow: 'Enabled'
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
       administrators: [
         {
           identityResourceId: nestedDependencies.outputs.managedIdentityResourceId

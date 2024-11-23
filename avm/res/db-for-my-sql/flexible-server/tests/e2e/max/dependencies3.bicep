@@ -31,23 +31,25 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-01-01' = {
         vnetAddressPrefix
       ]
     }
-  }
-
-  resource subnet 'subnets@2024-01-01' = {
-    name: subnetName
-    properties: {
-      addressPrefix: mySqlSubnetPrefix
-      delegations: [
-        {
-          name: 'dlg-Microsoft.DBforMySQL-flexibleServers'
-          properties: {
-            serviceName: 'Microsoft.DBforMySQL/flexibleServers'
+    subnets: [
+      {
+        name: subnetName
+        properties: {
+          addressPrefix: mySqlSubnetPrefix
+          networkSecurityGroup: {
+            id: nsg.id
           }
+          delegations: [
+            {
+              name: 'mySQLDelegation'
+              properties: {
+                serviceName: 'Microsoft.DBforMySQL/flexibleServers'
+              }
+            }
+          ]
         }
-      ]
-      privateEndpointNetworkPolicies: 'Enabled'
-      privateLinkServiceNetworkPolicies: 'Enabled'
-    }
+      }
+    ]
   }
 }
 
@@ -66,6 +68,41 @@ resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06
     virtualNetwork: {
       id: vnet.id
     }
+  }
+}
+
+resource nsg 'Microsoft.Network/networkSecurityGroups@2024-01-01' = {
+  name: '${virtualNetworkName}-nsg'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowMySQL'
+        properties: {
+          priority: 1000
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '3306'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+        }
+      }
+      {
+        name: 'AllowHealthChecks'
+        properties: {
+          priority: 1001
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
   }
 }
 
