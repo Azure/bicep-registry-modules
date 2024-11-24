@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'mysql${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       userAssignedIdentities: {
         '${nestedDependencies.outputs.managedIdentityResourceId}': {}
