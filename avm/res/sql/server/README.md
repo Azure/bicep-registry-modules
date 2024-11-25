@@ -461,6 +461,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     databases: [
       {
         name: 'myDatabase'
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -499,7 +500,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
-          "name": "myDatabase"
+          "name": "myDatabase",
+          "zoneRedundant": false
         }
       ]
     },
@@ -535,6 +537,7 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
     name: 'myDatabase'
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
@@ -1116,6 +1119,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           tier: 'Basic'
         }
         sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -1161,7 +1165,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "name": "Basic",
             "tier": "Basic"
           },
-          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>"
+          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>",
+          "zoneRedundant": false
         }
       ]
     },
@@ -1204,6 +1209,7 @@ param databases = [
       tier: 'Basic'
     }
     sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
