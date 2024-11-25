@@ -65,6 +65,9 @@ module testDeployment '../../../main.bicep' = [
       vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
       ]
+      vnetRoutesStaticRoutes: {
+        
+      }
       virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
       vpnServerConfigurationResourceId: nestedDependencies.outputs.vpnServerConfigurationResourceId
     }

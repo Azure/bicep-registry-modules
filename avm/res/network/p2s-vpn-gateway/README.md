@@ -348,6 +348,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    vnetRoutesStaticRoutes: {}
     vpnClientAddressPoolAddressPrefixes: [
       '10.0.2.0/24'
     ]
@@ -399,6 +400,9 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
+    "vnetRoutesStaticRoutes": {
+      "value": {}
+    },
     "vpnClientAddressPoolAddressPrefixes": {
       "value": [
         "10.0.2.0/24"
@@ -432,6 +436,7 @@ param tags = {
   Environment: 'Non-Prod'
   Role: 'DeploymentValidation'
 }
+param vnetRoutesStaticRoutes = {}
 param vpnClientAddressPoolAddressPrefixes = [
   '10.0.2.0/24'
 ]
@@ -647,14 +652,43 @@ The routes from the virtual hub to virtual network connections.
 
 The static route configuration for the P2S VPN Gateway.
 
-- Required: Yes
+- Required: No
 - Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-vnetroutesstaticroutesstaticroutesaddressprefixes) | array | The address prefixes of the static route. |
+| [`name`](#parameter-vnetroutesstaticroutesstaticroutesname) | string | The name of the static route. |
+| [`nextHopIpAddress`](#parameter-vnetroutesstaticroutesstaticroutesnexthopipaddress) | string | The next hop IP of the static route. |
+
+### Parameter: `vnetRoutesStaticRoutes.staticRoutes.addressPrefixes`
+
+The address prefixes of the static route.
+
+- Required: No
+- Type: array
+
+### Parameter: `vnetRoutesStaticRoutes.staticRoutes.name`
+
+The name of the static route.
+
+- Required: No
+- Type: string
+
+### Parameter: `vnetRoutesStaticRoutes.staticRoutes.nextHopIpAddress`
+
+The next hop IP of the static route.
+
+- Required: No
+- Type: string
 
 ### Parameter: `vnetRoutesStaticRoutes.staticRoutesConfig`
 
 The static route configuration for the P2S VPN Gateway.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Optional parameters**

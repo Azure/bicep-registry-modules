@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "16702048568126491308"
+      "templateHash": "18201468322189687463"
     },
     "name": "P2S VPN Gateway",
     "description": "This module deploys a Virtual Hub P2S Gateway.",
@@ -43,35 +43,36 @@
       "properties": {
         "staticRoutes": {
           "type": "array",
-          "prefixItems": [
-            {
-              "type": "object",
-              "properties": {
-                "addressPrefixes": {
-                  "type": "array",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The address prefixes of the static route."
-                  }
+          "items": {
+            "type": "object",
+            "properties": {
+              "addressPrefixes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
                 },
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of the static route."
-                  }
-                },
-                "nextHopIpAddress": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The next hop IP of the static route."
-                  }
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The address prefixes of the static route."
+                }
+              },
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the static route."
+                }
+              },
+              "nextHopIpAddress": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The next hop IP of the static route."
                 }
               }
             }
-          ],
-          "items": false,
+          },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The static route configuration for the P2S VPN Gateway."
           }
@@ -87,6 +88,7 @@
               }
             }
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The static route configuration for the P2S VPN Gateway."
           }

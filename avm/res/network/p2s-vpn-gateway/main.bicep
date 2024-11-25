@@ -179,22 +179,20 @@ type lockType = {
 @description('Optional. A Type representing the VNET static routes for the P2S VPN Gateway.')
 type vnetRoutesStaticRoutesType = {
   @description('Optional. The static route configuration for the P2S VPN Gateway.')
-  staticRoutes: [
-    {
-      @description('Optional. The address prefixes of the static route.')
-      addressPrefixes: array?
+  staticRoutes: {
+    @description('Optional. The address prefixes of the static route.')
+    addressPrefixes: string[]?
 
-      @description('Optional. The name of the static route.')
-      name: string?
+    @description('Optional. The name of the static route.')
+    name: string?
 
-      @description('Optional. The next hop IP of the static route.')
-      nextHopIpAddress: string?
-    }
-  ]
+    @description('Optional. The next hop IP of the static route.')
+    nextHopIpAddress: string?
+  }[]?
   @description('Optional. The static route configuration for the P2S VPN Gateway.')
   staticRoutesConfig: {
     @description('Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.')
     vnetLocalRouteOverrideCriteria: string?
-  }
+  }?
 }
 
