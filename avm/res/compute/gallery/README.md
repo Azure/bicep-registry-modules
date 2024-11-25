@@ -1303,7 +1303,7 @@ Images to create.
 | [`excludedDiskTypes`](#parameter-imagesexcludeddisktypes) | array | Describes the disallowed disk types. |
 | [`hyperVGeneration`](#parameter-imageshypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
 | [`isAcceleratedNetworkSupported`](#parameter-imagesisacceleratednetworksupported) | bool | Specify if the image supports accelerated networking. Defaults to true. |
-| [`isHibernateSupported`](#parameter-imagesishibernatesupported) | bool | Specifiy if the image supports hibernation. |
+| [`isHibernateSupported`](#parameter-imagesishibernatesupported) | bool | Specify if the image supports hibernation. |
 | [`memory`](#parameter-imagesmemory) | object | Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16. |
 | [`privacyStatementUri`](#parameter-imagesprivacystatementuri) | string | The privacy statement uri. |
 | [`purchasePlan`](#parameter-imagespurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
@@ -1447,7 +1447,7 @@ Specify if the image supports accelerated networking. Defaults to true.
 
 ### Parameter: `images.isHibernateSupported`
 
-Specifiy if the image supports hibernation.
+Specify if the image supports hibernation.
 
 - Required: No
 - Type: bool
