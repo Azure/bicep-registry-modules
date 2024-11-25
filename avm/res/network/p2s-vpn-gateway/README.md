@@ -44,12 +44,12 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'vscminp2sVpnGw'
+    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     virtualHubResourceId: '<virtualHubResourceId>'
     vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
     // Non-required parameters
     associatedRouteTableName: 'defaultRouteTable'
     location: '<location>'
-    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     vpnClientAddressPoolAddressPrefixes: [
       '10.0.2.0/24'
     ]
@@ -73,6 +73,9 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "name": {
       "value": "vscminp2sVpnGw"
     },
+    "p2SConnectionConfigurationsName": {
+      "value": "p2sConnectionConfig1"
+    },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
     },
@@ -85,9 +88,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "p2SConnectionConfigurationsName": {
-      "value": "p2sConnectionConfig1"
     },
     "vpnClientAddressPoolAddressPrefixes": {
       "value": [
@@ -110,12 +110,12 @@ using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
 param name = 'vscminp2sVpnGw'
+p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param virtualHubResourceId = '<virtualHubResourceId>'
 param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 // Non-required parameters
 param associatedRouteTableName = 'defaultRouteTable'
 param location = '<location>'
-p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param vpnClientAddressPoolAddressPrefixes = [
   '10.0.2.0/24'
 ]
@@ -139,6 +139,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'vscmaxp2sVpnGw'
+    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     virtualHubResourceId: '<virtualHubResourceId>'
     vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
     // Non-required parameters
@@ -152,7 +153,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     isRoutingPreferenceInternet: false
     location: '<location>'
     outboundRouteMapResourceId: '<outboundRouteMapResourceId>'
-    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     propagatedLabelNames: '<propagatedLabelNames>'
     propagatedRouteTableNames: [
       '<hubRouteTableName>'
@@ -196,6 +196,9 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "name": {
       "value": "vscmaxp2sVpnGw"
     },
+    "p2SConnectionConfigurationsName": {
+      "value": "p2sConnectionConfig1"
+    },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
     },
@@ -226,9 +229,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     },
     "outboundRouteMapResourceId": {
       "value": "<outboundRouteMapResourceId>"
-    },
-    "p2SConnectionConfigurationsName": {
-      "value": "p2sConnectionConfig1"
     },
     "propagatedLabelNames": {
       "value": "<propagatedLabelNames>"
@@ -279,6 +279,7 @@ using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
 param name = 'vscmaxp2sVpnGw'
+p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param virtualHubResourceId = '<virtualHubResourceId>'
 param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 // Non-required parameters
@@ -292,7 +293,6 @@ param inboundRouteMapResourceId = '<inboundRouteMapResourceId>'
 param isRoutingPreferenceInternet = false
 param location = '<location>'
 param outboundRouteMapResourceId = '<outboundRouteMapResourceId>'
-p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param propagatedLabelNames = '<propagatedLabelNames>'
 param propagatedRouteTableNames = [
   '<hubRouteTableName>'
@@ -336,6 +336,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'vscwafp2sVpnGw'
+    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     virtualHubResourceId: '<virtualHubResourceId>'
     vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
     // Non-required parameters
@@ -343,7 +344,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     enableInternetSecurity: true
     isRoutingPreferenceInternet: false
     location: '<location>'
-    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     tags: {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
@@ -371,6 +371,9 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "name": {
       "value": "vscwafp2sVpnGw"
     },
+    "p2SConnectionConfigurationsName": {
+      "value": "p2sConnectionConfig1"
+    },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
     },
@@ -389,9 +392,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "p2SConnectionConfigurationsName": {
-      "value": "p2sConnectionConfig1"
     },
     "tags": {
       "value": {
@@ -420,6 +420,7 @@ using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
 param name = 'vscwafp2sVpnGw'
+p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param virtualHubResourceId = '<virtualHubResourceId>'
 param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 // Non-required parameters
@@ -427,7 +428,6 @@ param associatedRouteTableName = 'defaultRouteTable'
 param enableInternetSecurity = true
 param isRoutingPreferenceInternet = false
 param location = '<location>'
-p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param tags = {
   Environment: 'Non-Prod'
   Role: 'DeploymentValidation'
@@ -446,7 +446,6 @@ param vpnClientAddressPoolAddressPrefixes = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`name`](#parameter-name) | string | The name of the P2S VPN Gateway. |
 | [`p2SConnectionConfigurationsName`](#parameter-p2sconnectionconfigurationsname) | string | The name of the P2S Connection Configuration. |
 | [`virtualHubResourceId`](#parameter-virtualhubresourceid) | string | The resource ID of the gateways virtual hub. |
@@ -468,6 +467,7 @@ param vpnClientAddressPoolAddressPrefixes = [
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`inboundRouteMapResourceId`](#parameter-inboundroutemapresourceid) | string | The Resource ID of the inbound route map. |
 | [`isRoutingPreferenceInternet`](#parameter-isroutingpreferenceinternet) | bool | The routing preference for the P2S VPN Gateway, Internet or Microsoft network. |
+| [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`outboundRouteMapResourceId`](#parameter-outboundroutemapresourceid) | string | The Resource ID of the outbound route map. |
 | [`propagatedLabelNames`](#parameter-propagatedlabelnames) | array | The Labels to propagate routes to. |
@@ -475,14 +475,6 @@ param vpnClientAddressPoolAddressPrefixes = [
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vnetRoutesStaticRoutes`](#parameter-vnetroutesstaticroutes) | object | The routes from the virtual hub to virtual network connections. |
 | [`vpnGatewayScaleUnit`](#parameter-vpngatewayscaleunit) | int | The scale unit of the VPN Gateway. |
-
-### Parameter: `location`
-
-Location where all resources will be created.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 
@@ -495,7 +487,7 @@ The name of the P2S VPN Gateway.
 
 The name of the P2S Connection Configuration.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `virtualHubResourceId`
@@ -570,6 +562,14 @@ The routing preference for the P2S VPN Gateway, Internet or Microsoft network.
 
 - Required: No
 - Type: bool
+
+### Parameter: `location`
+
+Location where all resources will be created.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
 

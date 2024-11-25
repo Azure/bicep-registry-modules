@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the P2S VPN Gateway.')
 param name string
 
-@description('Required. Location where all resources will be created.')
+@description('Optional. Location where all resources will be created.')
 param location string = resourceGroup().location
 
 @allowed([
@@ -25,7 +25,7 @@ param customDnsServers array = []
 param isRoutingPreferenceInternet bool?
 
 @description('Required. The name of the P2S Connection Configuration.')
-param p2SConnectionConfigurationsName string?
+param p2SConnectionConfigurationsName string
 
 @description('Optional. Enable/Disable Internet Security; "Propagate Default Route".')
 param enableInternetSecurity bool?
