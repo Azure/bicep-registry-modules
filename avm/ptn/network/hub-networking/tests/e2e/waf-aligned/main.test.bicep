@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
             publicIPAddressObject: {
               name: 'hub1PublicIp'
             }
-            threatIntelMode: 'Alert'
+            threatIntelMode: 'Deny'
             zones: [
               1
               2
