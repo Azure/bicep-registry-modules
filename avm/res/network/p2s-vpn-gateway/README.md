@@ -343,11 +343,11 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     enableInternetSecurity: true
     isRoutingPreferenceInternet: false
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
     vpnClientAddressPoolAddressPrefixes: [
       '10.0.2.0/24'
     ]
@@ -390,14 +390,14 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "p2SConnectionConfigurationsName": {
       "value": "p2sConnectionConfig1"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "Role": "DeploymentValidation"
+      }
     },
     "vpnClientAddressPoolAddressPrefixes": {
       "value": [
@@ -427,11 +427,11 @@ param associatedRouteTableName = 'defaultRouteTable'
 param enableInternetSecurity = true
 param isRoutingPreferenceInternet = false
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
+param tags = {
+  Environment: 'Non-Prod'
+  Role: 'DeploymentValidation'
+}
 param vpnClientAddressPoolAddressPrefixes = [
   '10.0.2.0/24'
 ]
