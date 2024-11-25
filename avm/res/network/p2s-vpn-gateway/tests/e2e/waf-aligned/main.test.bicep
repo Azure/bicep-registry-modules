@@ -54,9 +54,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}p2sVpnGw'
       location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
+      tags: {
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
       p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
       isRoutingPreferenceInternet: false
