@@ -905,7 +905,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           publicIPAddressObject: {
             name: 'hub1PublicIp'
           }
-          threatIntelMode: 'Alert'
+          threatIntelMode: 'Deny'
           zones: [
             1
             2
@@ -1008,7 +1008,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "publicIPAddressObject": {
               "name": "hub1PublicIp"
             },
-            "threatIntelMode": "Alert",
+            "threatIntelMode": "Deny",
             "zones": [
               1,
               2,
@@ -1111,7 +1111,7 @@ param hubVirtualNetworks = {
       publicIPAddressObject: {
         name: 'hub1PublicIp'
       }
-      threatIntelMode: 'Alert'
+      threatIntelMode: 'Deny'
       zones: [
         1
         2

@@ -794,7 +794,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableNonSslPort: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -875,9 +874,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableNonSslPort": {
-      "value": true
     },
     "location": {
       "value": "<location>"
@@ -978,7 +974,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param enableNonSslPort = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
