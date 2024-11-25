@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -67,13 +67,27 @@ module testDeployment '../../../main.bicep' = [
         nestedDependencies.outputs.hubRouteTableName
       ]
       propagatedLabelNames: nestedDependencies.outputs.hubRouteTableLabels
+      vnetRoutesStaticRoutes: {
+        staticRoutes: [
+          {
+            name: 'staticRoute1'
+            addressPrefixes: [
+              '10.1.101.0/24'
+            ]
+            nextHopIpAddress: nestedDependencies.outputs.azureFirewallPrivateIp
+          }
+        ]
+        staticRoutesConfig: {
+          vnetLocalRouteOverrideCriteria: 'Allow'
+        }
+      }
       vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
         '10.0.3.0/24'
       ]
-      virtualHubId: nestedDependencies.outputs.virtualHubResourceId
+      virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
       vpnGatewayScaleUnit: 5
-      vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
+      vpnServerConfigurationResourceId: nestedDependencies.outputs.vpnServerConfigurationResourceId
       p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     }
   }

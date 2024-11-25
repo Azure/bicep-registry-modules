@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 param associatedRouteTableName string?
 
 @description('Optional. The names of the route tables to propagate to the P2S VPN Gateway.')
-param propagatedRouteTableNames array = []
+param propagatedRouteTableNames string[] = []
 
 @description('Optional. The custom DNS servers for the P2S VPN Gateway.')
 param customDnsServers array = []
@@ -37,19 +37,22 @@ param inboundRouteMapResourceId string?
 param outboundRouteMapResourceId string?
 
 @description('Optional. The Labels to propagate routes to.')
-param propagatedLabelNames array = []
+param propagatedLabelNames string[] = []
+
+@description('Optional. The routes from the virtual hub to virtual network connections.')
+param vnetRoutesStaticRoutes vnetRoutesStaticRoutesType?
 
 @description('Required. The address prefixes for the VPN Client Address Pool.')
 param vpnClientAddressPoolAddressPrefixes array = []
 
 @description('Required. The resource ID of the gateways virtual hub.')
-param virtualHubId string
+param virtualHubResourceId string
 
 @description('Optional. The scale unit of the VPN Gateway.')
 param vpnGatewayScaleUnit int?
 
 @description('Required. The resource ID of the VPN Server Configuration.')
-param vpnServerConfigurationId string
+param vpnServerConfigurationResourceId string
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -63,7 +66,7 @@ param enableTelemetry bool = true
 // =============== //
 
 @description('Extract the virtual hub name from the virtual hub ID.')
-var virtualHubName = split(virtualHubId, '/')[8]
+var virtualHubName = split(virtualHubResourceId, '/')[8]
 
 // ============== //
 
@@ -119,6 +122,7 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-01-01' = {
               ]
               labels: propagatedLabelNames
             }
+            vnetRoutes: vnetRoutesStaticRoutes
           }
           vpnClientAddressPool: {
             addressPrefixes: vpnClientAddressPoolAddressPrefixes
@@ -127,11 +131,11 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-01-01' = {
       }
     ]
     virtualHub: {
-      id: virtualHubId
+      id: virtualHubResourceId
     }
     vpnGatewayScaleUnit: vpnGatewayScaleUnit
     vpnServerConfiguration: {
-      id: vpnServerConfigurationId
+      id: vpnServerConfigurationResourceId
     }
   }
 }
@@ -171,7 +175,10 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+@export()
+@description('Optional. A Type representing the VNET static routes for the P2S VPN Gateway.')
 type vnetRoutesStaticRoutesType = {
+  @description('Optional. The static route configuration for the P2S VPN Gateway.')
   staticRoutes: [
     {
       @description('Optional. The address prefixes of the static route.')
@@ -184,8 +191,9 @@ type vnetRoutesStaticRoutesType = {
       nextHopIpAddress: string?
     }
   ]
+  @description('Optional. The static route configuration for the P2S VPN Gateway.')
   staticRoutesConfig: {
-    @description('Optional. ')
+    @description('Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.')
     vnetLocalRouteOverrideCriteria: string?
   }
 }

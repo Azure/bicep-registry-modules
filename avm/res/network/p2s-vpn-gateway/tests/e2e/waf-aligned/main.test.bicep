@@ -58,10 +58,6 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      tags: {
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
       p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
       isRoutingPreferenceInternet: false
       enableInternetSecurity: true
@@ -69,8 +65,8 @@ module testDeployment '../../../main.bicep' = [
       vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
       ]
-      virtualHubId: nestedDependencies.outputs.virtualHubResourceId
-      vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
+      virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
+      vpnServerConfigurationResourceId: nestedDependencies.outputs.vpnServerConfigurationResourceId
     }
   }
 ]

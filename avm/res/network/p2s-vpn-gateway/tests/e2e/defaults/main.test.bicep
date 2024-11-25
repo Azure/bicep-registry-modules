@@ -59,8 +59,8 @@ module testDeployment '../../../main.bicep' = [
         '10.0.2.0/24'
       ]
       associatedRouteTableName: 'defaultRouteTable'
-      virtualHubId: nestedDependencies.outputs.virtualHubResourceId
-      vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
+      virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
+      vpnServerConfigurationResourceId: nestedDependencies.outputs.vpnServerConfigurationResourceId
     }
   }
 ]

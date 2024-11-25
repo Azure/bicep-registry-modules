@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "91504486809439588"
+      "version": "0.31.92.45157",
+      "templateHash": "12497552485897757858"
     },
     "name": "P2S VPN Gateway",
     "description": "This module deploys a Virtual Hub P2S Gateway.",
@@ -71,7 +71,10 @@
               }
             }
           ],
-          "items": false
+          "items": false,
+          "metadata": {
+            "description": "Optional. The static route configuration for the P2S VPN Gateway."
+          }
         },
         "staticRoutesConfig": {
           "type": "object",
@@ -80,11 +83,18 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. "
+                "description": "Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke."
               }
             }
+          },
+          "metadata": {
+            "description": "Optional. The static route configuration for the P2S VPN Gateway."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. A Type representing the VNET static routes for the P2S VPN Gateway."
       }
     }
   },
@@ -115,6 +125,9 @@
     },
     "propagatedRouteTableNames": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The names of the route tables to propagate to the P2S VPN Gateway."
@@ -164,9 +177,19 @@
     },
     "propagatedLabelNames": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The Labels to propagate routes to."
+      }
+    },
+    "vnetRoutesStaticRoutes": {
+      "$ref": "#/definitions/vnetRoutesStaticRoutesType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The routes from the virtual hub to virtual network connections."
       }
     },
     "vpnClientAddressPoolAddressPrefixes": {
@@ -176,7 +199,7 @@
         "description": "Required. The address prefixes for the VPN Client Address Pool."
       }
     },
-    "virtualHubId": {
+    "virtualHubResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The resource ID of the gateways virtual hub."
@@ -189,7 +212,7 @@
         "description": "Optional. The scale unit of the VPN Gateway."
       }
     },
-    "vpnServerConfigurationId": {
+    "vpnServerConfigurationResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The resource ID of the VPN Server Configuration."
@@ -217,7 +240,7 @@
     }
   },
   "variables": {
-    "virtualHubName": "[split(parameters('virtualHubId'), '/')[8]]"
+    "virtualHubName": "[split(parameters('virtualHubResourceId'), '/')[8]]"
   },
   "resources": {
     "avmTelemetry": {
@@ -271,7 +294,8 @@
                     }
                   ],
                   "labels": "[parameters('propagatedLabelNames')]"
-                }
+                },
+                "vnetRoutes": "[parameters('vnetRoutesStaticRoutes')]"
               },
               "vpnClientAddressPool": {
                 "addressPrefixes": "[parameters('vpnClientAddressPoolAddressPrefixes')]"
@@ -280,11 +304,11 @@
           }
         ],
         "virtualHub": {
-          "id": "[parameters('virtualHubId')]"
+          "id": "[parameters('virtualHubResourceId')]"
         },
         "vpnGatewayScaleUnit": "[parameters('vpnGatewayScaleUnit')]",
         "vpnServerConfiguration": {
-          "id": "[parameters('vpnServerConfigurationId')]"
+          "id": "[parameters('vpnServerConfigurationResourceId')]"
         }
       }
     },

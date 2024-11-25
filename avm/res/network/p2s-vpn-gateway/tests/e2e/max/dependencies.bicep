@@ -134,6 +134,9 @@ output azureFirewallResourceId string = azureFirewall.id
 @description('The name of the created hub Azure Firewall')
 output azureFirewallName string = azureFirewall.name
 
+@description('The private IP address of the created hub Azure Firewall')
+output azureFirewallPrivateIp string = azureFirewall.properties.ipConfigurations[0].properties.privateIPAddress
+
 @description('The resource ID of the created hub route table')
 output hubRouteTableName string = hubRouteTable.name
 
