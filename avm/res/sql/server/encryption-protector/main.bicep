@@ -8,10 +8,10 @@ param sqlServerName string
 @description('Required. The name of the server key.')
 param serverKeyName string
 
-@description('Optional. Key auto rotation opt-in flag. Either true or false.')
+@description('Optional. Key auto rotation opt-in flag.')
 param autoRotationEnabled bool = true
 
-@description('Optional. The encryption protector type like \'ServiceManaged\', \'AzureKeyVault\'.')
+@description('Optional. The encryption protector type.')
 @allowed([
   'AzureKeyVault'
   'ServiceManaged'

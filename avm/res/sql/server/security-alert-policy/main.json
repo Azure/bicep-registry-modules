@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "13612886831231279930"
+      "templateHash": "15381579869855736341"
     },
     "name": "Azure SQL Server Security Alert Policies",
     "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -25,8 +25,16 @@
         "type": "string"
       },
       "defaultValue": [],
+      "allowedValues": [
+        "Sql_Injection",
+        "Sql_Injection_Vulnerability",
+        "Access_Anomaly",
+        "Data_Exfiltration",
+        "Unsafe_Action",
+        "Brute_Force"
+      ],
       "metadata": {
-        "description": "Optional. Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force."
+        "description": "Optional. Alerts to disable."
       }
     },
     "emailAccountAdmins": {

@@ -804,10 +804,10 @@ type encryptionProtectorType = {
   @description('Required. The name of the server key.')
   serverKeyName: string
 
-  @description('Optional. The encryption protector type like \'ServiceManaged\', \'AzureKeyVault\'.')
+  @description('Optional. The encryption protector type.')
   serverKeyType: 'ServiceManaged' | 'AzureKeyVault'?
 
-  @description('Optional. Key auto rotation opt-in flag. Either true or false.')
+  @description('Optional. Key auto rotation opt-in flag.')
   autoRotationEnabled: bool?
 }
 
@@ -846,7 +846,7 @@ type keyType = {
   @description('Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
   name: string?
 
-  @description('Optional. The server key type like \'ServiceManaged\', \'AzureKeyVault\'.')
+  @description('Optional. The server key type.')
   serverKeyType: 'ServiceManaged' | 'AzureKeyVault'?
 
   @description('Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: \'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion\'.')
@@ -870,8 +870,14 @@ type securityAlerPolicyType = {
   @description('Required. The name of the Security Alert Policy.')
   name: string
 
-  @description('Optional. Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.')
-  disabledAlerts: string[]?
+  @description('Optional. Alerts to disable.')
+  disabledAlerts: (
+    | 'Sql_Injection'
+    | 'Sql_Injection_Vulnerability'
+    | 'Access_Anomaly'
+    | 'Data_Exfiltration'
+    | 'Unsafe_Action'
+    | 'Brute_Force')[]?
 
   @description('Optional. Specifies that the alert is sent to the account administrators.')
   emailAccountAdmins: bool?

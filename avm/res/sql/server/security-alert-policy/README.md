@@ -32,7 +32,7 @@ This module deploys an Azure SQL Server Security Alert Policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`disabledAlerts`](#parameter-disabledalerts) | array | Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force. |
+| [`disabledAlerts`](#parameter-disabledalerts) | array | Alerts to disable. |
 | [`emailAccountAdmins`](#parameter-emailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
 | [`emailAddresses`](#parameter-emailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
 | [`retentionDays`](#parameter-retentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
@@ -56,11 +56,22 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 ### Parameter: `disabledAlerts`
 
-Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.
+Alerts to disable.
 
 - Required: No
 - Type: array
 - Default: `[]`
+- Allowed:
+  ```Bicep
+  [
+    'Access_Anomaly'
+    'Brute_Force'
+    'Data_Exfiltration'
+    'Sql_Injection'
+    'Sql_Injection_Vulnerability'
+    'Unsafe_Action'
+  ]
+  ```
 
 ### Parameter: `emailAccountAdmins`
 

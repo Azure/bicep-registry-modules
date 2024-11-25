@@ -3025,8 +3025,8 @@ The encryption protection configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoRotationEnabled`](#parameter-encryptionprotectorobjautorotationenabled) | bool | Key auto rotation opt-in flag. Either true or false. |
-| [`serverKeyType`](#parameter-encryptionprotectorobjserverkeytype) | string | The encryption protector type like 'ServiceManaged', 'AzureKeyVault'. |
+| [`autoRotationEnabled`](#parameter-encryptionprotectorobjautorotationenabled) | bool | Key auto rotation opt-in flag. |
+| [`serverKeyType`](#parameter-encryptionprotectorobjserverkeytype) | string | The encryption protector type. |
 
 ### Parameter: `encryptionProtectorObj.serverKeyName`
 
@@ -3037,14 +3037,14 @@ The name of the server key.
 
 ### Parameter: `encryptionProtectorObj.autoRotationEnabled`
 
-Key auto rotation opt-in flag. Either true or false.
+Key auto rotation opt-in flag.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `encryptionProtectorObj.serverKeyType`
 
-The encryption protector type like 'ServiceManaged', 'AzureKeyVault'.
+The encryption protector type.
 
 - Required: No
 - Type: string
@@ -3140,7 +3140,7 @@ The keys to configure.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-keysname) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
-| [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type like 'ServiceManaged', 'AzureKeyVault'. |
+| [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type. |
 | [`uri`](#parameter-keysuri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
 
 ### Parameter: `keys.name`
@@ -3152,7 +3152,7 @@ The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pat
 
 ### Parameter: `keys.serverKeyType`
 
-The server key type like 'ServiceManaged', 'AzureKeyVault'.
+The server key type.
 
 - Required: No
 - Type: string
@@ -3873,7 +3873,7 @@ The security alert policies to create in the server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`disabledAlerts`](#parameter-securityalertpoliciesdisabledalerts) | array | Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force. |
+| [`disabledAlerts`](#parameter-securityalertpoliciesdisabledalerts) | array | Alerts to disable. |
 | [`emailAccountAdmins`](#parameter-securityalertpoliciesemailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
 | [`emailAddresses`](#parameter-securityalertpoliciesemailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
 | [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
@@ -3890,10 +3890,21 @@ The name of the Security Alert Policy.
 
 ### Parameter: `securityAlertPolicies.disabledAlerts`
 
-Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.
+Alerts to disable.
 
 - Required: No
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Access_Anomaly'
+    'Brute_Force'
+    'Data_Exfiltration'
+    'Sql_Injection'
+    'Sql_Injection_Vulnerability'
+    'Unsafe_Action'
+  ]
+  ```
 
 ### Parameter: `securityAlertPolicies.emailAccountAdmins`
 

@@ -8,7 +8,7 @@ param name string?
 @description('Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment.')
 param serverName string
 
-@description('Optional. The server key type like \'ServiceManaged\', \'AzureKeyVault\'.')
+@description('Optional. The server key type.')
 @allowed([
   'AzureKeyVault'
   'ServiceManaged'

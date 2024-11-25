@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "7651488637711444262"
+      "templateHash": "16457177770650062823"
     },
     "name": "Azure SQL Server Keys",
     "description": "This module deploys an Azure SQL Server Key.",
@@ -34,7 +34,7 @@
         "ServiceManaged"
       ],
       "metadata": {
-        "description": "Optional. The server key type like 'ServiceManaged', 'AzureKeyVault'."
+        "description": "Optional. The server key type."
       }
     },
     "uri": {

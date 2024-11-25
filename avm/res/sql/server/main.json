@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "15036093798777454762"
+      "templateHash": "1261593764623972732"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -639,14 +639,14 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The encryption protector type like 'ServiceManaged', 'AzureKeyVault'."
+            "description": "Optional. The encryption protector type."
           }
         },
         "autoRotationEnabled": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Key auto rotation opt-in flag. Either true or false."
+            "description": "Optional. Key auto rotation opt-in flag."
           }
         }
       },
@@ -741,7 +741,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The server key type like 'ServiceManaged', 'AzureKeyVault'."
+            "description": "Optional. The server key type."
           }
         },
         "uri": {
@@ -794,12 +794,17 @@
         },
         "disabledAlerts": {
           "type": "array",
-          "items": {
-            "type": "string"
-          },
+          "allowedValues": [
+            "Access_Anomaly",
+            "Brute_Force",
+            "Data_Exfiltration",
+            "Sql_Injection",
+            "Sql_Injection_Vulnerability",
+            "Unsafe_Action"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force."
+            "description": "Optional. Alerts to disable."
           }
         },
         "emailAccountAdmins": {
@@ -4536,7 +4541,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "13612886831231279930"
+              "templateHash": "15381579869855736341"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -4555,8 +4560,16 @@
                 "type": "string"
               },
               "defaultValue": [],
+              "allowedValues": [
+                "Sql_Injection",
+                "Sql_Injection_Vulnerability",
+                "Access_Anomaly",
+                "Data_Exfiltration",
+                "Unsafe_Action",
+                "Brute_Force"
+              ],
               "metadata": {
-                "description": "Optional. Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force."
+                "description": "Optional. Alerts to disable."
               }
             },
             "emailAccountAdmins": {
@@ -4934,7 +4947,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "7651488637711444262"
+              "templateHash": "16457177770650062823"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -4962,7 +4975,7 @@
                 "ServiceManaged"
               ],
               "metadata": {
-                "description": "Optional. The server key type like 'ServiceManaged', 'AzureKeyVault'."
+                "description": "Optional. The server key type."
               }
             },
             "uri": {
@@ -5057,7 +5070,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "745642603990954512"
+              "templateHash": "3436938593239210559"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector.",
@@ -5080,7 +5093,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. Key auto rotation opt-in flag. Either true or false."
+                "description": "Optional. Key auto rotation opt-in flag."
               }
             },
             "serverKeyType": {
@@ -5091,7 +5104,7 @@
                 "ServiceManaged"
               ],
               "metadata": {
-                "description": "Optional. The encryption protector type like 'ServiceManaged', 'AzureKeyVault'."
+                "description": "Optional. The encryption protector type."
               }
             }
           },

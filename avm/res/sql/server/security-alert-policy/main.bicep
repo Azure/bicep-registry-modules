@@ -5,7 +5,15 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the Security Alert Policy.')
 param name string
 
-@description('Optional. Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.')
+@description('Optional. Alerts to disable.')
+@allowed([
+  'Sql_Injection'
+  'Sql_Injection_Vulnerability'
+  'Access_Anomaly'
+  'Data_Exfiltration'
+  'Unsafe_Action'
+  'Brute_Force'
+])
 param disabledAlerts string[] = []
 
 @description('Optional. Specifies that the alert is sent to the account administrators.')
