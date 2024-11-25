@@ -449,7 +449,6 @@ param vpnClientAddressPoolAddressPrefixes = [
 | [`name`](#parameter-name) | string | The name of the P2S VPN Gateway. |
 | [`p2SConnectionConfigurationsName`](#parameter-p2sconnectionconfigurationsname) | string | The name of the P2S Connection Configuration. |
 | [`virtualHubResourceId`](#parameter-virtualhubresourceid) | string | The resource ID of the gateways virtual hub. |
-| [`vpnClientAddressPoolAddressPrefixes`](#parameter-vpnclientaddresspooladdressprefixes) | array | The address prefixes for the VPN Client Address Pool. |
 | [`vpnServerConfigurationResourceId`](#parameter-vpnserverconfigurationresourceid) | string | The resource ID of the VPN Server Configuration. |
 
 **Conditional parameters**
@@ -474,6 +473,7 @@ param vpnClientAddressPoolAddressPrefixes = [
 | [`propagatedRouteTableNames`](#parameter-propagatedroutetablenames) | array | The names of the route tables to propagate to the P2S VPN Gateway. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vnetRoutesStaticRoutes`](#parameter-vnetroutesstaticroutes) | object | The routes from the virtual hub to virtual network connections. |
+| [`vpnClientAddressPoolAddressPrefixes`](#parameter-vpnclientaddresspooladdressprefixes) | array | The address prefixes for the VPN Client Address Pool. |
 | [`vpnGatewayScaleUnit`](#parameter-vpngatewayscaleunit) | int | The scale unit of the VPN Gateway. |
 
 ### Parameter: `name`
@@ -496,14 +496,6 @@ The resource ID of the gateways virtual hub.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `vpnClientAddressPoolAddressPrefixes`
-
-The address prefixes for the VPN Client Address Pool.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `vpnServerConfigurationResourceId`
 
@@ -677,6 +669,14 @@ Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destinat
 
 - Required: No
 - Type: string
+
+### Parameter: `vpnClientAddressPoolAddressPrefixes`
+
+The address prefixes for the VPN Client Address Pool.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `vpnGatewayScaleUnit`
 

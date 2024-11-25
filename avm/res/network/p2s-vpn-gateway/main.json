@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "7924437135032484571"
+      "templateHash": "16702048568126491308"
     },
     "name": "P2S VPN Gateway",
     "description": "This module deploys a Virtual Hub P2S Gateway.",
@@ -195,7 +195,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Required. The address prefixes for the VPN Client Address Pool."
+        "description": "Optional. The address prefixes for the VPN Client Address Pool."
       }
     },
     "virtualHubResourceId": {

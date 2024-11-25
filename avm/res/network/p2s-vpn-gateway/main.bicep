@@ -42,7 +42,7 @@ param propagatedLabelNames string[] = []
 @description('Optional. The routes from the virtual hub to virtual network connections.')
 param vnetRoutesStaticRoutes vnetRoutesStaticRoutesType?
 
-@description('Required. The address prefixes for the VPN Client Address Pool.')
+@description('Optional. The address prefixes for the VPN Client Address Pool.')
 param vpnClientAddressPoolAddressPrefixes array = []
 
 @description('Required. The resource ID of the gateways virtual hub.')
