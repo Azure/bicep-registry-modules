@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "742058353495491790"
+      "version": "0.31.92.45157",
+      "templateHash": "15634445701421809589"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -66,7 +66,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -108,7 +108,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -149,7 +149,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -172,14 +172,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationDisabled' setting."
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
           }
         },
-        "autoRotationDisabled": {
+        "autoRotationEnabled": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. If configured, instead of auto-rotating to the latest key version, the latest key version at the time of the deployment is used."
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
           }
         },
         "userAssignedIdentityResourceId": {
@@ -193,7 +193,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -315,7 +315,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -345,7 +345,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -373,7 +373,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -515,7 +515,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -590,7 +590,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     }
@@ -967,7 +967,7 @@
       "properties": {
         "anonymousPullEnabled": "[parameters('anonymousPullEnabled')]",
         "adminUserEnabled": "[parameters('acrAdminUserEnabled')]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('status', 'enabled', 'keyVaultProperties', createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationDisabled'), false()), reference('cMKKeyVault::cMKKey').keyUriWithVersion, reference('cMKKeyVault::cMKKey').keyUri)))), null())]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('status', 'enabled', 'keyVaultProperties', createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]",
         "policies": {
           "azureADAuthenticationAsArmPolicy": {
             "status": "[parameters('azureADAuthenticationAsArmPolicyStatus')]"
@@ -1103,8 +1103,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "17963190751439748514"
+              "version": "0.31.92.45157",
+              "templateHash": "2013383059353814727"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
@@ -1230,8 +1230,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "4997004041066797666"
+              "version": "0.31.92.45157",
+              "templateHash": "15634919072704510138"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication.",
@@ -1378,8 +1378,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "7759513970094711275"
+              "version": "0.31.92.45157",
+              "templateHash": "6279725946439884689"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set.",
@@ -1553,8 +1553,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1396902957012921251"
+              "version": "0.31.92.45157",
+              "templateHash": "13627621455718326628"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -1685,8 +1685,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10216591470402784498"
+              "version": "0.31.92.45157",
+              "templateHash": "14778812339643154349"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
