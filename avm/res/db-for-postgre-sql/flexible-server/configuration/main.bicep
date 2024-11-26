@@ -33,5 +33,5 @@ output name string = configuration.name
 @description('The resource ID of the deployed configuration.')
 output resourceId string = configuration.id
 
-@description('The resource group of the deployed configuration.')
+@description('The resource group name of the deployed configuration.')
 output resourceGroupName string = resourceGroup().name

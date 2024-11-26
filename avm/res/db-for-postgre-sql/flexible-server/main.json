@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "4728482451637165190"
+      "templateHash": "12519592368342729889"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -561,7 +561,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The administrator login name for the server. Can only be specified when the PostgreSQL server is being created."
+        "description": "Optional. The administrator login name of the server. Can only be specified when the PostgreSQL server is being created."
       }
     },
     "administratorLoginPassword": {
@@ -701,6 +701,17 @@
       ],
       "metadata": {
         "description": "Optional. The mode to create a new PostgreSQL server."
+      }
+    },
+    "serverThreatProtection": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server."
       }
     },
     "managedIdentities": {
@@ -1055,7 +1066,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "5664871042626134193"
+              "templateHash": "9727749658752104599"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -1127,7 +1138,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group of the deployed database."
+                "description": "The resource group name of the deployed database."
               },
               "value": "[resourceGroup().name]"
             }
@@ -1282,7 +1293,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "11371774526186435661"
+              "templateHash": "8957023200335864723"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -1354,7 +1365,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group of the deployed configuration."
+                "description": "The resource group name of the deployed configuration."
               },
               "value": "[resourceGroup().name]"
             }
@@ -1488,6 +1499,79 @@
       "dependsOn": [
         "flexibleServer",
         "flexibleServer_configurations"
+      ]
+    },
+    "flexibleServer_advancedThreatProtection": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PostgreSQL-Threat', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "serverThreatProtection": {
+            "value": "[parameters('serverThreatProtection')]"
+          },
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.31.92.45157",
+              "templateHash": "17813527102398946933"
+            },
+            "name": "DBforPostgreSQL Flexible Server Administrators",
+            "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "serverThreatProtection": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings",
+              "apiVersion": "2024-08-01",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'PostgreSQL-Threat')]",
+              "properties": {
+                "state": "[parameters('serverThreatProtection')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed administrator."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
       ]
     },
     "server_privateEndpoints": {

@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the PostgreSQL flexible server.')
 param name string
 
-@description('Optional. The administrator login name for the server. Can only be specified when the PostgreSQL server is being created.')
+@description('Optional. The administrator login name of the server. Can only be specified when the PostgreSQL server is being created.')
 param administratorLogin string?
 
 @description('Optional. The administrator login password.')
@@ -97,6 +97,13 @@ param highAvailability string = 'ZoneRedundant'
 ])
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.')
+param serverThreatProtection string = 'Enabled'
 
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Conditional. The managed identity definition for this resource. Required if \'cMKKeyName\' is not empty.')
@@ -380,6 +387,14 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
     ]
   }
 ]
+
+module flexibleServer_advancedThreatProtection 'advancedThreatProtection/main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-PostgreSQL-Threat'
+  params: {
+    serverThreatProtection: serverThreatProtection
+    flexibleServerName: flexibleServer.name
+  }
+}
 
 resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

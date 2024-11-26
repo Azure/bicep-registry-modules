@@ -68,5 +68,5 @@ Value of the configuration.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the deployed configuration. |
-| `resourceGroupName` | string | The resource group of the deployed configuration. |
+| `resourceGroupName` | string | The resource group name of the deployed configuration. |
 | `resourceId` | string | The resource ID of the deployed configuration. |

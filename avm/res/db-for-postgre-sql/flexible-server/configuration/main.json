@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "11371774526186435661"
+      "templateHash": "8957023200335864723"
     },
     "name": "DBforPostgreSQL Flexible Server Configurations",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -78,7 +78,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group of the deployed configuration."
+        "description": "The resource group name of the deployed configuration."
       },
       "value": "[resourceGroup().name]"
     }

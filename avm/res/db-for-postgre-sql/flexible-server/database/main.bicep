@@ -33,5 +33,5 @@ output name string = database.name
 @description('The resource ID of the deployed database.')
 output resourceId string = database.id
 
-@description('The resource group of the deployed database.')
+@description('The resource group name of the deployed database.')
 output resourceGroupName string = resourceGroup().name
