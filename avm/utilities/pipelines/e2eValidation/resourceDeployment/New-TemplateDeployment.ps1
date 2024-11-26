@@ -112,24 +112,24 @@ function Start-MonitorDeploymentForScope {
         'resourcegroup' {
             do {
                 try {
-                    Write-Verbose ('Retriving deployment status for [{0}] on resource group [{1}]' -f $deploymentName, $ResourceGroupName)
+                    Write-Verbose ('Retrieving deployment status for [{0}] on resource group [{1}]' -f $deploymentName, $ResourceGroupName)
                     $deployments = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName -ErrorAction Stop
 
                     If ($?) { $retryCheckDeploymentCount = 0 }
                 } catch {
-                    Write-Verbose ('An error occured while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
+                    Write-Verbose ('An error occurred while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
                     If ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                        Write-Warning "The error 'An error occurred while sending the request' occured while checking the state of the deployment. Retrying in 5 seconds.."
+                        Write-Warning "The error 'An error occurred while sending the request' occurred while checking the state of the deployment. Retrying in 5 seconds.."
                         $retryCheckDeploymentCount++
                         Start-Sleep -Seconds 5
                         $retryCheck = $true
                     } ElseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                        Write-Warning "The error '$($PSitem.Exception.Message)' occured while checking the state of the deployment. Retrying in 5 seconds.."
+                        Write-Warning "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. Retrying in 5 seconds.."
                         $retryCheckDeploymentCount++
                         Start-Sleep -Seconds 5
                         $retryCheck = $true
                     } ElseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
-                        Write-Error "The error '$($PSitem.Exception.Message)' occured while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
+                        Write-Error "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
                     }
                     continue
@@ -148,24 +148,24 @@ function Start-MonitorDeploymentForScope {
         'subscription' {
             do {
                 try {
-                    Write-Verbose ('Retriving deployment status for [{0}] on subscription' -f $deploymentName)
+                    Write-Verbose ('Retrieving deployment status for [{0}] on subscription' -f $deploymentName)
                     $deployments = Get-AzDeploymentOperation -DeploymentName $deploymentName -ErrorAction Stop
 
                     If ($?) { $retryCheckDeploymentCount = 0 }
                 } catch {
-                    Write-Verbose ('An error occured while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
+                    Write-Verbose ('An error occurred while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
                     If ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                        Write-Warning "The error 'An error occurred while sending the request' occured while checking the state of the deployment. Retrying in 5 seconds.."
+                        Write-Warning "The error 'An error occurred while sending the request' occurred while checking the state of the deployment. Retrying in 5 seconds.."
                         $retryCheckDeploymentCount++
                         Start-Sleep -Seconds 5
                         $retryCheck = $true
                     } ElseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                        Write-Warning "The error '$($PSitem.Exception.Message)' occured while checking the state of the deployment. Retrying in 5 seconds.."
+                        Write-Warning "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. Retrying in 5 seconds.."
                         $retryCheckDeploymentCount++
                         Start-Sleep -Seconds 5
                         $retryCheck = $true
                     } ElseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
-                        Write-Error "The error '$($PSitem.Exception.Message)' occured while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
+                        Write-Error "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
                     }
                     continue
