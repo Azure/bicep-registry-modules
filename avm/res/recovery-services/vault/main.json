@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "359024779812375294"
+      "templateHash": "5096948249327950906"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -79,7 +79,7 @@
             }
           },
           "metadata": {
-            "description": "Required. The restore settings of the vault."
+            "description": "Optional. The restore settings of the vault."
           }
         }
       }
@@ -733,7 +733,7 @@
       "$ref": "#/definitions/restoreSettingsType",
       "nullable": true,
       "metadata": {
-        "description": "Required. The restore settings of the vault."
+        "description": "Optional. The restore settings of the vault."
       }
     },
     "customerManagedKey": {

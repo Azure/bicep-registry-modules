@@ -66,7 +66,7 @@ param publicNetworkAccess string = 'Disabled'
 @description('Optional. The redundancy settings of the vault.')
 param redundancySettings redundancySettingsType?
 
-@description('Required. The restore settings of the vault.')
+@description('Optional. The restore settings of the vault.')
 param restoreSettings restoreSettingsType?
 
 import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
@@ -460,7 +460,7 @@ type redundancySettingsType = {
 }
 
 type restoreSettingsType = {
-  @description('Required. The restore settings of the vault.')
+  @description('Optional. The restore settings of the vault.')
   crossSubscriptionRestoreSettings: {
     @description('Optional. The restore settings of the vault.')
     crossSubscriptionRestoreState: string?
