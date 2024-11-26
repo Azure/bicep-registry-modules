@@ -1,6 +1,6 @@
-# DBforPostgreSQL Flexible Server Administrators `[Microsoft.DBforPostgreSQL/flexibleServers]`
+# DBforPostgreSQL Flexible Server Advanced Threat Protection `[Microsoft.DBforPostgreSQL/flexibleServers]`
 
-This module deploys a DBforPostgreSQL Flexible Server Administrator.
+This module deploys a DBforPostgreSQL Advanced Threat Protection.
 
 ## Navigation
 

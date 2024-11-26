@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "12265757919063467182"
+      "templateHash": "11178095343635627862"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -711,7 +711,7 @@
         "Enabled"
       ],
       "metadata": {
-        "description": "Required. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server."
+        "description": "Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server."
       }
     },
     "managedIdentities": {
@@ -1525,10 +1525,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "16083548324029648281"
+              "templateHash": "10546207213686594307"
             },
-            "name": "DBforPostgreSQL Flexible Server Administrators",
-            "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",
+            "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
+            "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {

@@ -1308,7 +1308,6 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the PostgreSQL flexible server. |
-| [`serverThreatProtection`](#parameter-serverthreatprotection) | string | Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server. |
 | [`skuName`](#parameter-skuname) | string | The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3. |
 | [`tier`](#parameter-tier) | string | The tier of the particular SKU. Tier must align with the 'skuName' property. Example, tier cannot be 'Burstable' if skuName is 'Standard_D4s_v3'. |
 
@@ -1345,6 +1344,7 @@ param tags = {
 | [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be linked to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`serverThreatProtection`](#parameter-serverthreatprotection) | string | Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server. |
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantId`](#parameter-tenantid) | string | Tenant id of the server. |
@@ -1356,21 +1356,6 @@ The name of the PostgreSQL flexible server.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `serverThreatProtection`
-
-Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.
-
-- Required: No
-- Type: string
-- Default: `'Enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `skuName`
 
@@ -2341,6 +2326,21 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `serverThreatProtection`
+
+Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
   ]
   ```
 

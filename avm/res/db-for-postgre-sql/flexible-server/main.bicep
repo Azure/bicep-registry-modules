@@ -102,7 +102,7 @@ param createMode string = 'Default'
   'Disabled'
   'Enabled'
 ])
-@description('Required. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.')
+@description('Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.')
 param serverThreatProtection string = 'Enabled'
 
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'

@@ -1,5 +1,5 @@
-metadata name = 'DBforPostgreSQL Flexible Server Administrators'
-metadata description = 'This module deploys a DBforPostgreSQL Flexible Server Administrator.'
+metadata name = 'DBforPostgreSQL Flexible Server Advanced Threat Protection'
+metadata description = 'This module deploys a DBforPostgreSQL Advanced Threat Protection.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.')
