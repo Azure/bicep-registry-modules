@@ -57,7 +57,7 @@ param lock lockType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingFullType[]?
+param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @description('Optional. Array of role assignments to create.')
