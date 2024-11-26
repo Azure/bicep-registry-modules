@@ -141,10 +141,11 @@ function Start-MonitorDeploymentForScope {
                     if ($deployment.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Error "Deployment failed with provisioning state [$($deployment.ProvisioningState -join ',')]. Error Message: [$($deployment.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
-                    }
-                    elseif ($deployment.ProvisioningState -in $healthyDeploymentStates -and $deployment.StatusCode -ne 'OK') {
+                    } elseif ($deployment.ProvisioningState -eq 'Succeeded' -and $deployment.StatusCode -ne 'OK') {
                         Write-Verbose "Deployment [$($deployment.Name)] is still running with provisioning state [$($deployment.ProvisioningState)] and status code [$($deployment.StatusCode)]"
                         $runningDeployment = $true
+                    } else {
+                        Write-Verbose "Deployment [$($deployment.Name)] has a provisioning state [$($deployment.ProvisioningState)] and status code [$($deployment.StatusCode)]"
                     }
                 }
 
@@ -184,10 +185,11 @@ function Start-MonitorDeploymentForScope {
                     if ($deployment.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Error "Deployment failed with provisioning state [$($deployment.ProvisioningState -join ',')]. Error Message: [$($deployment.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
-                    }
-                    elseif ($deployment.ProvisioningState -in $healthyDeploymentStates -and $deployment.StatusCode -ne 'OK') {
+                    } elseif ($deployment.ProvisioningState -eq 'Succeeded' -and $deployment.StatusCode -ne 'OK') {
                         Write-Verbose "Deployment [$($deployment.Name)] is still running with provisioning state [$($deployment.ProvisioningState)] and status code [$($deployment.StatusCode)]"
                         $runningDeployment = $true
+                    } else {
+                        Write-Verbose "Deployment [$($deployment.Name)] has a provisioning state [$($deployment.ProvisioningState)] and status code [$($deployment.StatusCode)]"
                     }
                 }
 
