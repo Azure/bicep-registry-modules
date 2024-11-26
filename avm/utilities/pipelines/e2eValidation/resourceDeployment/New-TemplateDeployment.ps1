@@ -135,14 +135,14 @@ function Start-MonitorDeploymentForScope {
                     continue
                 }
 
-                Write-Verbose ('Deployment statuses for [{0}] and sub-operations on resource group [{1}] are [{2}]' -f $deploymentName, $ResourceGroupName, ($deployments.ProvisioningState -join ','))
-                if ($deployments | ForEach-Object { $_.ProvisioningState } -in $unhealthyDeploymentStates) {
+                Write-Verbose ('Deployment status for [{0}] and sub-operations on subscription are: provisioningStates: [{1}] statusCodes: [{2}]' -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
+                if (($deployments | ForEach-Object { $_.ProvisioningState } -in $unhealthyDeploymentStates) -contains $true) {
                     Write-Error "Deployment failed with provisioning state [$($deployments.ProvisioningState -join ',')]. Error Message: [$($deployments.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                     break
                 }
 
                 Start-Sleep -Seconds 5
-            } while ($retryCheck -or ($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates))
+            } while ($retryCheck -or (($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates) -contains $false))
             break
         }
         'subscription' {
@@ -171,7 +171,7 @@ function Start-MonitorDeploymentForScope {
                     continue
                 }
 
-                Write-Verbose ('Deployment status for [{0}] and sub-operations on subscription are: [{1}]' -f $deploymentName, ($deployments.ProvisioningState -join ','))
+                Write-Verbose ('Deployment status for [{0}] and sub-operations on subscription are: provisioningStates: [{1}] statusCodes: [{2}]' -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
                 foreach ($deployment in $deployments) {
                     if ($deployment.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Error "Deployment failed with provisioning state [$($deployment.ProvisioningState -join ',')]. Error Message: [$($deployment.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
@@ -180,7 +180,7 @@ function Start-MonitorDeploymentForScope {
                 }
 
                 Start-Sleep -Seconds 5
-            } while ($retryCheck -or ($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates))
+            } while ($retryCheck -or (($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates) -Contains $false))
             break
         }
         'managementgroup' {
@@ -382,6 +382,9 @@ function New-TemplateDeploymentInner {
                             Write-Verobse ('Creating deployment [{0}] on resource group [{1}]' -f $DeploymentInputs, $ResourceGroupName)
                             $null = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName -AsJob
 
+                            # wait 15 seconds for the deployment to be created
+                            Start-Sleep -Seconds 15
+
                             Write-Verbose ('Starting monitoring of deployment [{0}] on resource group [{1}]' -f $deploymentName, $ResourceGroupName)
                             Start-MonitorDeploymentForScope @DeploymentInputs -DeploymentScope $deploymentScope -ResourceGroupName $ResourceGroupName
                         }
@@ -394,6 +397,9 @@ function New-TemplateDeploymentInner {
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
                             $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -AsJob
+
+                            # wait 15 seconds for the deployment to be created
+                            Start-Sleep -Seconds 15
 
                             Write-Verbose ('Starting monitoring of deployment [{0}] on subscription [{1}]' -f $deploymentName, $SubscriptionId)
                             Start-MonitorDeploymentForScope -DeploymentName $deploymentName -DeploymentScope $deploymentScope
