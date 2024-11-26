@@ -3558,7 +3558,7 @@ The restore settings of the vault.
 - Required: Yes
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -3568,7 +3568,7 @@ The restore settings of the vault.
 
 The restore settings of the vault.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments`
