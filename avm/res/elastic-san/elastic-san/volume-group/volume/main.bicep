@@ -29,18 +29,6 @@ param sizeGiB int
 @sys.description('Optional. List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.')
 param snapshots volumeSnapshotType[]?
 
-// ============== //
-// Variables      //
-// ============== //
-
-// ============== //
-// Resources      //
-// ============== //
-
-//
-// Add your resources here
-//
-
 resource elasticSan 'Microsoft.ElasticSan/elasticSans@2023-01-01' existing = {
   name: elasticSanName
 
