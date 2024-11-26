@@ -24,6 +24,13 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -31,13 +38,6 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
   }
-}
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
 }
 
 // ============== //
@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = [
         {
           // Test - Private endpoints
           name: 'vol-grp-01'
-          privateEndpoints:[
+          privateEndpoints: [
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               privateDnsZoneGroup: {

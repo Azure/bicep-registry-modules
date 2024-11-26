@@ -28,6 +28,13 @@ param baseTime string = utcNow('u')
 // Dependencies //
 // ============ //
 
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
@@ -52,13 +59,6 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: enforcedLocation
   }
-}
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: enforcedLocation
 }
 
 // ============== //
