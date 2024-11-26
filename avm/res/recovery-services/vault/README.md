@@ -2711,9 +2711,9 @@ param tags = {
 | [`backupConfig`](#parameter-backupconfig) | object | The backup configuration. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | List of all backup policies. |
 | [`backupStorageConfig`](#parameter-backupstorageconfig) | object | The storage configuration for the Azure Recovery Service Vault. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`encryption`](#parameter-encryption) | object | The encryption settings for the vault. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -2760,6 +2760,63 @@ The storage configuration for the Azure Recovery Service Vault.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -2914,76 +2971,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `encryption`
-
-The encryption settings for the vault.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`infrastructureEncryption`](#parameter-encryptioninfrastructureencryption) | string | The encryption settings for the vault. |
-| [`kekIdentity`](#parameter-encryptionkekidentity) | object | The user assigned identity to be used. |
-| [`keyVaultProperties`](#parameter-encryptionkeyvaultproperties) | object | The key vault URI. |
-
-### Parameter: `encryption.infrastructureEncryption`
-
-The encryption settings for the vault.
-
-- Required: No
-- Type: string
-
-### Parameter: `encryption.kekIdentity`
-
-The user assigned identity to be used.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`userAssignedIdentity`](#parameter-encryptionkekidentityuserassignedidentity) | string | The user assigned identity to be used. |
-| [`useSystemAssignedIdentity`](#parameter-encryptionkekidentityusesystemassignedidentity) | bool | Indicate that system assigned identity should be used. |
-
-### Parameter: `encryption.kekIdentity.userAssignedIdentity`
-
-The user assigned identity to be used.
-
-- Required: No
-- Type: string
-
-### Parameter: `encryption.kekIdentity.useSystemAssignedIdentity`
-
-Indicate that system assigned identity should be used.
-
-- Required: No
-- Type: bool
-
-### Parameter: `encryption.keyVaultProperties`
-
-The key vault URI.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyUri`](#parameter-encryptionkeyvaultpropertieskeyuri) | string | The key vault URI. |
-
-### Parameter: `encryption.keyVaultProperties.keyUri`
-
-The key vault URI.
-
-- Required: No
-- Type: string
 
 ### Parameter: `location`
 
@@ -3726,6 +3713,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 

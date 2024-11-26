@@ -6,58 +6,40 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "14800957207343530226"
+      "templateHash": "5096948249327950906"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "encryptionType": {
+    "customerManagedKeyType": {
       "type": "object",
       "properties": {
-        "infrastructureEncryption": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The encryption settings for the vault."
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
           }
         },
-        "kekIdentity": {
-          "type": "object",
-          "properties": {
-            "userAssignedIdentity": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The user assigned identity to be used."
-              }
-            },
-            "useSystemAssignedIdentity": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Indicate that system assigned identity should be used."
-              }
-            }
-          },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Optional. The user assigned identity to be used."
-          }
-        },
-        "keyVaultProperties": {
-          "type": "object",
-          "properties": {
-            "keyUri": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The key vault URI."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Optional. The key vault URI."
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
           }
         }
       },
@@ -80,8 +62,7 @@
             "description": "Optional. The storage redundancy setting of a vault."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "restoreSettingsType": {
       "type": "object",
@@ -101,8 +82,7 @@
             "description": "Optional. The restore settings of the vault."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "managedIdentitiesType": {
       "type": "object",
@@ -564,6 +544,50 @@
         }
       },
       "nullable": true
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     }
   },
   "parameters": {
@@ -698,22 +722,25 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled."
       }
     },
-    "encryption": {
-      "$ref": "#/definitions/encryptionType",
-      "metadata": {
-        "description": "Optional. The encryption settings for the vault."
-      }
-    },
     "redundancySettings": {
       "$ref": "#/definitions/redundancySettingsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The redundancy settings of the vault."
       }
     },
     "restoreSettings": {
       "$ref": "#/definitions/restoreSettingsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The restore settings of the vault."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition."
       }
     }
   },
@@ -742,6 +769,18 @@
     }
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
+      "dependsOn": [
+        "cMKKeyVault"
+      ]
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -762,6 +801,24 @@
         }
       }
     },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+    },
+    "cMKUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+    },
     "rsv": {
       "type": "Microsoft.RecoveryServices/vaults",
       "apiVersion": "2024-04-01",
@@ -777,10 +834,14 @@
         "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), parameters('monitoringSettings'), null())]",
         "securitySettings": "[if(not(empty(parameters('securitySettings'))), parameters('securitySettings'), null())]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "encryption": "[if(not(empty(parameters('encryption'))), parameters('encryption'), null())]",
         "redundancySettings": "[if(not(empty(parameters('redundancySettings'))), parameters('redundancySettings'), null())]",
-        "restoreSettings": "[if(not(empty(parameters('restoreSettings'))), parameters('restoreSettings'), null())]"
-      }
+        "restoreSettings": "[if(not(empty(parameters('restoreSettings'))), parameters('restoreSettings'), null())]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', 'Enabled', 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'keyVaultProperties', createObject('keyUri', reference('cMKKeyVault').vaultUri)), null())]"
+      },
+      "dependsOn": [
+        "cMKKeyVault",
+        "cMKUserAssignedIdentity"
+      ]
     },
     "rsv_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
