@@ -26,18 +26,6 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-// ============== //
-// Variables      //
-// ============== //
-
-// ============== //
-// Resources      //
-// ============== //
-
-//
-// Add your resources here
-//
-
 resource elasticSan 'Microsoft.ElasticSan/elasticSans@2023-01-01' existing = {
   name: elasticSanName
 
