@@ -141,7 +141,7 @@ function Test-VerifyDiagSettings($ResourceId, $DiagName, $LogAnalyticsWorkspaceR
     $diagCat.Type | Should -Be 'microsoft.insights/diagnosticSettingsCategories'
 }
 
-function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnections, $PrivateEndpointCounts, $PrivateEndpoints, $Tags) {
+function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnections, $PrivateEndpointCounts, $PrivateEndpoints, $Tags, $Lock) {
 
     if ( $GroupIds ) {
 
@@ -194,7 +194,9 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
                 $PrivateEndpoints[$i].networkInterfaceResourceIds | Should -Not -BeNullOrEmpty
 
                 Test-VerifyTagsForResource -ResourceId $PrivateEndpoints[$i].resourceId -Tags $Tags
-                Test-VerifyLock -LockName 'myCustomLockName' -ResourceId $PrivateEndpoints[$i].resourceId
+                if ($Lock) {
+                    Test-VerifyLock -LockName 'myCustomLockName' -ResourceId $PrivateEndpoints[$i].resourceId
+                }
             }
         }
 
@@ -246,7 +248,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds, $PrivateEndpointCounts, $PrivateEndpoints, $Tags) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds, $PrivateEndpointCounts, $PrivateEndpoints, $Tags, $Lock) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -341,7 +343,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
         $PrivateEndpoints.Count | Should -Be $PrivateEndpointCounts
     }
 
-    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $vg.PrivateEndpointConnection -PrivateEndpointCounts $PrivateEndpointCounts -PrivateEndpoints $PrivateEndpoints -Tags $Tags
+    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $vg.PrivateEndpointConnection -PrivateEndpointCounts $PrivateEndpointCounts -PrivateEndpoints $PrivateEndpoints -Tags $Tags -Lock $Lock
 
     $vg.ProtocolType | Should -Be 'iSCSI'
     $vg.ResourceGroupName | Should -Be $ResourceGroupName
@@ -349,7 +351,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     $vg.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups'
 }
 
-function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds, $ExpectedRoleAssignments, $LogAnalyticsWorkspaceResourceId) {
+function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds, $ExpectedRoleAssignments, $LogAnalyticsWorkspaceResourceId, $Lock) {
 
     $esan = Get-AzElasticSan -ResourceGroupName $ResourceGroupName -Name $Name
     $esan | Should -Not -BeNullOrEmpty
@@ -374,7 +376,7 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     $esan.Location | Should -Be $Location
     $esan.Name | Should -Be $Name
 
-    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $esan.PrivateEndpointConnection -PrivateEndpointCounts 0 -PrivateEndpoints $null -Tags $null
+    Test-VerifyElasticSANPrivateEndpoints -GroupIds $GroupIds -PrivateEndpointConnections $esan.PrivateEndpointConnection -PrivateEndpointCounts 0 -PrivateEndpoints $null -Tags $null -Lock $Lock
 
     $esan.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $esan.ResourceGroupName | Should -Be $ResourceGroupName

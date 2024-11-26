@@ -898,10 +898,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicNetworkAccess: 'Disabled'
     sku: 'Premium_ZRS'
     tags: {
@@ -981,12 +977,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "publicNetworkAccess": {
       "value": "Disabled"
@@ -1070,10 +1060,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param publicNetworkAccess = 'Disabled'
 param sku = 'Premium_ZRS'
 param tags = {

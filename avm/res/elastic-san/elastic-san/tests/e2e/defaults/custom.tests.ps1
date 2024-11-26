@@ -54,7 +54,8 @@ Describe 'Validate Deployment' {
                 -VolumeGroupCount 0 `
                 -GroupIds $null `
                 -ExpectedRoleAssignments $null `
-                -LogAnalyticsWorkspaceResourceId $null
+                -LogAnalyticsWorkspaceResourceId $null `
+                -Locks $false
         }
     }
 }

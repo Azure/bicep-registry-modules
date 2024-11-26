@@ -55,7 +55,8 @@ Describe 'Validate Deployment' {
                 -VolumeGroupCount $expectedVolumeGroupsCount `
                 -GroupIds $null `
                 -ExpectedRoleAssignments $null `
-                -LogAnalyticsWorkspaceResourceId $null
+                -LogAnalyticsWorkspaceResourceId $null `
+                -Locks $false
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
@@ -100,7 +101,8 @@ Describe 'Validate Deployment' {
                     -GroupIds $null `
                     -PrivateEndpointCounts 0 `
                     -PrivateEndpoints $null `
-                    -Tags $expectedTags
+                    -Tags $expectedTags `
+                    -Locks $false
             }
         }
     }
