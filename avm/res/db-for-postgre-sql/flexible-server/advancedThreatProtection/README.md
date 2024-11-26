@@ -16,24 +16,17 @@ This module deploys a DBforPostgreSQL Flexible Server Administrator.
 
 ## Parameters
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`flexibleServerName`](#parameter-flexibleservername) | string | The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment. |
-
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`serverThreatProtection`](#parameter-serverthreatprotection) | string | Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server. |
 
-### Parameter: `flexibleServerName`
+**Conditional parameters**
 
-The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`flexibleServerName`](#parameter-flexibleservername) | string | The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment. |
 
 ### Parameter: `serverThreatProtection`
 
@@ -48,6 +41,13 @@ Specifies the state of the Threat Protection, whether it is enabled or disabled 
     'Enabled'
   ]
   ```
+
+### Parameter: `flexibleServerName`
+
+The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
 
 ## Outputs
 
