@@ -14,11 +14,11 @@ param collation string?
 @description('Optional. The charset of the database.')
 param charset string?
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
   name: flexibleServerName
 }
 
-resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2022-12-01' = {
+resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2024-08-01' = {
   name: name
   parent: flexibleServer
   properties: {

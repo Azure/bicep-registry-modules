@@ -12,7 +12,7 @@ This module deploys a DBforPostgreSQL Flexible Server Database.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DBforPostgreSQL/flexibleServers/databases` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2022-12-01/flexibleServers/databases) |
+| `Microsoft.DBforPostgreSQL/flexibleServers/databases` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/databases) |
 
 ## Parameters
 

@@ -234,7 +234,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
   name: name
   location: location
   tags: tags

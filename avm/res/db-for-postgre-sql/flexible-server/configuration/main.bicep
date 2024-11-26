@@ -14,11 +14,11 @@ param source string?
 @description('Optional. Value of the configuration.')
 param value string?
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
   name: flexibleServerName
 }
 
-resource configuration 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2022-12-01' = {
+resource configuration 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2024-08-01' = {
   name: name
   parent: flexibleServer
   properties: {

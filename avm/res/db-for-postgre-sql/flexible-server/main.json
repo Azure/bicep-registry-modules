@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "13236500116916645585"
+      "version": "0.31.92.45157",
+      "templateHash": "4728482451637165190"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -856,7 +856,10 @@
       "apiVersion": "2023-07-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
+      "dependsOn": [
+        "cMKKeyVault"
+      ]
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -898,7 +901,7 @@
     },
     "flexibleServer": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2024-08-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -934,7 +937,11 @@
           "storageSizeGB": "[parameters('storageSizeGB')]"
         },
         "version": "[parameters('version')]"
-      }
+      },
+      "dependsOn": [
+        "cMKKeyVault",
+        "cMKUserAssignedIdentity"
+      ]
     },
     "flexibleServer_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1047,8 +1054,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "5925943942284222024"
+              "version": "0.31.92.45157",
+              "templateHash": "5664871042626134193"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -1086,17 +1093,20 @@
             "flexibleServer": {
               "existing": true,
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2022-12-01",
+              "apiVersion": "2024-08-01",
               "name": "[parameters('flexibleServerName')]"
             },
             "database": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
-              "apiVersion": "2022-12-01",
+              "apiVersion": "2024-08-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
                 "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
-              }
+              },
+              "dependsOn": [
+                "flexibleServer"
+              ]
             }
           },
           "outputs": {
@@ -1161,8 +1171,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "9983440066171652627"
+              "version": "0.31.92.45157",
+              "templateHash": "6379250023868980103"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
@@ -1197,7 +1207,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-              "apiVersion": "2022-12-01",
+              "apiVersion": "2024-08-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -1271,8 +1281,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "4744350024962623928"
+              "version": "0.31.92.45157",
+              "templateHash": "11371774526186435661"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -1310,17 +1320,20 @@
             "flexibleServer": {
               "existing": true,
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2022-12-01",
+              "apiVersion": "2024-08-01",
               "name": "[parameters('flexibleServerName')]"
             },
             "configuration": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
-              "apiVersion": "2022-12-01",
+              "apiVersion": "2024-08-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "source": "[if(not(empty(parameters('source'))), parameters('source'), null())]",
                 "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
-              }
+              },
+              "dependsOn": [
+                "flexibleServer"
+              ]
             }
           },
           "outputs": {
@@ -1389,8 +1402,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "16481538210870485841"
+              "version": "0.31.92.45157",
+              "templateHash": "17553479172045066016"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",
@@ -1438,7 +1451,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
-              "apiVersion": "2022-12-01",
+              "apiVersion": "2024-08-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('objectId'))]",
               "properties": {
                 "principalName": "[parameters('principalName')]",
@@ -2272,7 +2285,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('flexibleServer', '2022-12-01', 'full').location]"
+      "value": "[reference('flexibleServer', '2024-08-01', 'full').location]"
     },
     "fqdn": {
       "type": "string",
