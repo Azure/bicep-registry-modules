@@ -63,7 +63,3 @@ output location string = location
 
 @sys.description('The resource group of the deployed Elastic SAN Volume Snapshot.')
 output resourceGroupName string = resourceGroup().name
-
-// ================ //
-// Definitions      //
-// ================ //
