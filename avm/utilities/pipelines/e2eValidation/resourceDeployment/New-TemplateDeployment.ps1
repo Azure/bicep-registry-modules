@@ -135,14 +135,21 @@ function Start-MonitorDeploymentForScope {
                     continue
                 }
 
-                Write-Verbose ('Deployment status for [{0}] and sub-operations on subscription are: provisioningStates: [{1}] statusCodes: [{2}]' -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
-                if (($deployments | ForEach-Object { $_.ProvisioningState } -in $unhealthyDeploymentStates) -contains $true) {
-                    Write-Error "Deployment failed with provisioning state [$($deployments.ProvisioningState -join ',')]. Error Message: [$($deployments.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
-                    break
+                Write-Verbose ("Deployment status for [{0}] and sub-operations on $deploymentScope are: provisioningStates: [{1}] statusCodes: [{2}]" -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
+                $runningDeployment = $false
+                foreach ($deployment in $deployments) {
+                    if ($deployment.ProvisioningState -in $unhealthyDeploymentStates) {
+                        Write-Error "Deployment failed with provisioning state [$($deployment.ProvisioningState -join ',')]. Error Message: [$($deployment.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
+                        break
+                    }
+                    elseif ($deployment.ProvisioningState -in $healthyDeploymentStates -and $deployment.StatusCode -ne 'OK') {
+                        Write-Verbose "Deployment [$($deployment.Name)] is still running with provisioning state [$($deployment.ProvisioningState)] and status code [$($deployment.StatusCode)]"
+                        $runningDeployment = $true
+                    }
                 }
 
                 Start-Sleep -Seconds 5
-            } while ($retryCheck -or (($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates) -contains $false))
+            } while ($retryCheck -or $runningDeployment)
             break
         }
         'subscription' {
@@ -171,16 +178,21 @@ function Start-MonitorDeploymentForScope {
                     continue
                 }
 
-                Write-Verbose ('Deployment status for [{0}] and sub-operations on subscription are: provisioningStates: [{1}] statusCodes: [{2}]' -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
+                Write-Verbose ("Deployment status for [{0}] and sub-operations on $deploymentScope are: provisioningStates: [{1}] statusCodes: [{2}]" -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
+                $runningDeployment = $false
                 foreach ($deployment in $deployments) {
                     if ($deployment.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Error "Deployment failed with provisioning state [$($deployment.ProvisioningState -join ',')]. Error Message: [$($deployment.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
                     }
+                    elseif ($deployment.ProvisioningState -in $healthyDeploymentStates -and $deployment.StatusCode -ne 'OK') {
+                        Write-Verbose "Deployment [$($deployment.Name)] is still running with provisioning state [$($deployment.ProvisioningState)] and status code [$($deployment.StatusCode)]"
+                        $runningDeployment = $true
+                    }
                 }
 
                 Start-Sleep -Seconds 5
-            } while ($retryCheck -or (($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates) -Contains $false))
+            } while ($retryCheck -or $runningDeployment)
             break
         }
         'managementgroup' {
