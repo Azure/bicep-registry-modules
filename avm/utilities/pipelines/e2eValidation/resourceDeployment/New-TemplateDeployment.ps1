@@ -171,7 +171,7 @@ function Start-MonitorDeploymentForScope {
                     continue
                 }
 
-                Write-Verbose ('Deployment status for [{0}] and sub-operations on subscription are: [{1}]' -f $deploymentName, $ResourceGroupName, ($deployments.ProvisioningState -join ','))
+                Write-Verbose ('Deployment status for [{0}] and sub-operations on subscription are: [{1}]' -f $deploymentName, ($deployments.ProvisioningState -join ','))
                 foreach ($deployment in $deployments) {
                     if ($deployment.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Error "Deployment failed with provisioning state [$($deployment.ProvisioningState -join ',')]. Error Message: [$($deployment.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
