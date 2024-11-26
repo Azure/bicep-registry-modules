@@ -65,11 +65,6 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 
-var tags = {
-  Owner: 'Contoso'
-  CostCenter: '123-456-789'
-}
-
 @sys.batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -108,12 +103,18 @@ module testDeployment '../../../main.bicep' = [
                   }
                 ]
               }
-              tags: tags
+              tags: {
+                Owner: 'Contoso'
+                CostCenter: '123-456-789'
+              }
             }
           ]
         }
       ]
-      tags: tags
+      tags: {
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
+      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

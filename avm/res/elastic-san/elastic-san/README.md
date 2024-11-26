@@ -726,7 +726,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Non-required parameters
     availabilityZone: 1
     sku: 'Premium_LRS'
-    tags: '<tags>'
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
     volumeGroups: [
       {
         name: 'vol-grp-01'
@@ -744,7 +747,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
               ]
             }
             subnetResourceId: '<subnetResourceId>'
-            tags: '<tags>'
+            tags: {
+              CostCenter: '123-456-789'
+              Owner: 'Contoso'
+            }
           }
         ]
       }
@@ -777,7 +783,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "Premium_LRS"
     },
     "tags": {
-      "value": "<tags>"
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
     },
     "volumeGroups": {
       "value": [
@@ -797,7 +806,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
                 ]
               },
               "subnetResourceId": "<subnetResourceId>",
-              "tags": "<tags>"
+              "tags": {
+                "CostCenter": "123-456-789",
+                "Owner": "Contoso"
+              }
             }
           ]
         }
@@ -822,7 +834,10 @@ param name = 'esanpe001'
 // Non-required parameters
 param availabilityZone = 1
 param sku = 'Premium_LRS'
-param tags = '<tags>'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
 param volumeGroups = [
   {
     name: 'vol-grp-01'
@@ -840,7 +855,10 @@ param volumeGroups = [
           ]
         }
         subnetResourceId: '<subnetResourceId>'
-        tags: '<tags>'
+        tags: {
+          CostCenter: '123-456-789'
+          Owner: 'Contoso'
+        }
       }
     ]
   }
@@ -886,7 +904,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     }
     publicNetworkAccess: 'Disabled'
     sku: 'Premium_ZRS'
-    tags: '<tags>'
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
     volumeGroups: [
       {
         customerManagedKey: {
@@ -910,7 +931,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
               ]
             }
             subnetResourceId: '<subnetResourceId>'
-            tags: '<tags>'
+            tags: {
+              CostCenter: '123-456-789'
+              Owner: 'Contoso'
+            }
           }
         ]
         volumes: [
@@ -971,7 +995,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "Premium_ZRS"
     },
     "tags": {
-      "value": "<tags>"
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
     },
     "volumeGroups": {
       "value": [
@@ -997,7 +1024,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
                 ]
               },
               "subnetResourceId": "<subnetResourceId>",
-              "tags": "<tags>"
+              "tags": {
+                "CostCenter": "123-456-789",
+                "Owner": "Contoso"
+              }
             }
           ],
           "volumes": [
@@ -1046,7 +1076,10 @@ param lock = {
 }
 param publicNetworkAccess = 'Disabled'
 param sku = 'Premium_ZRS'
-param tags = '<tags>'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
 param volumeGroups = [
   {
     customerManagedKey: {
@@ -1070,7 +1103,10 @@ param volumeGroups = [
           ]
         }
         subnetResourceId: '<subnetResourceId>'
-        tags: '<tags>'
+        tags: {
+          CostCenter: '123-456-789'
+          Owner: 'Contoso'
+        }
       }
     ]
     volumes: [

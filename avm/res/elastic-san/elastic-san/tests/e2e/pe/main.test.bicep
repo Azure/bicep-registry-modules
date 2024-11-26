@@ -44,11 +44,6 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-var tags = {
-  Owner: 'Contoso'
-  CostCenter: '123-456-789'
-}
-
 @sys.batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -59,7 +54,10 @@ module testDeployment '../../../main.bicep' = [
       sku: 'Premium_LRS'
       availabilityZone: 1
       // publicNetworkAccess: 'Disabled' // Private Endpoints should enforce this to be 'Disbled'
-      tags: tags
+      tags: {
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
+      }
       volumeGroups: [
         {
           // Test - Private endpoints
@@ -74,7 +72,10 @@ module testDeployment '../../../main.bicep' = [
                   }
                 ]
               }
-              tags: tags
+              tags: {
+                Owner: 'Contoso'
+                CostCenter: '123-456-789'
+              }
               lock: {
                 kind: 'CanNotDelete'
                 name: 'myCustomLockName'
