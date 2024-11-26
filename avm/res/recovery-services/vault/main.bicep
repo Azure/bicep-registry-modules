@@ -428,7 +428,7 @@ type redundancySettingsType = {
 
   @description('Optional. The storage redundancy setting of a vault.')
   standardTierStorageRedundancy: string?
-}?
+}
 
 type restoreSettingsType = {
   @description('Optional. The restore settings of the vault.')
