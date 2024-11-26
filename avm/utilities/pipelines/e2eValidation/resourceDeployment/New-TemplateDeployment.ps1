@@ -142,7 +142,7 @@ function Start-MonitorDeploymentForScope {
                 }
 
                 Start-Sleep -Seconds 5
-            } while (($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates) -or $retryCheck)
+            } while ($retryCheck -or ($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates))
             break
         }
         'subscription' {
@@ -180,7 +180,7 @@ function Start-MonitorDeploymentForScope {
                 }
 
                 Start-Sleep -Seconds 5
-            } while (($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates) -or $retryCheck)
+            } while ($retryCheck -or ($deployments | ForEach-Object { $_.ProvisioningState } -in $healthyDeploymentStates))
             break
         }
         'managementgroup' {
