@@ -436,7 +436,7 @@ type restoreSettingsType = {
     @description('Optional. The restore settings of the vault.')
     crossSubscriptionRestoreState: string?
   }
-}?
+}
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
