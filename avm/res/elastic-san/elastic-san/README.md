@@ -1092,7 +1092,7 @@ param volumeGroups = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Elastic SAN. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must be between 3 and 24 characters long. |
+| [`name`](#parameter-name) | string | Name of the Elastic SAN. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. |
 
 **Conditional parameters**
 
@@ -1118,7 +1118,7 @@ param volumeGroups = [
 
 ### Parameter: `name`
 
-Name of the Elastic SAN. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must be between 3 and 24 characters long.
+Name of the Elastic SAN. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character.
 
 - Required: Yes
 - Type: string
@@ -1506,7 +1506,7 @@ List of Elastic SAN Volume Groups to be created in the Elastic SAN. An Elastic S
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-volumegroupsname) | string | The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long. |
+| [`name`](#parameter-volumegroupsname) | string | The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. |
 
 **Optional parameters**
 
@@ -1520,7 +1520,7 @@ List of Elastic SAN Volume Groups to be created in the Elastic SAN. An Elastic S
 
 ### Parameter: `volumeGroups.name`
 
-The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long.
+The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character.
 
 - Required: Yes
 - Type: string
@@ -2043,7 +2043,7 @@ List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elast
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-volumegroupsvolumesname) | string | The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long. |
+| [`name`](#parameter-volumegroupsvolumesname) | string | The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. |
 | [`sizeGiB`](#parameter-volumegroupsvolumessizegib) | int | Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges from 1 Gibibyte (GiB) to 64 Tebibyte (TiB), equating to 65536 Gibibytes (GiB). |
 
 **Optional parameters**
@@ -2054,7 +2054,7 @@ List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elast
 
 ### Parameter: `volumeGroups.volumes.name`
 
-The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.
+The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character.
 
 - Required: Yes
 - Type: string
@@ -2077,11 +2077,11 @@ List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-volumegroupsvolumessnapshotsname) | string | The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long. |
+| [`name`](#parameter-volumegroupsvolumessnapshotsname) | string | The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. |
 
 ### Parameter: `volumeGroups.volumes.snapshots.name`
 
-The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.
+The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character.
 
 - Required: Yes
 - Type: string
