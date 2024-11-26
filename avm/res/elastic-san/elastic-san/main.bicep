@@ -225,14 +225,6 @@ resource elasticSan_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@20
           timeGrain: null
         }
       ]
-      /* Not supported by the service currently
-      logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
-          categoryGroup: group.?categoryGroup
-          category: group.?category
-          enabled: group.?enabled ?? true
-        }
-      ]*/
       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
