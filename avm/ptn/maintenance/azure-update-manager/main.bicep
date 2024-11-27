@@ -168,6 +168,7 @@ module maintenanceConfig_rg 'br/public:avm/res/resources/resource-group:0.4.0' =
     name: maintenanceConfigurationsResourceGroupName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 @description('Creates a user-assigned managed identity for policy deployment.')
