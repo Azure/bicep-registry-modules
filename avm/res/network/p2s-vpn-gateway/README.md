@@ -139,7 +139,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'vscmaxp2sVpnGw'
-    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
+    p2SConnectionConfigurationsName: 'p2sConnectionConfig'
     virtualHubResourceId: '<virtualHubResourceId>'
     vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
     // Non-required parameters
@@ -157,20 +157,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     propagatedRouteTableNames: [
       '<hubRouteTableName>'
     ]
-    vnetRoutesStaticRoutes: {
-      staticRoutes: [
-        {
-          addressPrefixes: [
-            '10.1.101.0/24'
-          ]
-          name: 'staticRoute1'
-          nextHopIpAddress: '<nextHopIpAddress>'
-        }
-      ]
-      staticRoutesConfig: {
-        vnetLocalRouteOverrideCriteria: 'Allow'
-      }
-    }
     vpnClientAddressPoolAddressPrefixes: [
       '10.0.2.0/24'
       '10.0.3.0/24'
@@ -197,7 +183,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
       "value": "vscmaxp2sVpnGw"
     },
     "p2SConnectionConfigurationsName": {
-      "value": "p2sConnectionConfig1"
+      "value": "p2sConnectionConfig"
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
@@ -238,22 +224,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
         "<hubRouteTableName>"
       ]
     },
-    "vnetRoutesStaticRoutes": {
-      "value": {
-        "staticRoutes": [
-          {
-            "addressPrefixes": [
-              "10.1.101.0/24"
-            ],
-            "name": "staticRoute1",
-            "nextHopIpAddress": "<nextHopIpAddress>"
-          }
-        ],
-        "staticRoutesConfig": {
-          "vnetLocalRouteOverrideCriteria": "Allow"
-        }
-      }
-    },
     "vpnClientAddressPoolAddressPrefixes": {
       "value": [
         "10.0.2.0/24",
@@ -279,7 +249,7 @@ using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
 param name = 'vscmaxp2sVpnGw'
-p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
+p2SConnectionConfigurationsName: 'p2sConnectionConfig'
 param virtualHubResourceId = '<virtualHubResourceId>'
 param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 // Non-required parameters
@@ -297,20 +267,6 @@ param propagatedLabelNames = '<propagatedLabelNames>'
 param propagatedRouteTableNames = [
   '<hubRouteTableName>'
 ]
-param vnetRoutesStaticRoutes = {
-  staticRoutes: [
-    {
-      addressPrefixes: [
-        '10.1.101.0/24'
-      ]
-      name: 'staticRoute1'
-      nextHopIpAddress: '<nextHopIpAddress>'
-    }
-  ]
-  staticRoutesConfig: {
-    vnetLocalRouteOverrideCriteria: 'Allow'
-  }
-}
 param vpnClientAddressPoolAddressPrefixes = [
   '10.0.2.0/24'
   '10.0.3.0/24'
