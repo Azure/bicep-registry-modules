@@ -62,6 +62,9 @@ resource hubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2024-01-01'
 resource hubRouteMap 'Microsoft.Network/virtualHubs/routeMaps@2024-01-01' = {
   name: 'VPNRouteMap'
   parent: virtualHub
+  dependsOn: [
+    hubRouteTable
+  ]
   properties: {
     rules: [
       {

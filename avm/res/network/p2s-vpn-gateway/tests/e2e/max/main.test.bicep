@@ -21,7 +21,6 @@ param serviceShort string = 'vscmax'
 param namePrefix string = '#_namePrefix_#'
 
 
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -67,20 +66,6 @@ module testDeployment '../../../main.bicep' = [
         nestedDependencies.outputs.hubRouteTableName
       ]
       propagatedLabelNames: nestedDependencies.outputs.hubRouteTableLabels
-      vnetRoutesStaticRoutes: {
-        staticRoutes: [
-          {
-            name: 'staticRoute1'
-            addressPrefixes: [
-              '10.1.101.0/24'
-            ]
-            nextHopIpAddress: nestedDependencies.outputs.azureFirewallPrivateIp
-          }
-        ]
-        staticRoutesConfig: {
-          vnetLocalRouteOverrideCriteria: 'Allow'
-        }
-      }
       vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
         '10.0.3.0/24'
@@ -88,7 +73,7 @@ module testDeployment '../../../main.bicep' = [
       virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
       vpnGatewayScaleUnit: 5
       vpnServerConfigurationResourceId: nestedDependencies.outputs.vpnServerConfigurationResourceId
-      p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
+      p2SConnectionConfigurationsName: 'p2sConnectionConfig'
     }
   }
 ]
