@@ -31,7 +31,7 @@ param poolAllocationMode string = 'BatchService'
 @description('Conditional. The key vault to associate with the Batch account. Required if the \'poolAllocationMode\' is set to \'UserSubscription\' and requires the service principal \'Microsoft Azure Batch\' to be granted contributor permissions on this key vault.')
 param keyVaultReferenceResourceId string?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -46,11 +46,11 @@ param publicNetworkAccess string = ''
 @description('Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled.')
 param networkProfile networkProfileType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -68,15 +68,15 @@ param allowedAuthenticationModes array?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -194,9 +194,9 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
           keyVaultProperties: {
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
               ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
-              : (customerManagedKey.?autoRotationDisabled ?? false)
-                  ? cMKKeyVault::cMKKey.properties.keyUriWithVersion
-                  : cMKKeyVault::cMKKey.properties.keyUri
+              : (customerManagedKey.?autoRotationEnabled ?? true)
+                  ? cMKKeyVault::cMKKey.properties.keyUri
+                  : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           }
         }
       : null

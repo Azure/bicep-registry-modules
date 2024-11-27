@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "4443971065098621397"
+      "version": "0.31.92.45157",
+      "templateHash": "12495366781631453353"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -83,7 +83,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -125,7 +125,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -166,7 +166,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -189,14 +189,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationDisabled' setting."
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
           }
         },
-        "autoRotationDisabled": {
+        "autoRotationEnabled": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. If configured, instead of auto-rotating to the latest key version, the latest key version at the time of the deployment is used."
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
           }
         },
         "userAssignedIdentityResourceId": {
@@ -210,7 +210,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -332,7 +332,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -362,7 +362,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -390,7 +390,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -531,7 +531,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -606,7 +606,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     }
@@ -863,7 +863,7 @@
           "nodeIdentityReference": "[if(not(equals(null(), parameters('storageAccessIdentityResourceId'))), createObject('resourceId', parameters('storageAccessIdentityResourceId')), null())]",
           "storageAccountId": "[parameters('storageAccountId')]"
         },
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationDisabled'), false()), reference('cMKKeyVault::cMKKey').keyUriWithVersion, reference('cMKKeyVault::cMKKey').keyUri)))), null())]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]",
         "keyVaultReference": "[if(equals(parameters('poolAllocationMode'), 'UserSubscription'), createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultReferenceResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultReferenceResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(parameters('keyVaultReferenceResourceId'), 'dummyVault'), '/'))), 'url', reference('batchKeyVaultReference').vaultUri), null())]",
         "networkProfile": "[if(not(empty(coalesce(parameters('networkProfile'), createObject()))), createObject('accountAccess', if(not(empty(variables('accountAccessNetworkProfileIpRules'))), createObject('defaultAction', coalesce(tryGet(tryGet(parameters('networkProfile'), 'accountAccess'), 'defaultAction'), 'Deny'), 'ipRules', variables('accountAccessNetworkProfileIpRules')), null()), 'nodeManagementAccess', if(not(empty(variables('nodeManagementAccessNetworkProfileIpRules'))), createObject('defaultAction', coalesce(tryGet(tryGet(parameters('networkProfile'), 'nodeManagementAccess'), 'defaultAction'), 'Deny'), 'ipRules', variables('nodeManagementAccessNetworkProfileIpRules')), null())), null())]",
         "poolAllocationMode": "[parameters('poolAllocationMode')]",
