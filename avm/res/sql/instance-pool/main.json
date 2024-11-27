@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "6377684067214410829"
+      "version": "0.31.92.45157",
+      "templateHash": "9615596309279122424"
     },
     "name": "SQL Server Instance Pool",
     "description": "This module deploys an Azure SQL Server Instance Pool.",
