@@ -69,6 +69,13 @@ param geoRedundantBackup string = 'Enabled' // Enabled by default for WAF-alignm
 param storageSizeGB int = 32
 
 @allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Flag to enable / disable Storage Auto grow for flexible server.')
+param autoGrow string?
+
+@allowed([
   '11'
   '12'
   '13'
@@ -297,6 +304,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
       : null
     storage: {
       storageSizeGB: storageSizeGB
+      autoGrow: autoGrow
     }
     version: version
   }

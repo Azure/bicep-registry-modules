@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "11178095343635627862"
+      "templateHash": "7349108150501797324"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -661,6 +661,17 @@
         "description": "Optional. Max storage allowed for a server."
       }
     },
+    "autoGrow": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Flag to enable / disable Storage Auto grow for flexible server."
+      }
+    },
     "version": {
       "type": "string",
       "defaultValue": "16",
@@ -945,7 +956,8 @@
         "pointInTimeUTC": "[if(equals(parameters('createMode'), 'PointInTimeRestore'), parameters('pointInTimeUTC'), null())]",
         "sourceServerResourceId": "[if(or(equals(parameters('createMode'), 'PointInTimeRestore'), equals(parameters('createMode'), 'Replica')), parameters('sourceServerResourceId'), null())]",
         "storage": {
-          "storageSizeGB": "[parameters('storageSizeGB')]"
+          "storageSizeGB": "[parameters('storageSizeGB')]",
+          "autoGrow": "[parameters('autoGrow')]"
         },
         "version": "[parameters('version')]"
       },

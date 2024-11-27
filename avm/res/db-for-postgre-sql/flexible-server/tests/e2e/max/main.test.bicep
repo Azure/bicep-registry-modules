@@ -77,6 +77,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       serverThreatProtection: 'Enabled'
+      autoGrow: 'Enabled'
     }
   }
 ]

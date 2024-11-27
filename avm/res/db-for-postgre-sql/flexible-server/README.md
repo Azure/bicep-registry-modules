@@ -154,6 +154,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    autoGrow: 'Enabled'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -200,6 +201,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
+    "autoGrow": {
+      "value": "Enabled"
+    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -244,6 +248,7 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param autoGrow = 'Enabled'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -1326,6 +1331,7 @@ param tags = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of the server. Can only be specified when the PostgreSQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
+| [`autoGrow`](#parameter-autogrow) | string | Flag to enable / disable Storage Auto grow for flexible server. |
 | [`availabilityZone`](#parameter-availabilityzone) | string | Availability zone information of the server. Default will have no preference set. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
 | [`configurations`](#parameter-configurations) | array | The configurations to create in the server. |
@@ -1436,6 +1442,20 @@ The Azure AD administrators when AAD authentication enabled.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `autoGrow`
+
+Flag to enable / disable Storage Auto grow for flexible server.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `availabilityZone`
 
