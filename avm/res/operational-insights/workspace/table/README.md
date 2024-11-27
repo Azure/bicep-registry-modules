@@ -77,7 +77,35 @@ Restore parameters.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endRestoreTime`](#parameter-restoredlogsendrestoretime) | string | The timestamp to end the restore by (UTC). |
+| [`sourceTable`](#parameter-restoredlogssourcetable) | string | The table to restore data from. |
+| [`startRestoreTime`](#parameter-restoredlogsstartrestoretime) | string | The timestamp to start the restore from (UTC). |
+
+### Parameter: `restoredLogs.endRestoreTime`
+
+The timestamp to end the restore by (UTC).
+
+- Required: No
+- Type: string
+
+### Parameter: `restoredLogs.sourceTable`
+
+The table to restore data from.
+
+- Required: No
+- Type: string
+
+### Parameter: `restoredLogs.startRestoreTime`
+
+The timestamp to start the restore from (UTC).
+
+- Required: No
+- Type: string
 
 ### Parameter: `retentionInDays`
 
@@ -200,7 +228,120 @@ Table's schema.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`columns`](#parameter-schemacolumns) | array | A list of table custom columns. |
+| [`name`](#parameter-schemaname) | string | The table name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-schemadescription) | string | The table description. |
+| [`displayName`](#parameter-schemadisplayname) | string | The table display name. |
+
+### Parameter: `schema.columns`
+
+A list of table custom columns.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-schemacolumnsname) | string | The column name. |
+| [`type`](#parameter-schemacolumnstype) | string | The column type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataTypeHint`](#parameter-schemacolumnsdatatypehint) | string | The column data type logical hint. |
+| [`description`](#parameter-schemacolumnsdescription) | string | The column description. |
+| [`displayName`](#parameter-schemacolumnsdisplayname) | string | Column display name. |
+
+### Parameter: `schema.columns.name`
+
+The column name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `schema.columns.type`
+
+The column type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'boolean'
+    'dateTime'
+    'dynamic'
+    'guid'
+    'int'
+    'long'
+    'real'
+    'string'
+  ]
+  ```
+
+### Parameter: `schema.columns.dataTypeHint`
+
+The column data type logical hint.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'armPath'
+    'guid'
+    'ip'
+    'uri'
+  ]
+  ```
+
+### Parameter: `schema.columns.description`
+
+The column description.
+
+- Required: No
+- Type: string
+
+### Parameter: `schema.columns.displayName`
+
+Column display name.
+
+- Required: No
+- Type: string
+
+### Parameter: `schema.name`
+
+The table name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `schema.description`
+
+The table description.
+
+- Required: No
+- Type: string
+
+### Parameter: `schema.displayName`
+
+The table display name.
+
+- Required: No
+- Type: string
 
 ### Parameter: `searchResults`
 
@@ -208,7 +349,56 @@ Parameters of the search job that initiated this table.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`query`](#parameter-searchresultsquery) | string | The search job query. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-searchresultsdescription) | string | The search description. |
+| [`endSearchTime`](#parameter-searchresultsendsearchtime) | string | The timestamp to end the search by (UTC). |
+| [`limit`](#parameter-searchresultslimit) | int | Limit the search job to return up to specified number of rows. |
+| [`startSearchTime`](#parameter-searchresultsstartsearchtime) | string | The timestamp to start the search from (UTC). |
+
+### Parameter: `searchResults.query`
+
+The search job query.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `searchResults.description`
+
+The search description.
+
+- Required: No
+- Type: string
+
+### Parameter: `searchResults.endSearchTime`
+
+The timestamp to end the search by (UTC).
+
+- Required: No
+- Type: string
+
+### Parameter: `searchResults.limit`
+
+Limit the search job to return up to specified number of rows.
+
+- Required: No
+- Type: int
+
+### Parameter: `searchResults.startSearchTime`
+
+The timestamp to start the search from (UTC).
+
+- Required: No
+- Type: string
 
 ### Parameter: `totalRetentionInDays`
 
