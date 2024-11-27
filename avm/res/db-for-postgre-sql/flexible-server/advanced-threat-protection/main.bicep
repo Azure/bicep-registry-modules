@@ -17,12 +17,21 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' e
 }
 
 resource flexibleServer_advancedThreatProtection 'Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings@2024-08-01' = {
-  name: 'PostgreSQL-Threat'
+  name: 'PostgreSQL-advancedThreatProtection'
   parent: flexibleServer
   properties: {
     state: serverThreatProtection
   }
 }
+
+@description('The resource id of the advanced threat protection state for the flexible server.')
+output name string = flexibleServer_advancedThreatProtection.name
+
+@description('The resource id of the advanced threat protection state for the flexible server.')
+output resourceId string = flexibleServer_advancedThreatProtection.id
+
+@description('The advanced threat protection state for the flexible server.')
+output advancedTreatProtectionState string = flexibleServer_advancedThreatProtection.properties.state
 
 @description('The resource group of the deployed administrator.')
 output resourceGroupName string = resourceGroup().name
