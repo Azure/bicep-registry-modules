@@ -53,4 +53,7 @@ The name of the parent PostgreSQL flexible server. Required if the template is u
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `advancedTreatProtectionState` | string | The advanced threat protection state for the flexible server. |
+| `name` | string | The resource id of the advanced threat protection state for the flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed administrator. |
+| `resourceId` | string | The resource id of the advanced threat protection state for the flexible server. |
