@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the MySQL flexible server.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -69,11 +69,11 @@ param geoRedundantBackup string = 'Enabled'
 @description('Optional. The mode to create a new MySQL server.')
 param createMode string = 'Default'
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Conditional. The managed identity definition for this resource. Required if \'customerManagedKey\' is not empty.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition to use for the managed service.')
 param customerManagedKey customerManagedKeyType?
 
@@ -159,11 +159,11 @@ param databases array = []
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 

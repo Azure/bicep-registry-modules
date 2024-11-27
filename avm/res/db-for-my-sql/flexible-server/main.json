@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "6324847736643695446"
+      "version": "0.31.92.45157",
+      "templateHash": "17625741196665765886"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -46,7 +46,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -168,7 +168,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -198,7 +198,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -219,7 +219,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -294,7 +294,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     }
@@ -863,8 +863,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10199279763826788730"
+              "version": "0.31.92.45157",
+              "templateHash": "8816099454149448745"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database.",
@@ -971,8 +971,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "13305829010103324120"
+              "version": "0.31.92.45157",
+              "templateHash": "10309431502079210011"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule.",
@@ -1080,8 +1080,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6411863635069242457"
+              "version": "0.31.92.45157",
+              "templateHash": "15901602668303039143"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
