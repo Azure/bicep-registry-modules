@@ -479,7 +479,7 @@ module requireAUMTagPolicyAssignment 'modules/policyAssignments.bicep' = {
 
 // OUTPUTS
 @description('The resource IDs of the maintenance configurations.')
-output maintenanceConfigurationIds array = [
+output maintenanceConfigurationResourceIds array = [
   for i in range(0, length(maintenanceConfigurations)): {
     id: maintenance_configurations[i].outputs.resourceId
   }
