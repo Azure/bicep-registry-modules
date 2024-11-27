@@ -63,11 +63,11 @@ param subnetResourceId string?
 @description('Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup.')
 param volumes array?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -84,7 +84,7 @@ param enableTelemetry bool = true
 ])
 param sku string = 'Standard'
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -158,9 +158,9 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
             keyName: customerManagedKey!.keyName
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
               ? customerManagedKey!.keyVersion
-              : (customerManagedKey.?autoRotationDisabled ?? false)
-                  ? last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-                  : null
+              : (customerManagedKey.?autoRotationEnabled ?? true)
+                  ? null
+                  : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
             vaultBaseUrl: cMKKeyVault.properties.vaultUri
           }
         : null
