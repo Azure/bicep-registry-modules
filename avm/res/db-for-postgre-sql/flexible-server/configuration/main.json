@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "177308783612667517"
+      "version": "0.31.92.45157",
+      "templateHash": "17544917398852278943"
     },
     "name": "DBforPostgreSQL Flexible Server Configurations",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -54,7 +54,10 @@
       "properties": {
         "source": "[parameters('source')]",
         "value": "[parameters('value')]"
-      }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
     }
   },
   "outputs": {

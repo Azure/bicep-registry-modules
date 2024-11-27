@@ -147,7 +147,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsmax001'
+    name: 'dfpfmax001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -183,7 +183,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsmax001"
+      "value": "dfpfmax001"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -233,7 +233,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param name = 'dfpsmax001'
+param name = 'dfpfmax001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -1317,7 +1317,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of a server. Can only be specified when the PostgreSQL server is being created. |
+| [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name for the server. Can only be specified when the PostgreSQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
 | [`availabilityZone`](#parameter-availabilityzone) | string | Availability zone information of the server. Default will have no preference set. |
@@ -1410,7 +1410,7 @@ Required if 'createMode' is set to 'PointInTimeRestore'.
 
 ### Parameter: `administratorLogin`
 
-The administrator login name of a server. Can only be specified when the PostgreSQL server is being created.
+The administrator login name for the server. Can only be specified when the PostgreSQL server is being created.
 
 - Required: No
 - Type: string
@@ -2395,7 +2395,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 
