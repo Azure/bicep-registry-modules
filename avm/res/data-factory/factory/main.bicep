@@ -64,27 +64,27 @@ param gitTenantId string = ''
 @description('Optional. List of Global Parameters for the factory.')
 param globalParameters object = {}
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -218,9 +218,9 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
           keyName: customerManagedKey!.keyName
           keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
             ? customerManagedKey!.keyVersion
-            : (customerManagedKey.?autoRotationDisabled ?? false)
-                ? last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-                : null
+            : (customerManagedKey.?autoRotationEnabled ?? true)
+                ? null
+                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
           vaultBaseUrl: cMKKeyVault.properties.vaultUri
         }
       : null
