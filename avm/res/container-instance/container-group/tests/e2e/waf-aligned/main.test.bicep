@@ -52,10 +52,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       containers: [
         {
           name: '${namePrefix}-az-aci-x-001'
