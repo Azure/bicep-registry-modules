@@ -500,14 +500,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
+    name: 'ciclow001'
+    // Non-required parameters
     ipAddressPorts: [
       {
         port: 443
         protocol: 'Tcp'
       }
     ]
-    name: 'ciclow001'
-    // Non-required parameters
     location: '<location>'
   }
 }
@@ -548,6 +548,10 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
+    "name": {
+      "value": "ciclow001"
+    },
+    // Non-required parameters
     "ipAddressPorts": {
       "value": [
         {
@@ -556,10 +560,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "ciclow001"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -598,14 +598,14 @@ param containers = [
     }
   }
 ]
+param name = 'ciclow001'
+// Non-required parameters
 param ipAddressPorts = [
   {
     port: 443
     protocol: 'Tcp'
   }
 ]
-param name = 'ciclow001'
-// Non-required parameters
 param location = '<location>'
 ```
 
