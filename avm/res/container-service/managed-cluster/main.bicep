@@ -599,6 +599,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       osDiskSizeGB: profile.?osDiskSizeGB
       osDiskType: profile.?osDiskType
       osType: profile.?osType ?? 'Linux'
+      osSKU: profile.?osSku ?? 'AzureLinux'
       #disable-next-line use-resource-id-functions // Not possible to reference as nested
       podSubnetID: profile.?podSubnetResourceId
       #disable-next-line use-resource-id-functions // Not possible to reference as nested
