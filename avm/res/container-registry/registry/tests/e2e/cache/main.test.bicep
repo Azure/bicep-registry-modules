@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     acrName: '${namePrefix}${serviceShort}001'
+    managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
   }
 }
 
