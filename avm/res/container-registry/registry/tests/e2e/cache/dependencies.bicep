@@ -7,9 +7,6 @@ param acrName string
 @description('Required. The name of the Key Vault referenced by the ACR Credential Set.')
 param keyVaultName string
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
-
 @description('Optional. UserName secret used by the ACR Credential Set deployment. The value is a GUID.')
 @secure()
 param userNameSecret string = newGuid()
@@ -17,11 +14,6 @@ param userNameSecret string = newGuid()
 @description('Optional. Password secret used by the ACR Credential Set deployment. The value is a GUID.')
 @secure()
 param passwordSecret string = newGuid()
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
-  location: location
-}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
@@ -51,19 +43,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
 }
 
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedIdentity.id}-KeyVaultSecretUser-RoleAssignment')
-  scope: keyVault
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '4633458b-17de-408a-b874-0445c86b69e6'
-    ) // Key Vault Secrets User
-    principalType: 'ServicePrincipal'
-  }
-}
-
 resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   name: acrName
   location: location
@@ -74,10 +53,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   resource credentialSet 'credentialSets@2023-11-01-preview' = {
     name: 'default'
     identity: {
-      type: 'UserAssigned'
-      userAssignedIdentities: {
-        '${managedIdentity.id}': {}
-      }
+      type: 'SystemAssigned'
     }
     properties: {
       authCredentials: [
@@ -90,9 +66,19 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
       loginServer: 'docker.io'
     }
   }
-  dependsOn: [
-    keyPermissions
-  ]
+}
+
+resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${acr::credentialSet.name}-KeyVaultSecretUser-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: acr::credentialSet.identity.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '4633458b-17de-408a-b874-0445c86b69e6'
+    ) // Key Vault Secrets User
+    principalType: 'ServicePrincipal'
+  }
 }
 
 @description('The username key vault secret URI.')
