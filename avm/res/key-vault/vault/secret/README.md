@@ -7,6 +7,7 @@ This module deploys a Key Vault Secret.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -215,3 +216,11 @@ Resource tags.
 | `resourceId` | string | The resource ID of the secret. |
 | `secretUri` | string | The uri of the secret. |
 | `secretUriWithVersion` | string | The uri with version of the secret. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |

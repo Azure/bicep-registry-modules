@@ -7,6 +7,7 @@ This module deploys a Key Vault Key.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -280,3 +281,11 @@ Resource tags.
 | `name` | string | The name of the key. |
 | `resourceGroupName` | string | The name of the resource group the key was created in. |
 | `resourceId` | string | The resource ID of the key. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
