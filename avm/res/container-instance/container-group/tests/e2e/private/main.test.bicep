@@ -118,7 +118,7 @@ module testDeployment '../../../main.bicep' = [
           port: 8080
         }
       ]
-      subnetId: nestedDependencies.outputs.subnetResourceId
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]
