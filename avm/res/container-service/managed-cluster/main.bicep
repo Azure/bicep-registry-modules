@@ -102,35 +102,13 @@ param adminUsername string = 'azureuser'
 param sshPublicKey string?
 
 @description('Optional. Enable Azure Active Directory integration.')
-param enableAad bool = false
+param aadProfile aadProfileType?
 
 @description('Conditional. Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster.')
 param aksServicePrincipalProfile object?
 
-@description('Optional. The client AAD application ID.')
-param aadProfileClientAppID string?
-
-@description('Optional. The server AAD application ID.')
-param aadProfileServerAppID string?
-
-@description('Optional. The server AAD application secret.')
-#disable-next-line secure-secrets-in-params // Not a secret
-param aadProfileServerAppSecret string?
-
-@description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
-param aadProfileTenantId string = subscription().tenantId
-
-@description('Optional. Specifies the AAD group object IDs that will have admin role of the cluster.')
-param aadProfileAdminGroupObjectIDs string[]?
-
-@description('Optional. Specifies whether to enable managed AAD integration.')
-param aadProfileManaged bool = true
-
 @description('Optional. Whether to enable Kubernetes Role-Based Access Control.')
 param enableRBAC bool = true
-
-@description('Optional. Specifies whether to enable Azure RBAC for Kubernetes authorization.')
-param aadProfileEnableAzureRBAC bool = enableRBAC
 
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
 param disableLocalAccounts bool = true
@@ -742,14 +720,14 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     publicNetworkAccess: publicNetworkAccess
-    aadProfile: enableAad ? {
-      clientAppID: aadProfileClientAppID
-      serverAppID: aadProfileServerAppID
-      serverAppSecret: aadProfileServerAppSecret
-      managed: aadProfileManaged
-      enableAzureRBAC: aadProfileEnableAzureRBAC
-      adminGroupObjectIDs: aadProfileAdminGroupObjectIDs
-      tenantID: aadProfileTenantId
+    aadProfile: !empty(aadProfile) ? {
+      clientAppID: aadProfile.?aadProfileClientAppID
+      serverAppID: aadProfile.?aadProfileServerAppID
+      serverAppSecret: aadProfile.?aadProfileServerAppSecret
+      managed: aadProfile.?aadProfileManaged
+      enableAzureRBAC: aadProfile.?aadProfileEnableAzureRBAC
+      adminGroupObjectIDs: aadProfile.?aadProfileAdminGroupObjectIDs
+      tenantID: aadProfile.?aadProfileTenantId
     } : null
     autoScalerProfile: {
       'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
@@ -1358,4 +1336,27 @@ type istioServiceMeshCertificateAuthorityType = {
 
   @description('Required. Root certificate object name in Azure Key Vault.')
   rootCertObjectName: string
+}?
+
+type aadProfileType = {
+  @description('Optional. The client AAD application ID.')
+  aadProfileClientAppID: string?
+
+  @description('Optional. The server AAD application ID.')
+  aadProfileServerAppID: string?
+
+  @description('Optional. The server AAD application secret.')
+  aadProfileServerAppSecret: string?
+
+  @description('Required. Specifies whether to enable managed AAD integration.')
+  aadProfileManaged: bool
+
+  @description('Required. Specifies whether to enable Azure RBAC for Kubernetes authorization.')
+  aadProfileEnableAzureRBAC: bool
+
+  @description('Optional. Specifies the AAD group object IDs that will have admin role of the cluster.')
+  aadProfileAdminGroupObjectIDs: string[]?
+
+  @description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
+  aadProfileTenantId: string?
 }?

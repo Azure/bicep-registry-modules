@@ -52,7 +52,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      enableAad: true
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
       managedIdentities: {
         systemAssigned: true
       }

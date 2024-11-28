@@ -67,7 +67,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      enableAad: true
       primaryAgentPoolProfiles: [
         {
           availabilityZones: [
@@ -178,7 +177,10 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
     }
     dependsOn: [
       nestedDependencies

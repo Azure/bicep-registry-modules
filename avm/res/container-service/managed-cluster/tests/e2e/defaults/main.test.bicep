@@ -50,7 +50,10 @@ module testDeployment '../../../main.bicep' = [
           mode: 'System'
         }
       ]
-      enableAad: true
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
     }
   }
 ]
