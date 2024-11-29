@@ -117,6 +117,8 @@ module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscrip
   }
 }
 
+// Create additional role assignments at different management group scopes if needed
+
 module policyAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-PolicyAssignment-Sub-Module'
   scope: subscription(subscriptionId)
