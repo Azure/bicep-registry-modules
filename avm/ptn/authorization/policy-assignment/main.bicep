@@ -50,6 +50,9 @@ param enforcementMode string = 'Default'
 @sys.description('Optional. The Target Scope for the Policy. The name of the management group for the policy assignment. If not provided, will use the current scope for deployment.')
 param managementGroupId string = managementGroup().name
 
+@sys.description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
+param additionalManagementGroupsIDsToAssignRbacTo array = []
+
 @sys.description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment.')
 param subscriptionId string = ''
 
@@ -114,6 +117,7 @@ module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscrip
     location: location
     overrides: !empty(overrides) ? overrides : []
     resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : []
+    additionalManagementGroupsIDsToAssignRbacTo: additionalManagementGroupsIDsToAssignRbacTo
   }
 }
 
