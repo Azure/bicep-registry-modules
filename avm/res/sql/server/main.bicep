@@ -43,16 +43,16 @@ param databases databasePropertyType[] = []
 param elasticPools elasticPoolPropertyType[] = []
 
 @description('Optional. The firewall rules to create in the server.')
-param firewallRules array = []
+param firewallRules firewallRuleType[] = []
 
 @description('Optional. The virtual network rules to create in the server.')
-param virtualNetworkRules array = []
+param virtualNetworkRules virtualNetworkRuleType[] = []
 
 @description('Optional. The security alert policies to create in the server.')
-param securityAlertPolicies array = []
+param securityAlertPolicies securityAlerPolicyType[] = []
 
 @description('Optional. The keys to configure.')
-param keys array = []
+param keys keyType[] = []
 
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
 param administrators serverExternalAdministratorType?
@@ -118,10 +118,10 @@ var identity = !empty(managedIdentities)
   : null
 
 @description('Optional. The encryption protection configuration.')
-param encryptionProtectorObj object = {}
+param encryptionProtectorObj encryptionProtectorType?
 
 @description('Optional. The vulnerability assessment configuration.')
-param vulnerabilityAssessmentsObj object = {}
+param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
 
 @description('Optional. The audit settings configuration.')
 param auditSettings auditSettingsType = {} //Use the defaults from the child module
@@ -394,8 +394,8 @@ module server_firewallRules 'firewall-rule/main.bicep' = [
     params: {
       name: firewallRule.name
       serverName: server.name
-      endIpAddress: firewallRule.?endIpAddress ?? '0.0.0.0'
-      startIpAddress: firewallRule.?startIpAddress ?? '0.0.0.0'
+      endIpAddress: firewallRule.?endIpAddress
+      startIpAddress: firewallRule.?startIpAddress
     }
   }
 ]
@@ -404,9 +404,9 @@ module server_virtualNetworkRules 'virtual-network-rule/main.bicep' = [
   for (virtualNetworkRule, index) in virtualNetworkRules: {
     name: '${uniqueString(deployment().name, location)}-Sql-VirtualNetworkRules-${index}'
     params: {
-      name: virtualNetworkRule.name
       serverName: server.name
-      ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint ?? false
+      name: virtualNetworkRule.name
+      ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint
       virtualNetworkSubnetId: virtualNetworkRule.virtualNetworkSubnetId
     }
   }
@@ -418,28 +418,26 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
     params: {
       name: securityAlertPolicy.name
       serverName: server.name
-      disabledAlerts: securityAlertPolicy.?disabledAlerts ?? []
-      emailAccountAdmins: securityAlertPolicy.?emailAccountAdmins ?? false
-      emailAddresses: securityAlertPolicy.?emailAddresses ?? []
-      retentionDays: securityAlertPolicy.?retentionDays ?? 0
-      state: securityAlertPolicy.?state ?? 'Disabled'
-      storageAccountAccessKey: securityAlertPolicy.?storageAccountAccessKey ?? ''
-      storageEndpoint: securityAlertPolicy.?storageEndpoint ?? ''
+      disabledAlerts: securityAlertPolicy.?disabledAlerts
+      emailAccountAdmins: securityAlertPolicy.?emailAccountAdmins
+      emailAddresses: securityAlertPolicy.?emailAddresses
+      retentionDays: securityAlertPolicy.?retentionDays
+      state: securityAlertPolicy.?state
+      storageAccountAccessKey: securityAlertPolicy.?storageAccountAccessKey
+      storageEndpoint: securityAlertPolicy.?storageEndpoint
     }
   }
 ]
 
-module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (!empty(vulnerabilityAssessmentsObj)) {
+module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (vulnerabilityAssessmentsObj != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-VulnAssessm'
   params: {
     serverName: server.name
-    name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: vulnerabilityAssessmentsObj.?recurringScansEmails ?? []
-    recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?recurringScansEmailSubscriptionAdmins ?? false
-    recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled ?? false
-    storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey ?? false
-    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment ?? true
+    name: vulnerabilityAssessmentsObj!.name
+    recurringScans: vulnerabilityAssessmentsObj.?recurringScans
+    storageAccountResourceId: vulnerabilityAssessmentsObj!.storageAccountResourceId
+    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey
+    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment
   }
   dependsOn: [
     server_securityAlertPolicies
@@ -450,21 +448,21 @@ module server_keys 'key/main.bicep' = [
   for (key, index) in keys: {
     name: '${uniqueString(deployment().name, location)}-Sql-Key-${index}'
     params: {
-      name: key.?name
       serverName: server.name
-      serverKeyType: key.?serverKeyType ?? 'ServiceManaged'
-      uri: key.?uri ?? ''
+      name: key.?name
+      serverKeyType: key.?serverKeyType
+      uri: key.?uri
     }
   }
 ]
 
-module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty(encryptionProtectorObj)) {
+module server_encryptionProtector 'encryption-protector/main.bicep' = if (encryptionProtectorObj != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: encryptionProtectorObj.serverKeyName
-    serverKeyType: encryptionProtectorObj.?serverKeyType ?? 'ServiceManaged'
-    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled ?? true
+    serverKeyName: encryptionProtectorObj!.serverKeyName
+    serverKeyType: encryptionProtectorObj.?serverKeyType
+    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled
   }
   dependsOn: [
     server_keys
@@ -557,6 +555,7 @@ output privateEndpoints array = [
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
+import { recurringScansType } from 'vulnerability-assessment/main.bicep'
 
 @export()
 type auditSettingsType = {
@@ -798,4 +797,103 @@ type elasticPoolPropertyType = {
 
   @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
   zoneRedundant: bool?
+}
+
+@export()
+type encryptionProtectorType = {
+  @description('Required. The name of the server key.')
+  serverKeyName: string
+
+  @description('Optional. The encryption protector type.')
+  serverKeyType: 'ServiceManaged' | 'AzureKeyVault'?
+
+  @description('Optional. Key auto rotation opt-in flag.')
+  autoRotationEnabled: bool?
+}
+
+@export()
+type vulnerabilityAssessmentType = {
+  @description('Required. The name of the vulnerability assessment.')
+  name: string
+
+  @description('Optional. The recurring scans settings.')
+  recurringScans: recurringScansType?
+
+  @description('Required. The resource ID of the storage account to store the scan reports.')
+  storageAccountResourceId: string
+
+  @description('Optional. Specifies whether to use the storage account access key to access the storage account.')
+  useStorageAccountAccessKey: bool?
+
+  @description('Optional. Specifies whether to create a role assignment for the storage account.')
+  createStorageRoleAssignment: bool?
+}
+
+@export()
+type firewallRuleType = {
+  @description('Required. The name of the firewall rule.')
+  name: string
+
+  @description('Optional. The start IP address of the firewall rule. Must be IPv4 format. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  startIpAddress: string?
+
+  @description('Optional. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  endIpAddress: string?
+}
+
+@export()
+type keyType = {
+  @description('Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
+  name: string?
+
+  @description('Optional. The server key type.')
+  serverKeyType: 'ServiceManaged' | 'AzureKeyVault'?
+
+  @description('Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: \'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion\'.')
+  uri: string?
+}
+
+@export()
+type virtualNetworkRuleType = {
+  @description('Required. The name of the Server Virtual Network Rule.')
+  name: string
+
+  @description('Required. The resource ID of the virtual network subnet.')
+  virtualNetworkSubnetId: string
+
+  @description('Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.')
+  ignoreMissingVnetServiceEndpoint: bool?
+}
+
+@export()
+type securityAlerPolicyType = {
+  @description('Required. The name of the Security Alert Policy.')
+  name: string
+
+  @description('Optional. Alerts to disable.')
+  disabledAlerts: (
+    | 'Sql_Injection'
+    | 'Sql_Injection_Vulnerability'
+    | 'Access_Anomaly'
+    | 'Data_Exfiltration'
+    | 'Unsafe_Action'
+    | 'Brute_Force')[]?
+
+  @description('Optional. Specifies that the alert is sent to the account administrators.')
+  emailAccountAdmins: bool?
+
+  @description('Optional. Specifies an array of email addresses to which the alert is sent.')
+  emailAddresses: string[]?
+
+  @description('Optional. Specifies the number of days to keep in the Threat Detection audit logs.')
+  retentionDays: int?
+
+  @description('Optional. Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database.')
+  state: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Specifies the identifier key of the Threat Detection audit storage account.')
+  storageAccountAccessKey: string?
+
+  @description('Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.')
+  storageEndpoint: string?
 }
