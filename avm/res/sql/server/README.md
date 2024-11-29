@@ -334,6 +334,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     elasticPools: [
       {
         name: 'ssep-ep-001'
+        zoneRedundant: false
       }
       {
         name: 'ssep-ep-002'
@@ -346,6 +347,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           name: 'GP_Gen5'
           tier: 'GeneralPurpose'
         }
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -379,7 +381,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
-          "name": "ssep-ep-001"
+          "name": "ssep-ep-001",
+          "zoneRedundant": false
         },
         {
           "name": "ssep-ep-002",
@@ -391,7 +394,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "capacity": 4,
             "name": "GP_Gen5",
             "tier": "GeneralPurpose"
-          }
+          },
+          "zoneRedundant": false
         }
       ]
     },
@@ -420,6 +424,7 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 param elasticPools = [
   {
     name: 'ssep-ep-001'
+    zoneRedundant: false
   }
   {
     name: 'ssep-ep-002'
@@ -432,6 +437,7 @@ param elasticPools = [
       name: 'GP_Gen5'
       tier: 'GeneralPurpose'
     }
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
