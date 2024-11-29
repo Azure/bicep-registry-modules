@@ -442,9 +442,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
-    azureFilesIdentityBasedAuthentication: !empty(azureFilesIdentityBasedAuthentication)
-      ? azureFilesIdentityBasedAuthentication
-      : null
+    ...(!empty(azureFilesIdentityBasedAuthentication)
+      ? { azureFilesIdentityBasedAuthentication: azureFilesIdentityBasedAuthentication }
+      : {})
   }
 }
 
