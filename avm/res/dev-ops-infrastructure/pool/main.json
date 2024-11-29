@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "3502193398932835678"
+      "version": "0.31.92.45157",
+      "templateHash": "16890042810141709976"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -57,6 +57,9 @@
             "description": "Optional. The secret management settings of the machines in the pool."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "storageProfileType": {
@@ -77,49 +80,7 @@
         "dataDisks": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "caching": {
-                "type": "string",
-                "allowedValues": [
-                  "None",
-                  "ReadOnly",
-                  "ReadWrite"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/."
-                }
-              },
-              "diskSizeGiB": {
-                "type": "int",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The initial disk size in gigabytes."
-                }
-              },
-              "driveLetter": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The drive letter for the empty data disk. If not specified, it will be the first available letter. Letters A, C, D, and E are not allowed."
-                }
-              },
-              "storageAccountType": {
-                "type": "string",
-                "allowedValues": [
-                  "Premium_LRS",
-                  "Premium_ZRS",
-                  "StandardSSD_LRS",
-                  "StandardSSD_ZRS",
-                  "Standard_LRS"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The storage Account type to be used for the data disk. If omitted, the default is Standard_LRS."
-                }
-              }
-            }
+            "$ref": "#/definitions/dataDiskType"
           },
           "nullable": true,
           "metadata": {
@@ -127,44 +88,47 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "imageType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "aliases": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. List of aliases to reference the image by."
-            }
+      "type": "object",
+      "properties": {
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "buffer": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The percentage of the buffer to be allocated to this image."
-            }
-          },
-          "wellKnownImageName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The image to use from a well-known set of images made available to customers."
-            }
-          },
-          "resourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The resource id of the image."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of aliases to reference the image by."
+          }
+        },
+        "buffer": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The percentage of the buffer to be allocated to this image."
+          }
+        },
+        "wellKnownImageName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "organizationProfileType": {
@@ -255,56 +219,58 @@
             "description": "Required. The list of Azure DevOps organizations the pool should be present in.."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "dataDiskType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "caching": {
-            "type": "string",
-            "allowedValues": [
-              "None",
-              "ReadOnly",
-              "ReadWrite"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/."
-            }
-          },
-          "diskSizeGiB": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The initial disk size in gigabytes."
-            }
-          },
-          "driveLetter": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The drive letter for the empty data disk. If not specified, it will be the first available letter. Letters A, C, D, and E are not allowed."
-            }
-          },
-          "storageAccountType": {
-            "type": "string",
-            "allowedValues": [
-              "Premium_LRS",
-              "Premium_ZRS",
-              "StandardSSD_LRS",
-              "StandardSSD_ZRS",
-              "Standard_LRS"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The storage Account type to be used for the data disk. If omitted, the default is Standard_LRS."
-            }
+      "type": "object",
+      "properties": {
+        "caching": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "ReadOnly",
+            "ReadWrite"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/."
+          }
+        },
+        "diskSizeGiB": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The initial disk size in gigabytes."
+          }
+        },
+        "driveLetter": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The drive letter for the empty data disk. If not specified, it will be the first available letter. Letters A, C, D, and E are not allowed."
+          }
+        },
+        "storageAccountType": {
+          "type": "string",
+          "allowedValues": [
+            "Premium_LRS",
+            "Premium_ZRS",
+            "StandardSSD_LRS",
+            "StandardSSD_ZRS",
+            "Standard_LRS"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The storage Account type to be used for the data disk. If omitted, the default is Standard_LRS."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "resourcePredictionsProfileAutomaticType": {
       "type": "object",
@@ -331,6 +297,9 @@
             "description": "Required. Determines the balance between cost and performance."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "resourcePredictionsProfileManualType": {
@@ -345,6 +314,9 @@
             "description": "Required. Customer provides the stand-by agent scheme."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "agentStatefulType": {
@@ -373,45 +345,6 @@
         },
         "resourcePredictions": {
           "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Defines pool buffer/stand-by agents."
-          }
-        },
-        "resourcePredictionsProfile": {
-          "type": "object",
-          "discriminator": {
-            "propertyName": "kind",
-            "mapping": {
-              "Automatic": {
-                "$ref": "#/definitions/resourcePredictionsProfileAutomaticType"
-              },
-              "Manual": {
-                "$ref": "#/definitions/resourcePredictionsProfileManualType"
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Determines how the stand-by scheme should be provided."
-          }
-        }
-      }
-    },
-    "agentStatelessType": {
-      "type": "object",
-      "properties": {
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "Stateless"
-          ],
-          "metadata": {
-            "description": "Required. Stateless profile meaning that the machines will be cleaned up after running a job."
-          }
-        },
-        "resourcePredictions": {
-          "type": "object",
           "properties": {
             "timeZone": {
               "type": "string",
@@ -420,13 +353,9 @@
               }
             },
             "daysData": {
-              "type": "array",
-              "items": {
-                "type": "object"
-              },
+              "$ref": "#/definitions/daysDataType",
               "nullable": true,
               "metadata": {
-                "example": "      [\n        { // Monday\n          '09:00': 5\n          '22:00': 0\n        }\n        {} // Tuesday\n        {} // Wednesday\n        {} // Thursday\n        { // Friday\n          '09:00': 5\n          '22:00': 0\n        }\n        {} // Saturday\n        {} // Sunday\n      ]\n      ",
                 "description": "Optional. The number of agents needed at a specific time."
               }
             }
@@ -454,6 +383,66 @@
             "description": "Optional. Determines how the stand-by scheme should be provided."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "agentStatelessType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Stateless"
+          ],
+          "metadata": {
+            "description": "Required. Stateless profile meaning that the machines will be cleaned up after running a job."
+          }
+        },
+        "resourcePredictions": {
+          "type": "object",
+          "properties": {
+            "timeZone": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`."
+              }
+            },
+            "daysData": {
+              "$ref": "#/definitions/daysDataType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The number of agents needed at a specific time."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Defines pool buffer/stand-by agents."
+          }
+        },
+        "resourcePredictionsProfile": {
+          "type": "object",
+          "discriminator": {
+            "propertyName": "kind",
+            "mapping": {
+              "Automatic": {
+                "$ref": "#/definitions/resourcePredictionsProfileAutomaticType"
+              },
+              "Manual": {
+                "$ref": "#/definitions/resourcePredictionsProfileManualType"
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Determines how the stand-by scheme should be provided."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "agentProfileType": {
@@ -468,80 +457,221 @@
             "$ref": "#/definitions/agentStatelessType"
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+    "standbyAgentsConfigType": {
+      "type": "object",
+      "properties": {
+        "startTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time at which the agents are needed."
+          }
+        },
+        "endTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time at which the agents are no longer needed."
+          }
+        },
+        "startAgentCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of agents needed at the start time."
+          }
+        },
+        "endAgentCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of agents needed at the end time."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "daysDataType": {
+      "type": "object",
+      "properties": {
+        "monday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Monday."
+          }
+        },
+        "tuesday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Tuesday."
+          }
+        },
+        "wednesday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Wednesday."
+          }
+        },
+        "thursday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Thursday."
+          }
+        },
+        "friday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Friday."
+          }
+        },
+        "saturday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Saturday."
+          }
+        },
+        "sunday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Sunday."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -566,129 +696,14 @@
           }
         }
       },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
         }
-      },
-      "nullable": true
+      }
     },
-    "managedIdentitiesType": {
+    "managedIdentityAllType": {
       "type": "object",
       "properties": {
         "systemAssigned": {
@@ -705,11 +720,91 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+        }
+      }
     }
   },
   "parameters": {
@@ -734,7 +829,10 @@
       }
     },
     "images": {
-      "$ref": "#/definitions/imageType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/imageType"
+      },
       "metadata": {
         "description": "Required. The VM images of the machines in the pool."
       }
@@ -780,6 +878,7 @@
     },
     "storageProfile": {
       "$ref": "#/definitions/storageProfileType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The storage profile of the machines in the pool."
       }
@@ -799,12 +898,17 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -817,13 +921,18 @@
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "example": "  {\n    systemAssigned: true,\n    userAssignedResourceIds: [\n      '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n    ]\n  }\n  {\n    systemAssigned: true\n  }\n  ",
         "description": "Optional. The managed service identities assigned to this resource."
@@ -846,7 +955,8 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject()))), null())]"
   },
   "resources": {
     "avmTelemetry": {
@@ -871,13 +981,13 @@
     },
     "managedDevOpsPool": {
       "type": "Microsoft.DevOpsInfrastructure/pools",
-      "apiVersion": "2024-04-04-preview",
+      "apiVersion": "2024-10-19",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "agentProfile": "[parameters('agentProfile')]",
+        "agentProfile": "[if(equals(parameters('agentProfile').kind, 'Stateful'), createObject('kind', 'Stateful', 'maxAgentLifetime', parameters('agentProfile').maxAgentLifetime, 'gracePeriodTimeSpan', parameters('agentProfile').gracePeriodTimeSpan, 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')), createObject('kind', 'Stateless', 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')))]",
         "devCenterProjectResourceId": "[parameters('devCenterProjectResourceId')]",
         "fabricProfile": {
           "sku": {
@@ -998,7 +1108,7 @@
       "metadata": {
         "description": "The location the Managed DevOps Pool resource was deployed into."
       },
-      "value": "[reference('managedDevOpsPool', '2024-04-04-preview', 'full').location]"
+      "value": "[reference('managedDevOpsPool', '2024-10-19', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1006,7 +1116,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2024-04-04-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2024-10-19', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "3878108397799577614"
+      "version": "0.30.23.60470",
+      "templateHash": "7267638032222261061"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -103,13 +103,13 @@
     "coolAccess": {
       "type": "bool",
       "metadata": {
-        "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes."
+        "description": "Required. If enabled (true) the pool can contain cool Access enabled volumes."
       }
     },
     "coolnessPeriod": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Specifies the number of days after which data that is not accessed by clients will be tiered."
+        "description": "Required. Specifies the number of days after which data that is not accessed by clients will be tiered."
       }
     },
     "coolAccessRetrievalPolicy": {
@@ -122,37 +122,37 @@
     "encryptionKeySource": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The source of the encryption key."
+        "description": "Required. The source of the encryption key."
       }
     },
     "keyVaultPrivateEndpointResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The resource ID of the key vault private endpoint."
+        "description": "Required. The resource ID of the key vault private endpoint."
       }
     },
     "endpointType": {
       "type": "string",
       "metadata": {
-        "description": "Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)."
+        "description": "Required. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)."
       }
     },
     "remoteVolumeRegion": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The remote region for the other end of the Volume Replication."
+        "description": "Required. The remote region for the other end of the Volume Replication."
       }
     },
     "remoteVolumeResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The resource ID of the remote volume."
+        "description": "Required. The resource ID of the remote volume."
       }
     },
     "replicationSchedule": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The replication schedule for the volume."
+        "description": "Required. The replication schedule for the volume."
       }
     },
     "backupEnabled": {
@@ -172,103 +172,103 @@
     "dailyHour": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The daily snapshot hour."
+        "description": "Required. The daily snapshot hour."
       }
     },
     "dailyMinute": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The daily snapshot minute."
+        "description": "Required. The daily snapshot minute."
       }
     },
     "dailySnapshotsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Daily snapshot count to keep."
+        "description": "Required. Daily snapshot count to keep."
       }
     },
     "dailyUsedBytes": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Daily snapshot used bytes."
+        "description": "Required. Daily snapshot used bytes."
       }
     },
     "hourlyMinute": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The hourly snapshot minute."
+        "description": "Required. The hourly snapshot minute."
       }
     },
     "hourlySnapshotsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Hourly snapshot count to keep."
+        "description": "Required. Hourly snapshot count to keep."
       }
     },
     "hourlyUsedBytes": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Hourly snapshot used bytes."
+        "description": "Required. Hourly snapshot used bytes."
       }
     },
     "daysOfMonth": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The monthly snapshot day."
+        "description": "Required. The monthly snapshot day."
       }
     },
     "monthlyHour": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The monthly snapshot hour."
+        "description": "Required. The monthly snapshot hour."
       }
     },
     "monthlyMinute": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The monthly snapshot minute."
+        "description": "Required. The monthly snapshot minute."
       }
     },
     "monthlySnapshotsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Monthly snapshot count to keep."
+        "description": "Required. Monthly snapshot count to keep."
       }
     },
     "monthlyUsedBytes": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Monthly snapshot used bytes."
+        "description": "Required. Monthly snapshot used bytes."
       }
     },
     "weeklyDay": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The weekly snapshot day."
+        "description": "Required. The weekly snapshot day."
       }
     },
     "weeklyHour": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The weekly snapshot hour."
+        "description": "Required. The weekly snapshot hour."
       }
     },
     "weeklyMinute": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The weekly snapshot minute."
+        "description": "Required. The weekly snapshot minute."
       }
     },
     "weeklySnapshotsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Weekly snapshot count to keep."
+        "description": "Required. Weekly snapshot count to keep."
       }
     },
     "weeklyUsedBytes": {
       "type": "int",
       "metadata": {
-        "description": "Optional. Weekly snapshot used bytes."
+        "description": "Required. Weekly snapshot used bytes."
       }
     },
     "snapEnabled": {
@@ -281,25 +281,25 @@
     "snapshotPolicyName": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The name of the snapshot policy."
+        "description": "Required. The name of the snapshot policy."
       }
     },
     "dailyBackupsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The daily backups to keep."
+        "description": "Required. The daily backups to keep."
       }
     },
     "monthlyBackupsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The monthly backups to keep."
+        "description": "Required. The monthly backups to keep."
       }
     },
     "weeklyBackupsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The weekly backups to keep."
+        "description": "Required. The weekly backups to keep."
       }
     },
     "backupVaultName": {
@@ -319,43 +319,37 @@
     "backupName": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The name of the backup."
+        "description": "Required. The name of the backup."
       }
     },
     "backupLabel": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The label of the backup."
+        "description": "Required. The label of the backup."
       }
     },
     "useExistingSnapshot": {
       "type": "bool",
       "metadata": {
-        "description": "Optional. Indicates whether to use an existing snapshot."
+        "description": "Required. Indicates whether to use an existing snapshot."
       }
     },
     "snapshotName": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The name of the snapshot."
-      }
-    },
-    "snapshotPolicyId": {
-      "type": "string",
-      "metadata": {
-        "description": "Optional. The snapshot Policy id."
+        "description": "Required. The name of the snapshot."
       }
     },
     "volumeResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The resource ID of the volume."
+        "description": "Required. The resource ID of the volume."
       }
     },
     "volumeType": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+        "description": "Required. The type of the volume. DataProtection volumes are used for replication."
       }
     },
     "name": {
@@ -390,13 +384,13 @@
     "backupPolicyLocation": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The backup policy location."
+        "description": "Required. The backup policy location."
       }
     },
     "snapshotPolicyLocation": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The location of snashot policies."
+        "description": "Required. The location of snashot policies."
       }
     },
     "serviceLevel": {
@@ -467,7 +461,7 @@
     "backupVaultId": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The Id of the Backup Vault."
+        "description": "Required. The Id of the Backup Vault."
       }
     },
     "replicationEnabled": {
@@ -604,8 +598,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "16399924782439066553"
+              "version": "0.30.23.60470",
+              "templateHash": "13036318518380500677"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File.",
@@ -622,31 +616,31 @@
               "type": "string",
               "defaultValue": "backupPolicy",
               "metadata": {
-                "description": "Required. The name of the backup policy."
+                "description": "Optional. The name of the backup policy."
               }
             },
             "backupPolicyLocation": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The location of the backup policy. Required if the template is used in a standalone deployment."
+                "description": "Required. The location of the backup policy. Required if the template is used in a standalone deployment."
               }
             },
             "dailyBackupsToKeep": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The daily backups to keep."
+                "description": "Required. The daily backups to keep."
               }
             },
             "monthlyBackupsToKeep": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The monthly backups to keep."
+                "description": "Required. The monthly backups to keep."
               }
             },
             "weeklyBackupsToKeep": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The weekly backups to keep."
+                "description": "Required. The weekly backups to keep."
               }
             },
             "backupEnabled": {
@@ -775,8 +769,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "17076752505050697613"
+              "version": "0.30.23.60470",
+              "templateHash": "12832989826838310090"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
@@ -792,7 +786,7 @@
             "snapshotPolicyName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The name of the snapshot policy."
+                "description": "Required. The name of the snapshot policy."
               }
             },
             "snapshotPolicyLocation": {
@@ -805,103 +799,103 @@
             "dailyHour": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The daily snapshot hour."
+                "description": "Required. The daily snapshot hour."
               }
             },
             "dailyMinute": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The daily snapshot minute."
+                "description": "Required. The daily snapshot minute."
               }
             },
             "dailySnapshotsToKeep": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Daily snapshot count to keep."
+                "description": "Required. Daily snapshot count to keep."
               }
             },
             "dailyUsedBytes": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Daily snapshot used bytes."
+                "description": "Required. Daily snapshot used bytes."
               }
             },
             "hourlyMinute": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The hourly snapshot minute."
+                "description": "Required. The hourly snapshot minute."
               }
             },
             "hourlySnapshotsToKeep": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Hourly snapshot count to keep."
+                "description": "Required. Hourly snapshot count to keep."
               }
             },
             "hourlyUsedBytes": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Hourly snapshot used bytes."
+                "description": "Required. Hourly snapshot used bytes."
               }
             },
             "daysOfMonth": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The monthly snapshot day."
+                "description": "Required. The monthly snapshot day."
               }
             },
             "monthlyHour": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The monthly snapshot hour."
+                "description": "Required. The monthly snapshot hour."
               }
             },
             "monthlyMinute": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The monthly snapshot minute."
+                "description": "Required. The monthly snapshot minute."
               }
             },
             "monthlySnapshotsToKeep": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Monthly snapshot count to keep."
+                "description": "Required. Monthly snapshot count to keep."
               }
             },
             "monthlyUsedBytes": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Monthly snapshot used bytes."
+                "description": "Required. Monthly snapshot used bytes."
               }
             },
             "weeklyDay": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The weekly snapshot day."
+                "description": "Required. The weekly snapshot day."
               }
             },
             "weeklyHour": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The weekly snapshot hour."
+                "description": "Required. The weekly snapshot hour."
               }
             },
             "weeklyMinute": {
               "type": "int",
               "metadata": {
-                "description": "Optional. The weekly snapshot minute."
+                "description": "Required. The weekly snapshot minute."
               }
             },
             "weeklySnapshotsToKeep": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Weekly snapshot count to keep."
+                "description": "Required. Weekly snapshot count to keep."
               }
             },
             "weeklyUsedBytes": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Weekly snapshot used bytes."
+                "description": "Required. Weekly snapshot used bytes."
               }
             },
             "snapEnabled": {

@@ -8,7 +8,7 @@ param databaseAccountName string
 @description('Required. Name of the SQL Role Assignment.')
 param name string
 
-@description('Required. Id needs to be granted.')
+@description('Optional. Id needs to be granted.')
 param principalId string = ''
 
 @description('Required. Id of the SQL Role Definition.')

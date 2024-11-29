@@ -154,8 +154,6 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            enableWORM: true
-            WORMRetention: 666
             allowProtectedAppendWrites: false
           }
         ]

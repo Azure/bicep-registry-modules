@@ -17,7 +17,7 @@ param namePrefix string = '#_namePrefix_#'
 param serviceShort string = 'ssamin'
 
 @description('Optional. A short guid for the subscription name.')
-param subscriptionGuid string = toLower(substring(newGuid(), 0, 3))
+param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'

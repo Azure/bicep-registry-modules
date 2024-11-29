@@ -209,7 +209,7 @@ module configurationStore_keyValues 'key-value/main.bicep' = [
   }
 ]
 
-module configurationStore_replicas 'replicas/main.bicep' = [
+module configurationStore_replicas 'replica/main.bicep' = [
   for (replicaLocation, index) in (replicaLocations ?? []): {
     name: '${uniqueString(deployment().name, location)}-AppConfig-Replicas-${index}'
     params: {
@@ -447,7 +447,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')

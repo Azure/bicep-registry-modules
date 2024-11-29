@@ -5,10 +5,10 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment.')
 param logAnalyticsWorkspaceName string
 
-@description('Required. Name of the solution.')
+@description('Required. Name of the data source.')
 param name string
 
-@description('Required. The kind of the DataSource.')
+@description('Optional. The kind of the data source.')
 @allowed([
   'AzureActivityLog'
   'WindowsEvent'
@@ -25,16 +25,16 @@ param kind string = 'AzureActivityLog'
 param tags object?
 
 @description('Optional. Resource ID of the resource to be linked.')
-param linkedResourceId string = ''
+param linkedResourceId string?
 
 @description('Optional. Windows event log name to configure when kind is WindowsEvent.')
-param eventLogName string = ''
+param eventLogName string?
 
 @description('Optional. Windows event types to configure when kind is WindowsEvent.')
 param eventTypes array = []
 
 @description('Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.')
-param objectName string = ''
+param objectName string?
 
 @description('Optional. Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.')
 param instanceName string = '*'
@@ -46,13 +46,13 @@ param intervalSeconds int = 60
 param performanceCounters array = []
 
 @description('Optional. Counter name to configure when kind is WindowsPerformanceCounter.')
-param counterName string = ''
+param counterName string?
 
 @description('Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection.')
-param state string = ''
+param state string?
 
 @description('Optional. System log to configure when kind is LinuxSyslog.')
-param syslogName string = ''
+param syslogName string?
 
 @description('Optional. Severities to configure when kind is LinuxSyslog.')
 param syslogSeverities array = []

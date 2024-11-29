@@ -20,7 +20,7 @@ param workspaceName string
 param plan string = 'Analytics'
 
 @description('Optional. Restore parameters.')
-param restoredLogs object = {}
+param restoredLogs restoredLogsType?
 
 @description('Optional. The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention.')
 @minValue(-1)
@@ -28,18 +28,19 @@ param restoredLogs object = {}
 param retentionInDays int = -1
 
 @description('Optional. Table\'s schema.')
-param schema object = {}
+param schema schemaType?
 
 @description('Optional. Parameters of the search job that initiated this table.')
-param searchResults object = {}
+param searchResults searchResultsType?
 
 @description('Optional. The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention.')
 @minValue(-1)
 @maxValue(2555)
 param totalRetentionInDays int = -1
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -136,28 +137,56 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+@export()
+@description('The parameters of the restore operation that initiated the table.')
+type restoredLogsType = {
+  @description('Optional. The table to restore data from.')
+  sourceTable: string?
+  @description('Optional. The timestamp to start the restore from (UTC).')
+  startRestoreTime: string?
+  @description('Optional. The timestamp to end the restore by (UTC).')
+  endRestoreTime: string?
+}
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
+@export()
+@description('The table schema.')
+type schemaType = {
+  @description('Required. The table name.')
+  name: string
+  @description('Required. A list of table custom columns.')
+  columns: columnType[]
+  @description('Optional. The table description.')
   description: string?
+  @description('Optional. The table display name.')
+  displayName: string?
+}
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+@export()
+@description('The parameters of the table column.')
+type columnType = {
+  @description('Required. The column name.')
+  name: string
+  @description('Required. The column type.')
+  type: 'boolean' | 'dateTime' | 'dynamic' | 'guid' | 'int' | 'long' | 'real' | 'string'
+  @description('Optional. The column data type logical hint.')
+  dataTypeHint: 'armPath' | 'guid' | 'ip' | 'uri'?
+  @description('Optional. The column description.')
+  description: string?
+  @description('Optional. Column display name.')
+  displayName: string?
+}
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+@export()
+@description('The parameters of the search job that initiated the table.')
+type searchResultsType = {
+  @description('Required. The search job query.')
+  query: string
+  @description('Optional. The search description.')
+  description: string?
+  @description('Optional. Limit the search job to return up to specified number of rows.')
+  limit: int?
+  @description('Optional. The timestamp to start the search from (UTC).')
+  startSearchTime: string?
+  @description('Optional. The timestamp to end the search by (UTC).')
+  endSearchTime: string?
+}

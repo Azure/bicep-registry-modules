@@ -17,7 +17,7 @@ param serviceShort string = 'dddarole'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'eastus2'
 

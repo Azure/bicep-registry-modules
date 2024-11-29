@@ -27,6 +27,7 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
 | `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
+| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/onboardingStates) |
 
 ## Usage examples
 
@@ -199,9 +200,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwadv001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
     ]
     linkedServices: [
@@ -213,7 +215,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     linkedStorageAccounts: [
       {
         name: 'Query'
-        resourceId: '<resourceId>'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
       }
     ]
     location: '<location>'
@@ -268,11 +272,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           columns: [
             {
               name: 'TimeGenerated'
-              type: 'DateTime'
+              type: 'dateTime'
             }
             {
               name: 'RawData'
-              type: 'String'
+              type: 'string'
             }
           ]
           name: 'CustomTableBasic_CL'
@@ -302,27 +306,27 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           columns: [
             {
               name: 'TimeGenerated'
-              type: 'DateTime'
+              type: 'dateTime'
             }
             {
               name: 'EventTime'
-              type: 'DateTime'
+              type: 'dateTime'
             }
             {
               name: 'EventLevel'
-              type: 'String'
+              type: 'string'
             }
             {
               name: 'EventCode'
-              type: 'Int'
+              type: 'int'
             }
             {
               name: 'Message'
-              type: 'String'
+              type: 'string'
             }
             {
               name: 'RawData'
-              type: 'String'
+              type: 'string'
             }
           ]
           name: 'CustomTableAdvanced_CL'
@@ -507,9 +511,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwadv001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         }
       ]
     },
@@ -525,7 +530,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "Query",
-          "resourceId": "<resourceId>"
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
         }
       ]
     },
@@ -594,11 +601,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             "columns": [
               {
                 "name": "TimeGenerated",
-                "type": "DateTime"
+                "type": "dateTime"
               },
               {
                 "name": "RawData",
-                "type": "String"
+                "type": "string"
               }
             ],
             "name": "CustomTableBasic_CL"
@@ -628,27 +635,27 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             "columns": [
               {
                 "name": "TimeGenerated",
-                "type": "DateTime"
+                "type": "dateTime"
               },
               {
                 "name": "EventTime",
-                "type": "DateTime"
+                "type": "dateTime"
               },
               {
                 "name": "EventLevel",
-                "type": "String"
+                "type": "string"
               },
               {
                 "name": "EventCode",
-                "type": "Int"
+                "type": "int"
               },
               {
                 "name": "Message",
-                "type": "String"
+                "type": "string"
               },
               {
                 "name": "RawData",
-                "type": "String"
+                "type": "string"
               }
             ],
             "name": "CustomTableAdvanced_CL"
@@ -825,9 +832,10 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+    name: 'AzureAutomation(oiwadv001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
   }
 ]
 param linkedServices = [
@@ -839,7 +847,9 @@ param linkedServices = [
 param linkedStorageAccounts = [
   {
     name: 'Query'
-    resourceId: '<resourceId>'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
   }
 ]
 param location = '<location>'
@@ -894,11 +904,11 @@ param tables = [
       columns: [
         {
           name: 'TimeGenerated'
-          type: 'DateTime'
+          type: 'dateTime'
         }
         {
           name: 'RawData'
-          type: 'String'
+          type: 'string'
         }
       ]
       name: 'CustomTableBasic_CL'
@@ -928,27 +938,27 @@ param tables = [
       columns: [
         {
           name: 'TimeGenerated'
-          type: 'DateTime'
+          type: 'dateTime'
         }
         {
           name: 'EventTime'
-          type: 'DateTime'
+          type: 'dateTime'
         }
         {
           name: 'EventLevel'
-          type: 'String'
+          type: 'string'
         }
         {
           name: 'EventCode'
-          type: 'Int'
+          type: 'int'
         }
         {
           name: 'Message'
-          type: 'String'
+          type: 'string'
         }
         {
           name: 'RawData'
-          type: 'String'
+          type: 'string'
         }
       ]
       name: 'CustomTableAdvanced_CL'
@@ -1153,9 +1163,25 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwmax001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
+      }
+      {
+        name: 'SecurityInsights(oiwmax001)'
+        plan: {
+          product: 'OMSGallery/SecurityInsights'
+          publisher: 'Microsoft'
+        }
+      }
+      {
+        name: 'SQLAuditing(oiwmax001)'
+        plan: {
+          name: 'SQLAuditing(oiwmax001)'
+          product: 'SQLAuditing'
+          publisher: 'Microsoft'
+        }
       }
     ]
     linkedServices: [
@@ -1167,7 +1193,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     linkedStorageAccounts: [
       {
         name: 'Query'
-        resourceId: '<resourceId>'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
       }
     ]
     location: '<location>'
@@ -1178,6 +1206,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     managedIdentities: {
       systemAssigned: true
     }
+    onboardWorkspaceToSentinel: true
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
     roleAssignments: [
@@ -1253,11 +1282,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           columns: [
             {
               name: 'TimeGenerated'
-              type: 'DateTime'
+              type: 'dateTime'
             }
             {
               name: 'RawData'
-              type: 'String'
+              type: 'string'
             }
           ]
           name: 'CustomTableBasic_CL'
@@ -1287,27 +1316,27 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           columns: [
             {
               name: 'TimeGenerated'
-              type: 'DateTime'
+              type: 'dateTime'
             }
             {
               name: 'EventTime'
-              type: 'DateTime'
+              type: 'dateTime'
             }
             {
               name: 'EventLevel'
-              type: 'String'
+              type: 'string'
             }
             {
               name: 'EventCode'
-              type: 'Int'
+              type: 'int'
             }
             {
               name: 'Message'
-              type: 'String'
+              type: 'string'
             }
             {
               name: 'RawData'
-              type: 'String'
+              type: 'string'
             }
           ]
           name: 'CustomTableAdvanced_CL'
@@ -1455,9 +1484,25 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwmax001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
+        },
+        {
+          "name": "SecurityInsights(oiwmax001)",
+          "plan": {
+            "product": "OMSGallery/SecurityInsights",
+            "publisher": "Microsoft"
+          }
+        },
+        {
+          "name": "SQLAuditing(oiwmax001)",
+          "plan": {
+            "name": "SQLAuditing(oiwmax001)",
+            "product": "SQLAuditing",
+            "publisher": "Microsoft"
+          }
         }
       ]
     },
@@ -1473,7 +1518,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "Query",
-          "resourceId": "<resourceId>"
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
         }
       ]
     },
@@ -1490,6 +1537,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": {
         "systemAssigned": true
       }
+    },
+    "onboardWorkspaceToSentinel": {
+      "value": true
     },
     "publicNetworkAccessForIngestion": {
       "value": "Disabled"
@@ -1577,11 +1627,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             "columns": [
               {
                 "name": "TimeGenerated",
-                "type": "DateTime"
+                "type": "dateTime"
               },
               {
                 "name": "RawData",
-                "type": "String"
+                "type": "string"
               }
             ],
             "name": "CustomTableBasic_CL"
@@ -1611,27 +1661,27 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             "columns": [
               {
                 "name": "TimeGenerated",
-                "type": "DateTime"
+                "type": "dateTime"
               },
               {
                 "name": "EventTime",
-                "type": "DateTime"
+                "type": "dateTime"
               },
               {
                 "name": "EventLevel",
-                "type": "String"
+                "type": "string"
               },
               {
                 "name": "EventCode",
-                "type": "Int"
+                "type": "int"
               },
               {
                 "name": "Message",
-                "type": "String"
+                "type": "string"
               },
               {
                 "name": "RawData",
-                "type": "String"
+                "type": "string"
               }
             ],
             "name": "CustomTableAdvanced_CL"
@@ -1773,9 +1823,25 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+    name: 'AzureAutomation(oiwmax001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
+  }
+  {
+    name: 'SecurityInsights(oiwmax001)'
+    plan: {
+      product: 'OMSGallery/SecurityInsights'
+      publisher: 'Microsoft'
+    }
+  }
+  {
+    name: 'SQLAuditing(oiwmax001)'
+    plan: {
+      name: 'SQLAuditing(oiwmax001)'
+      product: 'SQLAuditing'
+      publisher: 'Microsoft'
+    }
   }
 ]
 param linkedServices = [
@@ -1787,7 +1853,9 @@ param linkedServices = [
 param linkedStorageAccounts = [
   {
     name: 'Query'
-    resourceId: '<resourceId>'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
   }
 ]
 param location = '<location>'
@@ -1798,6 +1866,7 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
 }
+param onboardWorkspaceToSentinel = true
 param publicNetworkAccessForIngestion = 'Disabled'
 param publicNetworkAccessForQuery = 'Disabled'
 param roleAssignments = [
@@ -1873,11 +1942,11 @@ param tables = [
       columns: [
         {
           name: 'TimeGenerated'
-          type: 'DateTime'
+          type: 'dateTime'
         }
         {
           name: 'RawData'
-          type: 'String'
+          type: 'string'
         }
       ]
       name: 'CustomTableBasic_CL'
@@ -1907,27 +1976,27 @@ param tables = [
       columns: [
         {
           name: 'TimeGenerated'
-          type: 'DateTime'
+          type: 'dateTime'
         }
         {
           name: 'EventTime'
-          type: 'DateTime'
+          type: 'dateTime'
         }
         {
           name: 'EventLevel'
-          type: 'String'
+          type: 'string'
         }
         {
           name: 'EventCode'
-          type: 'Int'
+          type: 'int'
         }
         {
           name: 'Message'
-          type: 'String'
+          type: 'string'
         }
         {
           name: 'RawData'
-          type: 'String'
+          type: 'string'
         }
       ]
       name: 'CustomTableAdvanced_CL'
@@ -2062,9 +2131,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: 'AzureAutomation(oiwwaf001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
     ]
     linkedServices: [
@@ -2076,7 +2146,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     linkedStorageAccounts: [
       {
         name: 'Query'
-        resourceId: '<resourceId>'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
       }
     ]
     location: '<location>'
@@ -2231,9 +2303,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "AzureAutomation(oiwwaf001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         }
       ]
     },
@@ -2249,7 +2322,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "Query",
-          "resourceId": "<resourceId>"
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
         }
       ]
     },
@@ -2408,9 +2483,10 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+    name: 'AzureAutomation(oiwwaf001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
   }
 ]
 param linkedServices = [
@@ -2422,7 +2498,9 @@ param linkedServices = [
 param linkedStorageAccounts = [
   {
     name: 'Query'
-    resourceId: '<resourceId>'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
   }
 ]
 param location = '<location>'
@@ -2483,6 +2561,7 @@ param useResourcePermissions = true
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
+| [`onboardWorkspaceToSentinel`](#parameter-onboardworkspacetosentinel) | bool | Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Log Analytics ingestion. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Log Analytics query. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -2507,7 +2586,27 @@ List of Storage Accounts to be linked. Required if 'forceCmkForQuery' is set to 
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-linkedstorageaccountsname) | string | Name of the link. |
+| [`storageAccountIds`](#parameter-linkedstorageaccountsstorageaccountids) | array | Linked storage accounts resources Ids. |
+
+### Parameter: `linkedStorageAccounts.name`
+
+Name of the link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedStorageAccounts.storageAccountIds`
+
+Linked storage accounts resources Ids.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `dailyQuotaGb`
 
@@ -2523,7 +2622,87 @@ LAW data export instances to be deployed.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-dataexportsname) | string | Name of the data export. |
+| [`tableNames`](#parameter-dataexportstablenames) | array | The list of table names to export. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-dataexportsdestination) | object | The destination of the data export. |
+| [`enable`](#parameter-dataexportsenable) | bool | Enable or disable the data export. |
+
+### Parameter: `dataExports.name`
+
+Name of the data export.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataExports.tableNames`
+
+The list of table names to export.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataExports.destination`
+
+The destination of the data export.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-dataexportsdestinationresourceid) | string | The destination resource ID. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metaData`](#parameter-dataexportsdestinationmetadata) | object | The destination metadata. |
+
+### Parameter: `dataExports.destination.resourceId`
+
+The destination resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataExports.destination.metaData`
+
+The destination metadata.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubName`](#parameter-dataexportsdestinationmetadataeventhubname) | string | Allows to define an Event Hub name. Not applicable when destination is Storage Account. |
+
+### Parameter: `dataExports.destination.metaData.eventHubName`
+
+Allows to define an Event Hub name. Not applicable when destination is Storage Account.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataExports.enable`
+
+Enable or disable the data export.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `dataRetention`
 
@@ -2539,7 +2718,128 @@ LAW data sources to configure.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-datasourceskind) | string | The kind of data source. |
+| [`name`](#parameter-datasourcesname) | string | Name of the data source. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`counterName`](#parameter-datasourcescountername) | string | Counter name to configure when kind is WindowsPerformanceCounter. |
+| [`eventLogName`](#parameter-datasourceseventlogname) | string | The name of the event log to configure when kind is WindowsEvent. |
+| [`eventTypes`](#parameter-datasourceseventtypes) | array | The event types to configure when kind is WindowsEvent. |
+| [`instanceName`](#parameter-datasourcesinstancename) | string | Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
+| [`intervalSeconds`](#parameter-datasourcesintervalseconds) | int | Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
+| [`linkedResourceId`](#parameter-datasourceslinkedresourceid) | string | The resource id of the resource that will be linked to the workspace. |
+| [`objectName`](#parameter-datasourcesobjectname) | string | Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
+| [`performanceCounters`](#parameter-datasourcesperformancecounters) | array | List of counters to configure when the kind is LinuxPerformanceObject. |
+| [`state`](#parameter-datasourcesstate) | string | State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection. |
+| [`syslogName`](#parameter-datasourcessyslogname) | string | System log to configure when kind is LinuxSyslog. |
+| [`syslogSeverities`](#parameter-datasourcessyslogseverities) | array | Severities to configure when kind is LinuxSyslog. |
+| [`tags`](#parameter-datasourcestags) | object | Tags to configure in the resource. |
+
+### Parameter: `dataSources.kind`
+
+The kind of data source.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataSources.name`
+
+Name of the data source.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataSources.counterName`
+
+Counter name to configure when kind is WindowsPerformanceCounter.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataSources.eventLogName`
+
+The name of the event log to configure when kind is WindowsEvent.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataSources.eventTypes`
+
+The event types to configure when kind is WindowsEvent.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataSources.instanceName`
+
+Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataSources.intervalSeconds`
+
+Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.
+
+- Required: No
+- Type: int
+
+### Parameter: `dataSources.linkedResourceId`
+
+The resource id of the resource that will be linked to the workspace.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataSources.objectName`
+
+Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataSources.performanceCounters`
+
+List of counters to configure when the kind is LinuxPerformanceObject.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataSources.state`
+
+State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataSources.syslogName`
+
+System log to configure when kind is LinuxSyslog.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataSources.syslogSeverities`
+
+Severities to configure when kind is LinuxSyslog.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataSources.tags`
+
+Tags to configure in the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `diagnosticSettings`
 
@@ -2717,7 +3017,61 @@ List of gallerySolutions to be created in the log analytics workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsname) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`plan`](#parameter-gallerysolutionsplan) | object | Plan for solution object supported by the OperationsManagement resource provider. |
+
+### Parameter: `gallerySolutions.name`
+
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan`
+
+Plan for solution object supported by the OperationsManagement resource provider.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`product`](#parameter-gallerysolutionsplanproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsplanname) | string | Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used. |
+| [`publisher`](#parameter-gallerysolutionsplanpublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `gallerySolutions.plan.product`
+
+The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan.name`
+
+Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `gallerySolutions.plan.publisher`
+
+The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
+
+- Required: No
+- Type: string
 
 ### Parameter: `linkedServices`
 
@@ -2725,7 +3079,40 @@ List of services to be linked.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-linkedservicesname) | string | Name of the linked service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-linkedservicesresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
+| [`writeAccessResourceId`](#parameter-linkedserviceswriteaccessresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access. |
+
+### Parameter: `linkedServices.name`
+
+Name of the linked service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedServices.resourceId`
+
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
+
+- Required: No
+- Type: string
+
+### Parameter: `linkedServices.writeAccessResourceId`
+
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -2783,7 +3170,7 @@ The managed identity definition for this resource. Only one type of identity is 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2794,10 +3181,18 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
+
+### Parameter: `onboardWorkspaceToSentinel`
+
+Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `publicNetworkAccessForIngestion`
 
@@ -2944,7 +3339,88 @@ Kusto Query Language searches to save.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-savedsearchescategory) | string | The category of the saved search. This helps the user to find a saved search faster. |
+| [`displayName`](#parameter-savedsearchesdisplayname) | string | Display name for the search. |
+| [`name`](#parameter-savedsearchesname) | string | Name of the saved search. |
+| [`query`](#parameter-savedsearchesquery) | string | The query expression for the saved search. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`etag`](#parameter-savedsearchesetag) | string | The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag. |
+| [`functionAlias`](#parameter-savedsearchesfunctionalias) | string | The function alias if query serves as a function. |
+| [`functionParameters`](#parameter-savedsearchesfunctionparameters) | string | The optional function parameters if query serves as a function. Value should be in the following format: 'param-name1:type1 = default_value1, param-name2:type2 = default_value2'. For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions. |
+| [`tags`](#parameter-savedsearchestags) | array | The tags attached to the saved search. |
+| [`version`](#parameter-savedsearchesversion) | int | The version number of the query language. The current version is 2 and is the default. |
+
+### Parameter: `savedSearches.category`
+
+The category of the saved search. This helps the user to find a saved search faster.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `savedSearches.displayName`
+
+Display name for the search.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `savedSearches.name`
+
+Name of the saved search.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `savedSearches.query`
+
+The query expression for the saved search.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `savedSearches.etag`
+
+The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag.
+
+- Required: No
+- Type: string
+
+### Parameter: `savedSearches.functionAlias`
+
+The function alias if query serves as a function.
+
+- Required: No
+- Type: string
+
+### Parameter: `savedSearches.functionParameters`
+
+The optional function parameters if query serves as a function. Value should be in the following format: 'param-name1:type1 = default_value1, param-name2:type2 = default_value2'. For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions.
+
+- Required: No
+- Type: string
+
+### Parameter: `savedSearches.tags`
+
+The tags attached to the saved search.
+
+- Required: No
+- Type: array
+
+### Parameter: `savedSearches.version`
+
+The version number of the query language. The current version is 2 and is the default.
+
+- Required: No
+- Type: int
 
 ### Parameter: `skuCapacityReservationLevel`
 
@@ -2981,7 +3457,40 @@ List of storage accounts to be read by the workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAccountResourceId`](#parameter-storageinsightsconfigsstorageaccountresourceid) | string | Resource ID of the storage account to be linked. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containers`](#parameter-storageinsightsconfigscontainers) | array | The names of the blob containers that the workspace should read. |
+| [`tables`](#parameter-storageinsightsconfigstables) | array | List of tables to be read by the workspace. |
+
+### Parameter: `storageInsightsConfigs.storageAccountResourceId`
+
+Resource ID of the storage account to be linked.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageInsightsConfigs.containers`
+
+The names of the blob containers that the workspace should read.
+
+- Required: No
+- Type: array
+
+### Parameter: `storageInsightsConfigs.tables`
+
+List of tables to be read by the workspace.
+
+- Required: No
+- Type: array
 
 ### Parameter: `tables`
 
@@ -2989,7 +3498,373 @@ LAW custom tables to be deployed.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tablesname) | string | The name of the table. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`plan`](#parameter-tablesplan) | string | The plan for the table. |
+| [`restoredLogs`](#parameter-tablesrestoredlogs) | object | The restored logs for the table. |
+| [`retentionInDays`](#parameter-tablesretentionindays) | int | The retention in days for the table. |
+| [`roleAssignments`](#parameter-tablesroleassignments) | array | The role assignments for the table. |
+| [`schema`](#parameter-tablesschema) | object | The schema for the table. |
+| [`searchResults`](#parameter-tablessearchresults) | object | The search results for the table. |
+| [`totalRetentionInDays`](#parameter-tablestotalretentionindays) | int | The total retention in days for the table. |
+
+### Parameter: `tables.name`
+
+The name of the table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tables.plan`
+
+The plan for the table.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.restoredLogs`
+
+The restored logs for the table.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endRestoreTime`](#parameter-tablesrestoredlogsendrestoretime) | string | The timestamp to end the restore by (UTC). |
+| [`sourceTable`](#parameter-tablesrestoredlogssourcetable) | string | The table to restore data from. |
+| [`startRestoreTime`](#parameter-tablesrestoredlogsstartrestoretime) | string | The timestamp to start the restore from (UTC). |
+
+### Parameter: `tables.restoredLogs.endRestoreTime`
+
+The timestamp to end the restore by (UTC).
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.restoredLogs.sourceTable`
+
+The table to restore data from.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.restoredLogs.startRestoreTime`
+
+The timestamp to start the restore from (UTC).
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.retentionInDays`
+
+The retention in days for the table.
+
+- Required: No
+- Type: int
+
+### Parameter: `tables.roleAssignments`
+
+The role assignments for the table.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Monitoring Contributor'`
+  - `'Monitoring Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-tablesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-tablesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-tablesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-tablesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-tablesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-tablesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-tablesroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-tablesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `tables.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tables.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tables.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `tables.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `tables.schema`
+
+The schema for the table.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`columns`](#parameter-tablesschemacolumns) | array | A list of table custom columns. |
+| [`name`](#parameter-tablesschemaname) | string | The table name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-tablesschemadescription) | string | The table description. |
+| [`displayName`](#parameter-tablesschemadisplayname) | string | The table display name. |
+
+### Parameter: `tables.schema.columns`
+
+A list of table custom columns.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tablesschemacolumnsname) | string | The column name. |
+| [`type`](#parameter-tablesschemacolumnstype) | string | The column type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataTypeHint`](#parameter-tablesschemacolumnsdatatypehint) | string | The column data type logical hint. |
+| [`description`](#parameter-tablesschemacolumnsdescription) | string | The column description. |
+| [`displayName`](#parameter-tablesschemacolumnsdisplayname) | string | Column display name. |
+
+### Parameter: `tables.schema.columns.name`
+
+The column name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tables.schema.columns.type`
+
+The column type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'boolean'
+    'dateTime'
+    'dynamic'
+    'guid'
+    'int'
+    'long'
+    'real'
+    'string'
+  ]
+  ```
+
+### Parameter: `tables.schema.columns.dataTypeHint`
+
+The column data type logical hint.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'armPath'
+    'guid'
+    'ip'
+    'uri'
+  ]
+  ```
+
+### Parameter: `tables.schema.columns.description`
+
+The column description.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.schema.columns.displayName`
+
+Column display name.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.schema.name`
+
+The table name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tables.schema.description`
+
+The table description.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.schema.displayName`
+
+The table display name.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.searchResults`
+
+The search results for the table.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`query`](#parameter-tablessearchresultsquery) | string | The search job query. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-tablessearchresultsdescription) | string | The search description. |
+| [`endSearchTime`](#parameter-tablessearchresultsendsearchtime) | string | The timestamp to end the search by (UTC). |
+| [`limit`](#parameter-tablessearchresultslimit) | int | Limit the search job to return up to specified number of rows. |
+| [`startSearchTime`](#parameter-tablessearchresultsstartsearchtime) | string | The timestamp to start the search from (UTC). |
+
+### Parameter: `tables.searchResults.query`
+
+The search job query.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tables.searchResults.description`
+
+The search description.
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.searchResults.endSearchTime`
+
+The timestamp to end the search by (UTC).
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.searchResults.limit`
+
+Limit the search job to return up to specified number of rows.
+
+- Required: No
+- Type: int
+
+### Parameter: `tables.searchResults.startSearchTime`
+
+The timestamp to start the search from (UTC).
+
+- Required: No
+- Type: string
+
+### Parameter: `tables.totalRetentionInDays`
+
+The total retention in days for the table.
+
+- Required: No
+- Type: int
 
 ### Parameter: `tags`
 
@@ -3023,7 +3898,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 
