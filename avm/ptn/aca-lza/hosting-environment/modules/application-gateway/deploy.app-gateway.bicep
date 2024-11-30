@@ -102,7 +102,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 // => Certificates (supports only 1 for now)
 
 // @description('Adds the PFX file into Azure Key Vault for consumption by Application Gateway.')
-module appGatewayAddCertificates 'app-gateway-cert.bicep' = if (!empty(base64Certificate)) {
+module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
   name: take('appGatewayAddCertificates-Deployment-${uniqueString(resourceGroup().id)}', 64)
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
   params: {
@@ -214,29 +214,14 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
         }
       }
     ]
-    frontendPorts: (!empty(base64Certificate))
-      ? [
-          {
-            name: 'port_443'
-            properties: {
-              port: 443
-            }
-          }
-          {
-            name: 'port_80'
-            properties: {
-              port: 80
-            }
-          }
-        ]
-      : [
-          {
-            name: 'port_80'
-            properties: {
-              port: 80
-            }
-          }
-        ]
+    frontendPorts: [
+      {
+        name: 'port_443'
+        properties: {
+          port: 443
+        }
+      }
+    ]
     gatewayIPConfigurations: [
       {
         name: 'appGatewayIpConfig'
@@ -338,16 +323,14 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
       }
     ]
     sku: 'WAF_v2'
-    sslCertificates: (!empty(base64Certificate))
-      ? [
-          {
-            name: applicationGatewayFqdn
-            properties: {
-              keyVaultSecretId: appGatewayAddCertificates.outputs.SecretUri
-            }
-          }
-        ]
-      : []
+    sslCertificates: [
+      {
+        name: applicationGatewayFqdn
+        properties: {
+          keyVaultSecretId: appGatewayAddCertificates.outputs.SecretUri
+        }
+      }
+    ]
     tags: tags
     firewallPolicyId: appGwWafPolicy.outputs.resourceId
     sslPolicyType: 'Predefined'

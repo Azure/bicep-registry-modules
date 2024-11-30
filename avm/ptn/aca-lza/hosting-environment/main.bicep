@@ -90,8 +90,8 @@ param enableDaprInstrumentation bool
 @description('Optional. The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty.')
 param applicationGatewayFqdn string = ''
 
-@description('Optional. The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty.')
-param base64Certificate string = ''
+@description('Required. The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.')
+param base64Certificate string
 
 @description('Required. The name of the certificate key to use for Application Gateway certificate.')
 param applicationGatewayCertificateKeyName string

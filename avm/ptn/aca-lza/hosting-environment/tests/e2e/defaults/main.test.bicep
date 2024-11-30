@@ -48,6 +48,7 @@ module testDeployment '../../../main.bicep' = {
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     applicationGatewayCertificateKeyName: 'appgwcert'
+    base64Certificate: loadFileAsBase64('../../configuration/acahello.demoapp.com.pfx')
   }
 }
 
