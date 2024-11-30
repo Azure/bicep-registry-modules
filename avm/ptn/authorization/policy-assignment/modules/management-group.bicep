@@ -51,9 +51,6 @@ param nonComplianceMessages array = []
 ])
 param enforcementMode string = 'Default'
 
-@sys.description('Optional. The Target Scope for the Policy. The name of the management group for the policy assignment. If not provided, will use the current scope for deployment.')
-param managementGroupId string = managementGroup().name
-
 @sys.description('Optional. The policy excluded scopes.')
 param notScopes array = []
 
@@ -79,6 +76,10 @@ var identityVar = identity == 'SystemAssigned'
         }
       : null
 
+var finalArrayOfManagementGroupsToAssignRbacTo = identity == 'SystemAssigned'
+  ? union(additionalManagementGroupsIDsToAssignRbacTo, [managementGroup().name])
+  : []
+
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: name
   location: location
@@ -97,25 +98,14 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01'
   identity: identityVar
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
-    name: guid(managementGroupId, roleDefinitionId, location, name)
-    properties: {
-      roleDefinitionId: roleDefinitionId
-      principalId: policyAssignment.identity.principalId
-      principalType: 'ServicePrincipal'
-    }
-  }
-]
-
-module additionalManagementGroupRoleAssignments 'management-group-additional-rbac-asi-def-loop.bicep' = [
+module managementGroupRoleAssignments 'management-group-additional-rbac-asi-def-loop.bicep' = [
   for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo) && identity == 'SystemAssigned') {
     name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
       roleDefinitionId: roleDefinitionId
-      additionalManagementGroupsIDsToAssignRbacTo: additionalManagementGroupsIDsToAssignRbacTo
+      managementGroupsIDsToAssignRbacTo: finalArrayOfManagementGroupsToAssignRbacTo
     }
   }
 ]

@@ -113,7 +113,6 @@ module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscrip
     nonComplianceMessages: !empty(nonComplianceMessages) ? nonComplianceMessages : []
     enforcementMode: enforcementMode
     notScopes: !empty(notScopes) ? notScopes : []
-    managementGroupId: managementGroupId
     location: location
     overrides: !empty(overrides) ? overrides : []
     resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : []
