@@ -32,8 +32,8 @@ param keyVaultPrivateEndpointResourceId string?
 @description('Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).')
 param endpointType string?
 
-@description('Optional. The remote region for the other end of the Volume Replication.')
-param remoteVolumeRegion string?
+// @description('Optional. The remote region for the other end of the Volume Replication.')
+// param remoteVolumeRegion string?
 
 @description('Optional. The resource ID of the remote volume.')
 param remoteVolumeResourceId string?
@@ -193,8 +193,8 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
             replication: replicationEnabled
               ? {
                   endpointType: endpointType
-                  remoteVolumeRegion: remoteVolumeRegion
-                  remoteVolumeResourceId: remoteVolume.id
+                  remoteVolumeRegion: remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
+                  remoteVolumeResourceId: remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
                   replicationSchedule: replicationSchedule
                 }
               : {}

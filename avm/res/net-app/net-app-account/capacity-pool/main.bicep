@@ -117,7 +117,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       encryptionKeySource: volume.?encryptionKeySource ?? 'Microsoft.NetApp'
       keyVaultPrivateEndpointResourceId: volume.?keyVaultPrivateEndpointResourceId
       endpointType: volume.?endpointType
-      remoteVolumeRegion: volume.?remoteVolumeRegion
+      // remoteVolumeRegion: volume.?remoteVolumeRegion
       remoteVolumeResourceId: volume.?remoteVolumeResourceId
       replicationSchedule: volume.?replicationSchedule
       volumeType: volume.?volumeType
@@ -188,8 +188,8 @@ type volumeType = {
   @description('Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).')
   endpointType: string?
 
-  @description('Optional. The remote region for the other end of the Volume Replication.')
-  remoteVolumeRegion: string?
+  // @description('Optional. The remote region for the other end of the Volume Replication.')
+  // remoteVolumeRegion: string?
 
   @description('Optional. The resource ID of the remote volume.')
   remoteVolumeResourceId: string?
