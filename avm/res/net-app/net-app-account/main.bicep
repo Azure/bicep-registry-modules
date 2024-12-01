@@ -38,7 +38,7 @@ param encryptDCConnections bool = false
 param smbServerNamePrefix string = ''
 
 @description('Optional. Capacity pools to create.')
-param capacityPools array = []
+param capacityPools capacityPoolType[]?
 
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
@@ -72,6 +72,15 @@ param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The netapp backup vault to create & configure.')
+param backupVault backupVaultType?
+
+@description('Optional. The snapshot policies to create.')
+param snapshotPolicies snapshotPolicyType[]?
+
+@description('Optional. The backup policies to create.')
+param backupPolicies backupPolicyType[]?
 
 var activeDirectoryConnectionProperties = [
   {
@@ -220,14 +229,55 @@ resource netAppAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
+module netAppAccount_backupVault 'backup-vault/main.bicep' = if (!empty(backupVault)) {
+  name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVault'
+  params: {
+    netAppAccountName: netAppAccount.name
+    name: backupVault.?name
+    backups: backupVault.?backups
+    location: backupVault.?location ?? location
+  }
+}
+
+module netAppAccount_backupPolicies 'backup-policies/main.bicep' = [
+  for (backupPolicy, index) in (backupPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-ANFAccount-backupPolicy-${index}'
+    params: {
+      netAppAccountName: netAppAccount.name
+      name: backupPolicy.?name
+      dailyBackupsToKeep: backupPolicy.?dailyBackupsToKeep
+      monthlyBackupsToKeep: backupPolicy.?monthlyBackupsToKeep
+      weeklyBackupsToKeep: backupPolicy.?weeklyBackupsToKeep
+      enabled: backupPolicy.?enabled
+      location: backupPolicy.?location ?? location
+    }
+  }
+]
+
+module netAppAccount_snapshotPolicies 'snapshot-policies/main.bicep' = [
+  for (snapshotPolicy, index) in (snapshotPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-ANFAccount-snapshotPolicy-${index}'
+    params: {
+      netAppAccountName: netAppAccount.name
+      name: snapshotPolicy.?name
+      location: snapshotPolicy.?location ?? location
+      snapEnabled: snapshotPolicy.?snapEnabled
+      dailySchedule: snapshotPolicy.?dailySchedule
+      hourlySchedule: snapshotPolicy.?hourlySchedule
+      monthlySchedule: snapshotPolicy.?monthlySchedule
+      weeklySchedule: snapshotPolicy.?weeklySchedule
+    }
+  }
+]
+
 module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
-  for (capacityPool, index) in capacityPools: {
+  for (capacityPool, index) in (capacityPools ?? []): {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-CapPool-${index}'
     params: {
       netAppAccountName: netAppAccount.name
       name: capacityPool.name
-      location: location
       size: capacityPool.size
+      location: capacityPool.?location ?? location
       serviceLevel: capacityPool.?serviceLevel ?? 'Standard'
       qosType: capacityPool.?qosType ?? 'Auto'
       volumes: capacityPool.?volumes ?? []
@@ -236,6 +286,11 @@ module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
       encryptionType: capacityPool.?encryptionType ?? 'Single'
       tags: capacityPool.?tags ?? tags
     }
+    dependsOn: [
+      netAppAccount_backupVault
+      netAppAccount_backupPolicies
+      netAppAccount_snapshotPolicies
+    ]
   }
 ]
 
@@ -253,3 +308,97 @@ output location string = netAppAccount.location
 
 @description('The resource IDs of the volume created in the capacity pool.')
 output volumeResourceId string = (capacityPools != []) ? netAppAccount_capacityPools[0].outputs.volumeResourceId : ''
+
+// ================ //
+// Definitions      //
+// ================ //
+
+import { backupType } from 'backup-vault/main.bicep'
+@export()
+type backupVaultType = {
+  @description('Optional. The name of the backup vault.')
+  name: string?
+
+  @description('Optional. The list of backups to create.')
+  backups: backupType[]?
+
+  @description('Optional. Location of the backup vault.')
+  location: string?
+}
+
+import { volumeType } from 'capacity-pool/main.bicep'
+@export()
+type capacityPoolType = {
+  @description('Required. The name of the capacity pool.')
+  name: string
+
+  @description('Optional. Location of the pool volume.')
+  location: string?
+
+  @description('Optional. Tags for the capcity pool.')
+  tags: object?
+
+  @description('Optional. The pool service level.')
+  serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?
+
+  @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
+  size: int
+
+  @description('Optional. The qos type of the pool.')
+  qosType: ('Auto' | 'Manual')?
+
+  @description('Optional. List of volumnes to create in the capacity pool.')
+  volumes: volumeType[]?
+
+  @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
+  coolAccess: bool?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool.')
+  encryptionType: ('Single' | 'Double')?
+}
+
+import * as snapShotTypes from 'snapshot-policies/main.bicep'
+@export()
+type snapshotPolicyType = {
+  @description('Required. The name of the snapshot policy.')
+  name: string
+
+  @description('Optional. Location of the snapshot policy.')
+  location: string?
+
+  @description('Optional. Daily schedule for the snapshot policy.')
+  dailySchedule: snapShotTypes.dailyScheduleType?
+
+  @description('Optional. Hourly schedule for the snapshot policy.')
+  hourlySchedule: snapShotTypes.hourlyScheduleType?
+
+  @description('Optional. Monthly schedule for the snapshot policy.')
+  monthlySchedule: snapShotTypes.monthlyScheduleType?
+
+  @description('Optional. Weekly schedule for the snapshot policy.')
+  weeklySchedule: snapShotTypes.weeklyScheduleType?
+}
+
+@export()
+type backupPolicyType = {
+  @description('Optional. The name of the backup policy.')
+  name: string?
+
+  @description('Optional. The location of the backup policy.')
+  location: string?
+
+  @description('Optional. The daily backups to keep.')
+  dailyBackupsToKeep: int?
+
+  @description('Optional. The monthly backups to keep.')
+  monthlyBackupsToKeep: int?
+
+  @description('Optional. The weekly backups to keep.')
+  weeklyBackupsToKeep: int?
+
+  @description('Optional. Indicates whether the backup policy is enabled.')
+  enabled: bool?
+}

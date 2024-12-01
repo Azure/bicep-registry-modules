@@ -158,7 +158,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
             zones: [
-              '1'
+              1
             ]
           }
           {
@@ -181,7 +181,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
             zones: [
-              '1'
+              1
             ]
           }
         ]
@@ -296,7 +296,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
               "zones": [
-                "1"
+                1
               ]
             },
             {
@@ -319,7 +319,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
               "zones": [
-                "1"
+                1
               ]
             }
           ]
@@ -438,7 +438,7 @@ param capacityPools = [
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
         zones: [
-          '1'
+          1
         ]
       }
       {
@@ -461,7 +461,7 @@ param capacityPools = [
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
         zones: [
-          '1'
+          1
         ]
       }
     ]
@@ -574,9 +574,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zones: [
-              '1'
-            ]
           }
           {
             encryptionKeySource: '<encryptionKeySource>'
@@ -587,9 +584,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zones: [
-              '1'
-            ]
           }
         ]
       }
@@ -698,10 +692,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zones": [
-                "1"
-              ]
+              "usageThreshold": 107374182400
             },
             {
               "encryptionKeySource": "<encryptionKeySource>",
@@ -711,10 +702,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 "NFSv3"
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zones": [
-                "1"
-              ]
+              "usageThreshold": 107374182400
             }
           ]
         },
@@ -828,9 +816,6 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zones: [
-          '1'
-        ]
       }
       {
         encryptionKeySource: '<encryptionKeySource>'
@@ -841,9 +826,6 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zones: [
-          '1'
-        ]
       }
     ]
   }
@@ -986,6 +968,8 @@ param tags = {
 | :-- | :-- | :-- |
 | [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
 | [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
+| [`backupPolicies`](#parameter-backuppolicies) | array | The backup policies to create. |
+| [`backupVault`](#parameter-backupvault) | object | The netapp backup vault to create & configure. |
 | [`capacityPools`](#parameter-capacitypools) | array | Capacity pools to create. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`dnsServers`](#parameter-dnsservers) | string | Required if domainName is specified. Comma separated list of DNS server IP addresses (IPv4 only) required for the Active Directory (AD) domain join and SMB authentication operations to succeed. |
@@ -1004,6 +988,7 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverRootCACertificate`](#parameter-serverrootcacertificate) | string | A server Root certificate is required of ldapOverTLS is enabled. |
 | [`smbServerNamePrefix`](#parameter-smbservernameprefix) | string | Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes. |
+| [`snapshotPolicies`](#parameter-snapshotpolicies) | array | The snapshot policies to create. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
 ### Parameter: `name`
@@ -1029,13 +1014,699 @@ Enable AES encryption on the SMB Server.
 - Type: bool
 - Default: `False`
 
+### Parameter: `backupPolicies`
+
+The backup policies to create.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dailyBackupsToKeep`](#parameter-backuppoliciesdailybackupstokeep) | int | The daily backups to keep. |
+| [`enabled`](#parameter-backuppoliciesenabled) | bool | Indicates whether the backup policy is enabled. |
+| [`location`](#parameter-backuppolicieslocation) | string | The location of the backup policy. |
+| [`monthlyBackupsToKeep`](#parameter-backuppoliciesmonthlybackupstokeep) | int | The monthly backups to keep. |
+| [`name`](#parameter-backuppoliciesname) | string | The name of the backup policy. |
+| [`weeklyBackupsToKeep`](#parameter-backuppoliciesweeklybackupstokeep) | int | The weekly backups to keep. |
+
+### Parameter: `backupPolicies.dailyBackupsToKeep`
+
+The daily backups to keep.
+
+- Required: No
+- Type: int
+
+### Parameter: `backupPolicies.enabled`
+
+Indicates whether the backup policy is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `backupPolicies.location`
+
+The location of the backup policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupPolicies.monthlyBackupsToKeep`
+
+The monthly backups to keep.
+
+- Required: No
+- Type: int
+
+### Parameter: `backupPolicies.name`
+
+The name of the backup policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupPolicies.weeklyBackupsToKeep`
+
+The weekly backups to keep.
+
+- Required: No
+- Type: int
+
+### Parameter: `backupVault`
+
+The netapp backup vault to create & configure.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backups`](#parameter-backupvaultbackups) | array | The list of backups to create. |
+| [`location`](#parameter-backupvaultlocation) | string | Location of the backup vault. |
+| [`name`](#parameter-backupvaultname) | string | The name of the backup vault. |
+
+### Parameter: `backupVault.backups`
+
+The list of backups to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`volumeResourceId`](#parameter-backupvaultbackupsvolumeresourceid) | string | ResourceId used to identify the Volume. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`label`](#parameter-backupvaultbackupslabel) | string | Label for backup. |
+| [`name`](#parameter-backupvaultbackupsname) | string | The name of the backup. |
+| [`snapshotName`](#parameter-backupvaultbackupssnapshotname) | string | The name of the snapshot. |
+| [`useExistingSnapshot`](#parameter-backupvaultbackupsuseexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
+
+### Parameter: `backupVault.backups.volumeResourceId`
+
+ResourceId used to identify the Volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupVault.backups.label`
+
+Label for backup.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupVault.backups.name`
+
+The name of the backup.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupVault.backups.snapshotName`
+
+The name of the snapshot.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupVault.backups.useExistingSnapshot`
+
+Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.
+
+- Required: No
+- Type: bool
+
+### Parameter: `backupVault.location`
+
+Location of the backup vault.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupVault.name`
+
+The name of the backup vault.
+
+- Required: No
+- Type: string
+
 ### Parameter: `capacityPools`
 
 Capacity pools to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-capacitypoolsname) | string | The name of the capacity pool. |
+| [`size`](#parameter-capacitypoolssize) | int | Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`coolAccess`](#parameter-capacitypoolscoolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
+| [`encryptionType`](#parameter-capacitypoolsencryptiontype) | string | Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool. |
+| [`location`](#parameter-capacitypoolslocation) | string | Location of the pool volume. |
+| [`qosType`](#parameter-capacitypoolsqostype) | string | The qos type of the pool. |
+| [`roleAssignments`](#parameter-capacitypoolsroleassignments) | array | Array of role assignments to create. |
+| [`serviceLevel`](#parameter-capacitypoolsservicelevel) | string | The pool service level. |
+| [`tags`](#parameter-capacitypoolstags) | object | Tags for the capcity pool. |
+| [`volumes`](#parameter-capacitypoolsvolumes) | array | List of volumnes to create in the capacity pool. |
+
+### Parameter: `capacityPools.name`
+
+The name of the capacity pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.size`
+
+Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).
+
+- Required: Yes
+- Type: int
+
+### Parameter: `capacityPools.coolAccess`
+
+If enabled (true) the pool can contain cool Access enabled volumes.
+
+- Required: No
+- Type: bool
+
+### Parameter: `capacityPools.encryptionType`
+
+Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Double'
+    'Single'
+  ]
+  ```
+
+### Parameter: `capacityPools.location`
+
+Location of the pool volume.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.qosType`
+
+The qos type of the pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Auto'
+    'Manual'
+  ]
+  ```
+
+### Parameter: `capacityPools.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-capacitypoolsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-capacitypoolsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-capacitypoolsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-capacitypoolsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-capacitypoolsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-capacitypoolsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-capacitypoolsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-capacitypoolsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `capacityPools.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `capacityPools.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `capacityPools.serviceLevel`
+
+The pool service level.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium'
+    'Standard'
+    'StandardZRS'
+    'Ultra'
+  ]
+  ```
+
+### Parameter: `capacityPools.tags`
+
+Tags for the capcity pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `capacityPools.volumes`
+
+List of volumnes to create in the capacity pool.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-capacitypoolsvolumesname) | string | The name of the pool volume. |
+| [`replicationSchedule`](#parameter-capacitypoolsvolumesreplicationschedule) | string | The replication schedule for the volume. |
+| [`subnetResourceId`](#parameter-capacitypoolsvolumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
+| [`usageThreshold`](#parameter-capacitypoolsvolumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backupPolicyName`](#parameter-capacitypoolsvolumesbackuppolicyname) | string | The name of the backup policy to link. |
+| [`backupVaultResourceId`](#parameter-capacitypoolsvolumesbackupvaultresourceid) | string | The resource Id of the Backup Vault. |
+| [`coolAccess`](#parameter-capacitypoolsvolumescoolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
+| [`coolAccessRetrievalPolicy`](#parameter-capacitypoolsvolumescoolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
+| [`coolnessPeriod`](#parameter-capacitypoolsvolumescoolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
+| [`creationToken`](#parameter-capacitypoolsvolumescreationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
+| [`encryptionKeySource`](#parameter-capacitypoolsvolumesencryptionkeysource) | string | The source of the encryption key. |
+| [`endpointType`](#parameter-capacitypoolsvolumesendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst). |
+| [`exportPolicyRules`](#parameter-capacitypoolsvolumesexportpolicyrules) | array | Export policy rules. |
+| [`keyVaultPrivateEndpointResourceId`](#parameter-capacitypoolsvolumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
+| [`location`](#parameter-capacitypoolsvolumeslocation) | string | Location of the pool volume. |
+| [`networkFeatures`](#parameter-capacitypoolsvolumesnetworkfeatures) | string | Network feature for the volume. |
+| [`policyEnforced`](#parameter-capacitypoolsvolumespolicyenforced) | bool | If Backup policy is enforced. |
+| [`protocolTypes`](#parameter-capacitypoolsvolumesprotocoltypes) | array | Set of protocol types. |
+| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
+| [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesremotevolumeresourceid) | string | The resource ID of the remote volume. |
+| [`replicationEnabled`](#parameter-capacitypoolsvolumesreplicationenabled) | bool | Boolean to enable replication. |
+| [`roleAssignments`](#parameter-capacitypoolsvolumesroleassignments) | array | Array of role assignments to create. |
+| [`serviceLevel`](#parameter-capacitypoolsvolumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`snapshotPolicyName`](#parameter-capacitypoolsvolumessnapshotpolicyname) | string | The name of the snapshot policy to link. |
+| [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
+| [`zones`](#parameter-capacitypoolsvolumeszones) | array | Zone where the volume will be placed. |
+
+### Parameter: `capacityPools.volumes.name`
+
+The name of the pool volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.replicationSchedule`
+
+The replication schedule for the volume.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.subnetResourceId`
+
+The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.usageThreshold`
+
+Maximum storage quota allowed for a file system in bytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `capacityPools.volumes.backupPolicyName`
+
+The name of the backup policy to link.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.backupVaultResourceId`
+
+The resource Id of the Backup Vault.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.coolAccess`
+
+If enabled (true) the pool can contain cool Access enabled volumes.
+
+- Required: No
+- Type: bool
+
+### Parameter: `capacityPools.volumes.coolAccessRetrievalPolicy`
+
+Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.coolnessPeriod`
+
+Specifies the number of days after which data that is not accessed by clients will be tiered.
+
+- Required: No
+- Type: int
+
+### Parameter: `capacityPools.volumes.creationToken`
+
+A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.encryptionKeySource`
+
+The source of the encryption key.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.endpointType`
+
+Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.exportPolicyRules`
+
+Export policy rules.
+
+- Required: No
+- Type: array
+
+### Parameter: `capacityPools.volumes.keyVaultPrivateEndpointResourceId`
+
+The resource ID of the key vault private endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.location`
+
+Location of the pool volume.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.networkFeatures`
+
+Network feature for the volume.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Basic_Standard'
+    'Standard'
+    'Standard_Basic'
+  ]
+  ```
+
+### Parameter: `capacityPools.volumes.policyEnforced`
+
+If Backup policy is enforced.
+
+- Required: No
+- Type: bool
+
+### Parameter: `capacityPools.volumes.protocolTypes`
+
+Set of protocol types.
+
+- Required: No
+- Type: array
+
+### Parameter: `capacityPools.volumes.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.remoteVolumeResourceId`
+
+The resource ID of the remote volume.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.replicationEnabled`
+
+Boolean to enable replication.
+
+- Required: No
+- Type: bool
+
+### Parameter: `capacityPools.volumes.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-capacitypoolsvolumesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-capacitypoolsvolumesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-capacitypoolsvolumesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-capacitypoolsvolumesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-capacitypoolsvolumesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-capacitypoolsvolumesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-capacitypoolsvolumesroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-capacitypoolsvolumesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `capacityPools.volumes.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `capacityPools.volumes.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `capacityPools.volumes.serviceLevel`
+
+The pool service level. Must match the one of the parent capacity pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium'
+    'Standard'
+    'StandardZRS'
+    'Ultra'
+  ]
+  ```
+
+### Parameter: `capacityPools.volumes.snapshotPolicyName`
+
+The name of the snapshot policy to link.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.volumeType`
+
+The type of the volume. DataProtection volumes are used for replication.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.zones`
+
+Zone where the volume will be placed.
+
+- Required: No
+- Type: array
 
 ### Parameter: `customerManagedKey`
 
@@ -1348,6 +2019,227 @@ Required if domainName is specified. NetBIOS name of the SMB server. A computer 
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `snapshotPolicies`
+
+The snapshot policies to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-snapshotpoliciesname) | string | The name of the snapshot policy. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dailySchedule`](#parameter-snapshotpoliciesdailyschedule) | object | Daily schedule for the snapshot policy. |
+| [`hourlySchedule`](#parameter-snapshotpolicieshourlyschedule) | object | Hourly schedule for the snapshot policy. |
+| [`location`](#parameter-snapshotpolicieslocation) | string | Location of the snapshot policy. |
+| [`monthlySchedule`](#parameter-snapshotpoliciesmonthlyschedule) | object | Monthly schedule for the snapshot policy. |
+| [`weeklySchedule`](#parameter-snapshotpoliciesweeklyschedule) | object | Weekly schedule for the snapshot policy. |
+
+### Parameter: `snapshotPolicies.name`
+
+The name of the snapshot policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `snapshotPolicies.dailySchedule`
+
+Daily schedule for the snapshot policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hour`](#parameter-snapshotpoliciesdailyschedulehour) | int | The daily snapshot hour. |
+| [`minute`](#parameter-snapshotpoliciesdailyscheduleminute) | int | The daily snapshot minute. |
+| [`snapshotsToKeep`](#parameter-snapshotpoliciesdailyschedulesnapshotstokeep) | int | Daily snapshot count to keep. |
+| [`usedBytes`](#parameter-snapshotpoliciesdailyscheduleusedbytes) | int | Daily snapshot used bytes. |
+
+### Parameter: `snapshotPolicies.dailySchedule.hour`
+
+The daily snapshot hour.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.dailySchedule.minute`
+
+The daily snapshot minute.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.dailySchedule.snapshotsToKeep`
+
+Daily snapshot count to keep.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.dailySchedule.usedBytes`
+
+Daily snapshot used bytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.hourlySchedule`
+
+Hourly schedule for the snapshot policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minute`](#parameter-snapshotpolicieshourlyscheduleminute) | int | The hourly snapshot minute. |
+| [`snapshotsToKeep`](#parameter-snapshotpolicieshourlyschedulesnapshotstokeep) | int | Hourly snapshot count to keep. |
+| [`usedBytes`](#parameter-snapshotpolicieshourlyscheduleusedbytes) | int | Hourly snapshot used bytes. |
+
+### Parameter: `snapshotPolicies.hourlySchedule.minute`
+
+The hourly snapshot minute.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.hourlySchedule.snapshotsToKeep`
+
+Hourly snapshot count to keep.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.hourlySchedule.usedBytes`
+
+Hourly snapshot used bytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.location`
+
+Location of the snapshot policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `snapshotPolicies.monthlySchedule`
+
+Monthly schedule for the snapshot policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`daysOfMonth`](#parameter-snapshotpoliciesmonthlyscheduledaysofmonth) | string | The monthly snapshot day. |
+| [`hour`](#parameter-snapshotpoliciesmonthlyschedulehour) | int | The monthly snapshot hour. |
+| [`minute`](#parameter-snapshotpoliciesmonthlyscheduleminute) | int | The monthly snapshot minute. |
+| [`snapshotsToKeep`](#parameter-snapshotpoliciesmonthlyschedulesnapshotstokeep) | int | Monthly snapshot count to keep. |
+| [`usedBytes`](#parameter-snapshotpoliciesmonthlyscheduleusedbytes) | int | Monthly snapshot used bytes. |
+
+### Parameter: `snapshotPolicies.monthlySchedule.daysOfMonth`
+
+The monthly snapshot day.
+
+- Required: No
+- Type: string
+
+### Parameter: `snapshotPolicies.monthlySchedule.hour`
+
+The monthly snapshot hour.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.monthlySchedule.minute`
+
+The monthly snapshot minute.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.monthlySchedule.snapshotsToKeep`
+
+Monthly snapshot count to keep.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.monthlySchedule.usedBytes`
+
+Monthly snapshot used bytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.weeklySchedule`
+
+Weekly schedule for the snapshot policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`day`](#parameter-snapshotpoliciesweeklyscheduleday) | string | The weekly snapshot day. |
+| [`hour`](#parameter-snapshotpoliciesweeklyschedulehour) | int | The weekly snapshot hour. |
+| [`minute`](#parameter-snapshotpoliciesweeklyscheduleminute) | int | The weekly snapshot minute. |
+| [`snapshotsToKeep`](#parameter-snapshotpoliciesweeklyschedulesnapshotstokeep) | int | Weekly snapshot count to keep. |
+| [`usedBytes`](#parameter-snapshotpoliciesweeklyscheduleusedbytes) | int | Weekly snapshot used bytes. |
+
+### Parameter: `snapshotPolicies.weeklySchedule.day`
+
+The weekly snapshot day.
+
+- Required: No
+- Type: string
+
+### Parameter: `snapshotPolicies.weeklySchedule.hour`
+
+The weekly snapshot hour.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.weeklySchedule.minute`
+
+The weekly snapshot minute.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.weeklySchedule.snapshotsToKeep`
+
+Weekly snapshot count to keep.
+
+- Required: No
+- Type: int
+
+### Parameter: `snapshotPolicies.weeklySchedule.usedBytes`
+
+Weekly snapshot used bytes.
+
+- Required: No
+- Type: int
 
 ### Parameter: `tags`
 

@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = {
               }
             ]
             name: '${namePrefix}-${serviceShort}-vol-001'
-            zones: ['1']
+            zones: [1]
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
@@ -108,7 +108,7 @@ module testDeployment '../../../main.bicep' = {
               }
             ]
             name: '${namePrefix}-${serviceShort}-vol-002'
-            zones: ['1']
+            zones: [1]
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [

@@ -5,101 +5,62 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment.')
 param netAppAccountName string
 
-@description('Required. The name of the snapshot policy.')
-param snapshotPolicyName string
+@description('Optional. The name of the snapshot policy.')
+param name string = 'snapshotPolicy'
 
 @description('Optional. The location of the snapshot policy.')
-param snapshotPolicyLocation string = resourceGroup().location
+param location string = resourceGroup().location
 
-@description('Required. The daily snapshot hour.')
-param dailyHour int
+@description('Optional. Schedule for daily snapshots.')
+param dailySchedule dailyScheduleType = {
+  hour: 0
+  minute: 0
+  snapshotsToKeep: 0
+  usedBytes: 0
+}
 
-@description('Required. The daily snapshot minute.')
-param dailyMinute int
+@description('Optional. Schedule for hourly snapshots.')
+param hourlySchedule hourlyScheduleType = {
+  minute: 0
+  snapshotsToKeep: 0
+  usedBytes: 0
+}
 
-@description('Required. Daily snapshot count to keep.')
-param dailySnapshotsToKeep int
+@description('Optional. Schedule for monthly snapshots.')
+param monthlySchedule monthlyScheduleType = {
+  daysOfMonth: ''
+  hour: 0
+  minute: 0
+  snapshotsToKeep: 0
+  usedBytes: 0
+}
 
-@description('Required. Daily snapshot used bytes.')
-param dailyUsedBytes int
-
-@description('Required. The hourly snapshot minute.')
-param hourlyMinute int
-
-@description('Required. Hourly snapshot count to keep.')
-param hourlySnapshotsToKeep int
-
-@description('Required. Hourly snapshot used bytes.')
-param hourlyUsedBytes int
-
-@description('Required. The monthly snapshot day.')
-param daysOfMonth string
-
-@description('Required. The monthly snapshot hour.')
-param monthlyHour int
-
-@description('Required. The monthly snapshot minute.')
-param monthlyMinute int
-
-@description('Required. Monthly snapshot count to keep.')
-param monthlySnapshotsToKeep int
-
-@description('Required. Monthly snapshot used bytes.')
-param monthlyUsedBytes int
-
-@description('Required. The weekly snapshot day.')
-param weeklyDay string
-
-@description('Required. The weekly snapshot hour.')
-param weeklyHour int
-
-@description('Required. The weekly snapshot minute.')
-param weeklyMinute int
-
-@description('Required. Weekly snapshot count to keep.')
-param weeklySnapshotsToKeep int
-
-@description('Required. Weekly snapshot used bytes.')
-param weeklyUsedBytes int
+@description('Optional. Schedule for weekly snapshots.')
+param weeklySchedule weeklyScheduleType = {
+  day: ''
+  hour: 0
+  minute: 0
+  snapshotsToKeep: 0
+  usedBytes: 0
+}
 
 @description('Optional. Indicates whether the snapshot policy is enabled.')
-param snapEnabled bool = true
+param snapEnabled bool = false
 
 resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   name: netAppAccountName
 }
 
-resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024-03-01' = if (snapEnabled) {
-  name: snapshotPolicyName
+resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024-03-01' = {
+  name: name
   parent: netAppAccount
-  location: snapshotPolicyLocation
+  location: location
   properties: {
     enabled: snapEnabled
-    dailySchedule: {
-      hour: dailyHour
-      minute: dailyMinute
-      snapshotsToKeep: dailySnapshotsToKeep
-      usedBytes: dailyUsedBytes
-    }
-    hourlySchedule: {
-      minute: hourlyMinute
-      snapshotsToKeep: hourlySnapshotsToKeep
-      usedBytes: hourlyUsedBytes
-    }
-    monthlySchedule: {
-      daysOfMonth: daysOfMonth
-      hour: monthlyHour
-      minute: monthlyMinute
-      snapshotsToKeep: monthlySnapshotsToKeep
-      usedBytes: monthlyUsedBytes
-    }
-    weeklySchedule: {
-      day: weeklyDay
-      hour: weeklyHour
-      minute: weeklyMinute
-      snapshotsToKeep: weeklySnapshotsToKeep
-      usedBytes: weeklyUsedBytes
-    }
+    dailySchedule: dailySchedule
+    hourlySchedule: hourlySchedule
+    monthlySchedule: monthlySchedule
+    weeklySchedule: weeklySchedule
   }
 }
 
@@ -111,3 +72,70 @@ output name string = snapshotPolicies.name
 
 @description('The name of the Resource Group the Snapshot was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+type dailyScheduleType = {
+  @description('Optional. The daily snapshot hour.')
+  hour: int?
+
+  @description('Optional. The daily snapshot minute.')
+  minute: int?
+
+  @description('Optional. Daily snapshot count to keep.')
+  snapshotsToKeep: int?
+
+  @description('Optional. Daily snapshot used bytes.')
+  usedBytes: int?
+}
+
+@export()
+type hourlyScheduleType = {
+  @description('Optional. The hourly snapshot minute.')
+  minute: int?
+
+  @description('Optional. Hourly snapshot count to keep.')
+  snapshotsToKeep: int?
+
+  @description('Optional. Hourly snapshot used bytes.')
+  usedBytes: int?
+}
+
+@export()
+type monthlyScheduleType = {
+  @description('Optional. The monthly snapshot day.')
+  daysOfMonth: string?
+
+  @description('Optional. The monthly snapshot hour.')
+  hour: int?
+
+  @description('Optional. The monthly snapshot minute.')
+  minute: int?
+
+  @description('Optional. Monthly snapshot count to keep.')
+  snapshotsToKeep: int?
+
+  @description('Optional. Monthly snapshot used bytes.')
+  usedBytes: int?
+}
+
+@export()
+type weeklyScheduleType = {
+  @description('Optional. The weekly snapshot day.')
+  day: string?
+
+  @description('Optional. The weekly snapshot hour.')
+  hour: int?
+
+  @description('Optional. The weekly snapshot minute.')
+  minute: int?
+
+  @description('Optional. Weekly snapshot count to keep.')
+  snapshotsToKeep: int?
+
+  @description('Optional. Weekly snapshot used bytes.')
+  usedBytes: int?
+}
