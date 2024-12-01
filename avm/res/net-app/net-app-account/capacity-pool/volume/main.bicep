@@ -29,26 +29,14 @@ param encryptionKeySource string
 @description('Optional. The resource ID of the key vault private endpoint.')
 param keyVaultPrivateEndpointResourceId string?
 
-@description('Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).')
-param endpointType string?
-
 // @description('Optional. The remote region for the other end of the Volume Replication.')
 // param remoteVolumeRegion string?
-
-@description('Optional. The resource ID of the remote volume.')
-param remoteVolumeResourceId string?
-
-@description('Required. The replication schedule for the volume.')
-param replicationSchedule string?
 
 @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string?
 
 @description('Optional. Zone where the volume will be placed.')
 param zones int[] = [1, 2, 3]
-
-@description('Optional. If Backup policy is enforced.')
-param policyEnforced bool = false
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
@@ -83,21 +71,12 @@ param subnetResourceId string
 @description('Optional. Export policy rules.')
 param exportPolicyRules array = []
 
-@description('Optional. The name of the snapshot policy to link.')
-param snapshotPolicyName string?
-
-@description('Optional. The name of the backup policy to link.')
-param backupPolicyName string?
-
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. The resource Id of the Backup Vault.')
-param backupVaultResourceId string?
-
-@description('Optional. Boolean to enable replication.')
-param replicationEnabled bool = true
+@description('Optional. DataProtection type volumes include an object containing details of the replication')
+param dataProtection dataProtectionType?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -131,13 +110,17 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
     name: capacityPoolName
   }
 
-  resource backupPolicy 'backupPolicies@2024-03-01' existing = if (!empty(backupPolicyName)) {
-    name: backupPolicyName ?? 'dummyBackupPolicy'
+  resource backupPolicy 'backupPolicies@2024-03-01' existing = if (!empty(dataProtection.?backup)) {
+    name: dataProtection.?backup!.backupPolicyName
   }
 
-  resource snapshotPolicy 'snapshotPolicies@2024-03-01' existing = if (!empty(snapshotPolicyName)) {
-    name: snapshotPolicyName ?? 'dummySnapshotPolicy'
+  resource snapshotPolicy 'snapshotPolicies@2024-03-01' existing = if (!empty(dataProtection.?snapshot)) {
+    name: dataProtection.?snapshot!.snapshotPolicyName
   }
+}
+
+resource backupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' existing = if (!empty(dataProtection.?backup.backupVaultName)) {
+  name: dataProtection.?backup!.backupVaultName
 }
 
 resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
@@ -148,18 +131,18 @@ resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01'
   )
 }
 
-resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = if (!empty(remoteVolumeResourceId)) {
-  name: split((remoteVolumeResourceId ?? '//'), '/')[8]
+resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = if (!empty(dataProtection.?replication)) {
+  name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[8]
   scope: resourceGroup(
-    split((remoteVolumeResourceId ?? '//'), '/')[2],
-    split((remoteVolumeResourceId ?? '////'), '/')[4]
+    split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[2],
+    split((dataProtection.?replication.?remoteVolumeResourceId ?? '////'), '/')[4]
   )
 
   resource remoteCapacityPool 'capacityPools@2024-03-01' existing = {
-    name: split((remoteVolumeResourceId ?? '//'), '/')[10]
+    name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
 
     resource remoteVolume 'volumes@2024-07-01' existing = {
-      name: last(split(remoteVolumeResourceId ?? 'dummyVolumne', '/'))
+      name: last(split(dataProtection.?replication.?remoteVolumeResourceId ?? 'dummyVolumne', '/'))
     }
   }
 }
@@ -186,26 +169,26 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           keyVaultPrivateEndpointResourceId: keyVaultPrivateEndpoint.id
         }
       : {})
-    ...(volumeType != ''
+    ...(!empty(volumeType)
       ? {
           volumeType: volumeType
           dataProtection: {
-            replication: replicationEnabled
+            replication: !empty(dataProtection.?replication)
               ? {
-                  endpointType: endpointType
-                  remoteVolumeRegion: remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
+                  endpointType: dataProtection.?replication.endpointType
+                  remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
                   remoteVolumeResourceId: remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
-                  replicationSchedule: replicationSchedule
+                  replicationSchedule: dataProtection.?replication.replicationSchedule
                 }
               : {}
-            backup: !empty(backupPolicyName)
+            backup: !empty(dataProtection.?backup)
               ? {
                   backupPolicyId: netAppAccount::backupPolicy.id
-                  policyEnforced: policyEnforced
-                  backupVaultId: backupVaultResourceId
+                  policyEnforced: dataProtection.?backup.policyEnforced ?? false
+                  backupVaultId: backupVault.id
                 }
               : {}
-            snapshot: !empty(snapshotPolicyName)
+            snapshot: !empty(dataProtection.?snapshot)
               ? {
                   snapshotPolicyId: netAppAccount::snapshotPolicy.id
                 }
@@ -255,3 +238,52 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = volume.location
+
+// ================ //
+// Definitions      //
+// ================ //
+@export()
+@description('The type for the data protection properties.')
+type dataProtectionType = {
+  @description('Optional. Replication properties.')
+  replication: replicationType?
+
+  @description('Optional. Backup properties.')
+  backup: backupType?
+
+  @description('Optional. Snapshot properties.')
+  snapshot: snapshotType?
+}
+
+@description('The type for the replication properties.')
+type replicationType = {
+  @description('Required. Indicates whether the local volume is the source or destination for the Volume Replication.')
+  endpointType: ('dst' | 'src')
+
+  @description('Optional. The remote region for the other end of the Volume Replication.')
+  remoteVolumeRegion: string?
+
+  @description('Required. The resource ID of the remote volume.')
+  remoteVolumeResourceId: string
+
+  @description('Required. The replication schedule for the volume.')
+  replicationSchedule: ('_10minutely' | 'daily' | 'hourly')
+}
+
+@description('The type for the backup properties.')
+type backupType = {
+  @description('Required. The name of the backup policy to link.')
+  backupPolicyName: string
+
+  @description('Optional. Enable to enforce the policy.')
+  policyEnforced: bool
+
+  @description('Required. The name of the Backup Vault.')
+  backupVaultName: string
+}
+
+@description('The type for the snapshot properties.')
+type snapshotType = {
+  @description('Required. The name of the snapshot policy to link.')
+  snapshotPolicyName: string
+}

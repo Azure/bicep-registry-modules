@@ -260,6 +260,15 @@ module netAppAccount_snapshotPolicies 'snapshot-policies/main.bicep' = [
   }
 ]
 
+module netAppAccount_backupVault 'backup-vault/main.bicep' = if (!empty(backupVault)) {
+  name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVault'
+  params: {
+    netAppAccountName: netAppAccount.name
+    name: backupVault.?name
+    location: backupVault.?location ?? location
+  }
+}
+
 module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
   for (capacityPool, index) in (capacityPools ?? []): {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-CapPool-${index}'
@@ -279,12 +288,13 @@ module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
     dependsOn: [
       netAppAccount_backupPolicies
       netAppAccount_snapshotPolicies
+      netAppAccount_backupVault
     ]
   }
 ]
 
-module netAppAccount_backupVault 'backup-vault/main.bicep' = if (!empty(backupVault)) {
-  name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVault'
+module netAppAccount_backupVaultBackups 'backup-vault/main.bicep' = if (!empty(backupVault.?backups)) {
+  name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVault-Backups'
   params: {
     netAppAccountName: netAppAccount.name
     name: backupVault.?name

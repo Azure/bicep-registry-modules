@@ -85,8 +85,16 @@ module testDeployment '../../../main.bicep' = {
         volumes: [
           {
             name: '${namePrefix}-${serviceShort}-vol-001'
-            backupPolicyName: 'myBackupPolicy'
-            snapshotPolicyName: 'mySnapshotPolicy'
+            dataProtection: {
+              backup: {
+                backupPolicyName: 'myBackupPolicy'
+                backupVaultName: 'myVault'
+                policyEnforced: false
+              }
+              snapshot: {
+                snapshotPolicyName: 'mySnapshotPolicy'
+              }
+            }
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'

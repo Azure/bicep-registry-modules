@@ -116,16 +116,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       coolnessPeriod: volume.?coolnessPeriod ?? 0
       encryptionKeySource: volume.?encryptionKeySource ?? 'Microsoft.NetApp'
       keyVaultPrivateEndpointResourceId: volume.?keyVaultPrivateEndpointResourceId
-      endpointType: volume.?endpointType
-      // remoteVolumeRegion: volume.?remoteVolumeRegion
-      remoteVolumeResourceId: volume.?remoteVolumeResourceId
-      replicationSchedule: volume.?replicationSchedule
-      volumeType: volume.?volumeType
-      backupVaultResourceId: volume.?backupVaultResourceId
-      replicationEnabled: volume.?replicationEnabled
-      backupPolicyName: volume.?backupPolicyName
-      policyEnforced: volume.?policyEnforced
-      snapshotPolicyName: volume.?snapshotPolicyName
+      dataProtection: volume.?dataProtection
     }
   }
 ]
@@ -165,6 +156,7 @@ output volumeResourceId string = (volumes != []) ? capacityPool_volumes[0].outpu
 // Definitions      //
 // ================ //
 
+import { dataProtectionType } from 'volume/main.bicep'
 @export()
 type volumeType = {
   @description('Required. The name of the pool volume.')
@@ -185,29 +177,14 @@ type volumeType = {
   @description('Optional. The resource ID of the key vault private endpoint.')
   keyVaultPrivateEndpointResourceId: string?
 
-  @description('Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).')
-  endpointType: string?
-
-  // @description('Optional. The remote region for the other end of the Volume Replication.')
-  // remoteVolumeRegion: string?
-
-  @description('Optional. The resource ID of the remote volume.')
-  remoteVolumeResourceId: string?
-
-  @description('Required. The replication schedule for the volume.')
-  replicationSchedule: string?
-
-  @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
-  volumeType: string?
+  @description('Optional. DataProtection type volumes include an object containing details of the replication')
+  dataProtection: dataProtectionType?
 
   @description('Optional. Location of the pool volume.')
   location: string?
 
   @description('Optional. Zone where the volume will be placed.')
   zones: int[]?
-
-  @description('Optional. If Backup policy is enforced.')
-  policyEnforced: bool?
 
   @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
   serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?
@@ -230,18 +207,6 @@ type volumeType = {
   @description('Optional. Export policy rules.')
   exportPolicyRules: array?
 
-  @description('Optional. The name of the snapshot policy to link.')
-  snapshotPolicyName: string?
-
-  @description('Optional. The name of the backup policy to link.')
-  backupPolicyName: string?
-
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?
-
-  @description('Optional. The resource Id of the Backup Vault.')
-  backupVaultResourceId: string?
-
-  @description('Optional. Boolean to enable replication.')
-  replicationEnabled: bool?
 }
