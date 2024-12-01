@@ -65,6 +65,8 @@ module testDeployment '../../../main.bicep' = {
         name: 'mySnapshotPolicy'
         dailySchedule: {
           snapshotsToKeep: 1
+          minute: 0
+          hour: 0
         }
       }
     ]

@@ -58,15 +58,15 @@ output resourceGroupName string = resourceGroup().name
 
 @export()
 type dailyScheduleType = {
-  @description('Optional. The daily snapshot hour.')
+  @description('Required. The daily snapshot hour.')
   @minValue(0)
   @maxValue(23)
   hour: int?
 
-  @description('Optional. The daily snapshot minute.')
+  @description('Required. The daily snapshot minute.')
   @minValue(0)
   @maxValue(59)
-  minute: int?
+  minute: int
 
   @description('Required. Daily snapshot count to keep.')
   @minValue(1)
@@ -79,10 +79,10 @@ type dailyScheduleType = {
 
 @export()
 type hourlyScheduleType = {
-  @description('Optional. The hourly snapshot minute.')
+  @description('Required. The hourly snapshot minute.')
   @minValue(0)
   @maxValue(59)
-  minute: int?
+  minute: int
 
   @description('Required. Hourly snapshot count to keep.')
   @minValue(1)
