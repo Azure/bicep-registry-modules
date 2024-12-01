@@ -130,6 +130,14 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   resource capacityPool 'capacityPools@2024-03-01' existing = {
     name: capacityPoolName
   }
+
+  resource backupPolicy 'backupPolicies@2024-03-01' existing = if (!empty(backupPolicyName)) {
+    name: backupPolicyName ?? 'dummyBackupPolicy'
+  }
+
+  resource snapshotPolicy 'snapshotPolicies@2024-03-01' existing = if (!empty(snapshotPolicyName)) {
+    name: snapshotPolicyName ?? 'dummySnapshotPolicy'
+  }
 }
 
 resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
@@ -140,22 +148,21 @@ resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01'
   )
 }
 
-resource remoteVolume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-01' existing = if (!empty(remoteVolumeResourceId)) {
-  name: last(split(remoteVolumeResourceId ?? 'dummyVolumne', '/'))
+resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = if (!empty(remoteVolumeResourceId)) {
+  name: split((remoteVolumeResourceId ?? '//'), '/')[8]
   scope: resourceGroup(
     split((remoteVolumeResourceId ?? '//'), '/')[2],
     split((remoteVolumeResourceId ?? '////'), '/')[4]
   )
-}
 
-resource backupPolicy 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-01' existing = if (!empty(backupPolicyName)) {
-  name: backupPolicyName ?? 'dummyBackupPolicy'
-}
+  resource remoteCapacityPool 'capacityPools@2024-03-01' existing = {
+    name: split((remoteVolumeResourceId ?? '//'), '/')[10]
 
-resource snapshotPolicy 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024-03-01' existing = if (!empty(snapshotPolicyName)) {
-  name: snapshotPolicyName ?? 'dummySnapshotPolicy'
+    resource remoteVolume 'volumes@2024-07-01' existing = {
+      name: last(split(remoteVolumeResourceId ?? 'dummyVolumne', '/'))
+    }
+  }
 }
-
 resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
   name: split(subnetResourceId, '/')[8]
   scope: resourceGroup(split(subnetResourceId, '/')[2], split(subnetResourceId, '/')[4])
@@ -193,14 +200,14 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
               : {}
             backup: !empty(backupPolicyName)
               ? {
-                  backupPolicyId: backupPolicy.id
+                  backupPolicyId: netAppAccount::backupPolicy.id
                   policyEnforced: policyEnforced
                   backupVaultId: backupVaultResourceId
                 }
               : {}
             snapshot: !empty(snapshotPolicyName)
               ? {
-                  snapshotPolicyId: snapshotPolicy.id
+                  snapshotPolicyId: netAppAccount::snapshotPolicy.id
                 }
               : {}
           }
