@@ -58,13 +58,6 @@ module testDeployment '../../../main.bicep' = {
     capacityPools: [
       {
         name: '${namePrefix}-${serviceShort}-cp-001'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         serviceLevel: 'Premium'
         size: 4398046511104
         volumes: [
@@ -107,55 +100,6 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
       }
-      {
-        name: '${namePrefix}-${serviceShort}-cp-002'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        serviceLevel: 'Premium'
-        size: 4398046511104
-        volumes: []
-      }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId(
-          'Microsoft.Authorization/roleDefinitions',
-          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-        )
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Contact: 'test.user@testcompany.com'
-      CostCenter: '7890'
-      Environment: 'Non-Prod'
-      PurchaseOrder: '1234'
-      Role: 'DeploymentValidation'
-      ServiceName: 'DeploymentValidation'
-    }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }

@@ -31,7 +31,7 @@ module backupVault_backups 'backup/main.bicep' = [
       label: backup.?label
       snapshotName: backup.?snapshotName
       useExistingSnapshot: backup.?useExistingSnapshot
-      volumeResourceId: backup.volumeResourceId
+      volumeName: backup.volumeName
     }
   }
 ]
@@ -66,6 +66,6 @@ type backupType = {
   @description('Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.')
   useExistingSnapshot: bool?
 
-  @description('Required. ResourceId used to identify the Volume.')
-  volumeResourceId: string
+  @description('Required. The name used to identify the volume.')
+  volumeName: string
 }

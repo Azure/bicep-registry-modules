@@ -16,8 +16,8 @@ param snapshotName string = 'snapshot'
 @description('Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.')
 param useExistingSnapshot bool = false
 
-@description('Required. ResourceId used to identify the Volume.')
-param volumeResourceId string
+@description('Required. The name used to identify the volume.')
+param volumeName string
 
 resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   name: netAppAccountName
@@ -27,6 +27,10 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   }
 }
 
+resource remoteVolume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-01' existing = {
+  name: volumeName
+}
+
 resource backup 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01' = {
   name: name
   parent: netAppAccount::backupVault
@@ -34,7 +38,7 @@ resource backup 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01
     label: label
     snapshotName: snapshotName
     useExistingSnapshot: useExistingSnapshot
-    volumeResourceId: volumeResourceId
+    volumeResourceId: remoteVolume.name
   }
 }
 

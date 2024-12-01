@@ -229,16 +229,6 @@ resource netAppAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module netAppAccount_backupVault 'backup-vault/main.bicep' = if (!empty(backupVault)) {
-  name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVault'
-  params: {
-    netAppAccountName: netAppAccount.name
-    name: backupVault.?name
-    backups: backupVault.?backups
-    location: backupVault.?location ?? location
-  }
-}
-
 module netAppAccount_backupPolicies 'backup-policies/main.bicep' = [
   for (backupPolicy, index) in (backupPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-backupPolicy-${index}'
@@ -287,12 +277,24 @@ module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
       tags: capacityPool.?tags ?? tags
     }
     dependsOn: [
-      netAppAccount_backupVault
       netAppAccount_backupPolicies
       netAppAccount_snapshotPolicies
     ]
   }
 ]
+
+module netAppAccount_backupVault 'backup-vault/main.bicep' = if (!empty(backupVault)) {
+  name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVault'
+  params: {
+    netAppAccountName: netAppAccount.name
+    name: backupVault.?name
+    backups: backupVault.?backups
+    location: backupVault.?location ?? location
+  }
+  dependsOn: [
+    netAppAccount_capacityPools
+  ]
+}
 
 @description('The name of the NetApp account.')
 output name string = netAppAccount.name

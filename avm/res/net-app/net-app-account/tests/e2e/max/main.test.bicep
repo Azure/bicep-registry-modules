@@ -55,6 +55,16 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
+    backupPolicies: [
+      {
+        name: 'myBackupPolicy'
+      }
+    ]
+    snapshotPolicies: [
+      {
+        name: 'mySnapshotPolicy'
+      }
+    ]
     capacityPools: [
       {
         name: '${namePrefix}-${serviceShort}-cp-001'
@@ -69,6 +79,9 @@ module testDeployment '../../../main.bicep' = {
         size: 4398046511104
         volumes: [
           {
+            name: '${namePrefix}-${serviceShort}-vol-001'
+            backupPolicyName: 'myBackupPolicy'
+            snapshotPolicyName: 'mySnapshotPolicy'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -79,7 +92,6 @@ module testDeployment '../../../main.bicep' = {
                 unixReadWrite: true
               }
             ]
-            name: '${namePrefix}-${serviceShort}-vol-001'
             zones: [1]
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
@@ -133,6 +145,17 @@ module testDeployment '../../../main.bicep' = {
         volumes: []
       }
     ]
+    backupVault: {
+      name: 'myVault'
+      backups: [
+        {
+          name: 'myBackup'
+          snapshotName: 'aSnapshot'
+          volumeName: '${namePrefix}-${serviceShort}-vol-001'
+          label: 'myLabel'
+        }
+      ]
+    }
     roleAssignments: [
       {
         name: '18051111-2a33-4f8e-8b24-441aac1e6562'
@@ -170,7 +193,4 @@ module testDeployment '../../../main.bicep' = {
       ]
     }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }
