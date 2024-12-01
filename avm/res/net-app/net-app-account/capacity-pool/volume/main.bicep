@@ -176,10 +176,10 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
             replication: !empty(dataProtection.?replication)
               ? {
                   endpointType: dataProtection.?replication.endpointType
-                  remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? (!empty(dataProtection.?replication)
+                  remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? (!empty(dataProtection.?replication.?remoteVolumeResourceId)
                     ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
                     : '')
-                  remoteVolumeResourceId: !empty(dataProtection.?replication)
+                  remoteVolumeResourceId: !empty(dataProtection.?replication.?remoteVolumeResourceId)
                     ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
                     : ''
                   replicationSchedule: dataProtection.?replication.replicationSchedule
