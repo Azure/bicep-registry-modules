@@ -110,6 +110,10 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
     name: capacityPoolName
   }
 
+  resource backupVault 'backupVaults@2024-07-01' existing = if (!empty(dataProtection.?backup)) {
+    name: dataProtection.?backup!.backupVaultName
+  }
+
   resource backupPolicy 'backupPolicies@2024-03-01' existing = if (!empty(dataProtection.?backup)) {
     name: dataProtection.?backup!.backupPolicyName
   }
@@ -117,10 +121,6 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   resource snapshotPolicy 'snapshotPolicies@2024-03-01' existing = if (!empty(dataProtection.?snapshot)) {
     name: dataProtection.?snapshot!.snapshotPolicyName
   }
-}
-
-resource backupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' existing = if (!empty(dataProtection.?backup.backupVaultName)) {
-  name: dataProtection.?backup!.backupVaultName
 }
 
 resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
@@ -185,7 +185,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
               ? {
                   backupPolicyId: netAppAccount::backupPolicy.id
                   policyEnforced: dataProtection.?backup.policyEnforced ?? false
-                  backupVaultId: backupVault.id
+                  backupVaultId: netAppAccount::backupVault.id
                 }
               : {}
             snapshot: !empty(dataProtection.?snapshot)
