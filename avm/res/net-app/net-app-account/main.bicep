@@ -393,6 +393,8 @@ type backupPolicyType = {
   location: string?
 
   @description('Optional. The daily backups to keep.')
+  @minValue(2)
+  @maxValue(1019)
   dailyBackupsToKeep: int?
 
   @description('Optional. The monthly backups to keep.')

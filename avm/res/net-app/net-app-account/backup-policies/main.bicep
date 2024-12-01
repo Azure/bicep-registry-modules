@@ -12,7 +12,9 @@ param name string = 'backupPolicy'
 param location string = resourceGroup().location
 
 @description('Optional. The daily backups to keep.')
-param dailyBackupsToKeep int = 0
+@minValue(2)
+@maxValue(1019)
+param dailyBackupsToKeep int = 2
 
 @description('Optional. The monthly backups to keep.')
 param monthlyBackupsToKeep int = 0
