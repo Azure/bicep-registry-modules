@@ -63,6 +63,9 @@ module testDeployment '../../../main.bicep' = {
     snapshotPolicies: [
       {
         name: 'mySnapshotPolicy'
+        dailySchedule: {
+          snapshotsToKeep: 1
+        }
       }
     ]
     capacityPools: [

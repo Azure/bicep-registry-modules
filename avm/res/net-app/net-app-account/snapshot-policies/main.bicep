@@ -12,37 +12,16 @@ param name string = 'snapshotPolicy'
 param location string = resourceGroup().location
 
 @description('Optional. Schedule for hourly snapshots.')
-param hourlySchedule hourlyScheduleType = {
-  minute: 0
-  snapshotsToKeep: 0
-  usedBytes: 0
-}
+param hourlySchedule hourlyScheduleType?
 
 @description('Optional. Schedule for daily snapshots.')
-param dailySchedule dailyScheduleType = {
-  hour: 0
-  minute: 0
-  snapshotsToKeep: 0
-  usedBytes: 0
-}
+param dailySchedule dailyScheduleType?
 
 @description('Optional. Schedule for monthly snapshots.')
-param monthlySchedule monthlyScheduleType = {
-  daysOfMonth: ''
-  hour: 0
-  minute: 0
-  snapshotsToKeep: 0
-  usedBytes: 0
-}
+param monthlySchedule monthlyScheduleType?
 
 @description('Optional. Schedule for weekly snapshots.')
-param weeklySchedule weeklyScheduleType = {
-  day: ''
-  hour: 0
-  minute: 0
-  snapshotsToKeep: 0
-  usedBytes: 0
-}
+param weeklySchedule weeklyScheduleType?
 
 @description('Optional. Indicates whether the snapshot policy is enabled.')
 param snapEnabled bool = false
@@ -80,62 +59,84 @@ output resourceGroupName string = resourceGroup().name
 @export()
 type dailyScheduleType = {
   @description('Optional. The daily snapshot hour.')
+  @minValue(0)
+  @maxValue(23)
   hour: int?
 
   @description('Optional. The daily snapshot minute.')
+  @minValue(0)
+  @maxValue(59)
   minute: int?
 
-  @description('Optional. Daily snapshot count to keep.')
-  snapshotsToKeep: int?
+  @description('Required. Daily snapshot count to keep.')
+  @minValue(1)
+  @maxValue(255)
+  snapshotsToKeep: int
 
-  @description('Optional. Daily snapshot used bytes.')
+  @description('Optional. Resource size in bytes, current storage usage for the volume in bytes.')
   usedBytes: int?
 }
 
 @export()
 type hourlyScheduleType = {
   @description('Optional. The hourly snapshot minute.')
+  @minValue(0)
+  @maxValue(59)
   minute: int?
 
-  @description('Optional. Hourly snapshot count to keep.')
-  snapshotsToKeep: int?
+  @description('Required. Hourly snapshot count to keep.')
+  @minValue(1)
+  @maxValue(255)
+  snapshotsToKeep: int
 
-  @description('Optional. Hourly snapshot used bytes.')
-  usedBytes: int?
-}
-
-@export()
-type monthlyScheduleType = {
-  @description('Optional. The monthly snapshot day.')
-  daysOfMonth: string?
-
-  @description('Optional. The monthly snapshot hour.')
-  hour: int?
-
-  @description('Optional. The monthly snapshot minute.')
-  minute: int?
-
-  @description('Optional. Monthly snapshot count to keep.')
-  snapshotsToKeep: int?
-
-  @description('Optional. Monthly snapshot used bytes.')
+  @description('Optional. Resource size in bytes, current storage usage for the volume in bytes.')
   usedBytes: int?
 }
 
 @export()
 type weeklyScheduleType = {
-  @description('Optional. The weekly snapshot day.')
-  day: string?
+  @description('Required. The weekly snapshot day.')
+  day: ('Sunday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday')
 
-  @description('Optional. The weekly snapshot hour.')
-  hour: int?
+  @description('Required. The weekly snapshot hour.')
+  @minValue(0)
+  @maxValue(23)
+  hour: int
 
-  @description('Optional. The weekly snapshot minute.')
-  minute: int?
+  @description('Required. The weekly snapshot minute.')
+  @minValue(0)
+  @maxValue(59)
+  minute: int
 
-  @description('Optional. Weekly snapshot count to keep.')
-  snapshotsToKeep: int?
+  @description('Required. Weekly snapshot count to keep.')
+  @minValue(1)
+  @maxValue(255)
+  snapshotsToKeep: int
 
-  @description('Optional. Weekly snapshot used bytes.')
+  @description('Optional. Resource size in bytes, current storage usage for the volume in bytes.')
+  usedBytes: int?
+}
+
+@export()
+type monthlyScheduleType = {
+  @description('Required. Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., \'10,11,12\'.')
+  daysOfMonth: string
+
+  @description('Required. The monthly snapshot hour.')
+  @minValue(0)
+  @maxValue(23)
+  hour: int
+
+  @description('Required. The monthly snapshot minute.')
+  @minValue(0)
+  @maxValue(59)
+  minute: int
+
+  @description('Required. Monthly snapshot count to keep.')
+  @minValue(1)
+  @maxValue(255)
+  snapshotsToKeep: int
+
+  @description('Optional. Resource size in bytes, current storage usage for the volume in bytes.')
   usedBytes: int?
 }
