@@ -11,16 +11,16 @@ param name string = 'snapshotPolicy'
 @description('Optional. The location of the snapshot policy.')
 param location string = resourceGroup().location
 
-@description('Optional. Schedule for daily snapshots.')
-param dailySchedule dailyScheduleType = {
-  hour: 0
+@description('Optional. Schedule for hourly snapshots.')
+param hourlySchedule hourlyScheduleType = {
   minute: 0
   snapshotsToKeep: 0
   usedBytes: 0
 }
 
-@description('Optional. Schedule for hourly snapshots.')
-param hourlySchedule hourlyScheduleType = {
+@description('Optional. Schedule for daily snapshots.')
+param dailySchedule dailyScheduleType = {
+  hour: 0
   minute: 0
   snapshotsToKeep: 0
   usedBytes: 0
