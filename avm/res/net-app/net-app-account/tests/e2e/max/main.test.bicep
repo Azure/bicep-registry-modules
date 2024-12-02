@@ -103,6 +103,9 @@ module testDeployment '../../../main.bicep' = {
                 ruleIndex: 1
                 unixReadOnly: false
                 unixReadWrite: true
+                kerberos5iReadWrite: false
+                kerberos5pReadWrite: false
+                kerberos5ReadWrite: false
               }
             ]
             zones: [1]
