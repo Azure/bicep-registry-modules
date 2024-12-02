@@ -130,16 +130,16 @@ module testDeployment '../../../main.bicep' = {
             usageThreshold: 107374182400
           }
           {
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: false
-                nfsv41: true
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  nfsv41: true
+                  ruleIndex: 1
+                  unixReadWrite: true
+                }
+              ]
+            }
             name: 'vol-002'
             zones: [1]
             networkFeatures: 'Standard'

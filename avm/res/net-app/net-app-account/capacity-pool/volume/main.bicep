@@ -348,7 +348,7 @@ type exportPolicyType = {
     @description('Optional. Allows NFSv3 protocol. Enable only for NFSv3 type volumes.')
     nfsv3: bool?
 
-    @description('Optional. 	Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.')
+    @description('Optional. Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.')
     nfsv41: bool?
 
     @description('Optional. Read only access.')
