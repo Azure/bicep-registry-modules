@@ -151,7 +151,7 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existi
     split((dataProtection.?replication.?remoteVolumeResourceId ?? '////'), '/')[4]
   )
 
-  resource remoteCapacityPool 'capacityPools@2024-03-01' existing = {
+  resource remoteCapacityPool 'capacityPools@2024-03-01' existing = if (!empty(dataProtection.?replication)) {
     name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
 
     resource remoteVolume 'volumes@2024-07-01' existing = {
@@ -189,10 +189,10 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
             replication: !empty(dataProtection.?replication)
               ? {
                   endpointType: dataProtection.?replication.endpointType
-                  // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? (!empty(dataProtection.?replication.?remoteVolumeResourceId)
-                  //   ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
-                  //   : '')
-                  remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? ''
+                  remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? (!empty(dataProtection.?replication.?remoteVolumeResourceId)
+                    ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
+                    : '')
+                  // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? ''
                   remoteVolumeResourceId: !empty(dataProtection.?replication.?remoteVolumeResourceId)
                     ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
                     : ''
