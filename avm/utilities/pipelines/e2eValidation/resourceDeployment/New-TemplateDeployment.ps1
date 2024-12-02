@@ -141,7 +141,7 @@ function Start-MonitorDeploymentForScope {
                     if ($operation.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Warning "Deployment failed with provisioning state [$($operation.ProvisioningState -join ',')]. Error Message: [$($operation.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
-                    } elseif ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -ne 'OK') {
+                    } elseif ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -notin 'OK', 'Created') {
                         Write-Debug "Deployment operation [$($operation.operationId)] is still running with provisioning state [$($operation.ProvisioningState)] and status code [$($operation.StatusCode)]"
                         $runningDeployment = $true
                     } else {
@@ -185,7 +185,7 @@ function Start-MonitorDeploymentForScope {
                     if ($operation.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Warning "Deployment failed with provisioning state [$($operation.ProvisioningState -join ',')]. Error Message: [$($operation.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
-                    } elseif ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -ne 'OK') {
+                    } elseif ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -notin 'OK', 'Created') {
                         Write-Debug "Deployment operation [$($operation.operationId)] is still running with provisioning state [$($operation.ProvisioningState)] and status code [$($operation.StatusCode)]"
                         $runningDeployment = $true
                     } else {
