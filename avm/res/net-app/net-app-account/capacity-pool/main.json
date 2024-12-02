@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "3730866544800685451"
+      "version": "0.28.1.47646",
+      "templateHash": "1366013891071224264"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -442,8 +442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "9959623373940729999"
+              "version": "0.28.1.47646",
+              "templateHash": "14328317888842072540"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -911,7 +911,32 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. Boolean to enable replication."
+                "description": "Optional. Enables replication."
+              }
+            },
+            "smbEncryption": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume."
+              }
+            },
+            "smbContinuouslyAvailable": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
+              }
+            },
+            "smbNonBrowsable": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
               }
             }
           },
@@ -952,7 +977,7 @@
               "apiVersion": "2024-03-01",
               "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
               "location": "[parameters('location')]",
-              "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', parameters('backupVaultResourceId')), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject()))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
+              "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', parameters('backupVaultResourceId')), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject()))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'))))]",
               "zones": "[parameters('zones')]",
               "dependsOn": [
                 "backupPolicies",
@@ -1041,8 +1066,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "7603372758800543114"
+                      "version": "0.28.1.47646",
+                      "templateHash": "15255260076655189132"
                     },
                     "name": "Azure NetApp Files Backup Policy",
                     "description": "This module deploys a Backup Policy for Azure NetApp File.",
@@ -1212,8 +1237,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "16621946217169811859"
+                      "version": "0.28.1.47646",
+                      "templateHash": "17696312984702506132"
                     },
                     "name": "Azure NetApp Files Snapshot Policy",
                     "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",

@@ -90,9 +90,12 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`policyEnforced`](#parameter-policyenforced) | bool | If Backup policy is enforced. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
-| [`replicationEnabled`](#parameter-replicationenabled) | bool | Boolean to enable replication. |
+| [`replicationEnabled`](#parameter-replicationenabled) | bool | Enables replication. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
+| [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
+| [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
 | [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
@@ -496,7 +499,7 @@ Set of protocol types.
 
 ### Parameter: `replicationEnabled`
 
-Boolean to enable replication.
+Enables replication.
 
 - Required: No
 - Type: bool
@@ -619,6 +622,37 @@ The pool service level. Must match the one of the parent capacity pool.
     'Standard'
     'StandardZRS'
     'Ultra'
+  ]
+  ```
+
+### Parameter: `smbContinuouslyAvailable`
+
+Enables continuously available share property for SMB volume. Only applicable for SMB volume.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `smbEncryption`
+
+Enables SMB encryption. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `smbNonBrowsable`
+
+Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
   ]
   ```
 
