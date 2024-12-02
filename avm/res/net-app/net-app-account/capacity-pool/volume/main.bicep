@@ -78,6 +78,19 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. DataProtection type volumes include an object containing details of the replication')
 param dataProtection dataProtectionType?
 
+@description('Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume.')
+param smbEncryption bool = false
+
+@description('Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume.')
+param smbContinuouslyAvailable bool = false
+
+@description('Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param smbNonBrowsable string = 'Disabled'
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -211,6 +224,9 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           rules: exportPolicyRules
         }
       : null
+    smbContinuouslyAvailable: smbContinuouslyAvailable
+    smbEncryption: smbEncryption
+    smbNonBrowsable: smbNonBrowsable
   }
   zones: map(zones, zone => '${zone}')
 }

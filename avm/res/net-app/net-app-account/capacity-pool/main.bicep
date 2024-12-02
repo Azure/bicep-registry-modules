@@ -209,4 +209,13 @@ type volumeType = {
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume.')
+  smbEncryption: bool?
+
+  @description('Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume.')
+  smbContinuouslyAvailable: bool?
+
+  @description('Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
+  smbNonBrowsable: ('Enabled' | 'Disabled')?
 }

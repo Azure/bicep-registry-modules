@@ -2848,7 +2848,32 @@
                       "type": "bool",
                       "defaultValue": true,
                       "metadata": {
-                        "description": "Optional. Boolean to enable replication."
+                        "description": "Optional. Enables replication."
+                      }
+                    },
+                    "smbEncryption": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume."
+                      }
+                    },
+                    "smbContinuouslyAvailable": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
+                      }
+                    },
+                    "smbNonBrowsable": {
+                      "type": "string",
+                      "defaultValue": "Disabled",
+                      "allowedValues": [
+                        "Enabled",
+                        "Disabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
                       }
                     }
                   },

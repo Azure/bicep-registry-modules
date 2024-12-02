@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "4640478091742810721"
+      "version": "0.28.1.47646",
+      "templateHash": "14328317888842072540"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -297,7 +297,32 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Boolean to enable replication."
+        "description": "Optional. Enables replication."
+      }
+    },
+    "smbEncryption": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume."
+      }
+    },
+    "smbContinuouslyAvailable": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
+      }
+    },
+    "smbNonBrowsable": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
       }
     }
   },
@@ -389,8 +414,8 @@
       "apiVersion": "2024-03-01",
       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
       "location": "[parameters('location')]",
-      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '////'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), 'dummyVault'), '/')))), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('remoteVolumeResourceId'), '//'), '/')[2], split(coalesce(parameters('remoteVolumeResourceId'), '////'), '/')[4]), 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes', split(last(split(coalesce(parameters('remoteVolumeResourceId'), 'dummyVolumne'), '/')), '/')[0], split(last(split(coalesce(parameters('remoteVolumeResourceId'), 'dummyVolumne'), '/')), '/')[1], split(last(split(coalesce(parameters('remoteVolumeResourceId'), 'dummyVolumne'), '/')), '/')[2]), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(not(empty(parameters('backupPolicyName'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', split(coalesce(parameters('backupPolicyName'), 'dummyBackupPolicy'), '/')[0], split(coalesce(parameters('backupPolicyName'), 'dummyBackupPolicy'), '/')[1]), 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', parameters('backupVaultResourceId')), createObject()), 'snapshot', if(not(empty(parameters('snapshotPolicyName'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', split(coalesce(parameters('snapshotPolicyName'), 'dummySnapshotPolicy'), '/')[0], split(coalesce(parameters('snapshotPolicyName'), 'dummySnapshotPolicy'), '/')[1])), createObject()))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
-      "zones": "[map(parameters('zones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', parameters('backupVaultResourceId')), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject()))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'))))]",
+      "zones": "[parameters('zones')]",
       "dependsOn": [
         "backupPolicy",
         "netAppAccount::capacityPool",
@@ -421,6 +446,413 @@
       "dependsOn": [
         "volume"
       ]
+    },
+    "backupPolicies": {
+      "condition": "[parameters('backupEnabled')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('backupPolicyName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "dailyBackupsToKeep": {
+            "value": "[parameters('dailyBackupsToKeep')]"
+          },
+          "monthlyBackupsToKeep": {
+            "value": "[parameters('monthlyBackupsToKeep')]"
+          },
+          "netAppAccountName": {
+            "value": "[parameters('netAppAccountName')]"
+          },
+          "weeklyBackupsToKeep": {
+            "value": "[parameters('weeklyBackupsToKeep')]"
+          },
+          "backupEnabled": {
+            "value": "[parameters('backupEnabled')]"
+          },
+          "backupPolicyLocation": {
+            "value": "[parameters('backupPolicyLocation')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "15255260076655189132"
+            },
+            "name": "Azure NetApp Files Backup Policy",
+            "description": "This module deploys a Backup Policy for Azure NetApp File.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "netAppAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "backupPolicyName": {
+              "type": "string",
+              "defaultValue": "backupPolicy",
+              "metadata": {
+                "description": "Optional. The name of the backup policy."
+              }
+            },
+            "backupPolicyLocation": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the backup policy. Required if the template is used in a standalone deployment."
+              }
+            },
+            "dailyBackupsToKeep": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The daily backups to keep."
+              }
+            },
+            "monthlyBackupsToKeep": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The monthly backups to keep."
+              }
+            },
+            "weeklyBackupsToKeep": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The weekly backups to keep."
+              }
+            },
+            "backupEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether the backup policy is enabled."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",
+              "location": "[parameters('backupPolicyLocation')]",
+              "properties": {
+                "dailyBackupsToKeep": "[parameters('dailyBackupsToKeep')]",
+                "enabled": "[parameters('backupEnabled')]",
+                "monthlyBackupsToKeep": "[parameters('monthlyBackupsToKeep')]",
+                "weeklyBackupsToKeep": "[parameters('weeklyBackupsToKeep')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource IDs of the backup Policy created within volume."
+              },
+              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), parameters('backupPolicyName'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Backup Policy."
+              },
+              "value": "[parameters('backupPolicyName')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the Backup Policy was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      }
+    },
+    "snapshotPolicies": {
+      "condition": "[parameters('snapEnabled')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[uniqueString(parameters('snapshotPolicyName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "dailyHour": {
+            "value": "[parameters('dailyHour')]"
+          },
+          "dailyMinute": {
+            "value": "[parameters('dailyMinute')]"
+          },
+          "dailySnapshotsToKeep": {
+            "value": "[parameters('dailySnapshotsToKeep')]"
+          },
+          "dailyUsedBytes": {
+            "value": "[parameters('dailyUsedBytes')]"
+          },
+          "daysOfMonth": {
+            "value": "[parameters('daysOfMonth')]"
+          },
+          "hourlyMinute": {
+            "value": "[parameters('hourlyMinute')]"
+          },
+          "hourlySnapshotsToKeep": {
+            "value": "[parameters('hourlySnapshotsToKeep')]"
+          },
+          "hourlyUsedBytes": {
+            "value": "[parameters('hourlyUsedBytes')]"
+          },
+          "monthlyHour": {
+            "value": "[parameters('monthlyHour')]"
+          },
+          "monthlyMinute": {
+            "value": "[parameters('monthlyMinute')]"
+          },
+          "monthlySnapshotsToKeep": {
+            "value": "[parameters('monthlySnapshotsToKeep')]"
+          },
+          "monthlyUsedBytes": {
+            "value": "[parameters('monthlyUsedBytes')]"
+          },
+          "netAppAccountName": {
+            "value": "[parameters('netAppAccountName')]"
+          },
+          "snapshotPolicyName": {
+            "value": "[parameters('snapshotPolicyName')]"
+          },
+          "weeklyDay": {
+            "value": "[parameters('weeklyDay')]"
+          },
+          "weeklyHour": {
+            "value": "[parameters('weeklyHour')]"
+          },
+          "weeklyMinute": {
+            "value": "[parameters('weeklyMinute')]"
+          },
+          "weeklySnapshotsToKeep": {
+            "value": "[parameters('weeklySnapshotsToKeep')]"
+          },
+          "weeklyUsedBytes": {
+            "value": "[parameters('weeklyUsedBytes')]"
+          },
+          "snapshotPolicyLocation": {
+            "value": "[parameters('snapshotPolicyLocation')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "17696312984702506132"
+            },
+            "name": "Azure NetApp Files Snapshot Policy",
+            "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "netAppAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "snapshotPolicyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the snapshot policy."
+              }
+            },
+            "snapshotPolicyLocation": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. The location of the snapshot policy."
+              }
+            },
+            "dailyHour": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The daily snapshot hour."
+              }
+            },
+            "dailyMinute": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The daily snapshot minute."
+              }
+            },
+            "dailySnapshotsToKeep": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Daily snapshot count to keep."
+              }
+            },
+            "dailyUsedBytes": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Daily snapshot used bytes."
+              }
+            },
+            "hourlyMinute": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The hourly snapshot minute."
+              }
+            },
+            "hourlySnapshotsToKeep": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Hourly snapshot count to keep."
+              }
+            },
+            "hourlyUsedBytes": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Hourly snapshot used bytes."
+              }
+            },
+            "daysOfMonth": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The monthly snapshot day."
+              }
+            },
+            "monthlyHour": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The monthly snapshot hour."
+              }
+            },
+            "monthlyMinute": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The monthly snapshot minute."
+              }
+            },
+            "monthlySnapshotsToKeep": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Monthly snapshot count to keep."
+              }
+            },
+            "monthlyUsedBytes": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Monthly snapshot used bytes."
+              }
+            },
+            "weeklyDay": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The weekly snapshot day."
+              }
+            },
+            "weeklyHour": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The weekly snapshot hour."
+              }
+            },
+            "weeklyMinute": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The weekly snapshot minute."
+              }
+            },
+            "weeklySnapshotsToKeep": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Weekly snapshot count to keep."
+              }
+            },
+            "weeklyUsedBytes": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Weekly snapshot used bytes."
+              }
+            },
+            "snapEnabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Indicates whether the snapshot policy is enabled."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('snapEnabled')]",
+              "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]",
+              "location": "[parameters('snapshotPolicyLocation')]",
+              "properties": {
+                "enabled": "[parameters('snapEnabled')]",
+                "dailySchedule": {
+                  "hour": "[parameters('dailyHour')]",
+                  "minute": "[parameters('dailyMinute')]",
+                  "snapshotsToKeep": "[parameters('dailySnapshotsToKeep')]",
+                  "usedBytes": "[parameters('dailyUsedBytes')]"
+                },
+                "hourlySchedule": {
+                  "minute": "[parameters('hourlyMinute')]",
+                  "snapshotsToKeep": "[parameters('hourlySnapshotsToKeep')]",
+                  "usedBytes": "[parameters('hourlyUsedBytes')]"
+                },
+                "monthlySchedule": {
+                  "daysOfMonth": "[parameters('daysOfMonth')]",
+                  "hour": "[parameters('monthlyHour')]",
+                  "minute": "[parameters('monthlyMinute')]",
+                  "snapshotsToKeep": "[parameters('monthlySnapshotsToKeep')]",
+                  "usedBytes": "[parameters('monthlyUsedBytes')]"
+                },
+                "weeklySchedule": {
+                  "day": "[parameters('weeklyDay')]",
+                  "hour": "[parameters('weeklyHour')]",
+                  "minute": "[parameters('weeklyMinute')]",
+                  "snapshotsToKeep": "[parameters('weeklySnapshotsToKeep')]",
+                  "usedBytes": "[parameters('weeklyUsedBytes')]"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource IDs of the snapshot Policy created within volume."
+              },
+              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Backup Policy."
+              },
+              "value": "[parameters('snapshotPolicyName')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the Snapshot was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      }
     }
   },
   "outputs": {

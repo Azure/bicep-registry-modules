@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using Customer-Managed-Keys with System-Assigned identity'
+metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.'
 
 // ========== //
 // Parameters //
@@ -15,10 +15,13 @@ param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShor
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kcwaf'
+param serviceShort string = 'kcsencr'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
 
 // ============ //
 // Dependencies //
@@ -33,10 +36,12 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    kustoClusterName: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -50,27 +55,14 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}0001'
-      location: resourceLocation
+      name: nestedDependencies.outputs.kustoClusterName
       sku: 'Standard_E2ads_v5'
-      tier: 'Standard'
-      capacity: 3
-      enableAutoScale: true
-      autoScaleMin: 3
-      autoScaleMax: 10
-      enableZoneRedundant: true
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
-      enableDiskEncryption: true
-      enableDoubleEncryption: true
-      enablePublicNetworkAccess: false
-      enableAutoStop: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Env: 'test'
+      managedIdentities: {
+        systemAssigned: true
       }
     }
   }

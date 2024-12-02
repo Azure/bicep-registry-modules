@@ -52,13 +52,13 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`policyEnforced`](#parameter-policyenforced) | bool | If Backup policy is enforced. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
-| [`remoteVolumeRegion`](#parameter-remotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
-| [`remoteVolumeResourceId`](#parameter-remotevolumeresourceid) | string | The resource ID of the remote volume. |
-| [`replicationEnabled`](#parameter-replicationenabled) | bool | Boolean to enable replication. |
+| [`replicationEnabled`](#parameter-replicationenabled) | bool | Enables replication. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
-| [`snapshotPolicyName`](#parameter-snapshotpolicyname) | string | The name of the snapshot policy to link. |
-| [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
+| [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
+| [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
+| [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
 | [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `coolAccess`
@@ -233,7 +233,7 @@ The resource ID of the remote volume.
 
 ### Parameter: `replicationEnabled`
 
-Boolean to enable replication.
+Enables replication.
 
 - Required: No
 - Type: bool
@@ -359,7 +359,38 @@ The pool service level. Must match the one of the parent capacity pool.
   ]
   ```
 
-### Parameter: `snapshotPolicyName`
+### Parameter: `smbContinuouslyAvailable`
+
+Enables continuously available share property for SMB volume. Only applicable for SMB volume.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `smbEncryption`
+
+Enables SMB encryption. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `smbNonBrowsable`
+
+Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `snapEnabled`
 
 The name of the snapshot policy to link.
 
