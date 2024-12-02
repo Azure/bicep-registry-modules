@@ -68,8 +68,8 @@ param protocolTypes array = []
 @description('Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.')
 param subnetResourceId string
 
-@description('Optional. Export policy rules.')
-param exportPolicyRules array = []
+@description('Optional. The export policy rules.')
+param exportPolicy exportPolicyType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
@@ -222,11 +222,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
     usageThreshold: usageThreshold
     protocolTypes: protocolTypes
     subnetId: vnet::subnet.id
-    exportPolicy: !empty(exportPolicyRules)
-      ? {
-          rules: exportPolicyRules
-        }
-      : null
+    exportPolicy: exportPolicy
     smbContinuouslyAvailable: smbContinuouslyAvailable
     smbEncryption: smbEncryption
     smbNonBrowsable: smbNonBrowsable
@@ -309,4 +305,56 @@ type backupType = {
 type snapshotType = {
   @description('Required. The name of the snapshot policy to link.')
   snapshotPolicyName: string
+}
+
+@export()
+@description('The type for export policy rules.')
+type exportPolicyType = {
+  @description('Required. The Export policy rules.')
+  rules: {
+    @description('Required. Order index')
+    ruleIndex: int
+
+    @description('Optional. Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names.')
+    allowedClients: string?
+
+    @description('Optional. This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own.')
+    chownMode: ('Restricted' | 'Unrestricted')?
+
+    @description('Optional. Allows CIFS protocol.')
+    cifs: bool?
+
+    @description('Optional. Has root access to volume.')
+    hasRootAccess: bool?
+
+    @description('Optional. Kerberos5 Read only access.')
+    kerberos5ReadOnly: bool?
+
+    @description('Optional. Kerberos5 Read and write access')
+    kerberos5ReadWrite: bool?
+
+    @description('Optional. Kerberos5i Read only access.')
+    kerberos5iReadOnly: bool?
+
+    @description('Optional. Kerberos5i Read and write access.')
+    kerberos5iReadWrite: bool?
+
+    @description('Optional. Kerberos5p Read only access.')
+    kerberos5pReadOnly: bool?
+
+    @description('Optional. Kerberos5p Read and write access')
+    kerberos5pReadWrite: bool?
+
+    @description('Optional. Allows NFSv3 protocol. Enable only for NFSv3 type volumes.')
+    nfsv3: bool?
+
+    @description('Optional. 	Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.')
+    nfsv41: bool?
+
+    @description('Optional. Read only access.')
+    unixReadOnly: bool?
+
+    @description('Optional. Read and write access.')
+    unixReadWrite: bool?
+  }[]
 }

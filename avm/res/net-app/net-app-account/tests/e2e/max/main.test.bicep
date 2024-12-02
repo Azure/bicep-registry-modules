@@ -95,19 +95,24 @@ module testDeployment '../../../main.bicep' = {
                 snapshotPolicyName: 'mySnapshotPolicy'
               }
             }
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: false
-                nfsv41: true
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-                kerberos5iReadWrite: false
-                kerberos5pReadWrite: false
-                kerberos5ReadWrite: false
-              }
-            ]
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  nfsv3: false
+                  nfsv41: true
+                  ruleIndex: 1
+                  unixReadOnly: false
+                  unixReadWrite: true
+                  kerberos5iReadOnly: false
+                  kerberos5pReadOnly: false
+                  kerberos5ReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadWrite: false
+                  kerberos5ReadWrite: false
+                }
+              ]
+            }
             zones: [1]
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource

@@ -107,7 +107,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       usageThreshold: volume.usageThreshold
       protocolTypes: volume.?protocolTypes
       subnetResourceId: volume.subnetResourceId
-      exportPolicyRules: volume.?exportPolicyRules
+      exportPolicy: volume.?exportPolicy
       roleAssignments: volume.?roleAssignments
       networkFeatures: volume.?networkFeatures
       zones: volume.?zones
@@ -156,7 +156,7 @@ output volumeResourceId string = (volumes != []) ? capacityPool_volumes[0].outpu
 // Definitions      //
 // ================ //
 
-import { dataProtectionType } from 'volume/main.bicep'
+import { dataProtectionType, exportPolicyType } from 'volume/main.bicep'
 @export()
 type volumeType = {
   @description('Required. The name of the pool volume.')
@@ -205,7 +205,7 @@ type volumeType = {
   subnetResourceId: string
 
   @description('Optional. Export policy rules.')
-  exportPolicyRules: array?
+  exportPolicy: exportPolicyType?
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?
