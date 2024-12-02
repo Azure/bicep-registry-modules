@@ -404,7 +404,6 @@ param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the P2S VPN Gateway. |
 | [`virtualHubResourceId`](#parameter-virtualhubresourceid) | string | The resource ID of the gateways virtual hub. |
-| [`vpnServerConfigurationResourceId`](#parameter-vpnserverconfigurationresourceid) | string | The resource ID of the VPN Server Configuration. |
 
 **Conditional parameters**
 
@@ -431,6 +430,7 @@ param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 | [`vnetRoutesStaticRoutes`](#parameter-vnetroutesstaticroutes) | object | The routes from the virtual hub to virtual network connections. |
 | [`vpnClientAddressPoolAddressPrefixes`](#parameter-vpnclientaddresspooladdressprefixes) | array | The address prefixes for the VPN Client Address Pool. |
 | [`vpnGatewayScaleUnit`](#parameter-vpngatewayscaleunit) | int | The scale unit of the VPN Gateway. |
+| [`vpnServerConfigurationResourceId`](#parameter-vpnserverconfigurationresourceid) | string | The resource ID of the VPN Server Configuration. |
 
 ### Parameter: `name`
 
@@ -444,13 +444,6 @@ The name of the P2S VPN Gateway.
 The resource ID of the gateways virtual hub.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `vpnServerConfigurationResourceId`
-
-The resource ID of the VPN Server Configuration.
-
-- Required: No
 - Type: string
 
 ### Parameter: `associatedRouteTableName`
@@ -669,6 +662,13 @@ The scale unit of the VPN Gateway.
 
 - Required: No
 - Type: int
+
+### Parameter: `vpnServerConfigurationResourceId`
+
+The resource ID of the VPN Server Configuration.
+
+- Required: No
+- Type: string
 
 ## Outputs
 

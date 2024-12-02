@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "6406689213274600377"
+      "templateHash": "7595899390827367592"
     },
     "name": "P2S VPN Gateway",
     "description": "This module deploys a Virtual Hub P2S Gateway.",
@@ -218,7 +218,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Required. The resource ID of the VPN Server Configuration."
+        "description": "Optional. The resource ID of the VPN Server Configuration."
       }
     },
     "tags": {

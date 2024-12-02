@@ -51,7 +51,7 @@ param virtualHubResourceId string
 @description('Optional. The scale unit of the VPN Gateway.')
 param vpnGatewayScaleUnit int?
 
-@description('Required. The resource ID of the VPN Server Configuration.')
+@description('Optional. The resource ID of the VPN Server Configuration.')
 param vpnServerConfigurationResourceId string?
 
 @description('Optional. Tags of the resource.')
