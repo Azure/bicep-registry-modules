@@ -4,14 +4,15 @@ metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'tenant'
 
-@description('Type definition for management group child containing management group ID and subscription IDs.')
+@description('Required. Type definition for management group child containing management group ID and subscription IDs.')
 type typMgChild = {
-  @description('The ID of the management group.')
+  @description('Required.The ID of the management group.')
   managementGroupId: string
-  @description('The list of subscription IDs.')
+  @description('Required.The list of subscription IDs.')
   subscriptionIds: string[]
 }[]
 
+@description('Required. A UDR used to define as many objects as required to configure the appropriate Management Group ID to Subscription ID(s) association.')
 param parSubscriptionPlacement typMgChild = [
   {
     managementGroupId: 'Group1'
@@ -32,3 +33,6 @@ module customsubscriptionPlacement './modules/helper.bicep' = [
     }
   }
 ]
+
+@description('Output of number of management groups that have been configured with subscription placements ')
+output subscriptionPlacementSummary string = 'Subscription placements have been configured for ${length(parSubscriptionPlacement)} management groups.'

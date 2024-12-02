@@ -5,6 +5,15 @@ param managementGroupId string
 @description('The list of subscription IDs.')
 param subscriptionIds array
 
-resource customsubscriptionPlacement 'Microsoft.Management/managementGroups/subscriptions@2023-04-01' = [for (subscription,i) in subscriptionIds: {
-  name: '${managementGroupId}/${subscription}'
-}]
+resource customsubscriptionPlacement 'Microsoft.Management/managementGroups/subscriptions@2023-04-01' = [
+  for (subscription, i) in subscriptionIds: {
+    name: '${managementGroupId}/${subscription}'
+  }
+]
+
+@description('Output of the subscription placements.')
+output subscriptionPlacements array = [
+  for (subscription, i) in subscriptionIds: {
+    name: '${managementGroupId}/${subscription}'
+  }
+]
