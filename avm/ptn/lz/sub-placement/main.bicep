@@ -12,6 +12,7 @@ type typMgChild = {
   subscriptionIds: string[]
 }[]
 
+@description('Required. Type definition for management group child containing management group ID and subscription IDs.')
 param parSubscriptionPlacement typMgChild = [
   {
     managementGroupId: 'Group1'
@@ -33,5 +34,5 @@ module customsubscriptionPlacement './modules/helper.bicep' = [
   }
 ]
 
-@description('Output of number of management groups that have been configured with subscription placements ')
+@description('Output of number of management groups that have been configured with subscription placements.')
 output subscriptionPlacementSummary string = 'Subscription placements have been configured for ${length(parSubscriptionPlacement)} management groups.'
