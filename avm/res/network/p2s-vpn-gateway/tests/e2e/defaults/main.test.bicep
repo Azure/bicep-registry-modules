@@ -53,13 +53,11 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}p2sVpnGw'
-      location: resourceLocation
       p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
-      /*vpnClientAddressPoolAddressPrefixes: [
+      vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
       ]
       associatedRouteTableName: 'defaultRouteTable'
-      */
       virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
       vpnServerConfigurationResourceId: nestedDependencies.outputs.vpnServerConfigurationResourceId
     }

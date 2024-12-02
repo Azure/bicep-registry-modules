@@ -44,15 +44,14 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'vscminp2sVpnGw'
-    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     virtualHubResourceId: '<virtualHubResourceId>'
-    vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
     // Non-required parameters
     associatedRouteTableName: 'defaultRouteTable'
-    location: '<location>'
+    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     vpnClientAddressPoolAddressPrefixes: [
       '10.0.2.0/24'
     ]
+    vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
   }
 }
 ```
@@ -73,26 +72,23 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "name": {
       "value": "vscminp2sVpnGw"
     },
-    "p2SConnectionConfigurationsName": {
-      "value": "p2sConnectionConfig1"
-    },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
-    },
-    "vpnServerConfigurationResourceId": {
-      "value": "<vpnServerConfigurationResourceId>"
     },
     // Non-required parameters
     "associatedRouteTableName": {
       "value": "defaultRouteTable"
     },
-    "location": {
-      "value": "<location>"
+    "p2SConnectionConfigurationsName": {
+      "value": "p2sConnectionConfig1"
     },
     "vpnClientAddressPoolAddressPrefixes": {
       "value": [
         "10.0.2.0/24"
       ]
+    },
+    "vpnServerConfigurationResourceId": {
+      "value": "<vpnServerConfigurationResourceId>"
     }
   }
 }
@@ -110,15 +106,14 @@ using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
 param name = 'vscminp2sVpnGw'
-p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param virtualHubResourceId = '<virtualHubResourceId>'
-param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 // Non-required parameters
 param associatedRouteTableName = 'defaultRouteTable'
-param location = '<location>'
+p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param vpnClientAddressPoolAddressPrefixes = [
   '10.0.2.0/24'
 ]
+param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 ```
 
 </details>
@@ -139,9 +134,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'vscmaxp2sVpnGw'
-    p2SConnectionConfigurationsName: 'p2sConnectionConfig'
     virtualHubResourceId: '<virtualHubResourceId>'
-    vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
     // Non-required parameters
     associatedRouteTableName: 'noneRouteTable'
     customDnsServers: [
@@ -153,6 +146,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     isRoutingPreferenceInternet: false
     location: '<location>'
     outboundRouteMapResourceId: '<outboundRouteMapResourceId>'
+    p2SConnectionConfigurationsName: 'p2sConnectionConfig'
     propagatedLabelNames: '<propagatedLabelNames>'
     propagatedRouteTableNames: [
       '<hubRouteTableName>'
@@ -162,6 +156,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
       '10.0.3.0/24'
     ]
     vpnGatewayScaleUnit: 5
+    vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
   }
 }
 ```
@@ -182,14 +177,8 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "name": {
       "value": "vscmaxp2sVpnGw"
     },
-    "p2SConnectionConfigurationsName": {
-      "value": "p2sConnectionConfig"
-    },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
-    },
-    "vpnServerConfigurationResourceId": {
-      "value": "<vpnServerConfigurationResourceId>"
     },
     // Non-required parameters
     "associatedRouteTableName": {
@@ -216,6 +205,9 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "outboundRouteMapResourceId": {
       "value": "<outboundRouteMapResourceId>"
     },
+    "p2SConnectionConfigurationsName": {
+      "value": "p2sConnectionConfig"
+    },
     "propagatedLabelNames": {
       "value": "<propagatedLabelNames>"
     },
@@ -232,6 +224,9 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     },
     "vpnGatewayScaleUnit": {
       "value": 5
+    },
+    "vpnServerConfigurationResourceId": {
+      "value": "<vpnServerConfigurationResourceId>"
     }
   }
 }
@@ -249,9 +244,7 @@ using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
 param name = 'vscmaxp2sVpnGw'
-p2SConnectionConfigurationsName: 'p2sConnectionConfig'
 param virtualHubResourceId = '<virtualHubResourceId>'
-param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 // Non-required parameters
 param associatedRouteTableName = 'noneRouteTable'
 param customDnsServers = [
@@ -263,6 +256,7 @@ param inboundRouteMapResourceId = '<inboundRouteMapResourceId>'
 param isRoutingPreferenceInternet = false
 param location = '<location>'
 param outboundRouteMapResourceId = '<outboundRouteMapResourceId>'
+p2SConnectionConfigurationsName: 'p2sConnectionConfig'
 param propagatedLabelNames = '<propagatedLabelNames>'
 param propagatedRouteTableNames = [
   '<hubRouteTableName>'
@@ -272,6 +266,7 @@ param vpnClientAddressPoolAddressPrefixes = [
   '10.0.3.0/24'
 ]
 param vpnGatewayScaleUnit = 5
+param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 ```
 
 </details>
@@ -292,14 +287,13 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'vscwafp2sVpnGw'
-    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     virtualHubResourceId: '<virtualHubResourceId>'
-    vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
     // Non-required parameters
     associatedRouteTableName: 'defaultRouteTable'
     enableInternetSecurity: true
     isRoutingPreferenceInternet: false
     location: '<location>'
+    p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     tags: {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
@@ -308,6 +302,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     vpnClientAddressPoolAddressPrefixes: [
       '10.0.2.0/24'
     ]
+    vpnServerConfigurationResourceId: '<vpnServerConfigurationResourceId>'
   }
 }
 ```
@@ -328,14 +323,8 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "name": {
       "value": "vscwafp2sVpnGw"
     },
-    "p2SConnectionConfigurationsName": {
-      "value": "p2sConnectionConfig1"
-    },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
-    },
-    "vpnServerConfigurationResourceId": {
-      "value": "<vpnServerConfigurationResourceId>"
     },
     // Non-required parameters
     "associatedRouteTableName": {
@@ -350,6 +339,9 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "p2SConnectionConfigurationsName": {
+      "value": "p2sConnectionConfig1"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -363,6 +355,9 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
       "value": [
         "10.0.2.0/24"
       ]
+    },
+    "vpnServerConfigurationResourceId": {
+      "value": "<vpnServerConfigurationResourceId>"
     }
   }
 }
@@ -380,14 +375,13 @@ using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
 param name = 'vscwafp2sVpnGw'
-p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param virtualHubResourceId = '<virtualHubResourceId>'
-param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 // Non-required parameters
 param associatedRouteTableName = 'defaultRouteTable'
 param enableInternetSecurity = true
 param isRoutingPreferenceInternet = false
 param location = '<location>'
+p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param tags = {
   Environment: 'Non-Prod'
   Role: 'DeploymentValidation'
@@ -396,6 +390,7 @@ param vnetRoutesStaticRoutes = {}
 param vpnClientAddressPoolAddressPrefixes = [
   '10.0.2.0/24'
 ]
+param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 ```
 
 </details>
@@ -408,7 +403,6 @@ param vpnClientAddressPoolAddressPrefixes = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the P2S VPN Gateway. |
-| [`p2SConnectionConfigurationsName`](#parameter-p2sconnectionconfigurationsname) | string | The name of the P2S Connection Configuration. |
 | [`virtualHubResourceId`](#parameter-virtualhubresourceid) | string | The resource ID of the gateways virtual hub. |
 | [`vpnServerConfigurationResourceId`](#parameter-vpnserverconfigurationresourceid) | string | The resource ID of the VPN Server Configuration. |
 
@@ -430,6 +424,7 @@ param vpnClientAddressPoolAddressPrefixes = [
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`outboundRouteMapResourceId`](#parameter-outboundroutemapresourceid) | string | The Resource ID of the outbound route map. |
+| [`p2SConnectionConfigurationsName`](#parameter-p2sconnectionconfigurationsname) | string | The name of the P2S Connection Configuration. |
 | [`propagatedLabelNames`](#parameter-propagatedlabelnames) | array | The Labels to propagate routes to. |
 | [`propagatedRouteTableNames`](#parameter-propagatedroutetablenames) | array | The names of the route tables to propagate to the P2S VPN Gateway. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -440,13 +435,6 @@ param vpnClientAddressPoolAddressPrefixes = [
 ### Parameter: `name`
 
 The name of the P2S VPN Gateway.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `p2SConnectionConfigurationsName`
-
-The name of the P2S Connection Configuration.
 
 - Required: Yes
 - Type: string
@@ -462,7 +450,7 @@ The resource ID of the gateways virtual hub.
 
 The resource ID of the VPN Server Configuration.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `associatedRouteTableName`
@@ -563,6 +551,13 @@ Specify the name of lock.
 ### Parameter: `outboundRouteMapResourceId`
 
 The Resource ID of the outbound route map.
+
+- Required: No
+- Type: string
+
+### Parameter: `p2SConnectionConfigurationsName`
+
+The name of the P2S Connection Configuration.
 
 - Required: No
 - Type: string

@@ -24,8 +24,8 @@ param customDnsServers array = []
 @description('Optional. The routing preference for the P2S VPN Gateway, Internet or Microsoft network.')
 param isRoutingPreferenceInternet bool?
 
-@description('Required. The name of the P2S Connection Configuration.')
-param p2SConnectionConfigurationsName string
+@description('Optional. The name of the P2S Connection Configuration.')
+param p2SConnectionConfigurationsName string?
 
 @description('Optional. Enable/Disable Internet Security; "Propagate Default Route".')
 param enableInternetSecurity bool?
@@ -52,7 +52,7 @@ param virtualHubResourceId string
 param vpnGatewayScaleUnit int?
 
 @description('Required. The resource ID of the VPN Server Configuration.')
-param vpnServerConfigurationResourceId string
+param vpnServerConfigurationResourceId string?
 
 @description('Optional. Tags of the resource.')
 param tags object?
