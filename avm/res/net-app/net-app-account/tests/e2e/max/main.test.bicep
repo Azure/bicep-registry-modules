@@ -72,7 +72,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     capacityPools: [
       {
-        name: '${namePrefix}-${serviceShort}-cp-001'
+        name: 'cp-001'
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -84,7 +84,7 @@ module testDeployment '../../../main.bicep' = {
         size: 4398046511104
         volumes: [
           {
-            name: '${namePrefix}-${serviceShort}-vol-001'
+            name: 'vol-001'
             dataProtection: {
               backup: {
                 backupPolicyName: 'myBackupPolicy'
@@ -132,7 +132,7 @@ module testDeployment '../../../main.bicep' = {
                 unixReadWrite: true
               }
             ]
-            name: '${namePrefix}-${serviceShort}-vol-002'
+            name: 'vol-002'
             zones: [1]
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
@@ -148,7 +148,7 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
       {
-        name: '${namePrefix}-${serviceShort}-cp-002'
+        name: 'cp-002'
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -167,7 +167,8 @@ module testDeployment '../../../main.bicep' = {
         {
           name: 'myBackup'
           snapshotName: 'aSnapshot'
-          volumeName: '${namePrefix}-${serviceShort}-vol-001'
+          volumeName: 'vol-001'
+          capacityPoolName: 'cp-001'
           label: 'myLabel'
         }
       ]

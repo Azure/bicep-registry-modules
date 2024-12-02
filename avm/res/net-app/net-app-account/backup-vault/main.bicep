@@ -32,6 +32,7 @@ module backupVault_backups 'backup/main.bicep' = [
       snapshotName: backup.?snapshotName
       useExistingSnapshot: backup.?useExistingSnapshot
       volumeName: backup.volumeName
+      capacityPoolName: backup.capacityPoolName
     }
   }
 ]
@@ -66,6 +67,9 @@ type backupType = {
   @description('Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.')
   useExistingSnapshot: bool?
 
-  @description('Required. The name used to identify the volume.')
+  @description('Required. The name of the volume to backup.')
   volumeName: string
+
+  @description('Required. The name of the capacity pool containing the volumne.')
+  capacityPoolName: string
 }
