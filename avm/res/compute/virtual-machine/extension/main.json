@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "1194243367873711347"
+      "version": "0.31.92.45157",
+      "templateHash": "688718350646227538"
     },
     "name": "Virtual Machine Extensions",
     "description": "This module deploys a Virtual Machine Extension.",
@@ -121,7 +121,10 @@
         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
         "suppressFailures": "[parameters('supressFailures')]"
-      }
+      },
+      "dependsOn": [
+        "virtualMachine"
+      ]
     }
   },
   "outputs": {
