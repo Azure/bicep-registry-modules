@@ -79,6 +79,8 @@ module testDeployment '../../../main.bicep' = [
       siteConfig: {
         healthCheckPath: '/healthz'
         alwaysOn: true
+        minTlsVersion: '1.2'
+        ftpsState: 'FtpsOnly'
         metadata: [
           {
             name: 'CURRENT_STACK'
