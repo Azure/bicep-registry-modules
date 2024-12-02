@@ -11,7 +11,7 @@ param netAppAccountName string
 param label string?
 
 @description('Optional. The name of the snapshot.')
-param snapshotName string = 'snapshot'
+param snapshotName string?
 
 @description('Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.')
 param useExistingSnapshot bool = false

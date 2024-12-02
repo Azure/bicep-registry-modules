@@ -165,10 +165,15 @@ module testDeployment '../../../main.bicep' = {
       name: 'myVault'
       backups: [
         {
-          name: 'myBackup'
-          snapshotName: 'aSnapshot'
           volumeName: 'vol-001'
           capacityPoolName: 'cp-001'
+        }
+        {
+          name: 'myBackup02'
+          capacityPoolName: 'cp-001'
+          snapshotName: 'aSnapshot'
+          volumeName: 'vol-002'
+          useExistingSnapshot: true
           label: 'myLabel'
         }
       ]
