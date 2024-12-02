@@ -23,10 +23,12 @@ param parSubscriptionPlacement typMgChild = [
   }
 ]
 
-module customsubscriptionPlacement './modules/helper.bicep' = [for (subscriptionPlacement, index) in parSubscriptionPlacement: {
-  name: 'subPlacement${index}'
-  params: {
-    managementGroupId: subscriptionPlacement.managementGroupId
-    subscriptionIds: subscriptionPlacement.subscriptionIds
+module customsubscriptionPlacement './modules/helper.bicep' = [
+  for (subscriptionPlacement, index) in parSubscriptionPlacement: {
+    name: 'subPlacement${index}'
+    params: {
+      managementGroupId: subscriptionPlacement.managementGroupId
+      subscriptionIds: subscriptionPlacement.subscriptionIds
+    }
   }
-}]
+]

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "name": "subscription-placement",
+    "description": "This module allows for placement of subscriptions to management groups",
+    "owner": "Azure/module-maintainers"
+  },
+  "targetScope": "tenant",
+  "parameters": {
+    "parSubscriptionPlacement": {
+      "type": "array",
+      "metadata": {
+        "description": "Type definition for management group child containing management group ID and subscription IDs."
+      },
+      "defaultValue": [
+        {
+          "managementGroupId": "Group1",
+          "subscriptionIds": ["SUBID1", "SUBID2"]
+        },
+        {
+          "managementGroupId": "Group2",
+          "subscriptionIds": ["SUBID3"]
+        }
+      ]
+    }
+  },
+  "resources": [
+    {
+      "name": "[format('subPlacement{0}', copyIndex())]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "./modules/helper.bicep",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "managementGroupId": "[copyIndex().managementGroupId]",
+          "subscriptionIds": "[copyIndex().subscriptionIds]"
+        }
+      },
+      "copy": {
+        "name": "customsubscriptionPlacement",
+        "count": "[length(parameters('parSubscriptionPlacement'))]"
+      }
+    }
+  ]
+}
