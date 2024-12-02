@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying with a key vault reference to save secrets'
-metadata description = 'This instance deploys the module saving all its secrets in a key vault.'
+metadata name = 'Using only defaults and low memory containers'
+metadata description = 'This instance deploys the module with the minimum set of required parameters and with low memory.'
 
 // ========== //
 // Parameters //
@@ -9,17 +9,13 @@ metadata description = 'This instance deploys the module saving all its secrets 
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-containerinstance.containergroups-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sqlkvs'
-
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
+param serviceShort string = 'ciclow'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,15 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -54,19 +41,32 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      administratorLogin: 'adminUserName'
-      administratorLoginPassword: password
-      secretsExportConfiguration: {
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
-        sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
-      }
-      databases: [
+      name: '${namePrefix}${serviceShort}001'
+      containers: [
         {
-          name: 'myDatabase'
-          zoneRedundant: false
+          name: '${namePrefix}-az-aci-x-001'
+          properties: {
+            image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+            ports: [
+              {
+                port: 443
+                protocol: 'Tcp'
+              }
+            ]
+            resources: {
+              requests: {
+                cpu: 2
+                memoryInGB: '0.5'
+              }
+            }
+          }
+        }
+      ]
+      ipAddressPorts: [
+        {
+          protocol: 'Tcp'
+          port: 443
         }
       ]
     }
