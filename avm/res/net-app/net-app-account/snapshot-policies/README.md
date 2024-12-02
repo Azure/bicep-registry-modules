@@ -47,24 +47,20 @@ Schedule for daily snapshots.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      hour: 0
-      minute: 0
-      snapshotsToKeep: 0
-      usedBytes: 0
-  }
-  ```
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`hour`](#parameter-dailyschedulehour) | int | The daily snapshot hour. |
 | [`minute`](#parameter-dailyscheduleminute) | int | The daily snapshot minute. |
 | [`snapshotsToKeep`](#parameter-dailyschedulesnapshotstokeep) | int | Daily snapshot count to keep. |
-| [`usedBytes`](#parameter-dailyscheduleusedbytes) | int | Daily snapshot used bytes. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`usedBytes`](#parameter-dailyscheduleusedbytes) | int | Resource size in bytes, current storage usage for the volume in bytes. |
 
 ### Parameter: `dailySchedule.hour`
 
@@ -77,19 +73,19 @@ The daily snapshot hour.
 
 The daily snapshot minute.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `dailySchedule.snapshotsToKeep`
 
 Daily snapshot count to keep.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `dailySchedule.usedBytes`
 
-Daily snapshot used bytes.
+Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
@@ -100,40 +96,37 @@ Schedule for hourly snapshots.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      minute: 0
-      snapshotsToKeep: 0
-      usedBytes: 0
-  }
-  ```
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`minute`](#parameter-hourlyscheduleminute) | int | The hourly snapshot minute. |
 | [`snapshotsToKeep`](#parameter-hourlyschedulesnapshotstokeep) | int | Hourly snapshot count to keep. |
-| [`usedBytes`](#parameter-hourlyscheduleusedbytes) | int | Hourly snapshot used bytes. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`usedBytes`](#parameter-hourlyscheduleusedbytes) | int | Resource size in bytes, current storage usage for the volume in bytes. |
 
 ### Parameter: `hourlySchedule.minute`
 
 The hourly snapshot minute.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `hourlySchedule.snapshotsToKeep`
 
 Hourly snapshot count to keep.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `hourlySchedule.usedBytes`
 
-Hourly snapshot used bytes.
+Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
@@ -152,58 +145,53 @@ Schedule for monthly snapshots.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      daysOfMonth: ''
-      hour: 0
-      minute: 0
-      snapshotsToKeep: 0
-      usedBytes: 0
-  }
-  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`daysOfMonth`](#parameter-monthlyscheduledaysofmonth) | string | Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., '10,11,12'. |
+| [`hour`](#parameter-monthlyschedulehour) | int | The monthly snapshot hour. |
+| [`minute`](#parameter-monthlyscheduleminute) | int | The monthly snapshot minute. |
+| [`snapshotsToKeep`](#parameter-monthlyschedulesnapshotstokeep) | int | Monthly snapshot count to keep. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`daysOfMonth`](#parameter-monthlyscheduledaysofmonth) | string | The monthly snapshot day. |
-| [`hour`](#parameter-monthlyschedulehour) | int | The monthly snapshot hour. |
-| [`minute`](#parameter-monthlyscheduleminute) | int | The monthly snapshot minute. |
-| [`snapshotsToKeep`](#parameter-monthlyschedulesnapshotstokeep) | int | Monthly snapshot count to keep. |
-| [`usedBytes`](#parameter-monthlyscheduleusedbytes) | int | Monthly snapshot used bytes. |
+| [`usedBytes`](#parameter-monthlyscheduleusedbytes) | int | Resource size in bytes, current storage usage for the volume in bytes. |
 
 ### Parameter: `monthlySchedule.daysOfMonth`
 
-The monthly snapshot day.
+Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., '10,11,12'.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `monthlySchedule.hour`
 
 The monthly snapshot hour.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `monthlySchedule.minute`
 
 The monthly snapshot minute.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `monthlySchedule.snapshotsToKeep`
 
 Monthly snapshot count to keep.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `monthlySchedule.usedBytes`
 
-Monthly snapshot used bytes.
+Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
@@ -230,18 +218,8 @@ Schedule for weekly snapshots.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      day: ''
-      hour: 0
-      minute: 0
-      snapshotsToKeep: 0
-      usedBytes: 0
-  }
-  ```
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -249,39 +227,56 @@ Schedule for weekly snapshots.
 | [`hour`](#parameter-weeklyschedulehour) | int | The weekly snapshot hour. |
 | [`minute`](#parameter-weeklyscheduleminute) | int | The weekly snapshot minute. |
 | [`snapshotsToKeep`](#parameter-weeklyschedulesnapshotstokeep) | int | Weekly snapshot count to keep. |
-| [`usedBytes`](#parameter-weeklyscheduleusedbytes) | int | Weekly snapshot used bytes. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`usedBytes`](#parameter-weeklyscheduleusedbytes) | int | Resource size in bytes, current storage usage for the volume in bytes. |
 
 ### Parameter: `weeklySchedule.day`
 
 The weekly snapshot day.
 
-- Required: No
+- Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Friday'
+    'Monday'
+    'Saturday'
+    'Sunday'
+    'Thursday'
+    'Tuesday'
+    'Wednesday'
+  ]
+  ```
 
 ### Parameter: `weeklySchedule.hour`
 
 The weekly snapshot hour.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `weeklySchedule.minute`
 
 The weekly snapshot minute.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `weeklySchedule.snapshotsToKeep`
 
 Weekly snapshot count to keep.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `weeklySchedule.usedBytes`
 
-Weekly snapshot used bytes.
+Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int

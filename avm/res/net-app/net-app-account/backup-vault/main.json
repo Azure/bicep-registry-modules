@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "9578305427471720186"
+      "templateHash": "5005262647165114014"
     }
   },
   "definitions": {
@@ -41,10 +41,10 @@
             "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
           }
         },
-        "volumeResourceId": {
+        "volumeName": {
           "type": "string",
           "metadata": {
-            "description": "Required. ResourceId used to identify the Volume."
+            "description": "Required. The name used to identify the volume."
           }
         }
       },
@@ -134,8 +134,8 @@
           "useExistingSnapshot": {
             "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'useExistingSnapshot')]"
           },
-          "volumeResourceId": {
-            "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].volumeResourceId]"
+          "volumeName": {
+            "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].volumeName]"
           }
         },
         "template": {
@@ -146,7 +146,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "1463531693716025239"
+              "templateHash": "17019672073255266364"
             }
           },
           "parameters": {
@@ -190,10 +190,10 @@
                 "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
               }
             },
-            "volumeResourceId": {
+            "volumeName": {
               "type": "string",
               "metadata": {
-                "description": "Required. ResourceId used to identify the Volume."
+                "description": "Required. The name used to identify the volume."
               }
             }
           },
@@ -213,6 +213,12 @@
               "apiVersion": "2024-03-01",
               "name": "[parameters('netAppAccountName')]"
             },
+            "remoteVolume": {
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2024-07-01",
+              "name": "[parameters('volumeName')]"
+            },
             "backup": {
               "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
               "apiVersion": "2024-03-01",
@@ -221,10 +227,11 @@
                 "label": "[parameters('label')]",
                 "snapshotName": "[parameters('snapshotName')]",
                 "useExistingSnapshot": "[parameters('useExistingSnapshot')]",
-                "volumeResourceId": "[parameters('volumeResourceId')]"
+                "volumeResourceId": "[parameters('volumeName')]"
               },
               "dependsOn": [
-                "netAppAccount::backupVault"
+                "netAppAccount::backupVault",
+                "remoteVolume"
               ]
             }
           },

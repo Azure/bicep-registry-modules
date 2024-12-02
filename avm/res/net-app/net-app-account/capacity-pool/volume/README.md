@@ -26,7 +26,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`encryptionKeySource`](#parameter-encryptionkeysource) | string | The source of the encryption key. |
 | [`name`](#parameter-name) | string | The name of the pool volume. |
-| [`replicationSchedule`](#parameter-replicationschedule) | string | The replication schedule for the volume. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-usagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
 
@@ -41,24 +40,20 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy to link. |
-| [`backupVaultResourceId`](#parameter-backupvaultresourceid) | string | The resource Id of the Backup Vault. |
 | [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
-| [`endpointType`](#parameter-endpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst). |
+| [`dataProtection`](#parameter-dataprotection) | object | DataProtection type volumes include an object containing details of the replication |
 | [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-keyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
-| [`policyEnforced`](#parameter-policyenforced) | bool | If Backup policy is enforced. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
-| [`replicationEnabled`](#parameter-replicationenabled) | bool | Enables replication. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
-| [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
+| [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 | [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `coolAccess`
@@ -89,13 +84,6 @@ The name of the pool volume.
 - Required: Yes
 - Type: string
 
-### Parameter: `replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: No
-- Type: string
-
 ### Parameter: `subnetResourceId`
 
 The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.
@@ -124,20 +112,6 @@ The name of the parent NetApp account. Required if the template is used in a sta
 - Required: Yes
 - Type: string
 
-### Parameter: `backupPolicyName`
-
-The name of the backup policy to link.
-
-- Required: No
-- Type: string
-
-### Parameter: `backupVaultResourceId`
-
-The resource Id of the Backup Vault.
-
-- Required: No
-- Type: string
-
 ### Parameter: `coolAccessRetrievalPolicy`
 
 Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).
@@ -154,11 +128,144 @@ A unique file path for the volume. This is the name of the volume export. A volu
 - Type: string
 - Default: `[parameters('name')]`
 
-### Parameter: `endpointType`
+### Parameter: `dataProtection`
 
-Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).
+DataProtection type volumes include an object containing details of the replication
 
 - Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backup`](#parameter-dataprotectionbackup) | object | Backup properties. |
+| [`replication`](#parameter-dataprotectionreplication) | object | Replication properties. |
+| [`snapshot`](#parameter-dataprotectionsnapshot) | object | Snapshot properties. |
+
+### Parameter: `dataProtection.backup`
+
+Backup properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backupPolicyName`](#parameter-dataprotectionbackupbackuppolicyname) | string | The name of the backup policy to link. |
+| [`backupVaultName`](#parameter-dataprotectionbackupbackupvaultname) | string | The name of the Backup Vault. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`policyEnforced`](#parameter-dataprotectionbackuppolicyenforced) | bool | Enable to enforce the policy. |
+
+### Parameter: `dataProtection.backup.backupPolicyName`
+
+The name of the backup policy to link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataProtection.backup.backupVaultName`
+
+The name of the Backup Vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataProtection.backup.policyEnforced`
+
+Enable to enforce the policy.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `dataProtection.replication`
+
+Replication properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endpointType`](#parameter-dataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
+| [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
+| [`replicationSchedule`](#parameter-dataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
+
+### Parameter: `dataProtection.replication.endpointType`
+
+Indicates whether the local volume is the source or destination for the Volume Replication.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'dst'
+    'src'
+  ]
+  ```
+
+### Parameter: `dataProtection.replication.remoteVolumeResourceId`
+
+The resource ID of the remote volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
+
+### Parameter: `dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataProtection.snapshot`
+
+Snapshot properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`snapshotPolicyName`](#parameter-dataprotectionsnapshotsnapshotpolicyname) | string | The name of the snapshot policy to link. |
+
+### Parameter: `dataProtection.snapshot.snapshotPolicyName`
+
+The name of the snapshot policy to link.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `exportPolicyRules`
@@ -201,14 +308,6 @@ Network feature for the volume.
   ]
   ```
 
-### Parameter: `policyEnforced`
-
-If Backup policy is enforced.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `protocolTypes`
 
 Set of protocol types.
@@ -216,28 +315,6 @@ Set of protocol types.
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: No
-- Type: string
-
-### Parameter: `remoteVolumeResourceId`
-
-The resource ID of the remote volume.
-
-- Required: No
-- Type: string
-
-### Parameter: `replicationEnabled`
-
-Enables replication.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `roleAssignments`
 
@@ -389,13 +466,6 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
-
-### Parameter: `snapEnabled`
-
-The name of the snapshot policy to link.
-
-- Required: No
-- Type: string
 
 ### Parameter: `volumeType`
 

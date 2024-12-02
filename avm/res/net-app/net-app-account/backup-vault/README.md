@@ -48,7 +48,7 @@ The list of backups to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`volumeResourceId`](#parameter-backupsvolumeresourceid) | string | ResourceId used to identify the Volume. |
+| [`volumeName`](#parameter-backupsvolumename) | string | The name used to identify the volume. |
 
 **Optional parameters**
 
@@ -59,9 +59,9 @@ The list of backups to create.
 | [`snapshotName`](#parameter-backupssnapshotname) | string | The name of the snapshot. |
 | [`useExistingSnapshot`](#parameter-backupsuseexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
 
-### Parameter: `backups.volumeResourceId`
+### Parameter: `backups.volumeName`
 
-ResourceId used to identify the Volume.
+The name used to identify the volume.
 
 - Required: Yes
 - Type: string

@@ -372,7 +372,7 @@ type capacityPoolType = {
   encryptionType: ('Single' | 'Double')?
 }
 
-import * as snapShotTypes from 'snapshot-policies/main.bicep'
+import { dailyScheduleType, hourlyScheduleType, monthlyScheduleType, weeklyScheduleType } from 'snapshot-policies/main.bicep'
 @export()
 type snapshotPolicyType = {
   @description('Required. The name of the snapshot policy.')
@@ -382,16 +382,16 @@ type snapshotPolicyType = {
   location: string?
 
   @description('Optional. Daily schedule for the snapshot policy.')
-  dailySchedule: snapShotTypes.dailyScheduleType?
+  dailySchedule: dailyScheduleType?
 
   @description('Optional. Hourly schedule for the snapshot policy.')
-  hourlySchedule: snapShotTypes.hourlyScheduleType?
+  hourlySchedule: hourlyScheduleType?
 
   @description('Optional. Monthly schedule for the snapshot policy.')
-  monthlySchedule: snapShotTypes.monthlyScheduleType?
+  monthlySchedule: monthlyScheduleType?
 
   @description('Optional. Weekly schedule for the snapshot policy.')
-  weeklySchedule: snapShotTypes.weeklyScheduleType?
+  weeklySchedule: weeklyScheduleType?
 }
 
 @export()

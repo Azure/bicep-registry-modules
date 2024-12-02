@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "16714584671191583566"
+      "templateHash": "8260694130661724983"
     },
     "name": "Azure NetApp Files Backup Policy",
     "description": "This module deploys a Backup Policy for Azure NetApp File.",
@@ -34,7 +34,9 @@
     },
     "dailyBackupsToKeep": {
       "type": "int",
-      "defaultValue": 0,
+      "defaultValue": 2,
+      "minValue": 2,
+      "maxValue": 1019,
       "metadata": {
         "description": "Optional. The daily backups to keep."
       }

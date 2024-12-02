@@ -33,76 +33,9 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/net-app/net-app-account:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using nfs31 parameter set](#example-3-using-nfs31-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using large parameter set](#example-1-using-large-parameter-set)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: 'netAppAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'nanaamin001'
-    // Non-required parameters
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nanaamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/net-app/net-app-account:<version>'
-
-// Required parameters
-param name = 'nanaamin001'
-// Non-required parameters
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 2: _Using large parameter set_
+### Example 1: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -118,6 +51,22 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     // Required parameters
     name: 'nanaamax001'
     // Non-required parameters
+    backupPolicies: [
+      {
+        name: 'myBackupPolicy'
+      }
+    ]
+    backupVault: {
+      backups: [
+        {
+          label: 'myLabel'
+          name: 'myBackup'
+          snapshotName: 'aSnapshot'
+          volumeName: 'nanaamax-vol-001'
+        }
+      ]
+      name: 'myVault'
+    }
     capacityPools: [
       {
         name: 'nanaamax-cp-001'
@@ -132,6 +81,16 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
+            dataProtection: {
+              backup: {
+                backupPolicyName: 'myBackupPolicy'
+                backupVaultName: 'myVault'
+                policyEnforced: false
+              }
+              snapshot: {
+                snapshotPolicyName: 'mySnapshotPolicy'
+              }
+            }
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
@@ -228,6 +187,16 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    snapshotPolicies: [
+      {
+        dailySchedule: {
+          hour: 0
+          minute: 0
+          snapshotsToKeep: 1
+        }
+        name: 'mySnapshotPolicy'
+      }
+    ]
     tags: {
       Contact: 'test.user@testcompany.com'
       CostCenter: '7890'
@@ -258,6 +227,26 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
       "value": "nanaamax001"
     },
     // Non-required parameters
+    "backupPolicies": {
+      "value": [
+        {
+          "name": "myBackupPolicy"
+        }
+      ]
+    },
+    "backupVault": {
+      "value": {
+        "backups": [
+          {
+            "label": "myLabel",
+            "name": "myBackup",
+            "snapshotName": "aSnapshot",
+            "volumeName": "nanaamax-vol-001"
+          }
+        ],
+        "name": "myVault"
+      }
+    },
     "capacityPools": {
       "value": [
         {
@@ -273,6 +262,16 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
+              "dataProtection": {
+                "backup": {
+                  "backupPolicyName": "myBackupPolicy",
+                  "backupVaultName": "myVault",
+                  "policyEnforced": false
+                },
+                "snapshot": {
+                  "snapshotPolicyName": "mySnapshotPolicy"
+                }
+              },
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
@@ -376,6 +375,18 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         }
       ]
     },
+    "snapshotPolicies": {
+      "value": [
+        {
+          "dailySchedule": {
+            "hour": 0,
+            "minute": 0,
+            "snapshotsToKeep": 1
+          },
+          "name": "mySnapshotPolicy"
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Contact": "test.user@testcompany.com",
@@ -404,6 +415,22 @@ using 'br/public:avm/res/net-app/net-app-account:<version>'
 // Required parameters
 param name = 'nanaamax001'
 // Non-required parameters
+param backupPolicies = [
+  {
+    name: 'myBackupPolicy'
+  }
+]
+param backupVault = {
+  backups: [
+    {
+      label: 'myLabel'
+      name: 'myBackup'
+      snapshotName: 'aSnapshot'
+      volumeName: 'nanaamax-vol-001'
+    }
+  ]
+  name: 'myVault'
+}
 param capacityPools = [
   {
     name: 'nanaamax-cp-001'
@@ -418,6 +445,16 @@ param capacityPools = [
     size: 4398046511104
     volumes: [
       {
+        dataProtection: {
+          backup: {
+            backupPolicyName: 'myBackupPolicy'
+            backupVaultName: 'myVault'
+            policyEnforced: false
+          }
+          snapshot: {
+            snapshotPolicyName: 'mySnapshotPolicy'
+          }
+        }
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicyRules: [
           {
@@ -514,364 +551,14 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param tags = {
-  Contact: 'test.user@testcompany.com'
-  CostCenter: '7890'
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  PurchaseOrder: '1234'
-  Role: 'DeploymentValidation'
-  ServiceName: 'DeploymentValidation'
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using nfs31 parameter set_
-
-This instance deploys the module with nfs31.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: 'netAppAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'nanaanfs3001'
-    // Non-required parameters
-    capacityPools: [
-      {
-        name: 'nanaanfs3-cp-001'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        serviceLevel: 'Premium'
-        size: 4398046511104
-        volumes: [
-          {
-            encryptionKeySource: '<encryptionKeySource>'
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: true
-                nfsv41: false
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
-            name: 'nanaanfs3-vol-001'
-            networkFeatures: 'Standard'
-            protocolTypes: [
-              'NFSv3'
-            ]
-            roleAssignments: [
-              {
-                principalId: '<principalId>'
-                principalType: 'ServicePrincipal'
-                roleDefinitionIdOrName: 'Reader'
-              }
-            ]
-            subnetResourceId: '<subnetResourceId>'
-            usageThreshold: 107374182400
-          }
-          {
-            encryptionKeySource: '<encryptionKeySource>'
-            name: 'nanaanfs3-vol-002'
-            networkFeatures: 'Standard'
-            protocolTypes: [
-              'NFSv3'
-            ]
-            subnetResourceId: '<subnetResourceId>'
-            usageThreshold: 107374182400
-          }
-        ]
-      }
-      {
-        name: 'nanaanfs3-cp-002'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        serviceLevel: 'Premium'
-        size: 4398046511104
-        volumes: []
-      }
-    ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+param snapshotPolicies = [
+  {
+    dailySchedule: {
+      hour: 0
+      minute: 0
+      snapshotsToKeep: 1
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    tags: {
-      Contact: 'test.user@testcompany.com'
-      CostCenter: '7890'
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      PurchaseOrder: '1234'
-      Role: 'DeploymentValidation'
-      ServiceName: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nanaanfs3001"
-    },
-    // Non-required parameters
-    "capacityPools": {
-      "value": [
-        {
-          "name": "nanaanfs3-cp-001",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "serviceLevel": "Premium",
-          "size": 4398046511104,
-          "volumes": [
-            {
-              "encryptionKeySource": "<encryptionKeySource>",
-              "exportPolicyRules": [
-                {
-                  "allowedClients": "0.0.0.0/0",
-                  "nfsv3": true,
-                  "nfsv41": false,
-                  "ruleIndex": 1,
-                  "unixReadOnly": false,
-                  "unixReadWrite": true
-                }
-              ],
-              "name": "nanaanfs3-vol-001",
-              "networkFeatures": "Standard",
-              "protocolTypes": [
-                "NFSv3"
-              ],
-              "roleAssignments": [
-                {
-                  "principalId": "<principalId>",
-                  "principalType": "ServicePrincipal",
-                  "roleDefinitionIdOrName": "Reader"
-                }
-              ],
-              "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400
-            },
-            {
-              "encryptionKeySource": "<encryptionKeySource>",
-              "name": "nanaanfs3-vol-002",
-              "networkFeatures": "Standard",
-              "protocolTypes": [
-                "NFSv3"
-              ],
-              "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400
-            }
-          ]
-        },
-        {
-          "name": "nanaanfs3-cp-002",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "serviceLevel": "Premium",
-          "size": 4398046511104,
-          "volumes": []
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Contact": "test.user@testcompany.com",
-        "CostCenter": "7890",
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "PurchaseOrder": "1234",
-        "Role": "DeploymentValidation",
-        "ServiceName": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/net-app/net-app-account:<version>'
-
-// Required parameters
-param name = 'nanaanfs3001'
-// Non-required parameters
-param capacityPools = [
-  {
-    name: 'nanaanfs3-cp-001'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    serviceLevel: 'Premium'
-    size: 4398046511104
-    volumes: [
-      {
-        encryptionKeySource: '<encryptionKeySource>'
-        exportPolicyRules: [
-          {
-            allowedClients: '0.0.0.0/0'
-            nfsv3: true
-            nfsv41: false
-            ruleIndex: 1
-            unixReadOnly: false
-            unixReadWrite: true
-          }
-        ]
-        name: 'nanaanfs3-vol-001'
-        networkFeatures: 'Standard'
-        protocolTypes: [
-          'NFSv3'
-        ]
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        usageThreshold: 107374182400
-      }
-      {
-        encryptionKeySource: '<encryptionKeySource>'
-        name: 'nanaanfs3-vol-002'
-        networkFeatures: 'Standard'
-        protocolTypes: [
-          'NFSv3'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        usageThreshold: 107374182400
-      }
-    ]
-  }
-  {
-    name: 'nanaanfs3-cp-002'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    serviceLevel: 'Premium'
-    size: 4398046511104
-    volumes: []
-  }
-]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
-param roleAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+    name: 'mySnapshotPolicy'
   }
 ]
 param tags = {
@@ -882,81 +569,6 @@ param tags = {
   PurchaseOrder: '1234'
   Role: 'DeploymentValidation'
   ServiceName: 'DeploymentValidation'
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: 'netAppAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'nanaawaf001'
-    // Non-required parameters
-    location: '<location>'
-    tags: {
-      service: 'netapp'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nanaawaf001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "service": "netapp"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/net-app/net-app-account:<version>'
-
-// Required parameters
-param name = 'nanaawaf001'
-// Non-required parameters
-param location = '<location>'
-param tags = {
-  service: 'netapp'
 }
 ```
 
@@ -1109,7 +721,7 @@ The list of backups to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`volumeResourceId`](#parameter-backupvaultbackupsvolumeresourceid) | string | ResourceId used to identify the Volume. |
+| [`volumeName`](#parameter-backupvaultbackupsvolumename) | string | The name used to identify the volume. |
 
 **Optional parameters**
 
@@ -1120,9 +732,9 @@ The list of backups to create.
 | [`snapshotName`](#parameter-backupvaultbackupssnapshotname) | string | The name of the snapshot. |
 | [`useExistingSnapshot`](#parameter-backupvaultbackupsuseexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
 
-### Parameter: `backupVault.backups.volumeResourceId`
+### Parameter: `backupVault.backups.volumeName`
 
-ResourceId used to identify the Volume.
+The name used to identify the volume.
 
 - Required: Yes
 - Type: string
@@ -1390,7 +1002,6 @@ List of volumnes to create in the capacity pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-capacitypoolsvolumesname) | string | The name of the pool volume. |
-| [`replicationSchedule`](#parameter-capacitypoolsvolumesreplicationschedule) | string | The replication schedule for the volume. |
 | [`subnetResourceId`](#parameter-capacitypoolsvolumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-capacitypoolsvolumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
 
@@ -1398,27 +1009,22 @@ List of volumnes to create in the capacity pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupPolicyName`](#parameter-capacitypoolsvolumesbackuppolicyname) | string | The name of the backup policy to link. |
-| [`backupVaultResourceId`](#parameter-capacitypoolsvolumesbackupvaultresourceid) | string | The resource Id of the Backup Vault. |
 | [`coolAccess`](#parameter-capacitypoolsvolumescoolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`coolAccessRetrievalPolicy`](#parameter-capacitypoolsvolumescoolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-capacitypoolsvolumescoolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-capacitypoolsvolumescreationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
+| [`dataProtection`](#parameter-capacitypoolsvolumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication |
 | [`encryptionKeySource`](#parameter-capacitypoolsvolumesencryptionkeysource) | string | The source of the encryption key. |
-| [`endpointType`](#parameter-capacitypoolsvolumesendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst). |
 | [`exportPolicyRules`](#parameter-capacitypoolsvolumesexportpolicyrules) | array | Export policy rules. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-capacitypoolsvolumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-capacitypoolsvolumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-capacitypoolsvolumesnetworkfeatures) | string | Network feature for the volume. |
-| [`policyEnforced`](#parameter-capacitypoolsvolumespolicyenforced) | bool | If Backup policy is enforced. |
 | [`protocolTypes`](#parameter-capacitypoolsvolumesprotocoltypes) | array | Set of protocol types. |
-| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
-| [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesremotevolumeresourceid) | string | The resource ID of the remote volume. |
-| [`replicationEnabled`](#parameter-capacitypoolsvolumesreplicationenabled) | bool | Boolean to enable replication. |
 | [`roleAssignments`](#parameter-capacitypoolsvolumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-capacitypoolsvolumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
-| [`snapshotPolicyName`](#parameter-capacitypoolsvolumessnapshotpolicyname) | string | The name of the snapshot policy to link. |
-| [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
+| [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
+| [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
+| [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`zones`](#parameter-capacitypoolsvolumeszones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `capacityPools.volumes.name`
@@ -1426,13 +1032,6 @@ List of volumnes to create in the capacity pool.
 The name of the pool volume.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `capacityPools.volumes.replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: No
 - Type: string
 
 ### Parameter: `capacityPools.volumes.subnetResourceId`
@@ -1448,20 +1047,6 @@ Maximum storage quota allowed for a file system in bytes.
 
 - Required: Yes
 - Type: int
-
-### Parameter: `capacityPools.volumes.backupPolicyName`
-
-The name of the backup policy to link.
-
-- Required: No
-- Type: string
-
-### Parameter: `capacityPools.volumes.backupVaultResourceId`
-
-The resource Id of the Backup Vault.
-
-- Required: No
-- Type: string
 
 ### Parameter: `capacityPools.volumes.coolAccess`
 
@@ -1491,16 +1076,149 @@ A unique file path for the volume. This is the name of the volume export. A volu
 - Required: No
 - Type: string
 
-### Parameter: `capacityPools.volumes.encryptionKeySource`
+### Parameter: `capacityPools.volumes.dataProtection`
 
-The source of the encryption key.
+DataProtection type volumes include an object containing details of the replication
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backup`](#parameter-capacitypoolsvolumesdataprotectionbackup) | object | Backup properties. |
+| [`replication`](#parameter-capacitypoolsvolumesdataprotectionreplication) | object | Replication properties. |
+| [`snapshot`](#parameter-capacitypoolsvolumesdataprotectionsnapshot) | object | Snapshot properties. |
+
+### Parameter: `capacityPools.volumes.dataProtection.backup`
+
+Backup properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backupPolicyName`](#parameter-capacitypoolsvolumesdataprotectionbackupbackuppolicyname) | string | The name of the backup policy to link. |
+| [`backupVaultName`](#parameter-capacitypoolsvolumesdataprotectionbackupbackupvaultname) | string | The name of the Backup Vault. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`policyEnforced`](#parameter-capacitypoolsvolumesdataprotectionbackuppolicyenforced) | bool | Enable to enforce the policy. |
+
+### Parameter: `capacityPools.volumes.dataProtection.backup.backupPolicyName`
+
+The name of the backup policy to link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.backup.backupVaultName`
+
+The name of the Backup Vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.backup.policyEnforced`
+
+Enable to enforce the policy.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.dataProtection.replication`
+
+Replication properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endpointType`](#parameter-capacitypoolsvolumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
+| [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
+| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
+
+Indicates whether the local volume is the source or destination for the Volume Replication.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'dst'
+    'src'
+  ]
+  ```
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeResourceId`
+
+The resource ID of the remote volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.
 
 - Required: No
 - Type: string
 
-### Parameter: `capacityPools.volumes.endpointType`
+### Parameter: `capacityPools.volumes.dataProtection.snapshot`
 
-Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).
+Snapshot properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`snapshotPolicyName`](#parameter-capacitypoolsvolumesdataprotectionsnapshotsnapshotpolicyname) | string | The name of the snapshot policy to link. |
+
+### Parameter: `capacityPools.volumes.dataProtection.snapshot.snapshotPolicyName`
+
+The name of the snapshot policy to link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.encryptionKeySource`
+
+The source of the encryption key.
 
 - Required: No
 - Type: string
@@ -1542,40 +1260,12 @@ Network feature for the volume.
   ]
   ```
 
-### Parameter: `capacityPools.volumes.policyEnforced`
-
-If Backup policy is enforced.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `capacityPools.volumes.protocolTypes`
 
 Set of protocol types.
 
 - Required: No
 - Type: array
-
-### Parameter: `capacityPools.volumes.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: No
-- Type: string
-
-### Parameter: `capacityPools.volumes.remoteVolumeResourceId`
-
-The resource ID of the remote volume.
-
-- Required: No
-- Type: string
-
-### Parameter: `capacityPools.volumes.replicationEnabled`
-
-Boolean to enable replication.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `capacityPools.volumes.roleAssignments`
 
@@ -1696,19 +1386,33 @@ The pool service level. Must match the one of the parent capacity pool.
   ]
   ```
 
-### Parameter: `capacityPools.volumes.snapshotPolicyName`
+### Parameter: `capacityPools.volumes.smbContinuouslyAvailable`
 
-The name of the snapshot policy to link.
+Enables continuously available share property for SMB volume. Only applicable for SMB volume.
+
+- Required: No
+- Type: bool
+
+### Parameter: `capacityPools.volumes.smbEncryption`
+
+Enables SMB encryption. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: bool
+
+### Parameter: `capacityPools.volumes.smbNonBrowsable`
+
+Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.
 
 - Required: No
 - Type: string
-
-### Parameter: `capacityPools.volumes.volumeType`
-
-The type of the volume. DataProtection volumes are used for replication.
-
-- Required: No
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `capacityPools.volumes.zones`
 
@@ -2066,14 +1770,19 @@ Daily schedule for the snapshot policy.
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`hour`](#parameter-snapshotpoliciesdailyschedulehour) | int | The daily snapshot hour. |
 | [`minute`](#parameter-snapshotpoliciesdailyscheduleminute) | int | The daily snapshot minute. |
 | [`snapshotsToKeep`](#parameter-snapshotpoliciesdailyschedulesnapshotstokeep) | int | Daily snapshot count to keep. |
-| [`usedBytes`](#parameter-snapshotpoliciesdailyscheduleusedbytes) | int | Daily snapshot used bytes. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`usedBytes`](#parameter-snapshotpoliciesdailyscheduleusedbytes) | int | Resource size in bytes, current storage usage for the volume in bytes. |
 
 ### Parameter: `snapshotPolicies.dailySchedule.hour`
 
@@ -2086,19 +1795,19 @@ The daily snapshot hour.
 
 The daily snapshot minute.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.dailySchedule.snapshotsToKeep`
 
 Daily snapshot count to keep.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.dailySchedule.usedBytes`
 
-Daily snapshot used bytes.
+Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
@@ -2110,31 +1819,36 @@ Hourly schedule for the snapshot policy.
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`minute`](#parameter-snapshotpolicieshourlyscheduleminute) | int | The hourly snapshot minute. |
 | [`snapshotsToKeep`](#parameter-snapshotpolicieshourlyschedulesnapshotstokeep) | int | Hourly snapshot count to keep. |
-| [`usedBytes`](#parameter-snapshotpolicieshourlyscheduleusedbytes) | int | Hourly snapshot used bytes. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`usedBytes`](#parameter-snapshotpolicieshourlyscheduleusedbytes) | int | Resource size in bytes, current storage usage for the volume in bytes. |
 
 ### Parameter: `snapshotPolicies.hourlySchedule.minute`
 
 The hourly snapshot minute.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.hourlySchedule.snapshotsToKeep`
 
 Hourly snapshot count to keep.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.hourlySchedule.usedBytes`
 
-Hourly snapshot used bytes.
+Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
@@ -2153,47 +1867,52 @@ Monthly schedule for the snapshot policy.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`daysOfMonth`](#parameter-snapshotpoliciesmonthlyscheduledaysofmonth) | string | Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., '10,11,12'. |
+| [`hour`](#parameter-snapshotpoliciesmonthlyschedulehour) | int | The monthly snapshot hour. |
+| [`minute`](#parameter-snapshotpoliciesmonthlyscheduleminute) | int | The monthly snapshot minute. |
+| [`snapshotsToKeep`](#parameter-snapshotpoliciesmonthlyschedulesnapshotstokeep) | int | Monthly snapshot count to keep. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`daysOfMonth`](#parameter-snapshotpoliciesmonthlyscheduledaysofmonth) | string | The monthly snapshot day. |
-| [`hour`](#parameter-snapshotpoliciesmonthlyschedulehour) | int | The monthly snapshot hour. |
-| [`minute`](#parameter-snapshotpoliciesmonthlyscheduleminute) | int | The monthly snapshot minute. |
-| [`snapshotsToKeep`](#parameter-snapshotpoliciesmonthlyschedulesnapshotstokeep) | int | Monthly snapshot count to keep. |
-| [`usedBytes`](#parameter-snapshotpoliciesmonthlyscheduleusedbytes) | int | Monthly snapshot used bytes. |
+| [`usedBytes`](#parameter-snapshotpoliciesmonthlyscheduleusedbytes) | int | Resource size in bytes, current storage usage for the volume in bytes. |
 
 ### Parameter: `snapshotPolicies.monthlySchedule.daysOfMonth`
 
-The monthly snapshot day.
+Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., '10,11,12'.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `snapshotPolicies.monthlySchedule.hour`
 
 The monthly snapshot hour.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.monthlySchedule.minute`
 
 The monthly snapshot minute.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.monthlySchedule.snapshotsToKeep`
 
 Monthly snapshot count to keep.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.monthlySchedule.usedBytes`
 
-Monthly snapshot used bytes.
+Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
@@ -2205,7 +1924,7 @@ Weekly schedule for the snapshot policy.
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -2213,39 +1932,56 @@ Weekly schedule for the snapshot policy.
 | [`hour`](#parameter-snapshotpoliciesweeklyschedulehour) | int | The weekly snapshot hour. |
 | [`minute`](#parameter-snapshotpoliciesweeklyscheduleminute) | int | The weekly snapshot minute. |
 | [`snapshotsToKeep`](#parameter-snapshotpoliciesweeklyschedulesnapshotstokeep) | int | Weekly snapshot count to keep. |
-| [`usedBytes`](#parameter-snapshotpoliciesweeklyscheduleusedbytes) | int | Weekly snapshot used bytes. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`usedBytes`](#parameter-snapshotpoliciesweeklyscheduleusedbytes) | int | Resource size in bytes, current storage usage for the volume in bytes. |
 
 ### Parameter: `snapshotPolicies.weeklySchedule.day`
 
 The weekly snapshot day.
 
-- Required: No
+- Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Friday'
+    'Monday'
+    'Saturday'
+    'Sunday'
+    'Thursday'
+    'Tuesday'
+    'Wednesday'
+  ]
+  ```
 
 ### Parameter: `snapshotPolicies.weeklySchedule.hour`
 
 The weekly snapshot hour.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.weeklySchedule.minute`
 
 The weekly snapshot minute.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.weeklySchedule.snapshotsToKeep`
 
 Weekly snapshot count to keep.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `snapshotPolicies.weeklySchedule.usedBytes`
 
-Weekly snapshot used bytes.
+Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int

@@ -46,7 +46,7 @@ The daily backups to keep.
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `2`
 
 ### Parameter: `enabled`
 

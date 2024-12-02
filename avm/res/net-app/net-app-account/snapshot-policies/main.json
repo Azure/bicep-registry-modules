@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "17696312984702506132"
+      "version": "0.31.92.45157",
+      "templateHash": "8234460097013804513"
     },
     "name": "Azure NetApp Files Snapshot Policy",
     "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
@@ -19,29 +19,33 @@
         "hour": {
           "type": "int",
           "nullable": true,
+          "minValue": 0,
+          "maxValue": 23,
           "metadata": {
-            "description": "Optional. The daily snapshot hour."
+            "description": "Required. The daily snapshot hour."
           }
         },
         "minute": {
           "type": "int",
-          "nullable": true,
+          "minValue": 0,
+          "maxValue": 59,
           "metadata": {
-            "description": "Optional. The daily snapshot minute."
+            "description": "Required. The daily snapshot minute."
           }
         },
         "snapshotsToKeep": {
           "type": "int",
-          "nullable": true,
+          "minValue": 1,
+          "maxValue": 255,
           "metadata": {
-            "description": "Optional. Daily snapshot count to keep."
+            "description": "Required. Daily snapshot count to keep."
           }
         },
         "usedBytes": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Daily snapshot used bytes."
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
           }
         }
       },
@@ -54,66 +58,25 @@
       "properties": {
         "minute": {
           "type": "int",
-          "nullable": true,
+          "minValue": 0,
+          "maxValue": 59,
           "metadata": {
-            "description": "Optional. The hourly snapshot minute."
+            "description": "Required. The hourly snapshot minute."
           }
         },
         "snapshotsToKeep": {
           "type": "int",
-          "nullable": true,
+          "minValue": 1,
+          "maxValue": 255,
           "metadata": {
-            "description": "Optional. Hourly snapshot count to keep."
+            "description": "Required. Hourly snapshot count to keep."
           }
         },
         "usedBytes": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Hourly snapshot used bytes."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "monthlyScheduleType": {
-      "type": "object",
-      "properties": {
-        "daysOfMonth": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The monthly snapshot day."
-          }
-        },
-        "hour": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The monthly snapshot hour."
-          }
-        },
-        "minute": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The monthly snapshot minute."
-          }
-        },
-        "snapshotsToKeep": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Monthly snapshot count to keep."
-          }
-        },
-        "usedBytes": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Monthly snapshot used bytes."
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
           }
         }
       },
@@ -126,37 +89,93 @@
       "properties": {
         "day": {
           "type": "string",
-          "nullable": true,
+          "allowedValues": [
+            "Friday",
+            "Monday",
+            "Saturday",
+            "Sunday",
+            "Thursday",
+            "Tuesday",
+            "Wednesday"
+          ],
           "metadata": {
-            "description": "Optional. The weekly snapshot day."
+            "description": "Required. The weekly snapshot day."
           }
         },
         "hour": {
           "type": "int",
-          "nullable": true,
+          "minValue": 0,
+          "maxValue": 23,
           "metadata": {
-            "description": "Optional. The weekly snapshot hour."
+            "description": "Required. The weekly snapshot hour."
           }
         },
         "minute": {
           "type": "int",
-          "nullable": true,
+          "minValue": 0,
+          "maxValue": 59,
           "metadata": {
-            "description": "Optional. The weekly snapshot minute."
+            "description": "Required. The weekly snapshot minute."
           }
         },
         "snapshotsToKeep": {
           "type": "int",
-          "nullable": true,
+          "minValue": 1,
+          "maxValue": 255,
           "metadata": {
-            "description": "Optional. Weekly snapshot count to keep."
+            "description": "Required. Weekly snapshot count to keep."
           }
         },
         "usedBytes": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Weekly snapshot used bytes."
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "monthlyScheduleType": {
+      "type": "object",
+      "properties": {
+        "daysOfMonth": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., '10,11,12'."
+          }
+        },
+        "hour": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 23,
+          "metadata": {
+            "description": "Required. The monthly snapshot hour."
+          }
+        },
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The monthly snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Monthly snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
           }
         }
       },
@@ -186,51 +205,30 @@
         "description": "Optional. The location of the snapshot policy."
       }
     },
-    "dailySchedule": {
-      "$ref": "#/definitions/dailyScheduleType",
-      "defaultValue": {
-        "hour": 0,
-        "minute": 0,
-        "snapshotsToKeep": 0,
-        "usedBytes": 0
-      },
-      "metadata": {
-        "description": "Optional. Schedule for daily snapshots."
-      }
-    },
     "hourlySchedule": {
       "$ref": "#/definitions/hourlyScheduleType",
-      "defaultValue": {
-        "minute": 0,
-        "snapshotsToKeep": 0,
-        "usedBytes": 0
-      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Schedule for hourly snapshots."
       }
     },
+    "dailySchedule": {
+      "$ref": "#/definitions/dailyScheduleType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Schedule for daily snapshots."
+      }
+    },
     "monthlySchedule": {
       "$ref": "#/definitions/monthlyScheduleType",
-      "defaultValue": {
-        "daysOfMonth": "",
-        "hour": 0,
-        "minute": 0,
-        "snapshotsToKeep": 0,
-        "usedBytes": 0
-      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Schedule for monthly snapshots."
       }
     },
     "weeklySchedule": {
       "$ref": "#/definitions/weeklyScheduleType",
-      "defaultValue": {
-        "day": "",
-        "hour": 0,
-        "minute": 0,
-        "snapshotsToKeep": 0,
-        "usedBytes": 0
-      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Schedule for weekly snapshots."
       }

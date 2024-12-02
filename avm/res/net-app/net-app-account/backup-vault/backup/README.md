@@ -19,7 +19,7 @@
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`volumeResourceId`](#parameter-volumeresourceid) | string | ResourceId used to identify the Volume. |
+| [`volumeName`](#parameter-volumename) | string | The name used to identify the volume. |
 
 **Conditional parameters**
 
@@ -37,9 +37,9 @@
 | [`snapshotName`](#parameter-snapshotname) | string | The name of the snapshot. |
 | [`useExistingSnapshot`](#parameter-useexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
 
-### Parameter: `volumeResourceId`
+### Parameter: `volumeName`
 
-ResourceId used to identify the Volume.
+The name used to identify the volume.
 
 - Required: Yes
 - Type: string
