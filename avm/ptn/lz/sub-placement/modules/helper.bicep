@@ -11,7 +11,7 @@ resource customsubscriptionPlacement 'Microsoft.Management/managementGroups/subs
   }
 ]
 
-@description('Output of the subscription placements.')
+@description('Output of the Management Group and Subscription Resource ID placements.')
 output subscriptionPlacements array = [
   for (subscription, i) in subscriptionIds: {
     name: '${managementGroupId}/${subscription}'

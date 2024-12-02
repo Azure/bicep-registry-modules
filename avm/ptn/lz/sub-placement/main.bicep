@@ -12,7 +12,6 @@ type typMgChild = {
   subscriptionIds: string[]
 }[]
 
-@description('Required. A UDR used to define as many objects as required to configure the appropriate Management Group ID to Subscription ID(s) association.')
 param parSubscriptionPlacement typMgChild = [
   {
     managementGroupId: 'Group1'
