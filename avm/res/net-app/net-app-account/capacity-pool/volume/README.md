@@ -29,7 +29,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`backupLabel`](#parameter-backuplabel) | string | The label of the backup. |
 | [`backupName`](#parameter-backupname) | string | The name of the backup. |
 | [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The backup policy location. |
-| [`backupVaultId`](#parameter-backupvaultid) | string | The Id of the Backup Vault. |
+| [`backupVaultResourceId`](#parameter-backupvaultresourceid) | string | The Id of the Backup Vault. |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
@@ -117,7 +117,7 @@ The backup policy location.
 - Required: Yes
 - Type: string
 
-### Parameter: `backupVaultId`
+### Parameter: `backupVaultResourceId`
 
 The Id of the Backup Vault.
 
@@ -660,3 +660,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `res/net-app/net-app-account/backup-policies` | Local reference |
 | `res/net-app/net-app-account/snapshot-policies` | Local reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
