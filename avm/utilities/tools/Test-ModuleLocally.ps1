@@ -139,6 +139,9 @@ function Test-ModuleLocally {
         [switch] $PesterTest,
 
         [Parameter(Mandatory = $false)]
+        [switch] $PesterTestRecurse,
+
+        [Parameter(Mandatory = $false)]
         [switch] $DeploymentTest,
 
         [Parameter(Mandatory = $false)]
@@ -177,8 +180,10 @@ function Test-ModuleLocally {
                 )
 
                 $moduleFolderPaths = @(Split-Path $TemplateFilePath -Parent)
-                $moduleFolderPaths += (Get-ChildItem -Path $moduleFolderPaths -Recurse -Directory -Force).FullName | Where-Object {
-                    (Get-ChildItem $_ -File -Depth 0 -Include @('main.json', 'main.bicep') -Force).Count -gt 0
+                if ($PesterTestRecurse) {
+                    $moduleFolderPaths += (Get-ChildItem -Path $moduleFolderPaths -Recurse -Directory -Force).FullName | Where-Object {
+                        (Get-ChildItem $_ -File -Depth 0 -Include @('main.json', 'main.bicep') -Force).Count -gt 0
+                    }
                 }
 
                 Invoke-Pester -Configuration @{
