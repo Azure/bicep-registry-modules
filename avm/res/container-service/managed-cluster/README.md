@@ -2799,7 +2799,7 @@ Properties of the primary agent pool.
 | [`orchestratorVersion`](#parameter-primaryagentpoolprofilesorchestratorversion) | string | The Kubernetes version of the agent pool. |
 | [`osDiskSizeGB`](#parameter-primaryagentpoolprofilesosdisksizegb) | int | The OS disk size in GB of the agent pool. |
 | [`osDiskType`](#parameter-primaryagentpoolprofilesosdisktype) | string | The OS disk type of the agent pool. |
-| [`osSku`](#parameter-primaryagentpoolprofilesossku) | string | The OS SKU of the agent pool. |
+| [`osSKU`](#parameter-primaryagentpoolprofilesossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-primaryagentpoolprofilesostype) | string | The OS type of the agent pool. |
 | [`podSubnetResourceId`](#parameter-primaryagentpoolprofilespodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-primaryagentpoolprofilesproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
@@ -2992,7 +2992,7 @@ The OS disk type of the agent pool.
 - Required: No
 - Type: string
 
-### Parameter: `primaryAgentPoolProfiles.osSku`
+### Parameter: `primaryAgentPoolProfiles.osSKU`
 
 The OS SKU of the agent pool.
 
@@ -3247,7 +3247,7 @@ Define one or more secondary/additional agent pools.
 | [`orchestratorVersion`](#parameter-agentpoolsorchestratorversion) | string | The Kubernetes version of the agent pool. |
 | [`osDiskSizeGB`](#parameter-agentpoolsosdisksizegb) | int | The OS disk size in GB of the agent pool. |
 | [`osDiskType`](#parameter-agentpoolsosdisktype) | string | The OS disk type of the agent pool. |
-| [`osSku`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
+| [`osSKU`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-agentpoolsostype) | string | The OS type of the agent pool. |
 | [`podSubnetResourceId`](#parameter-agentpoolspodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-agentpoolsproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
@@ -3440,7 +3440,7 @@ The OS disk type of the agent pool.
 - Required: No
 - Type: string
 
-### Parameter: `agentPools.osSku`
+### Parameter: `agentPools.osSKU`
 
 The OS SKU of the agent pool.
 

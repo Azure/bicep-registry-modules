@@ -89,7 +89,7 @@ param osDiskType string?
   'Windows2019'
   'Windows2022'
 ])
-param osSku string?
+param osSKU string?
 
 @description('Optional. The operating system type. The default is Linux.')
 @allowed([
@@ -178,7 +178,7 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-0
     orchestratorVersion: orchestratorVersion
     osDiskSizeGB: osDiskSizeGB
     osDiskType: osDiskType
-    osSKU: osSku
+    osSKU: osSKU
     osType: osType
     podSubnetID: podSubnetResourceId
     proximityPlacementGroupID: proximityPlacementGroupResourceId

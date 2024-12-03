@@ -185,7 +185,7 @@
         "description": "Optional. The default is \"Ephemeral\" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to \"Managed\". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os)."
       }
     },
-    "osSku": {
+    "osSKU": {
       "type": "string",
       "nullable": true,
       "allowedValues": [
@@ -339,7 +339,7 @@
         "orchestratorVersion": "[parameters('orchestratorVersion')]",
         "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
         "osDiskType": "[parameters('osDiskType')]",
-        "osSKU": "[parameters('osSku')]",
+        "osSKU": "[parameters('osSKU')]",
         "osType": "[parameters('osType')]",
         "podSubnetID": "[parameters('podSubnetResourceId')]",
         "proximityPlacementGroupID": "[parameters('proximityPlacementGroupResourceId')]",
