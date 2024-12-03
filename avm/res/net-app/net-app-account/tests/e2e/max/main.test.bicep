@@ -134,6 +134,7 @@ module testDeployment '../../../main.bicep' = {
               rules: [
                 {
                   allowedClients: '0.0.0.0/0'
+                  nfsv3: false
                   nfsv41: true
                   ruleIndex: 1
                   unixReadOnly: true
