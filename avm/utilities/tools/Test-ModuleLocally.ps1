@@ -176,11 +176,16 @@ function Test-ModuleLocally {
                     (Join-Path $moduleRoot 'tests' 'unit')         # Module Unit Tests
                 )
 
+                $moduleFolderPaths = @(Split-Path $TemplateFilePath -Parent)
+                $moduleFolderPaths += (Get-ChildItem -Path $moduleFolderPaths -Recurse -Directory -Force).FullName | Where-Object {
+                    (Get-ChildItem $_ -File -Depth 0 -Include @('main.json', 'main.bicep') -Force).Count -gt 0
+                }
+
                 Invoke-Pester -Configuration @{
                     Run    = @{
                         Container = New-PesterContainer -Path $testFiles -Data @{
                             repoRootPath      = $repoRootPath
-                            moduleFolderPaths = Split-Path $TemplateFilePath -Parent
+                            moduleFolderPaths = $moduleFolderPaths
                         }
                     }
                     Output = @{
