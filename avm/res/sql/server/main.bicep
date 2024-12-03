@@ -522,6 +522,9 @@ output name string = server.name
 @description('The resource ID of the deployed SQL server.')
 output resourceId string = server.id
 
+@description('The fully qualified domain name of the deployed SQL server.')
+output fullyQualifiedDomainName string = server.properties.fullyQualifiedDomainName
+
 @description('The resource group of the deployed SQL server.')
 output resourceGroupName string = resourceGroup().name
 

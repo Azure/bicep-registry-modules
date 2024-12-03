@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShor
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'akcwaf'
+param serviceShort string = 'kcwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -54,10 +54,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       sku: 'Standard_E2ads_v5'
       tier: 'Standard'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       capacity: 3
       enableAutoScale: true
       autoScaleMin: 3

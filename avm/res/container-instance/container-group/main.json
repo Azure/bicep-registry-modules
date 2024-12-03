@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "11653767368737977029"
+      "templateHash": "16278061396561058580"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -83,10 +83,10 @@
                       }
                     },
                     "memoryInGB": {
-                      "type": "int",
+                      "type": "string",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The memory request in GB of this container instance. To specify a decimal value, use the json() function."
+                        "description": "Optional. The memory request in GB of this container instance."
                       }
                     }
                   },
@@ -111,10 +111,10 @@
                       }
                     },
                     "memoryInGB": {
-                      "type": "int",
+                      "type": "string",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function."
+                        "description": "Optional. The memory limit in GB of this container instance."
                       }
                     }
                   },

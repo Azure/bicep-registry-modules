@@ -44,7 +44,9 @@ var azureWebJobsValues = !empty(storageAccountResourceId) && !(storageAccountUse
   : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication
       ? union(
           { AzureWebJobsStorage__accountName: storageAccount.name },
-          { AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob }
+          { AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob },
+          { AzureWebJobsStorage__queueServiceUri: storageAccount.properties.primaryEndpoints.queue },
+          { AzureWebJobsStorage__tableServiceUri: storageAccount.properties.primaryEndpoints.table }
         )
       : {}
 

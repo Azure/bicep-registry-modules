@@ -28,9 +28,10 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using CMK ](#example-2-using-cmk)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using private network](#example-4-using-private-network)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using only defaults and low memory containers](#example-3-using-only-defaults-and-low-memory-containers)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Using private network](#example-5-using-private-network)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -60,7 +61,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -107,7 +108,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -158,7 +159,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -212,7 +213,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -232,7 +233,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -304,7 +305,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -324,7 +325,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -406,7 +407,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -426,7 +427,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -465,7 +466,153 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using only defaults and low memory containers_
+
+This instance deploys the module with the minimum set of required parameters and with low memory.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
+  name: 'containerGroupDeployment'
+  params: {
+    // Required parameters
+    containers: [
+      {
+        name: 'az-aci-x-001'
+        properties: {
+          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+          ports: [
+            {
+              port: 443
+              protocol: 'Tcp'
+            }
+          ]
+          resources: {
+            requests: {
+              cpu: 2
+              memoryInGB: '0.5'
+            }
+          }
+        }
+      }
+    ]
+    name: 'ciclow001'
+    // Non-required parameters
+    ipAddressPorts: [
+      {
+        port: 443
+        protocol: 'Tcp'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containers": {
+      "value": [
+        {
+          "name": "az-aci-x-001",
+          "properties": {
+            "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
+            "ports": [
+              {
+                "port": 443,
+                "protocol": "Tcp"
+              }
+            ],
+            "resources": {
+              "requests": {
+                "cpu": 2,
+                "memoryInGB": "0.5"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "ciclow001"
+    },
+    // Non-required parameters
+    "ipAddressPorts": {
+      "value": [
+        {
+          "port": 443,
+          "protocol": "Tcp"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: '0.5'
+        }
+      }
+    }
+  }
+]
+param name = 'ciclow001'
+// Non-required parameters
+param ipAddressPorts = [
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -506,9 +653,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             }
           ]
           resources: {
+            limits: {
+              cpu: 4
+              memoryInGB: '4'
+            }
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -528,7 +679,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -607,9 +758,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
               }
             ],
             "resources": {
+              "limits": {
+                "cpu": 4,
+                "memoryInGB": "4"
+              },
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -629,7 +784,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -718,9 +873,13 @@ param containers = [
         }
       ]
       resources: {
+        limits: {
+          cpu: 4
+          memoryInGB: '4'
+        }
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -740,7 +899,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -779,7 +938,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using private network_
+### Example 5: _Using private network_
 
 This instance deploys the module within a virtual network.
 
@@ -813,7 +972,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 4
+              memoryInGB: '4'
             }
           }
         }
@@ -833,7 +992,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -900,7 +1059,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 4
+                "memoryInGB": "4"
               }
             }
           }
@@ -920,7 +1079,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -997,7 +1156,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 4
+          memoryInGB: '4'
         }
       }
     }
@@ -1017,7 +1176,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -1051,7 +1210,7 @@ param subnetResourceId = '<subnetResourceId>'
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1085,7 +1244,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -1105,7 +1264,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -1167,7 +1326,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -1187,7 +1346,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -1255,7 +1414,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -1275,7 +1434,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -1432,7 +1591,7 @@ The resource requests of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`gpu`](#parameter-containerspropertiesresourcesrequestsgpu) | object | The GPU request of this container instance. |
-| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | int | The memory request in GB of this container instance. To specify a decimal value, use the json() function. |
+| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | string | The memory request in GB of this container instance. |
 
 ### Parameter: `containers.properties.resources.requests.cpu`
 
@@ -1479,10 +1638,10 @@ The SKU of the GPU resource.
 
 ### Parameter: `containers.properties.resources.requests.memoryInGB`
 
-The memory request in GB of this container instance. To specify a decimal value, use the json() function.
+The memory request in GB of this container instance.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `containers.properties.resources.limits`
 
@@ -1502,7 +1661,7 @@ The resource limits of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`gpu`](#parameter-containerspropertiesresourceslimitsgpu) | object | The GPU limit of this container instance. |
-| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | int | The memory limit in GB of this container instance. To specify a decimal value, use the json() function. |
+| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | string | The memory limit in GB of this container instance. |
 
 ### Parameter: `containers.properties.resources.limits.cpu`
 
@@ -1549,10 +1708,10 @@ The SKU of the GPU resource.
 
 ### Parameter: `containers.properties.resources.limits.memoryInGB`
 
-The memory limit in GB of this container instance. To specify a decimal value, use the json() function.
+The memory limit in GB of this container instance.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `containers.properties.resources.securityContext`
 

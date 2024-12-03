@@ -116,6 +116,9 @@ module testDeployment '../../../main.bicep' = {
             ]
             subnetResourceId: nestedDependencies.outputs.subnetResourceId
             usageThreshold: 107374182400
+            smbEncryption: false
+            smbContinuouslyAvailable: false
+            smbNonBrowsable: 'Disabled'
           }
         ]
       }

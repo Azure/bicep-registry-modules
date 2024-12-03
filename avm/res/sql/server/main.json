@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "1261593764623972732"
+      "templateHash": "2810003323744846464"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -5575,6 +5575,13 @@
         "description": "The resource ID of the deployed SQL server."
       },
       "value": "[resourceId('Microsoft.Sql/servers', parameters('name'))]"
+    },
+    "fullyQualifiedDomainName": {
+      "type": "string",
+      "metadata": {
+        "description": "The fully qualified domain name of the deployed SQL server."
+      },
+      "value": "[reference('server').fullyQualifiedDomainName]"
     },
     "resourceGroupName": {
       "type": "string",

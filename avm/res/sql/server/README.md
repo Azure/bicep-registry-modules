@@ -4112,6 +4112,7 @@ Specifies whether to use the storage account access key to access the storage ac
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
+| `fullyQualifiedDomainName` | string | The fully qualified domain name of the deployed SQL server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed SQL server. |
 | `privateEndpoints` | array | The private endpoints of the SQL server. |

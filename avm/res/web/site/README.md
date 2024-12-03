@@ -832,7 +832,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
           value: 'false'
         }
       ]
+      ftpsState: 'FtpsOnly'
       linuxFxVersion: 'DOCKER|mcr.microsoft.com/appsvc/staticsite:latest'
+      minTlsVersion: '1.2'
     }
   }
 }
@@ -872,7 +874,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
             "value": "false"
           }
         ],
-        "linuxFxVersion": "DOCKER|mcr.microsoft.com/appsvc/staticsite:latest"
+        "ftpsState": "FtpsOnly",
+        "linuxFxVersion": "DOCKER|mcr.microsoft.com/appsvc/staticsite:latest",
+        "minTlsVersion": "1.2"
       }
     }
   }
@@ -902,7 +906,9 @@ param siteConfig = {
       value: 'false'
     }
   ]
+  ftpsState: 'FtpsOnly'
   linuxFxVersion: 'DOCKER|mcr.microsoft.com/appsvc/staticsite:latest'
+  minTlsVersion: '1.2'
 }
 ```
 
@@ -1134,6 +1140,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     scmSiteAlsoStopped: true
     siteConfig: {
       alwaysOn: true
+      ftpsState: 'FtpsOnly'
       healthCheckPath: '/healthz'
       metadata: [
         {
@@ -1141,6 +1148,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           value: 'dotnetcore'
         }
       ]
+      minTlsVersion: '1.2'
     }
     vnetContentShareEnabled: true
     vnetImagePullEnabled: true
@@ -1209,13 +1217,15 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "siteConfig": {
       "value": {
         "alwaysOn": true,
+        "ftpsState": "FtpsOnly",
         "healthCheckPath": "/healthz",
         "metadata": [
           {
             "name": "CURRENT_STACK",
             "value": "dotnetcore"
           }
-        ]
+        ],
+        "minTlsVersion": "1.2"
       }
     },
     "vnetContentShareEnabled": {
@@ -1270,6 +1280,7 @@ param publicNetworkAccess = 'Disabled'
 param scmSiteAlsoStopped = true
 param siteConfig = {
   alwaysOn: true
+  ftpsState: 'FtpsOnly'
   healthCheckPath: '/healthz'
   metadata: [
     {
@@ -1277,6 +1288,7 @@ param siteConfig = {
       value: 'dotnetcore'
     }
   ]
+  minTlsVersion: '1.2'
 }
 param vnetContentShareEnabled = true
 param vnetImagePullEnabled = true
@@ -2930,6 +2942,8 @@ module site 'br/public:avm/res/web/site:<version>' = {
           value: 'false'
         }
       ]
+      ftpsState: 'FtpsOnly'
+      minTlsVersion: '1.2'
       windowsFxVersion: 'DOCKER|mcr.microsoft.com/azure-app-service/windows/parkingpage:latest'
     }
   }
@@ -2970,6 +2984,8 @@ module site 'br/public:avm/res/web/site:<version>' = {
             "value": "false"
           }
         ],
+        "ftpsState": "FtpsOnly",
+        "minTlsVersion": "1.2",
         "windowsFxVersion": "DOCKER|mcr.microsoft.com/azure-app-service/windows/parkingpage:latest"
       }
     }
@@ -3000,6 +3016,8 @@ param siteConfig = {
       value: 'false'
     }
   ]
+  ftpsState: 'FtpsOnly'
+  minTlsVersion: '1.2'
   windowsFxVersion: 'DOCKER|mcr.microsoft.com/azure-app-service/windows/parkingpage:latest'
 }
 ```
