@@ -170,7 +170,7 @@ function Test-ModuleLocally {
         ################
         # PESTER Tests #
         ################
-        if ($PesterTest) {
+        if ($PesterTest -or $PesterTestRecurse) {
             Write-Verbose "Pester Testing Module: $ModuleName"
 
             try {
