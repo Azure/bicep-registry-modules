@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16770140342047484752"
+      "templateHash": "7080517864703302079"
     },
     "name": "Storage Account File Share Services",
     "description": "This module deploys a Storage Account File Share Service.",
@@ -168,6 +168,13 @@
         "description": "Optional. The service properties for soft delete."
       }
     },
+    "corsRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies CORS rules for the File service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the File service."
+      }
+    },
     "diagnosticSettings": {
       "type": "array",
       "items": {
@@ -198,6 +205,9 @@
       "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
       "properties": {
+        "cors": {
+          "corsRules": "[parameters('corsRules')]"
+        },
         "protocolSettings": "[parameters('protocolSettings')]",
         "shareDeleteRetentionPolicy": "[parameters('shareDeleteRetentionPolicy')]"
       }
