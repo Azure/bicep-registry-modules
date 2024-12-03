@@ -562,6 +562,10 @@ resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
           ? 'http://${proxyNic.properties.ipConfigurations[0].properties.privateIPAddress}:3128'
           : '')
       }
+      {
+        name: 'userAssignedManagedIdentityClientId'
+        value: userAssignedIdentity.properties.clientId
+      }
     ]
     protectedParameters: [
       {
@@ -595,6 +599,10 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       {
         name: 'subscriptionId'
         value: subscription().subscriptionId
+      }
+      {
+        name: 'userAssignedManagedIdentityClientId'
+        value: userAssignedIdentity.properties.clientId
       }
     ]
     treatFailureAsDeploymentFailure: true

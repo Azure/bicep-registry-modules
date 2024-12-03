@@ -9,7 +9,11 @@ param(
 
     [Parameter()]
     [int]
-    $hciNodeCount
+    $hciNodeCount,
+
+    [Parameter()]
+    [String]
+    $userAssignedManagedIdentityClientId
 
 )
 Function log {
@@ -37,7 +41,8 @@ Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 Install-Module -Name Az.ConnectedMachine -Force -AllowClobber -Scope CurrentUser -Repository PSGallery -ErrorAction SilentlyContinue
 Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
-Login-AzAccount -Identity -Subscription $subscriptionId
+log "Logging in to Azure with user-assigned managed identity '$($userAssignedManagedIdentityClientId)'..."
+Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
 
 log "Waiting for HCI Arc Machines to exist in the resource group '$($resourceGroupName)'..."
 
@@ -164,8 +169,12 @@ $ipChangeOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $dnsClientConfig = Get-DnsClientServerAddress -InterfaceAlias 'mgmt' -AddressFamily IPv4 | Select-Object -ExpandProperty ServerAddresses
 
     try {
-        Write-Output "[$env:computerName]Disabling DHCP on network interface 'mgmt'..."
-        Set-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Disabled
+        If (!(Get-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Enabled -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]DHCP is already disabled on network interface 'mgmt'..."
+        } Else {
+            Write-Output "[$env:computerName]Disabling DHCP on network interface 'mgmt'..."
+            Set-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Disabled
+        }
     } catch {
         Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'mgmt'. Error message: $_. Exiting..."
         Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
@@ -173,8 +182,12 @@ $ipChangeOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     }
 
     try {
-        Write-Output "[$env:computerName]Setting static IP address on network interface 'mgmt'..."
-        New-NetIPAddress -InterfaceAlias 'mgmt' -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -DefaultGateway $dhcpIpConfig.Ipv4DefaultGateway.NextHop -AddressFamily IPv4 -PrefixLength $prefixLength
+        If (!(Get-NetIPAddress -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -InterfaceAlias 'mgmt' -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]Setting static IP address on network interface 'mgmt'..."
+            New-NetIPAddress -InterfaceAlias 'mgmt' -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -DefaultGateway $dhcpIpConfig.Ipv4DefaultGateway.NextHop -AddressFamily IPv4 -PrefixLength $prefixLength
+        } Else {
+            Write-Output "[$env:computerName]Static IP address already set on network interface 'mgmt'..."
+        }
     } catch {
         Write-Output "[$env:computerName]Failed to set static IP address on network interface 'mgmt'. Error message: $_. Exiting..."
         Write-Error "[$env:computerName]Failed to set static IP address on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop

@@ -46,7 +46,11 @@ param (
 
     [parameter()]
     [string]
-    $proxyBypassString #"localhost;127.0.0.1;*.contoso.com;node1;node2;192.168.1.*;s-cluster"
+    $proxyBypassString, #"localhost;127.0.0.1;*.contoso.com;node1;node2;192.168.1.*;s-cluster",
+
+    [Parameter()]
+    [string]
+    $userAssignedManagedIdentityClientId
 )
 
 Function log {
@@ -85,11 +89,11 @@ If (!(Test-Path -Path 'C:\temp\hciHostDeployAdminCred.xml')) {
 }
 
 # get an access token for the VM MSI, which has been granted rights and will be used for the HCI Arc Initialization
-$response = Invoke-WebRequest -Uri 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F' `
-    -Headers @{Metadata = 'true' } `
-    -UseBasicParsing
-$content = $response.Content | ConvertFrom-Json
-$t = $content.access_token
+log "Logging in to Azure with user-assigned managed identity '$($userAssignedManagedIdentityClientId)'..."
+Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
+
+log 'Getting access token for Azure Stack HCI Arc initialization...'
+$t = Get-AzAccessToken -ResourceUrl 'https://management.azure.com' | Select-Object -ExpandProperty Token
 
 # pre-create AD objects
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
