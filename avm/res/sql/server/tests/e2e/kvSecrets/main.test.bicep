@@ -66,6 +66,7 @@ module testDeployment '../../../main.bicep' = [
       databases: [
         {
           name: 'myDatabase'
+          zoneRedundant: false
         }
       ]
     }

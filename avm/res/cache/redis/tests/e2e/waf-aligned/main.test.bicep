@@ -81,7 +81,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      enableNonSslPort: true
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

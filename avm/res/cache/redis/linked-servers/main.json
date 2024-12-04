@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "6993324639761594928"
+      "version": "0.31.92.45157",
+      "templateHash": "4764248912015671674"
     },
     "name": "Redis Cache Linked Servers",
     "description": "This module connects a primary and secondary Redis Cache together for geo-replication.",

@@ -8,6 +8,7 @@ This module deploys a Container Instance Container Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -27,9 +28,10 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using CMK ](#example-2-using-cmk)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using private network](#example-4-using-private-network)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using only defaults and low memory containers](#example-3-using-only-defaults-and-low-memory-containers)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Using private network](#example-5-using-private-network)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -59,20 +61,20 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
       }
     ]
+    name: 'cicgmin001'
+    // Non-required parameters
     ipAddressPorts: [
       {
         port: 443
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgmin001'
-    // Non-required parameters
     location: '<location>'
   }
 }
@@ -106,13 +108,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
         }
       ]
     },
+    "name": {
+      "value": "cicgmin001"
+    },
+    // Non-required parameters
     "ipAddressPorts": {
       "value": [
         {
@@ -121,10 +127,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "cicgmin001"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -157,20 +159,20 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
   }
 ]
+param name = 'cicgmin001'
+// Non-required parameters
 param ipAddressPorts = [
   {
     port: 443
     protocol: 'Tcp'
   }
 ]
-param name = 'cicgmin001'
-// Non-required parameters
 param location = '<location>'
 ```
 
@@ -211,7 +213,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -231,12 +233,19 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
       }
     ]
+    name: 'cicgencr001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
     ipAddressPorts: [
       {
         port: 80
@@ -247,13 +256,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgencr001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -303,7 +305,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -323,22 +325,10 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
-        }
-      ]
-    },
-    "ipAddressPorts": {
-      "value": [
-        {
-          "port": 80,
-          "protocol": "Tcp"
-        },
-        {
-          "port": 443,
-          "protocol": "Tcp"
         }
       ]
     },
@@ -352,6 +342,18 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
+    },
+    "ipAddressPorts": {
+      "value": [
+        {
+          "port": 80,
+          "protocol": "Tcp"
+        },
+        {
+          "port": 443,
+          "protocol": "Tcp"
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -405,7 +407,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -425,12 +427,19 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
   }
 ]
+param name = 'cicgencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
 param ipAddressPorts = [
   {
     port: 80
@@ -441,13 +450,6 @@ param ipAddressPorts = [
     protocol: 'Tcp'
   }
 ]
-param name = 'cicgencr001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -464,7 +466,153 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using only defaults and low memory containers_
+
+This instance deploys the module with the minimum set of required parameters and with low memory.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
+  name: 'containerGroupDeployment'
+  params: {
+    // Required parameters
+    containers: [
+      {
+        name: 'az-aci-x-001'
+        properties: {
+          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+          ports: [
+            {
+              port: 443
+              protocol: 'Tcp'
+            }
+          ]
+          resources: {
+            requests: {
+              cpu: 2
+              memoryInGB: '0.5'
+            }
+          }
+        }
+      }
+    ]
+    name: 'ciclow001'
+    // Non-required parameters
+    ipAddressPorts: [
+      {
+        port: 443
+        protocol: 'Tcp'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containers": {
+      "value": [
+        {
+          "name": "az-aci-x-001",
+          "properties": {
+            "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
+            "ports": [
+              {
+                "port": 443,
+                "protocol": "Tcp"
+              }
+            ],
+            "resources": {
+              "requests": {
+                "cpu": 2,
+                "memoryInGB": "0.5"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "ciclow001"
+    },
+    // Non-required parameters
+    "ipAddressPorts": {
+      "value": [
+        {
+          "port": 443,
+          "protocol": "Tcp"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: '0.5'
+        }
+      }
+    }
+  }
+]
+param name = 'ciclow001'
+// Non-required parameters
+param ipAddressPorts = [
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -505,9 +653,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             }
           ]
           resources: {
+            limits: {
+              cpu: 4
+              memoryInGB: '4'
+            }
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -527,12 +679,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
       }
     ]
+    name: 'cicgmax001'
+    // Non-required parameters
     ipAddressPorts: [
       {
         port: 80
@@ -543,8 +697,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgmax001'
-    // Non-required parameters
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -606,9 +758,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
               }
             ],
             "resources": {
+              "limits": {
+                "cpu": 4,
+                "memoryInGB": "4"
+              },
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -628,13 +784,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
         }
       ]
     },
+    "name": {
+      "value": "cicgmax001"
+    },
+    // Non-required parameters
     "ipAddressPorts": {
       "value": [
         {
@@ -647,10 +807,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "cicgmax001"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     },
@@ -717,9 +873,13 @@ param containers = [
         }
       ]
       resources: {
+        limits: {
+          cpu: 4
+          memoryInGB: '4'
+        }
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -739,12 +899,14 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
   }
 ]
+param name = 'cicgmax001'
+// Non-required parameters
 param ipAddressPorts = [
   {
     port: 80
@@ -755,8 +917,6 @@ param ipAddressPorts = [
     protocol: 'Tcp'
   }
 ]
-param name = 'cicgmax001'
-// Non-required parameters
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -778,7 +938,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using private network_
+### Example 5: _Using private network_
 
 This instance deploys the module within a virtual network.
 
@@ -812,7 +972,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 4
+              memoryInGB: '4'
             }
           }
         }
@@ -832,12 +992,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
       }
     ]
+    name: 'cicgprivate001'
+    // Non-required parameters
     ipAddressPorts: [
       {
         port: 80
@@ -852,15 +1014,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgprivate001'
-    // Non-required parameters
     ipAddressType: 'Private'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
   }
 }
 ```
@@ -899,7 +1059,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 4
+                "memoryInGB": "4"
               }
             }
           }
@@ -919,13 +1079,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
         }
       ]
     },
+    "name": {
+      "value": "cicgprivate001"
+    },
+    // Non-required parameters
     "ipAddressPorts": {
       "value": [
         {
@@ -942,10 +1106,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "cicgprivate001"
-    },
-    // Non-required parameters
     "ipAddressType": {
       "value": "Private"
     },
@@ -958,8 +1118,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "name": "myCustomLockName"
       }
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     }
   }
 }
@@ -996,7 +1156,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 4
+          memoryInGB: '4'
         }
       }
     }
@@ -1016,12 +1176,14 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
   }
 ]
+param name = 'cicgprivate001'
+// Non-required parameters
 param ipAddressPorts = [
   {
     port: 80
@@ -1036,21 +1198,19 @@ param ipAddressPorts = [
     protocol: 'Tcp'
   }
 ]
-param name = 'cicgprivate001'
-// Non-required parameters
 param ipAddressType = 'Private'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param subnetId = '<subnetId>'
+param subnetResourceId = '<subnetResourceId>'
 ```
 
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1084,7 +1244,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -1104,12 +1264,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
       }
     ]
+    name: 'cicgwaf001'
+    // Non-required parameters
     ipAddressPorts: [
       {
         port: 80
@@ -1120,13 +1282,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgwaf001'
-    // Non-required parameters
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1170,7 +1326,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -1190,13 +1346,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
         }
       ]
     },
+    "name": {
+      "value": "cicgwaf001"
+    },
+    // Non-required parameters
     "ipAddressPorts": {
       "value": [
         {
@@ -1209,18 +1369,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "cicgwaf001"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {
@@ -1264,7 +1414,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -1284,12 +1434,14 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
   }
 ]
+param name = 'cicgwaf001'
+// Non-required parameters
 param ipAddressPorts = [
   {
     port: 80
@@ -1300,13 +1452,7 @@ param ipAddressPorts = [
     protocol: 'Tcp'
   }
 ]
-param name = 'cicgwaf001'
-// Non-required parameters
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1351,7 +1497,7 @@ param tags = {
 | [`osType`](#parameter-ostype) | string | The operating system type required by the containers in the container group. - Windows or Linux. |
 | [`restartPolicy`](#parameter-restartpolicy) | string | Restart policy for all containers within the container group. - Always: Always restart. OnFailure: Restart on failure. Never: Never restart. - Always, OnFailure, Never. |
 | [`sku`](#parameter-sku) | string | The container group SKU. |
-| [`subnetId`](#parameter-subnetid) | string | Resource ID of the subnet. Only specify when ipAddressType is Private. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet. Only specify when ipAddressType is Private. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup. |
 
@@ -1445,7 +1591,7 @@ The resource requests of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`gpu`](#parameter-containerspropertiesresourcesrequestsgpu) | object | The GPU request of this container instance. |
-| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | int | The memory request in GB of this container instance. To specify a decimal value, use the json() function. |
+| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | string | The memory request in GB of this container instance. |
 
 ### Parameter: `containers.properties.resources.requests.cpu`
 
@@ -1492,10 +1638,10 @@ The SKU of the GPU resource.
 
 ### Parameter: `containers.properties.resources.requests.memoryInGB`
 
-The memory request in GB of this container instance. To specify a decimal value, use the json() function.
+The memory request in GB of this container instance.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `containers.properties.resources.limits`
 
@@ -1515,7 +1661,7 @@ The resource limits of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`gpu`](#parameter-containerspropertiesresourceslimitsgpu) | object | The GPU limit of this container instance. |
-| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | int | The memory limit in GB of this container instance. To specify a decimal value, use the json() function. |
+| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | string | The memory limit in GB of this container instance. |
 
 ### Parameter: `containers.properties.resources.limits.cpu`
 
@@ -1562,10 +1708,10 @@ The SKU of the GPU resource.
 
 ### Parameter: `containers.properties.resources.limits.memoryInGB`
 
-The memory limit in GB of this container instance. To specify a decimal value, use the json() function.
+The memory limit in GB of this container instance.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `containers.properties.resources.securityContext`
 
@@ -1783,7 +1929,7 @@ Name for the container group.
 
 Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 **Required parameters**
@@ -1843,7 +1989,8 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -1860,9 +2007,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string
@@ -2038,7 +2192,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2049,7 +2203,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -2093,7 +2247,7 @@ The container group SKU.
   ]
   ```
 
-### Parameter: `subnetId`
+### Parameter: `subnetResourceId`
 
 Resource ID of the subnet. Only specify when ipAddressType is Private.
 
@@ -2124,6 +2278,14 @@ Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to yo
 | `resourceGroupName` | string | The resource group the container group was deployed into. |
 | `resourceId` | string | The resource ID of the container group. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 

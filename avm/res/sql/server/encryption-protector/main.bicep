@@ -8,8 +8,8 @@ param sqlServerName string
 @description('Required. The name of the server key.')
 param serverKeyName string
 
-@description('Optional. Key auto rotation opt-in.')
-param autoRotationEnabled bool = false
+@description('Optional. Key auto rotation opt-in flag.')
+param autoRotationEnabled bool = true
 
 @description('Optional. The encryption protector type.')
 @allowed([

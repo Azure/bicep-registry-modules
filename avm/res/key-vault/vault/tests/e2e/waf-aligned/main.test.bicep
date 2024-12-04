@@ -112,10 +112,6 @@ module testDeployment '../../../main.bicep' = [
           keySize: 4096
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       networkAcls: {
         bypass: 'AzureServices'
         defaultAction: 'Deny'
@@ -152,9 +148,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

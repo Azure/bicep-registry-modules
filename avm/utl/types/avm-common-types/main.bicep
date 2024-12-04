@@ -386,11 +386,11 @@ type customerManagedKeyWithAutoRotateType = {
   @description('Required. The name of the customer managed key to use for encryption.')
   keyName: string
 
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per \'autoRotationDisabled\' setting.')
+  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per \'autoRotationEnabled\' setting.')
   keyVersion: string?
 
-  @description('Optional. If configured, instead of auto-rotating to the latest key version, the latest key version at the time of the deployment is used.')
-  autoRotationDisabled: bool?
+  @description('Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.')
+  autoRotationEnabled: bool?
 
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?

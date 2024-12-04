@@ -52,10 +52,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       containers: [
         {
           name: '${namePrefix}-az-aci-x-001'
@@ -76,7 +72,7 @@ module testDeployment '../../../main.bicep' = [
             resources: {
               requests: {
                 cpu: 2
-                memoryInGB: 2
+                memoryInGB: '2'
               }
             }
           }
@@ -96,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
             resources: {
               requests: {
                 cpu: 2
-                memoryInGB: 2
+                memoryInGB: '2'
               }
             }
           }

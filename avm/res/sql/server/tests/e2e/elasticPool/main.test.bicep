@@ -53,6 +53,7 @@ module testDeployment '../../../main.bicep' = [
         // bare minimum elastic pool: only a name is specified
         {
           name: '${namePrefix}-${serviceShort}-ep-001'
+          zoneRedundant: false
         }
         // more complex elastic pool with non-default SKU and per database settings
         {
@@ -66,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
             minCapacity: '0.5'
             maxCapacity: '4'
           }
+          zoneRedundant: false
         }
       ]
     }

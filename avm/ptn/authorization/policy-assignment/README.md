@@ -129,6 +129,9 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     name: 'apamgmax001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
+    additionalManagementGroupsIDsToAssignRbacTo: [
+      '<name>'
+    ]
     description: '[Description] Policy Assignment at the management group scope'
     displayName: '[Display Name] Policy Assignment at the management group scope'
     enforcementMode: 'DoNotEnforce'
@@ -217,6 +220,11 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
     },
     // Non-required parameters
+    "additionalManagementGroupsIDsToAssignRbacTo": {
+      "value": [
+        "<name>"
+      ]
+    },
     "description": {
       "value": "[Description] Policy Assignment at the management group scope"
     },
@@ -325,6 +333,9 @@ using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
 param name = 'apamgmax001'
 param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
 // Non-required parameters
+param additionalManagementGroupsIDsToAssignRbacTo = [
+  '<name>'
+]
 param description = '[Description] Policy Assignment at the management group scope'
 param displayName = '[Display Name] Policy Assignment at the management group scope'
 param enforcementMode = 'DoNotEnforce'
@@ -1167,6 +1178,7 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`additionalManagementGroupsIDsToAssignRbacTo`](#parameter-additionalmanagementgroupsidstoassignrbacto) | array | An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity. |
 | [`description`](#parameter-description) | string | This message will be part of response in case of policy violation. |
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1198,6 +1210,14 @@ Specifies the ID of the policy definition or policy set definition being assigne
 
 - Required: Yes
 - Type: string
+
+### Parameter: `additionalManagementGroupsIDsToAssignRbacTo`
+
+An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `description`
 

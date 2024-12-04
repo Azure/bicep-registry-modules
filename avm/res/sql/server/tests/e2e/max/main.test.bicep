@@ -106,12 +106,14 @@ module testDeployment '../../../main.bicep' = {
     ]
     vulnerabilityAssessmentsObj: {
       name: 'default'
-      emailSubscriptionAdmins: true
-      recurringScansIsEnabled: true
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
+      recurringScans: {
+        emailSubscriptionAdmins: true
+        isEnabled: true
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+      }
       storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
     }
     elasticPools: [

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "6120060466877826337"
+      "version": "0.31.92.45157",
+      "templateHash": "18280782395141983115"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account.",
@@ -503,11 +503,35 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
+    "managedEventHubState": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "NotSpecified"
+      ],
+      "metadata": {
+        "description": "Optional. The state of the managed Event Hub."
+      }
+    },
     "managedResourceGroupName": {
       "type": "string",
       "defaultValue": "[format('managed-rg-{0}', parameters('name'))]",
       "metadata": {
         "description": "Optional. The Managed Resource Group Name. A managed Storage Account, and an Event Hubs will be created in the selected subscription for catalog ingestion scenarios. Default is 'managed-rg-<purview-account-name>'."
+      }
+    },
+    "managedResourcesPublicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "NotSpecified",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "NotSpecified"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not public network access is allowed for managed resources."
       }
     },
     "publicNetworkAccess": {
@@ -622,14 +646,16 @@
     },
     "account": {
       "type": "Microsoft.Purview/accounts",
-      "apiVersion": "2021-07-01",
+      "apiVersion": "2021-12-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
         "cloudConnectors": {},
+        "managedEventHubState": "[parameters('managedEventHubState')]",
         "managedResourceGroupName": "[parameters('managedResourceGroupName')]",
+        "managedResourcesPublicNetworkAccess": "[parameters('managedResourcesPublicNetworkAccess')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
       }
     },
@@ -4568,7 +4594,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('account', '2021-07-01', 'full').location]"
+      "value": "[reference('account', '2021-12-01', 'full').location]"
     },
     "managedResourceGroupName": {
       "type": "string",
@@ -4603,7 +4629,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('account', '2021-07-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('account', '2021-12-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "accountPrivateEndpoints": {
       "type": "array",

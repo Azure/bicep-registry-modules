@@ -20,7 +20,7 @@ This module deploys a Purview Account.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Purview/accounts` | [2021-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Purview/2021-07-01/accounts) |
+| `Microsoft.Purview/accounts` | [2021-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Purview/2021-12-01/accounts) |
 
 ## Usage examples
 
@@ -31,8 +31,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/purview/account:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Public network access disabled for Purview managed resources](#example-2-public-network-access-disabled-for-purview-managed-resources)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -98,7 +99,76 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Public network access disabled for Purview managed resources_
+
+This instance deploys the module with public network access disabled for Purview managed resources.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/purview/account:<version>' = {
+  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    name: 'pvaing001'
+    // Non-required parameters
+    location: '<location>'
+    managedResourcesPublicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "pvaing001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedResourcesPublicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/purview/account:<version>'
+
+// Required parameters
+param name = 'pvaing001'
+// Non-required parameters
+param location = '<location>'
+param managedResourcesPublicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -663,7 +733,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1003,8 +1073,10 @@ param tags = {
 | [`eventHubPrivateEndpoints`](#parameter-eventhubprivateendpoints) | array | Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'namespace'. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedEventHubState`](#parameter-managedeventhubstate) | string | The state of the managed Event Hub. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managedResourceGroupName`](#parameter-managedresourcegroupname) | string | The Managed Resource Group Name. A managed Storage Account, and an Event Hubs will be created in the selected subscription for catalog ingestion scenarios. Default is 'managed-rg-<purview-account-name>'. |
+| [`managedResourcesPublicNetworkAccess`](#parameter-managedresourcespublicnetworkaccess) | string | Whether or not public network access is allowed for managed resources. |
 | [`portalPrivateEndpoints`](#parameter-portalprivateendpoints) | array | Configuration details for Purview Portal private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'portal'. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -2039,6 +2111,22 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `managedEventHubState`
+
+The state of the managed Event Hub.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NotSpecified'
+  ]
+  ```
+
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource.
@@ -2066,6 +2154,22 @@ The Managed Resource Group Name. A managed Storage Account, and an Event Hubs wi
 - Required: No
 - Type: string
 - Default: `[format('managed-rg-{0}', parameters('name'))]`
+
+### Parameter: `managedResourcesPublicNetworkAccess`
+
+Whether or not public network access is allowed for managed resources.
+
+- Required: No
+- Type: string
+- Default: `'NotSpecified'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NotSpecified'
+  ]
+  ```
 
 ### Parameter: `portalPrivateEndpoints`
 

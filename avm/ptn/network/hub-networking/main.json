@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "15226702818499942359"
+      "version": "0.31.92.45157",
+      "templateHash": "10817443316191820673"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -2345,8 +2345,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "5568850224456572684"
+              "version": "0.31.92.45157",
+              "templateHash": "5407453106862679302"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network.",
@@ -6473,8 +6473,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "16563975082451649304"
+              "version": "0.31.92.45157",
+              "templateHash": "16076301727176806098"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet.",
@@ -6556,8 +6556,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "10294962787410461549"
+              "version": "0.31.92.45157",
+              "templateHash": "3114934486774261221"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",

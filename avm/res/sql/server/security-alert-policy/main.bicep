@@ -5,14 +5,22 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the Security Alert Policy.')
 param name string
 
-@description('Optional. Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.')
-param disabledAlerts array = []
+@description('Optional. Alerts to disable.')
+@allowed([
+  'Sql_Injection'
+  'Sql_Injection_Vulnerability'
+  'Access_Anomaly'
+  'Data_Exfiltration'
+  'Unsafe_Action'
+  'Brute_Force'
+])
+param disabledAlerts string[] = []
 
 @description('Optional. Specifies that the alert is sent to the account administrators.')
 param emailAccountAdmins bool = false
 
 @description('Optional. Specifies an array of email addresses to which the alert is sent.')
-param emailAddresses array = []
+param emailAddresses string[] = []
 
 @description('Optional. Specifies the number of days to keep in the Threat Detection audit logs.')
 param retentionDays int = 0
@@ -24,12 +32,12 @@ param retentionDays int = 0
 ])
 param state string = 'Disabled'
 
-@description('Optional. Specifies the identifier key of the Threat Detection audit storage account..')
+@description('Optional. Specifies the identifier key of the Threat Detection audit storage account.')
 @secure()
-param storageAccountAccessKey string = ''
+param storageAccountAccessKey string?
 
 @description('Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.')
-param storageEndpoint string = ''
+param storageEndpoint string?
 
 @description('Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment.')
 param serverName string
@@ -47,8 +55,8 @@ resource securityAlertPolicy 'Microsoft.Sql/servers/securityAlertPolicies@2023-0
     emailAddresses: emailAddresses
     retentionDays: retentionDays
     state: state
-    storageAccountAccessKey: empty(storageAccountAccessKey) ? null : storageAccountAccessKey
-    storageEndpoint: empty(storageEndpoint) ? null : storageEndpoint
+    storageAccountAccessKey: storageAccountAccessKey
+    storageEndpoint: storageEndpoint
   }
 }
 

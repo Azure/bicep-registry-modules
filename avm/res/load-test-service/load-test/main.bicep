@@ -12,17 +12,20 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
 param tags object?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -30,6 +33,7 @@ param enableTelemetry bool = true
 @description('Optional. The description of the load test.')
 param loadTestDescription string?
 
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -144,7 +148,7 @@ resource loadTest 'Microsoft.LoadTestService/loadTests@2022-12-01' = {
             type: 'UserAssigned'
             resourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
           }
-          keyUrl: !empty(customerManagedKey.?keyVersion ?? '')
+          keyUrl: !empty(customerManagedKey.?keyVersion)
             ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
             : cMKKeyVault::cMKKey.properties.keyUriWithVersion
         }
@@ -185,64 +189,4 @@ output resourceGroupName string = resourceGroup().name
 output location string = loadTest.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = loadTest.?identity.?principalId ?? ''
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type customerManagedKeyType = {
-  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
-  userAssignedIdentityResourceId: string?
-
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string?
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string?
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-}?
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
-  userAssignedResourceIds: string[]?
-}?
+output systemAssignedMIPrincipalId string? = loadTest.?identity.?principalId
