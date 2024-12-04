@@ -1859,16 +1859,11 @@ IP addresses associated with AzureFirewall. Required if `virtualHubId` is suppli
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`privateIPAddress`](#parameter-hubipaddressesprivateipaddress) | string | List of private IP addresses associated with AzureFirewall. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`privateIPAddress`](#parameter-hubipaddressesprivateipaddress) | string | List of private IP addresses associated with AzureFirewall. |
 | [`publicIPs`](#parameter-hubipaddressespublicips) | object | List of public IP addresses associated with AzureFirewall. |
 
 ### Parameter: `hubIPAddresses.privateIPAddress`
