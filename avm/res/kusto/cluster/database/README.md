@@ -141,7 +141,5 @@ The time the data should be kept before it stops being accessible to queries in 
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `databaseName` | string | The name of the Kusto Cluster database. |
-| `databaseNameReadOnly` | string | The name of the Kusto Cluster read-only following database. |
-| `databaseNameReadWrite` | string | The name of the Kusto Cluster read-write database. |
-| `databaseResourceId` | string | The resource ID of the Kusto Cluster database. |
+| `name` | string | The name of the Kusto Cluster database. |
+| `resourceId` | string | The resource ID of the Kusto Cluster database. |

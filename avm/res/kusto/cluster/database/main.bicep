@@ -40,16 +40,10 @@ resource database_readWrite 'Microsoft.Kusto/clusters/databases@2023-08-15' = if
 // =============== //
 
 @description('The name of the Kusto Cluster database.')
-output databaseName string = name
+output name string = databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : database_readWrite.name
 
 @description('The resource ID of the Kusto Cluster database.')
-output databaseResourceId string = databaseKind == 'ReadWrite' ? database_readWrite.id : database_readOnly.id
-
-@description('The name of the Kusto Cluster read-only following database.')
-output databaseNameReadOnly string = databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : ''
-
-@description('The name of the Kusto Cluster read-write database.')
-output databaseNameReadWrite string = databaseKind == 'ReadWrite' ? database_readWrite.name : ''
+output resourceId string = databaseKind == 'ReadOnlyFollowing' ? database_readOnly.id : database_readWrite.id
 
 // =============== //
 //   Definitions   //
