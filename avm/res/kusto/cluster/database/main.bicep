@@ -8,6 +8,9 @@ param name string
 @description('Conditional. The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment.')
 param kustoClusterName string
 
+@description('Optional. Location for the databases.')
+param location string = resourceGroup().location
+
 @description('Optional. The object type of the databse.')
 @allowed([
   'ReadWrite'
@@ -25,12 +28,14 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2023-08-15' existing = {
 resource database_readOnly 'Microsoft.Kusto/clusters/databases@2023-08-15' = if (databaseKind == 'ReadOnlyFollowing') {
   name: name
   parent: kustoCluster
+  location: location
   kind: 'ReadOnlyFollowing'
 }
 
 resource database_readWrite 'Microsoft.Kusto/clusters/databases@2023-08-15' = if (databaseKind == 'ReadWrite') {
   name: name
   parent: kustoCluster
+  location: location
   kind: 'ReadWrite'
   properties: databaseKind == 'ReadWrite' ? databaseReadWriteProperties : null
 }

@@ -34,6 +34,7 @@ This module deploys a Kusto Cluster Database.
 | :-- | :-- | :-- |
 | [`databaseKind`](#parameter-databasekind) | string | The object type of the databse. |
 | [`databaseReadWriteProperties`](#parameter-databasereadwriteproperties) | object | The properties of the database if using read-write. Only used if databaseKind is ReadWrite. |
+| [`location`](#parameter-location) | string | Location for the databases. |
 
 ### Parameter: `name`
 
@@ -136,6 +137,14 @@ The time the data should be kept before it stops being accessible to queries in 
 
 - Required: No
 - Type: string
+
+### Parameter: `location`
+
+Location for the databases.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ## Outputs
 

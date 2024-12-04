@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "5338959197334266794"
+      "templateHash": "10708179470827073074"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database.",
@@ -88,6 +88,13 @@
         "description": "Conditional. The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment."
       }
     },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for the databases."
+      }
+    },
     "databaseKind": {
       "type": "string",
       "defaultValue": "ReadWrite",
@@ -118,6 +125,7 @@
       "type": "Microsoft.Kusto/clusters/databases",
       "apiVersion": "2023-08-15",
       "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
+      "location": "[parameters('location')]",
       "kind": "ReadOnlyFollowing",
       "dependsOn": [
         "kustoCluster"
@@ -128,6 +136,7 @@
       "type": "Microsoft.Kusto/clusters/databases",
       "apiVersion": "2023-08-15",
       "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
+      "location": "[parameters('location')]",
       "kind": "ReadWrite",
       "properties": "[if(equals(parameters('databaseKind'), 'ReadWrite'), parameters('databaseReadWriteProperties'), null())]",
       "dependsOn": [
