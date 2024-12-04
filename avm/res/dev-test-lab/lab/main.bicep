@@ -60,7 +60,7 @@ param premiumDataDisks string = 'Disabled'
 param support object = {}
 
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@description('Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.')
+@description('Conditional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
 @description('Optional. The resource ID(s) to assign to the virtual machines associated with this lab.')
