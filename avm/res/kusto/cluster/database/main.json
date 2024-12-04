@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "3288412342835116888"
+      "templateHash": "5338959197334266794"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database.",
@@ -149,6 +149,13 @@
         "description": "The resource ID of the Kusto Cluster database."
       },
       "value": "[if(equals(parameters('databaseKind'), 'ReadOnlyFollowing'), resourceId('Microsoft.Kusto/clusters/databases', parameters('kustoClusterName'), parameters('name')), resourceId('Microsoft.Kusto/clusters/databases', parameters('kustoClusterName'), parameters('name')))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group containing the Kusto Cluster database."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

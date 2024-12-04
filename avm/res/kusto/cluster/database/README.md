@@ -142,4 +142,5 @@ The time the data should be kept before it stops being accessible to queries in 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the Kusto Cluster database. |
+| `resourceGroupName` | string | The resource group containing the Kusto Cluster database. |
 | `resourceId` | string | The resource ID of the Kusto Cluster database. |

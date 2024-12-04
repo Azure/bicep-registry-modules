@@ -45,6 +45,9 @@ output name string = databaseKind == 'ReadOnlyFollowing' ? database_readOnly.nam
 @description('The resource ID of the Kusto Cluster database.')
 output resourceId string = databaseKind == 'ReadOnlyFollowing' ? database_readOnly.id : database_readWrite.id
 
+@description('The resource group containing the Kusto Cluster database.')
+output resourceGroupName string = resourceGroup().name
+
 // =============== //
 //   Definitions   //
 // =============== //
