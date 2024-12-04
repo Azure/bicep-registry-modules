@@ -39,6 +39,12 @@ resource database_readWrite 'Microsoft.Kusto/clusters/databases@2023-08-15' = if
 //     Outputs     //
 // =============== //
 
+@description('The name of the Kusto Cluster database.')
+output databaseName string = name
+
+@description('The resource ID of the Kusto Cluster database.')
+output databaseResourceId string = databaseKind == 'ReadWrite' ? database_readWrite.id : database_readOnly.id
+
 @description('The name of the Kusto Cluster read-only following database.')
 output databaseNameReadOnly string = databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : ''
 
