@@ -93,6 +93,11 @@ param smbNonBrowsable string = 'Disabled'
 
 var formattedRules = [
   for rule in (exportPolicy.?rules ?? []): {
+    ruleIndex: rule.ruleIndex
+    allowedClients: rule.?allowedClients
+    chownMode: rule.?chownMode
+    cifs: rule.?cifs
+    hasRootAccess: rule.?hasRootAccess
     ...((rule.?kerberos5ReadOnly != null)
       ? {
           kerberos5ReadOnly: rule.kerberos5ReadOnly
