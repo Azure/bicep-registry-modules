@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "10249716032875912201"
+      "version": "0.31.92.45157",
+      "templateHash": "3414152511831931415"
     },
     "name": "Site Deployment Extension ",
     "description": "This module deploys a Site extension for MSDeploy.",
