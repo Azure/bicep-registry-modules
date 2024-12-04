@@ -67,6 +67,9 @@ param maxIntervalInSeconds int = 300
   '3.6'
   '4.0'
   '4.2'
+  '5.0'
+  '6.0'
+  '7.0'
 ])
 param serverVersion string = '4.2'
 
