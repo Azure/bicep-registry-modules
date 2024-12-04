@@ -2145,13 +2145,13 @@ Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/te
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`associations`](#parameter-securitypoliciesassociations) | array | Domain names and URL patterns to math with this association. |
+| [`associations`](#parameter-securitypoliciesassociations) | array | Domain names and URL patterns to match with this association. |
 | [`name`](#parameter-securitypoliciesname) | string | Name of the security policy. |
 | [`wafPolicyResourceId`](#parameter-securitypolicieswafpolicyresourceid) | string | Resource ID of WAF policy. |
 
 ### Parameter: `securityPolicies.associations`
 
-Domain names and URL patterns to math with this association.
+Domain names and URL patterns to match with this association.
 
 - Required: Yes
 - Type: array
