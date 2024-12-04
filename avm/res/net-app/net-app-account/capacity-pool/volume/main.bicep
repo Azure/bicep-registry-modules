@@ -91,6 +91,71 @@ param smbContinuouslyAvailable bool = false
 ])
 param smbNonBrowsable string = 'Disabled'
 
+var formattedRules = [
+  for rule in (exportPolicy.?rules ?? []): {
+    ...(!empty(rule.?kerberos5ReadOnly)
+      ? {
+          kerberos5ReadOnly: rule.kerberos5ReadOnly
+        }
+      : {})
+    ...(!empty(rule.?kerberos5ReadWrite)
+      ? {
+          kerberos5ReadWrite: rule.kerberos5ReadWrite
+        }
+      : {})
+    ...(!empty(rule.?nfsv3)
+      ? {
+          nfsv3: rule.nfsv3
+        }
+      : {})
+    ...(!empty(rule.?nfsv41)
+      ? {
+          nfsv41: rule.nfsv41
+        }
+      : {})
+    ...(!empty(rule.?unixReadOnly)
+      ? {
+          unixReadOnly: rule.unixReadOnly
+        }
+      : {})
+    ...(!empty(rule.?unixReadWrite)
+      ? {
+          unixReadWrite: rule.unixReadWrite
+        }
+      : {})
+    ...(!empty(rule.?kerberos5iReadOnly)
+      ? {
+          kerberos5iReadOnly: rule.kerberos5iReadOnly
+        }
+      : {})
+    ...(!empty(rule.?kerberos5pReadOnly)
+      ? {
+          kerberos5pReadOnly: rule.kerberos5pReadOnly
+        }
+      : {})
+    ...(!empty(rule.?kerberos5ReadOnly)
+      ? {
+          kerberos5ReadOnly: rule.kerberos5ReadOnly
+        }
+      : {})
+    ...(!empty(rule.?kerberos5iReadWrite)
+      ? {
+          kerberos5iReadWrite: rule.kerberos5iReadWrite
+        }
+      : {})
+    ...(!empty(rule.?kerberos5pReadWrite)
+      ? {
+          kerberos5pReadWrite: rule.kerberos5pReadWrite
+        }
+      : {})
+    ...(!empty(rule.?kerberos5ReadWrite)
+      ? {
+          kerberos5ReadWrite: rule.kerberos5ReadWrite
+        }
+      : {})
+  }
+]
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -222,7 +287,12 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
     usageThreshold: usageThreshold
     protocolTypes: protocolTypes
     subnetId: vnet::subnet.id
-    exportPolicy: exportPolicy
+    // exportPolicy: exportPolicy
+    exportPolicy: !empty(exportPolicy)
+      ? {
+          rules: formattedRules
+        }
+      : null
     smbContinuouslyAvailable: smbContinuouslyAvailable
     smbEncryption: smbEncryption
     smbNonBrowsable: smbNonBrowsable
