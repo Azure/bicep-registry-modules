@@ -93,62 +93,62 @@ param smbNonBrowsable string = 'Disabled'
 
 var formattedRules = [
   for rule in (exportPolicy.?rules ?? []): {
-    ...(!empty(rule.?kerberos5ReadOnly)
+    ...((rule.?kerberos5ReadOnly != null)
       ? {
           kerberos5ReadOnly: rule.kerberos5ReadOnly
         }
       : {})
-    ...(!empty(rule.?kerberos5ReadWrite)
+    ...((rule.?kerberos5ReadWrite != null)
       ? {
           kerberos5ReadWrite: rule.kerberos5ReadWrite
         }
       : {})
-    ...(!empty(rule.?nfsv3)
+    ...((rule.?nfsv3 != null)
       ? {
           nfsv3: rule.nfsv3
         }
       : {})
-    ...(!empty(rule.?nfsv41)
+    ...((rule.?nfsv41 != null)
       ? {
           nfsv41: rule.nfsv41
         }
       : {})
-    ...(!empty(rule.?unixReadOnly)
+    ...((rule.?unixReadOnly != null)
       ? {
           unixReadOnly: rule.unixReadOnly
         }
       : {})
-    ...(!empty(rule.?unixReadWrite)
+    ...((rule.?unixReadWrite != null)
       ? {
           unixReadWrite: rule.unixReadWrite
         }
       : {})
-    ...(!empty(rule.?kerberos5iReadOnly)
+    ...((rule.?kerberos5iReadOnly != null)
       ? {
           kerberos5iReadOnly: rule.kerberos5iReadOnly
         }
       : {})
-    ...(!empty(rule.?kerberos5pReadOnly)
+    ...((rule.?kerberos5pReadOnly != null)
       ? {
           kerberos5pReadOnly: rule.kerberos5pReadOnly
         }
       : {})
-    ...(!empty(rule.?kerberos5ReadOnly)
+    ...((rule.?kerberos5ReadOnly != null)
       ? {
           kerberos5ReadOnly: rule.kerberos5ReadOnly
         }
       : {})
-    ...(!empty(rule.?kerberos5iReadWrite)
+    ...((rule.?kerberos5iReadWrite != null)
       ? {
           kerberos5iReadWrite: rule.kerberos5iReadWrite
         }
       : {})
-    ...(!empty(rule.?kerberos5pReadWrite)
+    ...((rule.?kerberos5pReadWrite != null)
       ? {
           kerberos5pReadWrite: rule.kerberos5pReadWrite
         }
       : {})
-    ...(!empty(rule.?kerberos5ReadWrite)
+    ...((rule.?kerberos5ReadWrite != null)
       ? {
           kerberos5ReadWrite: rule.kerberos5ReadWrite
         }
