@@ -55,7 +55,13 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     name: 'kcmin0001'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
+    enableDiskEncryption: true
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
   }
 }
 ```
@@ -80,8 +86,18 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
+    "enableDiskEncryption": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -101,7 +117,13 @@ using 'br/public:avm/res/kusto/cluster:<version>'
 param name = 'kcmin0001'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
+param enableDiskEncryption = true
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 ```
 
 </details>
