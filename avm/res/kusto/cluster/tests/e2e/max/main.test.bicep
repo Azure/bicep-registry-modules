@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param kustoClusterName string
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'akcmax'
+param serviceShort string = 'kcmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -42,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
+    // entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
   }
 }
 
@@ -69,8 +69,8 @@ module kustoClusterTestDeployment '../../../main.bicep' = [
       enableAutoScale: true
       principalAssignments: [
         {
-          principalId: nestedDependencies.outputs.entraIdGroupDisplayName
-          principalType: 'Group'
+          principalId: nestedDependencies.outputs.managedIdentityClientId
+          principalType: 'App'
           role: 'AllDatabasesViewer'
         }
       ]
