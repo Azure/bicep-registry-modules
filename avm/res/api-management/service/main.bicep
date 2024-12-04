@@ -409,16 +409,16 @@ module service_identityProviders 'identity-provider/main.bicep' = [
   }
 ]
 
-module service_loggers 'loggers/main.bicep' = [
+module service_loggers 'logger/main.bicep' = [
   for (logger, index) in loggers: {
     name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
     params: {
       name: logger.name
       apiManagementServiceName: service.name
       credentials: logger.?credentials ?? {}
-      isBuffered: logger.?isBuffered ?? true
-      loggerDescription: logger.?loggerDescription ?? ''
-      loggerType: logger.?loggerType ?? 'azureMonitor'
+      isBuffered: logger.?isBuffered
+      description: logger.?loggerDescription
+      type: logger.?loggerType ?? 'azureMonitor'
       targetResourceId: logger.?targetResourceId ?? ''
     }
     dependsOn: [

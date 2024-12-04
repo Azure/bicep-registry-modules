@@ -4627,6 +4627,9 @@ Default to 4.2. Specifies the MongoDB server version to use.
     '3.6'
     '4.0'
     '4.2'
+    '5.0'
+    '6.0'
+    '7.0'
   ]
   ```
 
