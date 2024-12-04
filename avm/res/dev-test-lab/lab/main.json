@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "1419394102141517311"
+      "templateHash": "3645724665133222461"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -1047,7 +1047,7 @@
       "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The managed identity definition for this resource."
+        "description": "Optional. The managed identity definition for this resource. For new labs created after 8/10/2020, the lab's system assigned identity is set to On by default and lab owner will not be able to turn this off for the lifecycle of the lab."
       }
     },
     "managementIdentitiesResourceIds": {
