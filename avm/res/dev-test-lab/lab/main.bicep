@@ -8,11 +8,11 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -59,7 +59,7 @@ param premiumDataDisks string = 'Disabled'
 @description('Optional. The properties of any lab support message associated with this lab.')
 param support object = {}
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Conditional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 

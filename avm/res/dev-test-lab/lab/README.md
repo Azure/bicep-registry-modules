@@ -1084,7 +1084,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`encryptionDiskEncryptionSetId`](#parameter-encryptiondiskencryptionsetid) | string | The Disk Encryption Set Resource ID used to encrypt OS and data disks created as part of the the lab. Required if encryptionType is set to "EncryptionAtRestWithCustomerKey". |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`notificationchannels`](#parameter-notificationchannels) | array | Notification Channels to create for the lab. Required if the schedules property "notificationSettingsStatus" is set to "Enabled. |
 
 **Optional parameters**
@@ -1134,7 +1134,7 @@ The Disk Encryption Set Resource ID used to encrypt OS and data disks created as
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.
+The managed identity definition for this resource.
 
 - Required: No
 - Type: object
@@ -2487,7 +2487,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 

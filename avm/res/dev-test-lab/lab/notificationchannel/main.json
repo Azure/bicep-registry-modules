@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "6304680074734813370"
+      "version": "0.31.92.45157",
+      "templateHash": "6916642699067464539"
     },
     "name": "DevTest Lab Notification Channels",
     "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
@@ -98,7 +98,10 @@
         "emailRecipient": "[parameters('emailRecipient')]",
         "webHookUrl": "[parameters('webHookUrl')]",
         "notificationLocale": "[parameters('notificationLocale')]"
-      }
+      },
+      "dependsOn": [
+        "lab"
+      ]
     }
   },
   "outputs": {
