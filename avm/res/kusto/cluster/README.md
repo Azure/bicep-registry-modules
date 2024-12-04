@@ -139,146 +139,282 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-targetScope = 'subscription'
-
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShort}-rg'
-
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
-@description('Required. The name of the Kusto Cluster.')
-param kustoClusterName string
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kcmax'
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
-
-var formattedKustoClusterName = '${namePrefix}${serviceShort}0001'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
   params: {
-    location: resourceLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    // entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
+    // Required parameters
+    name: 'kcmax0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    acceptedAudiences: [
+      {
+        value: 'https://contoso.com'
+      }
+    ]
+    allowedFqdnList: [
+      'contoso.com'
+    ]
+    allowedIpRangeList: [
+      '192.168.1.1'
+    ]
+    autoScaleMax: 6
+    autoScaleMin: 3
+    capacity: 3
+    enableAutoScale: true
+    enableAutoStop: true
+    enableDiskEncryption: true
+    enableDoubleEncryption: true
+    enablePublicNetworkAccess: true
+    enablePurge: true
+    enableRestrictOutboundNetworkAccess: true
+    enableStreamingIngest: true
+    enableZoneRedundant: true
+    engineType: 'V3'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    principalAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'App'
+        role: 'AllDatabasesViewer'
+      }
+    ]
+    publicIPType: 'DualStack'
+    roleAssignments: [
+      {
+        name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
   }
 }
+```
 
-// ============== //
-// Test Execution //
-// ============== //
+</details>
+<p>
 
-@batchSize(1)
-module kustoClusterTestDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      name: '${namePrefix}${serviceShort}0001'
-      location: resourceLocation
-      sku: 'Standard_E2ads_v5'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcmax0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "acceptedAudiences": {
+      "value": [
+        {
+          "value": "https://contoso.com"
+        }
+      ]
+    },
+    "allowedFqdnList": {
+      "value": [
+        "contoso.com"
+      ]
+    },
+    "allowedIpRangeList": {
+      "value": [
+        "192.168.1.1"
+      ]
+    },
+    "autoScaleMax": {
+      "value": 6
+    },
+    "autoScaleMin": {
+      "value": 3
+    },
+    "capacity": {
+      "value": 3
+    },
+    "enableAutoScale": {
+      "value": true
+    },
+    "enableAutoStop": {
+      "value": true
+    },
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "enableDoubleEncryption": {
+      "value": true
+    },
+    "enablePublicNetworkAccess": {
+      "value": true
+    },
+    "enablePurge": {
+      "value": true
+    },
+    "enableRestrictOutboundNetworkAccess": {
+      "value": true
+    },
+    "enableStreamingIngest": {
+      "value": true
+    },
+    "enableZoneRedundant": {
+      "value": true
+    },
+    "engineType": {
+      "value": "V3"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
       }
-      capacity: 3
-      autoScaleMin: 3
-      autoScaleMax: 6
-      enableAutoScale: true
-      principalAssignments: [
-        {
-          principalId: nestedDependencies.outputs.managedIdentityClientId
-          principalType: 'App'
-          role: 'AllDatabasesViewer'
-        }
-      ]
-      allowedFqdnList: [
-        'contoso.com'
-      ]
-      enableAutoStop: true
-      enableDiskEncryption: true
-      enableDoubleEncryption: true
-      enablePublicNetworkAccess: true
-      enablePurge: true
-      enableStreamingIngest: true
-      allowedIpRangeList: [
-        '192.168.1.1'
-      ]
-      acceptedAudiences: [
-        {
-          value: 'https://contoso.com'
-        }
-      ]
-      enableZoneRedundant: true
-      engineType: 'V3'
-      publicIPType: 'DualStack'
-      enableRestrictOutboundNetworkAccess: true
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
         ]
       }
-      roleAssignments: [
+    },
+    "principalAssignments": {
+      "value": [
         {
-          name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
+          "principalId": "<principalId>",
+          "principalType": "App",
+          "role": "AllDatabasesViewer"
         }
+      ]
+    },
+    "publicIPType": {
+      "value": "DualStack"
+    },
+    "roleAssignments": {
+      "value": [
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
+          "name": "c2a4b728-c3d0-47f5-afbb-ea45c45859de",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
         {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     }
   }
-]
-
-module kustoClusterDatabaseTestDeployment '../../../database/main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-database'
-  params:{
-    name: 'myDatabase'
-    kustoClusterName: formattedKustoClusterName
-    databaseKind: 'ReadWrite'
-    databaseReadWriteProperties: {
-      hotCachePeriod: 'P1D'
-    }
-  }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcmax0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param acceptedAudiences = [
+  {
+    value: 'https://contoso.com'
+  }
+]
+param allowedFqdnList = [
+  'contoso.com'
+]
+param allowedIpRangeList = [
+  '192.168.1.1'
+]
+param autoScaleMax = 6
+param autoScaleMin = 3
+param capacity = 3
+param enableAutoScale = true
+param enableAutoStop = true
+param enableDiskEncryption = true
+param enableDoubleEncryption = true
+param enablePublicNetworkAccess = true
+param enablePurge = true
+param enableRestrictOutboundNetworkAccess = true
+param enableStreamingIngest = true
+param enableZoneRedundant = true
+param engineType = 'V3'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param principalAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'App'
+    role: 'AllDatabasesViewer'
+  }
+]
+param publicIPType = 'DualStack'
+param roleAssignments = [
+  {
+    name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
 ```
 
 </details>
