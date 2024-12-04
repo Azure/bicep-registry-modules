@@ -14,16 +14,11 @@ param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShor
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Required. The name of the Kusto Cluster.')
-param kustoClusterName string
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'kcmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-var formattedKustoClusterName = '${namePrefix}${serviceShort}0001'
 
 // ============ //
 // Dependencies //
@@ -131,7 +126,7 @@ module kustoClusterDatabaseTestDeployment '../../../database/main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-database'
   params:{
     name: 'myDatabase'
-    kustoClusterName: formattedKustoClusterName
+    kustoClusterName: testDeployment[0].outputs.name
     databaseKind: 'ReadWrite'
     databaseReadWriteProperties: {
       hotCachePeriod: 'P1D'
