@@ -127,6 +127,7 @@ module kustoClusterDatabaseTestDeployment '../../../database/main.bicep' = {
   params:{
     name: 'myDatabase'
     kustoClusterName: testDeployment[0].outputs.name
+    location: resourceLocation
     databaseKind: 'ReadWrite'
     databaseReadWriteProperties: {
       hotCachePeriod: 'P1D'
