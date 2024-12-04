@@ -1877,7 +1877,7 @@ List of private IP addresses associated with AzureFirewall.
 
 List of public IP addresses associated with AzureFirewall.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Optional parameters**

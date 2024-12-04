@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "8821846237918697733"
+      "templateHash": "10933158166695618711"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -708,6 +708,7 @@
               }
             }
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. List of public IP addresses associated with AzureFirewall."
           }

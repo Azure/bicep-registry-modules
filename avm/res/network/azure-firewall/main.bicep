@@ -636,5 +636,5 @@ type hubIPAddressesType = {
     ]?
     @description('Optional. Public IP address count.')
     count: int?
-  }
+  }?
 }?
