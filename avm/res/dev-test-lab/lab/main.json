@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "3645724665133222461"
+      "templateHash": "16337037731346424792"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -2064,7 +2064,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "6916642699067464539"
+              "templateHash": "1470030882457989802"
             },
             "name": "DevTest Lab Notification Channels",
             "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
@@ -2103,7 +2103,6 @@
             },
             "events": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
                 "description": "Required. The list of event for which this notification is enabled."
               }
