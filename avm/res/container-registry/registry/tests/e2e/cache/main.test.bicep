@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'crrcach'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'cs2'
 
 // ============ //
 // Dependencies //
@@ -74,10 +74,15 @@ module testDeployment '../../../main.bicep' = [
       ]
       cacheRules: [
         {
-          name: 'customRule'
+          name: 'customRuleWithAuth'
           sourceRepository: 'docker.io/library/hello-world'
           targetRepository: 'cached-docker-hub/hello-world'
           credentialSetResourceId: nestedDependencies.outputs.acrCredentialSetResourceId
+        }
+        {
+          name: 'customRuleWithoutAuth'
+          sourceRepository: 'mcr.microsoft.com/bicep/avm/*'
+          targetRepository: 'avm/*'
         }
       ]
     }

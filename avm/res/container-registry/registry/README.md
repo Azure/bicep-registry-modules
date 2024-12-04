@@ -17,12 +17,12 @@ This module deploys an Azure Container Registry (ACR).
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -63,9 +63,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     cacheRules: [
       {
         credentialSetResourceId: '<credentialSetResourceId>'
-        name: 'customRule'
+        name: 'customRuleWithAuth'
         sourceRepository: 'docker.io/library/hello-world'
         targetRepository: 'cached-docker-hub/hello-world'
+      }
+      {
+        name: 'customRuleWithoutAuth'
+        sourceRepository: 'mcr.microsoft.com/bicep/avm/*'
+        targetRepository: 'avm/*'
       }
     ]
     credentialSets: [
@@ -116,9 +121,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "credentialSetResourceId": "<credentialSetResourceId>",
-          "name": "customRule",
+          "name": "customRuleWithAuth",
           "sourceRepository": "docker.io/library/hello-world",
           "targetRepository": "cached-docker-hub/hello-world"
+        },
+        {
+          "name": "customRuleWithoutAuth",
+          "sourceRepository": "mcr.microsoft.com/bicep/avm/*",
+          "targetRepository": "avm/*"
         }
       ]
     },
@@ -165,9 +175,14 @@ param acrSku = 'Standard'
 param cacheRules = [
   {
     credentialSetResourceId: '<credentialSetResourceId>'
-    name: 'customRule'
+    name: 'customRuleWithAuth'
     sourceRepository: 'docker.io/library/hello-world'
     targetRepository: 'cached-docker-hub/hello-world'
+  }
+  {
+    name: 'customRuleWithoutAuth'
+    sourceRepository: 'mcr.microsoft.com/bicep/avm/*'
+    targetRepository: 'avm/*'
   }
 ]
 param credentialSets = [
@@ -387,7 +402,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -473,8 +487,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    softDeletePolicyDays: 7
-    softDeletePolicyStatus: 'disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -513,9 +525,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "acrSku": {
       "value": "Premium"
-    },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
     },
     "diagnosticSettings": {
       "value": [
@@ -622,12 +631,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "softDeletePolicyDays": {
-      "value": 7
-    },
-    "softDeletePolicyStatus": {
-      "value": "disabled"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -665,7 +668,6 @@ param name = 'crrmax001'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
-param azureADAuthenticationAsArmPolicyStatus = 'enabled'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -751,8 +753,6 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param softDeletePolicyDays = 7
-param softDeletePolicyStatus = 'disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -886,7 +886,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -916,8 +915,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         name: '<name>'
       }
     ]
-    softDeletePolicyDays: 7
-    softDeletePolicyStatus: 'disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -950,9 +947,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "acrSku": {
       "value": "Premium"
-    },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
     },
     "diagnosticSettings": {
       "value": [
@@ -995,12 +989,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "softDeletePolicyDays": {
-      "value": 7
-    },
-    "softDeletePolicyStatus": {
-      "value": "disabled"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1030,7 +1018,6 @@ param name = 'crrwaf001'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
-param azureADAuthenticationAsArmPolicyStatus = 'enabled'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1060,8 +1047,6 @@ param replications = [
     name: '<name>'
   }
 ]
-param softDeletePolicyDays = 7
-param softDeletePolicyStatus = 'disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1087,8 +1072,6 @@ param trustPolicyStatus = 'enabled'
 | :-- | :-- | :-- |
 | [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
-| [`anonymousPullEnabled`](#parameter-anonymouspullenabled) | bool | Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers. |
-| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled. |
 | [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. |
 | [`credentialSets`](#parameter-credentialsets) | array | Array of Credential Sets. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -1110,8 +1093,6 @@ param trustPolicyStatus = 'enabled'
 | [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scopeMaps`](#parameter-scopemaps) | array | Scope maps setting. |
-| [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
-| [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`webhooks`](#parameter-webhooks) | array | All webhooks to create. |
@@ -1145,29 +1126,6 @@ Tier of your Azure container registry.
     'Basic'
     'Premium'
     'Standard'
-  ]
-  ```
-
-### Parameter: `anonymousPullEnabled`
-
-Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `azureADAuthenticationAsArmPolicyStatus`
-
-The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.
-
-- Required: No
-- Type: string
-- Default: `'enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
   ]
   ```
 
@@ -2140,29 +2098,6 @@ The name of the scope map.
 
 - Required: No
 - Type: string
-
-### Parameter: `softDeletePolicyDays`
-
-The number of days after which a soft-deleted item is permanently deleted.
-
-- Required: No
-- Type: int
-- Default: `7`
-
-### Parameter: `softDeletePolicyStatus`
-
-Soft Delete policy status. Default is disabled.
-
-- Required: No
-- Type: string
-- Default: `'disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
 
 ### Parameter: `tags`
 

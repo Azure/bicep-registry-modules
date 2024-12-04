@@ -41,11 +41,11 @@ param customHeaders object?
 @description('Optional. The scope of repositories where the event can be triggered. For example, \'foo:*\' means events for all tags under repository \'foo\'. \'foo:bar\' means events for \'foo:bar\' only. \'foo\' is equivalent to \'foo:latest\'. Empty means all events.')
 param scope string?
 
-resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
+resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
   name: registryName
 }
 
-resource webhook 'Microsoft.ContainerRegistry/registries/webhooks@2023-06-01-preview' = {
+resource webhook 'Microsoft.ContainerRegistry/registries/webhooks@2023-07-01' = {
   name: name
   parent: registry
   location: location

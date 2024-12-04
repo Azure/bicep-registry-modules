@@ -23,11 +23,11 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
+resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
   name: registryName
 }
 
-resource credentialSet 'Microsoft.ContainerRegistry/registries/credentialSets@2023-11-01-preview' = {
+resource credentialSet 'Microsoft.ContainerRegistry/registries/credentialSets@2023-07-01' = {
   name: name
   parent: registry
   identity: identity
