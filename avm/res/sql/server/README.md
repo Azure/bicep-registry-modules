@@ -334,6 +334,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     elasticPools: [
       {
         name: 'ssep-ep-001'
+        zoneRedundant: false
       }
       {
         name: 'ssep-ep-002'
@@ -346,6 +347,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           name: 'GP_Gen5'
           tier: 'GeneralPurpose'
         }
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -379,7 +381,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
-          "name": "ssep-ep-001"
+          "name": "ssep-ep-001",
+          "zoneRedundant": false
         },
         {
           "name": "ssep-ep-002",
@@ -391,7 +394,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "capacity": 4,
             "name": "GP_Gen5",
             "tier": "GeneralPurpose"
-          }
+          },
+          "zoneRedundant": false
         }
       ]
     },
@@ -420,6 +424,7 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 param elasticPools = [
   {
     name: 'ssep-ep-001'
+    zoneRedundant: false
   }
   {
     name: 'ssep-ep-002'
@@ -432,6 +437,7 @@ param elasticPools = [
       name: 'GP_Gen5'
       tier: 'GeneralPurpose'
     }
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
@@ -461,6 +467,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     databases: [
       {
         name: 'myDatabase'
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -499,7 +506,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
-          "name": "myDatabase"
+          "name": "myDatabase",
+          "zoneRedundant": false
         }
       ]
     },
@@ -535,6 +543,7 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
     name: 'myDatabase'
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
@@ -702,13 +711,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     ]
     vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
     }
   }
@@ -903,13 +914,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "vulnerabilityAssessmentsObj": {
       "value": {
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>"
       }
     }
@@ -1068,13 +1081,15 @@ param virtualNetworkRules = [
   }
 ]
 param vulnerabilityAssessmentsObj = {
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
 }
 ```
@@ -1110,6 +1125,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           tier: 'Basic'
         }
         sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -1155,7 +1171,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "name": "Basic",
             "tier": "Basic"
           },
-          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>"
+          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>",
+          "zoneRedundant": false
         }
       ]
     },
@@ -1198,6 +1215,7 @@ param databases = [
       tier: 'Basic'
     }
     sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
@@ -1251,13 +1269,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
     vulnerabilityAssessmentsObj: {
       createStorageRoleAssignment: true
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
       useStorageAccountAccessKey: false
     }
@@ -1321,13 +1341,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "vulnerabilityAssessmentsObj": {
       "value": {
         "createStorageRoleAssignment": true,
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>",
         "useStorageAccountAccessKey": false
       }
@@ -1373,13 +1395,15 @@ param tags = {
 }
 param vulnerabilityAssessmentsObj = {
   createStorageRoleAssignment: true
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
   useStorageAccountAccessKey: false
 }
@@ -1508,13 +1532,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     ]
     vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
     }
   }
@@ -1667,13 +1693,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "vulnerabilityAssessmentsObj": {
       "value": {
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>"
       }
     }
@@ -1798,13 +1826,15 @@ param virtualNetworkRules = [
   }
 ]
 param vulnerabilityAssessmentsObj = {
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
 }
 ```
@@ -2996,7 +3026,47 @@ The encryption protection configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serverKeyName`](#parameter-encryptionprotectorobjserverkeyname) | string | The name of the server key. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-encryptionprotectorobjautorotationenabled) | bool | Key auto rotation opt-in flag. |
+| [`serverKeyType`](#parameter-encryptionprotectorobjserverkeytype) | string | The encryption protector type. |
+
+### Parameter: `encryptionProtectorObj.serverKeyName`
+
+The name of the server key.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `encryptionProtectorObj.autoRotationEnabled`
+
+Key auto rotation opt-in flag.
+
+- Required: No
+- Type: bool
+
+### Parameter: `encryptionProtectorObj.serverKeyType`
+
+The encryption protector type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureKeyVault'
+    'ServiceManaged'
+  ]
+  ```
 
 ### Parameter: `federatedClientId`
 
@@ -3012,6 +3082,40 @@ The firewall rules to create in the server.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-firewallrulesname) | string | The name of the firewall rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+| [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+
+### Parameter: `firewallRules.name`
+
+The name of the firewall rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.endIpAddress`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: No
+- Type: string
+
+### Parameter: `firewallRules.startIpAddress`
+
+The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: No
+- Type: string
 
 ### Parameter: `isIPv6Enabled`
 
@@ -3042,6 +3146,42 @@ The keys to configure.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-keysname) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
+| [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type. |
+| [`uri`](#parameter-keysuri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
+
+### Parameter: `keys.name`
+
+The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.serverKeyType`
+
+The server key type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureKeyVault'
+    'ServiceManaged'
+  ]
+  ```
+
+### Parameter: `keys.uri`
+
+The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -3735,6 +3875,98 @@ The security alert policies to create in the server.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-securityalertpoliciesname) | string | The name of the Security Alert Policy. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`disabledAlerts`](#parameter-securityalertpoliciesdisabledalerts) | array | Alerts to disable. |
+| [`emailAccountAdmins`](#parameter-securityalertpoliciesemailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
+| [`emailAddresses`](#parameter-securityalertpoliciesemailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
+| [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
+| [`state`](#parameter-securityalertpoliciesstate) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
+| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | string | Specifies the identifier key of the Threat Detection audit storage account. |
+| [`storageEndpoint`](#parameter-securityalertpoliciesstorageendpoint) | string | Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs. |
+
+### Parameter: `securityAlertPolicies.name`
+
+The name of the Security Alert Policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAlertPolicies.disabledAlerts`
+
+Alerts to disable.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Access_Anomaly'
+    'Brute_Force'
+    'Data_Exfiltration'
+    'Sql_Injection'
+    'Sql_Injection_Vulnerability'
+    'Unsafe_Action'
+  ]
+  ```
+
+### Parameter: `securityAlertPolicies.emailAccountAdmins`
+
+Specifies that the alert is sent to the account administrators.
+
+- Required: No
+- Type: bool
+
+### Parameter: `securityAlertPolicies.emailAddresses`
+
+Specifies an array of email addresses to which the alert is sent.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityAlertPolicies.retentionDays`
+
+Specifies the number of days to keep in the Threat Detection audit logs.
+
+- Required: No
+- Type: int
+
+### Parameter: `securityAlertPolicies.state`
+
+Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `securityAlertPolicies.storageAccountAccessKey`
+
+Specifies the identifier key of the Threat Detection audit storage account.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityAlertPolicies.storageEndpoint`
+
+Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -3750,19 +3982,137 @@ The virtual network rules to create in the server.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworkrulesname) | string | The name of the Server Virtual Network Rule. |
+| [`virtualNetworkSubnetId`](#parameter-virtualnetworkrulesvirtualnetworksubnetid) | string | The resource ID of the virtual network subnet. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-virtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Allow creating a firewall rule before the virtual network has vnet service endpoint enabled. |
+
+### Parameter: `virtualNetworkRules.name`
+
+The name of the Server Virtual Network Rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkRules.virtualNetworkSubnetId`
+
+The resource ID of the virtual network subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `vulnerabilityAssessmentsObj`
 
 The vulnerability assessment configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-vulnerabilityassessmentsobjname) | string | The name of the vulnerability assessment. |
+| [`storageAccountResourceId`](#parameter-vulnerabilityassessmentsobjstorageaccountresourceid) | string | The resource ID of the storage account to store the scan reports. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`createStorageRoleAssignment`](#parameter-vulnerabilityassessmentsobjcreatestorageroleassignment) | bool | Specifies whether to create a role assignment for the storage account. |
+| [`recurringScans`](#parameter-vulnerabilityassessmentsobjrecurringscans) | object | The recurring scans settings. |
+| [`useStorageAccountAccessKey`](#parameter-vulnerabilityassessmentsobjusestorageaccountaccesskey) | bool | Specifies whether to use the storage account access key to access the storage account. |
+
+### Parameter: `vulnerabilityAssessmentsObj.name`
+
+The name of the vulnerability assessment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vulnerabilityAssessmentsObj.storageAccountResourceId`
+
+The resource ID of the storage account to store the scan reports.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vulnerabilityAssessmentsObj.createStorageRoleAssignment`
+
+Specifies whether to create a role assignment for the storage account.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans`
+
+The recurring scans settings.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emails`](#parameter-vulnerabilityassessmentsobjrecurringscansemails) | array | Specifies an array of e-mail addresses to which the scan notification is sent. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emailSubscriptionAdmins`](#parameter-vulnerabilityassessmentsobjrecurringscansemailsubscriptionadmins) | bool | Specifies that the schedule scan notification will be sent to the subscription administrators. |
+| [`isEnabled`](#parameter-vulnerabilityassessmentsobjrecurringscansisenabled) | bool | Recurring scans state. |
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.emails`
+
+Specifies an array of e-mail addresses to which the scan notification is sent.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.emailSubscriptionAdmins`
+
+Specifies that the schedule scan notification will be sent to the subscription administrators.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.isEnabled`
+
+Recurring scans state.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.useStorageAccountAccessKey`
+
+Specifies whether to use the storage account access key to access the storage account.
+
+- Required: No
+- Type: bool
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
+| `fullyQualifiedDomainName` | string | The fully qualified domain name of the deployed SQL server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed SQL server. |
 | `privateEndpoints` | array | The private endpoints of the SQL server. |
