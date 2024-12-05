@@ -21,7 +21,7 @@ param administratorLogin string = ''
 @secure()
 param administratorLoginPassword string = ''
 
-@description('Optional. The Azure AD administrators when AAD authentication enabled.')
+@description('Optional. The Azure AD administrators when AAD authentication is enabled. Requires the assignment of userAssignedIdentities.')
 param administrators array = []
 
 @description('Required. The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3.')
@@ -68,8 +68,8 @@ param geoRedundantBackup string = 'Enabled'
 @description('Optional. The mode to create a new MySQL server.')
 param createMode string = 'Default'
 
-@description('Conditional. The managed identity definition for this resource. Required if \'customerManagedKey\' is not empty.')
-param managedIdentities managedIdentitiesType
+@description('Optional. The managed identity definition for this resource.')
+param userAssignedIdentities object = {}
 
 @description('Optional. The customer managed key definition to use for the managed service.')
 param customerManagedKey customerManagedKeyType
@@ -90,6 +90,9 @@ param maintenanceWindow object = {}
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29.')
 param delegatedSubnetResourceId string = ''
+
+@description('Optional. Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration.')
+param publicNetworkAccess string = 'Disabled'
 
 @description('Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access". Required if "delegatedSubnetResourceId" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server.')
 param privateDnsZoneResourceId string = ''
@@ -172,19 +175,6 @@ var standByAvailabilityZoneTable = {
 }
 
 var standByAvailabilityZone = standByAvailabilityZoneTable[?highAvailability]
-
-var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
-  {},
-  (cur, next) => union(cur, next)
-) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-
-var identity = !empty(managedIdentities)
-  ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-    }
-  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -282,7 +272,12 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
     name: skuName
     tier: tier
   }
-  identity: identity
+  identity: !empty(userAssignedIdentities)
+    ? {
+        type: 'UserAssigned'
+        userAssignedIdentities: userAssignedIdentities
+      }
+    : null
   properties: {
     administratorLogin: !empty(administratorLogin) ? administratorLogin : null
     administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
@@ -319,12 +314,21 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
           startMinute: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startMinute : 0
         }
       : null
-    network: !empty(delegatedSubnetResourceId) && empty(firewallRules)
-      ? {
-          delegatedSubnetResourceId: delegatedSubnetResourceId
-          privateDnsZoneResourceId: privateDnsZoneResourceId
-        }
-      : null
+    network: publicNetworkAccess == 'Enabled'
+      ? (!empty(delegatedSubnetResourceId) || empty(firewallRules)
+          ? {
+              publicNetworkAccess: publicNetworkAccess
+              delegatedSubnetResourceId: delegatedSubnetResourceId
+              privateDnsZoneResourceId: privateDnsZoneResourceId
+            }
+          : null)
+      : (!empty(delegatedSubnetResourceId)
+          ? {
+              publicNetworkAccess: publicNetworkAccess
+              delegatedSubnetResourceId: delegatedSubnetResourceId
+              privateDnsZoneResourceId: privateDnsZoneResourceId
+            }
+          : null)
     replicationRole: replicationRole
     restorePointInTime: restorePointInTime
     sourceServerResourceId: !empty(sourceServerResourceId) ? sourceServerResourceId : null
@@ -449,11 +453,6 @@ output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
 // =============== //
 //   Definitions   //
 // =============== //
-
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
-}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

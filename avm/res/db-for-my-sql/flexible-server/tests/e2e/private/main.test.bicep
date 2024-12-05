@@ -58,6 +58,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
+      userAssignedIdentities: {
+        '${nestedDependencies.outputs.managedIdentityResourceId}': {}
+      }
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       skuName: 'Standard_D2ds_v4'
@@ -75,11 +78,6 @@ module testDeployment '../../../main.bicep' = [
       ]
       highAvailability: 'SameZone'
       storageAutoGrow: 'Enabled'
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
       administrators: [
         {
           identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
