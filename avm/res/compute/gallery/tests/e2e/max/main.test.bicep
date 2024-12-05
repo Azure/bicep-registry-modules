@@ -56,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      description: 'This is a test deployment.'
       applications: [
         {
           name: '${namePrefix}-${serviceShort}-appd-001'
