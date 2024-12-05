@@ -91,76 +91,6 @@ param smbContinuouslyAvailable bool = false
 ])
 param smbNonBrowsable string = 'Disabled'
 
-var formattedRules = [
-  for rule in (exportPolicy.?rules ?? []): {
-    ruleIndex: rule.ruleIndex
-    allowedClients: rule.?allowedClients
-    chownMode: rule.?chownMode
-    cifs: rule.?cifs
-    hasRootAccess: rule.?hasRootAccess
-    ...((rule.?kerberos5ReadOnly != null)
-      ? {
-          kerberos5ReadOnly: rule.kerberos5ReadOnly
-        }
-      : {})
-    ...((rule.?kerberos5ReadWrite != null)
-      ? {
-          kerberos5ReadWrite: rule.kerberos5ReadWrite
-        }
-      : {})
-    ...((rule.?nfsv3 != null)
-      ? {
-          nfsv3: rule.nfsv3
-        }
-      : {})
-    ...((rule.?nfsv41 != null)
-      ? {
-          nfsv41: rule.nfsv41
-        }
-      : {})
-    ...((rule.?unixReadOnly != null)
-      ? {
-          unixReadOnly: rule.unixReadOnly
-        }
-      : {})
-    ...((rule.?unixReadWrite != null)
-      ? {
-          unixReadWrite: rule.unixReadWrite
-        }
-      : {})
-    ...((rule.?kerberos5iReadOnly != null)
-      ? {
-          kerberos5iReadOnly: rule.kerberos5iReadOnly
-        }
-      : {})
-    ...((rule.?kerberos5pReadOnly != null)
-      ? {
-          kerberos5pReadOnly: rule.kerberos5pReadOnly
-        }
-      : {})
-    ...((rule.?kerberos5ReadOnly != null)
-      ? {
-          kerberos5ReadOnly: rule.kerberos5ReadOnly
-        }
-      : {})
-    ...((rule.?kerberos5iReadWrite != null)
-      ? {
-          kerberos5iReadWrite: rule.kerberos5iReadWrite
-        }
-      : {})
-    ...((rule.?kerberos5pReadWrite != null)
-      ? {
-          kerberos5pReadWrite: rule.kerberos5pReadWrite
-        }
-      : {})
-    ...((rule.?kerberos5ReadWrite != null)
-      ? {
-          kerberos5ReadWrite: rule.kerberos5ReadWrite
-        }
-      : {})
-  }
-]
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -292,12 +222,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
     usageThreshold: usageThreshold
     protocolTypes: protocolTypes
     subnetId: vnet::subnet.id
-    // exportPolicy: exportPolicy
-    exportPolicy: !empty(exportPolicy)
-      ? {
-          rules: formattedRules
-        }
-      : null
+    exportPolicy: exportPolicy
     smbContinuouslyAvailable: smbContinuouslyAvailable
     smbEncryption: smbEncryption
     smbNonBrowsable: smbNonBrowsable
@@ -402,34 +327,34 @@ type exportPolicyType = {
     @description('Optional. Has root access to volume.')
     hasRootAccess: bool?
 
-    @description('Optional. Kerberos5 Read only access.')
-    kerberos5ReadOnly: bool?
+    @description('Required. Kerberos5 Read only access.')
+    kerberos5ReadOnly: bool
 
-    @description('Optional. Kerberos5 Read and write access')
-    kerberos5ReadWrite: bool?
+    @description('Required. Kerberos5 Read and write access')
+    kerberos5ReadWrite: bool
 
-    @description('Optional. Kerberos5i Read only access.')
-    kerberos5iReadOnly: bool?
+    @description('Required. Kerberos5i Read only access.')
+    kerberos5iReadOnly: bool
 
-    @description('Optional. Kerberos5i Read and write access.')
-    kerberos5iReadWrite: bool?
+    @description('Required. Kerberos5i Read and write access.')
+    kerberos5iReadWrite: bool
 
-    @description('Optional. Kerberos5p Read only access.')
-    kerberos5pReadOnly: bool?
+    @description('Required. Kerberos5p Read only access.')
+    kerberos5pReadOnly: bool
 
-    @description('Optional. Kerberos5p Read and write access')
-    kerberos5pReadWrite: bool?
+    @description('Required. Kerberos5p Read and write access')
+    kerberos5pReadWrite: bool
 
-    @description('Optional. Allows NFSv3 protocol. Enable only for NFSv3 type volumes.')
-    nfsv3: bool?
+    @description('Required. Allows NFSv3 protocol. Enable only for NFSv3 type volumes.')
+    nfsv3: bool
 
-    @description('Optional. Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.')
-    nfsv41: bool?
+    @description('Required. Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.')
+    nfsv41: bool
 
-    @description('Optional. Read only access.')
-    unixReadOnly: bool?
+    @description('Required. Read only access.')
+    unixReadOnly: bool
 
-    @description('Optional. Read and write access.')
-    unixReadWrite: bool?
+    @description('Required. Read and write access.')
+    unixReadWrite: bool
   }[]
 }

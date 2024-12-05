@@ -134,12 +134,17 @@ module testDeployment '../../../main.bicep' = {
               rules: [
                 {
                   allowedClients: '0.0.0.0/0'
-                  // nfsv3: false
+                  nfsv3: false
                   nfsv41: true
                   ruleIndex: 1
-                  // unixReadOnly: true
-                  // unixReadWrite: true
-                  // kerberos5ReadOnly: true
+                  unixReadOnly: true
+                  unixReadWrite: true
+                  kerberos5ReadOnly: true
+                  kerberos5ReadWrite: false
+                  kerberos5iReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadOnly: false
+                  kerberos5pReadWrite: true
                 }
               ]
             }
