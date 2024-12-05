@@ -3049,7 +3049,7 @@ param sqlDatabases = [
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Default to true. Enable/Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
 | [`locations`](#parameter-locations) | array | Default to the location where the account is deployed. Locations enabled for the Cosmos DB account. |
@@ -3069,7 +3069,7 @@ param sqlDatabases = [
 | [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. |
 | [`tables`](#parameter-tables) | array | Table configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
-| [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Defaults to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s) |
+| [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s) |
 
 ### Parameter: `name`
 
@@ -3390,7 +3390,7 @@ Default to false. Enables the account to write in multiple locations. Periodic b
 
 ### Parameter: `enableTelemetry`
 
-Default to true. Enable/Disable usage telemetry for module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -4560,10 +4560,11 @@ Tags of the Database Account resource.
 
 ### Parameter: `totalThroughputLimit`
 
-Defaults to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s)
+Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s)
 
 - Required: No
 - Type: int
+- Default: `-1`
 
 ## Outputs
 

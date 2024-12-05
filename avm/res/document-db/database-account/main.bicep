@@ -91,11 +91,11 @@ param gremlinDatabases array = []
 @description('Optional. Table configurations.')
 param tables array = []
 
-@description('Optional. Default to true. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Defaults to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s)')
-param totalThroughputLimit int?
+@description('Optional. Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s).')
+param totalThroughputLimit int = -1
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -268,7 +268,7 @@ var databaseAccountProperties = union(
     capabilities: capabilities
     minimalTlsVersion: minimumTlsVersion
     capacity: {
-      totalThrougputLimit: totalThroughputLimit ?? -1
+      totalThrougputLimit: totalThroughputLimit
     }
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
