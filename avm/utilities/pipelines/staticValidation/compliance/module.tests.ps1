@@ -320,6 +320,27 @@ Describe 'Module tests' -Tag 'Module' {
             }
         }
 
+        BeforeAll {
+            $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+            try {
+                $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
+                if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
+                    $telemetryFileContent = $rawResponse.Content -split '\n'
+                } else {
+                    Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Incorrect Url (e.g., points to HTML)
+                    $telemetryFileContent = $null
+                }
+            } catch {
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Invalid url
+                $telemetryFileContent = $null
+            }
+
+            .  (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
+            # load cross-references
+            $crossReferencedModuleList = Get-CrossReferencedModuleList
+
+        }
+
         It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
 
             param(
@@ -335,7 +356,11 @@ Describe 'Module tests' -Tag 'Module' {
             . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
             # Apply update with already compiled template content
-            Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{ TemplateFileContent = $templateFileContent }
+            Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
+                TemplateFileContent       = $templateFileContent
+                CrossReferencedModuleList = $crossReferencedModuleList
+                TelemetryFileContent      = $telemetryFileContent
+            }
 
             # Get hash after 'update'
             $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
