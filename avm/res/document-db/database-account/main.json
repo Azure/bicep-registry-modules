@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "1272677222480156701"
+      "templateHash": "15087724607037385937"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1076,7 +1076,10 @@
         "EnableGremlin",
         "EnableMongo",
         "DisableRateLimitingResponses",
-        "EnableServerless"
+        "EnableServerless",
+        "EnableNoSQLVectorSearch",
+        "EnableNoSQLFullTextSearch",
+        "EnableMaterializedViews"
       ],
       "metadata": {
         "description": "Optional. List of Cosmos DB capabilities for the account."
