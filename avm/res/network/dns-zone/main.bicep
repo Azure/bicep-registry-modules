@@ -537,7 +537,7 @@ type soaType = {
     host: string
 
     @description('Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration.')
-    minimumTtl: int
+    minimumTTL: int
 
     @description('Required. The refresh value for this SOA record.')
     refreshTime: int
