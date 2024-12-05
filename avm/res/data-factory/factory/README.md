@@ -216,6 +216,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
             }
           ]
         }
+        service: 'dataFactory'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           application: 'AVM'
@@ -230,6 +231,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
             }
           ]
         }
+        service: 'portal'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -398,6 +400,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
               }
             ]
           },
+          "service": "dataFactory",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "application": "AVM",
@@ -412,6 +415,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
               }
             ]
           },
+          "service": "portal",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -558,6 +562,7 @@ param privateEndpoints = [
         }
       ]
     }
+    service: 'dataFactory'
     subnetResourceId: '<subnetResourceId>'
     tags: {
       application: 'AVM'
@@ -572,6 +577,7 @@ param privateEndpoints = [
         }
       ]
     }
+    service: 'portal'
     subnetResourceId: '<subnetResourceId>'
   }
 ]
@@ -770,7 +776,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managedPrivateEndpoints`](#parameter-managedprivateendpoints) | array | An array of managed private endpoints objects created in the Data Factory managed virtual network. |
 | [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1344,7 +1350,7 @@ The name of the Managed Virtual Network.
 
 ### Parameter: `privateEndpoints`
 
-Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -1353,6 +1359,7 @@ Configuration Details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1373,8 +1380,14 @@ Configuration Details for private endpoints. For security reasons, it is recomme
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+
+### Parameter: `privateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -1569,7 +1582,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -1579,7 +1592,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -1594,7 +1607,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -1605,7 +1618,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -1647,7 +1660,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1738,13 +1751,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `privateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -1897,7 +1903,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Notes
 
