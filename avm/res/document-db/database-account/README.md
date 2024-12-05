@@ -3184,7 +3184,10 @@ List of Cosmos DB capabilities for the account.
     'DisableRateLimitingResponses'
     'EnableCassandra'
     'EnableGremlin'
+    'EnableMaterializedViews'
     'EnableMongo'
+    'EnableNoSQLFullTextSearch'
+    'EnableNoSQLVectorSearch'
     'EnableServerless'
     'EnableTable'
   ]
