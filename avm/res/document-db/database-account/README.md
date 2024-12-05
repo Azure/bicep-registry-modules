@@ -1838,13 +1838,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Non-required parameters
     enableAnalyticalStorage: true
     location: '<location>'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: '<locationName>'
-      }
-    ]
     sqlDatabases: [
       {
         containers: [
@@ -2122,15 +2115,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "location": {
       "value": "<location>"
     },
-    "locations": {
-      "value": [
-        {
-          "failoverPriority": 0,
-          "isZoneRedundant": false,
-          "locationName": "<locationName>"
-        }
-      ]
-    },
     "sqlDatabases": {
       "value": [
         {
@@ -2402,13 +2386,6 @@ param name = 'dddasql001'
 // Non-required parameters
 param enableAnalyticalStorage = true
 param location = '<location>'
-param locations = [
-  {
-    failoverPriority: 0
-    isZoneRedundant: false
-    locationName: '<locationName>'
-  }
-]
 param sqlDatabases = [
   {
     containers: [
