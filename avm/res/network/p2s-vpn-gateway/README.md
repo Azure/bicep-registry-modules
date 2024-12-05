@@ -298,7 +298,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    vnetRoutesStaticRoutes: {}
     vpnClientAddressPoolAddressPrefixes: [
       '10.0.2.0/24'
     ]
@@ -348,9 +347,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
-    "vnetRoutesStaticRoutes": {
-      "value": {}
-    },
     "vpnClientAddressPoolAddressPrefixes": {
       "value": [
         "10.0.2.0/24"
@@ -386,7 +382,6 @@ param tags = {
   Environment: 'Non-Prod'
   Role: 'DeploymentValidation'
 }
-param vnetRoutesStaticRoutes = {}
 param vpnClientAddressPoolAddressPrefixes = [
   '10.0.2.0/24'
 ]
