@@ -157,6 +157,7 @@ module testDeployment '../../../main.bicep' = [
       managedVirtualNetworkName: 'default'
       privateEndpoints: [
         {
+          service: 'dataFactory'
           privateDnsZoneGroup: {
             privateDnsZoneGroupConfigs: [
               {
@@ -171,6 +172,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
+          service: 'portal'
           privateDnsZoneGroup: {
             privateDnsZoneGroupConfigs: [
               {
