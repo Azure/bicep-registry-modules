@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults and use AKS Automatic mode'
-metadata description = 'This instance deploys the module with the set of automatic parameters.'
+metadata name = 'Deploying Non-AAD Cluster'
+metadata description = 'This instance deploys the module with a non-AAD integrated cluster.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-containerservice.managedclus
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csauto'
+param serviceShort string = 'csnonaad'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -39,58 +39,19 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
-      disableLocalAccounts: true
-      enableKeyvaultSecretsProvider: true
-      enableSecretRotation: true
-      kedaAddon: true
-      kubernetesVersion: '1.28'
-      aadProfile: {
-        aadProfileEnableAzureRBAC: true
-        aadProfileManaged: true
-      }
-      maintenanceConfigurations: [
-        {
-          name: 'aksManagedAutoUpgradeSchedule'
-          maintenanceWindow: {
-            schedule: {
-              daily: null
-              weekly: {
-                intervalWeeks: 1
-                dayOfWeek: 'Sunday'
-              }
-              absoluteMonthly: null
-              relativeMonthly: null
-            }
-            durationHours: 4
-            utcOffset: '+00:00'
-            startDate: '2024-07-03'
-            startTime: '00:00'
-          }
-        }
-      ]
       managedIdentities: {
         systemAssigned: true
       }
-      nodeProvisioningProfile: {
-        mode: 'Auto'
-      }
-      nodeResourceGroupProfile: {
-        restrictionLevel: 'ReadOnly'
-      }
-      outboundType: 'managedNATGateway'
       primaryAgentPoolProfiles: [
         {
           name: 'systempool'
           count: 3
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_DS2_v2'
           mode: 'System'
         }
       ]
-      publicNetworkAccess: 'Enabled'
-      skuName: 'Automatic'
-      vpaAddon: true
-      webApplicationRoutingEnabled: true
+      aadProfile: null
+      disableLocalAccounts: false
     }
   }
 ]
