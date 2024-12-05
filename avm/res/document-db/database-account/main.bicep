@@ -110,6 +110,9 @@ param diagnosticSettings diagnosticSettingType
   'EnableMongo'
   'DisableRateLimitingResponses'
   'EnableServerless'
+  'EnableNoSQLVectorSearch'
+  'EnableNoSQLFullTextSearch'
+  'EnableMaterializedViews'
 ])
 @description('Optional. List of Cosmos DB capabilities for the account.')
 param capabilitiesToAdd string[] = []
