@@ -245,7 +245,7 @@ module testDeployment '../../../main.bicep' = [
             email: 'azuredns-hostmaster.microsoft.com'
             expireTime: 2419200
             host: 'ns1-04.azure-dns.com.'
-            minimumTtl: 300
+            minimumTTL: 300
             refreshTime: 3600
             retryTime: 300
             serialNumber: 1
