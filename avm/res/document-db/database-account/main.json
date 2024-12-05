@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "5260021870678732997"
+      "templateHash": "10855021340496431236"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1052,7 +1052,7 @@
       "type": "int",
       "defaultValue": -1,
       "metadata": {
-        "description": "Optional. Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s)"
+        "description": "Optional. Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s)."
       }
     },
     "lock": {

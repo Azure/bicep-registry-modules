@@ -3069,7 +3069,7 @@ param sqlDatabases = [
 | [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. |
 | [`tables`](#parameter-tables) | array | Table configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
-| [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s) |
+| [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s). |
 
 ### Parameter: `name`
 
@@ -4560,7 +4560,7 @@ Tags of the Database Account resource.
 
 ### Parameter: `totalThroughputLimit`
 
-Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s)
+Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s).
 
 - Required: No
 - Type: int
