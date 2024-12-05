@@ -67,10 +67,15 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
+
+    disableLocalAuth: true
+    automaticFailover: true
+    minimumTlsVersion: 'Tls12'
     disableKeyBasedMetadataWriteAccess: true
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+
+    networkRestrictions: {
+      networkAclBypass: 'None'
+      publicNetworkAccess: 'Disabled'
     }
     diagnosticSettings: [
       {
@@ -91,31 +96,12 @@ module testDeployment '../../../main.bicep' = {
         }
         service: 'Sql'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     sqlDatabases: [
       {
-        containers: [
-          {
-            name: 'container-001'
-            kind: 'Hash'
-            paths: [
-              '/myPartitionKey1'
-            ]
-          }
-        ]
-        name: '${namePrefix}-sql-${serviceShort}-001'
+        name: 'no-containers-specified'
       }
     ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }

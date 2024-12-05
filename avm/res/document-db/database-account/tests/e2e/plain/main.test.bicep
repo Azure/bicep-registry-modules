@@ -41,11 +41,18 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      disableLocalAuth: true
-      backupPolicyType: 'Continuous'
-      disableKeyBasedMetadataWriteAccess: true
-      defaultConsistencyLevel: 'ConsistentPrefix'
-      backupPolicyContinuousTier: 'Continuous7Days'
+
+      enableTelemetry: false
+      databaseAccountOfferType: 'Standard'
+      totalThroughputLimit: 4000
+      capabilitiesToAdd: [
+        'EnableServerless'
+      ]
+
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
       locations: [
         {
           failoverPriority: 0
@@ -58,6 +65,11 @@ module testDeployment '../../../main.bicep' = [
           name: 'no-containers-specified'
         }
       ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
 ]
