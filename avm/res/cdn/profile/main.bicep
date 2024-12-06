@@ -341,7 +341,7 @@ type securityPolicyType = {
   @description('Required. Name of the security policy.')
   name: string
 
-  @description('Required. Domain names and URL patterns to math with this association.')
+  @description('Required. Domain names and URL patterns to match with this association.')
   associations: associationsType
 
   @description('Required. Resource ID of WAF policy.')
