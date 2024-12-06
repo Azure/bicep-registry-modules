@@ -35,6 +35,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
