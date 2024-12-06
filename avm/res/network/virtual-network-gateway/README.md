@@ -2446,7 +2446,6 @@ param vpnType = 'RouteBased'
 | [`clusterSettings`](#parameter-clustersettings) | object | Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP. |
 | [`gatewayType`](#parameter-gatewaytype) | string | Specifies the gateway type. E.g. VPN, ExpressRoute. |
 | [`name`](#parameter-name) | string | Specifies the Virtual Network Gateway name. |
-| [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
 | [`vNetResourceId`](#parameter-vnetresourceid) | string | Virtual Network resource ID. |
 
 **Optional parameters**
@@ -2474,6 +2473,7 @@ param vpnType = 'RouteBased'
 | [`publicIPPrefixResourceId`](#parameter-publicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
 | [`publicIpZones`](#parameter-publicipzones) | array | Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vpnClientAadConfiguration`](#parameter-vpnclientaadconfiguration) | object | Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided. |
 | [`vpnClientAddressPoolPrefix`](#parameter-vpnclientaddresspoolprefix) | string | The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network. |
@@ -2507,36 +2507,6 @@ Specifies the Virtual Network Gateway name.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `skuName`
-
-The SKU of the Gateway.
-
-- Required: No
-- Type: string
-- Default: `[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]`
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'ErGw1AZ'
-    'ErGw2AZ'
-    'ErGw3AZ'
-    'HighPerformance'
-    'Standard'
-    'UltraPerformance'
-    'VpnGw1'
-    'VpnGw1AZ'
-    'VpnGw2'
-    'VpnGw2AZ'
-    'VpnGw3'
-    'VpnGw3AZ'
-    'VpnGw4'
-    'VpnGw4AZ'
-    'VpnGw5'
-    'VpnGw5AZ'
-  ]
-  ```
 
 ### Parameter: `vNetResourceId`
 
@@ -3120,6 +3090,36 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `skuName`
+
+The SKU of the Gateway.
+
+- Required: No
+- Type: string
+- Default: `[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'ErGw1AZ'
+    'ErGw2AZ'
+    'ErGw3AZ'
+    'HighPerformance'
+    'Standard'
+    'UltraPerformance'
+    'VpnGw1'
+    'VpnGw1AZ'
+    'VpnGw2'
+    'VpnGw2AZ'
+    'VpnGw3'
+    'VpnGw3AZ'
+    'VpnGw4'
+    'VpnGw4AZ'
+    'VpnGw5'
+    'VpnGw5AZ'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -3179,10 +3179,18 @@ Specifies the VPN type.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `activeActive` | bool | Shows if the virtual network gateway is configured in Active-Active mode. |
+| `asn` | int | The ASN (Autonomous System Number) of the virtual network gateway. |
+| `customBgpIpAddresses` | string | The custom Azure APIPA BGP IP address. |
+| `defaultBgpIpAddresses` | string | The default Azure BGP peer IP address. |
+| `ipConfigurations` | array | The IPconfigurations object of the Virtual Network Gateway. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the virtual network gateway. |
+| `publicIpAddress` | string | The public IP address of the virtual network gateway. |
 | `resourceGroupName` | string | The resource group the virtual network gateway was deployed. |
 | `resourceId` | string | The resource ID of the virtual network gateway. |
+| `secondBgpIpAddress` | string | The second default Azure BGP peer IP address (Active-Active mode). |
+| `secondCustomBgpIpAddress` | string | The second custom Azure APIPA BGP IP address (Active-Active mode). |
+| `secondPublicIpAddress` | string | The second public IP address of the virtual network gateway (Active-Active mode). |
 
 ## Cross-referenced modules
 
