@@ -679,7 +679,7 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 
 // supporting resources
 // -----------------
-module vault 'br/public:avm/res/key-vault/vault:0.10.2' = {
+module vault 'br/public:avm/res/key-vault/vault:0.11.0' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName, subscription().subscriptionId)}-vault'
   params: {
     name: keyVaultName
@@ -727,6 +727,7 @@ module registry 'br/public:avm/res/container-registry/registry:0.6.0' = {
     location: location
     enableTelemetry: enableTelemetry
     acrSku: deployInVnet ? 'Premium' : 'Standard' // Private Endpoint needs Premium tier
+    trustPolicyStatus: deployInVnet ? 'enabled' : 'disabled' // Content Trust requires Premium tier
     retentionPolicyDays: 30
     retentionPolicyStatus: 'enabled'
     softDeletePolicyDays: 7
