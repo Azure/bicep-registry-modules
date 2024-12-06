@@ -137,7 +137,6 @@ param vpnClientAadConfiguration object = {}
   'MultiHomed'
 ])
 param resiliencyModel string = 'SingleHomed'
-
 // ================//
 // Variables       //
 // ================//
@@ -394,7 +393,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
     vpnType: vpnTypeVar
     vpnClientConfiguration: !empty(vpnClientAddressPoolPrefix) ? vpnClientConfiguration : null
     vpnGatewayGeneration: gatewayType == 'Vpn' ? vpnGatewayGeneration : 'None'
-    resiliencyModel: resiliencyModel
+    resiliencyModel: !isExpressRoute ? resiliencyModel : null
   }
   dependsOn: [
     publicIPAddress
