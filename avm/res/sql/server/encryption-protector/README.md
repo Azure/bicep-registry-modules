@@ -32,7 +32,7 @@ This module deploys an Azure SQL Server Encryption Protector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoRotationEnabled`](#parameter-autorotationenabled) | bool | Key auto rotation opt-in. |
+| [`autoRotationEnabled`](#parameter-autorotationenabled) | bool | Key auto rotation opt-in flag. |
 | [`serverKeyType`](#parameter-serverkeytype) | string | The encryption protector type. |
 
 ### Parameter: `serverKeyName`
@@ -51,11 +51,11 @@ The name of the sql server. Required if the template is used in a standalone dep
 
 ### Parameter: `autoRotationEnabled`
 
-Key auto rotation opt-in.
+Key auto rotation opt-in flag.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `serverKeyType`
 
