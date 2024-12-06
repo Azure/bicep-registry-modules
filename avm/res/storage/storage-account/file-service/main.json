@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "11334292387756483860"
+      "version": "0.31.92.45157",
+      "templateHash": "17717414137233873720"
     },
     "name": "Storage Account File Share Services",
     "description": "This module deploys a Storage Account File Share Service.",
@@ -292,8 +292,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6729752654389555660"
+              "version": "0.31.92.45157",
+              "templateHash": "669654870318178686"
             },
             "name": "Storage Account File Shares",
             "description": "This module deploys a Storage Account File Share.",
@@ -505,8 +505,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "11498628270290452072"
+                      "version": "0.31.92.45157",
+                      "templateHash": "9505259635631318962"
                     }
                   },
                   "parameters": {
