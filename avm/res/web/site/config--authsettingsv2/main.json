@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "7782125422759995841"
+      "version": "0.31.92.45157",
+      "templateHash": "8027540450131770630"
     },
     "name": "Site Auth Settings V2 Config",
     "description": "This module deploys a Site Auth Settings V2 Configuration.",

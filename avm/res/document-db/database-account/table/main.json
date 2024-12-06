@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "15712676324433329983"
+      "version": "0.31.92.45157",
+      "templateHash": "6722170581524078621"
     },
     "name": "Azure Cosmos DB account tables",
     "description": "This module deploys a table within an Azure Cosmos DB Account.",
