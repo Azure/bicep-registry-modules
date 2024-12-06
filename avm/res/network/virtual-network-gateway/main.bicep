@@ -131,10 +131,16 @@ param enableTelemetry bool = true
 @description('Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.')
 param vpnClientAadConfiguration object = {}
 
+@description('Optional. Property to indicate if the Express Route Gateway has resiliency model of MultiHomed or SingleHomed.')
+@allowed([
+  'SingleHomed'
+  'MultiHomed'
+])
+param resiliencyModel string = 'SingleHomed'
+
 // ================//
 // Variables       //
 // ================//
-
 // Other Variables
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
@@ -152,18 +158,10 @@ var secondPipNameVar = isActiveActive ? (clusterSettings.?secondPipName ?? '${na
 
 var arrayPipNameVar = isActiveActive
   ? concat(
-      !empty(existingFirstPipResourceId)
-        ? []
-        : [firstPipName],
-      !empty(existingSecondPipResourceIdVar)
-        ? []
-        : [secondPipNameVar]
+      !empty(existingFirstPipResourceId) ? [] : [firstPipName],
+      !empty(existingSecondPipResourceIdVar) ? [] : [secondPipNameVar]
     )
-  : concat(
-      !empty(existingFirstPipResourceId)
-        ? []
-        : [firstPipName]
-    )
+  : concat(!empty(existingFirstPipResourceId) ? [] : [firstPipName])
 
 // Potential BGP configurations (Active-Active vs Active-Passive)
 var bgpSettingsVar = isActiveActive
@@ -216,12 +214,12 @@ var ipConfiguration = isActiveActive
           }
           publicIPAddress: {
             id: isActiveActive
-            ? !empty(existingSecondPipResourceIdVar)
-            ? existingSecondPipResourceIdVar
-            : az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
-          : !empty(existingFirstPipResourceId)
-            ? existingFirstPipResourceId
-            : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+              ? !empty(existingSecondPipResourceIdVar)
+                  ? existingSecondPipResourceIdVar
+                  : az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
+              : !empty(existingFirstPipResourceId)
+                  ? existingFirstPipResourceId
+                  : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig2'
@@ -367,7 +365,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = [
 
 // VNET Gateway
 // ============
-resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04-01' = {
+resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -383,6 +381,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     enablePrivateIpAddress: enablePrivateIpAddress
     enableBgpRouteTranslationForNat: enableBgpRouteTranslationForNat
     gatewayType: gatewayType
+
     gatewayDefaultSite: !empty(gatewayDefaultSiteLocalNetworkGatewayId)
       ? {
           id: gatewayDefaultSiteLocalNetworkGatewayId
@@ -395,6 +394,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     vpnType: vpnTypeVar
     vpnClientConfiguration: !empty(vpnClientAddressPoolPrefix) ? vpnClientConfiguration : null
     vpnGatewayGeneration: gatewayType == 'Vpn' ? vpnGatewayGeneration : 'None'
+    resiliencyModel: resiliencyModel
   }
   dependsOn: [
     publicIPAddress
@@ -577,25 +577,20 @@ type diagnosticSettingType = {
 }[]?
 
 type activePassiveNoBgpType = {
-  
   clusterMode: 'activePassiveNoBgp'
-
 }
 
 type activeActiveNoBgpType = {
-  
   clusterMode: 'activeActiveNoBgp'
 
   @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
   existingSecondPipResourceId: string?
-  
+
   @description('Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway\'s name with the \'-pip2\' suffix.')
   secondPipName: string?
-
 }
 
 type activePassiveBgpType = {
-  
   clusterMode: 'activePassiveBgp'
 
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
@@ -608,15 +603,14 @@ type activePassiveBgpType = {
 }
 
 type activeActiveBgpType = {
-  
   clusterMode: 'activeActiveBgp'
 
   @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
   existingSecondPipResourceId: string?
-  
+
   @description('Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway\'s name with the \'-pip2\' suffix.')
   secondPipName: string?
-  
+
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
   @minValue(0)
   @maxValue(4294967295)
