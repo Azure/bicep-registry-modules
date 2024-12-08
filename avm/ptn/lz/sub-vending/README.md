@@ -837,7 +837,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkResourceGroupLockEnabled`](#parameter-virtualnetworkresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.<p> |
 | [`virtualNetworkResourceGroupName`](#parameter-virtualnetworkresourcegroupname) | string | The name of the Resource Group to create the Virtual Network in that is created by this module.<p> |
 | [`virtualNetworkResourceGroupTags`](#parameter-virtualnetworkresourcegrouptags) | object | An object of Tag key & value pairs to be appended to the Resource Group that the Virtual Network is created in.<p><p>> **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.<p> |
-| [`virtualNetworkSubnets`](#parameter-virtualnetworksubnets) | array | The subnets of the Virtual Network that will be created by this module |
+| [`virtualNetworkSubnets`](#parameter-virtualnetworksubnets) | array | The subnets of the Virtual Network that will be created by this module. |
 | [`virtualNetworkTags`](#parameter-virtualnetworktags) | object | An object of tag key/value pairs to be set on the Virtual Network that is created.<p><p>> **NOTE:** Tags will be overwritten on resource if any exist already.<p> |
 | [`virtualNetworkUseRemoteGateways`](#parameter-virtualnetworkuseremotegateways) | bool | Enables the use of remote gateways in the specified hub virtual network.<p><p>> **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.<p> |
 | [`virtualNetworkVwanAssociatedRouteTableResourceId`](#parameter-virtualnetworkvwanassociatedroutetableresourceid) | string | The resource ID of the virtual hub route table to associate to the virtual hub connection (this virtual network). If left blank/empty the `defaultRouteTable` will be associated.<p> |
@@ -1303,7 +1303,7 @@ An object of Tag key & value pairs to be appended to the Resource Group that the
 
 ### Parameter: `virtualNetworkSubnets`
 
-The subnets of the Virtual Network that will be created by this module
+The subnets of the Virtual Network that will be created by this module.
 
 - Required: No
 - Type: array

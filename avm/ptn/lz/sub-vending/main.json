@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "5414246674867753840"
+      "templateHash": "9211955178912630576"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -515,7 +515,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The subnets of the Virtual Network that will be created by this module"
+        "description": "Optional. The subnets of the Virtual Network that will be created by this module."
       }
     },
     "virtualNetworkDnsServers": {
@@ -1028,7 +1028,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "10760903935178767058"
+              "templateHash": "2030234177824216969"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1559,7 +1559,7 @@
               },
               "defaultValue": [],
               "metadata": {
-                "description": ". The subnets of the Virtual Network that will be created by this module."
+                "description": "The subnets of the Virtual Network that will be created by this module."
               }
             },
             "virtualNetworkDnsServers": {

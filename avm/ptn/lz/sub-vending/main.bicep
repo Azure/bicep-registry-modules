@@ -138,7 +138,7 @@ param virtualNetworkTags object = {}
 @description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.''')
 param virtualNetworkAddressSpace array = []
 
-@description('''Optional. The subnets of the Virtual Network that will be created by this module''')
+@description('''Optional. The subnets of the Virtual Network that will be created by this module.''')
 param virtualNetworkSubnets subnetType[]?
 
 @description('''Optional. The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.
