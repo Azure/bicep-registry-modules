@@ -130,6 +130,7 @@ module testDeployment '../../../main.bicep' = {
             usageThreshold: 107374182400
           }
           {
+            kerberosEnabled: true
             exportPolicy: {
               rules: [
                 {

@@ -218,4 +218,7 @@ type volumeType = {
 
   @description('Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
   smbNonBrowsable: ('Enabled' | 'Disabled')?
+
+  @description('Optional. Define if a volume is KerberosEnabled.')
+  kerberosEnabled: bool?
 }
