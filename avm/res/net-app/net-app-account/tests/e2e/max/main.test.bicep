@@ -137,8 +137,8 @@ module testDeployment '../../../main.bicep' = {
                   nfsv3: false
                   nfsv41: true
                   ruleIndex: 1
-                  unixReadOnly: true
-                  unixReadWrite: true
+                  unixReadOnly: false
+                  unixReadWrite: false
                   kerberos5ReadOnly: true
                   kerberos5ReadWrite: false
                   kerberos5iReadOnly: false
