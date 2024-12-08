@@ -145,7 +145,7 @@ module testDeployment '../../../main.bicep' = {
                   kerberos5iReadOnly: false
                   kerberos5iReadWrite: false
                   kerberos5pReadOnly: false
-                  kerberos5pReadWrite: true
+                  kerberos5pReadWrite: false
                 }
               ]
             }
