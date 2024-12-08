@@ -18,20 +18,21 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Management/managementGroups/subscriptions` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2021-04-01/managementGroups/subscriptions) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/hubVirtualNetworkConnections) |
 | `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
-| `Microsoft.Resources/tags` | [2019-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/tags) |
-| `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
+| `Microsoft.Resources/tags` | [2019-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2019-10-01/tags) |
+| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
@@ -217,6 +218,12 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     virtualNetworkPeeringEnabled: true
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkSubnets: [
+      {
+        addressPrefix: '10.110.1.0/24'
+        name: 'Subnet1'
+      }
+    ]
     virtualNetworkUseRemoteGateways: false
   }
 }
@@ -330,6 +337,14 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "virtualNetworkResourceGroupName": {
       "value": "<virtualNetworkResourceGroupName>"
     },
+    "virtualNetworkSubnets": {
+      "value": [
+        {
+          "addressPrefix": "10.110.1.0/24",
+          "name": "Subnet1"
+        }
+      ]
+    },
     "virtualNetworkUseRemoteGateways": {
       "value": false
     }
@@ -391,6 +406,12 @@ param virtualNetworkName = '<virtualNetworkName>'
 param virtualNetworkPeeringEnabled = true
 param virtualNetworkResourceGroupLockEnabled = false
 param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkSubnets = [
+  {
+    addressPrefix: '10.110.1.0/24'
+    name: 'Subnet1'
+  }
+]
 param virtualNetworkUseRemoteGateways = false
 ```
 
@@ -816,6 +837,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkResourceGroupLockEnabled`](#parameter-virtualnetworkresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.<p> |
 | [`virtualNetworkResourceGroupName`](#parameter-virtualnetworkresourcegroupname) | string | The name of the Resource Group to create the Virtual Network in that is created by this module.<p> |
 | [`virtualNetworkResourceGroupTags`](#parameter-virtualnetworkresourcegrouptags) | object | An object of Tag key & value pairs to be appended to the Resource Group that the Virtual Network is created in.<p><p>> **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.<p> |
+| [`virtualNetworkSubnets`](#parameter-virtualnetworksubnets) | array | The subnets of the Virtual Network that will be created by this module |
 | [`virtualNetworkTags`](#parameter-virtualnetworktags) | object | An object of tag key/value pairs to be set on the Virtual Network that is created.<p><p>> **NOTE:** Tags will be overwritten on resource if any exist already.<p> |
 | [`virtualNetworkUseRemoteGateways`](#parameter-virtualnetworkuseremotegateways) | bool | Enables the use of remote gateways in the specified hub virtual network.<p><p>> **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.<p> |
 | [`virtualNetworkVwanAssociatedRouteTableResourceId`](#parameter-virtualnetworkvwanassociatedroutetableresourceid) | string | The resource ID of the virtual hub route table to associate to the virtual hub connection (this virtual network). If left blank/empty the `defaultRouteTable` will be associated.<p> |
@@ -1279,6 +1301,163 @@ An object of Tag key & value pairs to be appended to the Resource Group that the
 - Type: object
 - Default: `{}`
 
+### Parameter: `virtualNetworkSubnets`
+
+The subnets of the Virtual Network that will be created by this module
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworksubnetsname) | string | The Name of the subnet resource. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-virtualnetworksubnetsaddressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
+| [`addressPrefixes`](#parameter-virtualnetworksubnetsaddressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationGatewayIPConfigurations`](#parameter-virtualnetworksubnetsapplicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
+| [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
+| [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
+| [`networkSecurityGroupResourceId`](#parameter-virtualnetworksubnetsnetworksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-virtualnetworksubnetsprivatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
+| [`routeTableResourceId`](#parameter-virtualnetworksubnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`serviceEndpointPolicies`](#parameter-virtualnetworksubnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
+| [`serviceEndpoints`](#parameter-virtualnetworksubnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
+| [`sharingScope`](#parameter-virtualnetworksubnetssharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
+
+### Parameter: `virtualNetworkSubnets.name`
+
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.addressPrefix`
+
+The address prefix for the subnet. Required if `addressPrefixes` is empty.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.addressPrefixes`
+
+List of address prefixes for the subnet. Required if `addressPrefix` is empty.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.applicationGatewayIPConfigurations`
+
+Application gateway IP configurations of virtual network resource.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.defaultOutboundAccess`
+
+Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkSubnets.delegation`
+
+The delegation to enable on the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.natGatewayResourceId`
+
+The resource ID of the NAT Gateway to use for the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroupResourceId`
+
+The resource ID of the network security group to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.privateEndpointNetworkPolicies`
+
+enable or disable apply network policies on private endpoint in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
+  ]
+  ```
+
+### Parameter: `virtualNetworkSubnets.privateLinkServiceNetworkPolicies`
+
+enable or disable apply network policies on private link service in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `virtualNetworkSubnets.routeTableResourceId`
+
+The resource ID of the route table to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.serviceEndpointPolicies`
+
+An array of service endpoint policies.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.serviceEndpoints`
+
+The service endpoints to enable on the subnet.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.sharingScope`
+
+Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DelegatedServices'
+    'Tenant'
+  ]
+  ```
+
 ### Parameter: `virtualNetworkTags`
 
 An object of tag key/value pairs to be set on the Virtual Network that is created.<p><p>> **NOTE:** Tags will be overwritten on resource if any exist already.<p>
@@ -1344,13 +1523,13 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/role-assignment:0.1.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.3.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
+| `br/public:avm/ptn/authorization/role-assignment:0.2.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.5.1` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.2.4` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.14.3` | Remote reference |
 
 ## Data Collection
 

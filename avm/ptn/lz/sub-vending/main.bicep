@@ -395,6 +395,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkName: virtualNetworkName
     virtualNetworkTags: virtualNetworkTags
     virtualNetworkAddressSpace: virtualNetworkAddressSpace
+    virtualNetworkSubnets: virtualNetworkSubnets
     virtualNetworkDnsServers: virtualNetworkDnsServers
     virtualNetworkDdosPlanResourceId: virtualNetworkDdosPlanResourceId
     virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
