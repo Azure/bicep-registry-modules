@@ -146,5 +146,10 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
             $vnetHs.VirtualNetworkPeerings[0].AllowGatewayTransit | Should -Be $false
         }
+
+        It "Should have a Virtual Network with a subnet created named 'Subnet1' with addressPrefix '10.110.1.0/24'" {
+            $vnetHs.Subnets[0].Name | Should -Be 'Subnet1'
+            $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.110.1.0/24'
+        }
     }
 }

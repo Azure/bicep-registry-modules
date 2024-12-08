@@ -64,6 +64,12 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkAddressSpace: [
       '10.110.0.0/16'
     ]
+    virtualNetworkSubnets: [
+      {
+        name: 'Subnet1'
+        addressPrefix: '10.110.1.0/24'
+      }
+    ]
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true
     virtualNetworkUseRemoteGateways: false
