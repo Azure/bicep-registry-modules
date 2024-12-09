@@ -1,4 +1,4 @@
-name: "avm.ptn.lz.sub-placement"
+name: "avm.ptn.mgmtgroup-subscriptionplacement"
 
 on:
   workflow_dispatch:
@@ -24,15 +24,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.lz.sub-placement"
+      - ".github/workflows/avm.ptn.mgmtgroup-subscriptionplacement.yml"
       - "avm/ptn/lz/sub-placement/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/lz/sub-placement"
-  workflowPath: ".github/workflows/avm.ptn.lz.sub-placement.yml"
+  modulePath: "avm/ptn/mgmt-groups/subscription-placement"
+  workflowPath: ".github/workflows/avm.ptn.mgmtgroup-subscriptionplacement.yml"
 
 concurrency:
   group: ${{ github.workflow }}
