@@ -76,6 +76,13 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var actionGroups = [
+  for action in actions: {
+    actionGroupId: action.?actionGroupId ?? action
+    webHookProperties: action.?webHookProperties
+  }
+]
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -126,10 +133,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
   tags: tags
   kind: kind
   properties: {
-    actions: {
-      actionGroups: actions
-      customProperties: {}
-    }
+    actions: actionGroups
     autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
     criteria: criterias
     description: alertDescription
