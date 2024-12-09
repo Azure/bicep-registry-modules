@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "4461001441551159036"
+      "version": "0.31.34.60546",
+      "templateHash": "17857709197993310769"
     },
     "name": "API Management Service Subscriptions",
     "description": "This module deploys an API Management Service Subscription.",
@@ -18,6 +18,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Determines whether tracing can be enabled."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "maxLength": 100,
+      "metadata": {
+        "description": "Required. API Management Service Subscriptions name. Must be 1 to 100 characters long."
       }
     },
     "apiManagementServiceName": {
@@ -81,16 +88,13 @@
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "scope": "[parameters('scope')]",
-        "displayName": "[parameters('name')]",
+        "displayName": "[parameters('displayName')]",
         "ownerId": "[parameters('ownerId')]",
         "primaryKey": "[parameters('primaryKey')]",
         "secondaryKey": "[parameters('secondaryKey')]",
         "state": "[parameters('state')]",
         "allowTracing": "[parameters('allowTracing')]"
-      },
-      "dependsOn": [
-        "service"
-      ]
+      }
     }
   },
   "outputs": {

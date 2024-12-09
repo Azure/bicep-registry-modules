@@ -18,7 +18,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/imageTemplates) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2023-07-01/imageTemplates) |
 
 ## Usage examples
 
@@ -46,12 +46,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   name: 'imageTemplateDeployment'
   params: {
     // Required parameters
-    customizationSteps: [
-      {
-        restartTimeout: '30m'
-        type: 'WindowsRestart'
-      }
-    ]
     distributions: [
       {
         imageName: 'mi-vmiitmin-001'
@@ -59,9 +53,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     imageSource: {
-      offer: 'Windows-10'
+      offer: 'Windows-11'
       publisher: 'MicrosoftWindowsDesktop'
-      sku: 'win10-22h2-ent'
+      sku: 'win11-23h2-ent'
       type: 'PlatformImage'
       version: 'latest'
     }
@@ -82,7 +76,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -90,14 +84,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customizationSteps": {
-      "value": [
-        {
-          "restartTimeout": "30m",
-          "type": "WindowsRestart"
-        }
-      ]
-    },
     "distributions": {
       "value": [
         {
@@ -108,9 +94,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "imageSource": {
       "value": {
-        "offer": "Windows-10",
+        "offer": "Windows-11",
         "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win10-22h2-ent",
+        "sku": "win11-23h2-ent",
         "type": "PlatformImage",
         "version": "latest"
       }
@@ -136,6 +122,40 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/virtual-machine-images/image-template:<version>'
+
+// Required parameters
+param distributions = [
+  {
+    imageName: 'mi-vmiitmin-001'
+    type: 'ManagedImage'
+  }
+]
+param imageSource = {
+  offer: 'Windows-11'
+  publisher: 'MicrosoftWindowsDesktop'
+  sku: 'win11-23h2-ent'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param name = 'vmiitmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -150,6 +170,39 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   name: 'imageTemplateDeployment'
   params: {
     // Required parameters
+    distributions: [
+      {
+        imageName: 'mi-vmiitmax-001'
+        type: 'ManagedImage'
+      }
+      {
+        imageName: 'umi-vmiitmax-001'
+        type: 'VHD'
+      }
+      {
+        replicationRegions: [
+          '<resourceLocation>'
+        ]
+        sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
+        sharedImageGalleryImageDefinitionTargetVersion: '<sharedImageGalleryImageDefinitionTargetVersion>'
+        type: 'SharedImage'
+      }
+    ]
+    imageSource: {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'vmiitmax001'
+    // Non-required parameters
+    buildTimeoutInMinutes: 60
     customizationSteps: [
       {
         name: 'PowerShell installation'
@@ -170,39 +223,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         type: 'Shell'
       }
     ]
-    distributions: [
-      {
-        imageName: 'mi-vmiitmax-001'
-        type: 'ManagedImage'
-      }
-      {
-        imageName: 'umi-vmiitmax-001'
-        type: 'VHD'
-      }
-      {
-        replicationRegions: [
-          '<resourceLocation>'
-        ]
-        sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
-        sharedImageGalleryImageDefinitionTargetVersion: '<sharedImageGalleryImageDefinitionTargetVersion>'
-        type: 'SharedImage'
-      }
-    ]
-    imageSource: {
-      offer: '0001-com-ubuntu-server-lunar'
-      publisher: 'canonical'
-      sku: '23_04-gen2'
-      type: 'PlatformImage'
-      version: 'latest'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    name: 'vmiitmax001'
-    // Non-required parameters
-    buildTimeoutInMinutes: 60
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -212,11 +232,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     osDiskSizeGB: 127
     roleAssignments: [
       {
+        name: 'bb257a92-dc06-4831-9b74-ee5442d8ce0f'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -227,7 +249,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    stagingResourceGroup: '<stagingResourceGroup>'
+    stagingResourceGroupResourceId: '<stagingResourceGroupResourceId>'
     subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -260,7 +282,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -268,28 +290,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customizationSteps": {
-      "value": [
-        {
-          "name": "PowerShell installation",
-          "scriptUri": "<scriptUri>",
-          "type": "Shell"
-        },
-        {
-          "destination": "Initialize-LinuxSoftware.ps1",
-          "name": "Initialize-LinuxSoftware",
-          "sourceUri": "<sourceUri>",
-          "type": "File"
-        },
-        {
-          "inline": [
-            "pwsh \"Initialize-LinuxSoftware.ps1\""
-          ],
-          "name": "Software installation",
-          "type": "Shell"
-        }
-      ]
-    },
     "distributions": {
       "value": [
         {
@@ -312,9 +312,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "imageSource": {
       "value": {
-        "offer": "0001-com-ubuntu-server-lunar",
+        "offer": "ubuntu-24_04-lts",
         "publisher": "canonical",
-        "sku": "23_04-gen2",
+        "sku": "server",
         "type": "PlatformImage",
         "version": "latest"
       }
@@ -332,6 +332,28 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     // Non-required parameters
     "buildTimeoutInMinutes": {
       "value": 60
+    },
+    "customizationSteps": {
+      "value": [
+        {
+          "name": "PowerShell installation",
+          "scriptUri": "<scriptUri>",
+          "type": "Shell"
+        },
+        {
+          "destination": "Initialize-LinuxSoftware.ps1",
+          "name": "Initialize-LinuxSoftware",
+          "sourceUri": "<sourceUri>",
+          "type": "File"
+        },
+        {
+          "inline": [
+            "pwsh \"Initialize-LinuxSoftware.ps1\""
+          ],
+          "name": "Software installation",
+          "type": "Shell"
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -351,11 +373,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     "roleAssignments": {
       "value": [
         {
+          "name": "bb257a92-dc06-4831-9b74-ee5442d8ce0f",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -367,8 +391,8 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         }
       ]
     },
-    "stagingResourceGroup": {
-      "value": "<stagingResourceGroup>"
+    "stagingResourceGroupResourceId": {
+      "value": "<stagingResourceGroupResourceId>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -410,6 +434,122 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/virtual-machine-images/image-template:<version>'
+
+// Required parameters
+param distributions = [
+  {
+    imageName: 'mi-vmiitmax-001'
+    type: 'ManagedImage'
+  }
+  {
+    imageName: 'umi-vmiitmax-001'
+    type: 'VHD'
+  }
+  {
+    replicationRegions: [
+      '<resourceLocation>'
+    ]
+    sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
+    sharedImageGalleryImageDefinitionTargetVersion: '<sharedImageGalleryImageDefinitionTargetVersion>'
+    type: 'SharedImage'
+  }
+]
+param imageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param name = 'vmiitmax001'
+// Non-required parameters
+param buildTimeoutInMinutes = 60
+param customizationSteps = [
+  {
+    name: 'PowerShell installation'
+    scriptUri: '<scriptUri>'
+    type: 'Shell'
+  }
+  {
+    destination: 'Initialize-LinuxSoftware.ps1'
+    name: 'Initialize-LinuxSoftware'
+    sourceUri: '<sourceUri>'
+    type: 'File'
+  }
+  {
+    inline: [
+      'pwsh \'Initialize-LinuxSoftware.ps1\''
+    ]
+    name: 'Software installation'
+    type: 'Shell'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param optimizeVmBoot = 'Enabled'
+param osDiskSizeGB = 127
+param roleAssignments = [
+  {
+    name: 'bb257a92-dc06-4831-9b74-ee5442d8ce0f'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param stagingResourceGroupResourceId = '<stagingResourceGroupResourceId>'
+param subnetResourceId = '<subnetResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param validationProcess = {
+  continueDistributeOnFailure: true
+  inVMValidations: [
+    {
+      inline: [
+        'echo \'Software validation successful.\''
+      ]
+      name: 'Validate-Software'
+      type: 'Shell'
+    }
+  ]
+  sourceValidationOnly: false
+}
+param vmSize = 'Standard_D2s_v3'
+param vmUserAssignedIdentities = [
+  '<managedIdentityResourceId>'
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -424,12 +564,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   name: 'imageTemplateDeployment'
   params: {
     // Required parameters
-    customizationSteps: [
-      {
-        restartTimeout: '10m'
-        type: 'WindowsRestart'
-      }
-    ]
     distributions: [
       {
         sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
@@ -450,6 +584,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     }
     name: 'vmiitwaf001'
     // Non-required parameters
+    customizationSteps: [
+      {
+        restartTimeout: '10m'
+        type: 'WindowsRestart'
+      }
+    ]
     location: '<location>'
     subnetResourceId: '<subnetResourceId>'
     tags: {
@@ -466,7 +606,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -474,14 +614,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customizationSteps": {
-      "value": [
-        {
-          "restartTimeout": "10m",
-          "type": "WindowsRestart"
-        }
-      ]
-    },
     "distributions": {
       "value": [
         {
@@ -510,6 +642,14 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": "vmiitwaf001"
     },
     // Non-required parameters
+    "customizationSteps": {
+      "value": [
+        {
+          "restartTimeout": "10m",
+          "type": "WindowsRestart"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -530,6 +670,51 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/virtual-machine-images/image-template:<version>'
+
+// Required parameters
+param distributions = [
+  {
+    sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
+    type: 'SharedImage'
+  }
+]
+param imageSource = {
+  offer: 'Windows-11'
+  publisher: 'MicrosoftWindowsDesktop'
+  sku: 'win11-22h2-avd'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param name = 'vmiitwaf001'
+// Non-required parameters
+param customizationSteps = [
+  {
+    restartTimeout: '10m'
+    type: 'WindowsRestart'
+  }
+]
+param location = '<location>'
+param subnetResourceId = '<subnetResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -537,7 +722,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customizationSteps`](#parameter-customizationsteps) | array | Customization steps to be run when building the VM image. |
 | [`distributions`](#parameter-distributions) | array | The distribution targets where the image output needs to go to. |
 | [`imageSource`](#parameter-imagesource) | object | Image source definition in object format. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -548,13 +732,14 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | The image build timeout in minutes. 0 means the default 240 minutes. |
+| [`customizationSteps`](#parameter-customizationsteps) | array | Customization steps to be run when building the VM image. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`optimizeVmBoot`](#parameter-optimizevmboot) | string | The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time. |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`stagingResourceGroup`](#parameter-stagingresourcegroup) | string | Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain. |
+| [`stagingResourceGroupResourceId`](#parameter-stagingresourcegroupresourceid) | string | Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`validationProcess`](#parameter-validationprocess) | object | Configuration options and list of validations to be performed on the resulting image. |
@@ -565,14 +750,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a unique image template name. |
-
-### Parameter: `customizationSteps`
-
-Customization steps to be run when building the VM image.
-
-- Required: Yes
-- Type: array
+| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date is used to generate a unique image template name. |
 
 ### Parameter: `distributions`
 
@@ -605,7 +783,7 @@ The managed identity definition for this resource.
 
 The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `name`
@@ -622,6 +800,13 @@ The image build timeout in minutes. 0 means the default 240 minutes.
 - Required: No
 - Type: int
 - Default: `0`
+
+### Parameter: `customizationSteps`
+
+Customization steps to be run when building the VM image.
+
+- Required: No
+- Type: array
 
 ### Parameter: `enableTelemetry`
 
@@ -703,6 +888,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -719,6 +910,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -769,6 +961,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -786,7 +985,7 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `stagingResourceGroup`
+### Parameter: `stagingResourceGroupResourceId`
 
 Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.
 
@@ -959,12 +1158,11 @@ List of User-Assigned Identities associated to the Build VM for accessing Azure 
 
 ### Parameter: `baseTime`
 
-Do not provide a value! This date value is used to generate a unique image template name.
+Do not provide a value! This date is used to generate a unique image template name.
 
 - Required: No
 - Type: string
 - Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
-
 
 ## Outputs
 
@@ -979,7 +1177,11 @@ Do not provide a value! This date value is used to generate a unique image templ
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 

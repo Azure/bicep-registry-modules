@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "14618669791216532904"
+      "version": "0.31.34.60546",
+      "templateHash": "5493266151487858395"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value.",
@@ -80,10 +80,7 @@
         "displayName": "[parameters('displayName')]",
         "value": "[if(variables('keyVaultEmpty'), parameters('value'), null())]",
         "keyVault": "[if(not(variables('keyVaultEmpty')), parameters('keyVault'), null())]"
-      },
-      "dependsOn": [
-        "service"
-      ]
+      }
     }
   },
   "outputs": {

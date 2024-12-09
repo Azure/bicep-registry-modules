@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceGroup.location
+      kind: 'ASEv3'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'App Service Environment'
@@ -79,11 +80,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -99,16 +102,21 @@ module testDeployment '../../../main.bicep' = [
       ]
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       internalLoadBalancingMode: 'Web, Publishing'
+      networkConfiguration: {
+        properties: {
+          allowNewPrivateEndpointConnections: true
+          ftpEnabled: true
+          inboundIpAddressOverride: '10.0.0.10'
+          remoteDebugEnabled: true
+        }
+      }
       clusterSettings: [
         {
           name: 'DisableTls1.0'
           value: '1'
         }
       ]
-      allowNewPrivateEndpointConnections: true
-      ftpEnabled: true
-      inboundIpAddressOverride: '10.0.0.10'
-      remoteDebugEnabled: true
+      zoneRedundant: true
       upgradePreference: 'Late'
       diagnosticSettings: [
         {

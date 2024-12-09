@@ -31,6 +31,7 @@ spec:
     - Azure.ContainerApp.PublicAccess
     # Azure Virtual Machine
     - Azure.VM.AMA
+    - Azure.VM.MaintenanceConfig # Excluded as it requires user input
     - Azure.VM.Standalone
     # Azure App Service
     - Azure.AppService.WebProbe # Supressed as the probe path is specific to the app
@@ -42,6 +43,11 @@ spec:
     - Azure.FrontDoor.Probe # Supressed as the probe is being provided as parameter and we are not able to enforce as default value
     - Azure.FrontDoor.ProbeMethod # Supressed as the probe method is being provided as parameter and we are not able to enforce as default value
     - Azure.FrontDoor.ProbePath # Supressed as the probe path is being provided as parameter and we are not able to enforce as default value
+    # Azure API Management
+    - Azure.APIM.MultiRegion # Team agreed this is too expensive for most use cases and is safe to ignore. Would require dependencies for a min deployment.
+    - Azure.APIM.ManagedIdentity
+    # AKS specific
+    - Azure.AKS.MaintenanceWindow # Excluded as it requires user input
   if:
     name: "."
     contains:

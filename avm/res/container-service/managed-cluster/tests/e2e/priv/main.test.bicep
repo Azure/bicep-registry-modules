@@ -55,10 +55,10 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       enablePrivateCluster: true
-      primaryAgentPoolProfile: [
+      primaryAgentPoolProfiles: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 1
           enableAutoScaling: true
@@ -72,16 +72,15 @@ module testDeployment '../../../main.bicep' = [
           ]
           osDiskSizeGB: 0
           osType: 'Linux'
-          serviceCidr: ''
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+          vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
       ]
       agentPools: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 2
           enableAutoScaling: true
@@ -98,11 +97,11 @@ module testDeployment '../../../main.bicep' = [
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+          vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 2
           enableAutoScaling: true

@@ -1,15 +1,49 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "7136569845646186437"
+      "version": "0.31.92.45157",
+      "templateHash": "8392467222383128491"
     },
     "name": "Log Analytics Workspace Data Exports",
     "description": "This module deploys a Log Analytics Workspace Data Export.",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "destinationType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The destination resource ID."
+          }
+        },
+        "metaData": {
+          "type": "object",
+          "properties": {
+            "eventHubName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The destination metadata."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The data export destination properties."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -27,8 +61,8 @@
       }
     },
     "destination": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/destinationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Destination properties."
       }
@@ -42,14 +76,23 @@
     },
     "tableNames": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "minLength": 1,
       "metadata": {
-        "description": "Optional. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
+        "description": "Required. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[parameters('workspaceName')]"
+    },
+    "dataExport": {
       "type": "Microsoft.OperationalInsights/workspaces/dataExports",
       "apiVersion": "2020-08-01",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
@@ -57,9 +100,12 @@
         "destination": "[parameters('destination')]",
         "enable": "[parameters('enable')]",
         "tableNames": "[parameters('tableNames')]"
-      }
+      },
+      "dependsOn": [
+        "workspace"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

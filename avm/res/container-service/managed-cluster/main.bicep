@@ -12,7 +12,7 @@ param location string = resourceGroup().location
 param dnsPrefix string = name
 
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentitiesType?
 
 @description('Optional. Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.')
 @allowed([
@@ -38,6 +38,7 @@ param networkPluginMode string?
 @allowed([
   'azure'
   'calico'
+  'cilium'
 ])
 param networkPolicy string?
 
@@ -76,6 +77,13 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
+@description('Optional. Name of a managed cluster SKU.')
+@allowed([
+  'Base'
+  'Automatic'
+])
+param skuName string = 'Base'
+
 @description('Optional. Tier of a managed cluster SKU.')
 @allowed([
   'Free'
@@ -110,7 +118,7 @@ param aadProfileServerAppSecret string?
 param aadProfileTenantId string = subscription().tenantId
 
 @description('Optional. Specifies the AAD group object IDs that will have admin role of the cluster.')
-param aadProfileAdminGroupObjectIDs array?
+param aadProfileAdminGroupObjectIDs string[]?
 
 @description('Optional. Specifies whether to enable managed AAD integration.')
 param aadProfileManaged bool = true
@@ -122,13 +130,19 @@ param enableRBAC bool = true
 param aadProfileEnableAzureRBAC bool = enableRBAC
 
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
-param disableLocalAccounts bool = false
+param disableLocalAccounts bool = true
+
+@description('Optional. Node provisioning settings that apply to the whole cluster.')
+param nodeProvisioningProfile object?
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
 
+@description('Optional. The node resource group configuration profile.')
+param nodeResourceGroupProfile object?
+
 @description('Optional. IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.')
-param authorizedIPRanges array?
+param authorizedIPRanges string[]?
 
 @description('Optional. Whether to disable run command for the cluster or not.')
 param disableRunCommand bool = false
@@ -151,10 +165,13 @@ param enablePrivateClusterPublicFQDN bool = false
 param privateDNSZone string?
 
 @description('Required. Properties of the primary agent pool.')
-param primaryAgentPoolProfile array
+param primaryAgentPoolProfiles agentPoolType[]
 
 @description('Optional. Define one or more secondary/additional agent pools.')
-param agentPools agentPoolType
+param agentPools agentPoolType[]?
+
+@description('Optional. Whether or not to use AKS Automatic mode.')
+param maintenanceConfigurations maintenanceConfigurationType[]?
 
 @description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
 param costAnalysisEnabled bool = false
@@ -196,13 +213,9 @@ param kubeDashboardEnabled bool = false
 #disable-next-line secure-secrets-in-params // Not a secret
 param enableKeyvaultSecretsProvider bool = false
 
-@allowed([
-  'false'
-  'true'
-])
 @description('Optional. Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation.')
 #disable-next-line secure-secrets-in-params // Not a secret
-param enableSecretRotation string = 'false'
+param enableSecretRotation bool = false
 
 @description('Optional. Specifies the scan interval of the auto-scaler of the AKS cluster.')
 param autoScalerProfileScanInterval string = '10s'
@@ -226,14 +239,10 @@ param autoScalerProfileScaleDownUnreadyTime string = '20m'
 param autoScalerProfileUtilizationThreshold string = '0.5'
 
 @description('Optional. Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster.')
-param autoScalerProfileMaxGracefulTerminationSec string = '600'
+param autoScalerProfileMaxGracefulTerminationSec int = 600
 
-@allowed([
-  'false'
-  'true'
-])
 @description('Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.')
-param autoScalerProfileBalanceSimilarNodeGroups string = 'false'
+param autoScalerProfileBalanceSimilarNodeGroups bool = false
 
 @allowed([
   'least-waste'
@@ -245,33 +254,25 @@ param autoScalerProfileBalanceSimilarNodeGroups string = 'false'
 param autoScalerProfileExpander string = 'random'
 
 @description('Optional. Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.')
-param autoScalerProfileMaxEmptyBulkDelete string = '10'
+param autoScalerProfileMaxEmptyBulkDelete int = 10
 
 @description('Optional. Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported.')
 param autoScalerProfileMaxNodeProvisionTime string = '15m'
 
 @description('Optional. Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0.')
-param autoScalerProfileMaxTotalUnreadyPercentage string = '45'
+param autoScalerProfileMaxTotalUnreadyPercentage int = 45
 
 @description('Optional. For scenarios like burst/batch scale where you do not want CA to act before the kubernetes scheduler could schedule all the pods, you can tell CA to ignore unscheduled pods before they are a certain age. Values must be an integer followed by a unit ("s" for seconds, "m" for minutes, "h" for hours, etc).')
 param autoScalerProfileNewPodScaleUpDelay string = '0s'
 
 @description('Optional. Specifies the OK total unready count for the auto-scaler of the AKS cluster.')
-param autoScalerProfileOkTotalUnreadyCount string = '3'
+param autoScalerProfileOkTotalUnreadyCount int = 3
 
-@allowed([
-  'false'
-  'true'
-])
 @description('Optional. Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster.')
-param autoScalerProfileSkipNodesWithLocalStorage string = 'true'
+param autoScalerProfileSkipNodesWithLocalStorage bool = true
 
-@allowed([
-  'false'
-  'true'
-])
 @description('Optional. Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster.')
-param autoScalerProfileSkipNodesWithSystemPods string = 'true'
+param autoScalerProfileSkipNodesWithSystemPods bool = true
 
 @allowed([
   'node-image'
@@ -282,6 +283,15 @@ param autoScalerProfileSkipNodesWithSystemPods string = 'true'
 ])
 @description('Optional. Auto-upgrade channel on the AKS cluster.')
 param autoUpgradeProfileUpgradeChannel string = 'stable'
+
+@allowed([
+  'NodeImage'
+  'None'
+  'SecurityPatch'
+  'Unmanaged'
+])
+@description('Optional. Auto-upgrade channel on the Node Os.')
+param autoNodeOsUpgradeProfileUpgradeChannel string = 'Unmanaged'
 
 @description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
 param podIdentityProfileAllowNetworkPluginKubenet bool = false
@@ -340,7 +350,7 @@ param diagnosticSettings diagnosticSettingType
 param omsAgentEnabled bool = true
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
-param monitoringWorkspaceId string?
+param monitoringWorkspaceResourceId string?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -358,7 +368,7 @@ param tags object?
 param diskEncryptionSetResourceId string?
 
 @description('Optional. Settings and configurations for the flux extension.')
-param fluxExtension extensionType
+param fluxExtension extensionType?
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
 param httpProxyConfig object?
@@ -369,32 +379,47 @@ param identityProfile object?
 @description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
 param kedaAddon bool = false
 
+@description('Optional. Whether to enable VPA add-on in cluster. Default value is false.')
+param vpaAddon bool = false
+
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
 
-@description('Optional. Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled.')
-param enableAzureMonitorProfileLogs bool = false
-
-@description('Optional. Indicates if Application Monitoring of the kubenetes cluster is enabled.')
-param enableAppMonitoring bool = false
-
-@description('Optional. Whether the Windows Log Collection for Azure Monitor Container Insights Logs Addon is enabled.')
-param enableWindowsHostLogs bool = false
-
 @description('Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled.')
 param enableContainerInsights bool = false
 
-@description('Optional. Indicates if Application Monitoring Open Telemetry Metrics is enabled.')
-param enableAppMonitoringOpenTelemetryMetrics bool = false
+@description('Optional. Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false.')
+param disableCustomMetrics bool = false
+
+@description('Optional. Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false.')
+param disablePrometheusMetricsScraping bool = false
+
+@description('Optional. The syslog host port. If not specified, the default port is 28330.')
+param syslogPort int = 28330
 
 @description('Optional. A comma-separated list of kubernetes cluster metrics labels.')
 param metricLabelsAllowlist string = ''
 
 @description('Optional. A comma-separated list of Kubernetes cluster metrics annotations.')
 param metricAnnotationsAllowList string = ''
+
+@description('Optional. Specifies whether the Istio ServiceMesh add-on is enabled or not.')
+param istioServiceMeshEnabled bool = false
+
+@description('Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values.')
+param istioServiceMeshRevisions array?
+
+@description('Optional. Specifies whether the Internal Istio Ingress Gateway is enabled or not.')
+param istioServiceMeshInternalIngressGatewayEnabled bool = false
+
+@description('Optional. Specifies whether the External Istio Ingress Gateway is enabled or not.')
+param istioServiceMeshExternalIngressGatewayEnabled bool = false
+
+@description('Optional. The Istio Certificate Authority definition.')
+param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityType
 
 // =========== //
 // Variables   //
@@ -485,63 +510,118 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 // ============ //
 // Dependencies //
 // ============ //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.containerservice-managedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerservice-managedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
 // ============== //
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' = {
   name: name
   location: location
   tags: tags
   identity: identity
   sku: {
-    name: 'Base'
+    name: skuName
     tier: skuTier
   }
   properties: {
+    agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
+      name: profile.name
+      count: profile.count ?? 1
+      availabilityZones: map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
+      creationData: !empty(profile.?sourceResourceId)
+        ? {
+            #disable-next-line use-resource-id-functions // Not possible to reference as nested
+            sourceResourceId: profile.sourceResourceId
+          }
+        : null
+      enableAutoScaling: profile.?enableAutoScaling ?? false
+      enableEncryptionAtHost: profile.?enableEncryptionAtHost ?? false
+      enableFIPS: profile.?enableFIPS ?? false
+      enableNodePublicIP: profile.?enableNodePublicIP ?? false
+      enableUltraSSD: profile.?enableUltraSSD ?? false
+      gpuInstanceProfile: profile.?gpuInstanceProfile
+      kubeletDiskType: profile.?kubeletDiskType
+      maxCount: profile.?maxCount
+      maxPods: profile.?maxPods
+      minCount: profile.?minCount
+      mode: profile.?mode
+      nodeLabels: profile.?nodeLabels
+      #disable-next-line use-resource-id-functions // Not possible to reference as nested
+      nodePublicIPPrefixID: profile.?nodePublicIpPrefixResourceId
+      nodeTaints: profile.?nodeTaints
+      orchestratorVersion: profile.?orchestratorVersion
+      osDiskSizeGB: profile.?osDiskSizeGB
+      osDiskType: profile.?osDiskType
+      osType: profile.?osType ?? 'Linux'
+      #disable-next-line use-resource-id-functions // Not possible to reference as nested
+      podSubnetID: profile.?podSubnetResourceId
+      #disable-next-line use-resource-id-functions // Not possible to reference as nested
+      proximityPlacementGroupID: profile.?proximityPlacementGroupResourceId
+      scaleDownMode: profile.?scaleDownMode ?? 'Delete'
+      scaleSetEvictionPolicy: profile.?scaleSetEvictionPolicy ?? 'Delete'
+      scaleSetPriority: profile.?scaleSetPriority
+      spotMaxPrice: profile.?spotMaxPrice
+      tags: profile.?tags
+      type: profile.?type
+      upgradeSettings: {
+        maxSurge: profile.?maxSurge
+      }
+      vmSize: profile.?vmSize ?? 'Standard_D2s_v3'
+      #disable-next-line use-resource-id-functions // Not possible to reference as nested
+      vnetSubnetID: profile.?vnetSubnetResourceId
+      workloadRuntime: profile.?workloadRuntime
+    })
     httpProxyConfig: httpProxyConfig
     identityProfile: identityProfile
     diskEncryptionSetID: diskEncryptionSetResourceId
     kubernetesVersion: kubernetesVersion
     dnsPrefix: dnsPrefix
-    agentPoolProfiles: primaryAgentPoolProfile
     linuxProfile: !empty(sshPublicKey)
       ? {
           adminUsername: adminUsername
@@ -585,11 +665,10 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
           : null
       }
       omsagent: {
-        enabled: omsAgentEnabled && !empty(monitoringWorkspaceId)
-        #disable-next-line BCP321 // Value will not be used if null or empty
-        config: omsAgentEnabled && !empty(monitoringWorkspaceId)
+        enabled: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
+        config: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
           ? {
-              logAnalyticsWorkspaceResourceID: monitoringWorkspaceId
+              logAnalyticsWorkspaceResourceID: monitoringWorkspaceResourceId!
             }
           : null
       }
@@ -615,7 +694,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         enabled: enableKeyvaultSecretsProvider
         config: enableKeyvaultSecretsProvider
           ? {
-              enableSecretRotation: enableSecretRotation
+              enableSecretRotation: toLower(string(enableSecretRotation))
             }
           : null
       }
@@ -628,17 +707,22 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     enableRBAC: enableRBAC
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
+    nodeResourceGroupProfile: nodeResourceGroupProfile
+    nodeProvisioningProfile: nodeProvisioningProfile
     enablePodSecurityPolicy: enablePodSecurityPolicy
     workloadAutoScalerProfile: {
       keda: {
         enabled: kedaAddon
       }
+      verticalPodAutoscaler: {
+        enabled: vpaAddon
+      }
     }
     networkProfile: {
       networkDataplane: networkDataplane
       networkPlugin: networkPlugin
-      networkPluginMode: networkPluginMode
-      networkPolicy: networkPolicy
+      networkPluginMode: networkDataplane == 'cilium' ? 'overlay' : networkPluginMode
+      networkPolicy: networkDataplane == 'cilium' ? 'cilium' : networkPolicy
       podCidr: podCidr
       serviceCidr: serviceCidr
       dnsServiceIP: dnsServiceIP
@@ -665,14 +749,14 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       tenantID: aadProfileTenantId
     }
     autoScalerProfile: {
-      'balance-similar-node-groups': autoScalerProfileBalanceSimilarNodeGroups
+      'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
       expander: autoScalerProfileExpander
-      'max-empty-bulk-delete': autoScalerProfileMaxEmptyBulkDelete
-      'max-graceful-termination-sec': autoScalerProfileMaxGracefulTerminationSec
+      'max-empty-bulk-delete': '${autoScalerProfileMaxEmptyBulkDelete}'
+      'max-graceful-termination-sec': '${autoScalerProfileMaxGracefulTerminationSec}'
       'max-node-provision-time': autoScalerProfileMaxNodeProvisionTime
-      'max-total-unready-percentage': autoScalerProfileMaxTotalUnreadyPercentage
+      'max-total-unready-percentage': '${autoScalerProfileMaxTotalUnreadyPercentage}'
       'new-pod-scale-up-delay': autoScalerProfileNewPodScaleUpDelay
-      'ok-total-unready-count': autoScalerProfileOkTotalUnreadyCount
+      'ok-total-unready-count': '${autoScalerProfileOkTotalUnreadyCount}'
       'scale-down-delay-after-add': autoScalerProfileScaleDownDelayAfterAdd
       'scale-down-delay-after-delete': autoScalerProfileScaleDownDelayAfterDelete
       'scale-down-delay-after-failure': autoScalerProfileScaleDownDelayAfterFailure
@@ -680,11 +764,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       'scale-down-unready-time': autoScalerProfileScaleDownUnreadyTime
       'scale-down-utilization-threshold': autoScalerProfileUtilizationThreshold
       'scan-interval': autoScalerProfileScanInterval
-      'skip-nodes-with-local-storage': autoScalerProfileSkipNodesWithLocalStorage
-      'skip-nodes-with-system-pods': autoScalerProfileSkipNodesWithSystemPods
+      'skip-nodes-with-local-storage': toLower(string(autoScalerProfileSkipNodesWithLocalStorage))
+      'skip-nodes-with-system-pods': toLower(string(autoScalerProfileSkipNodesWithSystemPods))
     }
     autoUpgradeProfile: {
       upgradeChannel: autoUpgradeProfileUpgradeChannel
+      nodeOSUpgradeChannel: autoNodeOsUpgradeProfileUpgradeChannel
     }
     apiServerAccessProfile: {
       authorizedIPRanges: authorizedIPRanges
@@ -694,26 +779,20 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       privateDNSZone: privateDNSZone
     }
     azureMonitorProfile: {
-      logs: enableAzureMonitorProfileLogs
+      containerInsights: enableContainerInsights
         ? {
-            appMonitoring: {
-              enabled: enableAppMonitoring
-            }
-            containerInsights: {
-              enabled: enableContainerInsights
-              logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceId) ? monitoringWorkspaceId : null
-              windowsHostLogs: {
-                enabled: enableWindowsHostLogs
-              }
-            }
+            enabled: enableContainerInsights
+            logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceResourceId)
+              ? monitoringWorkspaceResourceId
+              : null
+            disableCustomMetrics: disableCustomMetrics
+            disablePrometheusMetricsScraping: disablePrometheusMetricsScraping
+            syslogPort: syslogPort
           }
         : null
       metrics: enableAzureMonitorProfileMetrics
         ? {
             enabled: enableAzureMonitorProfileMetrics
-            appMonitoringOpenTelemetryMetrics: {
-              enabled: enableAppMonitoringOpenTelemetryMetrics
-            }
             kubeStateMetrics: {
               metricLabelsAllowlist: metricLabelsAllowlist
               metricAnnotationsAllowList: metricAnnotationsAllowList
@@ -733,7 +812,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
             securityMonitoring: {
               enabled: enableAzureDefender
             }
-            logAnalyticsWorkspaceResourceId: monitoringWorkspaceId
+            logAnalyticsWorkspaceResourceId: monitoringWorkspaceResourceId
           }
         : null
       workloadIdentity: enableWorkloadIdentity
@@ -763,8 +842,50 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       }
     }
     supportPlan: supportPlan
+    serviceMeshProfile: istioServiceMeshEnabled
+      ? {
+          istio: {
+            revisions: !empty(istioServiceMeshRevisions) ? istioServiceMeshRevisions : null
+            components: {
+              ingressGateways: [
+                {
+                  enabled: istioServiceMeshInternalIngressGatewayEnabled
+                  mode: 'Internal'
+                }
+                {
+                  enabled: istioServiceMeshExternalIngressGatewayEnabled
+                  mode: 'External'
+                }
+              ]
+            }
+            certificateAuthority: !empty(istioServiceMeshCertificateAuthority)
+              ? {
+                  plugin: {
+                    certChainObjectName: istioServiceMeshCertificateAuthority.?certChainObjectName
+                    certObjectName: istioServiceMeshCertificateAuthority.?certObjectName
+                    keyObjectName: istioServiceMeshCertificateAuthority.?keyObjectName
+                    keyVaultId: istioServiceMeshCertificateAuthority.?keyVaultResourceId
+                    rootCertObjectName: istioServiceMeshCertificateAuthority.?rootCertObjectName
+                  }
+                }
+              : null
+          }
+          mode: 'Istio'
+        }
+      : null
   }
 }
+
+module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = [
+  for (maintenanceConfiguration, index) in (maintenanceConfigurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfiguration-${index}'
+    params: {
+      name: maintenanceConfiguration!.name
+      maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
+      managedClusterName: managedCluster.name
+    }
+  }
+]
 
 module managedCluster_agentPools 'agent-pool/main.bicep' = [
   for (agentPool, index) in (agentPools ?? []): {
@@ -787,14 +908,14 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       minCount: agentPool.?minCount
       mode: agentPool.?mode
       nodeLabels: agentPool.?nodeLabels
-      nodePublicIpPrefixId: agentPool.?nodePublicIpPrefixId
+      nodePublicIpPrefixResourceId: agentPool.?nodePublicIpPrefixResourceId
       nodeTaints: agentPool.?nodeTaints
       orchestratorVersion: agentPool.?orchestratorVersion ?? kubernetesVersion
       osDiskSizeGB: agentPool.?osDiskSizeGB
       osDiskType: agentPool.?osDiskType
       osSku: agentPool.?osSku
       osType: agentPool.?osType
-      podSubnetId: agentPool.?podSubnetId
+      podSubnetResourceId: agentPool.?podSubnetResourceId
       proximityPlacementGroupResourceId: agentPool.?proximityPlacementGroupResourceId
       scaleDownMode: agentPool.?scaleDownMode
       scaleSetEvictionPolicy: agentPool.?scaleSetEvictionPolicy
@@ -804,41 +925,39 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       type: agentPool.?type
       maxSurge: agentPool.?maxSurge
       vmSize: agentPool.?vmSize
-      vnetSubnetId: agentPool.?vnetSubnetId
+      vnetSubnetResourceId: agentPool.?vnetSubnetResourceId
       workloadRuntime: agentPool.?workloadRuntime
     }
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' =
-  if (!empty(fluxExtension)) {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
-    params: {
-      clusterName: managedCluster.name
-      configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
-      configurationSettings: fluxExtension.?configurationSettings
-      enableTelemetry: enableTelemetry
-      extensionType: 'microsoft.flux'
-      fluxConfigurations: fluxExtension.?configurations
-      location: location
-      name: 'flux'
-      releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
-      releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
-      version: fluxExtension.?version
-    }
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(fluxExtension)) {
+  name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
+  params: {
+    clusterName: managedCluster.name
+    configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
+    configurationSettings: fluxExtension.?configurationSettings
+    enableTelemetry: enableTelemetry
+    extensionType: 'microsoft.flux'
+    fluxConfigurations: fluxExtension.?configurations
+    location: location
+    name: fluxExtension.?name ?? 'flux'
+    releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
+    releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
+    version: fluxExtension.?version
   }
+}
 
-resource managedCluster_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: managedCluster
+resource managedCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: managedCluster
+}
 
 resource managedCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -870,14 +989,10 @@ resource managedCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
 ]
 
 resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(managedCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(managedCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -889,28 +1004,26 @@ resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing =
-  if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
-    name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))!
-  }
+resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+  name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))!
+}
 
-resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' =
-  if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
-    name: guid(
-      dnsZone.id,
-      subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'),
-      'DNS Zone Contributor'
-    )
-    properties: {
-      roleDefinitionId: subscriptionResourceId(
-        'Microsoft.Authorization/roleDefinitions',
-        'befefa01-2a29-4197-83a8-272ff33ce314'
-      ) // 'DNS Zone Contributor'
-      principalId: managedCluster.properties.ingressProfile.webAppRouting.identity.objectId
-      principalType: 'ServicePrincipal'
-    }
-    scope: dnsZone
+resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+  name: guid(
+    dnsZone.id,
+    subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'),
+    'DNS Zone Contributor'
+  )
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'befefa01-2a29-4197-83a8-272ff33ce314'
+    ) // 'DNS Zone Contributor'
+    principalId: managedCluster.properties.ingressProfile.webAppRouting.identity.objectId
+    principalType: 'ServicePrincipal'
   }
+  scope: dnsZone
+}
 
 @description('The resource ID of the managed cluster.')
 output resourceId string = managedCluster.id
@@ -966,12 +1079,13 @@ output webAppRoutingIdentityObjectId string = managedCluster.properties.?ingress
 //   Definitions   //
 // =============== //
 
+@export()
 type agentPoolType = {
   @description('Required. The name of the agent pool.')
-  name: string?
+  name: string
 
   @description('Optional. The availability zones of the agent pool.')
-  availabilityZones: string[]?
+  availabilityZones: int[]?
 
   @description('Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
   count: int?
@@ -1019,7 +1133,7 @@ type agentPoolType = {
   nodeLabels: object?
 
   @description('Optional. The node public IP prefix ID of the agent pool.')
-  nodePublicIpPrefixId: string?
+  nodePublicIpPrefixResourceId: string?
 
   @description('Optional. The node taints of the agent pool.')
   nodeTaints: string[]?
@@ -1040,13 +1154,13 @@ type agentPoolType = {
   osType: ('Linux' | 'Windows')?
 
   @description('Optional. The pod subnet ID of the agent pool.')
-  podSubnetId: string?
+  podSubnetResourceId: string?
 
   @description('Optional. The proximity placement group resource ID of the agent pool.')
   proximityPlacementGroupResourceId: string?
 
   @description('Optional. The scale down mode of the agent pool.')
-  scaleDownMode: ('Delete' | 'Pause' | 'Requeue' | 'DeleteRequeue')?
+  scaleDownMode: ('Delete' | 'Deallocate')?
 
   @description('Optional. The scale set eviction policy of the agent pool.')
   scaleSetEvictionPolicy: ('Delete' | 'Deallocate')?
@@ -1070,23 +1184,25 @@ type agentPoolType = {
   vmSize: string?
 
   @description('Optional. The VNet subnet ID of the agent pool.')
-  vnetSubnetID: string?
+  vnetSubnetResourceId: string?
 
   @description('Optional. The workload runtime of the agent pool.')
   workloadRuntime: string?
 
   @description('Optional. The enable default telemetry of the agent pool.')
   enableDefaultTelemetry: bool?
-}[]?
+}
 
+@export()
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourcesIds: string[]?
-}?
+}
 
+@export()
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?
@@ -1095,7 +1211,11 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+@export()
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -1118,6 +1238,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
+@export()
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -1162,13 +1283,15 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
+@export()
 type fluxConfigurationProtectedSettingsType = {
   @description('Optional. The SSH private key to use for Git authentication.')
   sshPrivateKey: string?
-}?
+}
 
+@export()
 type extensionType = {
-  @description('Required. The name of the extension.')
+  @description('Optional. The name of the extension.')
   name: string?
 
   @description('Optional. Namespace where the extension Release must be placed.')
@@ -1177,7 +1300,7 @@ type extensionType = {
   @description('Optional. Namespace where the extension will be created for an Namespace scoped extension.')
   targetNamespace: string?
 
-  @description('Required. The release train of the extension.')
+  @description('Optional. The release train of the extension.')
   releaseTrain: string?
 
   @description('Optional. The configuration protected settings of the extension.')
@@ -1191,8 +1314,9 @@ type extensionType = {
 
   @description('Optional. The flux configurations of the extension.')
   configurations: array?
-}?
+}
 
+@export()
 type customerManagedKeyType = {
   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
   keyVaultResourceId: string
@@ -1205,4 +1329,30 @@ type customerManagedKeyType = {
 
   @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
   keyVaultNetworkAccess: ('Private' | 'Public')
+}
+
+@export()
+type maintenanceConfigurationType = {
+  @description('Required. Name of maintenance window.')
+  name: ('aksManagedAutoUpgradeSchedule' | 'aksManagedNodeOSUpgradeSchedule')
+
+  @description('Required. Maintenance window for the maintenance configuration.')
+  maintenanceWindow: object
+}?
+
+type istioServiceMeshCertificateAuthorityType = {
+  @description('Required. The resource ID of a key vault to reference a Certificate Authority from.')
+  keyVaultResourceId: string
+
+  @description('Required. The Certificate chain object name in Azure Key Vault.')
+  certChainObjectName: string
+
+  @description('Required. The Intermediate certificate object name in Azure Key Vault.')
+  certObjectName: string
+
+  @description('Required. The Intermediate certificate private key object name in Azure Key Vault.')
+  keyObjectName: string
+
+  @description('Required. Root certificate object name in Azure Key Vault.')
+  rootCertObjectName: string
 }?

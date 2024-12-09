@@ -45,12 +45,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.8.3' = {
     name: storageAccountName
     skuName: sku
     kind: 'BlockBlobStorage'
-    tags: union(
-      tags ?? {},
-      contains(tagsByResource, 'Microsoft.Storage/storageAccounts')
-        ? tagsByResource['Microsoft.Storage/storageAccounts']
-        : {}
-    )
+    tags: union(tags ?? {}, tagsByResource[?'Microsoft.Storage/storageAccounts'] ?? {})
     supportsHttpsTrafficOnly: true
     minimumTlsVersion: 'TLS1_2'
     allowBlobPublicAccess: false
@@ -101,12 +96,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.8.3' = {
 // Create managed identity to upload files
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${storageAccountName}_blobManager'
-  tags: union(
-    tags ?? {},
-    contains(tagsByResource, 'Microsoft.ManagedIdentity/userAssignedIdentities')
-      ? tagsByResource['Microsoft.ManagedIdentity/userAssignedIdentities']
-      : {}
-  )
+  tags: union(tags ?? {}, tagsByResource[?'Microsoft.ManagedIdentity/userAssignedIdentities'] ?? {})
   location: location
 }
 
@@ -116,12 +106,7 @@ module uploadSettings 'br/public:avm/res/resources/deployment-script:0.2.0' = {
     name: 'uploadSettings'
     kind: 'AzurePowerShell'
     location: startsWith(location, 'china') ? 'chinaeast2' : location
-    tags: union(
-      tags ?? {},
-      contains(tagsByResource, 'Microsoft.Resources/deploymentScripts')
-        ? tagsByResource['Microsoft.Resources/deploymentScripts']
-        : {}
-    )
+    tags: union(tags ?? {}, tagsByResource[?'Microsoft.Resources/deploymentScripts'] ?? {})
     managedIdentities: {
       userAssignedResourcesIds: [
         identity.id

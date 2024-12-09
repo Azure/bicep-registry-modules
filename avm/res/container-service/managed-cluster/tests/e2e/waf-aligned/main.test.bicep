@@ -71,10 +71,10 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       enablePrivateCluster: true
-      primaryAgentPoolProfile: [
+      primaryAgentPoolProfiles: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 3
           enableAutoScaling: true
@@ -88,16 +88,15 @@ module testDeployment '../../../main.bicep' = [
           ]
           osDiskSizeGB: 0
           osType: 'Linux'
-          serviceCidr: ''
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+          vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
       ]
       agentPools: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 3
           enableAutoScaling: true
@@ -115,11 +114,11 @@ module testDeployment '../../../main.bicep' = [
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+          vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 3
           enableAutoScaling: true
@@ -140,13 +139,46 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
+      autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
+      maintenanceConfigurations: [
+        {
+          name: 'aksManagedAutoUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+            }
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-15'
+            startTime: '00:00'
+          }
+        }
+        {
+          name: 'aksManagedNodeOSUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+            }
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-15'
+            startTime: '00:00'
+          }
+        }
+      ]
       networkPlugin: 'azure'
       networkPolicy: 'azure'
       skuTier: 'Standard'
       dnsServiceIP: '10.10.200.10'
       serviceCidr: '10.10.200.0/24'
       omsAgentEnabled: true
-      monitoringWorkspaceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      monitoringWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       disableLocalAccounts: true
       enableAzureDefender: true
       diagnosticSettings: [

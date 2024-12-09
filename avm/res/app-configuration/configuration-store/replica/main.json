@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.23.60470",
+      "templateHash": "7558745915280433021"
+    },
+    "name": "App Configuration Replicas",
+    "description": "This module deploys an App Configuration Replica.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the replica."
+      }
+    },
+    "appConfigurationName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent app configuration store. Required if the template is used in a standalone deployment."
+      }
+    },
+    "replicaLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location of the replica."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.AppConfiguration/configurationStores/replicas",
+      "apiVersion": "2023-03-01",
+      "name": "[format('{0}/{1}', parameters('appConfigurationName'), parameters('name'))]",
+      "location": "[parameters('replicaLocation')]"
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the app configuration was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the replica that was deployed."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the replica that was deployed."
+      },
+      "value": "[resourceId('Microsoft.AppConfiguration/configurationStores/replicas', parameters('appConfigurationName'), parameters('name'))]"
+    }
+  }
+}

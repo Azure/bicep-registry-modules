@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "4586229415263092385"
+      "version": "0.30.23.60470",
+      "templateHash": "8075255504556528583"
     },
     "name": "Healthcare API Workspace DICOM Services",
     "description": "This module deploys a Healthcare API Workspace DICOM Service.",
@@ -207,7 +207,7 @@
     "corsHeaders": {
       "type": "array",
       "metadata": {
-        "description": "Optional. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
+        "description": "Required. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
       }
     },
     "corsMethods": {

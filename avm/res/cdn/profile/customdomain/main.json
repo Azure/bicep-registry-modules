@@ -1,15 +1,88 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "15721665305636481516"
+      "version": "0.31.92.45157",
+      "templateHash": "420872064438039619"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains.",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "customDomainType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the custom domain."
+          }
+        },
+        "hostName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The host name of the custom domain."
+          }
+        },
+        "certificateType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureFirstPartyManagedCertificate",
+            "CustomerCertificate",
+            "ManagedCertificate"
+          ],
+          "metadata": {
+            "description": "Required. The type of the certificate."
+          }
+        },
+        "azureDnsZoneResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Azure DNS zone."
+          }
+        },
+        "preValidatedCustomDomainResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the pre-validated custom domain."
+          }
+        },
+        "secretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the secret."
+          }
+        },
+        "minimumTlsVersion": {
+          "type": "string",
+          "allowedValues": [
+            "TLS10",
+            "TLS12"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The minimum TLS version."
+          }
+        },
+        "extendedProperties": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Extended properties."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -54,6 +127,7 @@
     "certificateType": {
       "type": "string",
       "allowedValues": [
+        "AzureFirstPartyManagedCertificate",
         "CustomerCertificate",
         "ManagedCertificate"
       ],
@@ -80,8 +154,24 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "profile::secrect": {
+      "condition": "[not(empty(parameters('secretName')))]",
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles/secrets",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('profileName')]"
+    },
+    "customDomain": {
       "type": "Microsoft.Cdn/profiles/customDomains",
       "apiVersion": "2023-05-01",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
@@ -95,9 +185,12 @@
           "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
           "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
         }
-      }
+      },
+      "dependsOn": [
+        "profile"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

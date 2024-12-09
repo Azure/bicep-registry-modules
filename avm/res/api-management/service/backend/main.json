@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "1411324864869146839"
+      "version": "0.31.34.60546",
+      "templateHash": "8388368953433969607"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend.",
@@ -114,10 +114,7 @@
         "tls": "[parameters('tls')]",
         "url": "[parameters('url')]",
         "protocol": "[parameters('protocol')]"
-      },
-      "dependsOn": [
-        "service"
-      ]
+      }
     }
   },
   "outputs": {

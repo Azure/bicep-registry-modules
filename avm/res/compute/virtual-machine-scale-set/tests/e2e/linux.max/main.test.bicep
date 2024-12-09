@@ -17,6 +17,10 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmsslinmax'
 
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -73,6 +77,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       adminUsername: 'scaleSetAdmin'
+      adminPassword: password
       imageReference: {
         publisher: 'Canonical'
         offer: '0001-com-ubuntu-server-jammy'
@@ -91,6 +96,7 @@ module testDeployment '../../../main.bicep' = [
       availabilityZones: [
         '2'
       ]
+      bootDiagnosticEnabled: true
       bootDiagnosticStorageAccountName: nestedDependencies.outputs.storageAccountName
       dataDisks: [
         {
@@ -156,6 +162,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionMonitoringAgentConfig: {
         enabled: true
+        autoUpgradeMinorVersion: true
       }
       extensionNetworkWatcherAgentConfig: {
         enabled: true
@@ -190,8 +197,23 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
+          name: '8abf72f9-e918-4adc-b20b-c783b8799065'
+          roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          roleDefinitionIdOrName: 'Reader'
+          principalType: 'ServicePrincipal'
+        }
+        {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
       ]

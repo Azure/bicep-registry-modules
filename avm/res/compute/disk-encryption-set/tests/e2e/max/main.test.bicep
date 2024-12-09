@@ -65,11 +65,13 @@ module testDeployment '../../../main.bicep' = [
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       roleAssignments: [
         {
+          name: 'c331c327-6458-473a-9398-95b382c6f04f'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

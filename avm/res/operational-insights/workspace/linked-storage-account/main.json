@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "16393542404456450187"
+      "version": "0.31.92.45157",
+      "templateHash": "15129623170213660788"
     },
     "name": "Log Analytics Workspace Linked Storage Accounts",
     "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
@@ -30,25 +31,36 @@
         "description": "Required. Name of the link."
       }
     },
-    "resourceId": {
-      "type": "string",
+    "storageAccountIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minLength": 1,
       "metadata": {
-        "description": "Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+        "description": "Required. Linked storage accounts resources Ids."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[parameters('logAnalyticsWorkspaceName')]"
+    },
+    "linkedStorageAccount": {
       "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
       "apiVersion": "2020-08-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "properties": {
-        "storageAccountIds": [
-          "[parameters('resourceId')]"
-        ]
-      }
+        "storageAccountIds": "[parameters('storageAccountIds')]"
+      },
+      "dependsOn": [
+        "workspace"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

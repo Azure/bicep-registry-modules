@@ -8,7 +8,6 @@ This module deploys an Azure Virtual Desktop Application Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -61,7 +60,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -84,6 +83,24 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/application-group:<version>'
+
+// Required parameters
+param applicationGroupType = 'Desktop'
+param hostpoolName = '<hostpoolName>'
+param name = 'dvagmin002'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -147,11 +164,13 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
     }
     roleAssignments: [
       {
+        name: '30eaf006-ee2d-4a95-921c-87dfdb4c2061'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -176,7 +195,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -245,11 +264,13 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
     "roleAssignments": {
       "value": [
         {
+          "name": "30eaf006-ee2d-4a95-921c-87dfdb4c2061",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -269,6 +290,85 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/application-group:<version>'
+
+// Required parameters
+param applicationGroupType = 'RemoteApp'
+param hostpoolName = '<hostpoolName>'
+param name = 'dvagmax002'
+// Non-required parameters
+param applications = [
+  {
+    commandLineArguments: ''
+    commandLineSetting: 'DoNotAllow'
+    description: 'Notepad by ARM template'
+    filePath: 'C:\\Windows\\System32\\notepad.exe'
+    friendlyName: 'Notepad'
+    iconIndex: 0
+    iconPath: 'C:\\Windows\\System32\\notepad.exe'
+    name: 'notepad'
+    showInPortal: true
+  }
+  {
+    filePath: 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'
+    friendlyName: 'Wordpad'
+    name: 'wordpad'
+  }
+]
+param description = 'myDescription'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '30eaf006-ee2d-4a95-921c-87dfdb4c2061'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -315,7 +415,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -359,6 +459,35 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/application-group:<version>'
+
+// Required parameters
+param applicationGroupType = 'Desktop'
+param hostpoolName = '<hostpoolName>'
+param name = 'dvagwaf002'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -606,6 +735,29 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Owner'`
+  - `'Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Reader'`
+  - `'Desktop Virtualization Contributor'`
+  - `'Desktop Virtualization Host Pool Contributor'`
+  - `'Desktop Virtualization Host Pool Reader'`
+  - `'Desktop Virtualization Power On Off Contributor'`
+  - `'Desktop Virtualization Reader'`
+  - `'Desktop Virtualization Session Host Operator'`
+  - `'Desktop Virtualization User'`
+  - `'Desktop Virtualization User Session Operator'`
+  - `'Desktop Virtualization Virtual Machine Contributor'`
+  - `'Desktop Virtualization Workspace Contributor'`
+  - `'Desktop Virtualization Workspace Reader'`
+  - `'Managed Application Contributor Role'`
+  - `'Managed Application Operator Role'`
+  - `'Managed Applications Reader'`
 
 **Required parameters**
 
@@ -622,6 +774,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -672,6 +825,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -696,7 +856,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -705,10 +864,6 @@ Tags of the resource.
 | `name` | string | The name of the scaling plan. |
 | `resourceGroupName` | string | The name of the resource group the scaling plan was created in. |
 | `resourceId` | string | The resource ID of the scaling plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

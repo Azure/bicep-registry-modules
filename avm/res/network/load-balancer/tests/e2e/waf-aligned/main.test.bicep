@@ -109,10 +109,14 @@ module testDeployment '../../../main.bicep' = [
           protocol: 'Tcp'
         }
         {
+          backendAddressPoolName: 'servers'
           backendPort: 3389
           frontendIPConfigurationName: 'privateIPConfig1'
-          frontendPort: 3389
+          frontendPortRangeStart: 5000
+          frontendPortRangeEnd: 5010
+          loadDistribution: 'Default'
           name: 'inboundNatRule2'
+          probeName: 'probe2'
         }
       ]
       skuName: 'Standard'

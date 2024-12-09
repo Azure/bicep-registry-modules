@@ -8,7 +8,6 @@ This module deploys a Maintenance Configuration.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -57,7 +56,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +73,22 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/maintenance-configuration:<version>'
+
+// Required parameters
+param name = 'mmcmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -130,11 +145,13 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     namespace: 'mmcmaxns'
     roleAssignments: [
       {
+        name: 'd78ec5f7-4692-4f43-8c17-7569466bbed5'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -160,7 +177,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -222,11 +239,13 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     "roleAssignments": {
       "value": [
         {
+          "name": "d78ec5f7-4692-4f43-8c17-7569466bbed5",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -250,6 +269,79 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/maintenance-configuration:<version>'
+
+// Required parameters
+param name = 'mmcmax001'
+// Non-required parameters
+param extensionProperties = {
+  InGuestPatchMode: 'User'
+}
+param installPatches = {
+  linuxParameters: {
+    classificationsToInclude: '<classificationsToInclude>'
+    packageNameMasksToExclude: '<packageNameMasksToExclude>'
+    packageNameMasksToInclude: '<packageNameMasksToInclude>'
+  }
+  rebootSetting: 'IfRequired'
+  windowsParameters: {
+    classificationsToInclude: [
+      'Critical'
+      'Security'
+    ]
+    kbNumbersToExclude: '<kbNumbersToExclude>'
+    kbNumbersToInclude: '<kbNumbersToInclude>'
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maintenanceScope = 'InGuestPatch'
+param maintenanceWindow = {
+  duration: '03:00'
+  expirationDateTime: '9999-12-31 23:59:59'
+  recurEvery: 'Day'
+  startDateTime: '2022-12-31 13:00'
+  timeZone: 'W. Europe Standard Time'
+}
+param namespace = 'mmcmaxns'
+param roleAssignments = [
+  {
+    name: 'd78ec5f7-4692-4f43-8c17-7569466bbed5'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param visibility = 'Custom'
 ```
 
 </details>
@@ -315,7 +407,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -385,6 +477,55 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/maintenance-configuration:<version>'
+
+// Required parameters
+param name = 'mmcwaf001'
+// Non-required parameters
+param extensionProperties = {
+  InGuestPatchMode: 'User'
+}
+param installPatches = {
+  linuxParameters: {
+    classificationsToInclude: '<classificationsToInclude>'
+    packageNameMasksToExclude: '<packageNameMasksToExclude>'
+    packageNameMasksToInclude: '<packageNameMasksToInclude>'
+  }
+  rebootSetting: 'IfRequired'
+  windowsParameters: {
+    classificationsToInclude: [
+      'Critical'
+      'Security'
+    ]
+    kbNumbersToExclude: '<kbNumbersToExclude>'
+    kbNumbersToInclude: '<kbNumbersToInclude>'
+  }
+}
+param location = '<location>'
+param maintenanceScope = 'InGuestPatch'
+param maintenanceWindow = {
+  duration: '03:00'
+  expirationDateTime: '9999-12-31 23:59:59'
+  recurEvery: 'Day'
+  startDateTime: '2022-12-31 13:00'
+  timeZone: 'W. Europe Standard Time'
+}
+param namespace = 'mmcwafns'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param visibility = 'Custom'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -526,6 +667,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'Scheduled Patching Contributor'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -542,6 +690,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -592,6 +741,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -632,7 +788,6 @@ Gets or sets the visibility of the configuration. The default value is 'Custom'.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -641,10 +796,6 @@ Gets or sets the visibility of the configuration. The default value is 'Custom'.
 | `name` | string | The name of the Maintenance Configuration. |
 | `resourceGroupName` | string | The name of the resource group the Maintenance Configuration was created in. |
 | `resourceId` | string | The resource ID of the Maintenance Configuration. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

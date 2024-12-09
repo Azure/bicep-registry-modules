@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "16775981135504794519"
+      "version": "0.31.92.45157",
+      "templateHash": "156138954055342275"
     },
     "name": "Log Analytics Workspace Storage Insight Configs",
     "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -34,14 +34,20 @@
     },
     "containers": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The names of the blob containers that the workspace should read."
       }
     },
     "tables": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The names of the Azure tables that the workspace should read."
       }

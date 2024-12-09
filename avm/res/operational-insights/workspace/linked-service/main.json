@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "11327223922004680974"
+      "version": "0.31.92.45157",
+      "templateHash": "815879010072595898"
     },
     "name": "Log Analytics Workspace Linked Services",
     "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -27,14 +27,14 @@
     },
     "resourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+        "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
       }
     },
     "writeAccessResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require write access."
       }
@@ -61,7 +61,7 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "resourceId": "[parameters('resourceId')]",
-        "writeAccessResourceId": "[if(empty(parameters('writeAccessResourceId')), null(), parameters('writeAccessResourceId'))]"
+        "writeAccessResourceId": "[parameters('writeAccessResourceId')]"
       },
       "dependsOn": [
         "workspace"

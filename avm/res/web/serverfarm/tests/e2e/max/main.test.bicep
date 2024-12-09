@@ -18,7 +18,7 @@ param serviceShort string = 'wsfmax'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'australiaeast'
 
 // ============ //
 // Dependencies //
@@ -64,10 +64,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      skuName: 'S1'
-      skuCapacity: 1
+      skuName: 'P1v3'
+      skuCapacity: 3
       perSiteScaling: true
-      zoneRedundant: false
+      zoneRedundant: true
       kind: 'App'
       lock: {
         name: 'lock'
@@ -80,11 +80,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

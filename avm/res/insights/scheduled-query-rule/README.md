@@ -8,7 +8,6 @@ This module deploys a Scheduled Query Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -16,7 +15,7 @@ This module deploys a Scheduled Query Rule.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/scheduledQueryRules` | [2021-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-02-01-preview/scheduledQueryRules) |
+| `Microsoft.Insights/scheduledQueryRules` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-15-preview/scheduledQueryRules) |
 
 ## Usage examples
 
@@ -88,7 +87,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -150,6 +149,54 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/scheduled-query-rule:<version>'
+
+// Required parameters
+param criterias = {
+  allOf: [
+    {
+      dimensions: [
+        {
+          name: 'Computer'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+        {
+          name: 'InstanceName'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+      ]
+      metricMeasureColumn: 'AggregatedValue'
+      operator: 'GreaterThan'
+      query: 'Perf | where ObjectName == \'LogicalDisk\' | where CounterName == \'% Free Space\' | where InstanceName <> \'HarddiskVolume1\' and InstanceName <> \'_Total\' | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
+      threshold: 0
+      timeAggregation: 'Average'
+    }
+  ]
+}
+param name = 'isqrmin001'
+param scopes = [
+  '<logAnalyticsWorkspaceResourceId>'
+]
+// Non-required parameters
+param evaluationFrequency = 'PT5M'
+param location = '<location>'
+param windowSize = 'PT5M'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -197,17 +244,20 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     ]
     // Non-required parameters
     alertDescription: 'My sample Alert'
+    alertDisplayName: '<alertDisplayName>'
     autoMitigate: false
     evaluationFrequency: 'PT5M'
     location: '<location>'
     queryTimeRange: 'PT5M'
     roleAssignments: [
       {
+        name: 'fa8868c7-33d3-4cd5-86a5-cbf76261035b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -218,6 +268,10 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    ruleResolveConfiguration: {
+      autoResolved: true
+      timeToResolve: 'PT5M'
+    }
     suppressForMinutes: 'PT5M'
     tags: {
       Environment: 'Non-Prod'
@@ -234,7 +288,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -283,6 +337,9 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "alertDescription": {
       "value": "My sample Alert"
     },
+    "alertDisplayName": {
+      "value": "<alertDisplayName>"
+    },
     "autoMitigate": {
       "value": false
     },
@@ -298,11 +355,13 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "roleAssignments": {
       "value": [
         {
+          "name": "fa8868c7-33d3-4cd5-86a5-cbf76261035b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -313,6 +372,12 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "ruleResolveConfiguration": {
+      "value": {
+        "autoResolved": true,
+        "timeToResolve": "PT5M"
+      }
     },
     "suppressForMinutes": {
       "value": "PT5M"
@@ -329,6 +394,87 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/scheduled-query-rule:<version>'
+
+// Required parameters
+param criterias = {
+  allOf: [
+    {
+      dimensions: [
+        {
+          name: 'Computer'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+        {
+          name: 'InstanceName'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+      ]
+      metricMeasureColumn: 'AggregatedValue'
+      operator: 'GreaterThan'
+      query: 'Perf | where ObjectName == \'LogicalDisk\' | where CounterName == \'% Free Space\' | where InstanceName <> \'HarddiskVolume1\' and InstanceName <> \'_Total\' | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
+      threshold: 0
+      timeAggregation: 'Average'
+    }
+  ]
+}
+param name = 'isqrmax001'
+param scopes = [
+  '<logAnalyticsWorkspaceResourceId>'
+]
+// Non-required parameters
+param alertDescription = 'My sample Alert'
+param alertDisplayName = '<alertDisplayName>'
+param autoMitigate = false
+param evaluationFrequency = 'PT5M'
+param location = '<location>'
+param queryTimeRange = 'PT5M'
+param roleAssignments = [
+  {
+    name: 'fa8868c7-33d3-4cd5-86a5-cbf76261035b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param ruleResolveConfiguration = {
+  autoResolved: true
+  timeToResolve: 'PT5M'
+}
+param suppressForMinutes = 'PT5M'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param windowSize = 'PT5M'
 ```
 
 </details>
@@ -401,7 +547,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -482,6 +628,62 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/scheduled-query-rule:<version>'
+
+// Required parameters
+param criterias = {
+  allOf: [
+    {
+      dimensions: [
+        {
+          name: 'Computer'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+        {
+          name: 'InstanceName'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+      ]
+      metricMeasureColumn: 'AggregatedValue'
+      operator: 'GreaterThan'
+      query: 'Perf | where ObjectName == \'LogicalDisk\' | where CounterName == \'% Free Space\' | where InstanceName <> \'HarddiskVolume1\' and InstanceName <> \'_Total\' | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
+      threshold: 0
+      timeAggregation: 'Average'
+    }
+  ]
+}
+param name = 'isqrwaf001'
+param scopes = [
+  '<logAnalyticsWorkspaceResourceId>'
+]
+// Non-required parameters
+param alertDescription = 'My sample Alert'
+param autoMitigate = false
+param evaluationFrequency = 'PT5M'
+param location = '<location>'
+param queryTimeRange = 'PT5M'
+param suppressForMinutes = 'PT5M'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param windowSize = 'PT5M'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -505,6 +707,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | :-- | :-- | :-- |
 | [`actions`](#parameter-actions) | array | Actions to invoke when the alert fires. |
 | [`alertDescription`](#parameter-alertdescription) | string | The description of the scheduled query rule. |
+| [`alertDisplayName`](#parameter-alertdisplayname) | string | The display name of the scheduled query rule. |
 | [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. |
 | [`enabled`](#parameter-enabled) | bool | The flag which indicates whether this scheduled query rule is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -513,6 +716,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
 | [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert. |
@@ -563,6 +767,13 @@ The description of the scheduled query rule.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `alertDisplayName`
+
+The display name of the scheduled query rule.
+
+- Required: No
+- Type: string
 
 ### Parameter: `autoMitigate`
 
@@ -633,6 +844,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -649,6 +866,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -699,6 +917,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -715,6 +940,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `ruleResolveConfiguration`
+
+Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
+
+- Required: No
+- Type: object
 
 ### Parameter: `severity`
 
@@ -765,7 +997,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 - Type: array
 - Default: `[]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -774,10 +1005,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 | `name` | string | The Name of the created scheduled query rule. |
 | `resourceGroupName` | string | The Resource Group of the created scheduled query rule. |
 | `resourceId` | string | The resource ID of the created scheduled query rule. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -11,10 +11,10 @@ param location string = resourceGroup().location
 @description('Required. Shared services Virtual Network resource Id.')
 param virtualNetworkResourceId string
 
-@description('Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet.')
+@description('Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. This parameter is ignored when enablePrivateOnlyBastion is true.')
 param bastionSubnetPublicIpResourceId string = ''
 
-@description('Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided.')
+@description('Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true.')
 param publicIPAddressObject object = {
   name: '${name}-pip'
 }
@@ -27,27 +27,34 @@ param lock lockType
 
 @allowed([
   'Basic'
+  'Premium'
   'Standard'
 ])
 @description('Optional. The SKU of this Bastion Host.')
 param skuName string = 'Basic'
 
-@description('Optional. Choose to disable or enable Copy Paste.')
+@description('Optional. Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabled.')
 param disableCopyPaste bool = false
 
-@description('Optional. Choose to disable or enable File Copy.')
+@description('Optional. Choose to disable or enable File Copy. Not supported for Basic SKU.')
 param enableFileCopy bool = true
 
-@description('Optional. Choose to disable or enable IP Connect.')
+@description('Optional. Choose to disable or enable IP Connect. Not supported for Basic SKU.')
 param enableIpConnect bool = false
 
 @description('Optional. Choose to disable or enable Kerberos authentication.')
 param enableKerberos bool = false
 
-@description('Optional. Choose to disable or enable Shareable Link.')
+@description('Optional. Choose to disable or enable Shareable Link. Not supported for Basic SKU.')
 param enableShareableLink bool = false
 
-@description('Optional. The scale units for the Bastion Host resource.')
+@description('Optional. Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled.')
+param enableSessionRecording bool = false
+
+@description('Optional. Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature.')
+param enablePrivateOnlyBastion bool = false
+
+@description('Optional. The scale units for the Bastion Host resource. The Basic SKU only supports 2 scale units.')
 param scaleUnits int = 2
 
 @description('Optional. Array of role assignments to create.')
@@ -58,6 +65,14 @@ param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. A list of availability zones denoting where the Bastion Host resource needs to come from.')
+@allowed([
+  1
+  2
+  3
+])
+param zones int[] = [] // Availability Zones are currently in preview and only available in certain regions, therefore the default is an empty array.
 
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
@@ -72,14 +87,16 @@ var ipConfigurations = [
           id: '${virtualNetworkResourceId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
         }
       },
-      {
-        //Use existing Public IP, new Public IP created in this module
-        publicIPAddress: {
-          id: !empty(bastionSubnetPublicIpResourceId)
-            ? bastionSubnetPublicIpResourceId
-            : publicIPAddress.outputs.resourceId
-        }
-      }
+      (!enablePrivateOnlyBastion
+        ? {
+            //Use existing Public IP, new Public IP created in this module
+            publicIPAddress: {
+              id: !empty(bastionSubnetPublicIpResourceId)
+                ? bastionSubnetPublicIpResourceId
+                : publicIPAddress.outputs.resourceId
+            }
+          }
+        : {})
     )
   }
 ]
@@ -90,7 +107,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -100,83 +117,103 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.network-bastionhost.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-bastionhost.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.4.0' =
-  if (empty(bastionSubnetPublicIpResourceId)) {
-    name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
-    params: {
-      name: publicIPAddressObject.name
-      enableTelemetry: enableTelemetry
-      location: location
-      lock: lock
-      diagnosticSettings: publicIPAddressObject.?diagnosticSettings
-      publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
-      publicIPAllocationMethod: publicIPAddressObject.?publicIPAllocationMethod
-      publicIpPrefixResourceId: publicIPAddressObject.?publicIPPrefixResourceId
-      roleAssignments: publicIPAddressObject.?roleAssignments
-      skuName: publicIPAddressObject.?skuName
-      skuTier: publicIPAddressObject.?skuTier
-      tags: publicIPAddressObject.?tags ?? tags
-      zones: publicIPAddressObject.?zones
-    }
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if (empty(bastionSubnetPublicIpResourceId) && (!enablePrivateOnlyBastion)) {
+  name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
+  params: {
+    name: publicIPAddressObject.name
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    diagnosticSettings: publicIPAddressObject.?diagnosticSettings
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
+    publicIPAllocationMethod: publicIPAddressObject.?publicIPAllocationMethod
+    publicIpPrefixResourceId: publicIPAddressObject.?publicIPPrefixResourceId
+    roleAssignments: publicIPAddressObject.?roleAssignments
+    skuName: publicIPAddressObject.?skuName
+    skuTier: publicIPAddressObject.?skuTier
+    tags: publicIPAddressObject.?tags ?? tags
+    zones: publicIPAddressObject.?zones ?? (length(zones) > 0 ? zones : null) // if zones of the Public IP is empty, use the zones from the bastion host only if not empty (if empty, the default of the public IP will be used)
   }
+}
 
 var bastionpropertiesVar = union(
   {
     scaleUnits: skuName == 'Basic' ? 2 : scaleUnits
     ipConfigurations: ipConfigurations
-    enableKerberos: enableKerberos
   },
-  (skuName == 'Standard'
+  ((skuName == 'Basic' || skuName == 'Standard' || skuName == 'Premium')
     ? {
-        enableTunneling: skuName == 'Standard'
+        enableKerberos: enableKerberos
+      }
+    : {}),
+  ((skuName == 'Standard' || skuName == 'Premium')
+    ? {
+        enableTunneling: skuName == 'Standard' ? true : (enableSessionRecording ? false : true) // Tunneling is enabled by default for Standard SKU. For Premium SKU it is disabled by default if Session Recording is enabled.
         disableCopyPaste: disableCopyPaste
         enableFileCopy: enableFileCopy
         enableIpConnect: enableIpConnect
         enableShareableLink: enableShareableLink
       }
+    : {}),
+  (skuName == 'Premium'
+    ? {
+        enableSessionRecording: enableSessionRecording
+        enablePrivateOnlyBastion: enablePrivateOnlyBastion
+      }
     : {})
 )
 
-resource azureBastion 'Microsoft.Network/bastionHosts@2022-11-01' = {
+resource azureBastion 'Microsoft.Network/bastionHosts@2024-01-01' = {
   name: name
   location: location
   tags: tags
   sku: {
     name: skuName
   }
+  zones: map(zones, zone => string(zone))
   properties: bastionpropertiesVar
 }
 
-resource azureBastion_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: azureBastion
+resource azureBastion_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: azureBastion
+}
 
 resource azureBastion_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -201,14 +238,10 @@ resource azureBastion_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
 ]
 
 resource azureBastion_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(azureBastion.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(azureBastion.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -248,6 +281,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13864187993066263466"
+      "version": "0.31.92.45157",
+      "templateHash": "3019400626196043317"
     },
     "name": "Log Analytics Workspace Datasources",
     "description": "This module deploys a Log Analytics Workspace Data Source.",
@@ -22,7 +22,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the solution."
+        "description": "Required. Name of the data source."
       }
     },
     "kind": {
@@ -39,7 +39,7 @@
         "LinuxPerformanceCollection"
       ],
       "metadata": {
-        "description": "Required. The kind of the DataSource."
+        "description": "Optional. The kind of the data source."
       }
     },
     "tags": {
@@ -51,14 +51,14 @@
     },
     "linkedResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the resource to be linked."
       }
     },
     "eventLogName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Windows event log name to configure when kind is WindowsEvent."
       }
@@ -72,7 +72,7 @@
     },
     "objectName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
       }
@@ -100,21 +100,21 @@
     },
     "counterName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
       }
     },
     "state": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
       }
     },
     "syslogName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. System log to configure when kind is LinuxSyslog."
       }

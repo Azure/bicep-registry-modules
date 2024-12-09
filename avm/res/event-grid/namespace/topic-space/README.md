@@ -7,8 +7,6 @@ This module deploys an Eventgrid Namespace Topic Space.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -73,6 +71,20 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Resource Notifications System Topics Subscriber'`
+  - `'Contributor'`
+  - `'EventGrid Contributor'`
+  - `'EventGrid Data Contributor'`
+  - `'EventGrid Data Receiver'`
+  - `'EventGrid Data Sender'`
+  - `'EventGrid EventSubscription Contributor'`
+  - `'EventGrid EventSubscription Reader'`
+  - `'EventGrid TopicSpaces Publisher'`
+  - `'EventGrid TopicSpaces Subscriber'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -89,6 +101,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -139,6 +152,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -156,7 +176,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -164,11 +183,3 @@ The principal type of the assigned principal ID.
 | `name` | string | The name of the Topic Space. |
 | `resourceGroupName` | string | The name of the resource group the Topic Space was created in. |
 | `resourceId` | string | The resource ID of the Topic Space. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

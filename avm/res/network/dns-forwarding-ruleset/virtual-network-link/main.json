@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15095816376592886095"
+      "version": "0.30.23.60470",
+      "templateHash": "7319659019579418232"
     },
     "name": "Dns Forwarding Rulesets Virtual Network Links",
     "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset.",

@@ -10,7 +10,6 @@ This module deploys a Public SSH Key.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -19,7 +18,7 @@ This module deploys a Public SSH Key.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/sshPublicKeys` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-01/sshPublicKeys) |
+| `Microsoft.Compute/sshPublicKeys` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-01/sshPublicKeys) |
 
 ## Usage examples
 
@@ -59,7 +58,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +75,22 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'cspkmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -106,11 +121,13 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     publicKey: '<publicKey>'
     roleAssignments: [
       {
+        name: '74ec0421-c3f4-46f2-acf0-b519fe6fcf1c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -135,7 +152,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -165,11 +182,13 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "74ec0421-c3f4-46f2-acf0-b519fe6fcf1c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -189,6 +208,52 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'sshkey-cspkmax001'
+// Non-required parameters
+param enableTelemetry = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param publicKey = '<publicKey>'
+param roleAssignments = [
+  {
+    name: '74ec0421-c3f4-46f2-acf0-b519fe6fcf1c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -249,7 +314,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -309,6 +374,49 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'sshkey-cspkwaf001'
+// Non-required parameters
+param enableTelemetry = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param publicKey = '<publicKey>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -401,6 +509,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -417,6 +531,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -467,6 +582,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -491,7 +613,6 @@ Tags of the availability set resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -500,10 +621,6 @@ Tags of the availability set resource.
 | `name` | string | The name of the Public SSH Key. |
 | `resourceGroupName` | string | The name of the Resource Group the Public SSH Key was created in. |
 | `resourceId` | string | The resource ID of the Public SSH Key. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
