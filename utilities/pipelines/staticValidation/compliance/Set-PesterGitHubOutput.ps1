@@ -72,7 +72,7 @@ function Set-PesterGitHubOutput {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory = $false)]
-        [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.Parent.FullName,
+        [string] $RepoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.Parent.FullName,
 
         [Parameter(Mandatory = $true)]
         [PSCustomObject] $PesterTestResults,
