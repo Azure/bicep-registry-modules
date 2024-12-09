@@ -366,6 +366,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     virtualNetworkLinks: [
       {
         registrationEnabled: true
+        resolutionPolicy: 'Default'
         virtualNetworkResourceId: '<virtualNetworkResourceId>'
       }
     ]
@@ -662,6 +663,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
       "value": [
         {
           "registrationEnabled": true,
+          "resolutionPolicy": "Default",
           "virtualNetworkResourceId": "<virtualNetworkResourceId>"
         }
       ]
@@ -930,6 +932,7 @@ param txt = [
 param virtualNetworkLinks = [
   {
     registrationEnabled: true
+    resolutionPolicy: 'Default'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
 ]
