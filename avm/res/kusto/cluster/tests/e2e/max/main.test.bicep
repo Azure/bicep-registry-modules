@@ -120,3 +120,17 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+module kustoClusterDatabaseTestDeployment '../../../database/main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-database'
+  params:{
+    name: 'myDatabase'
+    kustoClusterName: testDeployment[0].outputs.name
+    location: resourceLocation
+    databaseKind: 'ReadWrite'
+    databaseReadWriteProperties: {
+      hotCachePeriod: 'P1D'
+    }
+  }
+}
