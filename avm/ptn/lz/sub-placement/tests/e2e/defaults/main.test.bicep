@@ -10,7 +10,7 @@ param namePrefix string = '#_namePrefix_#'
 param subscriptionGuid string = ' '
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'subpl'
+param serviceShort string = 'subplmin'
 
 // ============== //
 // Test Execution //
