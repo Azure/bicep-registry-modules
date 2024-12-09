@@ -2310,6 +2310,7 @@ Switch to make the Event Hub Namespace zone redundant.
 | `resourceGroupName` | string | The resource group where the namespace is deployed. |
 | `resourceId` | string | The resource ID of the eventspace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `connectionString` | string | The connection string of the Event Hub namespace. |
 
 ## Cross-referenced modules
 
