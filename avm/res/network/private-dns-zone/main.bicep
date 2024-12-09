@@ -512,4 +512,7 @@ type virtualNetworkLinkType = {
 
   @description('Optional. Resource tags.')
   tags: object?
+
+  @description('Optional. The resolution type of the private-dns-zone fallback machanism.')
+  resolutionPolicy: ('Default' | 'NxDomainRedirect')?
 }[]?

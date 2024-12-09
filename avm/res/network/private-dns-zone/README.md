@@ -2674,6 +2674,7 @@ Array of custom objects describing vNet links of the DNS zone. Each object shoul
 | [`location`](#parameter-virtualnetworklinkslocation) | string | The Azure Region where the resource lives. |
 | [`name`](#parameter-virtualnetworklinksname) | string | The resource name. |
 | [`registrationEnabled`](#parameter-virtualnetworklinksregistrationenabled) | bool | Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?. |
+| [`resolutionPolicy`](#parameter-virtualnetworklinksresolutionpolicy) | string | The resolution type of the private-dns-zone fallback machanism. |
 | [`tags`](#parameter-virtualnetworklinkstags) | object | Resource tags. |
 
 ### Parameter: `virtualNetworkLinks.virtualNetworkResourceId`
@@ -2703,6 +2704,20 @@ Is auto-registration of virtual machine records in the virtual network in the Pr
 
 - Required: No
 - Type: bool
+
+### Parameter: `virtualNetworkLinks.resolutionPolicy`
+
+The resolution type of the private-dns-zone fallback machanism.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'NxDomainRedirect'
+  ]
+  ```
 
 ### Parameter: `virtualNetworkLinks.tags`
 
