@@ -82,7 +82,6 @@ The resolution policy on the virtual network link. Only applicable for virtual n
 
 - Required: No
 - Type: string
-- Default: `'Default'`
 
 ### Parameter: `tags`
 

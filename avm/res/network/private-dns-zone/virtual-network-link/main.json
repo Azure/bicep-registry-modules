@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "2506107812951003279"
+      "templateHash": "6409823868550472261"
     },
     "name": "Private DNS Zone Virtual Network Link",
     "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -55,7 +55,7 @@
     },
     "resolutionPolicy": {
       "type": "string",
-      "defaultValue": "Default",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resolution policy on the virtual network link. Only applicable for virtual network links to privatelink zones, and for A,AAAA,CNAME queries. When set to `NxDomainRedirect`, Azure DNS resolver falls back to public resolution if private dns query resolution results in non-existent domain response. `Default` is configured as the default option."
       }
