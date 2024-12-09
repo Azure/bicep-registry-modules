@@ -223,6 +223,7 @@ module privateDnsZone_virtualNetworkLinks 'virtual-network-link/main.bicep' = [
       location: virtualNetworkLink.?location ?? 'global'
       registrationEnabled: virtualNetworkLink.?registrationEnabled ?? false
       tags: virtualNetworkLink.?tags ?? tags
+      resolutionPolicy: virtualNetworkLink.?resolutionPoliocy ?? 'Default'
     }
   }
 ]
