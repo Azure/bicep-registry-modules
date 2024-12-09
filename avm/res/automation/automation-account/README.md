@@ -246,9 +246,11 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     disableLocalAuth: true
     gallerySolutions: [
       {
-        name: 'Updates'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: '<name>'
+        plan: {
+          product: 'OMSGallery/Updates'
+          publisher: 'Microsoft'
+        }
       }
     ]
     jobSchedules: [
@@ -507,9 +509,11 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "gallerySolutions": {
       "value": [
         {
-          "name": "Updates",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "<name>",
+          "plan": {
+            "product": "OMSGallery/Updates",
+            "publisher": "Microsoft"
+          }
         }
       ]
     },
@@ -784,9 +788,11 @@ param diagnosticSettings = [
 param disableLocalAuth = true
 param gallerySolutions = [
   {
-    name: 'Updates'
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+    name: '<name>'
+    plan: {
+      product: 'OMSGallery/Updates'
+      publisher: 'Microsoft'
+    }
   }
 ]
 param jobSchedules = [
@@ -1025,9 +1031,10 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     disableLocalAuth: true
     gallerySolutions: [
       {
-        name: 'Updates'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
+        name: '<name>'
+        plan: {
+          product: 'OMSGallery/Updates'
+        }
       }
     ]
     jobSchedules: [
@@ -1235,9 +1242,10 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "gallerySolutions": {
       "value": [
         {
-          "name": "Updates",
-          "product": "OMSGallery",
-          "publisher": "Microsoft"
+          "name": "<name>",
+          "plan": {
+            "product": "OMSGallery/Updates"
+          }
         }
       ]
     },
@@ -1461,9 +1469,10 @@ param diagnosticSettings = [
 param disableLocalAuth = true
 param gallerySolutions = [
   {
-    name: 'Updates'
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+    name: '<name>'
+    plan: {
+      product: 'OMSGallery/Updates'
+    }
   }
 ]
 param jobSchedules = [
@@ -1747,7 +1756,7 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -1766,7 +1775,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
 
 - Required: No
 - Type: string
@@ -1946,7 +1955,61 @@ List of gallerySolutions to be created in the linked log analytics workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsname) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`plan`](#parameter-gallerysolutionsplan) | object | Plan for solution object supported by the OperationsManagement resource provider. |
+
+### Parameter: `gallerySolutions.name`
+
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan`
+
+Plan for solution object supported by the OperationsManagement resource provider.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`product`](#parameter-gallerysolutionsplanproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsplanname) | string | Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used. |
+| [`publisher`](#parameter-gallerysolutionsplanpublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `gallerySolutions.plan.product`
+
+The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.plan.name`
+
+Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `gallerySolutions.plan.publisher`
+
+The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
+
+- Required: No
+- Type: string
 
 ### Parameter: `jobSchedules`
 
@@ -2650,8 +2713,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/res/operations-management/solution:0.1.3` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 
