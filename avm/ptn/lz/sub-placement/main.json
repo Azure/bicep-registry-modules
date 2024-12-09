@@ -1,50 +1,183 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.31.92.45157",
+      "templateHash": "7040892232274995299"
+    },
     "name": "subscription-placement",
-    "description": "This module allows for placement of subscriptions to management groups",
+    "description": "This module allows for placement of subscriptions to management groups ",
     "owner": "Azure/module-maintainers"
   },
-  "targetScope": "tenant",
+  "definitions": {
+    "typMgChild": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "managementGroupId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required.The ID of the management group."
+            }
+          },
+          "subscriptionIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required.The list of subscription IDs."
+            }
+          }
+        }
+      }
+    }
+  },
   "parameters": {
     "parSubscriptionPlacement": {
-      "type": "array",
-      "metadata": {
-        "description": "Type definition for management group child containing management group ID and subscription IDs."
-      },
+      "$ref": "#/definitions/typMgChild",
       "defaultValue": [
         {
           "managementGroupId": "Group1",
-          "subscriptionIds": ["SUBID1", "SUBID2"]
+          "subscriptionIds": [
+            "SUBID1",
+            "SUBID2"
+          ]
         },
         {
           "managementGroupId": "Group2",
-          "subscriptionIds": ["SUBID3"]
+          "subscriptionIds": [
+            "SUBID3"
+          ]
         }
-      ]
+      ],
+      "metadata": {
+        "description": "Required. Type definition for management group child containing management group ID and subscription IDs."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
-  "resources": [
-    {
-      "name": "[format('subPlacement{0}', copyIndex())]",
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.lz-subplacement.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
-        "templateLink": {
-          "uri": "./modules/helper.bicep",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "managementGroupId": "[copyIndex().managementGroupId]",
-          "subscriptionIds": "[copyIndex().subscriptionIds]"
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
-      },
+      }
+    },
+    "customsubscriptionPlacement": {
       "copy": {
         "name": "customsubscriptionPlacement",
         "count": "[length(parameters('parSubscriptionPlacement'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('subPlacement{0}', copyIndex())]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "managementGroupId": {
+            "value": "[parameters('parSubscriptionPlacement')[copyIndex()].managementGroupId]"
+          },
+          "subscriptionIds": {
+            "value": "[parameters('parSubscriptionPlacement')[copyIndex()].subscriptionIds]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.31.92.45157",
+              "templateHash": "5373369794784532806"
+            }
+          },
+          "parameters": {
+            "managementGroupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ID of the management group."
+              }
+            },
+            "subscriptionIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The list of subscription IDs."
+              }
+            }
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "customsubscriptionPlacement",
+                "count": "[length(parameters('subscriptionIds'))]"
+              },
+              "type": "Microsoft.Management/managementGroups/subscriptions",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])]"
+            }
+          ],
+          "outputs": {
+            "subscriptionPlacements": {
+              "type": "array",
+              "metadata": {
+                "description": "Output of the Management Group and Subscription Resource ID placements."
+              },
+              "copy": {
+                "count": "[length(parameters('subscriptionIds'))]",
+                "input": {
+                  "name": "[format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])]"
+                }
+              }
+            }
+          }
+        }
       }
     }
-  ]
+  },
+  "outputs": {
+    "subscriptionPlacementSummary": {
+      "type": "string",
+      "metadata": {
+        "description": "Output of number of management groups that have been configured with subscription placements."
+      },
+      "value": "[format('Subscription placements have been configured for {0} management groups.', length(parameters('parSubscriptionPlacement')))]"
+    }
+  }
 }
