@@ -150,7 +150,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     // Non-required parameters
     location: '<location>'
     policySettings: {
-      customBlockResponseBody: 'This is a custom block response body'
+      customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
       customBlockResponseStatusCode: 403
       fileUploadLimitInMb: 10
       jsChallengeCookieExpirationInMins: 60
@@ -204,7 +204,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     },
     "policySettings": {
       "value": {
-        "customBlockResponseBody": "This is a custom block response body",
+        "customBlockResponseBody": "PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg==",
         "customBlockResponseStatusCode": 403,
         "fileUploadLimitInMb": 10,
         "jsChallengeCookieExpirationInMins": 60,
@@ -252,7 +252,7 @@ param name = 'nagwafpmax001'
 // Non-required parameters
 param location = '<location>'
 param policySettings = {
-  customBlockResponseBody: 'This is a custom block response body'
+  customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
   customBlockResponseStatusCode: 403
   fileUploadLimitInMb: 10
   jsChallengeCookieExpirationInMins: 60
