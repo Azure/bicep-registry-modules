@@ -4,7 +4,6 @@ metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'tenant'
 
-@description('Required. Type definition for management group child containing management group ID and subscription IDs.')
 type typMgChild = {
   @description('Required.The ID of the management group.')
   managementGroupId: string
