@@ -263,6 +263,7 @@ output hubAzureFirewalls object[] = [
         location: hubAzureFirewall[index].outputs.location
         name: hubAzureFirewall[index].outputs.name
         resourceId: hubAzureFirewall[index].outputs.resourceId
+        privateIp: hubAzureFirewall[index].outputs.privateIp
       }
     : {}
 ]
