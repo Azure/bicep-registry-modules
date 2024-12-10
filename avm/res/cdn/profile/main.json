@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "14510673865187152138"
+      "templateHash": "105371418444313506"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -647,6 +647,34 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Extended properties."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "customdomain/main.bicep"
+        }
+      }
+    },
+    "dnsValidationType": {
+      "type": "object",
+      "properties": {
+        "dnsTxtRecordName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The DNS record name."
+          }
+        },
+        "dnsTxtRecordValue": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The DNS record value."
+          }
+        },
+        "dnsTxtRecordExpiry": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The expiry date of the DNS record."
           }
         }
       },
@@ -1658,7 +1686,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "420872064438039619"
+              "templateHash": "6683563928811245633"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains.",
@@ -1728,6 +1756,32 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Extended properties."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "dnsValidationType": {
+              "type": "object",
+              "properties": {
+                "dnsTxtRecordName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The DNS record name."
+                  }
+                },
+                "dnsTxtRecordValue": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The DNS record value."
+                  }
+                },
+                "dnsTxtRecordExpiry": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The expiry date of the DNS record."
                   }
                 }
               },
@@ -1864,6 +1918,17 @@
                 "description": "The name of the resource group the custom domain was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "dnsValidation": {
+              "$ref": "#/definitions/dnsValidationType",
+              "metadata": {
+                "description": "The DNS validation records."
+              },
+              "value": {
+                "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
+                "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
+                "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+              }
             }
           }
         }
@@ -2969,7 +3034,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.92.45157",
-              "templateHash": "8817136365913068133"
+              "templateHash": "17704591486050919088"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -3790,6 +3855,13 @@
                 "description": "The list of routes assigned to the AFD endpoint."
               },
               "value": "[coalesce(parameters('routes'), createArray())]"
+            },
+            "frontDoorEndpointHostName": {
+              "type": "string",
+              "metadata": {
+                "description": "The host name of the AFD endpoint."
+              },
+              "value": "[reference('afdEndpoint').hostName]"
             }
           }
         }
@@ -4027,6 +4099,29 @@
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[coalesce(tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+    },
+    "dnsValidation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dnsValidationType"
+      },
+      "metadata": {
+        "description": "The list of records required for custom domains validation."
+      },
+      "copy": {
+        "count": "[length(parameters('customDomains'))]",
+        "input": "[reference(format('profile_customDomains[{0}]', copyIndex())).outputs.dnsValidation.value]"
+      }
+    },
+    "frontDoorEndpointHostNames": {
+      "type": "array",
+      "metadata": {
+        "description": "The list of AFD endpoint host names."
+      },
+      "copy": {
+        "count": "[length(parameters('afdEndpoints'))]",
+        "input": "[reference(format('profile_afdEndpoints[{0}]', copyIndex())).outputs.frontDoorEndpointHostName.value]"
+      }
     }
   }
 }
