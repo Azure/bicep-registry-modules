@@ -105,7 +105,7 @@ param memory string = '2Gi'
   }
 ]'''
 })
-param environmentVariables environmentVariablesType[]?
+param environmentVariables environmentVariableType[]?
 
 import { secretType } from 'modules/deploy_services.bicep'
 @description('Optional. The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.')
