@@ -43,7 +43,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   name: 'p2sVpnGatewayDeployment'
   params: {
     // Required parameters
-    name: 'vscminp2sVpnGw'
+    name: 'npvgminp2sVpnGw'
     virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     associatedRouteTableName: 'defaultRouteTable'
@@ -70,7 +70,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "vscminp2sVpnGw"
+      "value": "npvgminp2sVpnGw"
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
@@ -105,7 +105,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
 using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
-param name = 'vscminp2sVpnGw'
+param name = 'npvgminp2sVpnGw'
 param virtualHubResourceId = '<virtualHubResourceId>'
 // Non-required parameters
 param associatedRouteTableName = 'defaultRouteTable'
@@ -133,7 +133,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   name: 'p2sVpnGatewayDeployment'
   params: {
     // Required parameters
-    name: 'vscmaxp2sVpnGw'
+    name: 'npvgmaxp2sVpnGw'
     virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     associatedRouteTableName: 'noneRouteTable'
@@ -175,7 +175,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "vscmaxp2sVpnGw"
+      "value": "npvgmaxp2sVpnGw"
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
@@ -243,7 +243,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
 using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
-param name = 'vscmaxp2sVpnGw'
+param name = 'npvgmaxp2sVpnGw'
 param virtualHubResourceId = '<virtualHubResourceId>'
 // Non-required parameters
 param associatedRouteTableName = 'noneRouteTable'
@@ -286,7 +286,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   name: 'p2sVpnGatewayDeployment'
   params: {
     // Required parameters
-    name: 'vscwafp2sVpnGw'
+    name: 'npvgwafp2sVpnGw'
     virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     associatedRouteTableName: 'defaultRouteTable'
@@ -320,7 +320,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "vscwafp2sVpnGw"
+      "value": "npvgwafp2sVpnGw"
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
@@ -370,7 +370,7 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
 using 'br/public:avm/res/network/p2s-vpn-gateway:<version>'
 
 // Required parameters
-param name = 'vscwafp2sVpnGw'
+param name = 'npvgwafp2sVpnGw'
 param virtualHubResourceId = '<virtualHubResourceId>'
 // Non-required parameters
 param associatedRouteTableName = 'defaultRouteTable'
