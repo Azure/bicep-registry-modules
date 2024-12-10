@@ -333,7 +333,7 @@ type environmentVariableType = {
   @description('Required. The environment variable name.')
   name: string
 
-  @description('Conditional. The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.')
+  @description('Conditional. The name of the Container App secret from which to pull the environment variable value. Required if `value` is null.')
   secretRef: string?
 
   @description('Conditional. The environment variable value. Required if `secretRef` is null.')
