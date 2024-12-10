@@ -34,7 +34,7 @@ param platformReservedCidr string = '172.17.17.0/24'
 param platformReservedDnsIP string = '172.17.17.17'
 
 @description('Optional. Network security group, that will be added to the workload subnet.')
-param customNetworkSecurityGroups securityRulesType
+param customNetworkSecurityGroups securityRuleType[]?
 
 @description('Optional. Pass the name to use an existing managed identity for importing the container image and run the job. If not provided, a new managed identity will be created.')
 param managedIdentityResourceId string?
