@@ -884,7 +884,7 @@ type securityRuleType = {
     @description('Optional. The description of the security rule.')
     description: string?
 
-    @description('Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.')
+    @description('Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.')
     destinationAddressPrefix: string?
 
     @description('Optional. The destination address prefixes. CIDR or destination IP ranges.')
