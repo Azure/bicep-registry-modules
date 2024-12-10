@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "5152250446888543349"
+      "version": "0.31.92.45157",
+      "templateHash": "13291748033241997493"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone.",
@@ -632,6 +632,17 @@
             "metadata": {
               "description": "Optional. Resource tags."
             }
+          },
+          "resolutionPolicy": {
+            "type": "string",
+            "allowedValues": [
+              "Default",
+              "NxDomainRedirect"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resolution type of the private-dns-zone fallback machanism."
+            }
           }
         }
       },
@@ -854,8 +865,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1641889417618452692"
+              "version": "0.31.92.45157",
+              "templateHash": "10712926682811010094"
             },
             "name": "Private DNS Zone A record",
             "description": "This module deploys a Private DNS Zone A record.",
@@ -1107,8 +1118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17163414995652446126"
+              "version": "0.31.92.45157",
+              "templateHash": "6038454003460884843"
             },
             "name": "Private DNS Zone AAAA record",
             "description": "This module deploys a Private DNS Zone AAAA record.",
@@ -1360,8 +1371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2493714129104385633"
+              "version": "0.31.92.45157",
+              "templateHash": "7441428857459323856"
             },
             "name": "Private DNS Zone CNAME record",
             "description": "This module deploys a Private DNS Zone CNAME record.",
@@ -1613,8 +1624,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10928449924272756679"
+              "version": "0.31.92.45157",
+              "templateHash": "14644449511819726117"
             },
             "name": "Private DNS Zone MX record",
             "description": "This module deploys a Private DNS Zone MX record.",
@@ -1866,8 +1877,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13191587152357386110"
+              "version": "0.31.92.45157",
+              "templateHash": "15207022836369022219"
             },
             "name": "Private DNS Zone PTR record",
             "description": "This module deploys a Private DNS Zone PTR record.",
@@ -2119,8 +2130,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12872700379964561295"
+              "version": "0.31.92.45157",
+              "templateHash": "11873116919556672567"
             },
             "name": "Private DNS Zone SOA record",
             "description": "This module deploys a Private DNS Zone SOA record.",
@@ -2372,8 +2383,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12918383495773487180"
+              "version": "0.31.92.45157",
+              "templateHash": "14191219094184072575"
             },
             "name": "Private DNS Zone SRV record",
             "description": "This module deploys a Private DNS Zone SRV record.",
@@ -2625,8 +2636,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "128006490354221158"
+              "version": "0.31.92.45157",
+              "templateHash": "4736447107597592476"
             },
             "name": "Private DNS Zone TXT record",
             "description": "This module deploys a Private DNS Zone TXT record.",
@@ -2869,6 +2880,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "resolutionPolicy": {
+            "value": "[tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'resolutionPolicy')]"
           }
         },
         "template": {
@@ -2878,8 +2892,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1713449351614683457"
+              "version": "0.31.92.45157",
+              "templateHash": "6409823868550472261"
             },
             "name": "Private DNS Zone Virtual Network Link",
             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -2925,6 +2939,13 @@
               "metadata": {
                 "description": "Required. Link to another virtual network resource ID."
               }
+            },
+            "resolutionPolicy": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resolution policy on the virtual network link. Only applicable for virtual network links to privatelink zones, and for A,AAAA,CNAME queries. When set to `NxDomainRedirect`, Azure DNS resolver falls back to public resolution if private dns query resolution results in non-existent domain response. `Default` is configured as the default option."
+              }
             }
           },
           "resources": {
@@ -2936,7 +2957,7 @@
             },
             "virtualNetworkLink": {
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-              "apiVersion": "2020-06-01",
+              "apiVersion": "2024-06-01",
               "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2944,7 +2965,8 @@
                 "registrationEnabled": "[parameters('registrationEnabled')]",
                 "virtualNetwork": {
                   "id": "[parameters('virtualNetworkResourceId')]"
-                }
+                },
+                "resolutionPolicy": "[parameters('resolutionPolicy')]"
               },
               "dependsOn": [
                 "privateDnsZone"
@@ -2978,7 +3000,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('virtualNetworkLink', '2020-06-01', 'full').location]"
+              "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
             }
           }
         }
