@@ -329,7 +329,7 @@ output workloadSubnetAddressPrefix string = services.outputs.workloadSubnetAddre
 // Definitions      //
 // ================ //
 
-type environmentVariablesType = {
+type environmentVariableType = {
   @description('Required. The environment variable name.')
   name: string
 
