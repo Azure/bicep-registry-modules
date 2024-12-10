@@ -150,7 +150,7 @@ param secrets secretType[]?
 })
 param workloadProfiles array?
 
-@description('Optional.  The name of the workload profile to use. Leave empty to use a consumption based profile.')
+@description('Optional. The name of the workload profile to use. Leave empty to use a consumption based profile.')
 @metadata({ example: 'CAW01' })
 param workloadProfileName string?
 
