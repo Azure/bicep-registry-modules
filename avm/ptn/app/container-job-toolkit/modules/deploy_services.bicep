@@ -872,7 +872,7 @@ type secretType = {
 }
 
 @export()
-type securityRulesType = {
+type securityRuleType = {
   @description('Required. The name of the security rule.')
   name: string
 
