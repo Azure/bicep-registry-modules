@@ -925,6 +925,6 @@ type securityRuleType = {
     @description('Optional. The source port ranges.')
     sourcePortRanges: string[]?
   }
-}[]?
+}
 
 import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
