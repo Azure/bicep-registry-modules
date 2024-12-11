@@ -461,6 +461,7 @@ type redundancySettingsType = {
   standardTierStorageRedundancy: string?
 }
 
+@export()
 type restoreSettingsType = {
   @description('Optional. The restore settings of the vault.')
   crossSubscriptionRestoreSettings: {
