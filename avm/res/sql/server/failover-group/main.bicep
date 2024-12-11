@@ -15,10 +15,10 @@ param databases string[]
 param partnerServers string[]
 
 @description('Optional. Read-only endpoint of the failover group instance.')
-param readOnlyEndpoint FailoverGroupReadOnlyEndpointType?
+param readOnlyEndpoint failoverGroupReadOnlyEndpointType?
 
 @description('Required. Read-write endpoint of the failover group instance.')
-param readWriteEndpoint FailoverGroupReadWriteEndpointType
+param readWriteEndpoint failoverGroupReadWriteEndpointType
 
 @description('Required. Databases secondary type on partner server.')
 param secondaryType 'Geo' | 'Standby'
@@ -65,7 +65,7 @@ output resourceId string = failoverGroup.id
 output resourceGroupName string = resourceGroup().name
 
 @export()
-type FailoverGroupReadOnlyEndpointType = {
+type failoverGroupReadOnlyEndpointType = {
   @description('Required. Failover policy of the read-only endpoint for the failover group.')
   failoverPolicy: 'Disabled' | 'Enabled'
 
@@ -74,7 +74,7 @@ type FailoverGroupReadOnlyEndpointType = {
 }
 
 @export()
-type FailoverGroupReadWriteEndpointType = {
+type failoverGroupReadWriteEndpointType = {
   @description('Required. Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required.')
   failoverPolicy: 'Automatic' | 'Manual'
 
