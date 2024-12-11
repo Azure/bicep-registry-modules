@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "6409823868550472261"
+      "version": "0.32.4.45862",
+      "templateHash": "15326596012552051215"
     },
     "name": "Private DNS Zone Virtual Network Link",
     "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -80,10 +80,7 @@
           "id": "[parameters('virtualNetworkResourceId')]"
         },
         "resolutionPolicy": "[parameters('resolutionPolicy')]"
-      },
-      "dependsOn": [
-        "privateDnsZone"
-      ]
+      }
     }
   },
   "outputs": {
