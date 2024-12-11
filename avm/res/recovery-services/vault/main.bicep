@@ -69,10 +69,6 @@ param redundancySettings redundancySettingsType?
 @description('Optional. The restore settings of the vault.')
 param restoreSettings restoreSettingsType?
 
-//import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
-//@description('Optional. The customer managed key definition.')
-//param customerManagedKey customerManagedKeyWithAutoRotateType?
-
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
@@ -442,15 +438,18 @@ output privateEndpoints array = [
 // =============== //
 
 type customerManagedKeyType = {
-  @description('Optional. The resource ID of the key vault.')
+  @description('Required. The resource ID of the key vault.')
   infrastructureEncryption: string
+
   @description('Optional. The details of the identity used for CMK	.')
   kekIdentity: {
     @description('Optional. The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned.')
     userAssignedIdentity: string
+
     @description('Optional. Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field.')
     useSystemAssignedIdentity: bool
   }
+
   @description('Optional. The properties of the Key Vault which hosts CMK.')
   keyVaultProperties: {
     @description('Optional. The key uri of the Customer Managed Key.')

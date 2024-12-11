@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "1243345766942403568"
+      "templateHash": "2046284090406297202"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -19,7 +19,7 @@
         "infrastructureEncryption": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The resource ID of the key vault."
+            "description": "Required. The resource ID of the key vault."
           }
         },
         "kekIdentity": {
