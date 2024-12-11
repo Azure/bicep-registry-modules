@@ -130,7 +130,7 @@ param auditSettings auditSettingsType = {} //Use the defaults from the child mod
 param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The failover groups configuration.')
-param failoverGroups FailoverGroupType[] = []
+param failoverGroups failoverGroupType[] = []
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -580,7 +580,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 import { recurringScansType } from 'vulnerability-assessment/main.bicep'
-import { FailoverGroupReadOnlyEndpointType, FailoverGroupReadWriteEndpointType } from 'failover-group/main.bicep'
+import { failoverGroupReadOnlyEndpointType, failoverGroupReadWriteEndpointType } from 'failover-group/main.bicep'
 
 @export()
 type auditSettingsType = {
@@ -924,7 +924,7 @@ type securityAlerPolicyType = {
 }
 
 @export()
-type FailoverGroupType = {
+type failoverGroupType = {
   @description('Required. The name of the failover group.')
   name: string
 
@@ -935,10 +935,10 @@ type FailoverGroupType = {
   partnerServers: string[]
 
   @description('Optional. Read-only endpoint of the failover group instance.')
-  readOnlyEndpoint: FailoverGroupReadOnlyEndpointType?
+  readOnlyEndpoint: failoverGroupReadOnlyEndpointType?
 
   @description('Required. Read-write endpoint of the failover group instance.')
-  readWriteEndpoint: FailoverGroupReadWriteEndpointType
+  readWriteEndpoint: failoverGroupReadWriteEndpointType
 
   @description('Required. Databases secondary type on partner server.')
   secondaryType: 'Geo' | 'Standby'
