@@ -18,7 +18,7 @@ param policyAssignmentIdentityId string
 
 module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'resource-group-additional-rbac-asi.bicep' = [
   for rg in resourceGroupResourceIDsToAssignRbacTo: {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name, rg)}-PolicyAssignment-MG-Module-RBAC-RG-Sub${substring(split(rg, '/')[2], 0, 8)}'
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name, rg)}-PolicyAssignment-MG-Module-RBAC-RG-Sub-${substring(split(rg, '/')[2], 0, 8)}'
     scope: resourceGroup(split(rg, '/')[2], split(rg, '/')[4])
     params: {
       name: name
