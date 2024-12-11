@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "17004952515208416744"
+      "version": "0.32.4.45862",
+      "templateHash": "17435284765101876835"
     },
     "name": "Container job toolkit",
     "description": "This module deploys a container to run as a job.",
@@ -703,8 +703,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17409478353249451373"
+              "version": "0.32.4.45862",
+              "templateHash": "8622876591056375000"
             }
           },
           "definitions": {
@@ -1267,7 +1267,6 @@
                 }
               },
               "dependsOn": [
-                "dnsZoneKeyVault_existing",
                 "vnet"
               ]
             },
@@ -1291,7 +1290,6 @@
                 }
               },
               "dependsOn": [
-                "dnsZoneContainerRegistry_existing",
                 "vnet"
               ]
             },
@@ -11732,7 +11730,6 @@
                 }
               },
               "dependsOn": [
-                "dnsZoneKeyVault_existing",
                 "dnsZoneKeyVault_new",
                 "vault",
                 "vnet"
@@ -12542,7 +12539,6 @@
                 }
               },
               "dependsOn": [
-                "dnsZoneContainerRegistry_existing",
                 "dnsZoneContainerRegistry_new",
                 "registry",
                 "vnet"
