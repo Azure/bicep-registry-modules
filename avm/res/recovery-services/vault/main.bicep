@@ -69,9 +69,12 @@ param redundancySettings redundancySettingsType?
 @description('Optional. The restore settings of the vault.')
 param restoreSettings restoreSettingsType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+//import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+//@description('Optional. The customer managed key definition.')
+//param customerManagedKey customerManagedKeyWithAutoRotateType?
+
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyWithAutoRotateType?
+param customerManagedKey customerManagedKeyType
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -439,17 +442,20 @@ output privateEndpoints array = [
 // =============== //
 
 type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
-  userAssignedIdentityResourceId: string?
+  @description('Optional. The resource ID of the key vault.')
+  infrastructureEncryption: string
+  @description('Optional. The details of the identity used for CMK	.')
+  kekIdentity: {
+    @description('Optional. The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned.')
+    userAssignedIdentity: string
+    @description('Optional. Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field.')
+    useSystemAssignedIdentity: bool
+  }
+  @description('Optional. The properties of the Key Vault which hosts CMK.')
+  keyVaultProperties: {
+    @description('Optional. The key uri of the Customer Managed Key.')
+    keyUri: string
+  }
 }?
 
 @export()

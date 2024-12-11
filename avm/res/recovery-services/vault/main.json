@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "9001101463401436271"
+      "templateHash": "11339694914322254283"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -16,30 +16,44 @@
     "customerManagedKeyType": {
       "type": "object",
       "properties": {
-        "keyVaultResourceId": {
+        "infrastructureEncryption": {
           "type": "string",
           "metadata": {
-            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+            "description": "Optional. The resource ID of the key vault."
           }
         },
-        "keyName": {
-          "type": "string",
+        "kekIdentity": {
+          "type": "object",
+          "properties": {
+            "userAssignedIdentity": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned."
+              }
+            },
+            "useSystemAssignedIdentity": {
+              "type": "bool",
+              "metadata": {
+                "description": "Optional. Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field."
+              }
+            }
+          },
           "metadata": {
-            "description": "Required. The name of the customer managed key to use for encryption."
+            "description": "Optional. The details of the identity used for CMK\t."
           }
         },
-        "keyVersion": {
-          "type": "string",
-          "nullable": true,
+        "keyVaultProperties": {
+          "type": "object",
+          "properties": {
+            "keyUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. The key uri of the Customer Managed Key."
+              }
+            }
+          },
           "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
-          }
-        },
-        "userAssignedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+            "description": "Optional. The properties of the Key Vault which hosts CMK."
           }
         }
       },
@@ -62,6 +76,9 @@
             "description": "Optional. The storage redundancy setting of a vault."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "restoreSettingsType": {
@@ -81,6 +98,9 @@
             "description": "Optional. The restore settings of the vault."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "managedIdentitiesType": {
@@ -543,50 +563,6 @@
         }
       },
       "nullable": true
-    },
-    "customerManagedKeyWithAutoRotateType": {
-      "type": "object",
-      "properties": {
-        "keyVaultResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
-          }
-        },
-        "keyName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the customer managed key to use for encryption."
-          }
-        },
-        "keyVersion": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
-          }
-        },
-        "autoRotationEnabled": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
-          }
-        },
-        "userAssignedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
-        }
-      }
     }
   },
   "parameters": {
@@ -736,8 +712,7 @@
       }
     },
     "customerManagedKey": {
-      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
-      "nullable": true,
+      "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
         "description": "Optional. The customer managed key definition."
       }

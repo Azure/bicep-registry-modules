@@ -2768,54 +2768,67 @@ The customer managed key definition.
 - Required: No
 - Type: object
 
-**Required parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+| [`infrastructureEncryption`](#parameter-customermanagedkeyinfrastructureencryption) | string | The resource ID of the key vault. |
+| [`kekIdentity`](#parameter-customermanagedkeykekidentity) | object | The details of the identity used for CMK	. |
+| [`keyVaultProperties`](#parameter-customermanagedkeykeyvaultproperties) | object | The properties of the Key Vault which hosts CMK. |
+
+### Parameter: `customerManagedKey.infrastructureEncryption`
+
+The resource ID of the key vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.kekIdentity`
+
+The details of the identity used for CMK	.
+
+- Required: Yes
+- Type: object
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+| [`userAssignedIdentity`](#parameter-customermanagedkeykekidentityuserassignedidentity) | string | The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned. |
+| [`useSystemAssignedIdentity`](#parameter-customermanagedkeykekidentityusesystemassignedidentity) | bool | Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field. |
 
-### Parameter: `customerManagedKey.keyName`
+### Parameter: `customerManagedKey.kekIdentity.userAssignedIdentity`
 
-The name of the customer managed key to use for encryption.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVaultResourceId`
-
-The resource ID of a key vault to reference a customer managed key for encryption from.
+The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey.autoRotationEnabled`
+### Parameter: `customerManagedKey.kekIdentity.useSystemAssignedIdentity`
 
-Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field.
 
-- Required: No
+- Required: Yes
 - Type: bool
 
-### Parameter: `customerManagedKey.keyVersion`
+### Parameter: `customerManagedKey.keyVaultProperties`
 
-The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+The properties of the Key Vault which hosts CMK.
 
-- Required: No
-- Type: string
+- Required: Yes
+- Type: object
 
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+**Optional parameters**
 
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyUri`](#parameter-customermanagedkeykeyvaultpropertieskeyuri) | string | The key uri of the Customer Managed Key. |
 
-- Required: No
+### Parameter: `customerManagedKey.keyVaultProperties.keyUri`
+
+The key uri of the Customer Managed Key.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `diagnosticSettings`
@@ -3713,7 +3726,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 
