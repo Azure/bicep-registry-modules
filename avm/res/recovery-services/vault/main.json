@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "11339694914322254283"
+      "templateHash": "1243345766942403568"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -90,7 +90,7 @@
             "crossSubscriptionRestoreState": {
               "type": "string",
               "metadata": {
-                "description": "Required. The restore settings of the vault."
+                "description": "Optional. The restore settings of the vault."
               }
             }
           },
