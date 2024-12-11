@@ -181,7 +181,7 @@ configuration:
           - addLabel:
               label: "Needs: Immediate Attention :bangbang:"
 
-      - description: "ITA04 - Label issues that have been marked as requiring author feedback but have not had any activity for 4 days."
+      - description: "ITA04 - Label issues and PRs that have been marked as requiring author feedback but have not had any activity for 4 days."
         frequencies:
           - hourly:
               hour: 3
