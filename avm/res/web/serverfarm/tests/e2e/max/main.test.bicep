@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = [
       skuCapacity: 3
       perSiteScaling: true
       zoneRedundant: true
-      kind: 'App'
+      kind: 'app'
       lock: {
         name: 'lock'
         kind: 'CanNotDelete'
