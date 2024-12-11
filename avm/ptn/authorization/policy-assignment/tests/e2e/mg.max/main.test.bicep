@@ -46,6 +46,9 @@ module testDeployment '../../../main.bicep' = {
     additionalManagementGroupsIDsToAssignRbacTo: [
       additionalMg.name
     ]
+    additionalSubscriptionIDsToAssignRbacTo: [
+      subscriptionId
+    ]
     metadata: {
       category: 'Security'
       version: '1.0'
