@@ -1190,7 +1190,7 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalManagementGroupsIDsToAssignRbacTo`](#parameter-additionalmanagementgroupsidstoassignrbacto) | array | An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity. |
-| [`additionalSubscriptionIDsToAssignRbacTo`](#parameter-additionalsubscriptionidstoassignrbacto) | array | An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments). |
+| [`additionalSubscriptionIDsToAssignRbacTo`](#parameter-additionalsubscriptionidstoassignrbacto) | array | An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
 | [`description`](#parameter-description) | string | This message will be part of response in case of policy violation. |
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1206,7 +1206,7 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The Target Scope for the Policy. The name of the resource group for the policy assignment. |
 | [`resourceSelectors`](#parameter-resourceselectors) | array | The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location. |
 | [`roleDefinitionIds`](#parameter-roledefinitionids) | array | The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition. |
-| [`subscriptionId`](#parameter-subscriptionid) | string | The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment.  |
+| [`subscriptionId`](#parameter-subscriptionid) | string | The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. |
 | [`userAssignedIdentityId`](#parameter-userassignedidentityid) | string | The Resource ID for the user assigned identity to assign to the policy assignment. |
 
 ### Parameter: `name`
@@ -1233,7 +1233,7 @@ An array of additional management group IDs to assign RBAC to for the policy ass
 
 ### Parameter: `additionalSubscriptionIDsToAssignRbacTo`
 
-An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments).
+An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.
 
 - Required: No
 - Type: array
@@ -1376,7 +1376,7 @@ The IDs Of the Azure Role Definition list that is used to assign permissions to 
 
 ### Parameter: `subscriptionId`
 
-The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. 
+The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment.
 
 - Required: No
 - Type: string

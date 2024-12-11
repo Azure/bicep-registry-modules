@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13194582767587730600"
+      "templateHash": "1765733852827115802"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -115,14 +115,14 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments)."
+        "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
       }
     },
     "subscriptionId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. "
+        "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment."
       }
     },
     "resourceGroupName": {
@@ -244,7 +244,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15577842184885769601"
+              "templateHash": "14953662083337779474"
             },
             "name": "Policy Assignments (Management Group scope)",
             "description": "This module deploys a Policy Assignment at a Management Group scope.",
@@ -323,7 +323,7 @@
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments)."
+                "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
               }
             },
             "metadata": {
@@ -601,7 +601,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18097167553475569571"
+                      "templateHash": "5749576517620027653"
                     }
                   },
                   "parameters": {
@@ -609,7 +609,7 @@
                       "type": "array",
                       "defaultValue": [],
                       "metadata": {
-                        "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments)."
+                        "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
                       }
                     },
                     "roleDefinitionId": {
