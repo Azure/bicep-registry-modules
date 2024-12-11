@@ -38,10 +38,10 @@ param roleDefinitionIds array = []
 @sys.description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
 param additionalManagementGroupsIDsToAssignRbacTo array = []
 
-@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments)')
+@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments).')
 param additionalSubscriptionIDsToAssignRbacTo array = []
 
-// @sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments)')
+// @sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity. (Only supported for Management Group Policy Assignments).')
 // param additionalResourceGroupResourceIDsToAssignRbacTo array = []
 
 @sys.description('Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs.')
