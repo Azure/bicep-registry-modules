@@ -451,6 +451,8 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+@export()
 type redundancySettingsType = {
   @description('Optional. Flag to show if Cross Region Restore is enabled on the Vault or not.')
   crossRegionRestore: string?
