@@ -1,0 +1,3309 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.23.60470",
+      "templateHash": "1614271792495509793"
+    },
+    "name": "update-manager-configuration",
+    "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
+    "owner": "Azure/module-maintainers",
+    "version": "0.1.0",
+    "category": "Compute"
+  },
+  "definitions": {
+    "maintenanceConfigurationType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "maintenanceConfigName": {
+            "type": "string",
+            "metadata": {
+              "description": "The name of the maintenance configuration."
+            }
+          },
+          "location": {
+            "type": "string",
+            "metadata": {
+              "description": "The location where the maintenance configuration will be created."
+            }
+          },
+          "installPatches": {
+            "type": "object",
+            "properties": {
+              "linuxParameters": {
+                "type": "object",
+                "properties": {
+                  "classificationsToInclude": {
+                    "type": "array",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "The classifications of patches to include for Linux."
+                    }
+                  },
+                  "packageNameMasksToExclude": {
+                    "type": "array",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "The package name masks to exclude for Linux."
+                    }
+                  },
+                  "packageNameMasksToInclude": {
+                    "type": "array",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "The package name masks to include for Linux."
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "The patch installation settings for Linux."
+                }
+              },
+              "rebootSetting": {
+                "type": "string",
+                "metadata": {
+                  "description": "The reboot setting for the maintenance configuration."
+                }
+              },
+              "windowsParameters": {
+                "type": "object",
+                "properties": {
+                  "classificationsToInclude": {
+                    "type": "array",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "The classifications of patches to include for Windows."
+                    }
+                  },
+                  "kbNumbersToExclude": {
+                    "type": "array",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "The KB numbers to exclude for Windows."
+                    }
+                  },
+                  "kbNumbersToInclude": {
+                    "type": "array",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "The KB numbers to include for Windows."
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "The patch installation settings for Windows."
+                }
+              }
+            },
+            "metadata": {
+              "description": "The patch installation settings for the maintenance configuration."
+            }
+          },
+          "lock": {
+            "type": "object",
+            "metadata": {
+              "description": "The lock settings for the maintenance configuration."
+            }
+          },
+          "maintenanceWindow": {
+            "type": "object",
+            "properties": {
+              "duration": {
+                "type": "string",
+                "metadata": {
+                  "description": "The duration of the maintenance window."
+                }
+              },
+              "expirationDateTime": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "The expiration date and time of the maintenance window."
+                }
+              },
+              "recurEvery": {
+                "type": "string",
+                "metadata": {
+                  "description": "The recurrence interval of the maintenance window."
+                }
+              },
+              "startDateTime": {
+                "type": "string",
+                "metadata": {
+                  "description": "The start date and time of the maintenance window."
+                }
+              },
+              "timeZone": {
+                "type": "string",
+                "metadata": {
+                  "description": "Name of the timezone.\nList of timezones can be obtained by executing `[System.TimeZoneInfo]::GetSystemTimeZones()` in PowerShell.\nExample: `Pacific Standard Time`, `UTC`, `W. Europe Standard Time`, `Korea Standard Time`, `Cen. Australia Standard Time`.\n"
+                }
+              }
+            },
+            "metadata": {
+              "description": "The maintenance window settings for the maintenance configuration."
+            }
+          },
+          "visibility": {
+            "$ref": "#/definitions/visibilityType",
+            "metadata": {
+              "description": "The visibility of the maintenance configuration."
+            }
+          },
+          "resourceFilter": {
+            "type": "object",
+            "properties": {
+              "resourceGroups": {
+                "type": "array",
+                "nullable": true,
+                "metadata": {
+                  "description": "The resource groups to include in the maintenance configuration."
+                }
+              },
+              "osTypes": {
+                "type": "array",
+                "nullable": true,
+                "metadata": {
+                  "description": "The OS types to include in the maintenance configuration."
+                }
+              },
+              "locations": {
+                "type": "array",
+                "nullable": true,
+                "metadata": {
+                  "description": "The locations to include in the maintenance configuration."
+                }
+              }
+            },
+            "metadata": {
+              "description": "The resource filter settings for the maintenance configuration."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "The tags to apply to the maintenance configuration."
+            }
+          },
+          "roleAssignments": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "The role assignments for the maintenance configuration."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "description": "Defines the structure of a maintenance configuration."
+      }
+    },
+    "visibilityType": {
+      "type": "string",
+      "allowedValues": [
+        "",
+        "Custom",
+        "Public"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Defines the structure of visibility."
+      }
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified."
+      }
+    },
+    "maintenanceConfigurationsResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Resource Group to deploy the maintenance configurations and associated resources."
+      }
+    },
+    "maintenanceConfigurations": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "maintenanceConfigName": "maintenance_ring-01",
+          "location": "[parameters('location')]",
+          "installPatches": {
+            "linuxParameters": {
+              "classificationsToInclude": [
+                "Critical",
+                "Security"
+              ],
+              "packageNameMasksToExclude": [],
+              "packageNameMasksToInclude": []
+            },
+            "rebootSetting": "IfRequired",
+            "windowsParameters": {
+              "classificationsToInclude": [
+                "Critical",
+                "Security"
+              ],
+              "kbNumbersToExclude": [],
+              "kbNumbersToInclude": []
+            }
+          },
+          "lock": {},
+          "maintenanceWindow": {
+            "duration": "03:00",
+            "expirationDateTime": null,
+            "recurEvery": "1Day",
+            "startDateTime": "2024-09-19 00:00",
+            "timeZone": "UTC"
+          },
+          "visibility": "Custom",
+          "resourceFilter": {
+            "resourceGroups": [],
+            "osTypes": [
+              "Windows",
+              "Linux"
+            ],
+            "locations": []
+          }
+        },
+        {
+          "maintenanceConfigName": "maintenance_ring-02",
+          "location": "[parameters('location')]",
+          "installPatches": {
+            "linuxParameters": {
+              "classificationsToInclude": [
+                "Other"
+              ],
+              "packageNameMasksToExclude": [],
+              "packageNameMasksToInclude": []
+            },
+            "rebootSetting": "IfRequired",
+            "windowsParameters": {
+              "classificationsToInclude": [
+                "FeaturePack",
+                "ServicePack"
+              ],
+              "kbNumbersToExclude": [],
+              "kbNumbersToInclude": []
+            }
+          },
+          "lock": {},
+          "maintenanceWindow": {
+            "duration": "03:00",
+            "expirationDateTime": null,
+            "recurEvery": "Week Saturday,Sunday",
+            "startDateTime": "2024-09-19 00:00",
+            "timeZone": "UTC"
+          },
+          "visibility": "Custom",
+          "resourceFilter": {
+            "resourceGroups": [],
+            "osTypes": [
+              "Windows",
+              "Linux"
+            ],
+            "locations": []
+          }
+        }
+      ],
+      "metadata": {
+        "description": "Optional. An array of objects which contain the properties of the maintenance configurations to be created."
+      }
+    },
+    "enableAUMTagName": {
+      "type": "string",
+      "defaultValue": "aum_maintenance",
+      "metadata": {
+        "description": "Optional. The name of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager."
+      }
+    },
+    "enableAUMTagValue": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "metadata": {
+        "description": "Optional. The value of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager. Only the VMs/ARC enabled servers with Tags of the combination `<enableAUMTagName>`:`<enableAUMTagValue>` will be considered for Maintenance Configuration dynamic scoping."
+      }
+    },
+    "maintenanceConfigEnrollmentTagName": {
+      "type": "string",
+      "defaultValue": "aum_maintenance_config",
+      "metadata": {
+        "description": "Optional. The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`."
+      }
+    },
+    "policyDeploymentManagedIdentityName": {
+      "type": "string",
+      "defaultValue": "id-aumpolicy-contributor-01",
+      "maxLength": 63,
+      "metadata": {
+        "description": "Optional. The name of the User Assigned Managed Identity that will be used to deploy the policies."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource tags, which will be added to all resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "maintenanceConfigNames",
+        "count": "[length(parameters('maintenanceConfigurations'))]",
+        "input": "[parameters('maintenanceConfigurations')[copyIndex('maintenanceConfigNames')].maintenanceConfigName]"
+      }
+    ],
+    "aumEnablingTag": {
+      "[format('{0}', parameters('enableAUMTagName'))]": "[parameters('enableAUMTagValue')]"
+    },
+    "aumEnablingTagObject": {
+      "key": "[items(variables('aumEnablingTag'))[0].key]",
+      "value": "[items(variables('aumEnablingTag'))[0].value]"
+    },
+    "osTypes": [
+      "Windows",
+      "Linux"
+    ],
+    "resourceTypes": [
+      "Microsoft.Compute/virtualMachines",
+      "Microsoft.HybridCompute/machines"
+    ]
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.maintenance-azureupdatemanager.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "maintenanceConfig_rg": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('rg-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('maintenanceConfigurationsResourceGroupName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "12239489478811281495"
+            },
+            "name": "Resource Groups",
+            "description": "This module deploys a Resource Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Resource Group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location of the Resource Group. It uses the deployment's location when not provided."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the storage account resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "resourceGroup": {
+              "type": "Microsoft.Resources/resourceGroups",
+              "apiVersion": "2021-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {}
+            },
+            "resourceGroup_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+              "resourceGroup": "[parameters('name')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
+                  "name": {
+                    "value": "[parameters('name')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "16740360506283584978"
+                    }
+                  },
+                  "definitions": {
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the Resource Group."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "resourceGroup_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                      }
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "resourceGroup"
+              ]
+            },
+            "resourceGroup_roleAssignments": {
+              "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+              "resourceGroup": "[parameters('name')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "roleAssignments": {
+                    "value": "[parameters('roleAssignments')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "10992477577200576081"
+                    }
+                  },
+                  "definitions": {
+                    "roleAssignmentType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                            }
+                          },
+                          "roleDefinitionIdOrName": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                            }
+                          },
+                          "principalId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                            }
+                          },
+                          "principalType": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Device",
+                              "ForeignGroup",
+                              "Group",
+                              "ServicePrincipal",
+                              "User"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The principal type of the assigned principal ID."
+                            }
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The description of the role assignment."
+                            }
+                          },
+                          "condition": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                            }
+                          },
+                          "conditionVersion": {
+                            "type": "string",
+                            "allowedValues": [
+                              "2.0"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Version of the condition."
+                            }
+                          },
+                          "delegatedManagedIdentityResourceId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The Resource Id of the delegated managed identity resource."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "roleAssignments": {
+                      "$ref": "#/definitions/roleAssignmentType",
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Quota Request Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e5f05e5-9ab9-446b-b98d-1e2157c94125')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Tag Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4a9ae827-6dc8-4573-8ac7-8239d42aa03f')]",
+                      "Template Spec Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c9b6475-caf0-4164-b5a1-2142a7116f4b')]",
+                      "Template Spec Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '392ae280-861d-42bd-9ea5-08ee6d83b80e')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": {
+                    "resourceGroup_roleAssignments": {
+                      "copy": {
+                        "name": "resourceGroup_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceGroup().id, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                      "properties": {
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      }
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "resourceGroup"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the resource group."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "metadata": {
+        "description": "Creates a resource group for Azure Update Manager maintenance configurations."
+      }
+    },
+    "id_aumpolicy_contributor": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('mi-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "resourceGroup": "[parameters('maintenanceConfigurationsResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('policyDeploymentManagedIdentityName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "10609859695208799167"
+            },
+            "name": "User Assigned Identities",
+            "description": "This module deploys a User Assigned Identity.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "federatedIdentityCredentialsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the federated identity credential."
+                    }
+                  },
+                  "audiences": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "description": "Required. The list of audiences that can appear in the issued token."
+                    }
+                  },
+                  "issuer": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The URL of the issuer to be trusted."
+                    }
+                  },
+                  "subject": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The identifier of the external identity."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the User Assigned Identity."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "federatedIdentityCredentials": {
+              "$ref": "#/definitions/federatedIdentityCredentialsType",
+              "metadata": {
+                "description": "Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Managed Identity Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e40ec5ca-96e0-45a2-b4ff-59039f2c2b59')]",
+              "Managed Identity Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "userAssignedIdentity": {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2023-01-31",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]"
+            },
+            "userAssignedIdentity_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            },
+            "userAssignedIdentity_roleAssignments": {
+              "copy": {
+                "name": "userAssignedIdentity_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            },
+            "userAssignedIdentity_federatedIdentityCredentials": {
+              "copy": {
+                "name": "userAssignedIdentity_federatedIdentityCredentials",
+                "count": "[length(coalesce(parameters('federatedIdentityCredentials'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-UserMSI-FederatedIdentityCredential-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].name]"
+                  },
+                  "userAssignedIdentityName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "audiences": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].audiences]"
+                  },
+                  "issuer": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].issuer]"
+                  },
+                  "subject": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].subject]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "3716898257490923786"
+                    },
+                    "name": "User Assigned Identity Federated Identity Credential",
+                    "description": "This module deploys a User Assigned Identity Federated Identity Credential.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "userAssignedIdentityName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent user assigned identity. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the secret."
+                      }
+                    },
+                    "audiences": {
+                      "type": "array",
+                      "metadata": {
+                        "description": "Required. The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token."
+                      }
+                    },
+                    "issuer": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The URL of the issuer to be trusted. Must match the issuer claim of the external token being exchanged."
+                      }
+                    },
+                    "subject": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
+                      "apiVersion": "2023-01-31",
+                      "name": "[format('{0}/{1}', parameters('userAssignedIdentityName'), parameters('name'))]",
+                      "properties": {
+                        "audiences": "[parameters('audiences')]",
+                        "issuer": "[parameters('issuer')]",
+                        "subject": "[parameters('subject')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the federated identity credential."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the federated identity credential."
+                      },
+                      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials', parameters('userAssignedIdentityName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the federated identity credential was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the user assigned identity."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the user assigned identity."
+              },
+              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "The principal ID (object ID) of the user assigned identity."
+              },
+              "value": "[reference('userAssignedIdentity').principalId]"
+            },
+            "clientId": {
+              "type": "string",
+              "metadata": {
+                "description": "The client ID (application ID) of the user assigned identity."
+              },
+              "value": "[reference('userAssignedIdentity').clientId]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the user assigned identity was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('userAssignedIdentity', '2023-01-31', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "maintenanceConfig_rg"
+      ],
+      "metadata": {
+        "description": "Creates a user-assigned managed identity for policy deployment."
+      }
+    },
+    "maintenance_configurations": {
+      "copy": {
+        "name": "maintenance_configurations",
+        "count": "[length(parameters('maintenanceConfigurations'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('mainconf-{0}-{1}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4), parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName), 64)]",
+      "resourceGroup": "[parameters('maintenanceConfigurationsResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "installPatches": {
+            "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'installPatches')]"
+          },
+          "maintenanceWindow": {
+            "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'maintenanceWindow')]"
+          },
+          "visibility": {
+            "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'visibility')]"
+          },
+          "lock": {
+            "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'lock')]"
+          },
+          "tags": {
+            "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'tags')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'roleAssignments')]"
+          },
+          "extensionProperties": {
+            "value": {
+              "InGuestPatchMode": "User"
+            }
+          },
+          "maintenanceScope": {
+            "value": "InGuestPatch"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "14753349346482637834"
+            },
+            "name": "Maintenance Configurations",
+            "description": "This module deploys a Maintenance Configuration.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Maintenance Configuration Name."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "extensionProperties": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Gets or sets extensionProperties of the maintenanceConfiguration."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "maintenanceScope": {
+              "type": "string",
+              "defaultValue": "Host",
+              "allowedValues": [
+                "Host",
+                "OSImage",
+                "Extension",
+                "InGuestPatch",
+                "SQLDB",
+                "SQLManagedInstance"
+              ],
+              "metadata": {
+                "description": "Optional. Gets or sets maintenanceScope of the configuration."
+              }
+            },
+            "maintenanceWindow": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Definition of a MaintenanceWindow."
+              }
+            },
+            "namespace": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Gets or sets namespace of the resource."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Gets or sets tags of the resource."
+              }
+            },
+            "visibility": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "",
+                "Custom",
+                "Public"
+              ],
+              "metadata": {
+                "description": "Optional. Gets or sets the visibility of the configuration. The default value is 'Custom'."
+              }
+            },
+            "installPatches": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Configuration settings for VM guest patching with Azure Update Manager."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Scheduled Patching Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cd08ab90-6b14-449c-ad9a-8f8e549482c6')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.maintenance-maintenanceconfiguration.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "maintenanceConfiguration": {
+              "type": "Microsoft.Maintenance/maintenanceConfigurations",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "extensionProperties": "[parameters('extensionProperties')]",
+                "maintenanceScope": "[parameters('maintenanceScope')]",
+                "maintenanceWindow": "[parameters('maintenanceWindow')]",
+                "namespace": "[parameters('namespace')]",
+                "visibility": "[parameters('visibility')]",
+                "installPatches": "[if(equals(parameters('maintenanceScope'), 'InGuestPatch'), parameters('installPatches'), null())]"
+              }
+            },
+            "maintenanceConfiguration_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Maintenance/maintenanceConfigurations/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "maintenanceConfiguration"
+              ]
+            },
+            "maintenanceConfiguration_roleAssignments": {
+              "copy": {
+                "name": "maintenanceConfiguration_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Maintenance/maintenanceConfigurations/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "maintenanceConfiguration"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Maintenance Configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Maintenance Configuration."
+              },
+              "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Maintenance Configuration was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the Maintenance Configuration was created in."
+              },
+              "value": "[reference('maintenanceConfiguration', '2023-04-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "maintenanceConfig_rg"
+      ],
+      "metadata": {
+        "description": "Creates maintenance configurations based on the provided parameters."
+      }
+    },
+    "maintenance_configuration_assignments": {
+      "copy": {
+        "name": "maintenance_configuration_assignments",
+        "count": "[length(parameters('maintenanceConfigurations'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('mainconfassi-{0}-{1}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4), parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName), 64)]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "maintenanceConfigResourceGroupName": {
+            "value": "[parameters('maintenanceConfigurationsResourceGroupName')]"
+          },
+          "maintenanceConfigName": {
+            "value": "[reference(format('maintenance_configurations[{0}]', copyIndex())).outputs.name.value]"
+          },
+          "maintenanceConfigAssignmentName": {
+            "value": "[format('maintenanceConfigAssignment-{0}', parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName)]"
+          },
+          "filter": {
+            "value": {
+              "resourceTypes": "[variables('resourceTypes')]",
+              "resourceGroups": "[parameters('maintenanceConfigurations')[copyIndex()].resourceFilter.resourceGroups]",
+              "osTypes": "[parameters('maintenanceConfigurations')[copyIndex()].resourceFilter.osTypes]",
+              "locations": "[parameters('maintenanceConfigurations')[copyIndex()].resourceFilter.locations]",
+              "tagsettings": {
+                "filterOperator": "All",
+                "tags": {
+                  "[format('{0}', parameters('maintenanceConfigEnrollmentTagName'))]": [
+                    "[parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName]"
+                  ],
+                  "[format('{0}', parameters('enableAUMTagName'))]": [
+                    "[parameters('enableAUMTagValue')]"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.30.23.60470",
+              "templateHash": "13995364584817632567"
+            }
+          },
+          "parameters": {
+            "maintenanceConfigResourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the resource group containing the maintenance configuration."
+              }
+            },
+            "maintenanceConfigName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the maintenance configuration."
+              }
+            },
+            "maintenanceConfigAssignmentName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the maintenance configuration assignment."
+              }
+            },
+            "filter": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. The filter object which contains details of the filter to be applied."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().id]",
+              "metadata": {
+                "description": "Required. The id of the subscription where assignment is to be created."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Maintenance/configurationAssignments",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('maintenanceConfigAssignmentName')]",
+              "properties": {
+                "filter": "[parameters('filter')]",
+                "maintenanceConfigurationId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('maintenanceConfigResourceGroupName')), 'Microsoft.Maintenance/maintenanceConfigurations', parameters('maintenanceConfigName'))]",
+                "resourceId": "[parameters('subscriptionId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the maintenance configuration assignment."
+              },
+              "value": "[parameters('maintenanceConfigAssignmentName')]"
+            },
+            "maintenanceConfigAssignmentId": {
+              "type": "string",
+              "metadata": {
+                "description": "The id of the maintenance configuration assignment."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Maintenance/configurationAssignments', parameters('maintenanceConfigAssignmentName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[format('maintenance_configurations[{0}]', copyIndex())]"
+      ],
+      "metadata": {
+        "description": "Assigns maintenance configurations to resources based on the provided filters."
+      }
+    },
+    "setPrereqPolicyAssignment": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('prereqpolassi-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('AUMPrereqPolicyAssignment-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
+          },
+          "displayName": {
+            "value": "Azure Update Manager prerequisites settings update based on Tags"
+          },
+          "description": {
+            "value": "Azure Update Manager prerequisites settings update based on Tags of the Azure VMs/ARC enabled Servers"
+          },
+          "policyDefinitionId": {
+            "value": "/providers/Microsoft.Authorization/policyDefinitions/9905ca54-1471-49c6-8291-7582c04cd4d4"
+          },
+          "parameters": {
+            "value": {
+              "tagOperator": {
+                "value": "All"
+              },
+              "tagValues": {
+                "value": [
+                  "[variables('aumEnablingTagObject')]"
+                ]
+              },
+              "effect": {
+                "value": "DeployIfNotExists"
+              }
+            }
+          },
+          "identity": {
+            "value": "UserAssigned"
+          },
+          "userAssignedIdentityId": {
+            "value": "[reference('id_aumpolicy_contributor').outputs.resourceId.value]"
+          },
+          "roleDefinitionIds": {
+            "value": [
+              "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ]
+          },
+          "metadata": {
+            "value": {
+              "assignedBy": "maintenance/azure-update-manager"
+            }
+          },
+          "nonComplianceMessages": {
+            "value": []
+          },
+          "enforcementMode": {
+            "value": "Default"
+          },
+          "subscriptionId": {
+            "value": "[subscription().subscriptionId]"
+          },
+          "notScopes": {
+            "value": []
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "overrides": {
+            "value": []
+          },
+          "resourceSelectors": {
+            "value": []
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.30.23.60470",
+              "templateHash": "18165805964403960291"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. This message will be part of response in case of policy violation."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "defaultValue": "",
+              "maxLength": 128,
+              "metadata": {
+                "description": "Optional. The display name of the policy assignment. Maximum length is 128 characters."
+              }
+            },
+            "policyDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the ID of the policy definition or policy set definition being assigned."
+              }
+            },
+            "parameters": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Parameters for the policy assignment if needed."
+              }
+            },
+            "identity": {
+              "type": "string",
+              "defaultValue": "SystemAssigned",
+              "allowedValues": [
+                "SystemAssigned",
+                "UserAssigned",
+                "None"
+              ],
+              "metadata": {
+                "description": "Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions."
+              }
+            },
+            "userAssignedIdentityId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The Resource ID for the user assigned identity to assign to the policy assignment."
+              }
+            },
+            "roleDefinitionIds": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+              }
+            },
+            "nonComplianceMessages": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The messages that describe why a resource is non-compliant with the policy."
+              }
+            },
+            "enforcementMode": {
+              "type": "string",
+              "defaultValue": "Default",
+              "allowedValues": [
+                "Default",
+                "DoNotEnforce"
+              ],
+              "metadata": {
+                "description": "Optional. The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce."
+              }
+            },
+            "notScopes": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The policy excluded scopes."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "overrides": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition."
+              }
+            },
+            "resourceSelectors": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().subscriptionId]",
+              "metadata": {
+                "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment."
+              }
+            }
+          },
+          "variables": {
+            "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/policyAssignments",
+              "apiVersion": "2022-06-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                "parameters": "[parameters('parameters')]",
+                "nonComplianceMessages": "[if(not(empty(parameters('nonComplianceMessages'))), parameters('nonComplianceMessages'), createArray())]",
+                "enforcementMode": "[parameters('enforcementMode')]",
+                "notScopes": "[if(not(empty(parameters('notScopes'))), parameters('notScopes'), createArray())]",
+                "overrides": "[if(not(empty(parameters('overrides'))), parameters('overrides'), createArray())]",
+                "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]"
+              },
+              "identity": "[variables('identityVar')]"
+            },
+            {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('roleDefinitionIds'))]"
+              },
+              "condition": "[and(not(empty(parameters('roleDefinitionIds'))), equals(parameters('identity'), 'SystemAssigned'))]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(parameters('subscriptionId'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
+              "properties": {
+                "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
+                "principalId": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment Name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment principal ID."
+              },
+              "value": "[coalesce(tryGet(tryGet(reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment resource ID."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "id_aumpolicy_contributor"
+      ],
+      "metadata": {
+        "description": "Assigns the prerequisite policy for Azure Update Manager."
+      }
+    },
+    "configurePeriodicCheckingAzureVMsWin": {
+      "copy": {
+        "name": "configurePeriodicCheckingAzureVMsWin",
+        "count": "[length(variables('osTypes'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('periodiccheckvmpolassi-{0}-{1}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4), variables('osTypes')[copyIndex()]), 64)]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('AUMConfigurePeriodicCheckingAzVMPolicyAssignment{0}-{1}', variables('osTypes')[copyIndex()], substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
+          },
+          "displayName": {
+            "value": "[format('Azure Update Manager enabling periodic assessment on Azure VMs based on Tags for {0}', variables('osTypes')[copyIndex()])]"
+          },
+          "description": {
+            "value": "[format('This policy enables periodic checking for updates on Azure based on Tags of the Azure VMs for {0}', variables('osTypes')[copyIndex()])]"
+          },
+          "policyDefinitionId": {
+            "value": "/providers/Microsoft.Authorization/policyDefinitions/59efceea-0c96-497e-a4a1-4eb2290dac15"
+          },
+          "parameters": {
+            "value": {
+              "tagOperator": {
+                "value": "All"
+              },
+              "tagValues": {
+                "value": "[variables('aumEnablingTag')]"
+              },
+              "osType": {
+                "value": "[variables('osTypes')[copyIndex()]]"
+              }
+            }
+          },
+          "identity": {
+            "value": "UserAssigned"
+          },
+          "userAssignedIdentityId": {
+            "value": "[reference('id_aumpolicy_contributor').outputs.resourceId.value]"
+          },
+          "roleDefinitionIds": {
+            "value": [
+              "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ]
+          },
+          "metadata": {
+            "value": {
+              "assignedBy": "maintenance/azure-update-manager"
+            }
+          },
+          "nonComplianceMessages": {
+            "value": []
+          },
+          "enforcementMode": {
+            "value": "Default"
+          },
+          "subscriptionId": {
+            "value": "[subscription().subscriptionId]"
+          },
+          "notScopes": {
+            "value": []
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "overrides": {
+            "value": []
+          },
+          "resourceSelectors": {
+            "value": []
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.30.23.60470",
+              "templateHash": "18165805964403960291"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. This message will be part of response in case of policy violation."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "defaultValue": "",
+              "maxLength": 128,
+              "metadata": {
+                "description": "Optional. The display name of the policy assignment. Maximum length is 128 characters."
+              }
+            },
+            "policyDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the ID of the policy definition or policy set definition being assigned."
+              }
+            },
+            "parameters": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Parameters for the policy assignment if needed."
+              }
+            },
+            "identity": {
+              "type": "string",
+              "defaultValue": "SystemAssigned",
+              "allowedValues": [
+                "SystemAssigned",
+                "UserAssigned",
+                "None"
+              ],
+              "metadata": {
+                "description": "Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions."
+              }
+            },
+            "userAssignedIdentityId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The Resource ID for the user assigned identity to assign to the policy assignment."
+              }
+            },
+            "roleDefinitionIds": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+              }
+            },
+            "nonComplianceMessages": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The messages that describe why a resource is non-compliant with the policy."
+              }
+            },
+            "enforcementMode": {
+              "type": "string",
+              "defaultValue": "Default",
+              "allowedValues": [
+                "Default",
+                "DoNotEnforce"
+              ],
+              "metadata": {
+                "description": "Optional. The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce."
+              }
+            },
+            "notScopes": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The policy excluded scopes."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "overrides": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition."
+              }
+            },
+            "resourceSelectors": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().subscriptionId]",
+              "metadata": {
+                "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment."
+              }
+            }
+          },
+          "variables": {
+            "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/policyAssignments",
+              "apiVersion": "2022-06-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                "parameters": "[parameters('parameters')]",
+                "nonComplianceMessages": "[if(not(empty(parameters('nonComplianceMessages'))), parameters('nonComplianceMessages'), createArray())]",
+                "enforcementMode": "[parameters('enforcementMode')]",
+                "notScopes": "[if(not(empty(parameters('notScopes'))), parameters('notScopes'), createArray())]",
+                "overrides": "[if(not(empty(parameters('overrides'))), parameters('overrides'), createArray())]",
+                "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]"
+              },
+              "identity": "[variables('identityVar')]"
+            },
+            {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('roleDefinitionIds'))]"
+              },
+              "condition": "[and(not(empty(parameters('roleDefinitionIds'))), equals(parameters('identity'), 'SystemAssigned'))]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(parameters('subscriptionId'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
+              "properties": {
+                "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
+                "principalId": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment Name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment principal ID."
+              },
+              "value": "[coalesce(tryGet(tryGet(reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment resource ID."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "id_aumpolicy_contributor"
+      ],
+      "metadata": {
+        "description": "Enables periodic assessment on Azure VMs based on tags for each OS type."
+      }
+    },
+    "configurePeriodicCheckingARCServersWindows": {
+      "copy": {
+        "name": "configurePeriodicCheckingARCServersWindows",
+        "count": "[length(variables('osTypes'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('periodiccheckarcpolassi-{0}-{1}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4), variables('osTypes')[copyIndex()]), 64)]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('AUMConfigurePeriodicCheckingARCVMPolicyAssignment{0}-{1}', variables('osTypes')[copyIndex()], substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
+          },
+          "displayName": {
+            "value": "[format('Azure Update Manager enabling periodic assessment on ARC Servers based on Tags for {0}', variables('osTypes')[copyIndex()])]"
+          },
+          "description": {
+            "value": "[format('This policy enables periodic checking for updates on Azure based on Tags of the ARC Servers for {0}', variables('osTypes')[copyIndex()])]"
+          },
+          "policyDefinitionId": {
+            "value": "/providers/Microsoft.Authorization/policyDefinitions/bfea026e-043f-4ff4-9d1b-bf301ca7ff46"
+          },
+          "parameters": {
+            "value": {
+              "tagOperator": {
+                "value": "All"
+              },
+              "tagValues": {
+                "value": "[variables('aumEnablingTag')]"
+              },
+              "osType": {
+                "value": "[variables('osTypes')[copyIndex()]]"
+              }
+            }
+          },
+          "identity": {
+            "value": "UserAssigned"
+          },
+          "userAssignedIdentityId": {
+            "value": "[reference('id_aumpolicy_contributor').outputs.resourceId.value]"
+          },
+          "roleDefinitionIds": {
+            "value": [
+              "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ]
+          },
+          "metadata": {
+            "value": {
+              "assignedBy": "maintenance/azure-update-manager"
+            }
+          },
+          "nonComplianceMessages": {
+            "value": []
+          },
+          "enforcementMode": {
+            "value": "Default"
+          },
+          "subscriptionId": {
+            "value": "[subscription().subscriptionId]"
+          },
+          "notScopes": {
+            "value": []
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "overrides": {
+            "value": []
+          },
+          "resourceSelectors": {
+            "value": []
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.30.23.60470",
+              "templateHash": "18165805964403960291"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. This message will be part of response in case of policy violation."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "defaultValue": "",
+              "maxLength": 128,
+              "metadata": {
+                "description": "Optional. The display name of the policy assignment. Maximum length is 128 characters."
+              }
+            },
+            "policyDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the ID of the policy definition or policy set definition being assigned."
+              }
+            },
+            "parameters": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Parameters for the policy assignment if needed."
+              }
+            },
+            "identity": {
+              "type": "string",
+              "defaultValue": "SystemAssigned",
+              "allowedValues": [
+                "SystemAssigned",
+                "UserAssigned",
+                "None"
+              ],
+              "metadata": {
+                "description": "Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions."
+              }
+            },
+            "userAssignedIdentityId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The Resource ID for the user assigned identity to assign to the policy assignment."
+              }
+            },
+            "roleDefinitionIds": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+              }
+            },
+            "nonComplianceMessages": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The messages that describe why a resource is non-compliant with the policy."
+              }
+            },
+            "enforcementMode": {
+              "type": "string",
+              "defaultValue": "Default",
+              "allowedValues": [
+                "Default",
+                "DoNotEnforce"
+              ],
+              "metadata": {
+                "description": "Optional. The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce."
+              }
+            },
+            "notScopes": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The policy excluded scopes."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "overrides": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition."
+              }
+            },
+            "resourceSelectors": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().subscriptionId]",
+              "metadata": {
+                "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment."
+              }
+            }
+          },
+          "variables": {
+            "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/policyAssignments",
+              "apiVersion": "2022-06-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                "parameters": "[parameters('parameters')]",
+                "nonComplianceMessages": "[if(not(empty(parameters('nonComplianceMessages'))), parameters('nonComplianceMessages'), createArray())]",
+                "enforcementMode": "[parameters('enforcementMode')]",
+                "notScopes": "[if(not(empty(parameters('notScopes'))), parameters('notScopes'), createArray())]",
+                "overrides": "[if(not(empty(parameters('overrides'))), parameters('overrides'), createArray())]",
+                "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]"
+              },
+              "identity": "[variables('identityVar')]"
+            },
+            {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('roleDefinitionIds'))]"
+              },
+              "condition": "[and(not(empty(parameters('roleDefinitionIds'))), equals(parameters('identity'), 'SystemAssigned'))]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(parameters('subscriptionId'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
+              "properties": {
+                "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
+                "principalId": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment Name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment principal ID."
+              },
+              "value": "[coalesce(tryGet(tryGet(reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment resource ID."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "id_aumpolicy_contributor"
+      ],
+      "metadata": {
+        "description": "Enables periodic assessment on ARC Servers based on tags for each OS type."
+      }
+    },
+    "requireAUMTagPolicyDefinition": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('aumtagpoldef-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('requireAUMTagPolicyDefinition-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
+          },
+          "displayName": {
+            "value": "Require tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance"
+          },
+          "description": {
+            "value": "Enforces existence of tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance. Does not apply to other resources/resource groups."
+          },
+          "mode": {
+            "value": "Indexed"
+          },
+          "metadata": {
+            "value": {
+              "version": "1.0.0",
+              "category": "Tags"
+            }
+          },
+          "parameters": {
+            "value": {
+              "maintenanceConfigEnrollmentTagName": {
+                "type": "String",
+                "metadata": {
+                  "displayName": "Tag name to specify the corresponding Maintenance Configuration",
+                  "description": "Name of the Tag to specify the Maintenance Configuration to which the resource belongs. For example 'aum_maintenance_ring'"
+                },
+                "defaultValue": "[parameters('maintenanceConfigEnrollmentTagName')]"
+              },
+              "maintenanceConfigNames": {
+                "type": "Array",
+                "metadata": {
+                  "displayName": "Available AUM Maintenance Configurations",
+                  "description": "Available AUM Maintenance Configuration names. For example [Ring-01,Ring-02]"
+                },
+                "defaultValue": "[variables('maintenanceConfigNames')]"
+              },
+              "maintenanceEnablingTagName": {
+                "type": "String",
+                "metadata": {
+                  "displayName": "Tag name to enable AUM maintenance",
+                  "description": "Name of the tag that enables AUM maintenance. For example 'aum_maintenance'"
+                },
+                "defaultValue": "[parameters('enableAUMTagName')]"
+              }
+            }
+          },
+          "policyRule": {
+            "value": {
+              "if": {
+                "allOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "field": "type",
+                        "equals": "Microsoft.Compute/virtualMachines"
+                      },
+                      {
+                        "field": "type",
+                        "equals": "Microsoft.HybridCompute/machines"
+                      }
+                    ]
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "not": {
+                          "field": "[[concat('tags[', parameters('maintenanceConfigEnrollmentTagName'), ']')]",
+                          "in": "[[parameters('maintenanceConfigNames')]"
+                        }
+                      },
+                      {
+                        "not": {
+                          "field": "[[concat('tags[', parameters('maintenanceEnablingTagName'), ']')]",
+                          "exists": true
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "effect": "deny"
+              }
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.30.23.60470",
+              "templateHash": "4395727328043408484"
+            },
+            "name": "Policy Definitions (Subscription scope)",
+            "description": "This module deploys a Policy Definition at a Subscription scope.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy definition. Maximum length is 64 characters."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "defaultValue": "",
+              "maxLength": 128,
+              "metadata": {
+                "description": "Optional. The display name of the policy definition. Maximum length is 128 characters."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The policy definition description."
+              }
+            },
+            "mode": {
+              "type": "string",
+              "defaultValue": "All",
+              "allowedValues": [
+                "All",
+                "Indexed",
+                "Microsoft.KeyVault.Data",
+                "Microsoft.ContainerService.Data",
+                "Microsoft.Kubernetes.Data",
+                "Microsoft.Network.Data"
+              ],
+              "metadata": {
+                "description": "Optional. The policy definition mode. Default is All, Some examples are All, Indexed, Microsoft.KeyVault.Data."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The policy Definition metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+              }
+            },
+            "parameters": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The policy definition parameters that can be used in policy definition references."
+              }
+            },
+            "policyRule": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. The Policy Rule details for the Policy Definition."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location deployment metadata."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/policyDefinitions",
+              "apiVersion": "2021-06-01",
+              "name": "[parameters('name')]",
+              "properties": {
+                "policyType": "Custom",
+                "mode": "[parameters('mode')]",
+                "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                "parameters": "[if(not(empty(parameters('parameters'))), parameters('parameters'), null())]",
+                "policyRule": "[parameters('policyRule')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Definition Name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Definition resource ID."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Authorization/policyDefinitions', parameters('name'))]"
+            },
+            "roleDefinitionIds": {
+              "type": "array",
+              "metadata": {
+                "description": "Policy Definition Role Definition IDs."
+              },
+              "value": "[coalesce(tryGet(tryGet(reference(subscriptionResourceId('Microsoft.Authorization/policyDefinitions', parameters('name')), '2021-06-01').policyRule.then, 'details'), 'roleDefinitionIds'), createArray())]"
+            }
+          }
+        }
+      },
+      "metadata": {
+        "description": "Defines a policy to enforce tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance."
+      }
+    },
+    "requireAUMTagPolicyAssignment": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('aumtagpolassi-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('requireAUMTagPolicyAssignment-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
+          },
+          "displayName": {
+            "value": "Require AUM maintenance ring tag on Azure VMs/ARC enabled servers"
+          },
+          "description": {
+            "value": "Enforces existence of a tag on Azure VMs/ARC enabled servers."
+          },
+          "policyDefinitionId": {
+            "value": "[reference('requireAUMTagPolicyDefinition').outputs.resourceId.value]"
+          },
+          "parameters": {
+            "value": {
+              "maintenanceConfigEnrollmentTagName": {
+                "value": "[parameters('maintenanceConfigEnrollmentTagName')]"
+              },
+              "maintenanceConfigNames": {
+                "value": "[variables('maintenanceConfigNames')]"
+              },
+              "maintenanceEnablingTagName": {
+                "value": "[parameters('enableAUMTagName')]"
+              }
+            }
+          },
+          "identity": {
+            "value": "UserAssigned"
+          },
+          "userAssignedIdentityId": {
+            "value": "[reference('id_aumpolicy_contributor').outputs.resourceId.value]"
+          },
+          "roleDefinitionIds": {
+            "value": []
+          },
+          "metadata": {
+            "value": {
+              "assignedBy": "maintenance/azure-update-manager"
+            }
+          },
+          "nonComplianceMessages": {
+            "value": [
+              {
+                "message": "[format('Please ensure that the following tags are applied to the VMs/ARC Servers - {0}: [Enabled/Disabled], {1}: {2} ', parameters('enableAUMTagName'), parameters('maintenanceConfigEnrollmentTagName'), replace(replace(string(variables('maintenanceConfigNames')), '\"', ''), ',', '/'))]"
+              }
+            ]
+          },
+          "enforcementMode": {
+            "value": "Default"
+          },
+          "subscriptionId": {
+            "value": "[subscription().subscriptionId]"
+          },
+          "notScopes": {
+            "value": []
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "overrides": {
+            "value": []
+          },
+          "resourceSelectors": {
+            "value": []
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.30.23.60470",
+              "templateHash": "18165805964403960291"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. This message will be part of response in case of policy violation."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "defaultValue": "",
+              "maxLength": 128,
+              "metadata": {
+                "description": "Optional. The display name of the policy assignment. Maximum length is 128 characters."
+              }
+            },
+            "policyDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the ID of the policy definition or policy set definition being assigned."
+              }
+            },
+            "parameters": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Parameters for the policy assignment if needed."
+              }
+            },
+            "identity": {
+              "type": "string",
+              "defaultValue": "SystemAssigned",
+              "allowedValues": [
+                "SystemAssigned",
+                "UserAssigned",
+                "None"
+              ],
+              "metadata": {
+                "description": "Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions."
+              }
+            },
+            "userAssignedIdentityId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The Resource ID for the user assigned identity to assign to the policy assignment."
+              }
+            },
+            "roleDefinitionIds": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+              }
+            },
+            "nonComplianceMessages": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The messages that describe why a resource is non-compliant with the policy."
+              }
+            },
+            "enforcementMode": {
+              "type": "string",
+              "defaultValue": "Default",
+              "allowedValues": [
+                "Default",
+                "DoNotEnforce"
+              ],
+              "metadata": {
+                "description": "Optional. The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce."
+              }
+            },
+            "notScopes": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The policy excluded scopes."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "overrides": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition."
+              }
+            },
+            "resourceSelectors": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().subscriptionId]",
+              "metadata": {
+                "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment."
+              }
+            }
+          },
+          "variables": {
+            "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/policyAssignments",
+              "apiVersion": "2022-06-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                "parameters": "[parameters('parameters')]",
+                "nonComplianceMessages": "[if(not(empty(parameters('nonComplianceMessages'))), parameters('nonComplianceMessages'), createArray())]",
+                "enforcementMode": "[parameters('enforcementMode')]",
+                "notScopes": "[if(not(empty(parameters('notScopes'))), parameters('notScopes'), createArray())]",
+                "overrides": "[if(not(empty(parameters('overrides'))), parameters('overrides'), createArray())]",
+                "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]"
+              },
+              "identity": "[variables('identityVar')]"
+            },
+            {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('roleDefinitionIds'))]"
+              },
+              "condition": "[and(not(empty(parameters('roleDefinitionIds'))), equals(parameters('identity'), 'SystemAssigned'))]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(parameters('subscriptionId'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
+              "properties": {
+                "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
+                "principalId": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment Name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment principal ID."
+              },
+              "value": "[coalesce(tryGet(tryGet(reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy Assignment resource ID."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "id_aumpolicy_contributor",
+        "requireAUMTagPolicyDefinition"
+      ],
+      "metadata": {
+        "description": "Assigns the policy to enforce tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance."
+      }
+    }
+  },
+  "outputs": {
+    "maintenanceConfigurationIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the maintenance configurations."
+      },
+      "copy": {
+        "count": "[length(range(0, length(parameters('maintenanceConfigurations'))))]",
+        "input": {
+          "id": "[reference(format('maintenance_configurations[{0}]', range(0, length(parameters('maintenanceConfigurations')))[copyIndex()])).outputs.resourceId.value]"
+        }
+      }
+    }
+  }
+}
