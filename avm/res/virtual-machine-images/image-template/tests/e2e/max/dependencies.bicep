@@ -268,7 +268,7 @@ resource assetsStorageAccount_upload 'Microsoft.Resources/deploymentScripts@2023
   properties: {
     azPowerShellVersion: '9.7'
     retentionInterval: 'P1D'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
     environmentVariables: [
       {
         name: '__SCRIPT__Install__LinuxPowerShell_sh' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'.

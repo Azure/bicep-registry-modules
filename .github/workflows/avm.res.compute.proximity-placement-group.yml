@@ -30,8 +30,8 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.compute.proximity-placement-group.yml"
       - "avm/res/compute/proximity-placement-group/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

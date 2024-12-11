@@ -69,7 +69,7 @@ jobs:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "Azure.Default"
 
   job_psrule_test_waf_reliability: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
@@ -91,7 +91,7 @@ jobs:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "Azure.Pillar.Reliability"
 
   job_psrule_test_waf_security_cb: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
@@ -113,7 +113,7 @@ jobs:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "CB.AVM.WAF.Security"
 
   job_psrule_test_waf_security: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
@@ -135,7 +135,7 @@ jobs:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "Azure.Pillar.Security"
 
   #############################
