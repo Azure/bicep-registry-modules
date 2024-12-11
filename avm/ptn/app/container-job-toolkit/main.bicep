@@ -65,9 +65,9 @@ param deployDnsZoneContainerRegistry bool = true
 @description('Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.')
 param addressPrefix string = '10.50.0.0/16' // set a default value for the cidrSubnet calculation, even if not used
 
-import { securityRulesType } from 'modules/deploy_services.bicep'
+import { securityRuleType } from 'modules/deploy_services.bicep'
 @description('Optional. Network security group, that will be added to the workload subnet.')
-param customNetworkSecurityGroups securityRulesType
+param customNetworkSecurityGroups securityRuleType[]?
 
 // container related parameters
 // -------------------------
@@ -93,18 +93,6 @@ param cpu string = '1'
 param memory string = '2Gi'
 
 @description('Optional. The environment variables that will be added to the Container Apps Job.')
-@metadata({
-  example: '''[
-  {
-    name: 'ENV_VAR_NAME'
-    value: 'ENV_VAR_VALUE'
-  }
-  {
-    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-    secretRef: 'applicationinsights-connection-string'
-  }
-]'''
-})
 param environmentVariables environmentVariableType[]?
 
 import { secretType } from 'modules/deploy_services.bicep'
@@ -138,17 +126,7 @@ import { secretType } from 'modules/deploy_services.bicep'
 param secrets secretType[]?
 
 @description('Optional. Workload profiles for the managed environment. Leave empty to use a consumption based profile.')
-@metadata({
-  example: '''[
-    {
-      workloadProfileType: 'D4'
-      name: 'CAW01'
-      minimumCount: 0
-      maximumCount: 1
-    }
-  ]'''
-})
-param workloadProfiles array?
+param workloadProfiles workloadProfileType[]?
 
 @description('Optional. The name of the workload profile to use. Leave empty to use a consumption based profile.')
 @metadata({ example: 'CAW01' })
@@ -249,7 +227,7 @@ module job 'br/public:avm/res/app/job:0.5.1' = {
     enableTelemetry: enableTelemetry
     tags: tags
     lock: lock
-    environmentResourceId: services.outputs.managedEnvironmentId
+    environmentResourceId: services.outputs.managedEnvironmentResourceId
     workloadProfileName: workloadProfileName
     managedIdentities: {
       userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
@@ -315,9 +293,7 @@ output systemAssignedMIPrincipalId string = services.outputs.userManagedIdentity
 output vnetResourceId string = services.outputs.vnetResourceId
 
 @description('Conditional. The address prefix for the private endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty.')
-output privateEndpointSubnetAddressPrefix string = deployInVnet
-  ? services.outputs.privateEndpointSubnetAddressPrefix
-  : ''
+output privateEndpointSubnetAddressPrefix string = services.outputs.privateEndpointSubnetAddressPrefix
 
 @description('Conditional. The address prefix for the service endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty.')
 output deploymentscriptSubnetAddressPrefix string = services.outputs.deploymentscriptSubnetAddressPrefix
@@ -329,6 +305,20 @@ output workloadSubnetAddressPrefix string = services.outputs.workloadSubnetAddre
 // Definitions      //
 // ================ //
 
+@export()
+@metadata({
+  example: '''[
+  {
+    name: 'ENV_VAR_NAME'
+    value: 'ENV_VAR_VALUE'
+  }
+  {
+    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+    secretRef: 'applicationinsights-connection-string'
+  }
+]'''
+})
+@description('Environment variables with name and value or a reference to a Key Vault secret.')
 type environmentVariableType = {
   @description('Required. The environment variable name.')
   name: string
@@ -338,4 +328,30 @@ type environmentVariableType = {
 
   @description('Conditional. The environment variable value. Required if `secretRef` is null.')
   value: string?
+}
+
+@export()
+@metadata({
+  example: '''[
+    {
+      workloadProfileType: 'D4'
+      name: 'CAW01'
+      minimumCount: 0
+      maximumCount: 1
+    }
+  ]'''
+})
+@description('Workload profiles for the managed environment. Leave empty to use a consumption based profile.')
+type workloadProfileType = {
+  @description('Required. The type of the workload profile.')
+  workloadProfileType: string
+
+  @description('Required. The name of the workload profile.')
+  name: string
+
+  @description('Required. The minimum number of instances for the workload profile.')
+  minimumCount: int
+
+  @description('Required. The maximum number of instances for the workload profile.')
+  maximumCount: int
 }

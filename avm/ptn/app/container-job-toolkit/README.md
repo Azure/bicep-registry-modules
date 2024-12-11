@@ -50,8 +50,17 @@ This module deploys a container to run as a job.
 | `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
-| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
+| `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedServices) |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedStorageAccounts) |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/savedSearches) |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
+| `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
+| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
 | `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
@@ -158,7 +167,7 @@ param overwriteExistingImage = true
 
 ### Example 2: _Using large parameter set_
 
-This instance deploys the module with existing resources.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -685,7 +694,7 @@ param workloadProfiles = [
 | [`registryRoleAssignments`](#parameter-registryroleassignments) | array | The permissions that will be assigned to the Container Registry. The managed Identity will be assigned the permissions to get and list images. |
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`workloadProfileName`](#parameter-workloadprofilename) | string |  The name of the workload profile to use. Leave empty to use a consumption based profile. |
+| [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. Leave empty to use a consumption based profile. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles for the managed environment. Leave empty to use a consumption based profile. |
 
 ### Parameter: `containerImageSource`
@@ -785,7 +794,7 @@ The properties of the security rule.
 | :-- | :-- | :-- |
 | [`access`](#parameter-customnetworksecuritygroupspropertiesaccess) | string | Whether network traffic is allowed or denied. |
 | [`direction`](#parameter-customnetworksecuritygroupspropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
-| [`priority`](#parameter-customnetworksecuritygroupspropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`priority`](#parameter-customnetworksecuritygroupspropertiespriority) | int | The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
 | [`protocol`](#parameter-customnetworksecuritygroupspropertiesprotocol) | string | Network protocol this rule applies to. |
 
 **Optional parameters**
@@ -793,7 +802,7 @@ The properties of the security rule.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-customnetworksecuritygroupspropertiesdescription) | string | The description of the security rule. |
-| [`destinationAddressPrefix`](#parameter-customnetworksecuritygroupspropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefix`](#parameter-customnetworksecuritygroupspropertiesdestinationaddressprefix) | string | The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
 | [`destinationAddressPrefixes`](#parameter-customnetworksecuritygroupspropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
 | [`destinationApplicationSecurityGroupResourceIds`](#parameter-customnetworksecuritygroupspropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
 | [`destinationPortRange`](#parameter-customnetworksecuritygroupspropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
@@ -834,7 +843,7 @@ The direction of the rule. The direction specifies if rule will be evaluated on 
 
 ### Parameter: `customNetworkSecurityGroups.properties.priority`
 
-Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
 
 - Required: Yes
 - Type: int
@@ -866,7 +875,7 @@ The description of the security rule.
 
 ### Parameter: `customNetworkSecurityGroups.properties.destinationAddressPrefix`
 
-Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
 
 - Required: No
 - Type: string
@@ -956,19 +965,6 @@ The environment variables that will be added to the Container Apps Job.
 
 - Required: No
 - Type: array
-- Example:
-  ```Bicep
-  [[
-    {
-      name: 'ENV_VAR_NAME'
-      value: 'ENV_VAR_VALUE'
-    }
-    {
-      name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-      secretRef: 'applicationinsights-connection-string'
-    }
-  ]
-  ```
 
 **Required parameters**
 
@@ -980,7 +976,7 @@ The environment variables that will be added to the Container Apps Job.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`secretRef`](#parameter-environmentvariablessecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null. |
+| [`secretRef`](#parameter-environmentvariablessecretref) | string | The name of the Container App secret from which to pull the environment variable value. Required if `value` is null. |
 | [`value`](#parameter-environmentvariablesvalue) | string | The environment variable value. Required if `secretRef` is null. |
 
 ### Parameter: `environmentVariables.name`
@@ -992,7 +988,7 @@ The environment variable name.
 
 ### Parameter: `environmentVariables.secretRef`
 
-The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.
+The name of the Container App secret from which to pull the environment variable value. Required if `value` is null.
 
 - Required: No
 - Type: string
@@ -1334,7 +1330,7 @@ The secrets of the Container App. They will be added to Key Vault and configured
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null. |
-| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null. |
+| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is null. |
 
 **Optional parameters**
 
@@ -1353,7 +1349,7 @@ Azure Key Vault URL pointing to the secret referenced by the Container App Job. 
 
 ### Parameter: `secrets.value`
 
-The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.
+The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is null.
 
 - Required: No
 - Type: securestring
@@ -1388,7 +1384,7 @@ Tags of the resource.
 
 ### Parameter: `workloadProfileName`
 
- The name of the workload profile to use. Leave empty to use a consumption based profile.
+The name of the workload profile to use. Leave empty to use a consumption based profile.
 
 - Required: No
 - Type: string
@@ -1400,17 +1396,43 @@ Workload profiles for the managed environment. Leave empty to use a consumption 
 
 - Required: No
 - Type: array
-- Example:
-  ```Bicep
-  [[
-      {
-        workloadProfileType: 'D4'
-        name: 'CAW01'
-        minimumCount: 0
-        maximumCount: 1
-      }
-    ]
-  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maximumCount`](#parameter-workloadprofilesmaximumcount) | int | The maximum number of instances for the workload profile. |
+| [`minimumCount`](#parameter-workloadprofilesminimumcount) | int | The minimum number of instances for the workload profile. |
+| [`name`](#parameter-workloadprofilesname) | string | The name of the workload profile. |
+| [`workloadProfileType`](#parameter-workloadprofilesworkloadprofiletype) | string | The type of the workload profile. |
+
+### Parameter: `workloadProfiles.maximumCount`
+
+The maximum number of instances for the workload profile.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `workloadProfiles.minimumCount`
+
+The minimum number of instances for the workload profile.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `workloadProfiles.name`
+
+The name of the workload profile.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workloadProfiles.workloadProfileType`
+
+The type of the workload profile.
+
+- Required: Yes
+- Type: string
 
 ## Outputs
 
@@ -1442,8 +1464,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.5.1` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.9.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.14.3` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Notes
 

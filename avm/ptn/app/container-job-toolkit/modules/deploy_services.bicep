@@ -56,6 +56,7 @@ param keyVaultName string
 @description('Optional. Secrets that will be added to Key Vault for later reference in the Container App Job.')
 param keyVaultSecrets secretType[]?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Role assignments that will be added to the Key Vault. The managed Identity will be assigned the `Key Vault Secrets User` role by default.')
 param keyVaultRoleAssignments roleAssignmentType[]?
 
@@ -71,6 +72,7 @@ param workloadProfiles array?
 @description('Optional. Tags of the resource.')
 param tags object = {}
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -132,8 +134,11 @@ var vaultBuiltInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
 var registryRbacRoles = ['7f951dda-4ed3-4680-a7ca-43fe172d538d', '8311e382-0749-4cb8-b61a-304f252e45ec'] // ArcPull, AcrPush
+
 var storageAccountRbacRoles = ['69566ab7-960f-475b-8e7c-b3118f30c6bd'] // Storage File Data Privileged Contributor
+
 var formattedVaultRoleAssignments = [
   for (roleAssignment, index) in (keyVaultRoleAssignments ?? []): union(roleAssignment, {
     roleDefinitionId: vaultBuiltInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
@@ -144,6 +149,7 @@ var formattedVaultRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
 var formattedRegistryRoleAssignments = [
   for (roleAssignment, index) in (registryRoleAssignments ?? []): union(roleAssignment, {
     roleDefinitionId: vaultBuiltInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
@@ -154,10 +160,14 @@ var formattedRegistryRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
 // network related variables
 var privateEndpointSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 0) // the first /24 subnet in the address space
+
 var deploymentscriptSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 1) // the second /24 subnet in the address space
+
 var workloadSubnetAddressPrefix = cidrSubnet(addressPrefix, 23, 1) // the second /23 subnet in the address space, as the first /24 subnet is used for private endpoints
+
 var zoneRedundant = deployInVnet || (!empty(addressPrefix) && empty(workloadProfiles)) // zoneRedundant is only needed if the environment is deployed in a vnet or for consumption plan if an addressPrefix has been provided
 
 // filter and prepare secrets that need to be added to Key Vault in order to reference them later
@@ -185,7 +195,9 @@ var regionSpecificServiceTags = {
   southcentralusstg: 'usstagec'
   brazilsoutheast: 'brazilse'
 }
+
 var locationLowered = toLower(location)
+
 var regionServiceTag = regionSpecificServiceTags[?locationLowered] ?? locationLowered
 
 // Networking resources
@@ -200,6 +212,7 @@ module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRe
     lock: lock
   }
 }
+
 module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant && !empty(workloadProfiles)) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-nsg-workload'
   params: {
@@ -321,6 +334,7 @@ module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0
     )
   }
 }
+
 module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant && empty(workloadProfiles)) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-nsg-workload'
   params: {
@@ -548,9 +562,11 @@ module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.6.0' = 
     ]
   }
 }
+
 resource dnsZoneKeyVault_existing 'Microsoft.Network/privateDnsZones@2020-06-01' existing = if (deployInVnet && !deployDnsZoneKeyVault) {
   name: 'privatelink.vaultcore.azure.net'
 }
+
 resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneKeyVault) {
   name: 'KeyVault-link-${name}'
   parent: dnsZoneKeyVault_existing
@@ -579,9 +595,11 @@ module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:
     ]
   }
 }
+
 resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@2020-06-01' existing = if (deployInVnet && !deployDnsZoneContainerRegistry) {
   name: 'privatelink.azurecr.io'
 }
+
 resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneContainerRegistry) {
   name: 'ContainerRegistry-link-${name}'
   parent: dnsZoneContainerRegistry_existing
@@ -627,6 +645,7 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.9.
     ]
   }
 }
+
 module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.9.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-privateEndpoint_ContainerRegistry'
   params: {
@@ -668,6 +687,7 @@ resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023
   location: location
   tags: union(tags, { 'used-by': 'container-job-toolkit' })
 }
+
 resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
   name: last(split(managedIdentityResourceId! ?? 'dummyMsi', '/'))
   // get the resource group from the managed identity, as it could be in another resource group
@@ -740,6 +760,7 @@ module registry 'br/public:avm/res/container-registry/registry:0.6.0' = {
     publicNetworkAccess: deployInVnet ? 'Disabled' : null
   }
 }
+
 module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = [
   for registryRole in registryRbacRoles: {
     name: '${uniqueString(deployment().name, location, resourceGroupName)}-registry-rbac-${registryRole}'
@@ -790,10 +811,15 @@ module storage 'br/public:avm/res/storage/storage-account:0.14.3' = if (deployIn
   }
 }
 
-resource law 'Microsoft.OperationalInsights/workspaces@2023-09-01' = if (empty(logAnalyticsWorkspaceResourceId)) {
-  name: '${name}-law'
-  location: location
-  tags: union(tags, { 'used-by': 'container-job-toolkit' })
+module law 'br/public:avm/res/operational-insights/workspace:0.9.0' = if (empty(logAnalyticsWorkspaceResourceId)) {
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-law'
+  params: {
+    name: 'la-${name}'
+    location: location
+    enableTelemetry: enableTelemetry
+    tags: union(tags, { 'used-by': 'container-job-toolkit' })
+    lock: lock
+  }
 }
 
 // Managed Environment
@@ -803,7 +829,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.1' = {
   params: {
     name: 'container-apps-environment-${name}'
     enableTelemetry: enableTelemetry
-    logAnalyticsWorkspaceResourceId: !empty(logAnalyticsWorkspaceResourceId) ? logAnalyticsWorkspaceResourceId! : law.id
+    logAnalyticsWorkspaceResourceId: !empty(logAnalyticsWorkspaceResourceId)
+      ? logAnalyticsWorkspaceResourceId!
+      : law.outputs.resourceId
     location: location
     tags: union(tags, { 'used-by': 'container-job-toolkit' })
     lock: lock
@@ -819,33 +847,63 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.1' = {
   }
 }
 
+@description('The resouce ID of the Log Analytics Workspace (passed as parameter value or from the newly created Log Analytics Workspace).')
 output logAnalyticsResourceId string = !empty(logAnalyticsWorkspaceResourceId)
   ? logAnalyticsWorkspaceResourceId!
-  : law.id
+  : law.outputs.resourceId
+
+@description('The name of the Key Vault instance.')
 output vaultName string = vault.outputs.name
+
+@description('The Key Vault secret URI for the Application Insights connection string.')
 output keyVaultAppInsightsConnectionStringUrl string = !empty(appInsightsConnectionString ?? '')
   ? '${vault.outputs.uri}/secrets/applicationinsights-connection-string'
   : ''
+
+@description('The name of the Container Registry instance.')
 output registryName string = registry.outputs.name
+
+@description('The login server of the Container Registry instance.')
 output registryLoginServer string = registry.outputs.loginServer
-output managedEnvironmentId string = managedEnvironment.outputs.resourceId
+
+@description('The resource ID of the managed environment resource.')
+output managedEnvironmentResourceId string = managedEnvironment.outputs.resourceId
+
+@description('The resource ID of the (new or existing) managed identity.')
 output userManagedIdentityResourceId string = managedIdentityResourceId == null
   ? userIdentity_new.id
   : userIdentity_existing.id
+
+@description('The principal ID of the (new or existing) managed identity.')
 output userManagedIdentityPrincipalId string = managedIdentityResourceId == null
   ? userIdentity_new.properties.principalId
   : userIdentity_existing.properties.principalId
+
+@description('The resource ID of the storage account instance.')
 output storageAccountResourceId string = deployInVnet ? storage.outputs.resourceId : ''
 
+@description('The resource ID of the virtual network instance.')
 output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''
 
+@description('The address prefix of the private endpoint subnet.')
 output privateEndpointSubnetAddressPrefix string = deployInVnet ? privateEndpointSubnetAddressPrefix : ''
+
+@description('The address prefix of the subnet, the deployment script is using.')
 output deploymentscriptSubnetAddressPrefix string = deployInVnet ? deploymentscriptSubnetAddressPrefix : ''
+
+@description('The address prefix of the subnet, the container app is using.')
 output workloadSubnetAddressPrefix string = deployInVnet ? workloadSubnetAddressPrefix : '' // also used for zoneRedundant configuration
+
+@description('The resource ID of the subnet, the deployment script is using.')
 output subnetResourceId_deploymentScript string = deployInVnet ? vnet.outputs.subnetResourceIds[1] : ''
 
+@description('The CIDR of the Docker bridge.')
 output dockerBridgeCidr string = dockerBridgeCidr
+
+@description('The CIDR of the platform reserved range.')
 output platformReservedCidr string = platformReservedCidr
+
+@description('The IP address of the platform reserved DNS server.')
 output platformReservedDnsIP string = platformReservedDnsIP
 
 // ================ //
@@ -853,6 +911,7 @@ output platformReservedDnsIP string = platformReservedDnsIP
 // ================ //
 
 @export()
+@description('Secrets that will be added to Key Vault for later reference in the Container App Job.')
 type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
@@ -866,12 +925,13 @@ type secretType = {
   @description('Optional. The name of the secret.')
   name: string?
 
-  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
+  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is null.')
   @secure()
   value: string?
 }
 
 @export()
+@description('Network security group, that will be added to the workload subnet.')
 type securityRuleType = {
   @description('Required. The name of the security rule.')
   name: string
@@ -926,5 +986,3 @@ type securityRuleType = {
     sourcePortRanges: string[]?
   }
 }
-
-import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
