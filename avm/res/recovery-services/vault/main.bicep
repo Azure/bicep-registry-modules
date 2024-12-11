@@ -63,10 +63,10 @@ param securitySettings object = {}
 ])
 param publicNetworkAccess string = 'Disabled'
 
-@description('Optional. The redundancy settings of the vault.')
+@description('Required. The redundancy settings of the vault.')
 param redundancySettings redundancySettingsType?
 
-@description('Optional. The restore settings of the vault.')
+@description('Required. The restore settings of the vault.')
 param restoreSettings restoreSettingsType?
 
 @description('Optional. The customer managed key definition.')

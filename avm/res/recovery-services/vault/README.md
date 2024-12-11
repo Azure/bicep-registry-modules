@@ -2703,6 +2703,8 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Azure Recovery Service Vault. |
+| [`redundancySettings`](#parameter-redundancysettings) | object | The redundancy settings of the vault. |
+| [`restoreSettings`](#parameter-restoresettings) | object | The restore settings of the vault. |
 
 **Optional parameters**
 
@@ -2721,11 +2723,9 @@ param tags = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`protectionContainers`](#parameter-protectioncontainers) | array | List of all protection containers. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
-| [`redundancySettings`](#parameter-redundancysettings) | object | The redundancy settings of the vault. |
 | [`replicationAlertSettings`](#parameter-replicationalertsettings) | object | Replication alert settings. |
 | [`replicationFabrics`](#parameter-replicationfabrics) | array | List of all replication fabrics. |
 | [`replicationPolicies`](#parameter-replicationpolicies) | array | List of all replication policies. |
-| [`restoreSettings`](#parameter-restoresettings) | object | The restore settings of the vault. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securitySettings`](#parameter-securitysettings) | object | Security Settings of the vault. |
 | [`tags`](#parameter-tags) | object | Tags of the Recovery Service Vault resource. |
@@ -2733,6 +2733,67 @@ param tags = {
 ### Parameter: `name`
 
 Name of the Azure Recovery Service Vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `redundancySettings`
+
+The redundancy settings of the vault.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossRegionRestore`](#parameter-redundancysettingscrossregionrestore) | string | Flag to show if Cross Region Restore is enabled on the Vault or not. |
+| [`standardTierStorageRedundancy`](#parameter-redundancysettingsstandardtierstorageredundancy) | string | The storage redundancy setting of a vault. |
+
+### Parameter: `redundancySettings.crossRegionRestore`
+
+Flag to show if Cross Region Restore is enabled on the Vault or not.
+
+- Required: No
+- Type: string
+
+### Parameter: `redundancySettings.standardTierStorageRedundancy`
+
+The storage redundancy setting of a vault.
+
+- Required: No
+- Type: string
+
+### Parameter: `restoreSettings`
+
+The restore settings of the vault.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossSubscriptionRestoreSettings`](#parameter-restoresettingscrosssubscriptionrestoresettings) | object | The restore settings of the vault. |
+
+### Parameter: `restoreSettings.crossSubscriptionRestoreSettings`
+
+The restore settings of the vault.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossSubscriptionRestoreState`](#parameter-restoresettingscrosssubscriptionrestoresettingscrosssubscriptionrestorestate) | string | The restore settings of the vault. |
+
+### Parameter: `restoreSettings.crossSubscriptionRestoreSettings.crossSubscriptionRestoreState`
+
+The restore settings of the vault.
 
 - Required: Yes
 - Type: string
@@ -3499,34 +3560,6 @@ Whether or not public network access is allowed for this resource. For security 
   ]
   ```
 
-### Parameter: `redundancySettings`
-
-The redundancy settings of the vault.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`crossRegionRestore`](#parameter-redundancysettingscrossregionrestore) | string | Flag to show if Cross Region Restore is enabled on the Vault or not. |
-| [`standardTierStorageRedundancy`](#parameter-redundancysettingsstandardtierstorageredundancy) | string | The storage redundancy setting of a vault. |
-
-### Parameter: `redundancySettings.crossRegionRestore`
-
-Flag to show if Cross Region Restore is enabled on the Vault or not.
-
-- Required: No
-- Type: string
-
-### Parameter: `redundancySettings.standardTierStorageRedundancy`
-
-The storage redundancy setting of a vault.
-
-- Required: No
-- Type: string
-
 ### Parameter: `replicationAlertSettings`
 
 Replication alert settings.
@@ -3550,39 +3583,6 @@ List of all replication policies.
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `restoreSettings`
-
-The restore settings of the vault.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`crossSubscriptionRestoreSettings`](#parameter-restoresettingscrosssubscriptionrestoresettings) | object | The restore settings of the vault. |
-
-### Parameter: `restoreSettings.crossSubscriptionRestoreSettings`
-
-The restore settings of the vault.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`crossSubscriptionRestoreState`](#parameter-restoresettingscrosssubscriptionrestoresettingscrosssubscriptionrestorestate) | string | The restore settings of the vault. |
-
-### Parameter: `restoreSettings.crossSubscriptionRestoreSettings.crossSubscriptionRestoreState`
-
-The restore settings of the vault.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `roleAssignments`
 
