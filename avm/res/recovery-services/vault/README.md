@@ -2773,11 +2773,6 @@ The customer managed key definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`infrastructureEncryption`](#parameter-customermanagedkeyinfrastructureencryption) | string | The resource ID of the key vault. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`kekIdentity`](#parameter-customermanagedkeykekidentity) | object | The details of the identity used for CMK	. |
 | [`keyVaultProperties`](#parameter-customermanagedkeykeyvaultproperties) | object | The properties of the Key Vault which hosts CMK. |
 
@@ -2795,7 +2790,7 @@ The details of the identity used for CMK	.
 - Required: Yes
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -2823,7 +2818,7 @@ The properties of the Key Vault which hosts CMK.
 - Required: Yes
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -3511,7 +3506,7 @@ The redundancy settings of the vault.
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |

@@ -441,28 +441,28 @@ type customerManagedKeyType = {
   @description('Required. The resource ID of the key vault.')
   infrastructureEncryption: string
 
-  @description('Optional. The details of the identity used for CMK	.')
+  @description('Required. The details of the identity used for CMK	.')
   kekIdentity: {
-    @description('Optional. The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned.')
+    @description('Required. The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned.')
     userAssignedIdentity: string
 
-    @description('Optional. Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field.')
+    @description('Required. Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field.')
     useSystemAssignedIdentity: bool
   }
 
-  @description('Optional. The properties of the Key Vault which hosts CMK.')
+  @description('Required. The properties of the Key Vault which hosts CMK.')
   keyVaultProperties: {
-    @description('Optional. The key uri of the Customer Managed Key.')
+    @description('Required. The key uri of the Customer Managed Key.')
     keyUri: string
   }
 }?
 
 @export()
 type redundancySettingsType = {
-  @description('Optional. Flag to show if Cross Region Restore is enabled on the Vault or not.')
+  @description('Required. Flag to show if Cross Region Restore is enabled on the Vault or not.')
   crossRegionRestore: string?
 
-  @description('Optional. The storage redundancy setting of a vault.')
+  @description('Required. The storage redundancy setting of a vault.')
   standardTierStorageRedundancy: string?
 }
 
