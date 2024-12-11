@@ -76,6 +76,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
       primaryAgentPoolProfiles: [
         {
           availabilityZones: [
