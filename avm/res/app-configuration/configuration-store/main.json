@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "1487487747339936931"
+      "version": "0.32.4.45862",
+      "templateHash": "10452972878115150542"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -744,10 +744,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -806,7 +803,7 @@
         "softDeleteRetentionInDays": "[if(equals(parameters('sku'), 'Free'), 0, parameters('softDeleteRetentionInDays'))]"
       },
       "dependsOn": [
-        "cMKKeyVault",
+        "cMKKeyVault::cMKKey",
         "cMKUserAssignedIdentity"
       ]
     },
@@ -924,8 +921,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "16228768685345449634"
+              "version": "0.32.4.45862",
+              "templateHash": "7922138698421978944"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value.",
@@ -980,10 +977,7 @@
                 "contentType": "[parameters('contentType')]",
                 "tags": "[parameters('tags')]",
                 "value": "[parameters('value')]"
-              },
-              "dependsOn": [
-                "appConfiguration"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1045,8 +1039,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "5813668514829209844"
+              "version": "0.32.4.45862",
+              "templateHash": "17969455097723208424"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica.",
