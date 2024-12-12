@@ -141,11 +141,11 @@ module testDeployment '../../../main.bicep' = {
                   unixReadOnly: false
                   unixReadWrite: false
                   kerberos5ReadOnly: true
-                  kerberos5ReadWrite: false
-                  kerberos5iReadOnly: false
-                  kerberos5iReadWrite: false
-                  kerberos5pReadOnly: false
-                  kerberos5pReadWrite: false
+                  kerberos5ReadWrite: true
+                  kerberos5iReadOnly: true
+                  kerberos5iReadWrite: true
+                  kerberos5pReadOnly: true
+                  kerberos5pReadWrite: true
                 }
               ]
             }
