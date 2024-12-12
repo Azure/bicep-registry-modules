@@ -385,7 +385,7 @@ output privateEndpoints array = [
 @export()
 @description('The type for the data plane proxy.')
 type dataPlaneProxyType = {
-  @description('Optional. The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources.')
+  @description('Optional. The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources. \'Pass-through\' is recommended.')
   authenticationMode: ('Local' | 'Pass-through')?
 
   @description('Required. The data plane proxy private link delegation. This property manages if a request from delegated Azure Resource Manager (ARM) private link is allowed when the data plane resource requires private link.')

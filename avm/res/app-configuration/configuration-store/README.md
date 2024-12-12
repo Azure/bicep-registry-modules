@@ -286,9 +286,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     name: 'accmax001'
     // Non-required parameters
     createMode: 'Default'
-    dataPlaneProxy: {
-      privateLinkDelegation: 'Enabled'
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -397,11 +394,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Non-required parameters
     "createMode": {
       "value": "Default"
-    },
-    "dataPlaneProxy": {
-      "value": {
-        "privateLinkDelegation": "Enabled"
-      }
     },
     "diagnosticSettings": {
       "value": [
@@ -528,9 +520,6 @@ using 'br/public:avm/res/app-configuration/configuration-store:<version>'
 param name = 'accmax001'
 // Non-required parameters
 param createMode = 'Default'
-param dataPlaneProxy = {
-  privateLinkDelegation: 'Enabled'
-}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1074,7 +1063,7 @@ Property specifying the configuration of data plane proxy for Azure Resource Man
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authenticationMode`](#parameter-dataplaneproxyauthenticationmode) | string | The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources. |
+| [`authenticationMode`](#parameter-dataplaneproxyauthenticationmode) | string | The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources. 'Pass-through' is recommended. |
 
 ### Parameter: `dataPlaneProxy.privateLinkDelegation`
 
@@ -1092,7 +1081,7 @@ The data plane proxy private link delegation. This property manages if a request
 
 ### Parameter: `dataPlaneProxy.authenticationMode`
 
-The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources.
+The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources. 'Pass-through' is recommended.
 
 - Required: No
 - Type: string

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2569749451508037823"
+      "templateHash": "2494796385676696617"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -24,7 +24,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources."
+            "description": "Optional. The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources. 'Pass-through' is recommended."
           }
         },
         "privateLinkDelegation": {
