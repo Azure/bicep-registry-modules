@@ -56,7 +56,6 @@ module customsubscriptionPlacement './modules/helper.bicep' = [
   }
 ]
 
-
 // =============== //
 //   Outputs   //
 // =============== //
@@ -72,6 +71,6 @@ output subscriptionPlacementSummary string = 'Subscription placements have been 
 type typMgChild = {
   @description('Required. The ID of the management group.')
   managementGroupId: string
-  @description('Required. The list of subscription IDs.')
+  @description('Required. The list of subscription IDs to be placed underneath the management group.')
   subscriptionIds: string[]
 }[]

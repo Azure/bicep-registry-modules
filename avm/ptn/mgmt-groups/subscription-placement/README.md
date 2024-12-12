@@ -139,7 +139,7 @@ Type definition for management group child containing management group ID and su
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`managementGroupId`](#parameter-parsubscriptionplacementmanagementgroupid) | string | The ID of the management group. |
-| [`subscriptionIds`](#parameter-parsubscriptionplacementsubscriptionids) | array | The list of subscription IDs. |
+| [`subscriptionIds`](#parameter-parsubscriptionplacementsubscriptionids) | array | The list of subscription IDs to be placed underneath the management group. |
 
 ### Parameter: `parSubscriptionPlacement.managementGroupId`
 
@@ -150,7 +150,7 @@ The ID of the management group.
 
 ### Parameter: `parSubscriptionPlacement.subscriptionIds`
 
-The list of subscription IDs.
+The list of subscription IDs to be placed underneath the management group.
 
 - Required: Yes
 - Type: array
