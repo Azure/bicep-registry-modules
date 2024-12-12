@@ -2294,7 +2294,7 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `kustoCluster_databases` | array | The databases of the kusto cluster. |
+| `databases` | array | The databases of the kusto cluster. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the kusto cluster. |
 | `privateEndpoints` | array | The private endpoints of the kusto cluster. |

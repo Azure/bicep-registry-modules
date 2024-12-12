@@ -432,7 +432,7 @@ output privateEndpoints array = [
 ]
 
 @description('The databases of the kusto cluster.')
-output kustoCluster_databases array = [
+output databases array = [
   for (database, index) in (!empty(databases) ? array(databases) : []): {
     name: kustoCluster_databases[index].outputs.name
     resourceId: kustoCluster_databases[index].outputs.resourceId

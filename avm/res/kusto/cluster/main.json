@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1461589423847251"
+      "templateHash": "5485047453025059126"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -2401,7 +2401,7 @@
         }
       }
     },
-    "kustoCluster_databases": {
+    "databases": {
       "type": "array",
       "metadata": {
         "description": "The databases of the kusto cluster."
