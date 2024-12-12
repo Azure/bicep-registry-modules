@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Deploying Non-AAD Cluster'
+metadata description = 'This instance deploys the module with a non-AAD integrated cluster.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-containerservice.managedclus
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csmin'
+param serviceShort string = 'csnonaad'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -46,14 +46,12 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'systempool'
           count: 3
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_DS2_v2'
           mode: 'System'
         }
       ]
-      aadProfile: {
-        aadProfileEnableAzureRBAC: true
-        aadProfileManaged: true
-      }
+      aadProfile: null
+      disableLocalAccounts: false
     }
   }
 ]

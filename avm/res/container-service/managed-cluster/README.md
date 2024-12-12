@@ -37,8 +37,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-3-using-only-defaults)
 - [Using Istio Service Mesh add-on](#example-4-using-istio-service-mesh-add-on)
 - [Using Kubenet Network Plugin.](#example-5-using-kubenet-network-plugin)
-- [Using Private Cluster.](#example-6-using-private-cluster)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Deploying Non-AAD Cluster](#example-6-deploying-non-aad-cluster)
+- [Using Private Cluster.](#example-7-using-private-cluster)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _Using only defaults and use AKS Automatic mode (PREVIEW)_
 
@@ -64,6 +65,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
     disableLocalAccounts: true
     enableKeyvaultSecretsProvider: true
@@ -136,6 +141,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "autoNodeOsUpgradeProfileUpgradeChannel": {
       "value": "NodeImage"
     },
@@ -234,6 +245,10 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param autoNodeOsUpgradeProfileUpgradeChannel = 'NodeImage'
 param disableLocalAccounts = true
 param enableKeyvaultSecretsProvider = true
@@ -318,6 +333,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     agentPools: [
       {
         availabilityZones: [
@@ -575,6 +594,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "agentPools": {
       "value": [
         {
@@ -886,6 +911,10 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param agentPools = [
   {
     availabilityZones: [
@@ -1127,6 +1156,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -1162,6 +1195,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "location": {
       "value": "<location>"
     },
@@ -1195,6 +1234,10 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
@@ -1228,6 +1271,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
     istioServiceMeshCertificateAuthority: {
@@ -1277,6 +1324,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "enableKeyvaultSecretsProvider": {
       "value": true
     },
@@ -1336,6 +1389,10 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
 param istioServiceMeshCertificateAuthority = {
@@ -1396,6 +1453,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     agentPools: [
       {
         availabilityZones: [
@@ -1527,6 +1588,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "agentPools": {
       "value": [
         {
@@ -1666,6 +1733,10 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param agentPools = [
   {
     availabilityZones: [
@@ -1758,7 +1829,118 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Using Private Cluster._
+### Example 6: _Deploying Non-AAD Cluster_
+
+This instance deploys the module with a non-AAD integrated cluster.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
+  name: 'managedClusterDeployment'
+  params: {
+    // Required parameters
+    name: 'csnonaad001'
+    primaryAgentPoolProfiles: [
+      {
+        count: 3
+        mode: 'System'
+        name: 'systempool'
+        vmSize: 'Standard_DS2_v2'
+      }
+    ]
+    // Non-required parameters
+    aadProfile: '<aadProfile>'
+    disableLocalAccounts: false
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csnonaad001"
+    },
+    "primaryAgentPoolProfiles": {
+      "value": [
+        {
+          "count": 3,
+          "mode": "System",
+          "name": "systempool",
+          "vmSize": "Standard_DS2_v2"
+        }
+      ]
+    },
+    // Non-required parameters
+    "aadProfile": {
+      "value": "<aadProfile>"
+    },
+    "disableLocalAccounts": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csnonaad001'
+param primaryAgentPoolProfiles = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param aadProfile = '<aadProfile>'
+param disableLocalAccounts = false
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
 
@@ -1796,6 +1978,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     agentPools: [
       {
         availabilityZones: [
@@ -1896,6 +2082,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "agentPools": {
       "value": [
         {
@@ -2008,6 +2200,10 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param agentPools = [
   {
     availabilityZones: [
@@ -2068,7 +2264,7 @@ param skuTier = 'Standard'
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -2106,6 +2302,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     agentPools: [
       {
         availabilityZones: [
@@ -2280,6 +2480,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "agentPools": {
       "value": [
         {
@@ -2486,6 +2692,10 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param agentPools = [
   {
     availabilityZones: [
@@ -2640,13 +2850,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadProfileAdminGroupObjectIDs`](#parameter-aadprofileadmingroupobjectids) | array | Specifies the AAD group object IDs that will have admin role of the cluster. |
-| [`aadProfileClientAppID`](#parameter-aadprofileclientappid) | string | The client AAD application ID. |
-| [`aadProfileEnableAzureRBAC`](#parameter-aadprofileenableazurerbac) | bool | Specifies whether to enable Azure RBAC for Kubernetes authorization. |
-| [`aadProfileManaged`](#parameter-aadprofilemanaged) | bool | Specifies whether to enable managed AAD integration. |
-| [`aadProfileServerAppID`](#parameter-aadprofileserverappid) | string | The server AAD application ID. |
-| [`aadProfileServerAppSecret`](#parameter-aadprofileserverappsecret) | string | The server AAD application secret. |
-| [`aadProfileTenantId`](#parameter-aadprofiletenantid) | string | Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication. |
+| [`aadProfile`](#parameter-aadprofile) | object | Enable Azure Active Directory integration. |
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
@@ -3140,57 +3344,78 @@ Specifies the resource ID of connected application gateway. Required if `ingress
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileAdminGroupObjectIDs`
+### Parameter: `aadProfile`
+
+Enable Azure Active Directory integration.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadProfileEnableAzureRBAC`](#parameter-aadprofileaadprofileenableazurerbac) | bool | Specifies whether to enable Azure RBAC for Kubernetes authorization. |
+| [`aadProfileManaged`](#parameter-aadprofileaadprofilemanaged) | bool | Specifies whether to enable managed AAD integration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadProfileAdminGroupObjectIDs`](#parameter-aadprofileaadprofileadmingroupobjectids) | array | Specifies the AAD group object IDs that will have admin role of the cluster. |
+| [`aadProfileClientAppID`](#parameter-aadprofileaadprofileclientappid) | string | The client AAD application ID. |
+| [`aadProfileServerAppID`](#parameter-aadprofileaadprofileserverappid) | string | The server AAD application ID. |
+| [`aadProfileServerAppSecret`](#parameter-aadprofileaadprofileserverappsecret) | string | The server AAD application secret. |
+| [`aadProfileTenantId`](#parameter-aadprofileaadprofiletenantid) | string | Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication. |
+
+### Parameter: `aadProfile.aadProfileEnableAzureRBAC`
+
+Specifies whether to enable Azure RBAC for Kubernetes authorization.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `aadProfile.aadProfileManaged`
+
+Specifies whether to enable managed AAD integration.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `aadProfile.aadProfileAdminGroupObjectIDs`
 
 Specifies the AAD group object IDs that will have admin role of the cluster.
 
 - Required: No
 - Type: array
 
-### Parameter: `aadProfileClientAppID`
+### Parameter: `aadProfile.aadProfileClientAppID`
 
 The client AAD application ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileEnableAzureRBAC`
-
-Specifies whether to enable Azure RBAC for Kubernetes authorization.
-
-- Required: No
-- Type: bool
-- Default: `[parameters('enableRBAC')]`
-
-### Parameter: `aadProfileManaged`
-
-Specifies whether to enable managed AAD integration.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `aadProfileServerAppID`
+### Parameter: `aadProfile.aadProfileServerAppID`
 
 The server AAD application ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileServerAppSecret`
+### Parameter: `aadProfile.aadProfileServerAppSecret`
 
 The server AAD application secret.
 
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileTenantId`
+### Parameter: `aadProfile.aadProfileTenantId`
 
 Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.
 
 - Required: No
 - Type: string
-- Default: `[subscription().tenantId]`
 
 ### Parameter: `aciConnectorLinuxEnabled`
 
