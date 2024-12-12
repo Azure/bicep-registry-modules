@@ -89,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 0
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
       ]
@@ -113,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
           scaleSetEvictionPolicy: 'Delete'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
         {
@@ -135,7 +135,7 @@ module testDeployment '../../../main.bicep' = [
           scaleSetEvictionPolicy: 'Delete'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
         }
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
