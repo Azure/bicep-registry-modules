@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13871524692494146314"
+      "version": "0.32.4.45862",
+      "templateHash": "10324618530995904011"
     },
     "name": "Storage Account Local Users",
     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -139,10 +139,7 @@
         "homeDirectory": "[parameters('homeDirectory')]",
         "permissionScopes": "[parameters('permissionScopes')]",
         "sshAuthorizedKeys": "[parameters('sshAuthorizedKeys')]"
-      },
-      "dependsOn": [
-        "storageAccount"
-      ]
+      }
     }
   },
   "outputs": {
