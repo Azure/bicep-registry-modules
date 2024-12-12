@@ -1,7 +1,14 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults and use AKS Automatic mode (PREVIEW)'
-metadata description = 'Node autoprovisioning (NAP) for AKS is currently in PREVIEW. Register the NodeAutoProvisioningPreview feature flag using the az feature register command. MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION. This instance deploys the module with the set of automatic parameters.'
+metadata description = '''
+This instance deploys the module with the set of automatic parameters.'
+
+Node autoprovisioning (NAP) for AKS is currently in PREVIEW.
+Register the NodeAutoProvisioningPreview feature flag using the az feature register command.
+
+MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION.
+'''
 
 // ========== //
 // Parameters //
@@ -72,9 +79,7 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-      nodeProvisioningProfile: {
-        mode: 'Auto'
-      }
+      nodeProvisioningProfile: 'Auto'
       nodeResourceGroupProfile: {
         restrictionLevel: 'ReadOnly'
       }
