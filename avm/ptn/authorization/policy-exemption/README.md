@@ -30,7 +30,6 @@ The following section provides usage examples for the module, which were used to
 - [Policy Exemption (Resource Group)](#example-4-policy-exemption-resource-group)
 - [Policy Exemption (Subscription)](#example-5-policy-exemption-subscription)
 - [Policy Exemption (Subscription)](#example-6-policy-exemption-subscription)
-- [Waf-Aligned](#example-7-waf-aligned)
 
 ### Example 1: _Policy Exemptions (Management Group scope)_
 
@@ -782,19 +781,6 @@ param resourceSelectors = [
   }
 ]
 param subscriptionId = '<subscriptionId>'
-```
-
-</details>
-<p>
-
-### Example 7: _Waf-Aligned_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-
 ```
 
 </details>
