@@ -22,8 +22,8 @@ resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2022-12-0
   name: name
   parent: flexibleServer
   properties: {
-    collation: !empty(collation) ? collation : null
-    charset: !empty(charset) ? charset : null
+    collation: collation
+    charset: charset
   }
 }
 
