@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "9112993609811464047"
+      "version": "0.32.4.45862",
+      "templateHash": "3546390882406301587"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -856,10 +856,7 @@
       "apiVersion": "2023-07-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -939,8 +936,7 @@
         "version": "[parameters('version')]"
       },
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
+        "cMKKeyVault::cMKKey"
       ]
     },
     "flexibleServer_lock": {
@@ -1054,8 +1050,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3975156466788361818"
+              "version": "0.32.4.45862",
+              "templateHash": "11632575389049940661"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -1103,10 +1099,7 @@
               "properties": {
                 "collation": "[parameters('collation')]",
                 "charset": "[parameters('charset')]"
-              },
-              "dependsOn": [
-                "flexibleServer"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1171,8 +1164,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "13990914411694160996"
+              "version": "0.32.4.45862",
+              "templateHash": "2417829760859901443"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
@@ -1281,8 +1274,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17544917398852278943"
+              "version": "0.32.4.45862",
+              "templateHash": "4603954091356584226"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -1330,10 +1323,7 @@
               "properties": {
                 "source": "[parameters('source')]",
                 "value": "[parameters('value')]"
-              },
-              "dependsOn": [
-                "flexibleServer"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1402,8 +1392,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "787734745917336225"
+              "version": "0.32.4.45862",
+              "templateHash": "13710762420924831499"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",
