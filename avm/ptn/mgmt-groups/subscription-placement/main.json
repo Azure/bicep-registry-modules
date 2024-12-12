@@ -6,14 +6,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3265681683082198627"
+      "templateHash": "6920720962396336725"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups ",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "typMgChild": {
+    "subscriptionPlacementType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -39,10 +39,10 @@
   },
   "parameters": {
     "parSubscriptionPlacement": {
-      "$ref": "#/definitions/typMgChild",
+      "$ref": "#/definitions/subscriptionPlacementType",
       "defaultValue": [],
       "metadata": {
-        "description": "Required. Type definition for management group child containing management group ID and subscription IDs."
+        "description": "Required. The management group IDs along with the subscriptions to be placed underneath them."
       }
     },
     "location": {

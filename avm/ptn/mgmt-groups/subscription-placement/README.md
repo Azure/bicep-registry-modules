@@ -41,8 +41,11 @@ module subscriptionPlacement 'br/public:avm/ptn/mgmt-groups/subscription-placeme
   params: {
     parSubscriptionPlacement: [
       {
-        managementGroupId: '<managementGroupId>'
-        subscriptionIds: '<subscriptionIds>'
+        managementGroupId: 'testmg1'
+        subscriptionIds: [
+          '00000000-0000-0000-0000-000000000001'
+          '00000000-0000-0000-0000-000000000002'
+        ]
       }
     ]
   }
@@ -64,8 +67,11 @@ module subscriptionPlacement 'br/public:avm/ptn/mgmt-groups/subscription-placeme
     "parSubscriptionPlacement": {
       "value": [
         {
-          "managementGroupId": "<managementGroupId>",
-          "subscriptionIds": "<subscriptionIds>"
+          "managementGroupId": "testmg1",
+          "subscriptionIds": [
+            "00000000-0000-0000-0000-000000000001",
+            "00000000-0000-0000-0000-000000000002"
+          ]
         }
       ]
     }
@@ -85,8 +91,11 @@ using 'br/public:avm/ptn/mgmt-groups/subscription-placement:<version>'
 
 param parSubscriptionPlacement = [
   {
-    managementGroupId: '<managementGroupId>'
-    subscriptionIds: '<subscriptionIds>'
+    managementGroupId: 'testmg1'
+    subscriptionIds: [
+      '00000000-0000-0000-0000-000000000001'
+      '00000000-0000-0000-0000-000000000002'
+    ]
   }
 ]
 ```
@@ -100,7 +109,7 @@ param parSubscriptionPlacement = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`parSubscriptionPlacement`](#parameter-parsubscriptionplacement) | array | Type definition for management group child containing management group ID and subscription IDs. |
+| [`parSubscriptionPlacement`](#parameter-parsubscriptionplacement) | array | The management group IDs along with the subscriptions to be placed underneath them. |
 
 **Optional parameters**
 
@@ -111,7 +120,7 @@ param parSubscriptionPlacement = [
 
 ### Parameter: `parSubscriptionPlacement`
 
-Type definition for management group child containing management group ID and subscription IDs.
+The management group IDs along with the subscriptions to be placed underneath them.
 
 - Required: No
 - Type: array
