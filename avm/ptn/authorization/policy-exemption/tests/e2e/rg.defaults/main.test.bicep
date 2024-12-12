@@ -43,6 +43,9 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-04-01'
   name: 'audit-vm-managed-disks'
   scope: managementGroup()
   properties: {
+    metadata: {
+      assignedBy: 'Bicep'
+    }
     policyDefinitionId: policyDefinitionID
     description: ' 	This policy audits VMs that do not use managed disks'
     displayName: 'Audit VMs that do not use managed disks'
