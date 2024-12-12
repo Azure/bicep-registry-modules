@@ -1,6 +1,6 @@
-# <Add module name> `[Authorization/RoleDefinition]`
+# avm/ptn/authorization/role-definition `[Authorization/RoleDefinition]`
 
-<Add description>
+This module deploys a custom role definition to a Management Group.
 
 ## Navigation
 
@@ -12,7 +12,9 @@
 
 ## Resource Types
 
-_None_
+| Resource Type | API Version |
+| :-- | :-- |
+| `Microsoft.Authorization/roleDefinitions` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-05-01-preview/roleDefinitions) |
 
 ## Usage examples
 
@@ -22,10 +24,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/role-definition:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Role Definition (Management Group scope) - Required Parameters](#example-1-role-definition-management-group-scope---required-parameters)
+- [Role Definition (Management Group scope) - Using loadJsonContent](#example-2-role-definition-management-group-scope---using-loadjsoncontent)
 
-### Example 1: _Defaults_
+### Example 1: _Role Definition (Management Group scope) - Required Parameters_
+
+This module deploys a Role Definition at a Management Group scope using minimal parameters.
+
 
 <details>
 
@@ -36,7 +41,12 @@ module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>
   name: 'roleDefinitionDeployment'
   params: {
     // Required parameters
-    name: 'arddef001'
+    roleDefinition: {
+      actions: [
+        '*/read'
+      ]
+      name: 'rbac-custom-role-reader'
+    }
     // Non-required parameters
     location: '<location>'
   }
@@ -56,8 +66,13 @@ module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "arddef001"
+    "roleDefinition": {
+      "value": {
+        "actions": [
+          "*/read"
+        ],
+        "name": "rbac-custom-role-reader"
+      }
     },
     // Non-required parameters
     "location": {
@@ -78,7 +93,12 @@ module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>
 using 'br/public:avm/ptn/authorization/role-definition:<version>'
 
 // Required parameters
-param name = 'arddef001'
+param roleDefinition = {
+  actions: [
+    '*/read'
+  ]
+  name: 'rbac-custom-role-reader'
+}
 // Non-required parameters
 param location = '<location>'
 ```
@@ -86,7 +106,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _Role Definition (Management Group scope) - Using loadJsonContent_
+
+This module deploys a Role Definition at a Management Group scope using loadJsonContent to load a custom role definition stored in a JSON file.
+
 
 <details>
 
@@ -97,7 +120,15 @@ module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>
   name: 'roleDefinitionDeployment'
   params: {
     // Required parameters
-    name: 'ardwaf001'
+    roleDefinition: {
+      actions: '<actions>'
+      dataActions: '<dataActions>'
+      description: '<description>'
+      name: '<name>'
+      notActions: '<notActions>'
+      notDataActions: '<notDataActions>'
+      roleName: '<roleName>'
+    }
     // Non-required parameters
     location: '<location>'
   }
@@ -117,8 +148,16 @@ module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "ardwaf001"
+    "roleDefinition": {
+      "value": {
+        "actions": "<actions>",
+        "dataActions": "<dataActions>",
+        "description": "<description>",
+        "name": "<name>",
+        "notActions": "<notActions>",
+        "notDataActions": "<notDataActions>",
+        "roleName": "<roleName>"
+      }
     },
     // Non-required parameters
     "location": {
@@ -139,7 +178,15 @@ module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>
 using 'br/public:avm/ptn/authorization/role-definition:<version>'
 
 // Required parameters
-param name = 'ardwaf001'
+param roleDefinition = {
+  actions: '<actions>'
+  dataActions: '<dataActions>'
+  description: '<description>'
+  name: '<name>'
+  notActions: '<notActions>'
+  notDataActions: '<notDataActions>'
+  roleName: '<roleName>'
+}
 // Non-required parameters
 param location = '<location>'
 ```
@@ -153,20 +200,94 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the resource to create. |
+| [`roleDefinition`](#parameter-roledefinition) | object | Array of custom role definitions to create on the management group. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`location`](#parameter-location) | string | The location of the telemetry deployment to be created. Default is location of deployment. |
 
-### Parameter: `name`
+### Parameter: `roleDefinition`
 
-Name of the resource to create.
+Array of custom role definitions to create on the management group.
 
 - Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-roledefinitionname) | string | The name of the custom role definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actions`](#parameter-roledefinitionactions) | array | The permission actions of the custom role definition. |
+| [`assignableScopes`](#parameter-roledefinitionassignablescopes) | array | The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used. |
+| [`dataActions`](#parameter-roledefinitiondataactions) | array | The permission data actions of the custom role definition. |
+| [`description`](#parameter-roledefinitiondescription) | string | The description of the custom role definition. |
+| [`notActions`](#parameter-roledefinitionnotactions) | array | The permission not actions of the custom role definition. |
+| [`notDataActions`](#parameter-roledefinitionnotdataactions) | array | The permission not data actions of the custom role definition. |
+| [`roleName`](#parameter-roledefinitionrolename) | string | The display name of the custom role definition. If not specified, the name will be used. |
+
+### Parameter: `roleDefinition.name`
+
+The name of the custom role definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleDefinition.actions`
+
+The permission actions of the custom role definition.
+
+- Required: No
+- Type: array
+
+### Parameter: `roleDefinition.assignableScopes`
+
+The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used.
+
+- Required: No
+- Type: array
+
+### Parameter: `roleDefinition.dataActions`
+
+The permission data actions of the custom role definition.
+
+- Required: No
+- Type: array
+
+### Parameter: `roleDefinition.description`
+
+The description of the custom role definition.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleDefinition.notActions`
+
+The permission not actions of the custom role definition.
+
+- Required: No
+- Type: array
+
+### Parameter: `roleDefinition.notDataActions`
+
+The permission not data actions of the custom role definition.
+
+- Required: No
+- Type: array
+
+### Parameter: `roleDefinition.roleName`
+
+The display name of the custom role definition. If not specified, the name will be used.
+
+- Required: No
 - Type: string
 
 ### Parameter: `enableTelemetry`
@@ -179,15 +300,17 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `location`
 
-Location for all Resources.
+The location of the telemetry deployment to be created. Default is location of deployment.
 
 - Required: No
 - Type: string
-- Default: `[resourceGroup().location]`
+- Default: `[deployment().location]`
 
 ## Outputs
 
-_None_
+| Output | Type |
+| :-- | :-- |
+| `managementGroupCustomRoleDefinitionIds` | object |
 
 ## Data Collection
 

@@ -1,48 +1,35 @@
-targetScope = 'subscription'
+targetScope = 'managementGroup'
+metadata name = 'Role Definition (Management Group scope) - Using loadJsonContent'
+metadata description = 'This module deploys a Role Definition at a Management Group scope using loadJsonContent to load a custom role definition stored in a JSON file.'
 
 // ========== //
 // Parameters //
 // ========== //
 
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'acrdmgjson'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'ardwaf'
-
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
 
 // ============== //
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      // You parameters go here
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+param customRoleDefinitionJson object = loadJsonContent('lib/subscription_owner.alz_role_definition.json')
+
+module testDeployment '../../../main.bicep' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  params: {
+    roleDefinition: {
+      name: customRoleDefinitionJson.name
+      roleName: customRoleDefinitionJson.properties.roleName
+      description: customRoleDefinitionJson.properties.description
+      actions: customRoleDefinitionJson.properties.permissions[0].actions
+      notActions: customRoleDefinitionJson.properties.permissions[0].notActions
+      dataActions: customRoleDefinitionJson.properties.permissions[0].dataActions
+      notDataActions: customRoleDefinitionJson.properties.permissions[0].notDataActions
     }
+    location: resourceLocation
   }
-]
+}
