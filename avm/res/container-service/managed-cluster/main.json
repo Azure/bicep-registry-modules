@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9232127846824520513"
+      "templateHash": "9554800820602512447"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -890,7 +890,7 @@
         "Automatic"
       ],
       "metadata": {
-        "description": "Optional. Name of a managed cluster SKU."
+        "description": "Optional. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. Name of a managed cluster SKU."
       }
     },
     "skuTier": {
@@ -1003,7 +1003,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Node provisioning settings that apply to the whole cluster."
+        "description": "Optional. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. Node provisioning settings that apply to the whole cluster."
       }
     },
     "nodeResourceGroup": {
