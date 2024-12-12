@@ -287,7 +287,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Non-required parameters
     createMode: 'Default'
     dataPlaneProxy: {
-      authenticationMode: 'Pass-through'
       privateLinkDelegation: 'Enabled'
     }
     diagnosticSettings: [
@@ -401,7 +400,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "dataPlaneProxy": {
       "value": {
-        "authenticationMode": "Pass-through",
         "privateLinkDelegation": "Enabled"
       }
     },
@@ -531,7 +529,6 @@ param name = 'accmax001'
 // Non-required parameters
 param createMode = 'Default'
 param dataPlaneProxy = {
-  authenticationMode: 'Pass-through'
   privateLinkDelegation: 'Enabled'
 }
 param diagnosticSettings = [
@@ -1071,22 +1068,13 @@ Property specifying the configuration of data plane proxy for Azure Resource Man
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authenticationMode`](#parameter-dataplaneproxyauthenticationmode) | string | The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources. |
 | [`privateLinkDelegation`](#parameter-dataplaneproxyprivatelinkdelegation) | string | The data plane proxy private link delegation. This property manages if a request from delegated Azure Resource Manager (ARM) private link is allowed when the data plane resource requires private link. |
 
-### Parameter: `dataPlaneProxy.authenticationMode`
+**Optional parameters**
 
-The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Local'
-    'Pass-through'
-  ]
-  ```
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authenticationMode`](#parameter-dataplaneproxyauthenticationmode) | string | The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources. |
 
 ### Parameter: `dataPlaneProxy.privateLinkDelegation`
 
@@ -1099,6 +1087,20 @@ The data plane proxy private link delegation. This property manages if a request
   [
     'Disabled'
     'Enabled'
+  ]
+  ```
+
+### Parameter: `dataPlaneProxy.authenticationMode`
+
+The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Local'
+    'Pass-through'
   ]
   ```
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13095551099918565940"
+      "templateHash": "2569749451508037823"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -22,8 +22,9 @@
             "Local",
             "Pass-through"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources."
+            "description": "Optional. The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources."
           }
         },
         "privateLinkDelegation": {
@@ -837,7 +838,7 @@
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyVaultProperties', createObject('keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)), 'identityClientId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), reference('cMKUserAssignedIdentity').clientId, null()))), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', 'Enabled'))]",
         "softDeleteRetentionInDays": "[if(equals(parameters('sku'), 'Free'), 0, parameters('softDeleteRetentionInDays'))]",
-        "dataPlaneProxy": "[parameters('dataPlaneProxy')]"
+        "dataPlaneProxy": "[if(not(empty(parameters('dataPlaneProxy'))), createObject('authenticationMode', coalesce(tryGet(parameters('dataPlaneProxy'), 'authenticationMode'), 'Pass-through'), 'privateLinkDelegation', parameters('dataPlaneProxy').privateLinkDelegation), null())]"
       },
       "dependsOn": [
         "cMKKeyVault::cMKKey",

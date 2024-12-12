@@ -158,7 +158,6 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       dataPlaneProxy: {
-        authenticationMode: 'Pass-through'
         privateLinkDelegation: 'Enabled'
       }
     }
