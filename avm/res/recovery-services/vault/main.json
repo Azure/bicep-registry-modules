@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "3802837286624194217"
+      "templateHash": "4034527475794432271"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -66,14 +66,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. Flag to show if Cross Region Restore is enabled on the Vault or not."
+            "description": "Optional. Flag to show if Cross Region Restore is enabled on the Vault or not."
           }
         },
         "standardTierStorageRedundancy": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The storage redundancy setting of a vault."
+            "description": "Optional. The storage redundancy setting of a vault."
           }
         }
       },
@@ -701,14 +701,14 @@
       "$ref": "#/definitions/redundancySettingsType",
       "nullable": true,
       "metadata": {
-        "description": "Required. The redundancy settings of the vault."
+        "description": "Optional. The redundancy settings of the vault."
       }
     },
     "restoreSettings": {
       "$ref": "#/definitions/restoreSettingsType",
       "nullable": true,
       "metadata": {
-        "description": "Required. The restore settings of the vault."
+        "description": "Optional. The restore settings of the vault."
       }
     },
     "customerManagedKey": {

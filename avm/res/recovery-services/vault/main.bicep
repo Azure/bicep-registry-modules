@@ -63,10 +63,10 @@ param securitySettings object = {}
 ])
 param publicNetworkAccess string = 'Disabled'
 
-@description('Required. The redundancy settings of the vault.')
+@description('Optional. The redundancy settings of the vault.')
 param redundancySettings redundancySettingsType?
 
-@description('Required. The restore settings of the vault.')
+@description('Optional. The restore settings of the vault.')
 param restoreSettings restoreSettingsType?
 
 @description('Optional. The customer managed key definition.')
@@ -459,10 +459,10 @@ type customerManagedKeyType = {
 
 @export()
 type redundancySettingsType = {
-  @description('Required. Flag to show if Cross Region Restore is enabled on the Vault or not.')
+  @description('Optional. Flag to show if Cross Region Restore is enabled on the Vault or not.')
   crossRegionRestore: string?
 
-  @description('Required. The storage redundancy setting of a vault.')
+  @description('Optional. The storage redundancy setting of a vault.')
   standardTierStorageRedundancy: string?
 }
 
