@@ -69,20 +69,20 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
-@description('Optional. The lock settings of the service.')
+@description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
-@description('Optional. Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointSingleServiceType[]?
-
 import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
+
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
+param privateEndpoints privateEndpointMultiServiceType[]?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
@@ -327,20 +327,20 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   }
 ]
 
-module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
+      name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.service}-${index}'
               properties: {
                 privateLinkServiceId: dataFactory.id
                 groupIds: [
-                  privateEndpoint.?service ?? 'dataFactory'
+                  privateEndpoint.service
                 ]
               }
             }
@@ -349,11 +349,11 @@ module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.service}-${index}'
               properties: {
                 privateLinkServiceId: dataFactory.id
                 groupIds: [
-                  privateEndpoint.?service ?? 'dataFactory'
+                  privateEndpoint.service
                 ]
                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
               }
@@ -401,7 +401,7 @@ output privateEndpoints array = [
     resourceId: dataFactory_privateEndpoints[i].outputs.resourceId
     groupId: dataFactory_privateEndpoints[i].outputs.groupId
     customDnsConfig: dataFactory_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: dataFactory_privateEndpoints[i].outputs.networkInterfaceIds
+    networkInterfaceResourceIds: dataFactory_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
