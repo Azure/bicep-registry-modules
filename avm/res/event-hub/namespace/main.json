@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "9484587807097605805"
+      "version": "0.32.4.45862",
+      "templateHash": "2804785196723632019"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace.",
@@ -823,10 +823,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "cMKKeyVault": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
@@ -889,8 +886,8 @@
         "zoneRedundant": "[parameters('zoneRedundant')]"
       },
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
+        "cMKKeyVault::cMKKey",
+        "cMKKeyVault"
       ]
     },
     "eventHubNamespace_roleAssignments": {
@@ -1000,8 +997,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17259242639582200555"
+              "version": "0.32.4.45862",
+              "templateHash": "10870241183446190975"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule.",
@@ -1099,8 +1096,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "8113636930925672754"
+              "version": "0.32.4.45862",
+              "templateHash": "2513291802697135803"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config.",
@@ -1251,8 +1248,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "5033853023675754605"
+              "version": "0.32.4.45862",
+              "templateHash": "17504773495438271921"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub.",
@@ -1616,10 +1613,7 @@
               "type": "Microsoft.EventHub/namespaces/eventhubs",
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-              "properties": "[if(parameters('captureDescriptionEnabled'), union(variables('eventHubProperties'), variables('eventHubPropertiesCapture')), variables('eventHubProperties'))]",
-              "dependsOn": [
-                "namespace"
-              ]
+              "properties": "[if(parameters('captureDescriptionEnabled'), union(variables('eventHubProperties'), variables('eventHubPropertiesCapture')), variables('eventHubProperties'))]"
             },
             "eventHub_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1690,8 +1684,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "16171510166758171614"
+                      "version": "0.32.4.45862",
+                      "templateHash": "7140787813388812663"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
@@ -1796,8 +1790,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "13516577120816131911"
+                      "version": "0.32.4.45862",
+                      "templateHash": "14846437278716777277"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
@@ -1940,8 +1934,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3751066819839534982"
+              "version": "0.32.4.45862",
+              "templateHash": "6437192538669884795"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set.",
