@@ -464,7 +464,7 @@ type redundancySettingsType = {
 
   @description('Optional. The storage redundancy setting of a vault.')
   standardTierStorageRedundancy: string?
-}
+}?
 
 @export()
 type restoreSettingsType = {
@@ -473,7 +473,7 @@ type restoreSettingsType = {
     @description('Optional. The restore settings of the vault.')
     crossSubscriptionRestoreState: string
   }
-}
+}?
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
