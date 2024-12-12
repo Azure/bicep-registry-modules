@@ -157,6 +157,10 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      dataPlaneProxy: {
+        authenticationMode: 'Pass-through'
+        privateLinkDelegation: 'Enabled'
+      }
     }
   }
 ]

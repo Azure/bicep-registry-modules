@@ -6,13 +6,42 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10452972878115150542"
+      "templateHash": "13095551099918565940"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "dataPlaneProxyType": {
+      "type": "object",
+      "properties": {
+        "authenticationMode": {
+          "type": "string",
+          "allowedValues": [
+            "Local",
+            "Pass-through"
+          ],
+          "metadata": {
+            "description": "Required. The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources."
+          }
+        },
+        "privateLinkDelegation": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. The data plane proxy private link delegation. This property manages if a request from delegated Azure Resource Manager (ARM) private link is allowed when the data plane resource requires private link."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the data plane proxy."
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -696,6 +725,13 @@
         "description": "Optional. Tags of the resource."
       }
     },
+    "dataPlaneProxy": {
+      "$ref": "#/definitions/dataPlaneProxyType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Property specifying the configuration of data plane proxy for Azure Resource Manager (ARM)."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -786,7 +822,7 @@
     },
     "configurationStore": {
       "type": "Microsoft.AppConfiguration/configurationStores",
-      "apiVersion": "2023-03-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -800,7 +836,8 @@
         "enablePurgeProtection": "[if(equals(parameters('sku'), 'Free'), false(), parameters('enablePurgeProtection'))]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyVaultProperties', createObject('keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)), 'identityClientId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), reference('cMKUserAssignedIdentity').clientId, null()))), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', 'Enabled'))]",
-        "softDeleteRetentionInDays": "[if(equals(parameters('sku'), 'Free'), 0, parameters('softDeleteRetentionInDays'))]"
+        "softDeleteRetentionInDays": "[if(equals(parameters('sku'), 'Free'), 0, parameters('softDeleteRetentionInDays'))]",
+        "dataPlaneProxy": "[parameters('dataPlaneProxy')]"
       },
       "dependsOn": [
         "cMKKeyVault::cMKKey",
@@ -922,7 +959,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7922138698421978944"
+              "templateHash": "1257304987024829675"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value.",
@@ -966,12 +1003,12 @@
             "appConfiguration": {
               "existing": true,
               "type": "Microsoft.AppConfiguration/configurationStores",
-              "apiVersion": "2023-03-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('appConfigurationName')]"
             },
             "keyValues": {
               "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
-              "apiVersion": "2023-03-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('appConfigurationName'), parameters('name'))]",
               "properties": {
                 "contentType": "[parameters('contentType')]",
@@ -1040,7 +1077,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17969455097723208424"
+              "templateHash": "5469955128467975062"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica.",
@@ -1069,7 +1106,7 @@
           "resources": [
             {
               "type": "Microsoft.AppConfiguration/configurationStores/replicas",
-              "apiVersion": "2023-03-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('appConfigurationName'), parameters('name'))]",
               "location": "[parameters('replicaLocation')]"
             }
@@ -1900,14 +1937,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('configurationStore', '2023-03-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('configurationStore', '2024-05-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('configurationStore', '2023-03-01', 'full').location]"
+      "value": "[reference('configurationStore', '2024-05-01', 'full').location]"
     },
     "endpoint": {
       "type": "string",

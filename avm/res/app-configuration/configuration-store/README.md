@@ -15,9 +15,9 @@ This module deploys an App Configuration Store.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.AppConfiguration/configurationStores` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2023-03-01/configurationStores) |
-| `Microsoft.AppConfiguration/configurationStores/keyValues` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2023-03-01/configurationStores/keyValues) |
-| `Microsoft.AppConfiguration/configurationStores/replicas` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2023-03-01/configurationStores/replicas) |
+| `Microsoft.AppConfiguration/configurationStores` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores) |
+| `Microsoft.AppConfiguration/configurationStores/keyValues` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores/keyValues) |
+| `Microsoft.AppConfiguration/configurationStores/replicas` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores/replicas) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -286,6 +286,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     name: 'accmax001'
     // Non-required parameters
     createMode: 'Default'
+    dataPlaneProxy: {
+      authenticationMode: 'Pass-through'
+      privateLinkDelegation: 'Enabled'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -394,6 +398,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Non-required parameters
     "createMode": {
       "value": "Default"
+    },
+    "dataPlaneProxy": {
+      "value": {
+        "authenticationMode": "Pass-through",
+        "privateLinkDelegation": "Enabled"
+      }
     },
     "diagnosticSettings": {
       "value": [
@@ -520,6 +530,10 @@ using 'br/public:avm/res/app-configuration/configuration-store:<version>'
 param name = 'accmax001'
 // Non-required parameters
 param createMode = 'Default'
+param dataPlaneProxy = {
+  authenticationMode: 'Pass-through'
+  privateLinkDelegation: 'Enabled'
+}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -950,6 +964,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`createMode`](#parameter-createmode) | string | Indicates whether the configuration store need to be recovered. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`dataPlaneProxy`](#parameter-dataplaneproxy) | object | Property specifying the configuration of data plane proxy for Azure Resource Manager (ARM). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disables all authentication methods other than AAD authentication. |
 | [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier. |
@@ -1044,6 +1059,48 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+
+### Parameter: `dataPlaneProxy`
+
+Property specifying the configuration of data plane proxy for Azure Resource Manager (ARM).
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authenticationMode`](#parameter-dataplaneproxyauthenticationmode) | string | The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources. |
+| [`privateLinkDelegation`](#parameter-dataplaneproxyprivatelinkdelegation) | string | The data plane proxy private link delegation. This property manages if a request from delegated Azure Resource Manager (ARM) private link is allowed when the data plane resource requires private link. |
+
+### Parameter: `dataPlaneProxy.authenticationMode`
+
+The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Local'
+    'Pass-through'
+  ]
+  ```
+
+### Parameter: `dataPlaneProxy.privateLinkDelegation`
+
+The data plane proxy private link delegation. This property manages if a request from delegated Azure Resource Manager (ARM) private link is allowed when the data plane resource requires private link.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings`
 

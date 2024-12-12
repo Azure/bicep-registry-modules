@@ -69,6 +69,9 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Tags of the resource.')
 param tags object?
 
+@description('Optional. Property specifying the configuration of data plane proxy for Azure Resource Manager (ARM).')
+param dataPlaneProxy dataPlaneProxyType?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -171,7 +174,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2023-03-01' = {
+resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -201,6 +204,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2023
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
     softDeleteRetentionInDays: sku == 'Free' ? 0 : softDeleteRetentionInDays
+    dataPlaneProxy: dataPlaneProxy
   }
 }
 
@@ -368,3 +372,17 @@ output privateEndpoints array = [
     networkInterfaceIds: configurationStore_privateEndpoints[i].outputs.networkInterfaceIds
   }
 ]
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for the data plane proxy.')
+type dataPlaneProxyType = {
+  @description('Required. The data plane proxy authentication mode. This property manages the authentication mode of request to the data plane resources.')
+  authenticationMode: 'Local' | 'Pass-through'
+
+  @description('Required. The data plane proxy private link delegation. This property manages if a request from delegated Azure Resource Manager (ARM) private link is allowed when the data plane resource requires private link.')
+  privateLinkDelegation: 'Disabled' | 'Enabled'
+}
