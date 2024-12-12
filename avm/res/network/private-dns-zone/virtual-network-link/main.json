@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1713449351614683457"
+      "version": "0.32.4.45862",
+      "templateHash": "15326596012552051215"
     },
     "name": "Private DNS Zone Virtual Network Link",
     "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -52,6 +52,13 @@
       "metadata": {
         "description": "Required. Link to another virtual network resource ID."
       }
+    },
+    "resolutionPolicy": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resolution policy on the virtual network link. Only applicable for virtual network links to privatelink zones, and for A,AAAA,CNAME queries. When set to `NxDomainRedirect`, Azure DNS resolver falls back to public resolution if private dns query resolution results in non-existent domain response. `Default` is configured as the default option."
+      }
     }
   },
   "resources": {
@@ -63,7 +70,7 @@
     },
     "virtualNetworkLink": {
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2024-06-01",
       "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -71,11 +78,9 @@
         "registrationEnabled": "[parameters('registrationEnabled')]",
         "virtualNetwork": {
           "id": "[parameters('virtualNetworkResourceId')]"
-        }
-      },
-      "dependsOn": [
-        "privateDnsZone"
-      ]
+        },
+        "resolutionPolicy": "[parameters('resolutionPolicy')]"
+      }
     }
   },
   "outputs": {
@@ -105,7 +110,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualNetworkLink', '2020-06-01', 'full').location]"
+      "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
     }
   }
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "15873678240851060540"
+      "version": "0.31.92.45157",
+      "templateHash": "17863230728556651506"
     },
     "name": "CDN Profiles AFD Endpoint Route",
     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -299,7 +299,10 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/afdEndpoints",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]"
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
+      "dependsOn": [
+        "profile"
+      ]
     },
     "profile::customDomains": {
       "copy": {
@@ -309,13 +312,19 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/customDomains",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]"
+      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]",
+      "dependsOn": [
+        "profile"
+      ]
     },
     "profile::originGroup": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles/originGroups",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
+      "dependsOn": [
+        "profile"
+      ]
     },
     "profile::ruleSet": {
       "copy": {
@@ -325,7 +334,10 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/ruleSets",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]"
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
+      "dependsOn": [
+        "profile"
+      ]
     },
     "profile": {
       "existing": true,
@@ -365,7 +377,10 @@
         "originPath": "[parameters('originPath')]",
         "patternsToMatch": "[parameters('patternsToMatch')]",
         "supportedProtocols": "[parameters('supportedProtocols')]"
-      }
+      },
+      "dependsOn": [
+        "profile::afdEndpoint"
+      ]
     }
   },
   "outputs": {
