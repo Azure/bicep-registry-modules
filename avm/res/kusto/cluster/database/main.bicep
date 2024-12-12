@@ -21,23 +21,23 @@ param databaseKind string = 'ReadWrite'
 @description('Optional. The properties of the database if using read-write. Only used if databaseKind is ReadWrite.')
 param databaseReadWriteProperties databaseReadWriteType
 
-resource kustoCluster 'Microsoft.Kusto/clusters@2023-08-15' existing = {
+resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: kustoClusterName
 }
 
-resource database_readOnly 'Microsoft.Kusto/clusters/databases@2023-08-15' = if (databaseKind == 'ReadOnlyFollowing') {
+resource database_readOnly 'Microsoft.Kusto/clusters/databases@2024-04-13' = if (databaseKind == 'ReadOnlyFollowing') {
   name: name
   parent: kustoCluster
   location: location
   kind: 'ReadOnlyFollowing'
 }
 
-resource database_readWrite 'Microsoft.Kusto/clusters/databases@2023-08-15' = if (databaseKind == 'ReadWrite') {
+resource database_readWrite 'Microsoft.Kusto/clusters/databases@2024-04-13' = if (databaseKind == 'ReadWrite') {
   name: name
   parent: kustoCluster
   location: location
   kind: 'ReadWrite'
-  properties: databaseKind == 'ReadWrite' ? databaseReadWriteProperties : null
+  properties: databaseReadWriteProperties ?? null
 }
 
 // =============== //

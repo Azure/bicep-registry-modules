@@ -431,6 +431,14 @@ output privateEndpoints array = [
   }
 ]
 
+@description('The databases of the kusto cluster.')
+output kustoCluster_databases array = [
+  for (database, index) in (!empty(databases) ? array(databases) : []): {
+    name: kustoCluster_databases[index].outputs.name
+    resourceId: kustoCluster_databases[index].outputs.resourceId
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -494,6 +502,6 @@ type databaseType = {
   name: string
   @description('Required. The object type of the databse.')
   kind: 'ReadWrite' | 'ReadOnlyFollowing'
-  @description('Conditional. Required if the database kind is ReadWrite and contains the properties of the database.')
+  @description('Conditional. Required if the database kind is ReadWrite. Contains the properties of the database.')
   readWriteProperties: databaseReadWriteType?
 }

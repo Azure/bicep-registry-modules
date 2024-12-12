@@ -12,7 +12,7 @@ This module deploys a Kusto Cluster Database.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Kusto/clusters/databases` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/databases) |
+| `Microsoft.Kusto/clusters/databases` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases) |
 
 ## Parameters
 

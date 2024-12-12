@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2097632775776400024"
+      "templateHash": "1461589423847251"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -169,7 +169,7 @@
           "$ref": "#/definitions/databaseReadWriteType",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. Required if the database kind is ReadWrite and contains the properties of the database."
+            "description": "Conditional. Required if the database kind is ReadWrite. Contains the properties of the database."
           }
         }
       },
@@ -2186,7 +2186,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "779786448528189184"
+              "templateHash": "18422341525898722212"
             },
             "name": "Kusto Cluster Databases",
             "description": "This module deploys a Kusto Cluster Database.",
@@ -2297,13 +2297,13 @@
             "kustoCluster": {
               "existing": true,
               "type": "Microsoft.Kusto/clusters",
-              "apiVersion": "2023-08-15",
+              "apiVersion": "2024-04-13",
               "name": "[parameters('kustoClusterName')]"
             },
             "database_readOnly": {
               "condition": "[equals(parameters('databaseKind'), 'ReadOnlyFollowing')]",
               "type": "Microsoft.Kusto/clusters/databases",
-              "apiVersion": "2023-08-15",
+              "apiVersion": "2024-04-13",
               "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "kind": "ReadOnlyFollowing"
@@ -2311,11 +2311,11 @@
             "database_readWrite": {
               "condition": "[equals(parameters('databaseKind'), 'ReadWrite')]",
               "type": "Microsoft.Kusto/clusters/databases",
-              "apiVersion": "2023-08-15",
+              "apiVersion": "2024-04-13",
               "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "kind": "ReadWrite",
-              "properties": "[if(equals(parameters('databaseKind'), 'ReadWrite'), parameters('databaseReadWriteProperties'), null())]"
+              "properties": "[coalesce(parameters('databaseReadWriteProperties'), null())]"
             }
           },
           "outputs": {
@@ -2398,6 +2398,19 @@
           "groupId": "[reference(format('kustoCluster_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
           "customDnsConfig": "[reference(format('kustoCluster_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
           "networkInterfaceIds": "[reference(format('kustoCluster_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+        }
+      }
+    },
+    "kustoCluster_databases": {
+      "type": "array",
+      "metadata": {
+        "description": "The databases of the kusto cluster."
+      },
+      "copy": {
+        "count": "[length(if(not(empty(parameters('databases'))), array(parameters('databases')), createArray()))]",
+        "input": {
+          "name": "[reference(format('kustoCluster_databases[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('kustoCluster_databases[{0}]', copyIndex())).outputs.resourceId.value]"
         }
       }
     }

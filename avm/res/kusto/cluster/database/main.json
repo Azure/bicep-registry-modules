@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "779786448528189184"
+      "templateHash": "18422341525898722212"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database.",
@@ -117,13 +117,13 @@
     "kustoCluster": {
       "existing": true,
       "type": "Microsoft.Kusto/clusters",
-      "apiVersion": "2023-08-15",
+      "apiVersion": "2024-04-13",
       "name": "[parameters('kustoClusterName')]"
     },
     "database_readOnly": {
       "condition": "[equals(parameters('databaseKind'), 'ReadOnlyFollowing')]",
       "type": "Microsoft.Kusto/clusters/databases",
-      "apiVersion": "2023-08-15",
+      "apiVersion": "2024-04-13",
       "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "kind": "ReadOnlyFollowing"
@@ -131,11 +131,11 @@
     "database_readWrite": {
       "condition": "[equals(parameters('databaseKind'), 'ReadWrite')]",
       "type": "Microsoft.Kusto/clusters/databases",
-      "apiVersion": "2023-08-15",
+      "apiVersion": "2024-04-13",
       "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "kind": "ReadWrite",
-      "properties": "[if(equals(parameters('databaseKind'), 'ReadWrite'), parameters('databaseReadWriteProperties'), null())]"
+      "properties": "[coalesce(parameters('databaseReadWriteProperties'), null())]"
     }
   },
   "outputs": {

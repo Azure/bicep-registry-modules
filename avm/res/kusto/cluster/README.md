@@ -19,7 +19,7 @@ This module deploys a Kusto Cluster.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Kusto/clusters` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters) |
-| `Microsoft.Kusto/clusters/databases` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/databases) |
+| `Microsoft.Kusto/clusters/databases` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases) |
 | `Microsoft.Kusto/clusters/principalAssignments` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/principalAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -165,10 +165,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       {
         kind: 'ReadWrite'
         name: 'myReadWriteDatabase'
-        readWriteProperties: {
-          hotCachePeriod: 'P1D'
-          softDeletePeriod: 'P7D'
-        }
       }
       {
         kind: 'ReadOnlyFollowing'
@@ -276,11 +272,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": [
         {
           "kind": "ReadWrite",
-          "name": "myReadWriteDatabase",
-          "readWriteProperties": {
-            "hotCachePeriod": "P1D",
-            "softDeletePeriod": "P7D"
-          }
+          "name": "myReadWriteDatabase"
         },
         {
           "kind": "ReadOnlyFollowing",
@@ -403,10 +395,6 @@ param databases = [
   {
     kind: 'ReadWrite'
     name: 'myReadWriteDatabase'
-    readWriteProperties: {
-      hotCachePeriod: 'P1D'
-      softDeletePeriod: 'P7D'
-    }
   }
   {
     kind: 'ReadOnlyFollowing'
@@ -1161,7 +1149,7 @@ The Kusto Cluster databases.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`readWriteProperties`](#parameter-databasesreadwriteproperties) | object | Required if the database kind is ReadWrite and contains the properties of the database. |
+| [`readWriteProperties`](#parameter-databasesreadwriteproperties) | object | Required if the database kind is ReadWrite. Contains the properties of the database. |
 
 ### Parameter: `databases.kind`
 
@@ -1186,7 +1174,7 @@ The name of the Kusto Cluster database.
 
 ### Parameter: `databases.readWriteProperties`
 
-Required if the database kind is ReadWrite and contains the properties of the database.
+Required if the database kind is ReadWrite. Contains the properties of the database.
 
 - Required: No
 - Type: object
@@ -2306,6 +2294,7 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `kustoCluster_databases` | array | The databases of the kusto cluster. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the kusto cluster. |
 | `privateEndpoints` | array | The private endpoints of the kusto cluster. |
