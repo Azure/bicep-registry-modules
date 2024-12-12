@@ -494,6 +494,6 @@ type databaseType = {
   name: string
   @description('Required. The object type of the databse.')
   kind: 'ReadWrite' | 'ReadOnlyFollowing'
-  @description('Conditional. The properties of the database if using read-write.')
+  @description('Conditional. Required if the database kind is ReadWrite and contains the properties of the database.')
   readWriteProperties: databaseReadWriteType?
 }

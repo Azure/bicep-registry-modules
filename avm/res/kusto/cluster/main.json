@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14542877836104287694"
+      "templateHash": "2097632775776400024"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -169,7 +169,7 @@
           "$ref": "#/definitions/databaseReadWriteType",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The properties of the database if using read-write."
+            "description": "Conditional. Required if the database kind is ReadWrite and contains the properties of the database."
           }
         }
       },
