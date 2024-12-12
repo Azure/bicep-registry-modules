@@ -1,19 +1,20 @@
-# Sub-Placement `[Lz/SubPlacement]`
+# subscription-placement `[MgmtGroups/SubscriptionPlacement]`
 
-This module allows for a hierarchical configuration of subscriptions to management group placement within an Azure tenant.
+This module allows for placement of subscriptions to management groups 
 
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
+- [Outputs](#Outputs)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Management/managementGroups/subscriptions` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/managementgroups/subscriptions) |
+| `Microsoft.Management/managementGroups/subscriptions` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions) |
 
 ## Usage examples
 
@@ -21,7 +22,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/lz/sub-placement:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/mgmt-groups/subscription-placement:<version>`.
 
 - [Using only defaults.](#example-1-using-only-defaults)
 
@@ -29,26 +30,19 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module subPlacement 'br/public:avm/ptn/lz/sub-placement:<version>' = {
-  name: 'subPlacementDeployment'
+module subscriptionPlacement 'br/public:avm/ptn/mgmt-groups/subscription-placement:<version>' = {
+  name: 'subscriptionPlacementDeployment'
   params: {
     parSubscriptionPlacement: [
       {
-        managementGroupId: 'Group1'
-        subscriptionIds: ['SubID1', 'SubID2']
-      }
-      {
-        managementGroupId: 'Group2'
-        subscriptionIds: ['SubID3']
-      }
-      {
-        managementGroupId: 'Group3'
-        subscriptionIds: []
+        managementGroupId: '<managementGroupId>'
+        subscriptionIds: '<subscriptionIds>'
       }
     ]
   }
@@ -68,25 +62,16 @@ module subPlacement 'br/public:avm/ptn/lz/sub-placement:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "parSubscriptionPlacement": {
-       [
+      "value": [
         {
-          "managementGroupId": "Group1",
-          "subscriptionIds": ["SUBID1", "SUBID2"]
-        },
-        {
-          "managementGroupId": "Group2",
-          "subscriptionIds": ["SUBID3"]
-        },
-        {
-          "managementGroupId": "Group3",
-          "subscriptionIds": []
+          "managementGroupId": "<managementGroupId>",
+          "subscriptionIds": "<subscriptionIds>"
         }
       ]
     }
   }
 }
 ```
-
 
 </details>
 <p>
@@ -96,20 +81,12 @@ module subPlacement 'br/public:avm/ptn/lz/sub-placement:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/lz/sub-placement:<version>'
+using 'br/public:avm/ptn/mgmt-groups/subscription-placement:<version>'
 
-param parSubscriptionPlacement typMgChild = [
+param parSubscriptionPlacement = [
   {
-    managementGroupId: 'Group1'
-    subscriptionIds: ['SUBID1', 'SUBID2']
-  },
-  {
-    managementGroupId: 'Group2'
-    subscriptionIds: ['SUBID3']
-  },
-  {
-    managementGroupId: 'Group3'
-    subscriptionIds: []
+    managementGroupId: '<managementGroupId>'
+    subscriptionIds: '<subscriptionIds>'
   }
 ]
 ```
@@ -123,29 +100,82 @@ param parSubscriptionPlacement typMgChild = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`managementGroupId`](#parameter-managementGroupId) | string | The ID of management group to be used. |
-| [`subscriptionIds`](#parameter-subscriptionIds) | array | An array of subscription IDs to be associated with management group ID. |
+| [`parSubscriptionPlacement`](#parameter-parsubscriptionplacement) | array | Type definition for management group child containing management group ID and subscription IDs. |
 
 **Optional parameters**
 
-There are no optional parameters associated with this module. 
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`location`](#parameter-location) | string | Location for all resources. |
 
-### Parameter: `managementGroupId`
+### Parameter: `parSubscriptionPlacement`
 
-The ID of Management Group used to be associated with defined subscription IDs
+Type definition for management group child containing management group ID and subscription IDs.
 
-- Required: yes
-- Type: string
-- Default: `' ' `
-
-### Parameter: `subscriptionIds`
-
-A singular or array of subscription IDs to be associated with a given Management Group ID. 
-
-- Required: yes
+- Required: No
 - Type: array
-- Default: `[ ]`
+- Default:
+  ```Bicep
+  [
+    {
+      managementGroupId: 'Group1'
+      subscriptionIds: [
+        'SUBID1'
+        'SUBID2'
+      ]
+    }
+    {
+      managementGroupId: 'Group2'
+      subscriptionIds: [
+        'SUBID3'
+      ]
+    }
+  ]
+  ```
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managementGroupId`](#parameter-parsubscriptionplacementmanagementgroupid) | string | The ID of the management group. |
+| [`subscriptionIds`](#parameter-parsubscriptionplacementsubscriptionids) | array | The list of subscription IDs. |
+
+### Parameter: `parSubscriptionPlacement.managementGroupId`
+
+The ID of the management group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `parSubscriptionPlacement.subscriptionIds`
+
+The list of subscription IDs.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[deployment().location]`
+
+## Outputs
+
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `subscriptionPlacementSummary` | string | Output of number of management groups that have been configured with subscription placements. |
 
 ## Data Collection
 

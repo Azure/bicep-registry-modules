@@ -1,15 +1,12 @@
+targetScope = 'tenant'
+
 metadata name = 'subscription-placement'
 metadata description = 'This module allows for placement of subscriptions to management groups '
 metadata owner = 'Azure/module-maintainers'
 
-targetScope = 'tenant'
-
-type typMgChild = {
-  @description('Required.The ID of the management group.')
-  managementGroupId: string
-  @description('Required.The list of subscription IDs.')
-  subscriptionIds: string[]
-}[]
+// ------------------
+//    PARAMETERS
+// ------------------
 
 @description('Required. Type definition for management group child containing management group ID and subscription IDs.')
 param parSubscriptionPlacement typMgChild = [
@@ -59,5 +56,22 @@ module customsubscriptionPlacement './modules/helper.bicep' = [
   }
 ]
 
+
+// =============== //
+//   Outputs   //
+// =============== //
+
 @description('Output of number of management groups that have been configured with subscription placements.')
 output subscriptionPlacementSummary string = 'Subscription placements have been configured for ${length(parSubscriptionPlacement)} management groups.'
+
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+type typMgChild = {
+  @description('Required. The ID of the management group.')
+  managementGroupId: string
+  @description('Required. The list of subscription IDs.')
+  subscriptionIds: string[]
+}[]

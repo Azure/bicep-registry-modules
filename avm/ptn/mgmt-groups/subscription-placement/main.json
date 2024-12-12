@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "7040892232274995299"
+      "version": "0.32.4.45862",
+      "templateHash": "7736352582742344857"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups ",
@@ -21,7 +21,7 @@
           "managementGroupId": {
             "type": "string",
             "metadata": {
-              "description": "Required.The ID of the management group."
+              "description": "Required. The ID of the management group."
             }
           },
           "subscriptionIds": {
@@ -30,7 +30,7 @@
               "type": "string"
             },
             "metadata": {
-              "description": "Required.The list of subscription IDs."
+              "description": "Required. The list of subscription IDs."
             }
           }
         }
@@ -79,7 +79,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.lz-subplacement.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.mgmtgroup-subplacement.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
@@ -124,8 +124,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "5373369794784532806"
+              "version": "0.32.4.45862",
+              "templateHash": "16047016274117361351"
             }
           },
           "parameters": {
