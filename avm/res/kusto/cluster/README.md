@@ -1161,7 +1161,7 @@ The Kusto Cluster databases.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`readWriteProperties`](#parameter-databasesreadwriteproperties) | object | The properties of the database if using read-write. |
+| [`readWriteProperties`](#parameter-databasesreadwriteproperties) | object | Required if the database kind is ReadWrite and contains the properties of the database. |
 
 ### Parameter: `databases.kind`
 
@@ -1186,7 +1186,7 @@ The name of the Kusto Cluster database.
 
 ### Parameter: `databases.readWriteProperties`
 
-The properties of the database if using read-write.
+Required if the database kind is ReadWrite and contains the properties of the database.
 
 - Required: No
 - Type: object
