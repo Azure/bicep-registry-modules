@@ -63,6 +63,15 @@ param securitySettings object = {}
 ])
 param publicNetworkAccess string = 'Disabled'
 
+@description('Required. The redundancy settings of the vault.')
+param redundancySettings redundancySettingsType?
+
+@description('Required. The restore settings of the vault.')
+param restoreSettings restoreSettingsType?
+
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyType
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -146,7 +155,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' = {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
+
+resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
   name: name
   location: location
   tags: tags
@@ -159,6 +188,23 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' = {
     monitoringSettings: !empty(monitoringSettings) ? monitoringSettings : null
     securitySettings: !empty(securitySettings) ? securitySettings : null
     publicNetworkAccess: publicNetworkAccess
+    redundancySettings: !empty(redundancySettings) ? redundancySettings : null
+    restoreSettings: !empty(restoreSettings) ? restoreSettings : null
+    encryption: !empty(customerManagedKey)
+      ? {
+          infrastructureEncryption: 'Enabled'
+          kekIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? {
+                userAssignedIdentity: cMKUserAssignedIdentity.id
+              }
+            : {
+                useSystemAssignedIdentity: empty(customerManagedKey.?userAssignedIdentityResourceId)
+              }
+          keyVaultProperties: {
+            keyUri: cMKKeyVault.properties.vaultUri
+          }
+        }
+      : null
   }
 }
 
@@ -167,11 +213,9 @@ module rsv_replicationFabrics 'replication-fabric/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-RSV-Fabric-${index}'
     params: {
       recoveryVaultName: rsv.name
-      name: contains(replicationFabric, 'name') ? replicationFabric.name : replicationFabric.location
+      name: replicationFabric.?name ?? replicationFabric.location
       location: replicationFabric.location
-      replicationContainers: contains(replicationFabric, 'replicationContainers')
-        ? replicationFabric.replicationContainers
-        : []
+      replicationContainers: replicationFabric.?replicationContainers ?? []
     }
     dependsOn: [
       rsv_replicationPolicies
@@ -185,18 +229,10 @@ module rsv_replicationPolicies 'replication-policy/main.bicep' = [
     params: {
       name: replicationPolicy.name
       recoveryVaultName: rsv.name
-      appConsistentFrequencyInMinutes: contains(replicationPolicy, 'appConsistentFrequencyInMinutes')
-        ? replicationPolicy.appConsistentFrequencyInMinutes
-        : 60
-      crashConsistentFrequencyInMinutes: contains(replicationPolicy, 'crashConsistentFrequencyInMinutes')
-        ? replicationPolicy.crashConsistentFrequencyInMinutes
-        : 5
-      multiVmSyncStatus: contains(replicationPolicy, 'multiVmSyncStatus')
-        ? replicationPolicy.multiVmSyncStatus
-        : 'Enable'
-      recoveryPointHistory: contains(replicationPolicy, 'recoveryPointHistory')
-        ? replicationPolicy.recoveryPointHistory
-        : 1440
+      appConsistentFrequencyInMinutes: replicationPolicy.?appConsistentFrequencyInMinutes ?? 60
+      crashConsistentFrequencyInMinutes: replicationPolicy.?crashConsistentFrequencyInMinutes ?? 5
+      multiVmSyncStatus: replicationPolicy.?multiVmSyncStatus ?? 'Enable'
+      recoveryPointHistory: replicationPolicy.?recoveryPointHistory ?? 1440
     }
   }
 ]
@@ -220,7 +256,7 @@ module rsv_backupFabric_protectionContainers 'backup-fabric/protection-container
       friendlyName: protectionContainer.?friendlyName
       backupManagementType: protectionContainer.?backupManagementType
       containerType: protectionContainer.?containerType
-      protectedItems: contains(protectionContainer, 'protectedItems') ? protectionContainer.protectedItems : []
+      protectedItems: protectionContainer.?protectedItems ?? []
       location: location
     }
   }
@@ -241,22 +277,14 @@ module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
   name: '${uniqueString(deployment().name, location)}-RSV-BackupConfig'
   params: {
     recoveryVaultName: rsv.name
-    name: contains(backupConfig, 'name') ? backupConfig.name : 'vaultconfig'
-    enhancedSecurityState: contains(backupConfig, 'enhancedSecurityState')
-      ? backupConfig.enhancedSecurityState
-      : 'Enabled'
-    resourceGuardOperationRequests: contains(backupConfig, 'resourceGuardOperationRequests')
-      ? backupConfig.resourceGuardOperationRequests
-      : []
-    softDeleteFeatureState: contains(backupConfig, 'softDeleteFeatureState')
-      ? backupConfig.softDeleteFeatureState
-      : 'Enabled'
-    storageModelType: contains(backupConfig, 'storageModelType') ? backupConfig.storageModelType : 'GeoRedundant'
-    storageType: contains(backupConfig, 'storageType') ? backupConfig.storageType : 'GeoRedundant'
-    storageTypeState: contains(backupConfig, 'storageTypeState') ? backupConfig.storageTypeState : 'Locked'
-    isSoftDeleteFeatureStateEditable: contains(backupConfig, 'isSoftDeleteFeatureStateEditable')
-      ? backupConfig.isSoftDeleteFeatureStateEditable
-      : true
+    name: backupConfig.?name ?? 'vaultconfig'
+    enhancedSecurityState: backupConfig.?enhancedSecurityState ?? 'Enabled'
+    resourceGuardOperationRequests: backupConfig.?resourceGuardOperationRequests ?? []
+    softDeleteFeatureState: backupConfig.?softDeleteFeatureState ?? 'Enabled'
+    storageModelType: backupConfig.?storageModelType ?? 'GeoRedundant'
+    storageType: backupConfig.?storageType ?? 'GeoRedundant'
+    storageTypeState: backupConfig.?storageTypeState ?? 'Locked'
+    isSoftDeleteFeatureStateEditable: backupConfig.?isSoftDeleteFeatureStateEditable ?? true
   }
 }
 
@@ -265,11 +293,9 @@ module rsv_replicationAlertSettings 'replication-alert-setting/main.bicep' = if 
   params: {
     name: 'defaultAlertSetting'
     recoveryVaultName: rsv.name
-    customEmailAddresses: contains(replicationAlertSettings, 'customEmailAddresses')
-      ? replicationAlertSettings.customEmailAddresses
-      : []
-    locale: contains(replicationAlertSettings, 'locale') ? replicationAlertSettings.locale : ''
-    sendToOwners: contains(replicationAlertSettings, 'sendToOwners') ? replicationAlertSettings.sendToOwners : 'Send'
+    customEmailAddresses: replicationAlertSettings.?customEmailAddresses ?? []
+    locale: replicationAlertSettings.?locale ?? ''
+    sendToOwners: replicationAlertSettings.?sendToOwners ?? 'Send'
   }
 }
 
@@ -410,6 +436,44 @@ output privateEndpoints array = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+type customerManagedKeyType = {
+  @description('Required. The resource ID of the key vault.')
+  infrastructureEncryption: string
+
+  @description('Required. The details of the identity used for CMK	.')
+  kekIdentity: {
+    @description('Required. The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned.')
+    userAssignedIdentity: string
+
+    @description('Required. Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field.')
+    useSystemAssignedIdentity: bool
+  }
+
+  @description('Required. The properties of the Key Vault which hosts CMK.')
+  keyVaultProperties: {
+    @description('Required. The key uri of the Customer Managed Key.')
+    keyUri: string
+  }
+}?
+
+@export()
+type redundancySettingsType = {
+  @description('Required. Flag to show if Cross Region Restore is enabled on the Vault or not.')
+  crossRegionRestore: string?
+
+  @description('Required. The storage redundancy setting of a vault.')
+  standardTierStorageRedundancy: string?
+}
+
+@export()
+type restoreSettingsType = {
+  @description('Optional. The restore settings of the vault.')
+  crossSubscriptionRestoreSettings: {
+    @description('Optional. The restore settings of the vault.')
+    crossSubscriptionRestoreState: string
+  }
+}
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
