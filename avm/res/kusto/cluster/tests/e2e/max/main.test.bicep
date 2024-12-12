@@ -117,20 +117,20 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      databases: [
+        {
+          name: 'myReadWriteDatabase'
+          kind: 'ReadWrite'
+          readWriteProperties: {
+            softDeletePeriod: 'P7D'
+            hotCachePeriod: 'P1D'
+          }
+        }
+        {
+          name: 'myReadOnlyDatabase'
+          kind: 'ReadOnlyFollowing'
+        }
+      ]
     }
   }
 ]
-
-module kustoClusterDatabaseTestDeployment '../../../database/main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-database'
-  params:{
-    name: 'myDatabase'
-    kustoClusterName: testDeployment[0].outputs.name
-    location: resourceLocation
-    databaseKind: 'ReadWrite'
-    databaseReadWriteProperties: {
-      hotCachePeriod: 'P1D'
-    }
-  }
-}

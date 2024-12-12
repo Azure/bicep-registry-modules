@@ -19,6 +19,7 @@ This module deploys a Kusto Cluster.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Kusto/clusters` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters) |
+| `Microsoft.Kusto/clusters/databases` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/databases) |
 | `Microsoft.Kusto/clusters/principalAssignments` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/principalAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -160,6 +161,20 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     autoScaleMax: 6
     autoScaleMin: 3
     capacity: 3
+    databases: [
+      {
+        kind: 'ReadWrite'
+        name: 'myReadWriteDatabase'
+        readWriteProperties: {
+          hotCachePeriod: 'P1D'
+          softDeletePeriod: 'P7D'
+        }
+      }
+      {
+        kind: 'ReadOnlyFollowing'
+        name: 'myReadOnlyDatabase'
+      }
+    ]
     enableAutoScale: true
     enableAutoStop: true
     enableDiskEncryption: true
@@ -256,6 +271,22 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     },
     "capacity": {
       "value": 3
+    },
+    "databases": {
+      "value": [
+        {
+          "kind": "ReadWrite",
+          "name": "myReadWriteDatabase",
+          "readWriteProperties": {
+            "hotCachePeriod": "P1D",
+            "softDeletePeriod": "P7D"
+          }
+        },
+        {
+          "kind": "ReadOnlyFollowing",
+          "name": "myReadOnlyDatabase"
+        }
+      ]
     },
     "enableAutoScale": {
       "value": true
@@ -368,6 +399,20 @@ param allowedIpRangeList = [
 param autoScaleMax = 6
 param autoScaleMin = 3
 param capacity = 3
+param databases = [
+  {
+    kind: 'ReadWrite'
+    name: 'myReadWriteDatabase'
+    readWriteProperties: {
+      hotCachePeriod: 'P1D'
+      softDeletePeriod: 'P7D'
+    }
+  }
+  {
+    kind: 'ReadOnlyFollowing'
+    name: 'myReadOnlyDatabase'
+  }
+]
 param enableAutoScale = true
 param enableAutoStop = true
 param enableDiskEncryption = true
@@ -947,6 +992,7 @@ param tier = 'Standard'
 | [`autoScaleMin`](#parameter-autoscalemin) | int | When auto-scale is enabled, the minimum number of instances in the Kusto Cluster. |
 | [`capacity`](#parameter-capacity) | int | The number of instances of the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`databases`](#parameter-databases) | array | The Kusto Cluster databases. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableAutoScale`](#parameter-enableautoscale) | bool | Enable/disable auto-scale. |
 | [`enableAutoStop`](#parameter-enableautostop) | bool | Enable/disable auto-stop. |
@@ -1093,6 +1139,120 @@ The version of the customer managed key to reference for encryption. If not prov
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
 User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases`
+
+The Kusto Cluster databases.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-databaseskind) | string | The object type of the databse. |
+| [`name`](#parameter-databasesname) | string | The name of the Kusto Cluster database. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`readWriteProperties`](#parameter-databasesreadwriteproperties) | object | The properties of the database if using read-write. |
+
+### Parameter: `databases.kind`
+
+The object type of the databse.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ReadOnlyFollowing'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `databases.name`
+
+The name of the Kusto Cluster database.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.readWriteProperties`
+
+The properties of the database if using read-write.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hotCachePeriod`](#parameter-databasesreadwritepropertieshotcacheperiod) | string | Te time the data should be kept in cache for fast queries in TimeSpan. |
+| [`keyVaultProperties`](#parameter-databasesreadwritepropertieskeyvaultproperties) | object | The properties of the key vault. |
+| [`softDeletePeriod`](#parameter-databasesreadwritepropertiessoftdeleteperiod) | string | The time the data should be kept before it stops being accessible to queries in TimeSpan. |
+
+### Parameter: `databases.readWriteProperties.hotCachePeriod`
+
+Te time the data should be kept in cache for fast queries in TimeSpan.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties`
+
+The properties of the key vault.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-databasesreadwritepropertieskeyvaultpropertieskeyname) | string | The name of the key. |
+| [`keyVaultUri`](#parameter-databasesreadwritepropertieskeyvaultpropertieskeyvaulturi) | string | The Uri of the key vault. |
+| [`keyVersion`](#parameter-databasesreadwritepropertieskeyvaultpropertieskeyversion) | string | The version of the key. |
+| [`userIdentity`](#parameter-databasesreadwritepropertieskeyvaultpropertiesuseridentity) | string | The user identity. |
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties.keyName`
+
+The name of the key.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties.keyVaultUri`
+
+The Uri of the key vault.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties.keyVersion`
+
+The version of the key.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties.userIdentity`
+
+The user identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.readWriteProperties.softDeletePeriod`
+
+The time the data should be kept before it stops being accessible to queries in TimeSpan.
 
 - Required: No
 - Type: string

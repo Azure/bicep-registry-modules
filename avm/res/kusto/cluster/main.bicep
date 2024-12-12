@@ -130,6 +130,9 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. The Principal Assignments for the Kusto Cluster.')
 param principalAssignments principalAssignmentType[]?
 
+@description('Optional. The Kusto Cluster databases.')
+param databases databaseType[]?
+
 // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -386,6 +389,18 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
   }
 ]
 
+module kustoCluster_databases 'database/main.bicep' = [
+  for (database, index) in (databases ?? []): {
+    name: '${uniqueString(deployment().name, location)}-kustoCluster-database-${index}'
+    params: {
+      name: database.name
+      kustoClusterName: kustoCluster.name
+      databaseKind: database.kind
+      databaseReadWriteProperties: database.readWriteProperties
+    }
+  }
+]
+
 // ============ //
 // Outputs      //
 // ============ //
@@ -469,4 +484,16 @@ type principalAssignmentType = {
 
   @description('Optional. The tenant id of the principal.')
   tenantId: string?
+}
+
+import { databaseReadWriteType } from './database/main.bicep'
+
+@export()
+type databaseType = {
+  @description('Required. The name of the Kusto Cluster database.')
+  name: string
+  @description('Required. The object type of the databse.')
+  kind: 'ReadWrite' | 'ReadOnlyFollowing'
+  @description('Conditional. The properties of the database if using read-write.')
+  readWriteProperties: databaseReadWriteType?
 }

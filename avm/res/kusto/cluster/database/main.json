@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "10708179470827073074"
+      "version": "0.32.4.45862",
+      "templateHash": "779786448528189184"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database.",
@@ -126,10 +126,7 @@
       "apiVersion": "2023-08-15",
       "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
       "location": "[parameters('location')]",
-      "kind": "ReadOnlyFollowing",
-      "dependsOn": [
-        "kustoCluster"
-      ]
+      "kind": "ReadOnlyFollowing"
     },
     "database_readWrite": {
       "condition": "[equals(parameters('databaseKind'), 'ReadWrite')]",
@@ -138,10 +135,7 @@
       "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "kind": "ReadWrite",
-      "properties": "[if(equals(parameters('databaseKind'), 'ReadWrite'), parameters('databaseReadWriteProperties'), null())]",
-      "dependsOn": [
-        "kustoCluster"
-      ]
+      "properties": "[if(equals(parameters('databaseKind'), 'ReadWrite'), parameters('databaseReadWriteProperties'), null())]"
     }
   },
   "outputs": {
