@@ -1,0 +1,363 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.31.92.45157",
+      "templateHash": "7595899390827367592"
+    },
+    "name": "P2S VPN Gateway",
+    "description": "This module deploys a Virtual Hub P2S Gateway.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "vnetRoutesStaticRoutesType": {
+      "type": "object",
+      "properties": {
+        "staticRoutes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "addressPrefixes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The address prefixes of the static route."
+                }
+              },
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the static route."
+                }
+              },
+              "nextHopIpAddress": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The next hop IP of the static route."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The static route configuration for the P2S VPN Gateway."
+          }
+        },
+        "staticRoutesConfig": {
+          "type": "object",
+          "properties": {
+            "vnetLocalRouteOverrideCriteria": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The static route configuration for the P2S VPN Gateway."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. A Type representing the VNET static routes for the P2S VPN Gateway."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the P2S VPN Gateway."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location where all resources will be created."
+      }
+    },
+    "associatedRouteTableName": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "noneRouteTable",
+        "defaultRouteTable"
+      ],
+      "metadata": {
+        "description": "Conditional. The name of the associated route table. Required if deploying in a Secure Virtual Hub; cannot be a custom route table."
+      }
+    },
+    "propagatedRouteTableNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The names of the route tables to propagate to the P2S VPN Gateway."
+      }
+    },
+    "customDnsServers": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The custom DNS servers for the P2S VPN Gateway."
+      }
+    },
+    "isRoutingPreferenceInternet": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The routing preference for the P2S VPN Gateway, Internet or Microsoft network."
+      }
+    },
+    "p2SConnectionConfigurationsName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of the P2S Connection Configuration."
+      }
+    },
+    "enableInternetSecurity": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable Internet Security; \"Propagate Default Route\"."
+      }
+    },
+    "inboundRouteMapResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Resource ID of the inbound route map."
+      }
+    },
+    "outboundRouteMapResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Resource ID of the outbound route map."
+      }
+    },
+    "propagatedLabelNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The Labels to propagate routes to."
+      }
+    },
+    "vnetRoutesStaticRoutes": {
+      "$ref": "#/definitions/vnetRoutesStaticRoutesType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The routes from the virtual hub to virtual network connections."
+      }
+    },
+    "vpnClientAddressPoolAddressPrefixes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The address prefixes for the VPN Client Address Pool."
+      }
+    },
+    "virtualHubResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the gateways virtual hub."
+      }
+    },
+    "vpnGatewayScaleUnit": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The scale unit of the VPN Gateway."
+      }
+    },
+    "vpnServerConfigurationResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource ID of the VPN Server Configuration."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "virtualHubName": "[split(parameters('virtualHubResourceId'), '/')[8]]"
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[take(format('46d3xbcp.res.network-p2svpngateway.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "p2sVpnGateway": {
+      "type": "Microsoft.Network/p2svpnGateways",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "customDnsServers": "[parameters('customDnsServers')]",
+        "isRoutingPreferenceInternet": "[parameters('isRoutingPreferenceInternet')]",
+        "p2SConnectionConfigurations": [
+          {
+            "name": "[parameters('p2SConnectionConfigurationsName')]",
+            "properties": {
+              "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
+              "routingConfiguration": {
+                "associatedRouteTable": {
+                  "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', format('{0}', variables('virtualHubName')), format('{0}', parameters('associatedRouteTableName')))]"
+                },
+                "inboundRouteMap": "[if(not(empty(parameters('inboundRouteMapResourceId'))), createObject('id', parameters('inboundRouteMapResourceId')), null())]",
+                "outboundRouteMap": "[if(not(empty(parameters('outboundRouteMapResourceId'))), createObject('id', parameters('outboundRouteMapResourceId')), null())]",
+                "propagatedRouteTables": {
+                  "copy": [
+                    {
+                      "name": "ids",
+                      "count": "[length(parameters('propagatedRouteTableNames'))]",
+                      "input": {
+                        "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', format('{0}', variables('virtualHubName')), format('{0}', parameters('propagatedRouteTableNames')[copyIndex('ids')]))]"
+                      }
+                    }
+                  ],
+                  "labels": "[parameters('propagatedLabelNames')]"
+                },
+                "vnetRoutes": "[parameters('vnetRoutesStaticRoutes')]"
+              },
+              "vpnClientAddressPool": {
+                "addressPrefixes": "[parameters('vpnClientAddressPoolAddressPrefixes')]"
+              }
+            }
+          }
+        ],
+        "virtualHub": {
+          "id": "[parameters('virtualHubResourceId')]"
+        },
+        "vpnGatewayScaleUnit": "[parameters('vpnGatewayScaleUnit')]",
+        "vpnServerConfiguration": {
+          "id": "[parameters('vpnServerConfigurationResourceId')]"
+        }
+      }
+    },
+    "vpnGateway_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/p2svpnGateways/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "p2sVpnGateway"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the user VPN configuration."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the user VPN configuration."
+      },
+      "value": "[resourceId('Microsoft.Network/p2svpnGateways', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the user VPN configuration was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('p2sVpnGateway', '2024-01-01', 'full').location]"
+    }
+  }
+}
