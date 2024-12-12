@@ -1338,6 +1338,7 @@ type istioServiceMeshCertificateAuthorityType = {
   rootCertObjectName: string
 }?
 
+@export()
 type aadProfileType = {
   @description('Optional. The client AAD application ID.')
   aadProfileClientAppID: string?
