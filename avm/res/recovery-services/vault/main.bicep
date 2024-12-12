@@ -470,7 +470,7 @@ type redundancySettingsType = {
 type restoreSettingsType = {
   @description('Optional. The restore settings of the vault.')
   crossSubscriptionRestoreSettings: {
-    @description('Optional. The restore settings of the vault.')
+    @description('Required. The restore settings of the vault.')
     crossSubscriptionRestoreState: string
   }
 }?
