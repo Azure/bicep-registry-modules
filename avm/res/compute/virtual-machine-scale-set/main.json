@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "5570232042557896838"
+      "templateHash": "2848933356458236613"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -932,7 +932,7 @@
     },
     "vmss": {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -2518,14 +2518,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2023-09-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2024-07-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vmss', '2023-09-01', 'full').location]"
+      "value": "[reference('vmss', '2024-07-01', 'full').location]"
     }
   }
 }
