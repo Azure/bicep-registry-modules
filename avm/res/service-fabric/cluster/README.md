@@ -78,7 +78,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     }
     clientCertificateThumbprints: [
       {
-        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+        certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
         isAdmin: true
       }
     ]
@@ -143,7 +143,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     "clientCertificateThumbprints": {
       "value": [
         {
-          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+          "certificateThumbprint": "D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE",
           "isAdmin": true
         }
       ]
@@ -198,7 +198,7 @@ param certificateCommonNames = {
 }
 param clientCertificateThumbprints = [
   {
-    certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
     isAdmin: true
   }
 ]

@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
       }
       clientCertificateThumbprints: [
         {
-          certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+          certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
           isAdmin: true
         }
       ]
