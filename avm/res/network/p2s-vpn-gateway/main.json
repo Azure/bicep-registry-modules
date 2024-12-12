@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13111584697431765944"
+      "version": "0.31.92.45157",
+      "templateHash": "7595899390827367592"
     },
     "name": "P2S VPN Gateway",
     "description": "This module deploys a Virtual Hub P2S Gateway.",
