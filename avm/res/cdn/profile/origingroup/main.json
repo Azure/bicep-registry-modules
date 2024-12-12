@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "15886213526918072525"
+      "version": "0.31.92.45157",
+      "templateHash": "13972056376134412662"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group.",
@@ -289,7 +289,10 @@
         "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
         "sessionAffinityState": "[parameters('sessionAffinityState')]",
         "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-      }
+      },
+      "dependsOn": [
+        "profile"
+      ]
     },
     "originGroup_origins": {
       "copy": {
@@ -349,8 +352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "3615112055594041997"
+              "version": "0.31.92.45157",
+              "templateHash": "7808954044639543840"
             },
             "name": "CDN Profiles Origin",
             "description": "This module deploys a CDN Profile Origin.",
@@ -529,7 +532,10 @@
               "existing": true,
               "type": "Microsoft.Cdn/profiles/originGroups",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
+              "dependsOn": [
+                "profile"
+              ]
             },
             "profile": {
               "existing": true,
@@ -551,7 +557,10 @@
                 "priority": "[parameters('priority')]",
                 "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
                 "weight": "[parameters('weight')]"
-              }
+              },
+              "dependsOn": [
+                "profile::originGroup"
+              ]
             }
           },
           "outputs": {

@@ -189,8 +189,21 @@ param roleAssignments roleAssignmentType[]?
 @description('Required. The Id of the Backup Vault.')
 param backupVaultResourceId string
 
-@description('Optional. Boolean to enable replication.')
+@description('Optional. Enables replication.')
 param replicationEnabled bool = true
+
+@description('Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume.')
+param smbEncryption bool = false
+
+@description('Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume.')
+param smbContinuouslyAvailable bool = false
+
+@description('Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param smbNonBrowsable string = 'Disabled'
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -282,6 +295,9 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           rules: exportPolicyRules
         }
       : null
+    smbContinuouslyAvailable: smbContinuouslyAvailable
+    smbEncryption: smbEncryption
+    smbNonBrowsable: smbNonBrowsable
   }
   zones: zones
 }
