@@ -115,24 +115,7 @@ Type definition for management group child containing management group ID and su
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    {
-      managementGroupId: 'Group1'
-      subscriptionIds: [
-        'SUBID1'
-        'SUBID2'
-      ]
-    }
-    {
-      managementGroupId: 'Group2'
-      subscriptionIds: [
-        'SUBID3'
-      ]
-    }
-  ]
-  ```
+- Default: `[]`
 
 **Required parameters**
 

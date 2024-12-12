@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14040651364660354035"
+      "templateHash": "3265681683082198627"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups ",
@@ -40,21 +40,7 @@
   "parameters": {
     "parSubscriptionPlacement": {
       "$ref": "#/definitions/typMgChild",
-      "defaultValue": [
-        {
-          "managementGroupId": "Group1",
-          "subscriptionIds": [
-            "SUBID1",
-            "SUBID2"
-          ]
-        },
-        {
-          "managementGroupId": "Group2",
-          "subscriptionIds": [
-            "SUBID3"
-          ]
-        }
-      ],
+      "defaultValue": [],
       "metadata": {
         "description": "Required. Type definition for management group child containing management group ID and subscription IDs."
       }

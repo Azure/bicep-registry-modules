@@ -9,16 +9,7 @@ metadata owner = 'Azure/module-maintainers'
 // ------------------
 
 @description('Required. Type definition for management group child containing management group ID and subscription IDs.')
-param parSubscriptionPlacement typMgChild = [
-  {
-    managementGroupId: 'Group1'
-    subscriptionIds: ['SUBID1', 'SUBID2']
-  }
-  {
-    managementGroupId: 'Group2'
-    subscriptionIds: ['SUBID3']
-  }
-]
+param parSubscriptionPlacement typMgChild = []
 
 @description('Optional. Location for all resources.')
 param location string = deployment().location
