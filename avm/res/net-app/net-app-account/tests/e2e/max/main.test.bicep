@@ -130,25 +130,6 @@ module testDeployment '../../../main.bicep' = {
             usageThreshold: 107374182400
           }
           {
-            kerberosEnabled: true
-            exportPolicy: {
-              rules: [
-                {
-                  allowedClients: '0.0.0.0/0'
-                  nfsv3: false
-                  nfsv41: true
-                  ruleIndex: 1
-                  unixReadOnly: false
-                  unixReadWrite: false
-                  kerberos5ReadOnly: true
-                  kerberos5ReadWrite: true
-                  kerberos5iReadOnly: true
-                  kerberos5iReadWrite: true
-                  kerberos5pReadOnly: true
-                  kerberos5pReadWrite: true
-                }
-              ]
-            }
             name: 'vol-002'
             zones: [1]
             networkFeatures: 'Standard'
