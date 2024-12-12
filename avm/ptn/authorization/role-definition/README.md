@@ -308,9 +308,9 @@ The location of the telemetry deployment to be created. Default is location of d
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
-| `managementGroupCustomRoleDefinitionIds` | object |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `managementGroupCustomRoleDefinitionIds` | object | An object containing the resourceId, roleDefinitionId, and displayName of the custom role definition. |
 
 ## Data Collection
 

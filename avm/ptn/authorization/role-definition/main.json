@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6740189645424769245"
+      "templateHash": "9655529713252686344"
     },
     "name": "avm/ptn/authorization/role-definition",
     "description": "This module deploys a custom role definition to a Management Group.",
@@ -159,6 +159,9 @@
   "outputs": {
     "managementGroupCustomRoleDefinitionIds": {
       "type": "object",
+      "metadata": {
+        "description": "An object containing the resourceId, roleDefinitionId, and displayName of the custom role definition."
+      },
       "value": {
         "resourceId": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleDefinitions', if(and(and(contains(parameters('roleDefinition').name, '-'), equals(length(parameters('roleDefinition').name), 36)), equals(length(split(parameters('roleDefinition').name, '-')), 5)), parameters('roleDefinition').name, guid(parameters('roleDefinition').name)))]",
         "roleDefinitionId": "[if(and(and(contains(parameters('roleDefinition').name, '-'), equals(length(parameters('roleDefinition').name), 36)), equals(length(split(parameters('roleDefinition').name, '-')), 5)), parameters('roleDefinition').name, guid(parameters('roleDefinition').name))]",

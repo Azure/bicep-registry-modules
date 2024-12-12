@@ -65,6 +65,7 @@ resource res_roleDefinition_mg 'Microsoft.Authorization/roleDefinitions@2022-05-
 // Outputs      //
 // ============ //
 
+@description('An object containing the resourceId, roleDefinitionId, and displayName of the custom role definition.')
 output managementGroupCustomRoleDefinitionIds object = {
   resourceId: res_roleDefinition_mg.id
   roleDefinitionId: res_roleDefinition_mg.name
