@@ -12,11 +12,33 @@ param serviceShort string = 'apamgmax'
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-authorization.policyassignments-${serviceShort}-rg'
+
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment.')
 param subscriptionId string = '#_subscriptionId_#'
+
+// ============ //
+// Dependencies //
+// ============ //
+
+resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
+  scope: tenant()
+  name: '${uniqueString(deployment().name)}-additional-mg'
+}
+
+module additionalRsg 'br/public:avm/res/resources/resource-group:0.4.0' = {
+  scope: subscription(subscriptionId)
+  name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
+  params: {
+    name: resourceGroupName
+    location: resourceLocation
+  }
+}
 
 // ============== //
 // Test Execution //
@@ -34,6 +56,15 @@ module testDeployment '../../../main.bicep' = {
     identity: 'SystemAssigned'
     location: resourceLocation
     managementGroupId: last(split(managementGroup().id, '/'))
+    additionalManagementGroupsIDsToAssignRbacTo: [
+      additionalMg.name
+    ]
+    additionalSubscriptionIDsToAssignRbacTo: [
+      subscriptionId
+    ]
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      additionalRsg.outputs.resourceId
+    ]
     metadata: {
       category: 'Security'
       version: '1.0'
@@ -45,7 +76,7 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     notScopes: [
-      '/subscriptions/${subscriptionId}/resourceGroups/validation-rg'
+      additionalRsg.outputs.resourceId
     ]
     parameters: {
       enableCollectionOfSqlQueriesForSecurityResearch: {

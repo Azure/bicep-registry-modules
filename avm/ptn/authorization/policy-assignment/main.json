@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "2876622926889063776"
+      "version": "0.32.4.45862",
+      "templateHash": "3902127955131309221"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -102,6 +102,27 @@
       "defaultValue": "[managementGroup().name]",
       "metadata": {
         "description": "Optional. The Target Scope for the Policy. The name of the management group for the policy assignment. If not provided, will use the current scope for deployment."
+      }
+    },
+    "additionalManagementGroupsIDsToAssignRbacTo": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity."
+      }
+    },
+    "additionalSubscriptionIDsToAssignRbacTo": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
+      }
+    },
+    "additionalResourceGroupResourceIDsToAssignRbacTo": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
       }
     },
     "subscriptionId": {
@@ -211,14 +232,20 @@
             "value": "[parameters('enforcementMode')]"
           },
           "notScopes": "[if(not(empty(parameters('notScopes'))), createObject('value', parameters('notScopes')), createObject('value', createArray()))]",
-          "managementGroupId": {
-            "value": "[parameters('managementGroupId')]"
-          },
           "location": {
             "value": "[parameters('location')]"
           },
           "overrides": "[if(not(empty(parameters('overrides'))), createObject('value', parameters('overrides')), createObject('value', createArray()))]",
-          "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', createArray()))]"
+          "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', createArray()))]",
+          "additionalManagementGroupsIDsToAssignRbacTo": {
+            "value": "[parameters('additionalManagementGroupsIDsToAssignRbacTo')]"
+          },
+          "additionalSubscriptionIDsToAssignRbacTo": {
+            "value": "[parameters('additionalSubscriptionIDsToAssignRbacTo')]"
+          },
+          "additionalResourceGroupResourceIDsToAssignRbacTo": {
+            "value": "[parameters('additionalResourceGroupResourceIDsToAssignRbacTo')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -226,8 +253,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3257252324855693362"
+              "version": "0.32.4.45862",
+              "templateHash": "7784495768661856271"
             },
             "name": "Policy Assignments (Management Group scope)",
             "description": "This module deploys a Policy Assignment at a Management Group scope.",
@@ -295,6 +322,27 @@
                 "description": "Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
               }
             },
+            "additionalManagementGroupsIDsToAssignRbacTo": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity."
+              }
+            },
+            "additionalSubscriptionIDsToAssignRbacTo": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
+              }
+            },
+            "additionalResourceGroupResourceIDsToAssignRbacTo": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
+              }
+            },
             "metadata": {
               "type": "object",
               "defaultValue": {},
@@ -318,13 +366,6 @@
               ],
               "metadata": {
                 "description": "Optional. The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce."
-              }
-            },
-            "managementGroupId": {
-              "type": "string",
-              "defaultValue": "[managementGroup().name]",
-              "metadata": {
-                "description": "Optional. The Target Scope for the Policy. The name of the management group for the policy assignment. If not provided, will use the current scope for deployment."
               }
             },
             "notScopes": {
@@ -357,7 +398,8 @@
             }
           },
           "variables": {
-            "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]"
+            "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]",
+            "finalArrayOfManagementGroupsToAssignRbacTo": "[if(equals(parameters('identity'), 'SystemAssigned'), union(parameters('additionalManagementGroupsIDsToAssignRbacTo'), createArray(managementGroup().name)), createArray())]"
           },
           "resources": [
             {
@@ -381,17 +423,482 @@
             },
             {
               "copy": {
-                "name": "roleAssignment",
+                "name": "managementGroupRoleAssignments",
                 "count": "[length(parameters('roleDefinitionIds'))]"
               },
-              "condition": "[and(not(empty(parameters('roleDefinitionIds'))), equals(parameters('identity'), 'SystemAssigned'))]",
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "name": "[guid(parameters('managementGroupId'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
+              "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(parameters('additionalManagementGroupsIDsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
+              "location": "[deployment().location]",
               "properties": {
-                "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
-                "principalId": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
-                "principalType": "ServicePrincipal"
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "policyAssignmentIdentityId": {
+                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]"
+                  },
+                  "roleDefinitionId": {
+                    "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
+                  },
+                  "managementGroupsIDsToAssignRbacTo": {
+                    "value": "[variables('finalArrayOfManagementGroupsToAssignRbacTo')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "9631038445585845349"
+                    }
+                  },
+                  "parameters": {
+                    "managementGroupsIDsToAssignRbacTo": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity."
+                      }
+                    },
+                    "roleDefinitionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID Of the Azure Role Definition that is used to assign permissions to the identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[deployment().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 24,
+                      "metadata": {
+                        "description": "Required. Specifies the name of the policy assignment. Maximum length is 24 characters for management group scope."
+                      }
+                    },
+                    "policyAssignmentIdentityId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The managed identity principal ID associated with the policy assignment."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "additionalManagementGroupRoleAssignmentsPerMG",
+                        "count": "[length(parameters('managementGroupsIDsToAssignRbacTo'))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name')))]",
+                      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupsIDsToAssignRbacTo')[copyIndex()])]",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[parameters('name')]"
+                          },
+                          "policyAssignmentIdentityId": {
+                            "value": "[parameters('policyAssignmentIdentityId')]"
+                          },
+                          "roleDefinitionId": {
+                            "value": "[parameters('roleDefinitionId')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.32.4.45862",
+                              "templateHash": "9140403539470176881"
+                            }
+                          },
+                          "parameters": {
+                            "roleDefinitionId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The ID Of the Azure Role Definition that is used to assign permissions to the identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "defaultValue": "[deployment().location]",
+                              "metadata": {
+                                "description": "Optional. Location for all resources."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "maxLength": 24,
+                              "metadata": {
+                                "description": "Required. Specifies the name of the policy assignment. Maximum length is 24 characters for management group scope."
+                              }
+                            },
+                            "policyAssignmentIdentityId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The managed identity principal ID associated with the policy assignment."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "name": "[guid(managementGroup().id, parameters('roleDefinitionId'), parameters('location'), parameters('name'))]",
+                              "properties": {
+                                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                                "principalId": "[parameters('policyAssignmentIdentityId')]",
+                                "principalType": "ServicePrincipal"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name'))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "additionalSubscriptionRoleAssignments",
+                "count": "[length(parameters('roleDefinitionIds'))]"
+              },
+              "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(parameters('additionalSubscriptionIDsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
+              "location": "[deployment().location]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "policyAssignmentIdentityId": {
+                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]"
+                  },
+                  "roleDefinitionId": {
+                    "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
+                  },
+                  "subscriptionIDsToAssignRbacTo": {
+                    "value": "[parameters('additionalSubscriptionIDsToAssignRbacTo')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "5868976721767457523"
+                    }
+                  },
+                  "parameters": {
+                    "subscriptionIDsToAssignRbacTo": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
+                      }
+                    },
+                    "roleDefinitionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID Of the Azure Role Definition that is used to assign permissions to the identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[deployment().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 24,
+                      "metadata": {
+                        "description": "Required. Specifies the name of the policy assignment. Maximum length is 24 characters for management group scope."
+                      }
+                    },
+                    "policyAssignmentIdentityId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The managed identity principal ID associated with the policy assignment."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "additionalSubscriptionRoleAssignmentsPerSub",
+                        "count": "[length(parameters('subscriptionIDsToAssignRbacTo'))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-Sub-{1}', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name')), substring(parameters('subscriptionIDsToAssignRbacTo')[copyIndex()], 0, 8))]",
+                      "subscriptionId": "[parameters('subscriptionIDsToAssignRbacTo')[copyIndex()]]",
+                      "location": "[deployment().location]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[parameters('name')]"
+                          },
+                          "policyAssignmentIdentityId": {
+                            "value": "[parameters('policyAssignmentIdentityId')]"
+                          },
+                          "roleDefinitionId": {
+                            "value": "[parameters('roleDefinitionId')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.32.4.45862",
+                              "templateHash": "1856107527131838082"
+                            }
+                          },
+                          "parameters": {
+                            "roleDefinitionId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The ID Of the Azure Role Definition that is used to assign permissions to the identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "defaultValue": "[deployment().location]",
+                              "metadata": {
+                                "description": "Optional. Location for all resources."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "maxLength": 24,
+                              "metadata": {
+                                "description": "Required. Specifies the name of the policy assignment. Maximum length is 24 characters for management group scope."
+                              }
+                            },
+                            "policyAssignmentIdentityId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The managed identity principal ID associated with the policy assignment."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "name": "[guid(subscription().id, parameters('roleDefinitionId'), parameters('location'), parameters('name'))]",
+                              "properties": {
+                                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                                "principalId": "[parameters('policyAssignmentIdentityId')]",
+                                "principalType": "ServicePrincipal"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name'))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "additionalResourceGroupRoleAssignments",
+                "count": "[length(parameters('roleDefinitionIds'))]"
+              },
+              "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(parameters('additionalResourceGroupResourceIDsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-RGs', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
+              "location": "[deployment().location]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "policyAssignmentIdentityId": {
+                    "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]"
+                  },
+                  "roleDefinitionId": {
+                    "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
+                  },
+                  "resourceGroupResourceIDsToAssignRbacTo": {
+                    "value": "[parameters('additionalResourceGroupResourceIDsToAssignRbacTo')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "12514251766635911763"
+                    }
+                  },
+                  "parameters": {
+                    "resourceGroupResourceIDsToAssignRbacTo": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments."
+                      }
+                    },
+                    "roleDefinitionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID Of the Azure Role Definition that is used to assign permissions to the identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[deployment().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 24,
+                      "metadata": {
+                        "description": "Required. Specifies the name of the policy assignment. Maximum length is 24 characters for management group scope."
+                      }
+                    },
+                    "policyAssignmentIdentityId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The managed identity principal ID associated with the policy assignment."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "additionalResourceGroupResourceIDsRoleAssignmentsPerSub",
+                        "count": "[length(parameters('resourceGroupResourceIDsToAssignRbacTo'))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-RG-Sub-{1}', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name'), parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()]), substring(split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[2], 0, 8))]",
+                      "subscriptionId": "[split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[2]]",
+                      "resourceGroup": "[split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[4]]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[parameters('name')]"
+                          },
+                          "policyAssignmentIdentityId": {
+                            "value": "[parameters('policyAssignmentIdentityId')]"
+                          },
+                          "roleDefinitionId": {
+                            "value": "[parameters('roleDefinitionId')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.32.4.45862",
+                              "templateHash": "11358116386111113340"
+                            }
+                          },
+                          "parameters": {
+                            "roleDefinitionId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The ID Of the Azure Role Definition that is used to assign permissions to the identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "defaultValue": "[resourceGroup().location]",
+                              "metadata": {
+                                "description": "Optional. Location for all resources."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "maxLength": 24,
+                              "metadata": {
+                                "description": "Required. Specifies the name of the policy assignment. Maximum length is 24 characters for management group scope."
+                              }
+                            },
+                            "policyAssignmentIdentityId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The managed identity principal ID associated with the policy assignment."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "name": "[guid(resourceGroup().id, parameters('roleDefinitionId'), parameters('location'), parameters('name'))]",
+                              "properties": {
+                                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                                "principalId": "[parameters('policyAssignmentIdentityId')]",
+                                "principalType": "ServicePrincipal"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
               },
               "dependsOn": [
                 "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name'))]"
@@ -481,8 +988,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3684200367628760752"
+              "version": "0.32.4.45862",
+              "templateHash": "5956652963277088316"
             },
             "name": "Policy Assignments (Subscription scope)",
             "description": "This module deploys a Policy Assignment at a Subscription scope.",
@@ -736,8 +1243,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3879842459774615474"
+              "version": "0.32.4.45862",
+              "templateHash": "15421130529251696480"
             },
             "name": "Policy Assignments (Resource Group scope)",
             "description": "This module deploys a Policy Assignment at a Resource Group scope.",

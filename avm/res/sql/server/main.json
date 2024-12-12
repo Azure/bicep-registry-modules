@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "14327182870559615261"
+      "version": "0.31.92.45157",
+      "templateHash": "2810003323744846464"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -615,6 +615,245 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "encryptionProtectorType": {
+      "type": "object",
+      "properties": {
+        "serverKeyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the server key."
+          }
+        },
+        "serverKeyType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureKeyVault",
+            "ServiceManaged"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The encryption protector type."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Key auto rotation opt-in flag."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "vulnerabilityAssessmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the vulnerability assessment."
+          }
+        },
+        "recurringScans": {
+          "$ref": "#/definitions/recurringScansType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The recurring scans settings."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the storage account to store the scan reports."
+          }
+        },
+        "useStorageAccountAccessKey": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether to use the storage account access key to access the storage account."
+          }
+        },
+        "createStorageRoleAssignment": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether to create a role assignment for the storage account."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "firewallRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the firewall rule."
+          }
+        },
+        "startIpAddress": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        },
+        "endIpAddress": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "keyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+          }
+        },
+        "serverKeyType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureKeyVault",
+            "ServiceManaged"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The server key type."
+          }
+        },
+        "uri": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "virtualNetworkRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Server Virtual Network Rule."
+          }
+        },
+        "virtualNetworkSubnetId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the virtual network subnet."
+          }
+        },
+        "ignoreMissingVnetServiceEndpoint": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "securityAlerPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Security Alert Policy."
+          }
+        },
+        "disabledAlerts": {
+          "type": "array",
+          "allowedValues": [
+            "Access_Anomaly",
+            "Brute_Force",
+            "Data_Exfiltration",
+            "Sql_Injection",
+            "Sql_Injection_Vulnerability",
+            "Unsafe_Action"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Alerts to disable."
+          }
+        },
+        "emailAccountAdmins": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies that the alert is sent to the account administrators."
+          }
+        },
+        "emailAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies an array of email addresses to which the alert is sent."
+          }
+        },
+        "retentionDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the number of days to keep in the Threat Detection audit logs."
+          }
+        },
+        "state": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database."
+          }
+        },
+        "storageAccountAccessKey": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the identifier key of the Threat Detection audit storage account."
+          }
+        },
+        "storageEndpoint": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs."
           }
         }
       },
@@ -1273,6 +1512,39 @@
         }
       }
     },
+    "recurringScansType": {
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. Specifies an array of e-mail addresses to which the scan notification is sent."
+          }
+        },
+        "emailSubscriptionAdmins": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies that the schedule scan notification will be sent to the subscription administrators."
+          }
+        },
+        "isEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Recurring scans state."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "vulnerability-assessment/main.bicep"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -1485,6 +1757,9 @@
     },
     "firewallRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/firewallRuleType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The firewall rules to create in the server."
@@ -1492,6 +1767,9 @@
     },
     "virtualNetworkRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/virtualNetworkRuleType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The virtual network rules to create in the server."
@@ -1499,6 +1777,9 @@
     },
     "securityAlertPolicies": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/securityAlerPolicyType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The security alert policies to create in the server."
@@ -1506,6 +1787,9 @@
     },
     "keys": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/keyType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The keys to configure."
@@ -1594,15 +1878,15 @@
       }
     },
     "encryptionProtectorObj": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/encryptionProtectorType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The encryption protection configuration."
       }
     },
     "vulnerabilityAssessmentsObj": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/vulnerabilityAssessmentType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The vulnerability assessment configuration."
       }
@@ -1870,8 +2154,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "18018827030977470456"
+              "version": "0.31.92.45157",
+              "templateHash": "10088627667414343400"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -2586,8 +2870,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "14890409200962565555"
+                      "version": "0.31.92.45157",
+                      "templateHash": "1465086214783345027"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -2704,8 +2988,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "841731129374883266"
+                      "version": "0.31.92.45157",
+                      "templateHash": "3060709558343951533"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -2938,8 +3222,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10024079638382167120"
+              "version": "0.31.92.45157",
+              "templateHash": "9050866823207809352"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -4013,10 +4297,10 @@
             "value": "[parameters('name')]"
           },
           "endIpAddress": {
-            "value": "[coalesce(tryGet(parameters('firewallRules')[copyIndex()], 'endIpAddress'), '0.0.0.0')]"
+            "value": "[tryGet(parameters('firewallRules')[copyIndex()], 'endIpAddress')]"
           },
           "startIpAddress": {
-            "value": "[coalesce(tryGet(parameters('firewallRules')[copyIndex()], 'startIpAddress'), '0.0.0.0')]"
+            "value": "[tryGet(parameters('firewallRules')[copyIndex()], 'startIpAddress')]"
           }
         },
         "template": {
@@ -4025,8 +4309,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6449556555046717103"
+              "version": "0.31.92.45157",
+              "templateHash": "16725482503837347177"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule.",
@@ -4114,14 +4398,14 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[parameters('virtualNetworkRules')[copyIndex()].name]"
-          },
           "serverName": {
             "value": "[parameters('name')]"
           },
+          "name": {
+            "value": "[parameters('virtualNetworkRules')[copyIndex()].name]"
+          },
           "ignoreMissingVnetServiceEndpoint": {
-            "value": "[coalesce(tryGet(parameters('virtualNetworkRules')[copyIndex()], 'ignoreMissingVnetServiceEndpoint'), false())]"
+            "value": "[tryGet(parameters('virtualNetworkRules')[copyIndex()], 'ignoreMissingVnetServiceEndpoint')]"
           },
           "virtualNetworkSubnetId": {
             "value": "[parameters('virtualNetworkRules')[copyIndex()].virtualNetworkSubnetId]"
@@ -4133,8 +4417,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "4969955763304077350"
+              "version": "0.31.92.45157",
+              "templateHash": "11325013625158751172"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
@@ -4228,35 +4512,36 @@
             "value": "[parameters('name')]"
           },
           "disabledAlerts": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'disabledAlerts'), createArray())]"
+            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'disabledAlerts')]"
           },
           "emailAccountAdmins": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'emailAccountAdmins'), false())]"
+            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'emailAccountAdmins')]"
           },
           "emailAddresses": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'emailAddresses'), createArray())]"
+            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'emailAddresses')]"
           },
           "retentionDays": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'retentionDays'), 0)]"
+            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'retentionDays')]"
           },
           "state": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'state'), 'Disabled')]"
+            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'state')]"
           },
           "storageAccountAccessKey": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'storageAccountAccessKey'), '')]"
+            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'storageAccountAccessKey')]"
           },
           "storageEndpoint": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'storageEndpoint'), '')]"
+            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'storageEndpoint')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "15406914222375641032"
+              "version": "0.31.92.45157",
+              "templateHash": "15381579869855736341"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -4271,9 +4556,20 @@
             },
             "disabledAlerts": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "defaultValue": [],
+              "allowedValues": [
+                "Sql_Injection",
+                "Sql_Injection_Vulnerability",
+                "Access_Anomaly",
+                "Data_Exfiltration",
+                "Unsafe_Action",
+                "Brute_Force"
+              ],
               "metadata": {
-                "description": "Optional. Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force."
+                "description": "Optional. Alerts to disable."
               }
             },
             "emailAccountAdmins": {
@@ -4285,6 +4581,9 @@
             },
             "emailAddresses": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. Specifies an array of email addresses to which the alert is sent."
@@ -4310,14 +4609,14 @@
             },
             "storageAccountAccessKey": {
               "type": "securestring",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Specifies the identifier key of the Threat Detection audit storage account.."
+                "description": "Optional. Specifies the identifier key of the Threat Detection audit storage account."
               }
             },
             "storageEndpoint": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs."
               }
@@ -4329,8 +4628,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "securityAlertPolicy": {
               "type": "Microsoft.Sql/servers/securityAlertPolicies",
               "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
@@ -4340,11 +4645,14 @@
                 "emailAddresses": "[parameters('emailAddresses')]",
                 "retentionDays": "[parameters('retentionDays')]",
                 "state": "[parameters('state')]",
-                "storageAccountAccessKey": "[if(empty(parameters('storageAccountAccessKey')), null(), parameters('storageAccountAccessKey'))]",
-                "storageEndpoint": "[if(empty(parameters('storageEndpoint')), null(), parameters('storageEndpoint'))]"
-              }
+                "storageAccountAccessKey": "[parameters('storageAccountAccessKey')]",
+                "storageEndpoint": "[parameters('storageEndpoint')]"
+              },
+              "dependsOn": [
+                "server"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -4375,7 +4683,7 @@
       ]
     },
     "server_vulnerabilityAssessment": {
-      "condition": "[not(empty(parameters('vulnerabilityAssessmentsObj')))]",
+      "condition": "[not(equals(parameters('vulnerabilityAssessmentsObj'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sql-VulnAssessm', uniqueString(deployment().name, parameters('location')))]",
@@ -4391,37 +4699,65 @@
           "name": {
             "value": "[parameters('vulnerabilityAssessmentsObj').name]"
           },
-          "recurringScansEmails": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmails'), createArray())]"
-          },
-          "recurringScansEmailSubscriptionAdmins": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmailSubscriptionAdmins'), false())]"
-          },
-          "recurringScansIsEnabled": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansIsEnabled'), false())]"
+          "recurringScans": {
+            "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScans')]"
           },
           "storageAccountResourceId": {
             "value": "[parameters('vulnerabilityAssessmentsObj').storageAccountResourceId]"
           },
           "useStorageAccountAccessKey": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'useStorageAccountAccessKey'), false())]"
+            "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'useStorageAccountAccessKey')]"
           },
           "createStorageRoleAssignment": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'createStorageRoleAssignment'), true())]"
+            "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'createStorageRoleAssignment')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "11004049200994426011"
+              "version": "0.31.92.45157",
+              "templateHash": "12724764985088418792"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "recurringScansType": {
+              "type": "object",
+              "properties": {
+                "emails": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. Specifies an array of e-mail addresses to which the scan notification is sent."
+                  }
+                },
+                "emailSubscriptionAdmins": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies that the schedule scan notification will be sent to the subscription administrators."
+                  }
+                },
+                "isEnabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Recurring scans state."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -4436,25 +4772,15 @@
                 "description": "Conditional. The Name of SQL Server. Required if the template is used in a standalone deployment."
               }
             },
-            "recurringScansIsEnabled": {
-              "type": "bool",
-              "defaultValue": false,
+            "recurringScans": {
+              "$ref": "#/definitions/recurringScansType",
+              "defaultValue": {
+                "emails": [],
+                "emailSubscriptionAdmins": false,
+                "isEnabled": false
+              },
               "metadata": {
-                "description": "Optional. Recurring scans state."
-              }
-            },
-            "recurringScansEmailSubscriptionAdmins": {
-              "type": "bool",
-              "defaultValue": false,
-              "metadata": {
-                "description": "Optional. Specifies that the schedule scan notification will be is sent to the subscription administrators."
-              }
-            },
-            "recurringScansEmails": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. Specifies an array of email addresses to which the scan notification is sent."
+                "description": "Optional. The recurring scans settings."
               }
             },
             "storageAccountResourceId": {
@@ -4478,22 +4804,27 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "vulnerabilityAssessment": {
               "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
               "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
                 "storageAccountAccessKey": "[if(parameters('useStorageAccountAccessKey'), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
-                "recurringScans": {
-                  "isEnabled": "[parameters('recurringScansIsEnabled')]",
-                  "emailSubscriptionAdmins": "[parameters('recurringScansEmailSubscriptionAdmins')]",
-                  "emails": "[parameters('recurringScansEmails')]"
-                }
-              }
+                "recurringScans": "[parameters('recurringScans')]"
+              },
+              "dependsOn": [
+                "server"
+              ]
             },
-            {
+            "storageAccount_sbdc_rbac": {
               "condition": "[and(not(parameters('useStorageAccountAccessKey')), parameters('createStorageRoleAssignment'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -4510,7 +4841,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference(resourceId('Microsoft.Sql/servers', parameters('serverName')), '2023-08-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -4519,8 +4850,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "13956215614091387428"
+                      "version": "0.31.92.45157",
+                      "templateHash": "2903956714854050681"
                     }
                   },
                   "parameters": {
@@ -4545,9 +4876,12 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "server"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -4592,17 +4926,17 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[tryGet(parameters('keys')[copyIndex()], 'name')]"
-          },
           "serverName": {
             "value": "[parameters('name')]"
           },
+          "name": {
+            "value": "[tryGet(parameters('keys')[copyIndex()], 'name')]"
+          },
           "serverKeyType": {
-            "value": "[coalesce(tryGet(parameters('keys')[copyIndex()], 'serverKeyType'), 'ServiceManaged')]"
+            "value": "[tryGet(parameters('keys')[copyIndex()], 'serverKeyType')]"
           },
           "uri": {
-            "value": "[coalesce(tryGet(parameters('keys')[copyIndex()], 'uri'), '')]"
+            "value": "[tryGet(parameters('keys')[copyIndex()], 'uri')]"
           }
         },
         "template": {
@@ -4612,8 +4946,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "17839617504395216689"
+              "version": "0.31.92.45157",
+              "templateHash": "16457177770650062823"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -4641,14 +4975,14 @@
                 "ServiceManaged"
               ],
               "metadata": {
-                "description": "Optional. The encryption protector type like \"ServiceManaged\", \"AzureKeyVault\"."
+                "description": "Optional. The server key type."
               }
             },
             "uri": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required."
+                "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
               }
             }
           },
@@ -4706,7 +5040,7 @@
       ]
     },
     "server_encryptionProtector": {
-      "condition": "[not(empty(parameters('encryptionProtectorObj')))]",
+      "condition": "[not(equals(parameters('encryptionProtectorObj'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sql-EncryProtector', uniqueString(deployment().name, parameters('location')))]",
@@ -4723,10 +5057,10 @@
             "value": "[parameters('encryptionProtectorObj').serverKeyName]"
           },
           "serverKeyType": {
-            "value": "[coalesce(tryGet(parameters('encryptionProtectorObj'), 'serverKeyType'), 'ServiceManaged')]"
+            "value": "[tryGet(parameters('encryptionProtectorObj'), 'serverKeyType')]"
           },
           "autoRotationEnabled": {
-            "value": "[coalesce(tryGet(parameters('encryptionProtectorObj'), 'autoRotationEnabled'), true())]"
+            "value": "[tryGet(parameters('encryptionProtectorObj'), 'autoRotationEnabled')]"
           }
         },
         "template": {
@@ -4735,8 +5069,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "11473914706327458055"
+              "version": "0.31.92.45157",
+              "templateHash": "3436938593239210559"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector.",
@@ -4757,9 +5091,9 @@
             },
             "autoRotationEnabled": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
-                "description": "Optional. Key auto rotation opt-in."
+                "description": "Optional. Key auto rotation opt-in flag."
               }
             },
             "serverKeyType": {
@@ -4868,8 +5202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6303070680265885029"
+              "version": "0.31.92.45157",
+              "templateHash": "4626140114742164628"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings.",
@@ -5015,8 +5349,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "13956215614091387428"
+                      "version": "0.31.92.45157",
+                      "templateHash": "2903956714854050681"
                     }
                   },
                   "parameters": {
@@ -5103,8 +5437,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "13150358169332921706"
+              "version": "0.31.92.45157",
+              "templateHash": "17763074267065683265"
             }
           },
           "definitions": {
@@ -5241,6 +5575,13 @@
         "description": "The resource ID of the deployed SQL server."
       },
       "value": "[resourceId('Microsoft.Sql/servers', parameters('name'))]"
+    },
+    "fullyQualifiedDomainName": {
+      "type": "string",
+      "metadata": {
+        "description": "The fully qualified domain name of the deployed SQL server."
+      },
+      "value": "[reference('server').fullyQualifiedDomainName]"
     },
     "resourceGroupName": {
       "type": "string",
