@@ -34,14 +34,15 @@ param supportedOSType string
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
 param endOfLifeDate string?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Tags for all resources.')
 param tags object?
 
 @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
-param customActions array?
+param customActions customActionType[]?
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId(
@@ -124,28 +125,32 @@ output location string = application.location
 //   Definitions   //
 // =============== //
 
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+@export()
+type customActionType = {
+  @sys.description('Required. The name of the custom action. Must be unique within the Gallery Application Version.')
+  name: string
 
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @sys.description('Required. The script to run when executing this custom action.')
+  script: string
 
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
+  @sys.description('Optional. Description to help the users understand what this custom action does.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @sys.description('Optional. The parameters that this custom action uses.')
+  parameters: {
+    @sys.description('Required. The name of the parameter.')
+    name: string
 
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+    @sys.description('Optional. Specifies the type of the custom action parameter.')
+    type: ('ConfigurationDataBlob' | 'LogOutputBlob' | 'String')?
 
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+    @sys.description('Optional. A description to help users understand what this parameter means.')
+    description: string?
+
+    @sys.description('Optional. The default value of the parameter. Only applies to string types.')
+    defaultValue: string?
+
+    @sys.description('Optional. Indicates whether this parameter must be passed when running the custom action.')
+    required: bool?
+  }[]?
+}
