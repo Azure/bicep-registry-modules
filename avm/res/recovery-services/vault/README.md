@@ -3558,7 +3558,7 @@ The restore settings of the vault.
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
