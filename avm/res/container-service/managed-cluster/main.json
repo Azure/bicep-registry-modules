@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9859955776085277303"
+      "templateHash": "15234959045281729347"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1013,7 +1013,7 @@
         "description": "Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled."
       }
     },
-    "nodeProvisioningProfile": {
+    "nodeProvisioningProfileMode": {
       "type": "string",
       "nullable": true,
       "allowedValues": [
@@ -1794,7 +1794,7 @@
         "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "nodeResourceGroupProfile": "[parameters('nodeResourceGroupProfile')]",
-        "nodeProvisioningProfile": "[if(not(empty(parameters('nodeProvisioningProfile'))), createObject('mode', parameters('nodeProvisioningProfile')), null())]",
+        "nodeProvisioningProfile": "[if(not(empty(parameters('nodeProvisioningProfileMode'))), createObject('mode', parameters('nodeProvisioningProfileMode')), null())]",
         "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
         "workloadAutoScalerProfile": {
           "keda": {

@@ -118,7 +118,7 @@ param disableLocalAccounts bool = true
   'Auto'
   'Manual'
 ])
-param nodeProvisioningProfile string?
+param nodeProvisioningProfileMode string?
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
@@ -693,9 +693,9 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
     nodeResourceGroupProfile: nodeResourceGroupProfile
-    nodeProvisioningProfile: !empty(nodeProvisioningProfile)
+    nodeProvisioningProfile: !empty(nodeProvisioningProfileMode)
       ? {
-          mode: nodeProvisioningProfile
+          mode: nodeProvisioningProfileMode
         }
       : null
     enablePodSecurityPolicy: enablePodSecurityPolicy

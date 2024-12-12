@@ -79,7 +79,7 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-      nodeProvisioningProfile: 'Auto'
+      nodeProvisioningProfileMode: 'Auto'
       nodeResourceGroupProfile: {
         restrictionLevel: 'ReadOnly'
       }

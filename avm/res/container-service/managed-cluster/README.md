@@ -105,7 +105,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
-    nodeProvisioningProfile: 'Auto'
+    nodeProvisioningProfileMode: 'Auto'
     nodeResourceGroupProfile: {
       restrictionLevel: 'ReadOnly'
     }
@@ -199,7 +199,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "systemAssigned": true
       }
     },
-    "nodeProvisioningProfile": {
+    "nodeProvisioningProfileMode": {
       "value": "Auto"
     },
     "nodeResourceGroupProfile": {
@@ -281,7 +281,7 @@ param maintenanceConfigurations = [
 param managedIdentities = {
   systemAssigned: true
 }
-param nodeProvisioningProfile = 'Auto'
+param nodeProvisioningProfileMode = 'Auto'
 param nodeResourceGroupProfile = {
   restrictionLevel: 'ReadOnly'
 }
@@ -2933,7 +2933,7 @@ param tags = {
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
 | [`networkPolicy`](#parameter-networkpolicy) | string | Specifies the network policy used for building Kubernetes network. - calico or azure. |
-| [`nodeProvisioningProfile`](#parameter-nodeprovisioningprofile) | string | Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. |
+| [`nodeProvisioningProfileMode`](#parameter-nodeprovisioningprofilemode) | string | Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. |
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
@@ -4874,7 +4874,7 @@ Specifies the network policy used for building Kubernetes network. - calico or a
   ]
   ```
 
-### Parameter: `nodeProvisioningProfile`
+### Parameter: `nodeProvisioningProfileMode`
 
 Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.
 
