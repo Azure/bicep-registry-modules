@@ -67,6 +67,9 @@ param roleAssignments roleAssignmentType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingFullType[]?
+
 var builtInRoleNames = {
   'CDN Endpoint Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -177,6 +180,35 @@ resource profile_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
       condition: roleAssignment.?condition
       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: profile
+  }
+]
+
+resource profile_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
     scope: profile
   }
@@ -338,6 +370,7 @@ import { associationsType } from 'securityPolicies/main.bicep'
 import { ruleSetType } from 'ruleset/main.bicep'
 import { ruleType } from 'ruleset/rule/main.bicep'
 import { dnsValidationType } from 'customdomain/main.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
