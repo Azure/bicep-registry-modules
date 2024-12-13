@@ -110,7 +110,6 @@ module testDeployment '../../../main.bicep' = [
       }
       localUsers: [
         {
-          storageAccountName: '${namePrefix}${serviceShort}001'
           name: 'testuser'
           hasSharedKey: false
           hasSshKey: true
