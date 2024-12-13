@@ -21,7 +21,7 @@ param tags object?
 param description string = ''
 
 @sys.description('Required. The list of event for which this notification is enabled.')
-param events array = []
+param events array
 
 @sys.description('Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.')
 param emailRecipient string?
