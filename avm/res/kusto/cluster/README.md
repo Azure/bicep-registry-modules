@@ -170,10 +170,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           softDeletePeriod: 'P7D'
         }
       }
-      {
-        kind: 'ReadOnlyFollowing'
-        name: 'myReadOnlyDatabase'
-      }
     ]
     enableAutoScale: true
     enableAutoStop: true
@@ -281,10 +277,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
             "hotCachePeriod": "P1D",
             "softDeletePeriod": "P7D"
           }
-        },
-        {
-          "kind": "ReadOnlyFollowing",
-          "name": "myReadOnlyDatabase"
         }
       ]
     },
@@ -407,10 +399,6 @@ param databases = [
       hotCachePeriod: 'P1D'
       softDeletePeriod: 'P7D'
     }
-  }
-  {
-    kind: 'ReadOnlyFollowing'
-    name: 'myReadOnlyDatabase'
   }
 ]
 param enableAutoScale = true
