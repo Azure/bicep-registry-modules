@@ -18,6 +18,15 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment.')
 param subscriptionId string = '#_subscriptionId_#'
 
+// ============ //
+// Dependencies //
+// ============ //
+
+resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
+  scope: tenant()
+  name: '${uniqueString(deployment().name)}-additional-mg'
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -34,6 +43,9 @@ module testDeployment '../../../main.bicep' = {
     identity: 'SystemAssigned'
     location: resourceLocation
     managementGroupId: last(split(managementGroup().id, '/'))
+    additionalManagementGroupsIDsToAssignRbacTo: [
+      additionalMg.name
+    ]
     metadata: {
       category: 'Security'
       version: '1.0'
