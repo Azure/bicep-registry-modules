@@ -34,7 +34,7 @@ param networkPolicy string = 'azure'
 param dnsPrefix string = name
 
 @description('Optional. The name of the resource group for the managed resources of the AKS cluster.')
-param nodeResourceGroupName string = 'rg_aks_node'
+param nodeResourceGroupName string = 'rg-mc-${name}'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

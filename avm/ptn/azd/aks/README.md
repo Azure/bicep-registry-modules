@@ -1149,7 +1149,7 @@ The name of the resource group for the managed resources of the AKS cluster.
 
 - Required: No
 - Type: string
-- Default: `'rg_aks_node'`
+- Default: `[format('rg-mc-{0}', parameters('name'))]`
 
 ### Parameter: `podCidr`
 
