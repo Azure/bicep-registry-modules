@@ -1947,7 +1947,7 @@ Generate the Module ReadMe files into a specific folder path
 $templatePaths = (Get-ChildItem 'C:/network' -Filter 'main.bicep' -Recurse).FullName
 $templatePaths | ForEach-Object -Parallel { . '<PathToRepo>/utilities/tools/Set-ModuleReadMe.ps1' ; Set-ModuleReadMe -TemplateFilePath $_ }
 
-Generate the Module ReadMe for any template in a folder path
+Generate the Module ReadMe for any template in a folder pat
 #>
 function Set-ModuleReadMe {
 
