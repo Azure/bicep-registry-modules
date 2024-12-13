@@ -85,6 +85,10 @@ output location string = afdEndpoint.location
 @description('The list of routes assigned to the AFD endpoint.')
 output routes array = routes ?? []
 
+@description('The host name of the AFD endpoint.')
+output frontDoorEndpointHostName string = afdEndpoint.properties.hostName
+
+
 // =============== //
 //   Definitions   //
 // =============== //

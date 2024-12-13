@@ -45,6 +45,10 @@ module testDeployment '../../../main.bicep' = [
       enableSecretRotation: true
       kedaAddon: true
       kubernetesVersion: '1.28'
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
       maintenanceConfigurations: [
         {
           name: 'aksManagedAutoUpgradeSchedule'
