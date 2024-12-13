@@ -189,34 +189,6 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
     ...(!empty(volumeType)
       ? {
           volumeType: volumeType
-          // dataProtection: {
-          //   replication: !empty(dataProtection.?replication)
-          //     ? {
-          //         endpointType: dataProtection.?replication!.endpointType
-          //         // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? (!empty(dataProtection.?replication.?remoteVolumeResourceId)
-          //         //   ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
-          //         //   : '')
-          //         remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? ''
-          //         // remoteVolumeResourceId: !empty(dataProtection.?replication.?remoteVolumeResourceId)
-          //         //   ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
-          //         //   : ''
-          //         remoteVolumeResourceId: dataProtection.?replication!.remoteVolumeResourceId
-          //         replicationSchedule: dataProtection.?replication!.replicationSchedule
-          //       }
-          //     : {}
-          //   backup: !empty(dataProtection.?backup)
-          //     ? {
-          //         backupPolicyId: netAppAccount::backupPolicy.id
-          //         policyEnforced: dataProtection.?backup.policyEnforced ?? false
-          //         backupVaultId: netAppAccount::backupVault.id
-          //       }
-          //     : {}
-          //   snapshot: !empty(dataProtection.?snapshot)
-          //     ? {
-          //         snapshotPolicyId: netAppAccount::snapshotPolicy.id
-          //       }
-          //     : {}
-          // }
         }
       : {})
     dataProtection: !empty(dataProtection)
