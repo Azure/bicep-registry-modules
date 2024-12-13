@@ -93,7 +93,7 @@ configuration:
               label: "Status: Won't Fix :broken_heart:"
           - closeIssue
 
-      - description: 'ITA11 - When a reply from anyone to an issue occurs, remove the "Needs: Author Feedback :ear:" label and label with "Needs: Attention :wave:"'
+      - description: 'ITA11 - When the author replies, remove the "Needs: Author Feedback :ear:" label and label with "Needs: Attention :wave:"'
         if:
           - or:
               - payloadType: Pull_Request_Review_Comment
@@ -103,9 +103,13 @@ configuration:
                 action: Closed
           - hasLabel:
               label: "Needs: Author Feedback :ear:"
+          - isActivitySender:
+              issueAuthor: true
         then:
           - removeLabel:
               label: "Needs: Author Feedback :ear:"
+          - removeLabel:
+              label: "Status: No Recent Activity :zzz:"
           - addLabel:
               label: "Needs: Attention :wave:"
 
