@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "136819997431198276"
+      "version": "0.32.4.45862",
+      "templateHash": "13694467319022455305"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -232,13 +232,13 @@
     },
     "kind": {
       "type": "string",
-      "defaultValue": "App",
+      "defaultValue": "app",
       "allowedValues": [
-        "App",
-        "Elastic",
-        "FunctionApp",
-        "Windows",
-        "Linux"
+        "app",
+        "elastic",
+        "functionApp",
+        "windows",
+        "linux"
       ],
       "metadata": {
         "description": "Optional. Kind of server OS."
@@ -246,7 +246,7 @@
     },
     "reserved": {
       "type": "bool",
-      "defaultValue": "[equals(parameters('kind'), 'Linux')]",
+      "defaultValue": "[equals(parameters('kind'), 'linux')]",
       "metadata": {
         "description": "Conditional. Defaults to false when creating Windows/app App Service Plan. Required if creating a Linux App Service Plan and must be set to true."
       }
