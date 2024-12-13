@@ -100,6 +100,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $file.Name | Should -BeExactly 'README.md'
         }
 
+        # only avm/res/network/virtual-network/subnet is allowed to have a version.json file (PoC for child module publishing)
+        It '[<moduleFolderName>] Child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) -And ($_.resourceTypeIdentifier -ne 'network/virtual-network/subnet') }) {
+
+            param (
+                [string] $moduleFolderPath
+            )
+
+            $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+            $pathExisting | Should -Be $false
+        }
+
         It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
             param(
