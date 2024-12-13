@@ -101,7 +101,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # only avm/res/network/virtual-network/subnet is allowed to have a version.json file (PoC for child module publishing)
-        It '[<moduleFolderName>] Child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) -And ($_.resourceTypeIdentifier -ne 'network/virtual-network/subnet') }) {
+        It '[<moduleFolderName>] Child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) -And ($_.resourceTypeIdentifier -ne 'avm/res/network/virtual-network/subnet') }) {
 
             param (
                 [string] $moduleFolderPath
