@@ -126,10 +126,6 @@ module testDeployment '../../../main.bicep' = [
             hotCachePeriod: 'P1D'
           }
         }
-        {
-          name: 'myReadOnlyDatabase'
-          kind: 'ReadOnlyFollowing'
-        }
       ]
     }
   }
