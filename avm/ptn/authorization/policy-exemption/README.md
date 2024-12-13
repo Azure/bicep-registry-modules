@@ -119,7 +119,6 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     description: '[Description] Policy Exemption at the management group scope'
     displayName: '[DisplayName] Policy Exemption at the management group scope'
     enableTelemetry: true
-    expiresOn: '2024-11-14T20:46:13Z'
     location: '<location>'
     managementGroupId: 'alz-landingzones'
     metadata: {
@@ -184,9 +183,6 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     "enableTelemetry": {
       "value": true
     },
-    "expiresOn": {
-      "value": "2024-11-14T20:46:13Z"
-    },
     "location": {
       "value": "<location>"
     },
@@ -243,7 +239,6 @@ param assignmentScopeValidation = 'Default'
 param description = '[Description] Policy Exemption at the management group scope'
 param displayName = '[DisplayName] Policy Exemption at the management group scope'
 param enableTelemetry = true
-param expiresOn = '2024-11-14T20:46:13Z'
 param location = '<location>'
 param managementGroupId = 'alz-landingzones'
 param metadata = {
@@ -375,7 +370,6 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     description: '[Description] Policy Exemption at the management group scope'
     displayName: '[DisplayName] Policy Exemption at the management group scope'
     enableTelemetry: true
-    expiresOn: '2024-11-14T20:46:13Z'
     location: '<location>'
     metadata: {
       assignedBy: 'Bicep'
@@ -441,9 +435,6 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     "enableTelemetry": {
       "value": true
     },
-    "expiresOn": {
-      "value": "2024-11-14T20:46:13Z"
-    },
     "location": {
       "value": "<location>"
     },
@@ -503,7 +494,6 @@ param assignmentScopeValidation = 'Default'
 param description = '[Description] Policy Exemption at the management group scope'
 param displayName = '[DisplayName] Policy Exemption at the management group scope'
 param enableTelemetry = true
-param expiresOn = '2024-11-14T20:46:13Z'
 param location = '<location>'
 param metadata = {
   assignedBy: 'Bicep'
@@ -631,7 +621,6 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     description: '[Description] Policy Exemption at the management group scope'
     displayName: '[DisplayName] Policy Exemption at the management group scope'
     enableTelemetry: true
-    expiresOn: '2024-11-14T20:46:13Z'
     location: '<location>'
     metadata: {
       assignedBy: 'Bicep'
@@ -696,9 +685,6 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     "enableTelemetry": {
       "value": true
     },
-    "expiresOn": {
-      "value": "2024-11-14T20:46:13Z"
-    },
     "location": {
       "value": "<location>"
     },
@@ -755,7 +741,6 @@ param assignmentScopeValidation = 'Default'
 param description = '[Description] Policy Exemption at the management group scope'
 param displayName = '[DisplayName] Policy Exemption at the management group scope'
 param enableTelemetry = true
-param expiresOn = '2024-11-14T20:46:13Z'
 param location = '<location>'
 param metadata = {
   assignedBy: 'Bicep'
