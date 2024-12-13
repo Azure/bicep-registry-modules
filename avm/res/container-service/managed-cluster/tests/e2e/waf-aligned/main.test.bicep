@@ -76,7 +76,7 @@ module testDeployment '../../../main.bicep' = [
           availabilityZones: [
             3
           ]
-          count: 3
+          count: 1
           enableAutoScaling: true
           maxCount: 3
           maxPods: 50
@@ -98,7 +98,7 @@ module testDeployment '../../../main.bicep' = [
           availabilityZones: [
             3
           ]
-          count: 3
+          count: 2
           enableAutoScaling: true
           maxCount: 3
           maxPods: 50
@@ -120,7 +120,7 @@ module testDeployment '../../../main.bicep' = [
           availabilityZones: [
             3
           ]
-          count: 3
+          count: 2
           enableAutoScaling: true
           maxCount: 3
           maxPods: 50

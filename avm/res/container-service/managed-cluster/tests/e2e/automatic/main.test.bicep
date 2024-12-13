@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
       primaryAgentPoolProfiles: [
         {
           name: 'systempool'
-          count: 3
+          count: 1
           vmSize: 'Standard_DS4_v2'
           mode: 'System'
         }

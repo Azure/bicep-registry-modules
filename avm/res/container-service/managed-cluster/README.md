@@ -64,7 +64,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csauto001'
     primaryAgentPoolProfiles: [
       {
-        count: 3
+        count: 1
         mode: 'System'
         name: 'systempool'
         vmSize: 'Standard_DS4_v2'
@@ -137,7 +137,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
-          "count": 3,
+          "count": 1,
           "mode": "System",
           "name": "systempool",
           "vmSize": "Standard_DS4_v2"
@@ -240,7 +240,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csauto001'
 param primaryAgentPoolProfiles = [
   {
-    count: 3
+    count: 1
     mode: 'System'
     name: 'systempool'
     vmSize: 'Standard_DS4_v2'
@@ -1264,7 +1264,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csist001'
     primaryAgentPoolProfiles: [
       {
-        count: 3
+        count: 2
         mode: 'System'
         name: 'systempool'
         vmSize: 'Standard_DS4_v2'
@@ -1316,7 +1316,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
-          "count": 3,
+          "count": 2,
           "mode": "System",
           "name": "systempool",
           "vmSize": "Standard_DS4_v2"
@@ -1382,7 +1382,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csist001'
 param primaryAgentPoolProfiles = [
   {
-    count: 3
+    count: 2
     mode: 'System'
     name: 'systempool'
     vmSize: 'Standard_DS4_v2'
@@ -1846,7 +1846,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csnonaad001'
     primaryAgentPoolProfiles: [
       {
-        count: 3
+        count: 1
         mode: 'System'
         name: 'systempool'
         vmSize: 'Standard_DS2_v2'
@@ -1882,7 +1882,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
-          "count": 3,
+          "count": 1,
           "mode": "System",
           "name": "systempool",
           "vmSize": "Standard_DS2_v2"
@@ -1922,7 +1922,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csnonaad001'
 param primaryAgentPoolProfiles = [
   {
-    count: 3
+    count: 1
     mode: 'System'
     name: 'systempool'
     vmSize: 'Standard_DS2_v2'
@@ -2003,26 +2003,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
-      }
-      {
-        availabilityZones: [
-          3
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
       }
     ]
     dnsServiceIP: '10.10.200.10'
@@ -2110,26 +2090,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
-        },
-        {
-          "availabilityZones": [
-            3
-          ],
-          "count": 2,
-          "enableAutoScaling": true,
-          "maxCount": 3,
-          "maxPods": 30,
-          "minCount": 1,
-          "minPods": 2,
-          "mode": "User",
-          "name": "userpool2",
-          "nodeLabels": {},
-          "osDiskSizeGB": 128,
-          "osType": "Linux",
-          "scaleSetEvictionPolicy": "Delete",
-          "scaleSetPriority": "Regular",
-          "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
@@ -2226,26 +2186,6 @@ param agentPools = [
     vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
-  {
-    availabilityZones: [
-      3
-    ]
-    count: 2
-    enableAutoScaling: true
-    maxCount: 3
-    maxPods: 30
-    minCount: 1
-    minPods: 2
-    mode: 'User'
-    name: 'userpool2'
-    nodeLabels: {}
-    osDiskSizeGB: 128
-    osType: 'Linux'
-    scaleSetEvictionPolicy: 'Delete'
-    scaleSetPriority: 'Regular'
-    type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
-  }
 ]
 param dnsServiceIP = '10.10.200.10'
 param enablePrivateCluster = true
@@ -2284,7 +2224,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 1
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2311,7 +2251,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 2
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2333,7 +2273,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 2
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2461,7 +2401,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 1,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2492,7 +2432,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 2,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2514,7 +2454,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 2,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2674,7 +2614,7 @@ param primaryAgentPoolProfiles = [
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 1
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
@@ -2701,7 +2641,7 @@ param agentPools = [
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 2
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
@@ -2723,7 +2663,7 @@ param agentPools = [
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 2
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
