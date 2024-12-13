@@ -201,7 +201,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empt
   }
 }
 
-resource kustoCluster 'Microsoft.Kusto/clusters@2023-08-15' = {
+resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
   name: name
   location: location
   tags: tags
@@ -396,7 +396,7 @@ module kustoCluster_databases 'database/main.bicep' = [
       name: database.name
       kustoClusterName: kustoCluster.name
       databaseKind: database.kind
-      databaseReadWriteProperties: database.readWriteProperties
+      databaseReadWriteProperties: database.kind == 'ReadWrite' ? database.readWriteProperties : null
     }
   }
 ]

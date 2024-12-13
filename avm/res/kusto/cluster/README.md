@@ -18,7 +18,7 @@ This module deploys a Kusto Cluster.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Kusto/clusters` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters) |
+| `Microsoft.Kusto/clusters` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters) |
 | `Microsoft.Kusto/clusters/databases` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases) |
 | `Microsoft.Kusto/clusters/principalAssignments` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/principalAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -165,6 +165,10 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       {
         kind: 'ReadWrite'
         name: 'myReadWriteDatabase'
+        readWriteProperties: {
+          hotCachePeriod: 'P1D'
+          softDeletePeriod: 'P7D'
+        }
       }
       {
         kind: 'ReadOnlyFollowing'
@@ -272,7 +276,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": [
         {
           "kind": "ReadWrite",
-          "name": "myReadWriteDatabase"
+          "name": "myReadWriteDatabase",
+          "readWriteProperties": {
+            "hotCachePeriod": "P1D",
+            "softDeletePeriod": "P7D"
+          }
         },
         {
           "kind": "ReadOnlyFollowing",
@@ -395,6 +403,10 @@ param databases = [
   {
     kind: 'ReadWrite'
     name: 'myReadWriteDatabase'
+    readWriteProperties: {
+      hotCachePeriod: 'P1D'
+      softDeletePeriod: 'P7D'
+    }
   }
   {
     kind: 'ReadOnlyFollowing'

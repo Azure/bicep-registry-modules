@@ -121,6 +121,10 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'myReadWriteDatabase'
           kind: 'ReadWrite'
+          readWriteProperties: {
+            softDeletePeriod: 'P7D'
+            hotCachePeriod: 'P1D'
+          }
         }
         {
           name: 'myReadOnlyDatabase'

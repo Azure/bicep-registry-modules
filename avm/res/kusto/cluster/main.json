@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5485047453025059126"
+      "templateHash": "9035944392764193312"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -1134,7 +1134,7 @@
     },
     "kustoCluster": {
       "type": "Microsoft.Kusto/clusters",
-      "apiVersion": "2023-08-15",
+      "apiVersion": "2024-04-13",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -2174,9 +2174,7 @@
           "databaseKind": {
             "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].kind]"
           },
-          "databaseReadWriteProperties": {
-            "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].readWriteProperties]"
-          }
+          "databaseReadWriteProperties": "[if(equals(coalesce(parameters('databases'), createArray())[copyIndex()].kind, 'ReadWrite'), createObject('value', coalesce(parameters('databases'), createArray())[copyIndex()].readWriteProperties), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2369,7 +2367,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('kustoCluster', '2023-08-15', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('kustoCluster', '2024-04-13', 'full'), 'identity'), 'principalId')]"
     },
     "name": {
       "type": "string",
@@ -2383,7 +2381,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('kustoCluster', '2023-08-15', 'full').location]"
+      "value": "[reference('kustoCluster', '2024-04-13', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
