@@ -85,7 +85,7 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 0
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
         }
       ]
       agentPools: [
@@ -107,27 +107,7 @@ module testDeployment '../../../main.bicep' = [
           scaleSetEvictionPolicy: 'Delete'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
-        }
-        {
-          availabilityZones: [
-            3
-          ]
-          count: 2
-          enableAutoScaling: true
-          maxCount: 3
-          maxPods: 30
-          minCount: 1
-          minPods: 2
-          mode: 'User'
-          name: 'userpool2'
-          nodeLabels: {}
-          osDiskSizeGB: 128
-          osType: 'Linux'
-          scaleSetEvictionPolicy: 'Delete'
-          scaleSetPriority: 'Regular'
-          type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
         }
       ]
       networkPlugin: 'kubenet'
@@ -176,6 +156,10 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
+      }
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
       }
     }
     dependsOn: [

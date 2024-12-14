@@ -12,7 +12,7 @@ This module deploys an App Configuration Replica.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.AppConfiguration/configurationStores/replicas` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2023-03-01/configurationStores/replicas) |
+| `Microsoft.AppConfiguration/configurationStores/replicas` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores/replicas) |
 
 ## Parameters
 
