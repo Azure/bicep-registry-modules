@@ -9,11 +9,14 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. The SKU of the Service Bus Namespace.')
-param skuObject skuType
+@description('Optional. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.')
+param skuObject skuType = {
+  name: 'Premium'
+  capacity: 2
+}
 
-@description('Optional. Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones.')
-param zoneRedundant bool = false
+@description('Optional. Enabled by default in order to align with resiliency best practices, thus requires Premium SKU.')
+param zoneRedundant bool = true
 
 @allowed([
   '1.0'
@@ -30,7 +33,7 @@ param alternateName string?
 param premiumMessagingPartitions int = 1
 
 @description('Optional. Authorization Rules for the Service Bus namespace.')
-param authorizationRules authorizationRuleType = [
+param authorizationRules authorizationRuleType[] = [
   {
     name: 'RootManageSharedAccessKey'
     rights: [
@@ -42,22 +45,26 @@ param authorizationRules authorizationRuleType = [
 ]
 
 @description('Optional. The migration configuration.')
-param migrationConfiguration migrationConfigurationsType
+param migrationConfiguration migrationConfigurationsType?
 
 @description('Optional. The disaster recovery configuration.')
-param disasterRecoveryConfig disasterRecoveryConfigType
+param disasterRecoveryConfig disasterRecoveryConfigType?
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
@@ -68,8 +75,9 @@ param roleAssignments roleAssignmentType
 ])
 param publicNetworkAccess string = ''
 
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Configure networking options for Premium SKU Service Bus. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace.')
 param networkRuleSets networkRuleSetType?
@@ -84,19 +92,20 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. The queues to create in the service bus namespace.')
-param queues queueType?
+param queues queueType[]?
 
 @description('Optional. The topics to create in the service bus namespace.')
-param topics topicType?
+param topics topicType[]?
 
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = true
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
@@ -104,8 +113,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -126,7 +135,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -135,6 +144,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -354,7 +374,7 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
   }
 ]
 
-module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -395,8 +415,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -408,14 +427,14 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
 ]
 
 resource serviceBusNamespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(serviceBusNamespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      serviceBusNamespace.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -442,185 +461,22 @@ output systemAssignedMIPrincipalId string = serviceBusNamespace.?identity.?princ
 @description('The location the resource was deployed into.')
 output location string = serviceBusNamespace.location
 
+@description('The private endpoints of the service bus namespace.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: serviceBusNamespace_privateEndpoints[i].outputs.name
+    resourceId: serviceBusNamespace_privateEndpoints[i].outputs.resourceId
+    groupId: serviceBusNamespace_privateEndpoints[i].outputs.groupId
+    customDnsConfig: serviceBusNamespace_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: serviceBusNamespace_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourcesIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type privateEndpointType = {
-  @description('Optional. The name of the private endpoint.')
-  name: string?
-
-  @description('Optional. The location to deploy the private endpoint to.')
-  location: string?
-
-  @description('Optional. The name of the private link connection to create.')
-  privateLinkServiceConnectionName: string?
-
-  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
-  service: string?
-
-  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
-
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
-
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
-
-  @description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
-
-  @description('Optional. Custom DNS configurations.')
-  customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
-    fqdn: string?
-
-    @description('Required. A list of private IP addresses of the private endpoint.')
-    ipAddresses: string[]
-  }[]?
-
-  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @description('Required. The name of the resource that is unique within a resource group.')
-    name: string
-
-    @description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
-
-      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
-
-      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
-
-  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
-
-  @description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
-
-  @description('Optional. Specify the type of lock.')
-  lock: lockType
-
-  @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
-
-  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
-  userAssignedIdentityResourceId: string?
-}?
-
+@export()
 type skuType = {
   @description('Required. Name of this SKU. - Basic, Standard, Premium.')
   name: ('Basic' | 'Standard' | 'Premium')
@@ -629,14 +485,16 @@ type skuType = {
   capacity: int?
 }
 
+@export()
 type authorizationRuleType = {
   @description('Required. The name of the authorization rule.')
   name: string
 
   @description('Optional. The rights associated with the rule.')
   rights: ('Listen' | 'Manage' | 'Send')[]?
-}[]
+}
 
+@export()
 type disasterRecoveryConfigType = {
   @description('Optional. The name of the disaster recovery config.')
   name: string?
@@ -646,16 +504,18 @@ type disasterRecoveryConfigType = {
 
   @description('Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing.')
   partnerNamespace: string?
-}?
+}
 
+@export()
 type migrationConfigurationsType = {
   @description('Required. Name to access Standard Namespace after migration.')
   postMigrationName: string
 
   @description('Required. Existing premium Namespace resource ID which has no entities, will be used for migration.')
   targetNamespace: string
-}?
+}
 
+@export()
 type networkRuleSetType = {
   @description('Optional. This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied.')
   publicNetworkAccess: ('Disabled' | 'Enabled')?
@@ -683,8 +543,9 @@ type networkRuleSetType = {
     @description('Required. The ID of the subnet.')
     subnetResourceId: string
   }[]?
-}?
+}
 
+@export()
 type queueType = {
   @description('Required. The name of the queue.')
   name: string
@@ -702,7 +563,7 @@ type queueType = {
   maxMessageSizeInKilobytes: int?
 
   @description('Optional. Authorization Rules for the Service Bus Queue.')
-  authorizationRules: authorizationRuleType?
+  authorizationRules: authorizationRuleType[]?
 
   @description('Optional. A value that indicates whether this queue has dead letter support when a message expires.')
   deadLetteringOnMessageExpiration: bool?
@@ -741,7 +602,7 @@ type queueType = {
   requiresSession: bool?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType?
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
   status: (
@@ -754,14 +615,16 @@ type queueType = {
     | 'Deleting'
     | 'Renaming'
     | 'Unknown')?
-}[]?
+}
 
+import { subscriptionType } from 'topic/main.bicep'
+@export()
 type topicType = {
   @description('Required. The name of the topic.')
   name: string
 
   @description('Optional. Authorization Rules for the Service Bus Topic.')
-  authorizationRules: authorizationRuleType?
+  authorizationRules: authorizationRuleType[]?
 
   @description('Optional. ISO 8601 timespan idle interval after which the topic is automatically deleted. The minimum duration is 5 minutes.')
   autoDeleteOnIdle: string?
@@ -794,7 +657,7 @@ type topicType = {
   requiresDuplicateDetection: bool?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType?
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
   status: (
@@ -812,68 +675,5 @@ type topicType = {
   supportOrdering: bool?
 
   @description('Optional. The subscriptions of the topic.')
-  subscriptions: {
-    @description('Required. The name of the service bus namespace topic subscription.')
-    name: string
-
-    @description('Optional. ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes.')
-    autoDeleteOnIdle: string?
-
-    @description('Optional. The properties that are associated with a subscription that is client-affine.')
-    clientAffineProperties: {
-      @description('Required. Indicates the Client ID of the application that created the client-affine subscription.')
-      clientId: string
-
-      @description('Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not.')
-      isDurable: bool?
-
-      @description('Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not.')
-      isShared: bool?
-    }?
-
-    @description('Optional. A value that indicates whether a subscription has dead letter support when a message expires.')
-    deadLetteringOnMessageExpiration: bool?
-
-    @description('Optional. A value that indicates whether a subscription has dead letter support when a message expires.')
-    deadLetteringOnFilterEvaluationExceptions: bool?
-
-    @description('Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.')
-    defaultMessageTimeToLive: string?
-
-    @description('Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes.')
-    duplicateDetectionHistoryTimeWindow: string?
-
-    @description('Optional. A value that indicates whether server-side batched operations are enabled.')
-    enableBatchedOperations: bool?
-
-    @description('Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to.')
-    forwardDeadLetteredMessagesTo: string?
-
-    @description('Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to.')
-    forwardTo: string?
-
-    @description('Optional. A value that indicates whether the subscription supports the concept of session.')
-    isClientAffine: bool?
-
-    @description('Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.')
-    lockDuration: string?
-
-    @description('Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10.')
-    maxDeliveryCount: int?
-
-    @description('Optional. A value that indicates whether the subscription supports the concept of session.')
-    requiresSession: bool?
-
-    @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
-    status: (
-      | 'Active'
-      | 'Disabled'
-      | 'Restoring'
-      | 'SendDisabled'
-      | 'ReceiveDisabled'
-      | 'Creating'
-      | 'Deleting'
-      | 'Renaming'
-      | 'Unknown')?
-  }[]?
-}[]?
+  subscriptions: subscriptionType[]?
+}

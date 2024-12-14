@@ -44,7 +44,8 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       skuObject: {
-        name: 'Basic'
+        name: 'Premium'
+        capacity: 2
       }
     }
   }

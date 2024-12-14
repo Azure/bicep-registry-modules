@@ -55,6 +55,8 @@ module testDeployment '../../../main.bicep' = [
       kind: 'app,container,windows'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       siteConfig: {
+        minTlsVersion: '1.2'
+        ftpsState: 'FtpsOnly'
         appSettings: [
           {
             name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17087074157977382192"
+      "version": "0.30.23.60470",
+      "templateHash": "6385219422012602265"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet.",
@@ -14,84 +14,86 @@
   },
   "definitions": {
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
     }
   },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The Name of the subnet resource."
+        "description": "Required. The Name of the subnet resource."
       }
     },
     "virtualNetworkName": {
@@ -102,74 +104,99 @@
     },
     "addressPrefix": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The address prefix for the subnet."
+        "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
       }
     },
     "networkSecurityGroupResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the network security group to assign to the subnet."
       }
     },
     "routeTableResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the route table to assign to the subnet."
       }
     },
     "serviceEndpoints": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The service endpoints to enable on the subnet."
       }
     },
-    "delegations": {
-      "type": "array",
-      "defaultValue": [],
+    "delegation": {
+      "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The delegations to enable on the subnet."
+        "description": "Optional. The delegation to enable on the subnet."
       }
     },
     "natGatewayResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the NAT Gateway to use for the subnet."
       }
     },
     "privateEndpointNetworkPolicies": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Disabled",
         "Enabled",
-        ""
+        "NetworkSecurityGroupEnabled",
+        "RouteTableEnabled"
       ],
       "metadata": {
-        "description": "Optional. enable or disable apply network policies on private endpoint in the subnet."
+        "description": "Optional. Enable or disable apply network policies on private endpoint in the subnet."
       }
     },
     "privateLinkServiceNetworkPolicies": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Disabled",
-        "Enabled",
-        ""
+        "Enabled"
       ],
       "metadata": {
-        "description": "Optional. enable or disable apply network policies on private link service in the subnet."
+        "description": "Optional. Enable or disable apply network policies on private link service in the subnet."
       }
     },
     "addressPrefixes": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. List of address prefixes for the subnet."
+        "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
+      }
+    },
+    "defaultOutboundAccess": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet."
+      }
+    },
+    "sharingScope": {
+      "type": "string",
+      "allowedValues": [
+        "DelegatedServices",
+        "Tenant"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
       }
     },
     "applicationGatewayIPConfigurations": {
@@ -177,13 +204,6 @@
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Application gateway IP configurations of virtual network resource."
-      }
-    },
-    "ipAllocations": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Array of IpAllocation which reference this subnet."
       }
     },
     "serviceEndpointPolicies": {
@@ -194,7 +214,11 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -213,7 +237,7 @@
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -221,26 +245,35 @@
     "virtualNetwork": {
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('virtualNetworkName')]"
     },
     "subnet": {
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
       "properties": {
+        "copy": [
+          {
+            "name": "serviceEndpoints",
+            "count": "[length(parameters('serviceEndpoints'))]",
+            "input": {
+              "service": "[parameters('serviceEndpoints')[copyIndex('serviceEndpoints')]]"
+            }
+          }
+        ],
         "addressPrefix": "[parameters('addressPrefix')]",
+        "addressPrefixes": "[parameters('addressPrefixes')]",
         "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
         "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
         "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
-        "serviceEndpoints": "[parameters('serviceEndpoints')]",
-        "delegations": "[parameters('delegations')]",
-        "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",
-        "privateLinkServiceNetworkPolicies": "[if(not(empty(parameters('privateLinkServiceNetworkPolicies'))), parameters('privateLinkServiceNetworkPolicies'), null())]",
-        "addressPrefixes": "[parameters('addressPrefixes')]",
+        "delegations": "[if(not(empty(parameters('delegation'))), createArray(createObject('name', parameters('delegation'), 'properties', createObject('serviceName', parameters('delegation')))), createArray())]",
+        "privateEndpointNetworkPolicies": "[parameters('privateEndpointNetworkPolicies')]",
+        "privateLinkServiceNetworkPolicies": "[parameters('privateLinkServiceNetworkPolicies')]",
         "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
-        "ipAllocations": "[parameters('ipAllocations')]",
-        "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]"
+        "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]",
+        "defaultOutboundAccess": "[parameters('defaultOutboundAccess')]",
+        "sharingScope": "[parameters('sharingScope')]"
       },
       "dependsOn": [
         "virtualNetwork"
@@ -291,19 +324,19 @@
       },
       "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]"
     },
-    "subnetAddressPrefix": {
+    "addressPrefix": {
       "type": "string",
       "metadata": {
         "description": "The address prefix for the subnet."
       },
-      "value": "[reference('subnet').addressPrefix]"
+      "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefix'), '')]"
     },
-    "subnetAddressPrefixes": {
+    "addressPrefixes": {
       "type": "array",
       "metadata": {
         "description": "List of address prefixes for the subnet."
       },
-      "value": "[if(not(empty(parameters('addressPrefixes'))), reference('subnet').addressPrefixes, createArray())]"
+      "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefixes'), createArray())]"
     }
   }
 }

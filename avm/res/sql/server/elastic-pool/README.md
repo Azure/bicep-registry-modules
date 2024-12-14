@@ -7,8 +7,6 @@ This module deploys an Azure SQL Server Elastic Pool.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -34,17 +32,17 @@ This module deploys an Azure SQL Server Elastic Pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`databaseMaxCapacity`](#parameter-databasemaxcapacity) | int | The maximum capacity any one database can consume. |
-| [`databaseMinCapacity`](#parameter-databasemincapacity) | int | The minimum capacity all databases are guaranteed. |
+| [`autoPauseDelay`](#parameter-autopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
+| [`availabilityZone`](#parameter-availabilityzone) | string | Specifies the availability zone the pool's primary replica is pinned to. |
 | [`highAvailabilityReplicaCount`](#parameter-highavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this elastic pool. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`maintenanceConfigurationId`](#parameter-maintenanceconfigurationid) | string | Maintenance configuration resource ID assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur. |
 | [`maxSizeBytes`](#parameter-maxsizebytes) | int | The storage limit for the database elastic pool in bytes. |
 | [`minCapacity`](#parameter-mincapacity) | int | Minimal capacity that serverless pool will not shrink below, if not paused. |
-| [`skuCapacity`](#parameter-skucapacity) | int | Capacity of the particular SKU. |
-| [`skuName`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
-| [`skuTier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
+| [`perDatabaseSettings`](#parameter-perdatabasesettings) | object | The per database settings for the elastic pool. |
+| [`preferredEnclaveType`](#parameter-preferredenclavetype) | string | Type of enclave requested on the elastic pool. |
+| [`sku`](#parameter-sku) | object | The elastic pool SKU. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones. |
 
@@ -62,21 +60,30 @@ The name of the parent SQL Server. Required if the template is used in a standal
 - Required: Yes
 - Type: string
 
-### Parameter: `databaseMaxCapacity`
+### Parameter: `autoPauseDelay`
 
-The maximum capacity any one database can consume.
-
-- Required: No
-- Type: int
-- Default: `2`
-
-### Parameter: `databaseMinCapacity`
-
-The minimum capacity all databases are guaranteed.
+Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled.
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `-1`
+
+### Parameter: `availabilityZone`
+
+Specifies the availability zone the pool's primary replica is pinned to.
+
+- Required: No
+- Type: string
+- Default: `'NoPreference'`
+- Allowed:
+  ```Bicep
+  [
+    '1'
+    '2'
+    '3'
+    'NoPreference'
+  ]
+  ```
 
 ### Parameter: `highAvailabilityReplicaCount`
 
@@ -114,7 +121,6 @@ Maintenance configuration resource ID assigned to the elastic pool. This configu
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `maxSizeBytes`
 
@@ -131,29 +137,151 @@ Minimal capacity that serverless pool will not shrink below, if not paused.
 - Required: No
 - Type: int
 
-### Parameter: `skuCapacity`
+### Parameter: `perDatabaseSettings`
 
-Capacity of the particular SKU.
+The per database settings for the elastic pool.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      autoPauseDelay: -1
+      maxCapacity: '2'
+      minCapacity: '0'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxCapacity`](#parameter-perdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2'. |
+| [`minCapacity`](#parameter-perdatabasesettingsmincapacity) | string | The minimum capacity all databases are guaranteed. Examples: '0.5', '1'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoPauseDelay`](#parameter-perdatabasesettingsautopausedelay) | int | Auto Pause Delay for per database within pool. |
+
+### Parameter: `perDatabaseSettings.maxCapacity`
+
+The maximum capacity any one database can consume. Examples: '0.5', '2'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `perDatabaseSettings.minCapacity`
+
+The minimum capacity all databases are guaranteed. Examples: '0.5', '1'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `perDatabaseSettings.autoPauseDelay`
+
+Auto Pause Delay for per database within pool.
 
 - Required: No
 - Type: int
-- Default: `2`
 
-### Parameter: `skuName`
+### Parameter: `preferredEnclaveType`
 
-The name of the SKU, typically, a letter + Number code, e.g. P3.
+Type of enclave requested on the elastic pool.
 
 - Required: No
 - Type: string
-- Default: `'GP_Gen5'`
+- Default: `'Default'`
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'VBS'
+  ]
+  ```
 
-### Parameter: `skuTier`
+### Parameter: `sku`
+
+The elastic pool SKU.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      capacity: 2
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-skucapacity) | int | The capacity of the particular SKU. |
+| [`family`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
+| [`size`](#parameter-skusize) | string | Size of the particular SKU. |
+| [`tier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
+
+### Parameter: `sku.name`
+
+The name of the SKU, typically, a letter + Number code, e.g. P3.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'BasicPool'
+    'BC_DC'
+    'BC_Gen5'
+    'GP_DC'
+    'GP_FSv2'
+    'GP_Gen5'
+    'HS_Gen5'
+    'HS_MOPRMS'
+    'HS_PRMS'
+    'PremiumPool'
+    'ServerlessPool'
+    'StandardPool'
+  ]
+  ```
+
+### Parameter: `sku.capacity`
+
+The capacity of the particular SKU.
+
+- Required: No
+- Type: int
+
+### Parameter: `sku.family`
+
+If the service has different generations of hardware, for the same SKU, then that can be captured here.
+
+- Required: No
+- Type: string
+
+### Parameter: `sku.size`
+
+Size of the particular SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `sku.tier`
 
 The tier or edition of the particular SKU, e.g. Basic, Premium.
 
 - Required: No
 - Type: string
-- Default: `'GeneralPurpose'`
 
 ### Parameter: `tags`
 
@@ -168,8 +296,7 @@ Whether or not this elastic pool is zone redundant, which means the replicas of 
 
 - Required: No
 - Type: bool
-- Default: `False`
-
+- Default: `True`
 
 ## Outputs
 
@@ -179,11 +306,3 @@ Whether or not this elastic pool is zone redundant, which means the replicas of 
 | `name` | string | The name of the deployed Elastic Pool. |
 | `resourceGroupName` | string | The resource group of the deployed Elastic Pool. |
 | `resourceId` | string | The resource ID of the deployed Elastic Pool. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9853739797036762243"
+      "version": "0.30.23.60470",
+      "templateHash": "16298384162352496224"
     },
     "name": "Recovery Services Vault Replication Fabrics",
     "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario.",
@@ -22,7 +22,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. The recovery location the fabric represents."
+        "description": "Optional. The recovery location the fabric represents."
       }
     },
     "name": {
@@ -75,7 +75,9 @@
           "replicationFabricName": {
             "value": "[parameters('name')]"
           },
-          "replicationContainerMappings": "[if(contains(parameters('replicationContainers')[copyIndex()], 'replicationContainerMappings'), createObject('value', parameters('replicationContainers')[copyIndex()].replicationContainerMappings), createObject('value', createArray()))]"
+          "replicationContainerMappings": {
+            "value": "[tryGet(parameters('replicationContainers')[copyIndex()], 'replicationContainerMappings')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -83,8 +85,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "3376272434476190279"
+              "version": "0.30.23.60470",
+              "templateHash": "17558710415740898922"
             },
             "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
             "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -144,9 +146,15 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "name": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'name'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].name), createObject('value', ''))]",
-                  "policyId": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'policyId'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].policyId), createObject('value', ''))]",
-                  "policyName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'policyName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].policyName), createObject('value', ''))]",
+                  "name": {
+                    "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'name')]"
+                  },
+                  "policyId": {
+                    "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'policyId')]"
+                  },
+                  "policyName": {
+                    "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'policyName')]"
+                  },
                   "recoveryVaultName": {
                     "value": "[parameters('recoveryVaultName')]"
                   },
@@ -156,9 +164,15 @@
                   "sourceProtectionContainerName": {
                     "value": "[parameters('name')]"
                   },
-                  "targetProtectionContainerId": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetProtectionContainerId'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetProtectionContainerId), createObject('value', ''))]",
-                  "targetContainerFabricName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerFabricName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetContainerFabricName), createObject('value', parameters('replicationFabricName')))]",
-                  "targetContainerName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetContainerName), createObject('value', ''))]"
+                  "targetProtectionContainerId": {
+                    "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetProtectionContainerId')]"
+                  },
+                  "targetContainerFabricName": {
+                    "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerFabricName')]"
+                  },
+                  "targetContainerName": {
+                    "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerName')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -166,8 +180,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "5064323509873410241"
+                      "version": "0.30.23.60470",
+                      "templateHash": "5738551771802324865"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                     "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",

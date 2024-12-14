@@ -9,6 +9,9 @@ This is the orchestration module that is used and called by a consumer of the mo
 
 targetScope = 'managementGroup'
 
+//Imports
+import { roleAssignmentType } from 'modules/subResourceWrapper.bicep'
+
 // PARAMETERS
 
 // Subscription Parameters
@@ -37,7 +40,7 @@ param subscriptionAliasName string = ''
 
 @description('''Optional. The Billing Scope for the new Subscription alias, that will be created by this module.
 
-A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.
+A valid Billing Scope looks like `/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/enrollmentAccounts/{enrollmentAccountName}` and is case sensitive.
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
@@ -119,10 +122,11 @@ param virtualNetworkResourceGroupLockEnabled bool = true
 ''')
 param virtualNetworkLocation string = deployment().location
 
+@minLength(2)
 @maxLength(64)
 @description('''Optional. The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.
 ''')
-param virtualNetworkName string = ''
+param virtualNetworkName string?
 
 @description('''Optional. An object of tag key/value pairs to be set on the Virtual Network that is created.
 
@@ -196,9 +200,27 @@ Each object must contain the following `keys`:
     1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
     2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
 ''')
-param roleAssignments array = []
+@metadata({
+  example: '''
+  [
+    {
+      // Contributor role assignment at subscription scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/Contributor'
+      relativeScope: ''
+    }
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  '''
+})
+param roleAssignments roleAssignmentType = []
 
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The name of the resource group to create the deployment script for resource providers registration.')
@@ -221,7 +243,7 @@ param deploymentScriptNetworkSecurityGroupName string = 'nsg-${deployment().loca
 param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
 
 @description('Optional. The name of the storage account for the deployment script.')
-param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
+param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 10)}'
 
 @description('Optional. The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
 param deploymentScriptLocation string = deployment().location
@@ -293,9 +315,11 @@ param resourceProviders object = {
   'Microsoft.Sql': []
   'Microsoft.Storage': []
   'Microsoft.StreamAnalytics': []
-  'Microsoft.TimeSeriesInsights': []
   'Microsoft.Web': []
 }
+
+@sys.description('Optional. The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur.')
+param managementGroupAssociationDelayCount int = 15
 
 // VARIABLES
 
@@ -355,6 +379,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
       ? createSubscription.outputs.subscriptionId
       : existingSubscriptionId
+    managementGroupAssociationDelayCount: managementGroupAssociationDelayCount
     subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
     subscriptionManagementGroupId: subscriptionManagementGroupId
     subscriptionTags: subscriptionTags

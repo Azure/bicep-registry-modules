@@ -17,7 +17,7 @@ This module deploys a Data Collection Endpoint.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/dataCollectionEndpoints` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/dataCollectionEndpoints) |
+| `Microsoft.Insights/dataCollectionEndpoints` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionEndpoints) |
 
 ## Usage examples
 
@@ -57,7 +57,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +74,22 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-endpoint:<version>'
+
+// Required parameters
+param name = 'idcemin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -136,7 +152,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -201,6 +217,53 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-endpoint:<version>'
+
+// Required parameters
+param name = 'idcemax001'
+// Non-required parameters
+param description = 'This is a test data collection endpoint.'
+param kind = 'Windows'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param publicNetworkAccess = 'Enabled'
+param roleAssignments = [
+  {
+    name: 'db496446-89ac-4d91-a189-71544de0150a'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Windows'
+  resourceType: 'Data Collection Rules'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -234,7 +297,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -269,6 +332,28 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-endpoint:<version>'
+
+// Required parameters
+param name = 'idcewaf001'
+// Non-required parameters
+param kind = 'Windows'
+param location = '<location>'
+param publicNetworkAccess = 'Disabled'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Windows'
+  resourceType: 'Data Collection Rules'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -384,6 +469,7 @@ The configuration to set whether network access from public internet to the endp
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
@@ -393,6 +479,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -491,7 +583,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -503,7 +594,11 @@ Resource tags.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
 
 ## Data Collection
 

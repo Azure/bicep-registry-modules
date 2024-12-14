@@ -63,7 +63,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -71,6 +71,19 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
   "contentVersion": "1.0.0.0",
   "parameters": {}
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+
 ```
 
 </details>
@@ -90,10 +103,19 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
   name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'pdnsZonesLock'
+    }
     privateLinkPrivateDnsZones: [
       'testpdnszone1.int'
       'testpdnszone2.local'
     ]
+    tags: {
+      Environment: 'Example'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     virtualNetworkResourceIdsToLinkTo: [
       '<vnetResourceId>'
     ]
@@ -106,7 +128,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -116,11 +138,24 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "pdnsZonesLock"
+      }
+    },
     "privateLinkPrivateDnsZones": {
       "value": [
         "testpdnszone1.int",
         "testpdnszone2.local"
       ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Example",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     },
     "virtualNetworkResourceIdsToLinkTo": {
       "value": [
@@ -129,6 +164,35 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'pdnsZonesLock'
+}
+param privateLinkPrivateDnsZones = [
+  'testpdnszone1.int'
+  'testpdnszone2.local'
+]
+param tags = {
+  Environment: 'Example'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkResourceIdsToLinkTo = [
+  '<vnetResourceId>'
+]
 ```
 
 </details>
@@ -159,7 +223,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -178,6 +242,20 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+param virtualNetworkResourceIdsToLinkTo = [
+  '<vnetResourceId>'
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -187,7 +265,9 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified. |
+| [`lock`](#parameter-lock) | object | The lock settings for the Private Link Private DNS Zones created. |
 | [`privateLinkPrivateDnsZones`](#parameter-privatelinkprivatednszones) | array | An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.<p><p>**NOTE:**<p><li>Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.<li>Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.<p><p>**IMPORTANT:**<p><p>The folowing Private Link Private DNS Zones have been removed from the default value for this parameter as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as an array in the `privateLinkPrivateDnsZones` parameter, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:<p><li>`{subzone}.privatelink.{regionName}.azmk8s.io`<li>`privatelink.{dnsPrefix}.database.windows.net`<li>`privatelink.{partitionId}.azurestaticapps.net`<p><p>We have also removed the following Private Link Private DNS Zones from the default value for this parameter as they should only be created and used with in specific scenarios:<p><li>`privatelink.azure.com`.<p> |
+| [`tags`](#parameter-tags) | object | Tags of the Private Link Private DNS Zones created. |
 | [`virtualNetworkResourceIdsToLinkTo`](#parameter-virtualnetworkresourceidstolinkto) | array | An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID. |
 
 ### Parameter: `enableTelemetry`
@@ -206,6 +286,42 @@ Azure region where the each of the Private Link Private DNS Zones created will b
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `lock`
+
+The lock settings for the Private Link Private DNS Zones created.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateLinkPrivateDnsZones`
 
 An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.<p><p>**NOTE:**<p><li>Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.<li>Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.<p><p>**IMPORTANT:**<p><p>The folowing Private Link Private DNS Zones have been removed from the default value for this parameter as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as an array in the `privateLinkPrivateDnsZones` parameter, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:<p><li>`{subzone}.privatelink.{regionName}.azmk8s.io`<li>`privatelink.{dnsPrefix}.database.windows.net`<li>`privatelink.{partitionId}.azurestaticapps.net`<p><p>We have also removed the following Private Link Private DNS Zones from the default value for this parameter as they should only be created and used with in specific scenarios:<p><li>`privatelink.azure.com`.<p>
@@ -215,11 +331,9 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
 - Default:
   ```Bicep
   [
-    '{regionCode}.privatelink.backup.windowsazure.com'
     '{regionName}.data.privatelink.azurecr.io'
-    '{regionName}.privatelink.batch.azure.com'
-    '{regionName}.service.privatelink.batch.azure.com'
     'privatelink-global.wvd.microsoft.com'
+    'privatelink.{regionCode}.backup.windowsazure.com'
     'privatelink.{regionName}.azmk8s.io'
     'privatelink.{regionName}.kusto.windows.net'
     'privatelink.adf.azure.com'
@@ -241,6 +355,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.azureiotcentral.com'
     'privatelink.azurestaticapps.net'
     'privatelink.azurewebsites.net'
+    'privatelink.batch.azure.com'
     'privatelink.blob.core.windows.net'
     'privatelink.cassandra.cosmos.azure.com'
     'privatelink.cognitiveservices.azure.com'
@@ -294,6 +409,13 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
   ]
   ```
 
+### Parameter: `tags`
+
+Tags of the Private Link Private DNS Zones created.
+
+- Required: No
+- Type: object
+
 ### Parameter: `virtualNetworkResourceIdsToLinkTo`
 
 An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.
@@ -301,7 +423,6 @@ An array of Virtual Network Resource IDs to link to the Private Link Private DNS
 - Required: No
 - Type: array
 - Default: `[]`
-
 
 ## Outputs
 
@@ -317,7 +438,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-dns-zone:0.3.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 

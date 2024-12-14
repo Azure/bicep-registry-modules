@@ -8,7 +8,6 @@ This module deploys a Service Bus Namespace Topic.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -74,21 +73,7 @@ Authorization Rules for the Service Bus Topic.
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    {
-      name: 'RootManageSharedAccessKey'
-      properties: {
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-    }
-  ]
-  ```
+- Default: `[]`
 
 ### Parameter: `autoDeleteOnIdle`
 
@@ -203,6 +188,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Service Bus Data Owner'`
+  - `'Azure Service Bus Data Receiver'`
+  - `'Azure Service Bus Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -219,6 +213,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -269,6 +264,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -314,7 +316,184 @@ The subscriptions of the topic.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-subscriptionsname) | string | The name of the service bus namespace topic subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoDeleteOnIdle`](#parameter-subscriptionsautodeleteonidle) | string | ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes. |
+| [`clientAffineProperties`](#parameter-subscriptionsclientaffineproperties) | object | The properties that are associated with a subscription that is client-affine. |
+| [`deadLetteringOnFilterEvaluationExceptions`](#parameter-subscriptionsdeadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
+| [`deadLetteringOnMessageExpiration`](#parameter-subscriptionsdeadletteringonmessageexpiration) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
+| [`defaultMessageTimeToLive`](#parameter-subscriptionsdefaultmessagetimetolive) | string | ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes. |
+| [`duplicateDetectionHistoryTimeWindow`](#parameter-subscriptionsduplicatedetectionhistorytimewindow) | string | ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes. |
+| [`enableBatchedOperations`](#parameter-subscriptionsenablebatchedoperations) | bool | A value that indicates whether server-side batched operations are enabled. |
+| [`forwardDeadLetteredMessagesTo`](#parameter-subscriptionsforwarddeadletteredmessagesto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
+| [`forwardTo`](#parameter-subscriptionsforwardto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
+| [`isClientAffine`](#parameter-subscriptionsisclientaffine) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`lockDuration`](#parameter-subscriptionslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
+| [`maxDeliveryCount`](#parameter-subscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
+| [`requiresSession`](#parameter-subscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`status`](#parameter-subscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown. |
+
+### Parameter: `subscriptions.name`
+
+The name of the service bus namespace topic subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subscriptions.autoDeleteOnIdle`
+
+ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.clientAffineProperties`
+
+The properties that are associated with a subscription that is client-affine.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-subscriptionsclientaffinepropertiesclientid) | string | Indicates the Client ID of the application that created the client-affine subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isDurable`](#parameter-subscriptionsclientaffinepropertiesisdurable) | bool | For client-affine subscriptions, this value indicates whether the subscription is durable or not. |
+| [`isShared`](#parameter-subscriptionsclientaffinepropertiesisshared) | bool | For client-affine subscriptions, this value indicates whether the subscription is shared or not. |
+
+### Parameter: `subscriptions.clientAffineProperties.clientId`
+
+Indicates the Client ID of the application that created the client-affine subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subscriptions.clientAffineProperties.isDurable`
+
+For client-affine subscriptions, this value indicates whether the subscription is durable or not.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.clientAffineProperties.isShared`
+
+For client-affine subscriptions, this value indicates whether the subscription is shared or not.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.deadLetteringOnFilterEvaluationExceptions`
+
+A value that indicates whether a subscription has dead letter support when a message expires.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.deadLetteringOnMessageExpiration`
+
+A value that indicates whether a subscription has dead letter support when a message expires.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.defaultMessageTimeToLive`
+
+ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.duplicateDetectionHistoryTimeWindow`
+
+ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.enableBatchedOperations`
+
+A value that indicates whether server-side batched operations are enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.forwardDeadLetteredMessagesTo`
+
+The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.forwardTo`
+
+The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.isClientAffine`
+
+A value that indicates whether the subscription supports the concept of session.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.lockDuration`
+
+ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.maxDeliveryCount`
+
+Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10.
+
+- Required: No
+- Type: int
+
+### Parameter: `subscriptions.requiresSession`
+
+A value that indicates whether the subscription supports the concept of session.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.status`
+
+Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Active'
+    'Creating'
+    'Deleting'
+    'Disabled'
+    'ReceiveDisabled'
+    'Renaming'
+    'Restoring'
+    'SendDisabled'
+    'Unknown'
+  ]
+  ```
 
 ### Parameter: `supportOrdering`
 
@@ -323,7 +502,6 @@ Value that indicates whether the topic supports ordering.
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 
@@ -335,8 +513,8 @@ Value that indicates whether the topic supports ordering.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |

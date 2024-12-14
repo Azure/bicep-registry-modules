@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "7230564820615005386"
+      "version": "0.31.92.45157",
+      "templateHash": "1470030882457989802"
     },
     "name": "DevTest Lab Notification Channels",
     "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
@@ -45,14 +45,13 @@
     },
     "events": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
         "description": "Required. The list of event for which this notification is enabled."
       }
     },
     "emailRecipient": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
       }
@@ -85,8 +84,16 @@
       "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
+        "copy": [
+          {
+            "name": "events",
+            "count": "[length(parameters('events'))]",
+            "input": {
+              "eventName": "[parameters('events')[copyIndex('events')]]"
+            }
+          }
+        ],
         "description": "[parameters('description')]",
-        "events": "[parameters('events')]",
         "emailRecipient": "[parameters('emailRecipient')]",
         "webHookUrl": "[parameters('webHookUrl')]",
         "notificationLocale": "[parameters('notificationLocale')]"

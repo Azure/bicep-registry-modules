@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13231547958069431465"
+      "version": "0.30.23.60470",
+      "templateHash": "14721330685806821575"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for Subscriptions.",
@@ -74,7 +74,7 @@
         "GreaterThanOrEqualTo"
       ],
       "metadata": {
-        "description": "Required. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`."
+        "description": "Optional. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`."
       }
     },
     "thresholds": {
@@ -120,7 +120,7 @@
         "Forecasted"
       ],
       "metadata": {
-        "description": "Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`."
+        "description": "Optional. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`."
       }
     },
     "filter": {

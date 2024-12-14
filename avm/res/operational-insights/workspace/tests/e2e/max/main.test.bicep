@@ -175,11 +175,28 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'AzureAutomation'
-          product: 'OMSGallery'
-          publisher: 'Microsoft'
+          name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
+          plan: {
+            product: 'OMSGallery/AzureAutomation'
+          }
+        }
+        {
+          name: 'SecurityInsights(${namePrefix}${serviceShort}001)'
+          plan: {
+            product: 'OMSGallery/SecurityInsights'
+            publisher: 'Microsoft'
+          }
+        }
+        {
+          name: 'SQLAuditing(${namePrefix}${serviceShort}001)'
+          plan: {
+            name: 'SQLAuditing(${namePrefix}${serviceShort}001)'
+            product: 'SQLAuditing'
+            publisher: 'Microsoft'
+          }
         }
       ]
+      onboardWorkspaceToSentinel: true
       linkedServices: [
         {
           name: 'Automation'
@@ -189,7 +206,9 @@ module testDeployment '../../../main.bicep' = [
       linkedStorageAccounts: [
         {
           name: 'Query'
-          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountIds: [
+            nestedDependencies.outputs.storageAccountResourceId
+          ]
         }
       ]
       tables: [
@@ -200,11 +219,11 @@ module testDeployment '../../../main.bicep' = [
             columns: [
               {
                 name: 'TimeGenerated'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'RawData'
-                type: 'String'
+                type: 'string'
               }
             ]
           }
@@ -238,27 +257,27 @@ module testDeployment '../../../main.bicep' = [
             columns: [
               {
                 name: 'TimeGenerated'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'EventTime'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'EventLevel'
-                type: 'String'
+                type: 'string'
               }
               {
                 name: 'EventCode'
-                type: 'Int'
+                type: 'int'
               }
               {
                 name: 'Message'
-                type: 'String'
+                type: 'string'
               }
               {
                 name: 'RawData'
-                type: 'String'
+                type: 'string'
               }
             ]
           }
@@ -330,11 +349,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
