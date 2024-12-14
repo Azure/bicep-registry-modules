@@ -502,7 +502,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
         name: 'ssfog-fg-geo'
         partnerServers: [
-          '<name>'
+          '<secondaryServerName>'
         ]
         readWriteEndpoint: {
           failoverPolicy: 'Manual'
@@ -515,7 +515,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
         name: 'ssfog-fg-standby'
         partnerServers: [
-          '<name>'
+          '<secondaryServerName>'
         ]
         readWriteEndpoint: {
           failoverPolicy: 'Automatic'
@@ -529,7 +529,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
         name: 'ssfog-fg-readonly'
         partnerServers: [
-          '<name>'
+          '<secondaryServerName>'
         ]
         readOnlyEndpoint: {
           failoverPolicy: 'Enabled'
@@ -609,7 +609,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ],
           "name": "ssfog-fg-geo",
           "partnerServers": [
-            "<name>"
+            "<secondaryServerName>"
           ],
           "readWriteEndpoint": {
             "failoverPolicy": "Manual"
@@ -622,7 +622,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ],
           "name": "ssfog-fg-standby",
           "partnerServers": [
-            "<name>"
+            "<secondaryServerName>"
           ],
           "readWriteEndpoint": {
             "failoverPolicy": "Automatic",
@@ -636,7 +636,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ],
           "name": "ssfog-fg-readonly",
           "partnerServers": [
-            "<name>"
+            "<secondaryServerName>"
           ],
           "readOnlyEndpoint": {
             "failoverPolicy": "Enabled",
@@ -708,7 +708,7 @@ param failoverGroups = [
     ]
     name: 'ssfog-fg-geo'
     partnerServers: [
-      '<name>'
+      '<secondaryServerName>'
     ]
     readWriteEndpoint: {
       failoverPolicy: 'Manual'
@@ -721,7 +721,7 @@ param failoverGroups = [
     ]
     name: 'ssfog-fg-standby'
     partnerServers: [
-      '<name>'
+      '<secondaryServerName>'
     ]
     readWriteEndpoint: {
       failoverPolicy: 'Automatic'
@@ -735,7 +735,7 @@ param failoverGroups = [
     ]
     name: 'ssfog-fg-readonly'
     partnerServers: [
-      '<name>'
+      '<secondaryServerName>'
     ]
     readOnlyEndpoint: {
       failoverPolicy: 'Enabled'
