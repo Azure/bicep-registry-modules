@@ -38,14 +38,13 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 // Create a secondary server for the failover group
-module secondary '../../../main.bicep' = {
+var secondaryServerName = '${namePrefix}${serviceShort}002'
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, locationSecondary)}-test-${serviceShort}-secondary'
+  name: '${uniqueString(deployment().name, locationSecondary)}-nestedDependencies'
   params: {
-    name: '${namePrefix}${serviceShort}002'
+    serverName: secondaryServerName
     location: locationSecondary
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
   }
 }
 
@@ -102,7 +101,7 @@ module testDeployment '../../../main.bicep' = [
             '${namePrefix}-${serviceShort}-db1'
           ]
           partnerServers: [
-            secondary.outputs.name
+            secondaryServerName
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Manual'
@@ -116,7 +115,7 @@ module testDeployment '../../../main.bicep' = [
             '${namePrefix}-${serviceShort}-db2'
           ]
           partnerServers: [
-            secondary.outputs.name
+            secondaryServerName
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Automatic'
@@ -131,21 +130,18 @@ module testDeployment '../../../main.bicep' = [
             '${namePrefix}-${serviceShort}-db3'
           ]
           partnerServers: [
-            secondary.outputs.name
+            secondaryServerName
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Manual'
           }
           readOnlyEndpoint: {
             failoverPolicy: 'Enabled'
-            targetServer: secondary.outputs.name
+            targetServer: secondaryServerName
           }
           secondaryType: 'Geo'
         }
       ]
     }
-    dependsOn: [
-      secondary
-    ]
   }
 ]
