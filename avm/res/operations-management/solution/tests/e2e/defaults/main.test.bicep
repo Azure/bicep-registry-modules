@@ -48,7 +48,10 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: 'Updates'
+    name: 'Updates(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
+    plan: {
+      product: 'OMSGallery/Updates'
+    }
     location: resourceLocation
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
   }

@@ -13,11 +13,28 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityOnlyUserAssignedType?
+
+@description('Optional. The state of the managed Event Hub.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'NotSpecified'
+])
+param managedEventHubState string = 'Enabled'
 
 @description('Optional. The Managed Resource Group Name. A managed Storage Account, and an Event Hubs will be created in the selected subscription for catalog ingestion scenarios. Default is \'managed-rg-<purview-account-name>\'.')
 param managedResourceGroupName string = 'managed-rg-${name}'
+
+@description('Optional. Whether or not public network access is allowed for managed resources.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'NotSpecified'
+])
+param managedResourcesPublicNetworkAccess string = 'NotSpecified'
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
@@ -73,7 +90,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -113,14 +130,16 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource account 'Microsoft.Purview/accounts@2021-07-01' = {
+resource account 'Microsoft.Purview/accounts@2021-12-01' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
     cloudConnectors: {}
+    managedEventHubState: managedEventHubState
     managedResourceGroupName: managedResourceGroupName
+    managedResourcesPublicNetworkAccess: managedResourcesPublicNetworkAccess
     publicNetworkAccess: publicNetworkAccess
   }
 }
@@ -165,9 +184,9 @@ resource account_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
   }
 ]
 
-module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module account_accountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (accountPrivateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Account-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-account-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
@@ -206,8 +225,7 @@ module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -218,9 +236,9 @@ module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.
   }
 ]
 
-module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module account_portalPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (portalPrivateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Portal-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-portal-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
@@ -259,8 +277,7 @@ module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -271,9 +288,9 @@ module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1
   }
 ]
 
-module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module account_storageBlobPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (storageBlobPrivateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Storage-Blob-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-blob-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
@@ -312,8 +329,7 @@ module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' 
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -324,9 +340,9 @@ module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' 
   }
 ]
 
-module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module account_storageQueuePrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (storageQueuePrivateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Storage-Queue-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-queue-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
@@ -365,8 +381,7 @@ module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1'
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -377,9 +392,9 @@ module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1'
   }
 ]
 
-module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module account_eventHubPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (eventHubPrivateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Eventhub-Namespace-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-eventHub-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
@@ -418,8 +433,7 @@ module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -473,14 +487,64 @@ output managedEventHubId string = account.properties.managedResources.eventHubNa
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = account.?identity.?principalId ?? ''
 
+@description('The private endpoints of the Purview Account.')
+output accountPrivateEndpoints array = [
+  for (pe, i) in (!empty(accountPrivateEndpoints) ? array(accountPrivateEndpoints) : []): {
+    name: account_accountPrivateEndpoints[i].outputs.name
+    resourceId: account_accountPrivateEndpoints[i].outputs.resourceId
+    groupId: account_accountPrivateEndpoints[i].outputs.groupId
+    customDnsConfig: account_accountPrivateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: account_accountPrivateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
+@description('The private endpoints of the Purview Account Portal.')
+output portalPrivateEndpoints array = [
+  for (pe, i) in (!empty(portalPrivateEndpoints) ? array(portalPrivateEndpoints) : []): {
+    name: account_portalPrivateEndpoints[i].outputs.name
+    resourceId: account_portalPrivateEndpoints[i].outputs.resourceId
+    groupId: account_portalPrivateEndpoints[i].outputs.groupId
+    customDnsConfig: account_portalPrivateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: account_portalPrivateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
+@description('The private endpoints of the managed storage account blob service.')
+output storageBlobPrivateEndpoints array = [
+  for (pe, i) in (!empty(storageBlobPrivateEndpoints) ? array(storageBlobPrivateEndpoints) : []): {
+    name: account_storageBlobPrivateEndpoints[i].outputs.name
+    resourceId: account_storageBlobPrivateEndpoints[i].outputs.resourceId
+    groupId: account_storageBlobPrivateEndpoints[i].outputs.groupId
+    customDnsConfig: account_storageBlobPrivateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: account_storageBlobPrivateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
+@description('The private endpoints of the managed storage account queue service.')
+output storageQueuePrivateEndpoints array = [
+  for (pe, i) in (!empty(storageQueuePrivateEndpoints) ? array(storageQueuePrivateEndpoints) : []): {
+    name: account_storageQueuePrivateEndpoints[i].outputs.name
+    resourceId: account_storageQueuePrivateEndpoints[i].outputs.resourceId
+    groupId: account_storageQueuePrivateEndpoints[i].outputs.groupId
+    customDnsConfig: account_storageQueuePrivateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: account_storageQueuePrivateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
+@description('The private endpoints of the managed Event Hub Namespace.')
+output eventHubPrivateEndpoints array = [
+  for (pe, i) in (!empty(eventHubPrivateEndpoints) ? array(eventHubPrivateEndpoints) : []): {
+    name: account_eventHubPrivateEndpoints[i].outputs.name
+    resourceId: account_eventHubPrivateEndpoints[i].outputs.resourceId
+    groupId: account_eventHubPrivateEndpoints[i].outputs.groupId
+    customDnsConfig: account_eventHubPrivateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: account_eventHubPrivateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
-
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
-}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')
@@ -570,18 +634,26 @@ type privateEndpointType = {
   @description('Optional. The name of the private link connection to create.')
   privateLinkServiceConnectionName: string?
 
-  // Variant 1: A default service can be assumed (i.e., for services that only have one private endpoint type)
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -592,7 +664,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')

@@ -7,9 +7,7 @@ This module deploys a Healthcare API Workspace IoT Connector.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -26,7 +24,6 @@ This module deploys a Healthcare API Workspace IoT Connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deviceMapping`](#parameter-devicemapping) | object | The mapping JSON that determines how incoming device data is normalized. |
 | [`eventHubName`](#parameter-eventhubname) | string | Event Hub name to connect to. |
 | [`eventHubNamespaceName`](#parameter-eventhubnamespacename) | string | Namespace of the Event Hub to connect to. |
 | [`name`](#parameter-name) | string | The name of the MedTech service. |
@@ -42,26 +39,13 @@ This module deploys a Healthcare API Workspace IoT Connector.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`consumerGroup`](#parameter-consumergroup) | string | Consumer group of the event hub to connected to. |
+| [`deviceMapping`](#parameter-devicemapping) | object | The mapping JSON that determines how incoming device data is normalized. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`fhirdestination`](#parameter-fhirdestination) | object | FHIR Destination. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-
-### Parameter: `deviceMapping`
-
-The mapping JSON that determines how incoming device data is normalized.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      template: []
-      templateType: 'CollectionContent'
-  }
-  ```
 
 ### Parameter: `eventHubName`
 
@@ -98,6 +82,20 @@ Consumer group of the event hub to connected to.
 - Required: No
 - Type: string
 - Default: `[parameters('name')]`
+
+### Parameter: `deviceMapping`
+
+The mapping JSON that determines how incoming device data is normalized.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      template: []
+      templateType: 'CollectionContent'
+  }
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -332,7 +330,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -343,10 +340,6 @@ Tags of the resource.
 | `resourceId` | string | The resource ID of the medtech service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `workspaceName` | string | The name of the medtech workspace. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 
@@ -486,7 +479,3 @@ destinationMapping: {
 </details>
 
 <p>
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

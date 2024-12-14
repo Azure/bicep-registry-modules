@@ -20,23 +20,36 @@ param runOnce bool = false
 @description('Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`.')
 param assignRbacRole bool = true
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.')
-param managedIdentities managedIdentitiesType?
+param managedIdentities managedIdentityOnlyUserAssignedType?
 
 @description('Conditional. Name of the Managed Identity resource to create. Required if `assignRbacRole` is `true` and `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`.')
 param managedIdentityName string?
 
 @description('Required. A fully qualified image name to import.')
 @metadata({
-  example: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+  example: [
+    'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+    'docker.io/library/image:latest'
+    'docker.io/hello-world:latest'
+  ]
 })
 param image string
+
+@description('Optional. The username for the source registry. Required if the source registry is private, or to logon to the public docker registry.')
+param sourceRegistryUsername string = ''
+
+@description('Optional. The password for the source registry. Required if the source registry is private, or to logon to the public docker registry.')
+@secure()
+@metadata({ example: 'keyVault.getSecret("keyVaultSecretName")' })
+param sourceRegistryPassword string = ''
 
 @description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline.')
 @metadata({
   example: 'your-image-name:tag'
 })
-param newImageName string = last(split(image, '/'))
+param newImageName string = string(skip(image, indexOf(image, '/') + 1))
 
 @description('Optional. The image will be overwritten if it already exists in the ACR with the same tag. Default is false.')
 param overwriteExistingImage bool = false
@@ -76,7 +89,7 @@ param tags object?
 // Variables      //
 // ============== //
 
-var useExistingManagedIdentity = length(managedIdentities.?userAssignedResourcesIds ?? []) > 0
+var useExistingManagedIdentity = length(managedIdentities.?userAssignedResourceIds ?? []) > 0
 
 // ============== //
 // Resources      //
@@ -107,7 +120,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
 
 // needed to "convert" resourceIds to principalId
 resource existingManagedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = [
-  for resourceId in (managedIdentities.?userAssignedResourcesIds ?? []): if (assignRbacRole) {
+  for resourceId in (managedIdentities.?userAssignedResourceIds ?? []): if (assignRbacRole) {
     name: last(split(resourceId, '/'))
     scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4]) // get the resource group from the managed identity, as it could be in another resource group
   }
@@ -121,7 +134,7 @@ resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
 
 // assign the Contributor role to the managed identity (new or existing) to import images into the ACR
 resource acrRoleAssignmentExistingManagedIdentities 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for i in range(0, length(assignRbacRole ? (managedIdentities.?userAssignedResourcesIds ?? []) : [])): if (useExistingManagedIdentity && assignRbacRole) {
+  for i in range(0, length(assignRbacRole ? (managedIdentities.?userAssignedResourceIds ?? []) : [])): if (useExistingManagedIdentity && assignRbacRole) {
     name: guid('roleAssignment-acr-${existingManagedIdentities[i].name}')
     scope: acr
     properties: {
@@ -147,7 +160,7 @@ resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssign
   }
 }
 
-module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
+module imageImport 'br/public:avm/res/resources/deployment-script:0.5.0' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
@@ -156,51 +169,28 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
     tags: tags
     managedIdentities: useExistingManagedIdentity
       ? managedIdentities
-      : { userAssignedResourcesIds: [newManagedIdentity.id] }
+      : { userAssignedResourceIds: [newManagedIdentity.id] }
     kind: 'AzureCLI'
     runOnce: runOnce
-    azCliVersion: '2.61.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
+    azCliVersion: '2.63.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
     timeout: 'PT30M' // set timeout to 30m
     retentionInterval: 'PT1H' // cleanup after 1h
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'acrName'
-          value: acrName
-        }
-        {
-          name: 'imageName'
-          value: image
-        }
-        {
-          name: 'newImageName'
-          value: newImageName
-        }
-        {
-          name: 'overwriteExistingImage'
-          value: toLower(string(overwriteExistingImage))
-        }
-        {
-          name: 'initialDelay'
-          value: '${string(initialScriptDelay)}s'
-        }
-        {
-          name: 'retryMax'
-          value: string(retryMax)
-        }
-        {
-          name: 'retrySleep'
-          value: '5s'
-        }
-      ]
-    }
+    environmentVariables: [
+      { name: 'acrName', value: acrName }
+      { name: 'imageName', value: image }
+      { name: 'newImageName', value: newImageName }
+      { name: 'overwriteExistingImage', value: toLower(string(overwriteExistingImage)) }
+      { name: 'initialDelay', value: '${string(initialScriptDelay)}s' }
+      { name: 'retryMax', value: string(retryMax) }
+      { name: 'retrySleep', value: '5s' }
+      { name: 'sourceRegistryUsername', value: sourceRegistryUsername }
+      { name: 'sourceRegistryPassword', secureValue: sourceRegistryPassword }
+    ]
     cleanupPreference: cleanupPreference
     storageAccountResourceId: storageAccountResourceId
     containerGroupName: '${resourceGroup().name}-infrastructure'
     subnetResourceIds: subnetResourceIds
     scriptContent: '''#!/bin/bash
-    set -e
-
     echo "Waiting on RBAC replication ($initialDelay)\n"
     sleep $initialDelay
 
@@ -210,9 +200,17 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
     do
       echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName\n"
       if [ $overwriteExistingImage = 'true' ]; then
-        az acr import -n $acrName --source $imageName --image $newImageName --force
+        if [ -n "$sourceRegistryUsername" ] && [ -n "$sourceRegistryPassword" ]; then
+          az acr import -n $acrName --source $imageName --image $newImageName --force --username $sourceRegistryUsername --password $sourceRegistryPassword
+        else
+          az acr import -n $acrName --source $imageName --image $newImageName --force
+        fi
       else
-        az acr import -n $acrName --source $imageName --image $newImageName
+        if [ -n "$sourceRegistryUsername" ] && [ -n "$sourceRegistryPassword" ]; then
+          az acr import -n $acrName --source $imageName --image $newImageName --username $sourceRegistryUsername --password $sourceRegistryPassword
+        else
+          az acr import -n $acrName --source $imageName --image $newImageName
+        fi
       fi
 
       sleep $retrySleep
@@ -236,7 +234,9 @@ output deploymentScriptOutput string[] = imageImport.outputs.deploymentScriptLog
 @description('An array of the imported images.')
 output importedImage importedImageType = {
   originalImage: image
-  acrHostedImage: '${acr.properties.loginServer}${string(skip(image, indexOf(image,'/')))}'
+  acrHostedImage: empty(newImageName)
+    ? '${acr.properties.loginServer}${string(skip(image, indexOf(image,'/')))}'
+    : '${acr.properties.loginServer}/${newImageName}'
 }
 
 // ================ //
@@ -249,9 +249,4 @@ type importedImageType = {
 
   @description('Required. The image name in the Azure Container Registry.')
   acrHostedImage: string
-}
-
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourcesIds: string[]
 }

@@ -9,7 +9,6 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -19,7 +18,8 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Network/virtualHubs` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs) |
 | `Microsoft.Network/virtualHubs/hubRouteTables` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubRouteTables) |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubVirtualNetworkConnections) |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualHubs/hubVirtualNetworkConnections) |
+| `Microsoft.Network/virtualHubs/routingIntent` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/routingIntent) |
 
 ## Usage examples
 
@@ -31,7 +31,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Routing Intent](#example-3-using-routing-intent)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -61,7 +62,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -84,6 +85,24 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.0.0.0/16'
+param name = 'nvhmin'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -152,7 +171,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -223,7 +242,213 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.1.0.0/16'
+param name = 'nvhmax'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param hubRouteTables = [
+  {
+    name: 'routeTable1'
+  }
+]
+param hubVirtualNetworkConnections = [
+  {
+    name: 'connection1'
+    remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: '<id>'
+      }
+      propagatedRouteTables: {
+        ids: [
+          {
+            id: '<id>'
+          }
+        ]
+        labels: [
+          'none'
+        ]
+      }
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using Routing Intent_
+
+This instance deploys the module the Virtual WAN hub with Routing Intent enabled; requires an existing Virtual Hub, as well the firewall Resource ID.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
+  name: 'virtualHubDeployment'
+  params: {
+    // Required parameters
+    addressPrefix: '10.10.0.0/23'
+    name: 'nvhrtint'
+    virtualWanId: '<virtualWanId>'
+    // Non-required parameters
+    azureFirewallResourceId: '<azureFirewallResourceId>'
+    hubRouteTables: []
+    hubRoutingPreference: 'ASPath'
+    hubVirtualNetworkConnections: [
+      {
+        name: 'connection1'
+        remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+        routingConfiguration: {}
+      }
+    ]
+    internetToFirewall: false
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    privateToFirewall: true
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefix": {
+      "value": "10.10.0.0/23"
+    },
+    "name": {
+      "value": "nvhrtint"
+    },
+    "virtualWanId": {
+      "value": "<virtualWanId>"
+    },
+    // Non-required parameters
+    "azureFirewallResourceId": {
+      "value": "<azureFirewallResourceId>"
+    },
+    "hubRouteTables": {
+      "value": []
+    },
+    "hubRoutingPreference": {
+      "value": "ASPath"
+    },
+    "hubVirtualNetworkConnections": {
+      "value": [
+        {
+          "name": "connection1",
+          "remoteVirtualNetworkId": "<remoteVirtualNetworkId>",
+          "routingConfiguration": {}
+        }
+      ]
+    },
+    "internetToFirewall": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "privateToFirewall": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.10.0.0/23'
+param name = 'nvhrtint'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param azureFirewallResourceId = '<azureFirewallResourceId>'
+param hubRouteTables = []
+param hubRoutingPreference = 'ASPath'
+param hubVirtualNetworkConnections = [
+  {
+    name: 'connection1'
+    remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+    routingConfiguration: {}
+  }
+]
+param internetToFirewall = false
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateToFirewall = true
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -286,7 +511,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -357,6 +582,58 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.1.0.0/16'
+param name = 'nvhwaf'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param hubRouteTables = [
+  {
+    name: 'routeTable1'
+  }
+]
+param hubVirtualNetworkConnections = [
+  {
+    name: 'connection1'
+    remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: '<id>'
+      }
+      propagatedRouteTables: {
+        ids: [
+          {
+            id: '<id>'
+          }
+        ]
+        labels: [
+          'none'
+        ]
+      }
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -379,10 +656,12 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 | [`hubRouteTables`](#parameter-hubroutetables) | array | Route tables to create for the virtual hub. |
 | [`hubRoutingPreference`](#parameter-hubroutingpreference) | string | The preferred routing preference for this virtual hub. |
 | [`hubVirtualNetworkConnections`](#parameter-hubvirtualnetworkconnections) | array | Virtual network connections to create for the virtual hub. |
+| [`internetToFirewall`](#parameter-internettofirewall) | bool | Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`p2SVpnGatewayId`](#parameter-p2svpngatewayid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
 | [`preferredRoutingGateway`](#parameter-preferredroutinggateway) | string | The preferred routing gateway types. |
+| [`privateToFirewall`](#parameter-privatetofirewall) | bool | Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true. |
 | [`routeTableRoutes`](#parameter-routetableroutes) | array | VirtualHub route tables. |
 | [`securityPartnerProviderId`](#parameter-securitypartnerproviderid) | string | ID of the Security Partner Provider to link to. |
 | [`securityProviderName`](#parameter-securityprovidername) | string | The Security Provider name. |
@@ -479,6 +758,14 @@ Virtual network connections to create for the virtual hub.
 - Type: array
 - Default: `[]`
 
+### Parameter: `internetToFirewall`
+
+Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -547,6 +834,14 @@ The preferred routing gateway types.
     'VpnGateway'
   ]
   ```
+
+### Parameter: `privateToFirewall`
+
+Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `routeTableRoutes`
 
@@ -625,7 +920,6 @@ Resource ID of the VPN Gateway to link to.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -634,10 +928,6 @@ Resource ID of the VPN Gateway to link to.
 | `name` | string | The name of the virtual hub. |
 | `resourceGroupName` | string | The resource group the virtual hub was deployed into. |
 | `resourceId` | string | The resource ID of the virtual hub. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

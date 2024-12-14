@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "4808844582468160626"
+      "version": "0.31.34.60546",
+      "templateHash": "4744350024962623928"
     },
     "name": "DBforPostgreSQL Flexible Server Configurations",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -26,21 +27,27 @@
     },
     "source": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Source of the configuration."
       }
     },
     "value": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Value of the configuration."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "flexibleServer": {
+      "existing": true,
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "apiVersion": "2022-12-01",
+      "name": "[parameters('flexibleServerName')]"
+    },
+    "configuration": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
       "apiVersion": "2022-12-01",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
@@ -49,7 +56,7 @@
         "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

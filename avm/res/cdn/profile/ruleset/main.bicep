@@ -9,7 +9,7 @@ param name string
 param profileName string
 
 @description('Optinal. The rules to apply to the rule set.')
-param rules array?
+param rules ruleType[]?
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
@@ -34,6 +34,17 @@ module ruleSet_rules 'rule/main.bicep' = [
     }
   }
 ]
+
+import { ruleType } from './rule/main.bicep'
+
+@export()
+type ruleSetType = {
+  @description('Required. Name of the rule set.')
+  name: string
+
+  @description('Optional. Array of rules.')
+  rules: ruleType[]?
+}
 
 @description('The name of the rule set.')
 output name string = ruleSet.name

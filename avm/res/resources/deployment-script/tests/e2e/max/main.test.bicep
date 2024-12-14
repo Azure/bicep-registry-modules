@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    azCliVersion: '2.9.1'
+    azCliVersion: '2.52.0'
     kind: 'AzureCLI'
     retentionInterval: 'P1D'
     cleanupPreference: 'Always'
@@ -65,20 +65,18 @@ module testDeployment '../../../main.bicep' = {
     }
     containerGroupName: 'dep-${namePrefix}-cg-${serviceShort}'
     arguments: '-argument1 \\"test\\"'
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'var1'
-          value: 'test'
-        }
-        {
-          name: 'var2'
-          secureValue: guid(deployment().name)
-        }
-      ]
-    }
+    environmentVariables: [
+      {
+        name: 'var1'
+        value: 'test'
+      }
+      {
+        name: 'var2'
+        secureValue: guid(deployment().name)
+      }
+    ]
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }

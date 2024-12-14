@@ -8,7 +8,6 @@ This module deploys a Network Watcher.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -56,7 +55,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -68,6 +67,19 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-watcher:<version>'
+
+param location = '<location>'
 ```
 
 </details>
@@ -129,7 +141,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
             disable: false
             name: 'test-http-Bing'
             sources: [
-              'subnet-001(${resourceGroup.name})'
+              'subnet-001(<value>)'
             ]
             testConfigurations: [
               'HTTP Bing Test'
@@ -190,7 +202,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -241,7 +253,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
               "disable": false,
               "name": "test-http-Bing",
               "sources": [
-                "subnet-001(${resourceGroup.name})"
+                "subnet-001(<value>)"
               ],
               "testConfigurations": [
                 "HTTP Bing Test"
@@ -311,6 +323,113 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-watcher:<version>'
+
+param connectionMonitors = [
+  {
+    endpoints: [
+      {
+        name: '<name>'
+        resourceId: '<resourceId>'
+        type: 'AzureVM'
+      }
+      {
+        address: 'www.bing.com'
+        name: 'Bing'
+        type: 'ExternalAddress'
+      }
+    ]
+    name: 'nnwmax-cm-001'
+    testConfigurations: [
+      {
+        httpConfiguration: {
+          method: 'Get'
+          port: 80
+          preferHTTPS: false
+          requestHeaders: []
+          validStatusCodeRanges: [
+            '200'
+          ]
+        }
+        name: 'HTTP Bing Test'
+        protocol: 'Http'
+        successThreshold: {
+          checksFailedPercent: 5
+          roundTripTimeMs: 100
+        }
+        testFrequencySec: 30
+      }
+    ]
+    testGroups: [
+      {
+        destinations: [
+          'Bing'
+        ]
+        disable: false
+        name: 'test-http-Bing'
+        sources: [
+          'subnet-001(<value>)'
+        ]
+        testConfigurations: [
+          'HTTP Bing Test'
+        ]
+      }
+    ]
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param flowLogs = [
+  {
+    enabled: false
+    storageId: '<storageId>'
+    targetResourceId: '<targetResourceId>'
+  }
+  {
+    formatVersion: 1
+    name: 'nnwmax-fl-001'
+    retentionInDays: 8
+    storageId: '<storageId>'
+    targetResourceId: '<targetResourceId>'
+    trafficAnalyticsInterval: 10
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param name = '<name>'
+param roleAssignments = [
+  {
+    name: 'e8e93fb7-f450-41d5-ae86-a32d34e72578'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -367,7 +486,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
             disable: false
             name: 'test-http-Bing'
             sources: [
-              'subnet-001(${resourceGroup.name})'
+              'subnet-001(<value>)'
             ]
             testConfigurations: [
               'HTTP Bing Test'
@@ -409,7 +528,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -460,7 +579,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
               "disable": false,
               "name": "test-http-Bing",
               "sources": [
-                "subnet-001(${resourceGroup.name})"
+                "subnet-001(<value>)"
               ],
               "testConfigurations": [
                 "HTTP Bing Test"
@@ -509,6 +628,93 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-watcher:<version>'
+
+param connectionMonitors = [
+  {
+    endpoints: [
+      {
+        name: '<name>'
+        resourceId: '<resourceId>'
+        type: 'AzureVM'
+      }
+      {
+        address: 'www.bing.com'
+        name: 'Bing'
+        type: 'ExternalAddress'
+      }
+    ]
+    name: 'nnwwaf-cm-001'
+    testConfigurations: [
+      {
+        httpConfiguration: {
+          method: 'Get'
+          port: 80
+          preferHTTPS: false
+          requestHeaders: []
+          validStatusCodeRanges: [
+            '200'
+          ]
+        }
+        name: 'HTTP Bing Test'
+        protocol: 'Http'
+        successThreshold: {
+          checksFailedPercent: 5
+          roundTripTimeMs: 100
+        }
+        testFrequencySec: 30
+      }
+    ]
+    testGroups: [
+      {
+        destinations: [
+          'Bing'
+        ]
+        disable: false
+        name: 'test-http-Bing'
+        sources: [
+          'subnet-001(<value>)'
+        ]
+        testConfigurations: [
+          'HTTP Bing Test'
+        ]
+      }
+    ]
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param flowLogs = [
+  {
+    enabled: false
+    storageId: '<storageId>'
+    targetResourceId: '<targetResourceId>'
+  }
+  {
+    formatVersion: 1
+    name: 'nnwwaf-fl-001'
+    retentionInDays: 8
+    storageId: '<storageId>'
+    targetResourceId: '<targetResourceId>'
+    trafficAnalyticsInterval: 10
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param name = '<name>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -607,6 +813,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -705,7 +918,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -714,10 +926,6 @@ Tags of the resource.
 | `name` | string | The name of the deployed network watcher. |
 | `resourceGroupName` | string | The resource group the network watcher was deployed into. |
 | `resourceId` | string | The resource ID of the deployed network watcher. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

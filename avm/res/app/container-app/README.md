@@ -8,14 +8,13 @@ This module deploys a Container App.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/containerApps) |
+| `Microsoft.App/containerApps` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/containerApps) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -70,7 +69,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -102,6 +101,33 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acamin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -145,7 +171,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -180,6 +206,34 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acapriv001'
+// Non-required parameters
+param disableIngress = true
+param location = '<location>'
 ```
 
 </details>
@@ -294,7 +348,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -413,6 +467,105 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    env: [
+      {
+        name: 'ContainerAppStoredSecretName'
+        secretRef: 'containerappstoredsecret'
+      }
+      {
+        name: 'ContainerAppKeyVaultStoredSecretName'
+        secretRef: 'keyvaultstoredsecret'
+      }
+    ]
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    probes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acamax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param secrets = {
+  secureList: [
+    {
+      name: 'containerappstoredsecret'
+      value: '<value>'
+    }
+    {
+      identity: '<identity>'
+      keyVaultUrl: '<keyVaultUrl>'
+      name: 'keyvaultstoredsecret'
+    }
+  ]
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _VNet integrated container app deployment_
 
 This instance deploys the container app in a managed environment with a virtual network using TCP ingress.
@@ -440,6 +593,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acavnet001'
     // Non-required parameters
+    additionalPortMappings: [
+      {
+        exposedPort: 8080
+        external: false
+        targetPort: 8080
+      }
+    ]
     ingressAllowInsecure: false
     ingressExternal: false
     ingressTargetPort: 80
@@ -454,7 +614,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -481,6 +641,15 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acavnet001"
     },
     // Non-required parameters
+    "additionalPortMappings": {
+      "value": [
+        {
+          "exposedPort": 8080,
+          "external": false,
+          "targetPort": 8080
+        }
+      ]
+    },
     "ingressAllowInsecure": {
       "value": false
     },
@@ -498,6 +667,44 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acavnet001'
+// Non-required parameters
+param additionalPortMappings = [
+  {
+    exposedPort: 8080
+    external: false
+    targetPort: 8080
+  }
+]
+param ingressAllowInsecure = false
+param ingressExternal = false
+param ingressTargetPort = 80
+param ingressTransport = 'tcp'
+param location = '<location>'
 ```
 
 </details>
@@ -572,7 +779,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -651,6 +858,64 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    probes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acawaf001'
+// Non-required parameters
+param ingressAllowInsecure = false
+param ingressExternal = false
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -667,6 +932,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
+| [`additionalPortMappings`](#parameter-additionalportmappings) | array | Settings to expose additional ports on container app. |
 | [`clientCertificateMode`](#parameter-clientcertificatemode) | string | Client certificate mode for mTLS. |
 | [`corsPolicy`](#parameter-corspolicy) | object | Object userd to configure CORS policy. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
@@ -674,6 +940,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`disableIngress`](#parameter-disableingress) | bool | Bool to disable all ingress traffic for the container app. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exposedPort`](#parameter-exposedport) | int | Exposed Port in containers for TCP traffic from ingress. |
+| [`includeAddOns`](#parameter-includeaddons) | bool | Toggle to include the service configuration. |
 | [`ingressAllowInsecure`](#parameter-ingressallowinsecure) | bool | Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections. |
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
 | [`ingressTargetPort`](#parameter-ingresstargetport) | int | Target Port in containers for traffic from ingress. |
@@ -691,6 +958,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
 | [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
+| [`service`](#parameter-service) | object | Dev ContainerApp service type. |
+| [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`trafficLabel`](#parameter-trafficlabel) | string | Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes. |
@@ -1067,6 +1336,47 @@ Controls how active revisions are handled for the Container app.
   ]
   ```
 
+### Parameter: `additionalPortMappings`
+
+Settings to expose additional ports on container app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`external`](#parameter-additionalportmappingsexternal) | bool | Specifies whether the app port is accessible outside of the environment. |
+| [`targetPort`](#parameter-additionalportmappingstargetport) | int | Specifies the port the container listens on. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exposedPort`](#parameter-additionalportmappingsexposedport) | int | Specifies the exposed port for the target port. If not specified, it defaults to target port. |
+
+### Parameter: `additionalPortMappings.external`
+
+Specifies whether the app port is accessible outside of the environment.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `additionalPortMappings.targetPort`
+
+Specifies the port the container listens on.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `additionalPortMappings.exposedPort`
+
+Specifies the exposed port for the target port. If not specified, it defaults to target port.
+
+- Required: No
+- Type: int
+
 ### Parameter: `clientCertificateMode`
 
 Client certificate mode for mTLS.
@@ -1182,6 +1492,14 @@ Exposed Port in containers for TCP traffic from ingress.
 - Required: No
 - Type: int
 - Default: `0`
+
+### Parameter: `includeAddOns`
+
+Toggle to include the service configuration.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `ingressAllowInsecure`
 
@@ -1342,6 +1660,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'ContainerApp Reader'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1465,6 +1790,42 @@ The secrets of the Container App.
 - Type: secureObject
 - Default: `{}`
 
+### Parameter: `service`
+
+Dev ContainerApp service type.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `serviceBinds`
+
+List of container app services bound to the app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-servicebindsname) | string | The name of the service. |
+| [`serviceId`](#parameter-servicebindsserviceid) | string | The service ID. |
+
+### Parameter: `serviceBinds.name`
+
+The name of the service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceBinds.serviceId`
+
+The service ID.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `stickySessionsAffinity`
 
 Bool indicating if the Container App should enable session affinity.
@@ -1535,7 +1896,6 @@ Workload profile name to pin for container app execution.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1546,10 +1906,6 @@ Workload profile name to pin for container app execution.
 | `resourceGroupName` | string | The name of the resource group the Container App was deployed into. |
 | `resourceId` | string | The resource ID of the Container App. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

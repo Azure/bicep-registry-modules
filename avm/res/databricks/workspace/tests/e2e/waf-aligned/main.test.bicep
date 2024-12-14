@@ -23,6 +23,10 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDatabricksEnterpriseApplicationObjectId\'.')
+@secure()
+param azureDatabricksEnterpriseApplicationObjectId string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -47,7 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
-    databricksApplicationObjectId: '711330f9-cfad-4b10-a462-d82faa92027d' // Tenant-specific 'AzureDatabricks' Enterprise Application Object Id
+    databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
     keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
@@ -114,7 +118,6 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKeyManagedDisk: {
         keyName: nestedDependencies.outputs.keyVaultDiskKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
-        rotationToLatestKeyVersionEnabled: true
       }
       storageAccountName: 'sa${namePrefix}${serviceShort}001'
       storageAccountSkuName: 'Standard_ZRS'
@@ -133,9 +136,13 @@ module testDeployment '../../../main.bicep' = [
       customVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'databricks_ui_api'
           subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
           tags: {
@@ -152,9 +159,13 @@ module testDeployment '../../../main.bicep' = [
       accessConnectorResourceId: nestedDependencies.outputs.accessConnectorResourceId
       storageAccountPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.blobStoragePrivateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.blobStoragePrivateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
           tags: {
@@ -163,6 +174,9 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      complianceSecurityProfileValue: 'Disabled'
+      enhancedSecurityMonitoring: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
+      automaticClusterUpdate: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
     }
     dependsOn: [
       nestedDependencies

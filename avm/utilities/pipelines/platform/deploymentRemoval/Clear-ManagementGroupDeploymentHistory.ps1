@@ -53,7 +53,12 @@ function Clear-ManagementGroupDeploymentHistory {
             Authorization = 'Bearer {0}' -f ((Get-AzAccessToken -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText)
         }
     }
-    $response = Invoke-RestMethod @getInputObject
+    try {
+        $response = Invoke-RestMethod @getInputObject
+    } catch {
+        Write-Warning "Management Group [$ManagementGroupId] not found or not authorized. Skipping removal."
+        return
+    }
 
     if (($response | Get-Member -MemberType 'NoteProperty').Name -notcontains 'value') {
         throw ('Fetching deployments failed with error [{0}]' -f ($reponse | Out-String))

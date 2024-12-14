@@ -78,9 +78,13 @@ module testDeployment '../../../main.bicep' = [
         {
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -106,7 +110,6 @@ module testDeployment '../../../main.bicep' = [
       }
       localUsers: [
         {
-          storageAccountName: '${namePrefix}${serviceShort}001'
           name: 'testuser'
           hasSharedKey: false
           hasSshKey: true
@@ -150,8 +153,6 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            enableWORM: true
-            WORMRetention: 666
             allowProtectedAppendWrites: false
           }
         ]
