@@ -53,7 +53,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
@@ -106,12 +106,14 @@ module testDeployment '../../../main.bicep' = {
     ]
     vulnerabilityAssessmentsObj: {
       name: 'default'
-      emailSubscriptionAdmins: true
-      recurringScansIsEnabled: true
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
+      recurringScans: {
+        emailSubscriptionAdmins: true
+        isEnabled: true
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+      }
       storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
     }
     elasticPools: [

@@ -35,6 +35,15 @@ param userAssignedIdentityId string = ''
 @sys.description('Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition.')
 param roleDefinitionIds array = []
 
+@sys.description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
+param additionalManagementGroupsIDsToAssignRbacTo array = []
+
+@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+param additionalSubscriptionIDsToAssignRbacTo array = []
+
+@sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+param additionalResourceGroupResourceIDsToAssignRbacTo array = []
+
 @sys.description('Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs.')
 param metadata object = {}
 
@@ -48,9 +57,6 @@ param nonComplianceMessages array = []
 ])
 param enforcementMode string = 'Default'
 
-@sys.description('Optional. The Target Scope for the Policy. The name of the management group for the policy assignment. If not provided, will use the current scope for deployment.')
-param managementGroupId string = managementGroup().name
-
 @sys.description('Optional. The policy excluded scopes.')
 param notScopes array = []
 
@@ -63,14 +69,22 @@ param overrides array = []
 @sys.description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.')
 param resourceSelectors array = []
 
-var identityVar = identity == 'SystemAssigned' ? {
-  type: identity
-} : identity == 'UserAssigned' ? {
-  type: identity
-  userAssignedIdentities: {
-    '${userAssignedIdentityId}': {}
-  }
-} : null
+var identityVar = identity == 'SystemAssigned'
+  ? {
+      type: identity
+    }
+  : identity == 'UserAssigned'
+      ? {
+          type: identity
+          userAssignedIdentities: {
+            '${userAssignedIdentityId}': {}
+          }
+        }
+      : null
+
+var finalArrayOfManagementGroupsToAssignRbacTo = identity == 'SystemAssigned'
+  ? union(additionalManagementGroupsIDsToAssignRbacTo, [managementGroup().name])
+  : []
 
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: name
@@ -90,14 +104,41 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01'
   identity: identityVar
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
-  name: guid(managementGroupId, roleDefinitionId, location, name)
-  properties: {
-    roleDefinitionId: roleDefinitionId
-    principalId: policyAssignment.identity.principalId
-    principalType: 'ServicePrincipal'
+module managementGroupRoleAssignments 'management-group-additional-rbac-asi-def-loop.bicep' = [
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: roleDefinitionId
+      managementGroupsIDsToAssignRbacTo: finalArrayOfManagementGroupsToAssignRbacTo
+    }
   }
-}]
+]
+
+module additionalSubscriptionRoleAssignments 'subscription-additional-rbac-asi-def-loop.bicep' = [
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: roleDefinitionId
+      subscriptionIDsToAssignRbacTo: additionalSubscriptionIDsToAssignRbacTo
+    }
+  }
+]
+
+module additionalResourceGroupRoleAssignments 'resource-group-additional-rbac-asi-def-loop.bicep' = [
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-RGs'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: roleDefinitionId
+      resourceGroupResourceIDsToAssignRbacTo: additionalResourceGroupResourceIDsToAssignRbacTo
+    }
+  }
+]
 
 @sys.description('Policy Assignment Name.')
 output name string = policyAssignment.name

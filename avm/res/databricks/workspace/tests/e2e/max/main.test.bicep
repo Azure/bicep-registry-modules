@@ -60,7 +60,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -139,7 +139,7 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKeyManagedDisk: {
         keyName: nestedDependencies.outputs.keyVaultDiskKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
-        rotationToLatestKeyVersionEnabled: true
+        autoRotationDisabled: true
       }
       storageAccountName: 'sa${namePrefix}${serviceShort}001'
       storageAccountSkuName: 'Standard_ZRS'
