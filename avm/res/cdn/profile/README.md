@@ -27,7 +27,7 @@ This module deploys a CDN Profile.
 | `Microsoft.Cdn/profiles/ruleSets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets) |
 | `Microsoft.Cdn/profiles/ruleSets/rules` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets/rules) |
 | `Microsoft.Cdn/profiles/secrets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/secrets) |
-| `Microsoft.Cdn/profiles/securityPolicies` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/profiles/securityPolicies) |
+| `Microsoft.Cdn/profiles/securityPolicies` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2024-02-01/profiles/securityPolicies) |
 
 ## Usage examples
 
@@ -418,6 +418,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         hostName: 'dep-test-cdnpafd-custom-domain.azurewebsites.net'
         name: 'dep-test-cdnpafd-custom-domain'
       }
+      {
+        certificateType: 'ManagedCertificate'
+        hostName: 'dep-test2-cdnpafd-custom-domain.azurewebsites.net'
+        name: 'dep-test2-cdnpafd-custom-domain'
+      }
     ]
     location: 'global'
     managedIdentities: {
@@ -514,6 +519,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           "certificateType": "ManagedCertificate",
           "hostName": "dep-test-cdnpafd-custom-domain.azurewebsites.net",
           "name": "dep-test-cdnpafd-custom-domain"
+        },
+        {
+          "certificateType": "ManagedCertificate",
+          "hostName": "dep-test2-cdnpafd-custom-domain.azurewebsites.net",
+          "name": "dep-test2-cdnpafd-custom-domain"
         }
       ]
     },
@@ -613,6 +623,11 @@ param customDomains = [
     certificateType: 'ManagedCertificate'
     hostName: 'dep-test-cdnpafd-custom-domain.azurewebsites.net'
     name: 'dep-test-cdnpafd-custom-domain'
+  }
+  {
+    certificateType: 'ManagedCertificate'
+    hostName: 'dep-test2-cdnpafd-custom-domain.azurewebsites.net'
+    name: 'dep-test2-cdnpafd-custom-domain'
   }
 ]
 param location = 'global'
@@ -2215,8 +2230,10 @@ Endpoint tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `dnsValidation` | array | The list of records required for custom domains validation. |
 | `endpointId` | string | The resource ID of the CDN profile endpoint. |
 | `endpointName` | string | The name of the CDN profile endpoint. |
+| `frontDoorEndpointHostNames` | array | The list of AFD endpoint host names. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the CDN profile. |
 | `profileType` | string | The type of the CDN profile. |
