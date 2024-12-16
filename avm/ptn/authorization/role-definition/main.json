@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10522781211627883338"
+      "templateHash": "14291186332701774992"
     },
     "name": "avm/ptn/authorization/role-definition",
     "description": "This module deploys a custom role definition to a Management Group.",
@@ -111,7 +111,7 @@
     "roleDefinition": {
       "$ref": "#/definitions/roleDefinitionType",
       "metadata": {
-        "description": "Required. Array of custom role definitions to create on the management group."
+        "description": "Required. Object of custom role definition to create on the management group."
       }
     }
   },

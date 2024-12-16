@@ -10,7 +10,7 @@ param enableTelemetry bool = true
 @description('Optional. The location of the telemetry deployment to be created. Default is location of deployment.')
 param location string = deployment().location
 
-@description('Required. Array of custom role definitions to create on the management group.')
+@description('Required. Object of custom role definition to create on the management group.')
 param roleDefinition roleDefinitionType
 
 // ============== //

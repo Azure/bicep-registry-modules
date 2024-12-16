@@ -200,7 +200,7 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`roleDefinition`](#parameter-roledefinition) | object | Array of custom role definitions to create on the management group. |
+| [`roleDefinition`](#parameter-roledefinition) | object | Object of custom role definition to create on the management group. |
 
 **Optional parameters**
 
@@ -211,7 +211,7 @@ param location = '<location>'
 
 ### Parameter: `roleDefinition`
 
-Array of custom role definitions to create on the management group.
+Object of custom role definition to create on the management group.
 
 - Required: Yes
 - Type: object
