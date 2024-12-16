@@ -30,8 +30,8 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.app.container-job-toolkit.yml"
       - "avm/ptn/app/container-job-toolkit/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/utilities/pipelines/**"
+      - "!utilities/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
