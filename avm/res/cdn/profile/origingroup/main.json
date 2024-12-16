@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13972056376134412662"
+      "version": "0.32.4.45862",
+      "templateHash": "3450465162010752754"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group.",
@@ -289,10 +289,7 @@
         "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
         "sessionAffinityState": "[parameters('sessionAffinityState')]",
         "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-      },
-      "dependsOn": [
-        "profile"
-      ]
+      }
     },
     "originGroup_origins": {
       "copy": {
@@ -352,8 +349,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "7808954044639543840"
+              "version": "0.32.4.45862",
+              "templateHash": "5172201899085933507"
             },
             "name": "CDN Profiles Origin",
             "description": "This module deploys a CDN Profile Origin.",
@@ -532,10 +529,7 @@
               "existing": true,
               "type": "Microsoft.Cdn/profiles/originGroups",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
             },
             "profile": {
               "existing": true,
@@ -557,10 +551,7 @@
                 "priority": "[parameters('priority')]",
                 "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
                 "weight": "[parameters('weight')]"
-              },
-              "dependsOn": [
-                "profile::originGroup"
-              ]
+              }
             }
           },
           "outputs": {

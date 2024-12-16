@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "11873116919556672567"
+      "version": "0.32.4.45862",
+      "templateHash": "6653951445614700931"
     },
     "name": "Private DNS Zone SOA record",
     "description": "This module deploys a Private DNS Zone SOA record.",
@@ -161,10 +161,7 @@
         "metadata": "[parameters('metadata')]",
         "soaRecord": "[parameters('soaRecord')]",
         "ttl": "[parameters('ttl')]"
-      },
-      "dependsOn": [
-        "privateDnsZone"
-      ]
+      }
     },
     "SOA_roleAssignments": {
       "copy": {
