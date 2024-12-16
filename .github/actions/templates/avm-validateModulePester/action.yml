@@ -30,7 +30,7 @@ inputs:
   moduleTestFilePath:
     description: "The path to the test file"
     required: true
-    default: "avm/utilities/pipelines/staticValidation/compliance/module.tests.ps1"
+    default: "utilities/pipelines/staticValidation/compliance/module.tests.ps1"
 
 runs:
   using: "composite"
@@ -45,7 +45,7 @@ runs:
         Write-Output '::group::Run Pester tests'
 
         # Load used functions
-        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
 
         # Set repo root path
         $repoRootPath = $env:GITHUB_WORKSPACE
