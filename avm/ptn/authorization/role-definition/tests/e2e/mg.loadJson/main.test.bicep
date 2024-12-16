@@ -24,15 +24,13 @@ param customRoleDefinitionJson object = loadJsonContent('lib/subscription_owner.
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    roleDefinition: {
-      name: customRoleDefinitionJson.name
-      roleName: customRoleDefinitionJson.properties.roleName
-      description: customRoleDefinitionJson.properties.description
-      actions: customRoleDefinitionJson.properties.permissions[0].actions
-      notActions: customRoleDefinitionJson.properties.permissions[0].notActions
-      dataActions: customRoleDefinitionJson.properties.permissions[0].dataActions
-      notDataActions: customRoleDefinitionJson.properties.permissions[0].notDataActions
-    }
+    name: customRoleDefinitionJson.name
+    roleName: customRoleDefinitionJson.properties.roleName
+    description: customRoleDefinitionJson.properties.description
+    actions: customRoleDefinitionJson.properties.permissions[0].actions
+    notActions: customRoleDefinitionJson.properties.permissions[0].notActions
+    dataActions: customRoleDefinitionJson.properties.permissions[0].dataActions
+    notDataActions: customRoleDefinitionJson.properties.permissions[0].notDataActions
     location: resourceLocation
   }
 }

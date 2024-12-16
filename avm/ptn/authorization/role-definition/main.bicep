@@ -34,6 +34,14 @@ param notDataActions array?
 @sys.description('Optional. The display name of the custom role definition. If not specified, the name will be used.')
 param roleName string?
 
+// ============ //
+// Variables //
+// ============ //
+
+var roleDefNameFinalGuid = contains(name, '-') && length(name) == 36 && length(split(name, '-')) == 5
+  ? name
+  : guid(name)
+
 // ============== //
 // Resources      //
 // ============== //
@@ -59,20 +67,18 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource res_roleDefinition_mg 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' = {
-  name: contains(name, '-') && length(name) == 36 && length(split(name, '-')) == 5 ? name : guid(name)
+  name: roleDefNameFinalGuid
   properties: {
-    roleName: roleDefinition.?roleName ?? roleDefinition.name
-    description: roleDefinition.?description
+    roleName: roleName ?? roleDefNameFinalGuid
+    description: description
     type: 'CustomRole'
-    assignableScopes: roleDefinition.?assignableScopes ?? [
-      managementGroup().id
-    ]
+    assignableScopes: !empty(assignableScopes) ? assignableScopes : [managementGroup().id]
     permissions: [
       {
-        actions: roleDefinition.?actions ?? []
-        notActions: roleDefinition.?notActions ?? []
-        dataActions: roleDefinition.?dataActions ?? []
-        notDataActions: roleDefinition.?notDataActions ?? []
+        actions: actions ?? []
+        notActions: notActions ?? []
+        dataActions: dataActions ?? []
+        notDataActions: notDataActions ?? []
       }
     ]
   }
@@ -82,9 +88,12 @@ resource res_roleDefinition_mg 'Microsoft.Authorization/roleDefinitions@2022-05-
 // Outputs      //
 // ============ //
 
-@description('An object containing the resourceId, roleDefinitionId, and displayName of the custom role definition.')
+@sys.description('An object containing the resourceId, roleDefinitionId, and displayName of the custom role definition.')
 output managementGroupCustomRoleDefinitionIds object = {
   resourceId: res_roleDefinition_mg.id
-  roleDefinitionId: res_roleDefinition_mg.name
+  roleDefinitionIdName: res_roleDefinition_mg.name
   displayName: res_roleDefinition_mg.properties.roleName
 }
+
+@sys.description('The ID/name of the custom role definition created.')
+output roleDefinitionIdName string = res_roleDefinition_mg.id

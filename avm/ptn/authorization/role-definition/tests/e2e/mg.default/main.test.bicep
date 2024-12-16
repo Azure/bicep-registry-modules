@@ -22,12 +22,10 @@ param resourceLocation string = deployment().location
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    roleDefinition: {
-      name: '${namePrefix}-rbac-custom-role-reader'
-      actions: [
-        '*/read'
-      ]
-    }
+    name: '${namePrefix}-rbac-custom-role-reader'
+    actions: [
+      '*/read'
+    ]
     location: resourceLocation
   }
 }

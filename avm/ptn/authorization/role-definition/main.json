@@ -6,92 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14291186332701774992"
+      "templateHash": "4698417116112222192"
     },
     "name": "avm/ptn/authorization/role-definition",
     "description": "This module deploys a custom role definition to a Management Group.",
     "owner": "@jtracey93"
-  },
-  "definitions": {
-    "roleDefinitionType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the custom role definition."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the custom role definition."
-          }
-        },
-        "assignableScopes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used."
-          }
-        },
-        "actions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The permission actions of the custom role definition."
-          }
-        },
-        "notActions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The permission not actions of the custom role definition."
-          }
-        },
-        "dataActions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The permission data actions of the custom role definition."
-          }
-        },
-        "notDataActions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The permission not data actions of the custom role definition."
-          }
-        },
-        "roleName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The display name of the custom role definition. If not specified, the name will be used."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "A type for custom role definition."
-      }
-    }
   },
   "parameters": {
     "enableTelemetry": {
@@ -108,12 +27,64 @@
         "description": "Optional. The location of the telemetry deployment to be created. Default is location of deployment."
       }
     },
-    "roleDefinition": {
-      "$ref": "#/definitions/roleDefinitionType",
+    "name": {
+      "type": "string",
       "metadata": {
-        "description": "Required. Object of custom role definition to create on the management group."
+        "description": "Required. The name of the custom role definition."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The description of the custom role definition."
+      }
+    },
+    "assignableScopes": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used."
+      }
+    },
+    "actions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The permission actions of the custom role definition."
+      }
+    },
+    "notActions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The permission not actions of the custom role definition."
+      }
+    },
+    "dataActions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The permission data actions of the custom role definition."
+      }
+    },
+    "notDataActions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The permission not data actions of the custom role definition."
+      }
+    },
+    "roleName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The display name of the custom role definition. If not specified, the name will be used."
       }
     }
+  },
+  "variables": {
+    "roleDefNameFinalGuid": "[if(and(and(contains(parameters('name'), '-'), equals(length(parameters('name')), 36)), equals(length(split(parameters('name'), '-')), 5)), parameters('name'), guid(parameters('name')))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -140,18 +111,18 @@
     "res_roleDefinition_mg": {
       "type": "Microsoft.Authorization/roleDefinitions",
       "apiVersion": "2022-05-01-preview",
-      "name": "[if(and(and(contains(parameters('roleDefinition').name, '-'), equals(length(parameters('roleDefinition').name), 36)), equals(length(split(parameters('roleDefinition').name, '-')), 5)), parameters('roleDefinition').name, guid(parameters('roleDefinition').name))]",
+      "name": "[variables('roleDefNameFinalGuid')]",
       "properties": {
-        "roleName": "[coalesce(tryGet(parameters('roleDefinition'), 'roleName'), parameters('roleDefinition').name)]",
-        "description": "[tryGet(parameters('roleDefinition'), 'description')]",
+        "roleName": "[coalesce(parameters('roleName'), variables('roleDefNameFinalGuid'))]",
+        "description": "[parameters('description')]",
         "type": "CustomRole",
-        "assignableScopes": "[coalesce(tryGet(parameters('roleDefinition'), 'assignableScopes'), createArray(managementGroup().id))]",
+        "assignableScopes": "[if(not(empty(parameters('assignableScopes'))), parameters('assignableScopes'), createArray(managementGroup().id))]",
         "permissions": [
           {
-            "actions": "[coalesce(tryGet(parameters('roleDefinition'), 'actions'), createArray())]",
-            "notActions": "[coalesce(tryGet(parameters('roleDefinition'), 'notActions'), createArray())]",
-            "dataActions": "[coalesce(tryGet(parameters('roleDefinition'), 'dataActions'), createArray())]",
-            "notDataActions": "[coalesce(tryGet(parameters('roleDefinition'), 'notDataActions'), createArray())]"
+            "actions": "[coalesce(parameters('actions'), createArray())]",
+            "notActions": "[coalesce(parameters('notActions'), createArray())]",
+            "dataActions": "[coalesce(parameters('dataActions'), createArray())]",
+            "notDataActions": "[coalesce(parameters('notDataActions'), createArray())]"
           }
         ]
       }
@@ -164,10 +135,17 @@
         "description": "An object containing the resourceId, roleDefinitionId, and displayName of the custom role definition."
       },
       "value": {
-        "resourceId": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleDefinitions', if(and(and(contains(parameters('roleDefinition').name, '-'), equals(length(parameters('roleDefinition').name), 36)), equals(length(split(parameters('roleDefinition').name, '-')), 5)), parameters('roleDefinition').name, guid(parameters('roleDefinition').name)))]",
-        "roleDefinitionId": "[if(and(and(contains(parameters('roleDefinition').name, '-'), equals(length(parameters('roleDefinition').name), 36)), equals(length(split(parameters('roleDefinition').name, '-')), 5)), parameters('roleDefinition').name, guid(parameters('roleDefinition').name))]",
+        "resourceId": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleDefinitions', variables('roleDefNameFinalGuid'))]",
+        "roleDefinitionIdName": "[variables('roleDefNameFinalGuid')]",
         "displayName": "[reference('res_roleDefinition_mg').roleName]"
       }
+    },
+    "roleDefinitionIdName": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID/name of the custom role definition created."
+      },
+      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleDefinitions', variables('roleDefNameFinalGuid'))]"
     }
   }
 }
