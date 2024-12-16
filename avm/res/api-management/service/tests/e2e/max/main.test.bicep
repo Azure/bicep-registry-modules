@@ -111,6 +111,10 @@ module testDeployment '../../../main.bicep' = [
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'http://echoapi.cloudapp.net/api'
+          protocols: [
+            'http'
+            'https'
+          ]
         }
       ]
       authorizationServers: {
@@ -287,9 +291,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
