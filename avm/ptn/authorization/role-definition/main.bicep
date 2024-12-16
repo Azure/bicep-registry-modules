@@ -4,14 +4,35 @@ metadata owner = '@jtracey93'
 
 targetScope = 'managementGroup'
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The location of the telemetry deployment to be created. Default is location of deployment.')
+@sys.description('Optional. The location of the telemetry deployment to be created. Default is location of deployment.')
 param location string = deployment().location
 
-@description('Required. Object of custom role definition to create on the management group.')
-param roleDefinition roleDefinitionType
+@sys.description('Required. The name of the custom role definition.')
+param name string
+
+@sys.description('Optional. The description of the custom role definition.')
+param description string?
+
+@sys.description('Optional. The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used.')
+param assignableScopes array?
+
+@sys.description('Optional. The permission actions of the custom role definition.')
+param actions array?
+
+@sys.description('Optional. The permission not actions of the custom role definition.')
+param notActions array?
+
+@sys.description('Optional. The permission data actions of the custom role definition.')
+param dataActions array?
+
+@sys.description('Optional. The permission not data actions of the custom role definition.')
+param notDataActions array?
+
+@sys.description('Optional. The display name of the custom role definition. If not specified, the name will be used.')
+param roleName string?
 
 // ============== //
 // Resources      //
@@ -38,12 +59,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource res_roleDefinition_mg 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' = {
-  name: contains(roleDefinition.name, '-') && length(roleDefinition.name) == 36 && length(split(
-      roleDefinition.name,
-      '-'
-    )) == 5
-    ? roleDefinition.name
-    : guid(roleDefinition.name)
+  name: contains(name, '-') && length(name) == 36 && length(split(name, '-')) == 5 ? name : guid(name)
   properties: {
     roleName: roleDefinition.?roleName ?? roleDefinition.name
     description: roleDefinition.?description
@@ -71,36 +87,4 @@ output managementGroupCustomRoleDefinitionIds object = {
   resourceId: res_roleDefinition_mg.id
   roleDefinitionId: res_roleDefinition_mg.name
   displayName: res_roleDefinition_mg.properties.roleName
-}
-
-// ================ //
-// Definitions      //
-// ================ //
-
-@export()
-@description('A type for custom role definition.')
-type roleDefinitionType = {
-  @description('Required. The name of the custom role definition.')
-  name: string
-
-  @description('Optional. The description of the custom role definition.')
-  description: string?
-
-  @description('Optional. The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used.')
-  assignableScopes: string[]?
-
-  @description('Optional. The permission actions of the custom role definition.')
-  actions: string[]?
-
-  @description('Optional. The permission not actions of the custom role definition.')
-  notActions: string[]?
-
-  @description('Optional. The permission data actions of the custom role definition.')
-  dataActions: string[]?
-
-  @description('Optional. The permission not data actions of the custom role definition.')
-  notDataActions: string[]?
-
-  @description('Optional. The display name of the custom role definition. If not specified, the name will be used.')
-  roleName: string?
 }
