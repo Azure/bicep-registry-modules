@@ -50,7 +50,7 @@ var imagePaths = [
   }
 ]
 
-var githubURL = 'https://github.com/azure/bicep-registry-modules#main:avm/ptn/dev-ops/cicd-agents-and-runners/scripts'
+var githubURL = 'https://github.com/azure/avm-container-images-cicd-agents-and-runners#main'
 
 var acaGitHubRules = (selfHostedConfig.selfHostedType == 'github')
   ? [
@@ -417,9 +417,9 @@ resource buildImages 'Microsoft.ContainerRegistry/registries/tasks@2019-06-01-pr
         dockerFilePath: 'dockerfile'
         type: 'Docker'
         contextPath: contains(computeTypes, 'azure-container-app')
-          ? '${githubURL}/${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-app')[0].imagePath}'
+          ? '${githubURL}:${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-app')[0].imagePath}'
           : contains(computeTypes, 'azure-container-instance')
-              ? '${githubURL}/${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-instance')[0].imagePath}'
+              ? '${githubURL}:${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-instance')[0].imagePath}'
               : null
         imageNames: [
           '${acr.outputs.loginServer}/${selfHostedConfig.selfHostedType}-${image}:latest'
