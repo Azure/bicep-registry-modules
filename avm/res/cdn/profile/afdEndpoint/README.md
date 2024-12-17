@@ -310,6 +310,7 @@ The tags of the AFD Endpoint.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `frontDoorEndpointHostName` | string | The host name of the AFD endpoint. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the AFD Endpoint. |
 | `resourceGroupName` | string | The name of the resource group the endpoint was created in. |

@@ -77,7 +77,7 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
-@description('Optional. Name of a managed cluster SKU.')
+@description('Optional. Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
 @allowed([
   'Base'
   'Automatic'
@@ -113,8 +113,12 @@ param enableRBAC bool = true
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
 param disableLocalAccounts bool = true
 
-@description('Optional. Node provisioning settings that apply to the whole cluster.')
-param nodeProvisioningProfile object?
+@description('Optional. Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
+@allowed([
+  'Auto'
+  'Manual'
+])
+param nodeProvisioningProfileMode string?
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
@@ -689,7 +693,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
     nodeResourceGroupProfile: nodeResourceGroupProfile
-    nodeProvisioningProfile: nodeProvisioningProfile
+    nodeProvisioningProfile: !empty(nodeProvisioningProfileMode)
+      ? {
+          mode: nodeProvisioningProfileMode
+        }
+      : null
     enablePodSecurityPolicy: enablePodSecurityPolicy
     workloadAutoScalerProfile: {
       keda: {
@@ -720,15 +728,17 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     publicNetworkAccess: publicNetworkAccess
-    aadProfile: !empty(aadProfile) ? {
-      clientAppID: aadProfile.?aadProfileClientAppID
-      serverAppID: aadProfile.?aadProfileServerAppID
-      serverAppSecret: aadProfile.?aadProfileServerAppSecret
-      managed: aadProfile.?aadProfileManaged
-      enableAzureRBAC: aadProfile.?aadProfileEnableAzureRBAC
-      adminGroupObjectIDs: aadProfile.?aadProfileAdminGroupObjectIDs
-      tenantID: aadProfile.?aadProfileTenantId
-    } : null
+    aadProfile: !empty(aadProfile)
+      ? {
+          clientAppID: aadProfile.?aadProfileClientAppID
+          serverAppID: aadProfile.?aadProfileServerAppID
+          serverAppSecret: aadProfile.?aadProfileServerAppSecret
+          managed: aadProfile.?aadProfileManaged
+          enableAzureRBAC: aadProfile.?aadProfileEnableAzureRBAC
+          adminGroupObjectIDs: aadProfile.?aadProfileAdminGroupObjectIDs
+          tenantID: aadProfile.?aadProfileTenantId
+        }
+      : null
     autoScalerProfile: {
       'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
       expander: autoScalerProfileExpander
