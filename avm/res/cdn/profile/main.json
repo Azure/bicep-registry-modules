@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "10761375864597089825"
+      "version": "0.32.4.45862",
+      "templateHash": "2179775660826652695"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -50,7 +50,7 @@
           "associations": {
             "$ref": "#/definitions/associationsType",
             "metadata": {
-              "description": "Required. Domain names and URL patterns to math with this association."
+              "description": "Required. Domain names and URL patterns to match with this association."
             }
           },
           "wafPolicyResourceId": {
@@ -656,6 +656,34 @@
         }
       }
     },
+    "dnsValidationType": {
+      "type": "object",
+      "properties": {
+        "dnsTxtRecordName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The DNS record name."
+          }
+        },
+        "dnsTxtRecordValue": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The DNS record value."
+          }
+        },
+        "dnsTxtRecordExpiry": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The expiry date of the DNS record."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "customdomain/main.bicep"
+        }
+      }
+    },
     "originGroupType": {
       "type": "object",
       "properties": {
@@ -1134,8 +1162,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "5709530270456479127"
+              "version": "0.32.4.45862",
+              "templateHash": "12158435617192568330"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint.",
@@ -1251,8 +1279,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.34.60546",
-                      "templateHash": "12416203553821456162"
+                      "version": "0.32.4.45862",
+                      "templateHash": "1967881427631941882"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -1497,8 +1525,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "135211401759640973"
+              "version": "0.32.4.45862",
+              "templateHash": "6471061278844735033"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret.",
@@ -1647,8 +1675,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "10387694873442665915"
+              "version": "0.32.4.45862",
+              "templateHash": "12647886167890211057"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains.",
@@ -1718,6 +1746,32 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Extended properties."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "dnsValidationType": {
+              "type": "object",
+              "properties": {
+                "dnsTxtRecordName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The DNS record name."
+                  }
+                },
+                "dnsTxtRecordValue": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The DNS record value."
+                  }
+                },
+                "dnsTxtRecordExpiry": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The expiry date of the DNS record."
                   }
                 }
               },
@@ -1848,6 +1902,17 @@
                 "description": "The name of the resource group the custom domain was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "dnsValidation": {
+              "$ref": "#/definitions/dnsValidationType",
+              "metadata": {
+                "description": "The DNS validation records."
+              },
+              "value": {
+                "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
+                "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
+                "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+              }
             }
           }
         }
@@ -1900,8 +1965,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "15886213526918072525"
+              "version": "0.32.4.45862",
+              "templateHash": "3450465162010752754"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group.",
@@ -2244,8 +2309,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.34.60546",
-                      "templateHash": "3615112055594041997"
+                      "version": "0.32.4.45862",
+                      "templateHash": "5172201899085933507"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin.",
@@ -2546,8 +2611,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "4753233857701337613"
+              "version": "0.32.4.45862",
+              "templateHash": "8263137294746797692"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set.",
@@ -2705,8 +2770,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.34.60546",
-                      "templateHash": "11756620080021514486"
+                      "version": "0.32.4.45862",
+                      "templateHash": "14540406126609060699"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule.",
@@ -2934,8 +2999,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "16899001110062450573"
+              "version": "0.32.4.45862",
+              "templateHash": "5418845183779263042"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -3309,8 +3374,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.34.60546",
-                      "templateHash": "15873678240851060540"
+                      "version": "0.32.4.45862",
+                      "templateHash": "11233659924871585320"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -3737,6 +3802,13 @@
                 "description": "The list of routes assigned to the AFD endpoint."
               },
               "value": "[coalesce(parameters('routes'), createArray())]"
+            },
+            "frontDoorEndpointHostName": {
+              "type": "string",
+              "metadata": {
+                "description": "The host name of the AFD endpoint."
+              },
+              "value": "[reference('afdEndpoint').hostName]"
             }
           }
         }
@@ -3782,8 +3854,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "3914917842985483427"
+              "version": "0.32.4.45862",
+              "templateHash": "13846745009559493983"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy.",
@@ -3971,6 +4043,29 @@
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[coalesce(tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+    },
+    "dnsValidation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dnsValidationType"
+      },
+      "metadata": {
+        "description": "The list of records required for custom domains validation."
+      },
+      "copy": {
+        "count": "[length(parameters('customDomains'))]",
+        "input": "[reference(format('profile_customDomains[{0}]', copyIndex())).outputs.dnsValidation.value]"
+      }
+    },
+    "frontDoorEndpointHostNames": {
+      "type": "array",
+      "metadata": {
+        "description": "The list of AFD endpoint host names."
+      },
+      "copy": {
+        "count": "[length(parameters('afdEndpoints'))]",
+        "input": "[reference(format('profile_afdEndpoints[{0}]', copyIndex())).outputs.frontDoorEndpointHostName.value]"
+      }
     }
   }
 }

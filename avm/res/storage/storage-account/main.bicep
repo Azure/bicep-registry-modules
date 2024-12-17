@@ -9,11 +9,11 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -44,6 +44,7 @@ param skuName string = 'Standard_GRS'
   'Premium'
   'Hot'
   'Cool'
+  'Cold'
 ])
 @description('Conditional. Required if the Storage Account kind is set to BlobStorage. The access tier is used for billing. The "Premium" access tier is the default value for premium block blobs storage account type and it cannot be changed for the premium block blobs storage account type.')
 param accessTier string = 'Hot'
@@ -64,7 +65,7 @@ param defaultToOAuthAuthentication bool = false
 @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true.')
 param allowSharedKeyAccess bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -130,7 +131,7 @@ param enableHierarchicalNamespace bool = false
 param enableSftp bool = false
 
 @description('Optional. Local users to deploy for SFTP authentication.')
-param localUsers array = []
+param localUsers localUserType[]?
 
 @description('Optional. Enables local users feature, if set to true.')
 param isLocalUserEnabled bool = false
@@ -138,11 +139,11 @@ param isLocalUserEnabled bool = false
 @description('Optional. If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableNfsV3 bool = false
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -171,9 +172,9 @@ param publicNetworkAccess string = ''
 @description('Optional. Allows HTTPS traffic only to storage service if sets to true.')
 param supportsHttpsTrafficOnly bool = true
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. The SAS expiration period. DD.HH:MM:SS.')
 param sasExpirationPeriod string = ''
@@ -393,9 +394,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
           ? {
               keyname: customerManagedKey!.keyName
               keyvaulturi: cMKKeyVault.properties.vaultUri
-              keyversion: !empty(customerManagedKey.?keyVersion ?? '')
+              keyversion: !empty(customerManagedKey.?keyVersion)
                 ? customerManagedKey!.keyVersion
-                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                : (customerManagedKey.?autoRotationEnabled ?? true)
+                    ? null
+                    : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
             }
           : null
         identity: {
@@ -497,7 +500,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -563,7 +566,7 @@ module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!e
 
 // SFTP user settings
 module storageAccount_localUsers 'local-user/main.bicep' = [
-  for (localUser, index) in localUsers: {
+  for (localUser, index) in (localUsers ?? []): {
     name: '${uniqueString(deployment().name, location)}-Storage-LocalUsers-${index}'
     params: {
       storageAccountName: storageAccount.name
@@ -696,7 +699,7 @@ output primaryBlobEndpoint string = !empty(blobServices) && contains(blobService
   : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = storageAccount.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location
@@ -705,13 +708,13 @@ output location string = storageAccount.location
 output serviceEndpoints object = storageAccount.properties.primaryEndpoints
 
 @description('The private endpoints of the Storage Account.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: storageAccount_privateEndpoints[i].outputs.name
-    resourceId: storageAccount_privateEndpoints[i].outputs.resourceId
-    groupId: storageAccount_privateEndpoints[i].outputs.groupId
-    customDnsConfig: storageAccount_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: storageAccount_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: storageAccount_privateEndpoints[index].outputs.name
+    resourceId: storageAccount_privateEndpoints[index].outputs.resourceId
+    groupId: storageAccount_privateEndpoints[index].outputs.groupId
+    customDnsConfigs: storageAccount_privateEndpoints[index].outputs.customDnsConfig
+    networkInterfaceResourceIds: storageAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -724,6 +727,30 @@ output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 type networkAclsType = {
@@ -773,4 +800,29 @@ type secretsExportConfigurationType = {
 
   @description('Optional. The connectionString2 secret name to create.')
   connectionString2: string?
+}
+
+import { sshAuthorizedKeyType, permissionScopeType } from 'local-user/main.bicep'
+@export()
+type localUserType = {
+  @description('Required. The name of the local user used for SFTP Authentication.')
+  name: string
+
+  @description('Optional. Indicates whether shared key exists. Set it to false to remove existing shared key.')
+  hasSharedKey: bool?
+
+  @description('Required. Indicates whether SSH key exists. Set it to false to remove existing SSH key.')
+  hasSshKey: bool
+
+  @description('Required. Indicates whether SSH password exists. Set it to false to remove existing SSH password.')
+  hasSshPassword: bool
+
+  @description('Optional. The local user home directory.')
+  homeDirectory: string?
+
+  @description('Required. The permission scopes of the local user.')
+  permissionScopes: permissionScopeType[]
+
+  @description('Optional. The local user SSH authorized keys for SFTP.')
+  sshAuthorizedKeys: sshAuthorizedKeyType[]?
 }
