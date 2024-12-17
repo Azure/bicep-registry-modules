@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15037909642602435679"
+      "templateHash": "11860646535999860374"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -841,7 +841,7 @@
     "replica": {
       "$ref": "#/definitions/replicaType",
       "metadata": {
-        "description": "Conditional. The replication settings for the server. Can only be set on existing flexible servers."
+        "description": "Optional. The replication settings for the server. Can only be set on existing flexible servers."
       }
     },
     "lock": {

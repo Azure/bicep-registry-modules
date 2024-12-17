@@ -149,7 +149,7 @@ param databases array = []
 @description('Optional. The configurations to create in the server.')
 param configurations array = []
 
-@description('Conditional. The replication settings for the server. Can only be set on existing flexible servers.')
+@description('Optional. The replication settings for the server. Can only be set on existing flexible servers.')
 param replica replicaType
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
