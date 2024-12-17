@@ -36,7 +36,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module aks 'br/public:avm/res/container-service/managed-cluster:0.4.1' = {
+module aks 'br/public:avm/res/container-service/managed-cluster:0.5.3' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -70,9 +70,7 @@ module aks 'br/public:avm/res/container-service/managed-cluster:0.4.1' = {
     managedIdentities: {
       systemAssigned: true
     }
-    nodeProvisioningProfile: {
-      mode: 'Auto'
-    }
+    nodeProvisioningProfileMode: 'Auto'
     nodeResourceGroupProfile: {
       restrictionLevel: 'ReadOnly'
     }
