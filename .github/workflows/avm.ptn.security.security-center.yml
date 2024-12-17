@@ -30,8 +30,8 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.security.security-center.yml"
       - "avm/ptn/security/security-center/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

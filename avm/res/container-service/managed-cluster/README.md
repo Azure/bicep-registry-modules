@@ -32,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-service/managed-cluster:<version>`.
 
-- [Using only defaults and use AKS Automatic mode](#example-1-using-only-defaults-and-use-aks-automatic-mode)
+- [Using only defaults and use AKS Automatic mode (PREVIEW)](#example-1-using-only-defaults-and-use-aks-automatic-mode-preview)
 - [Using Azure CNI Network Plugin.](#example-2-using-azure-cni-network-plugin)
 - [Using only defaults](#example-3-using-only-defaults)
 - [Using Istio Service Mesh add-on](#example-4-using-istio-service-mesh-add-on)
@@ -41,9 +41,15 @@ The following section provides usage examples for the module, which were used to
 - [Using Private Cluster.](#example-7-using-private-cluster)
 - [WAF-aligned](#example-8-waf-aligned)
 
-### Example 1: _Using only defaults and use AKS Automatic mode_
+### Example 1: _Using only defaults and use AKS Automatic mode (PREVIEW)_
 
-This instance deploys the module with the set of automatic parameters.
+This instance deploys the module with the set of automatic parameters.'
+
+Node autoprovisioning (NAP) for AKS is currently in PREVIEW.
+Register the NodeAutoProvisioningPreview feature flag using the az feature register command.
+
+MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION.
+
 
 
 <details>
@@ -58,7 +64,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csauto001'
     primaryAgentPoolProfiles: [
       {
-        count: 3
+        count: 1
         mode: 'System'
         name: 'systempool'
         vmSize: 'Standard_DS4_v2'
@@ -99,9 +105,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
-    nodeProvisioningProfile: {
-      mode: 'Auto'
-    }
+    nodeProvisioningProfileMode: 'Auto'
     nodeResourceGroupProfile: {
       restrictionLevel: 'ReadOnly'
     }
@@ -133,7 +137,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
-          "count": 3,
+          "count": 1,
           "mode": "System",
           "name": "systempool",
           "vmSize": "Standard_DS4_v2"
@@ -195,10 +199,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "systemAssigned": true
       }
     },
-    "nodeProvisioningProfile": {
-      "value": {
-        "mode": "Auto"
-      }
+    "nodeProvisioningProfileMode": {
+      "value": "Auto"
     },
     "nodeResourceGroupProfile": {
       "value": {
@@ -238,7 +240,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csauto001'
 param primaryAgentPoolProfiles = [
   {
-    count: 3
+    count: 1
     mode: 'System'
     name: 'systempool'
     vmSize: 'Standard_DS4_v2'
@@ -279,9 +281,7 @@ param maintenanceConfigurations = [
 param managedIdentities = {
   systemAssigned: true
 }
-param nodeProvisioningProfile = {
-  mode: 'Auto'
-}
+param nodeProvisioningProfileMode = 'Auto'
 param nodeResourceGroupProfile = {
   restrictionLevel: 'ReadOnly'
 }
@@ -328,7 +328,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -357,7 +357,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
@@ -378,7 +378,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -588,7 +588,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -621,7 +621,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
@@ -642,7 +642,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -906,7 +906,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -935,7 +935,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
@@ -956,7 +956,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -1152,7 +1152,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
@@ -1190,7 +1190,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
@@ -1230,7 +1230,7 @@ param primaryAgentPoolProfiles = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
@@ -1264,10 +1264,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csist001'
     primaryAgentPoolProfiles: [
       {
-        count: 3
+        count: 2
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
@@ -1316,10 +1316,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
-          "count": 3,
+          "count": 2,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
@@ -1382,10 +1382,10 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csist001'
 param primaryAgentPoolProfiles = [
   {
-    count: 3
+    count: 2
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
@@ -1449,7 +1449,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
@@ -1476,27 +1476,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-      }
-      {
-        availabilityZones: [
-          3
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     diagnosticSettings: [
@@ -1583,7 +1563,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
@@ -1614,27 +1594,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
-        },
-        {
-          "availabilityZones": [
-            3
-          ],
-          "count": 2,
-          "enableAutoScaling": true,
-          "maxCount": 3,
-          "maxPods": 30,
-          "minCount": 1,
-          "minPods": 2,
-          "mode": "User",
-          "name": "userpool2",
-          "nodeLabels": {},
-          "osDiskSizeGB": 128,
-          "osType": "Linux",
-          "scaleSetEvictionPolicy": "Delete",
-          "scaleSetPriority": "Regular",
-          "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
@@ -1729,7 +1689,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
@@ -1756,27 +1716,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
-  }
-  {
-    availabilityZones: [
-      3
-    ]
-    count: 2
-    enableAutoScaling: true
-    maxCount: 3
-    maxPods: 30
-    minCount: 1
-    minPods: 2
-    mode: 'User'
-    name: 'userpool2'
-    nodeLabels: {}
-    osDiskSizeGB: 128
-    osType: 'Linux'
-    scaleSetEvictionPolicy: 'Delete'
-    scaleSetPriority: 'Regular'
-    type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 param diagnosticSettings = [
@@ -1846,7 +1786,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csnonaad001'
     primaryAgentPoolProfiles: [
       {
-        count: 3
+        count: 1
         mode: 'System'
         name: 'systempool'
         vmSize: 'Standard_DS2_v2'
@@ -1882,7 +1822,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
-          "count": 3,
+          "count": 1,
           "mode": "System",
           "name": "systempool",
           "vmSize": "Standard_DS2_v2"
@@ -1922,7 +1862,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csnonaad001'
 param primaryAgentPoolProfiles = [
   {
-    count: 3
+    count: 1
     mode: 'System'
     name: 'systempool'
     vmSize: 'Standard_DS2_v2'
@@ -1973,7 +1913,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -2001,28 +1941,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
-      }
-      {
-        availabilityZones: [
-          3
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
       }
     ]
     dnsServiceIP: '10.10.200.10'
@@ -2076,7 +1996,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2108,28 +2028,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
-        },
-        {
-          "availabilityZones": [
-            3
-          ],
-          "count": 2,
-          "enableAutoScaling": true,
-          "maxCount": 3,
-          "maxPods": 30,
-          "minCount": 1,
-          "minPods": 2,
-          "mode": "User",
-          "name": "userpool2",
-          "nodeLabels": {},
-          "osDiskSizeGB": 128,
-          "osType": "Linux",
-          "scaleSetEvictionPolicy": "Delete",
-          "scaleSetPriority": "Regular",
-          "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
         }
       ]
     },
@@ -2195,7 +2095,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2223,28 +2123,8 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
-  }
-  {
-    availabilityZones: [
-      3
-    ]
-    count: 2
-    enableAutoScaling: true
-    maxCount: 3
-    maxPods: 30
-    minCount: 1
-    minPods: 2
-    mode: 'User'
-    name: 'userpool2'
-    nodeLabels: {}
-    osDiskSizeGB: 128
-    osType: 'Linux'
-    scaleSetEvictionPolicy: 'Delete'
-    scaleSetPriority: 'Regular'
-    type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
   }
 ]
 param dnsServiceIP = '10.10.200.10'
@@ -2284,7 +2164,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 1
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2297,7 +2177,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -2311,7 +2191,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 2
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2326,14 +2206,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 2
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2348,7 +2228,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
@@ -2461,7 +2341,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 1,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2474,7 +2354,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2492,7 +2372,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 2,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2507,14 +2387,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 2,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2529,7 +2409,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
@@ -2674,7 +2554,7 @@ param primaryAgentPoolProfiles = [
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 1
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
@@ -2687,7 +2567,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2701,7 +2581,7 @@ param agentPools = [
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 2
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
@@ -2716,14 +2596,14 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 2
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
@@ -2738,7 +2618,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
@@ -2933,7 +2813,7 @@ param tags = {
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
 | [`networkPolicy`](#parameter-networkpolicy) | string | Specifies the network policy used for building Kubernetes network. - calico or azure. |
-| [`nodeProvisioningProfile`](#parameter-nodeprovisioningprofile) | object | Node provisioning settings that apply to the whole cluster. |
+| [`nodeProvisioningProfileMode`](#parameter-nodeprovisioningprofilemode) | string | Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. |
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
@@ -2948,7 +2828,7 @@ param tags = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or deny public network access for AKS. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
-| [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. |
+| [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
 | [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
@@ -4874,12 +4754,19 @@ Specifies the network policy used for building Kubernetes network. - calico or a
   ]
   ```
 
-### Parameter: `nodeProvisioningProfile`
+### Parameter: `nodeProvisioningProfileMode`
 
-Node provisioning settings that apply to the whole cluster.
+Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.
 
 - Required: No
-- Type: object
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Auto'
+    'Manual'
+  ]
+  ```
 
 ### Parameter: `nodeResourceGroup`
 
@@ -5115,7 +5002,7 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 ### Parameter: `skuName`
 
-Name of a managed cluster SKU.
+Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.
 
 - Required: No
 - Type: string

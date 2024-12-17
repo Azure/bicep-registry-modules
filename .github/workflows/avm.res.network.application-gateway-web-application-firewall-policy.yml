@@ -30,8 +30,8 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.network.application-gateway-web-application-firewall-policy.yml"
       - "avm/res/network/application-gateway-web-application-firewall-policy/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
