@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "10817443316191820673"
+      "templateHash": "3094748618491851368"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -6909,7 +6909,7 @@
       },
       "copy": {
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall, createObject('resourceGroupName', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value, 'location', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value, 'name', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value, 'resourceId', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value), createObject())]"
+        "input": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall, createObject('resourceGroupName', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value, 'location', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value, 'name', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value, 'resourceId', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value, 'privateIp', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.privateIp.value), createObject())]"
       }
     },
     "hubVirtualNetworkSubnets": {
