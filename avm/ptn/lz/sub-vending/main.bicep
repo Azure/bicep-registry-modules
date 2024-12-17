@@ -153,6 +153,9 @@ param virtualNetworkDdosPlanResourceId string = ''
 ''')
 param virtualNetworkPeeringEnabled bool = false
 
+@description('''Optional. Whether to deploy a NAT gateway to the created virtual network.''')
+param virtualNetworkDeployNatGateway bool = false
+
 @description('''Optional. The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.
 ''')
 param hubNetworkResourceId string = ''

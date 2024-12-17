@@ -64,6 +64,9 @@ param virtualNetworkDdosPlanResourceId string = ''
 @sys.description('Whether to enable peering/connection with the supplied hub virtual network or virtual hub.')
 param virtualNetworkPeeringEnabled bool = false
 
+@sys.description('Whether to deploy a NAT gateway to the created virtual network.')
+param virtualNetworkDeployNatGateway bool = false
+
 @sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection.')
 param hubNetworkResourceId string = ''
 
