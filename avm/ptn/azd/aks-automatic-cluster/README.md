@@ -52,6 +52,10 @@ module aksAutomaticCluster 'br/public:avm/ptn/azd/aks-automatic-cluster:<version
     // Required parameters
     name: 'csautomin001'
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     location: '<location>'
   }
 }
@@ -74,6 +78,12 @@ module aksAutomaticCluster 'br/public:avm/ptn/azd/aks-automatic-cluster:<version
       "value": "csautomin001"
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "location": {
       "value": "<location>"
     }
@@ -94,6 +104,10 @@ using 'br/public:avm/ptn/azd/aks-automatic-cluster:<version>'
 // Required parameters
 param name = 'csautomin001'
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param location = '<location>'
 ```
 
@@ -112,6 +126,7 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`aadProfile`](#parameter-aadprofile) | object | Enable Azure Active Directory integration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The Azure region/location for the AKS resources. |
 
@@ -120,6 +135,79 @@ param location = '<location>'
 The name for the AKS managed cluster.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `aadProfile`
+
+Enable Azure Active Directory integration.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadProfileEnableAzureRBAC`](#parameter-aadprofileaadprofileenableazurerbac) | bool | Specifies whether to enable Azure RBAC for Kubernetes authorization. |
+| [`aadProfileManaged`](#parameter-aadprofileaadprofilemanaged) | bool | Specifies whether to enable managed AAD integration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadProfileAdminGroupObjectIDs`](#parameter-aadprofileaadprofileadmingroupobjectids) | array | Specifies the AAD group object IDs that will have admin role of the cluster. |
+| [`aadProfileClientAppID`](#parameter-aadprofileaadprofileclientappid) | string | The client AAD application ID. |
+| [`aadProfileServerAppID`](#parameter-aadprofileaadprofileserverappid) | string | The server AAD application ID. |
+| [`aadProfileServerAppSecret`](#parameter-aadprofileaadprofileserverappsecret) | string | The server AAD application secret. |
+| [`aadProfileTenantId`](#parameter-aadprofileaadprofiletenantid) | string | Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication. |
+
+### Parameter: `aadProfile.aadProfileEnableAzureRBAC`
+
+Specifies whether to enable Azure RBAC for Kubernetes authorization.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `aadProfile.aadProfileManaged`
+
+Specifies whether to enable managed AAD integration.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `aadProfile.aadProfileAdminGroupObjectIDs`
+
+Specifies the AAD group object IDs that will have admin role of the cluster.
+
+- Required: No
+- Type: array
+
+### Parameter: `aadProfile.aadProfileClientAppID`
+
+The client AAD application ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `aadProfile.aadProfileServerAppID`
+
+The server AAD application ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `aadProfile.aadProfileServerAppSecret`
+
+The server AAD application secret.
+
+- Required: No
+- Type: string
+
+### Parameter: `aadProfile.aadProfileTenantId`
+
+Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.
+
+- Required: No
 - Type: string
 
 ### Parameter: `enableTelemetry`

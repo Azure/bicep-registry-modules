@@ -13,6 +13,10 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.5.3'
+@description('Optional. Enable Azure Active Directory integration.')
+param aadProfile aadProfileType?
+
 // ============== //
 // Resources      //
 // ============== //
@@ -87,6 +91,7 @@ module aks 'br/public:avm/res/container-service/managed-cluster:0.5.3' = {
     skuName: 'Automatic'
     vpaAddon: true
     webApplicationRoutingEnabled: true
+    aadProfile: aadProfile
   }
 }
 

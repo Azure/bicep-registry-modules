@@ -1,15 +1,79 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2197193655937419560"
+      "templateHash": "8684475244832615377"
     },
     "name": "Azd AKS Automatic Cluster",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "aadProfileType": {
+      "type": "object",
+      "properties": {
+        "aadProfileClientAppID": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The client AAD application ID."
+          }
+        },
+        "aadProfileServerAppID": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The server AAD application ID."
+          }
+        },
+        "aadProfileServerAppSecret": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The server AAD application secret."
+          }
+        },
+        "aadProfileManaged": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specifies whether to enable managed AAD integration."
+          }
+        },
+        "aadProfileEnableAzureRBAC": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specifies whether to enable Azure RBAC for Kubernetes authorization."
+          }
+        },
+        "aadProfileAdminGroupObjectIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the AAD group object IDs that will have admin role of the cluster."
+          }
+        },
+        "aadProfileTenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/container-service/managed-cluster:0.5.3"
+        }
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -31,10 +95,17 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "aadProfile": {
+      "$ref": "#/definitions/aadProfileType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Enable Azure Active Directory integration."
+      }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
@@ -54,7 +125,7 @@
         }
       }
     },
-    {
+    "aks": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-managed-cluster', uniqueString(deployment().name, parameters('location')))]",
@@ -147,6 +218,9 @@
           },
           "webApplicationRoutingEnabled": {
             "value": true
+          },
+          "aadProfile": {
+            "value": "[parameters('aadProfile')]"
           }
         },
         "template": {
@@ -3308,7 +3382,7 @@
         }
       }
     }
-  ],
+  },
   "outputs": {
     "resourceGroupName": {
       "type": "string",
@@ -3330,9 +3404,9 @@
         "description": "The AKS cluster identity."
       },
       "value": {
-        "clientId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-managed-cluster', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.kubeletIdentityClientId.value]",
-        "objectId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-managed-cluster', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.kubeletIdentityObjectId.value]",
-        "resourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-managed-cluster', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.kubeletIdentityResourceId.value]"
+        "clientId": "[reference('aks').outputs.kubeletIdentityClientId.value]",
+        "objectId": "[reference('aks').outputs.kubeletIdentityObjectId.value]",
+        "resourceId": "[reference('aks').outputs.kubeletIdentityResourceId.value]"
       }
     }
   }
