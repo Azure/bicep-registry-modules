@@ -18,7 +18,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments) |
 | `Microsoft.Compute/disks` | [2024-03-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks) |
 | `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
@@ -4775,10 +4775,10 @@ param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 | [`dedicatedHostId`](#parameter-dedicatedhostid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
 | [`disablePasswordAuthentication`](#parameter-disablepasswordauthentication) | bool | Specifies whether password authentication should be disabled. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
-| [`enableEvictionPolicy`](#parameter-enableevictionpolicy) | bool | Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy. |
 | [`enableHotpatching`](#parameter-enablehotpatching) | bool | Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
+| [`evictionPolicy`](#parameter-evictionpolicy) | string | Specifies the eviction policy for the low priority virtual machine. |
 | [`extensionAadJoinConfig`](#parameter-extensionaadjoinconfig) | object | The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000". |
 | [`extensionAntiMalwareConfig`](#parameter-extensionantimalwareconfig) | object | The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
@@ -4876,6 +4876,7 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 | [`caching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. |
 | [`createOption`](#parameter-osdiskcreateoption) | string | Specifies how the virtual machine should be created. |
 | [`deleteOption`](#parameter-osdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`diffDiskSettings`](#parameter-osdiskdiffdisksettings) | object | Specifies the ephemeral Disk Settings for the operating system disk. |
 | [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`name`](#parameter-osdiskname) | string | The disk name. |
 
@@ -4960,6 +4961,34 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
   [
     'Delete'
     'Detach'
+  ]
+  ```
+
+### Parameter: `osDisk.diffDiskSettings`
+
+Specifies the ephemeral Disk Settings for the operating system disk.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`placement`](#parameter-osdiskdiffdisksettingsplacement) | string | Specifies the ephemeral disk placement for the operating system disk. |
+
+### Parameter: `osDisk.diffDiskSettings.placement`
+
+Specifies the ephemeral disk placement for the operating system disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CacheDisk'
+    'NvmeDisk'
+    'ResourceDisk'
   ]
   ```
 
@@ -5324,14 +5353,6 @@ Indicates whether Automatic Updates is enabled for the Windows virtual machine. 
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableEvictionPolicy`
-
-Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `enableHotpatching`
 
 Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'.
@@ -5355,6 +5376,21 @@ This property can be used by user in the request to enable or disable the Host E
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `evictionPolicy`
+
+Specifies the eviction policy for the low priority virtual machine.
+
+- Required: No
+- Type: string
+- Default: `'Deallocate'`
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
 
 ### Parameter: `extensionAadJoinConfig`
 
@@ -5631,7 +5667,7 @@ The managed identity definition for this resource. The system-assigned managed i
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -5642,7 +5678,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -5735,6 +5771,27 @@ The list of SSH public keys used to authenticate with linux based VMs.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyData`](#parameter-publickeyskeydata) | string | Specifies the SSH public key data used to authenticate through ssh. |
+| [`path`](#parameter-publickeyspath) | string | Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file. |
+
+### Parameter: `publicKeys.keyData`
+
+Specifies the SSH public key data used to authenticate through ssh.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicKeys.path`
+
+Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `rebootSetting`
 

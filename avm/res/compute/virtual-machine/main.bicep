@@ -2,6 +2,12 @@ metadata name = 'Virtual Machines'
 metadata description = 'This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.'
 metadata owner = 'Azure/module-maintainers'
 
+import {
+  lockType
+  managedIdentityAllType
+  roleAssignmentType
+} from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+
 @description('Required. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
 
@@ -68,8 +74,12 @@ param certificatesToBeInstalled array = []
 ])
 param priority string = 'Regular'
 
-@description('Optional. Specifies the eviction policy for the low priority virtual machine. Will result in \'Deallocate\' eviction policy.')
-param enableEvictionPolicy bool = false
+@description('Optional. Specifies the eviction policy for the low priority virtual machine.')
+@allowed([
+  'Deallocate'
+  'Delete'
+])
+param evictionPolicy string = 'Deallocate'
 
 @description('Optional. Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars.')
 param maxPriceForLowPriorityVm string = ''
@@ -88,10 +98,10 @@ param dedicatedHostId string = ''
 param licenseType string = ''
 
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
-param publicKeys array = []
+param publicKeys publicKeyType[] = []
 
 @description('Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnostics will be enabled with a managed storage account if no bootDiagnosticsStorageAccountName value is provided. If bootDiagnostics and bootDiagnosticsStorageAccountName values are not provided, boot diagnostics will be disabled.')
 param bootDiagnostics bool = false
@@ -227,10 +237,10 @@ param extensionGuestConfigurationExtensionProtectedSettings object = {}
 param location string = resourceGroup().location
 
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -543,17 +553,23 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     storageProfile: {
       imageReference: imageReference
       osDisk: {
-        name: osDisk.?name ?? '${name}-disk-os-01'
+        caching: osDisk.?caching ?? 'ReadOnly'
         createOption: osDisk.?createOption ?? 'FromImage'
         deleteOption: osDisk.?deleteOption ?? 'Delete'
+        diffDiskSettings: empty(osDisk.?diffDiskSettings ?? {})
+          ? null
+          : {
+              option: 'Local'
+              placement: osDisk.diffDiskSettings!.placement
+            }
         diskSizeGB: osDisk.diskSizeGB
-        caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
-          storageAccountType: osDisk.managedDisk.storageAccountType
           diskEncryptionSet: {
             id: osDisk.managedDisk.?diskEncryptionSetResourceId
           }
+          storageAccountType: osDisk.managedDisk.storageAccountType
         }
+        name: osDisk.?name ?? '${name}-disk-os-01'
       }
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
@@ -630,7 +646,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       : null
     priority: priority
-    evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
+    evictionPolicy: 'Regular' != priority ? evictionPolicy : null
     #disable-next-line BCP036
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
@@ -1037,81 +1053,6 @@ output location string = vm.location
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type osDiskType = {
-  @description('Optional. The disk name.')
-  name: string?
-
-  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
-  diskSizeGB: int?
-
-  @description('Optional. Specifies how the virtual machine should be created.')
-  createOption: 'Attach' | 'Empty' | 'FromImage'?
-
-  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
-  deleteOption: 'Delete' | 'Detach'?
-
-  @description('Optional. Specifies the caching requirements.')
-  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
-
-  @description('Required. The managed disk parameters.')
-  managedDisk: {
-    @description('Optional. Specifies the storage account type for the managed disk.')
-    storageAccountType:
-      | 'PremiumV2_LRS'
-      | 'Premium_LRS'
-      | 'Premium_ZRS'
-      | 'StandardSSD_LRS'
-      | 'StandardSSD_ZRS'
-      | 'Standard_LRS'
-      | 'UltraSSD_LRS'?
-
-    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
-    diskEncryptionSetResourceId: string?
-  }
-}
-
 type dataDisksType = {
   @description('Optional. The disk name.')
   name: string?
@@ -1156,3 +1097,50 @@ type dataDisksType = {
     id: string?
   }
 }[]?
+
+type osDiskType = {
+  @description('Optional. Specifies the caching requirements.')
+  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
+
+  @description('Optional. Specifies how the virtual machine should be created.')
+  createOption: 'Attach' | 'Empty' | 'FromImage'?
+
+  @description('Optional. Specifies the ephemeral Disk Settings for the operating system disk.')
+  diffDiskSettings: {
+    @description('Required. Specifies the ephemeral disk placement for the operating system disk.')
+    placement: ('CacheDisk' | 'NvmeDisk' | 'ResourceDisk')
+  }?
+
+  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
+  diskSizeGB: int?
+
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Required. The managed disk parameters.')
+  managedDisk: {
+    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+    diskEncryptionSetResourceId: string?
+
+    @description('Optional. Specifies the storage account type for the managed disk.')
+    storageAccountType:
+      | 'PremiumV2_LRS'
+      | 'Premium_LRS'
+      | 'Premium_ZRS'
+      | 'StandardSSD_LRS'
+      | 'StandardSSD_ZRS'
+      | 'Standard_LRS'
+      | 'UltraSSD_LRS'?
+  }
+
+  @description('Optional. The disk name.')
+  name: string?
+}
+
+type publicKeyType = {
+  @description('Required. Specifies the SSH public key data used to authenticate through ssh.')
+  keyData: string
+
+  @description('Required. Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file.')
+  path: string
+}

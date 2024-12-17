@@ -5,220 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "8928644602939334563"
+      "version": "0.32.4.45862",
+      "templateHash": "2725845996002425667"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "osDiskType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The disk name."
-          }
-        },
-        "diskSizeGB": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the size of an empty data disk in gigabytes."
-          }
-        },
-        "createOption": {
-          "type": "string",
-          "allowedValues": [
-            "Attach",
-            "Empty",
-            "FromImage"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies how the virtual machine should be created."
-          }
-        },
-        "deleteOption": {
-          "type": "string",
-          "allowedValues": [
-            "Delete",
-            "Detach"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies whether data disk should be deleted or detached upon VM deletion."
-          }
-        },
-        "caching": {
-          "type": "string",
-          "allowedValues": [
-            "None",
-            "ReadOnly",
-            "ReadWrite"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the caching requirements."
-          }
-        },
-        "managedDisk": {
-          "type": "object",
-          "properties": {
-            "storageAccountType": {
-              "type": "string",
-              "allowedValues": [
-                "PremiumV2_LRS",
-                "Premium_LRS",
-                "Premium_ZRS",
-                "StandardSSD_LRS",
-                "StandardSSD_ZRS",
-                "Standard_LRS",
-                "UltraSSD_LRS"
-              ],
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Specifies the storage account type for the managed disk."
-              }
-            },
-            "diskEncryptionSetResourceId": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. The managed disk parameters."
-          }
-        }
-      }
-    },
     "dataDisksType": {
       "type": "array",
       "items": {
@@ -333,6 +127,261 @@
         }
       },
       "nullable": true
+    },
+    "osDiskType": {
+      "type": "object",
+      "properties": {
+        "caching": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "ReadOnly",
+            "ReadWrite"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the caching requirements."
+          }
+        },
+        "createOption": {
+          "type": "string",
+          "allowedValues": [
+            "Attach",
+            "Empty",
+            "FromImage"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies how the virtual machine should be created."
+          }
+        },
+        "diffDiskSettings": {
+          "type": "object",
+          "properties": {
+            "placement": {
+              "type": "string",
+              "allowedValues": [
+                "CacheDisk",
+                "NvmeDisk",
+                "ResourceDisk"
+              ],
+              "metadata": {
+                "description": "Required. Specifies the ephemeral disk placement for the operating system disk."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the ephemeral Disk Settings for the operating system disk."
+          }
+        },
+        "diskSizeGB": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the size of an empty data disk in gigabytes."
+          }
+        },
+        "deleteOption": {
+          "type": "string",
+          "allowedValues": [
+            "Delete",
+            "Detach"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether data disk should be deleted or detached upon VM deletion."
+          }
+        },
+        "managedDisk": {
+          "type": "object",
+          "properties": {
+            "diskEncryptionSetResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
+              }
+            },
+            "storageAccountType": {
+              "type": "string",
+              "allowedValues": [
+                "PremiumV2_LRS",
+                "Premium_LRS",
+                "Premium_ZRS",
+                "StandardSSD_LRS",
+                "StandardSSD_ZRS",
+                "Standard_LRS",
+                "UltraSSD_LRS"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the storage account type for the managed disk."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The managed disk parameters."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The disk name."
+          }
+        }
+      }
+    },
+    "publicKeyType": {
+      "type": "object",
+      "properties": {
+        "keyData": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Specifies the SSH public key data used to authenticate through ssh."
+          }
+        },
+        "path": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file."
+          }
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     }
   },
   "parameters": {
@@ -466,11 +515,15 @@
         "description": "Optional. Specifies the priority for the virtual machine."
       }
     },
-    "enableEvictionPolicy": {
-      "type": "bool",
-      "defaultValue": false,
+    "evictionPolicy": {
+      "type": "string",
+      "defaultValue": "Deallocate",
+      "allowedValues": [
+        "Deallocate",
+        "Delete"
+      ],
       "metadata": {
-        "description": "Optional. Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy."
+        "description": "Optional. Specifies the eviction policy for the low priority virtual machine."
       }
     },
     "maxPriceForLowPriorityVm": {
@@ -503,13 +556,17 @@
     },
     "publicKeys": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/publicKeyType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The list of SSH public keys used to authenticate with linux based VMs."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = \"True\"."
       }
@@ -768,12 +825,17 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -1065,17 +1127,18 @@
           ],
           "imageReference": "[parameters('imageReference')]",
           "osDisk": {
-            "name": "[coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name')))]",
+            "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
             "createOption": "[coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage')]",
             "deleteOption": "[coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete')]",
+            "diffDiskSettings": "[if(empty(coalesce(tryGet(parameters('osDisk'), 'diffDiskSettings'), createObject())), null(), createObject('option', 'Local', 'placement', parameters('osDisk').diffDiskSettings.placement))]",
             "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
-            "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
             "managedDisk": {
-              "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
               "diskEncryptionSet": {
                 "id": "[tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')]"
-              }
-            }
+              },
+              "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]"
+            },
+            "name": "[coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name')))]"
           }
         },
         "additionalCapabilities": {
@@ -1117,7 +1180,7 @@
         "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
         "virtualMachineScaleSet": "[if(not(empty(parameters('virtualMachineScaleSetResourceId'))), createObject('id', parameters('virtualMachineScaleSetResourceId')), null())]",
         "priority": "[parameters('priority')]",
-        "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
+        "evictionPolicy": "[if(not(equals('Regular', parameters('priority'))), parameters('evictionPolicy'), null())]",
         "billingProfile": "[if(and(not(empty(parameters('priority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', json(parameters('maxPriceForLowPriorityVm'))), null())]",
         "host": "[if(not(empty(parameters('dedicatedHostId'))), createObject('id', parameters('dedicatedHostId')), null())]",
         "licenseType": "[if(not(empty(parameters('licenseType'))), parameters('licenseType'), null())]",
@@ -1304,8 +1367,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "5147048658891642308"
+              "version": "0.32.4.45862",
+              "templateHash": "4332293246640728460"
             }
           },
           "definitions": {
@@ -2908,8 +2971,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3024,10 +3087,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3123,8 +3183,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3239,10 +3299,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3334,8 +3391,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3450,10 +3507,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3540,8 +3594,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3656,10 +3710,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3751,8 +3802,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3867,10 +3918,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3957,8 +4005,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4073,10 +4121,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4171,8 +4216,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4287,10 +4332,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4389,8 +4431,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4505,10 +4547,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4601,8 +4640,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4717,10 +4756,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4809,8 +4845,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4925,10 +4961,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5026,8 +5059,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -5142,10 +5175,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5239,8 +5269,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.32.4.45862",
+              "templateHash": "12912200857967286939"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -5355,10 +5385,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5438,8 +5465,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17378339479808033328"
+              "version": "0.32.4.45862",
+              "templateHash": "8409556960090427141"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
