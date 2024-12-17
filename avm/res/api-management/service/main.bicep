@@ -310,6 +310,7 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: authorizationServer.name
+      displayName: authorizationServer.displayName
       authorizationEndpoint: authorizationServer.authorizationEndpoint
       authorizationMethods: authorizationServer.?authorizationMethods ?? ['GET']
       bearerTokenSendingMethods: authorizationServer.?bearerTokenSendingMethods ?? ['authorizationHeader']
@@ -408,16 +409,16 @@ module service_identityProviders 'identity-provider/main.bicep' = [
   }
 ]
 
-module service_loggers 'loggers/main.bicep' = [
+module service_loggers 'logger/main.bicep' = [
   for (logger, index) in loggers: {
     name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
     params: {
       name: logger.name
       apiManagementServiceName: service.name
       credentials: logger.?credentials ?? {}
-      isBuffered: logger.?isBuffered ?? true
-      loggerDescription: logger.?loggerDescription ?? ''
-      loggerType: logger.?loggerType ?? 'azureMonitor'
+      isBuffered: logger.?isBuffered
+      description: logger.?loggerDescription
+      type: logger.?loggerType ?? 'azureMonitor'
       targetResourceId: logger.?targetResourceId ?? ''
     }
     dependsOn: [
@@ -467,6 +468,7 @@ module service_products 'product/main.bicep' = [
   for (product, index) in products: {
     name: '${uniqueString(deployment().name, location)}-Apim-Product-${index}'
     params: {
+      displayName: product.displayName
       apiManagementServiceName: service.name
       apis: product.?apis ?? []
       approvalRequired: product.?approvalRequired ?? false
@@ -490,6 +492,7 @@ module service_subscriptions 'subscription/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: subscription.name
+      displayName: subscription.displayName
       allowTracing: subscription.?allowTracing
       ownerId: subscription.?ownerId
       primaryKey: subscription.?primaryKey

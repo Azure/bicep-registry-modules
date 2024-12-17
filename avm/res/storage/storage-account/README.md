@@ -22,18 +22,18 @@ This module deploys a Storage Account.
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
+| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -83,7 +83,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -106,6 +106,24 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssablob001'
+// Non-required parameters
+param kind = 'BlobStorage'
+param location = '<location>'
+param skuName = 'Standard_LRS'
 ```
 
 </details>
@@ -139,7 +157,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -162,6 +180,24 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssablock001'
+// Non-required parameters
+param kind = 'BlockBlobStorage'
+param location = '<location>'
+param skuName = 'Premium_LRS'
 ```
 
 </details>
@@ -197,7 +233,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -222,6 +258,26 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssachf001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param blobServices = {
+  changeFeedEnabled: true
+}
+param location = '<location>'
 ```
 
 </details>
@@ -258,7 +314,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -283,6 +339,27 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssamin001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param location = '<location>'
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
 }
 ```
 
@@ -322,7 +399,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -347,6 +424,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'kvref'
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  accessKey1: 'custom-key1-name'
+  accessKey2: 'custom-key2-name'
+  connectionString1: 'custom-connectionString1-name'
+  connectionString2: 'custom-connectionString2-name'
+  keyVaultResourceId: '<keyVaultResourceId>'
 }
 ```
 
@@ -400,13 +500,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
         {
           allowProtectedAppendWrites: false
-          enableWORM: true
           metadata: {
             testKey: 'testValue'
           }
           name: 'archivecontainer'
           publicAccess: 'None'
-          WORMRetention: 666
         }
       ]
       deleteRetentionPolicyDays: 9
@@ -505,7 +603,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             service: 'blob'
           }
         ]
-        storageAccountName: 'ssamax001'
       }
     ]
     location: '<location>'
@@ -799,7 +896,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -845,13 +942,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           },
           {
             "allowProtectedAppendWrites": false,
-            "enableWORM": true,
             "metadata": {
               "testKey": "testValue"
             },
             "name": "archivecontainer",
-            "publicAccess": "None",
-            "WORMRetention": 666
+            "publicAccess": "None"
           }
         ],
         "deleteRetentionPolicyDays": 9,
@@ -963,8 +1058,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "resourceName": "avdscripts",
               "service": "blob"
             }
-          ],
-          "storageAccountName": "ssamax001"
+          ]
         }
       ]
     },
@@ -1283,6 +1377,439 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssamax001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param blobServices = {
+  automaticSnapshotPolicyEnabled: true
+  containerDeleteRetentionPolicyDays: 10
+  containerDeleteRetentionPolicyEnabled: true
+  containers: [
+    {
+      enableNfsV3AllSquash: true
+      enableNfsV3RootSquash: true
+      name: 'avdscripts'
+      publicAccess: 'None'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Owner'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+        }
+      ]
+    }
+    {
+      allowProtectedAppendWrites: false
+      metadata: {
+        testKey: 'testValue'
+      }
+      name: 'archivecontainer'
+      publicAccess: 'None'
+    }
+  ]
+  deleteRetentionPolicyDays: 9
+  deleteRetentionPolicyEnabled: true
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  lastAccessTimeTrackingPolicyEnabled: true
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enableHierarchicalNamespace = true
+enableNfsV3: true
+param enableSftp = true
+param fileServices = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  shares: [
+    {
+      accessTier: 'Hot'
+      name: 'avdprofiles'
+      roleAssignments: [
+        {
+          name: 'cff1213b-7877-4425-b67c-bb1de8950dfb'
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Owner'
+        }
+        {
+          name: '<name>'
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+        }
+      ]
+      shareQuota: 5120
+    }
+    {
+      name: 'avdprofiles2'
+      shareQuota: 102400
+    }
+  ]
+}
+param largeFileSharesState = 'Enabled'
+param localUsers = [
+  {
+    hasSharedKey: false
+    hasSshKey: true
+    hasSshPassword: false
+    homeDirectory: 'avdscripts'
+    name: 'testuser'
+    permissionScopes: [
+      {
+        permissions: 'r'
+        resourceName: 'avdscripts'
+        service: 'blob'
+      }
+    ]
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managementPolicyRules = [
+  {
+    definition: {
+      actions: {
+        baseBlob: {
+          delete: {
+            daysAfterModificationGreaterThan: 30
+          }
+          tierToCool: {
+            daysAfterLastAccessTimeGreaterThan: 5
+          }
+        }
+      }
+      filters: {
+        blobIndexMatch: [
+          {
+            name: 'BlobIndex'
+            op: '=='
+            value: '1'
+          }
+        ]
+        blobTypes: [
+          'blockBlob'
+        ]
+        prefixMatch: [
+          'sample-container/log'
+        ]
+      }
+    }
+    enabled: true
+    name: 'FirstRule'
+    type: 'Lifecycle'
+  }
+]
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      value: '1.1.1.1'
+    }
+  ]
+  resourceAccessRules: [
+    {
+      resourceId: '<resourceId>'
+      tenantId: '<tenantId>'
+    }
+  ]
+  virtualNetworkRules: [
+    {
+      action: 'Allow'
+      id: '<id>'
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'table'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'queue'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'file'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'web'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'dfs'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param queueServices = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  queues: [
+    {
+      metadata: {
+        key1: 'value1'
+        key2: 'value2'
+      }
+      name: 'queue1'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Owner'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+        }
+      ]
+    }
+    {
+      metadata: {}
+      name: 'queue2'
+    }
+  ]
+}
+param requireInfrastructureEncryption = true
+param roleAssignments = [
+  {
+    name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sasExpirationPeriod = '180.00:00:00'
+param skuName = 'Standard_LRS'
+param tableServices = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  tables: [
+    {
+      name: 'table1'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Owner'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+        }
+      ]
+    }
+    {
+      name: 'table2'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Owner'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        }
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+        }
+      ]
+    }
+  ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 7: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
@@ -1319,7 +1846,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1352,6 +1879,32 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssanfs001'
+// Non-required parameters
+param fileServices = {
+  shares: [
+    {
+      enabledProtocols: 'NFS'
+      name: 'nfsfileshare'
+    }
+  ]
+}
+param kind = 'FileStorage'
+param location = '<location>'
+param skuName = 'Premium_LRS'
 ```
 
 </details>
@@ -1411,7 +1964,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1464,6 +2017,50 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
 ```
 
 </details>
@@ -1530,7 +2127,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1597,6 +2194,57 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssauacr001'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 10: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
@@ -1624,7 +2272,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1644,6 +2292,23 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssav1001'
+// Non-required parameters
+param kind = 'Storage'
+param location = '<location>'
 ```
 
 </details>
@@ -1679,13 +2344,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
         {
           allowProtectedAppendWrites: false
-          enableWORM: true
           metadata: {
             testKey: 'testValue'
           }
           name: 'archivecontainer'
           publicAccess: 'None'
-          WORMRetention: 666
         }
       ]
       deleteRetentionPolicyDays: 9
@@ -1765,7 +2428,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             service: 'blob'
           }
         ]
-        storageAccountName: 'ssawaf001'
       }
     ]
     location: '<location>'
@@ -1913,7 +2575,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1942,13 +2604,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           },
           {
             "allowProtectedAppendWrites": false,
-            "enableWORM": true,
             "metadata": {
               "testKey": "testValue"
             },
             "name": "archivecontainer",
-            "publicAccess": "None",
-            "WORMRetention": 666
+            "publicAccess": "None"
           }
         ],
         "deleteRetentionPolicyDays": 9,
@@ -2041,8 +2701,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "resourceName": "avdscripts",
               "service": "blob"
             }
-          ],
-          "storageAccountName": "ssawaf001"
+          ]
         }
       ]
     },
@@ -2211,6 +2870,257 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssawaf001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param blobServices = {
+  automaticSnapshotPolicyEnabled: true
+  containerDeleteRetentionPolicyDays: 10
+  containerDeleteRetentionPolicyEnabled: true
+  containers: [
+    {
+      enableNfsV3AllSquash: true
+      enableNfsV3RootSquash: true
+      name: 'avdscripts'
+      publicAccess: 'None'
+    }
+    {
+      allowProtectedAppendWrites: false
+      metadata: {
+        testKey: 'testValue'
+      }
+      name: 'archivecontainer'
+      publicAccess: 'None'
+    }
+  ]
+  deleteRetentionPolicyDays: 9
+  deleteRetentionPolicyEnabled: true
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  lastAccessTimeTrackingPolicyEnabled: true
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enableHierarchicalNamespace = true
+enableNfsV3: true
+param enableSftp = true
+param fileServices = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  shares: [
+    {
+      accessTier: 'Hot'
+      name: 'avdprofiles'
+      shareQuota: 5120
+    }
+    {
+      name: 'avdprofiles2'
+      shareQuota: 102400
+    }
+  ]
+}
+param largeFileSharesState = 'Enabled'
+param localUsers = [
+  {
+    hasSharedKey: false
+    hasSshKey: true
+    hasSshPassword: false
+    homeDirectory: 'avdscripts'
+    name: 'testuser'
+    permissionScopes: [
+      {
+        permissions: 'r'
+        resourceName: 'avdscripts'
+        service: 'blob'
+      }
+    ]
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managementPolicyRules = [
+  {
+    definition: {
+      actions: {
+        baseBlob: {
+          delete: {
+            daysAfterModificationGreaterThan: 30
+          }
+          tierToCool: {
+            daysAfterLastAccessTimeGreaterThan: 5
+          }
+        }
+      }
+      filters: {
+        blobIndexMatch: [
+          {
+            name: 'BlobIndex'
+            op: '=='
+            value: '1'
+          }
+        ]
+        blobTypes: [
+          'blockBlob'
+        ]
+        prefixMatch: [
+          'sample-container/log'
+        ]
+      }
+    }
+    enabled: true
+    name: 'FirstRule'
+    type: 'Lifecycle'
+  }
+]
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      value: '1.1.1.1'
+    }
+  ]
+  virtualNetworkRules: [
+    {
+      action: 'Allow'
+      id: '<id>'
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param queueServices = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  queues: [
+    {
+      metadata: {
+        key1: 'value1'
+        key2: 'value2'
+      }
+      name: 'queue1'
+    }
+    {
+      metadata: {}
+      name: 'queue2'
+    }
+  ]
+}
+param requireInfrastructureEncryption = true
+param sasExpirationPeriod = '180.00:00:00'
+param skuName = 'Standard_ZRS'
+param tableServices = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  tables: [
+    {
+      name: 'table1'
+    }
+    {
+      name: 'table2'
+    }
+  ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -2255,7 +3165,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managementPolicyRules`](#parameter-managementpolicyrules) | array | The Storage Account ManagementPolicies Rules. |
-| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Set the minimum TLS version on request to storage. |
+| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore. |
 | [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
@@ -2286,6 +3196,7 @@ Required if the Storage Account kind is set to BlobStorage. The access tier is u
 - Allowed:
   ```Bicep
   [
+    'Cold'
     'Cool'
     'Hot'
     'Premium'
@@ -2390,8 +3301,9 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. If used must also be specified in `managedIdentities.userAssignedResourceIds`. Required if no system assigned identity is available for use. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
 
@@ -2407,16 +3319,23 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
-User assigned identity to use when fetching the customer managed key. If used must also be specified in `managedIdentities.userAssignedResourceIds`. Required if no system assigned identity is available for use.
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
 - Required: No
 - Type: string
@@ -2443,9 +3362,10 @@ The diagnostic settings of the service.
 | [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -2477,6 +3397,42 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
+### Parameter: `diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -2486,7 +3442,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
 - Required: No
 - Type: array
@@ -2519,7 +3475,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -2647,7 +3603,127 @@ Local users to deploy for SFTP authentication.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hasSshKey`](#parameter-localusershassshkey) | bool | Indicates whether SSH key exists. Set it to false to remove existing SSH key. |
+| [`hasSshPassword`](#parameter-localusershassshpassword) | bool | Indicates whether SSH password exists. Set it to false to remove existing SSH password. |
+| [`name`](#parameter-localusersname) | string | The name of the local user used for SFTP Authentication. |
+| [`permissionScopes`](#parameter-localuserspermissionscopes) | array | The permission scopes of the local user. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hasSharedKey`](#parameter-localusershassharedkey) | bool | Indicates whether shared key exists. Set it to false to remove existing shared key. |
+| [`homeDirectory`](#parameter-localusershomedirectory) | string | The local user home directory. |
+| [`sshAuthorizedKeys`](#parameter-localuserssshauthorizedkeys) | array | The local user SSH authorized keys for SFTP. |
+
+### Parameter: `localUsers.hasSshKey`
+
+Indicates whether SSH key exists. Set it to false to remove existing SSH key.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `localUsers.hasSshPassword`
+
+Indicates whether SSH password exists. Set it to false to remove existing SSH password.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `localUsers.name`
+
+The name of the local user used for SFTP Authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes`
+
+The permission scopes of the local user.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`permissions`](#parameter-localuserspermissionscopespermissions) | string | The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c). |
+| [`resourceName`](#parameter-localuserspermissionscopesresourcename) | string | The name of resource, normally the container name or the file share name, used by the local user. |
+| [`service`](#parameter-localuserspermissionscopesservice) | string | The service used by the local user, e.g. blob, file. |
+
+### Parameter: `localUsers.permissionScopes.permissions`
+
+The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes.resourceName`
+
+The name of resource, normally the container name or the file share name, used by the local user.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes.service`
+
+The service used by the local user, e.g. blob, file.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.hasSharedKey`
+
+Indicates whether shared key exists. Set it to false to remove existing shared key.
+
+- Required: No
+- Type: bool
+
+### Parameter: `localUsers.homeDirectory`
+
+The local user home directory.
+
+- Required: No
+- Type: string
+
+### Parameter: `localUsers.sshAuthorizedKeys`
+
+The local user SSH authorized keys for SFTP.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-localuserssshauthorizedkeyskey) | securestring | SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-localuserssshauthorizedkeysdescription) | string | Description used to store the function/usage of the key. |
+
+### Parameter: `localUsers.sshAuthorizedKeys.key`
+
+SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `localUsers.sshAuthorizedKeys.description`
+
+Description used to store the function/usage of the key.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -2705,7 +3781,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2716,7 +3792,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -2730,7 +3806,7 @@ The Storage Account ManagementPolicies Rules.
 
 ### Parameter: `minimumTlsVersion`
 
-Set the minimum TLS version on request to storage.
+Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore.
 
 - Required: No
 - Type: string
@@ -2738,9 +3814,8 @@ Set the minimum TLS version on request to storage.
 - Allowed:
   ```Bicep
   [
-    'TLS1_0'
-    'TLS1_1'
     'TLS1_2'
+    'TLS1_3'
   ]
   ```
 
@@ -2848,7 +3923,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -2873,7 +3948,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
@@ -2903,22 +3978,27 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint ip address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
-A list of private ip addresses of the private endpoint.
+A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -2968,7 +4048,7 @@ Properties of private endpoint IP configurations.
 | :-- | :-- | :-- |
 | [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
 
@@ -2986,7 +4066,7 @@ The member name of a group obtained from the remote resource that this private e
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
-A private ip address obtained from the private endpoint's subnet.
+A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
@@ -3066,7 +4146,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -3076,7 +4156,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -3091,7 +4171,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -3102,7 +4182,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -3134,6 +4214,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -3270,6 +4361,31 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reader and Data Access'`
+  - `'Role Based Access Control Administrator'`
+  - `'Storage Account Backup Contributor'`
+  - `'Storage Account Contributor'`
+  - `'Storage Account Key Operator Service Role'`
+  - `'Storage Blob Data Contributor'`
+  - `'Storage Blob Data Owner'`
+  - `'Storage Blob Data Reader'`
+  - `'Storage Blob Delegator'`
+  - `'Storage File Data Privileged Contributor'`
+  - `'Storage File Data Privileged Reader'`
+  - `'Storage File Data SMB Share Contributor'`
+  - `'Storage File Data SMB Share Elevated Contributor'`
+  - `'Storage File Data SMB Share Reader'`
+  - `'Storage Queue Data Contributor'`
+  - `'Storage Queue Data Message Processor'`
+  - `'Storage Queue Data Message Sender'`
+  - `'Storage Queue Data Reader'`
+  - `'Storage Table Data Contributor'`
+  - `'Storage Table Data Reader'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -3490,7 +4606,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Notes
 

@@ -7,6 +7,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -27,7 +28,6 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the capacity pool. |
-| [`networkFeatures`](#parameter-networkfeatures) | string | Network features available to the volume, or current state of update (Basic/Standard). |
 | [`size`](#parameter-size) | int | Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104). |
 
 **Conditional parameters**
@@ -55,14 +55,6 @@ The name of the capacity pool.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `networkFeatures`
-
-Network features available to the volume, or current state of update (Basic/Standard).
-
-- Required: No
-- Type: string
-- Default: `'Standard'`
 
 ### Parameter: `size`
 
@@ -130,6 +122,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -262,3 +260,13 @@ List of volumnes to create in the capacity pool.
 | `resourceGroupName` | string | The name of the Resource Group the Capacity Pool was created in. |
 | `resourceId` | string | The resource ID of the Capacity Pool. |
 | `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `res/net-app/net-app-account/backup-policies` | Local reference |
+| `res/net-app/net-app-account/snapshot-policies` | Local reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |

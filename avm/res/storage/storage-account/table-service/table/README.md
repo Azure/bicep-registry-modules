@@ -7,13 +7,14 @@ This module deploys a Storage Account Table.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 
 ## Parameters
 
@@ -55,6 +56,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reader and Data Access'`
+  - `'Role Based Access Control Administrator'`
+  - `'Storage Account Backup Contributor'`
+  - `'Storage Account Contributor'`
+  - `'Storage Account Key Operator Service Role'`
+  - `'Storage Table Data Contributor'`
+  - `'Storage Table Data Reader'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -153,3 +166,11 @@ The principal type of the assigned principal ID.
 | `name` | string | The name of the deployed file share service. |
 | `resourceGroupName` | string | The resource group of the deployed file share service. |
 | `resourceId` | string | The resource ID of the deployed file share service. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |

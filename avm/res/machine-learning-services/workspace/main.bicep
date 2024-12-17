@@ -41,8 +41,9 @@ param associatedApplicationInsightsResourceId string?
 @sys.description('Optional. The resource ID of the associated Container Registry.')
 param associatedContainerRegistryResourceId string?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @sys.description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @sys.description('Optional. The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.')
 param hbiWorkspace bool = false
@@ -50,11 +51,13 @@ param hbiWorkspace bool = false
 @sys.description('Conditional. The resource ID of the hub to associate with the workspace. Required if \'kind\' is set to \'Project\'.')
 param hubResourceId string?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointSingleServiceType[]?
 
 @sys.description('Optional. Computes to create respectively attach to the workspace.')
 param computes array?
@@ -68,19 +71,20 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @sys.description('Optional. The managed identity definition for this resource. At least one identity type is required.')
-param managedIdentities managedIdentitiesType = {
+param managedIdentities managedIdentityAllType = {
   systemAssigned: true
 }
 
 @sys.description('Conditional. Settings for feature store type workspaces. Required if \'kind\' is set to \'FeatureStore\'.')
-param featureStoreSettings featureStoreSettingType
+param featureStoreSettings featureStoreSettingType?
 
 @sys.description('Optional. Managed Network settings for a machine learning workspace.')
-param managedNetworkSettings managedNetworkSettingType
+param managedNetworkSettings managedNetworkSettingType?
 
 @sys.description('Optional. Settings for serverless compute created in the workspace.')
-param serverlessComputeSettings serverlessComputeSettingType
+param serverlessComputeSettings serverlessComputeSettingType?
 
 @sys.description('Optional. The authentication mode used by the workspace when connecting to the default storage account.')
 @allowed([
@@ -90,12 +94,12 @@ param serverlessComputeSettings serverlessComputeSettingType
 param systemDatastoresAuthMode string?
 
 @sys.description('Optional. Configuration for workspace hub settings.')
-param workspaceHubConfig workspaceHubConfigType
+param workspaceHubConfig workspaceHubConfigType?
 
 // Diagnostic Settings
-
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @sys.description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @sys.description('Optional. The description of this workspace.')
 param description string?
@@ -103,8 +107,9 @@ param description string?
 @sys.description('Optional. URL for the discovery service to identify regional endpoints for machine learning experimentation services.')
 param discoveryUrl string?
 
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @sys.description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
 @sys.description('Optional. The compute name for image build.')
 param imageBuildCompute string?
@@ -237,51 +242,48 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01-prev
     tier: sku
   }
   identity: identity
-  properties: union(
-    // Always added parameters
-    {
-      friendlyName: name
-      storageAccount: associatedStorageAccountResourceId
-      keyVault: associatedKeyVaultResourceId
-      applicationInsights: associatedApplicationInsightsResourceId
-      containerRegistry: associatedContainerRegistryResourceId
-      hbiWorkspace: hbiWorkspace
-      description: description
-      discoveryUrl: discoveryUrl
-      encryption: !empty(customerManagedKey)
-        ? {
-            status: 'Enabled'
-            identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-              ? {
-                  userAssignedIdentity: cMKUserAssignedIdentity.id
-                }
-              : null
-            keyVaultProperties: {
-              keyVaultArmId: cMKKeyVault.id
-              keyIdentifier: !empty(customerManagedKey.?keyVersion ?? '')
-                ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
-                : cMKKeyVault::cMKKey.properties.keyUriWithVersion
-            }
+  properties: {
+    friendlyName: name
+    storageAccount: associatedStorageAccountResourceId
+    keyVault: associatedKeyVaultResourceId
+    applicationInsights: associatedApplicationInsightsResourceId
+    containerRegistry: associatedContainerRegistryResourceId
+    hbiWorkspace: hbiWorkspace
+    description: description
+    discoveryUrl: discoveryUrl
+    encryption: !empty(customerManagedKey)
+      ? {
+          status: 'Enabled'
+          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? {
+                userAssignedIdentity: cMKUserAssignedIdentity.id
+              }
+            : null
+          keyVaultProperties: {
+            keyVaultArmId: cMKKeyVault.id
+            keyIdentifier: !empty(customerManagedKey.?keyVersion ?? '')
+              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           }
-        : null
-      imageBuildCompute: imageBuildCompute
-      primaryUserAssignedIdentity: primaryUserAssignedIdentity
-      systemDatastoresAuthMode: systemDatastoresAuthMode
-      publicNetworkAccess: publicNetworkAccess
-      serviceManagedResourcesSettings: serviceManagedResourcesSettings
-      featureStoreSettings: featureStoreSettings
-      hubResourceId: hubResourceId
-      managedNetwork: managedNetworkSettings
-      serverlessComputeSettings: serverlessComputeSettings
-      workspaceHubConfig: workspaceHubConfig
-    },
+        }
+      : null
+    imageBuildCompute: imageBuildCompute
+    primaryUserAssignedIdentity: primaryUserAssignedIdentity
+    systemDatastoresAuthMode: systemDatastoresAuthMode
+    publicNetworkAccess: publicNetworkAccess
+    serviceManagedResourcesSettings: serviceManagedResourcesSettings
+    featureStoreSettings: featureStoreSettings
+    hubResourceId: hubResourceId
+    managedNetwork: managedNetworkSettings
+    serverlessComputeSettings: serverlessComputeSettings
+    workspaceHubConfig: workspaceHubConfig
     // Parameters only added if not empty
-    !empty(sharedPrivateLinkResources)
+    ...(!empty(sharedPrivateLinkResources)
       ? {
           sharedPrivateLinkResources: sharedPrivateLinkResources
         }
-      : {}
-  )
+      : {})
+  }
   kind: kind
 }
 
@@ -449,7 +451,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = workspace.name
 
 @sys.description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = workspace.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = workspace.?identity.?principalId
 
 @sys.description('The location the resource was deployed into.')
 output location string = workspace.location
@@ -458,135 +460,7 @@ output location string = workspace.location
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @sys.description('Optional. Enables system assigned managed identity on the resource. Must be false if `primaryUserAssignedIdentity` is provided.')
-  systemAssigned: bool?
-
-  @sys.description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}
-
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
-
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
-
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type privateEndpointType = {
-  @sys.description('Optional. The name of the private endpoint.')
-  name: string?
-
-  @sys.description('Optional. The location to deploy the private endpoint to.')
-  location: string?
-
-  @sys.description('Optional. The name of the private link connection to create.')
-  privateLinkServiceConnectionName: string?
-
-  @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
-  service: string?
-
-  @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
-
-  @sys.description('Optional. The private DNS zone group to configure for the private endpoint.')
-  privateDnsZoneGroup: {
-    @sys.description('Optional. The name of the Private DNS Zone Group.')
-    name: string?
-
-    @sys.description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
-    privateDnsZoneGroupConfigs: {
-      @sys.description('Optional. The name of the private DNS zone group config.')
-      name: string?
-
-      @sys.description('Required. The resource id of the private DNS zone.')
-      privateDnsZoneResourceId: string
-    }[]
-  }?
-
-  @sys.description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
-
-  @sys.description('Optional. Custom DNS configurations.')
-  customDnsConfigs: {
-    @sys.description('Required. Fqdn that resolves to private endpoint IP address.')
-    fqdn: string?
-
-    @sys.description('Required. A list of private IP addresses of the private endpoint.')
-    ipAddresses: string[]
-  }[]?
-
-  @sys.description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @sys.description('Required. The name of the resource that is unique within a resource group.')
-    name: string
-
-    @sys.description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @sys.description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
-
-      @sys.description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
-
-      @sys.description('Required. A private IP address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
-
-  @sys.description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
-
-  @sys.description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
-
-  @sys.description('Optional. Specify the type of lock.')
-  lock: lockType
-
-  @sys.description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
-
-  @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
-
-  @sys.description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-
-  @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
-}[]?
-
+@export()
 type featureStoreSettingType = {
   @sys.description('Optional. Compute runtime config for feature store type workspace.')
   computeRuntime: {
@@ -599,12 +473,14 @@ type featureStoreSettingType = {
 
   @sys.description('Optional. The online store connection name.')
   onlineStoreConnectionName: string?
-}?
+}
 
+@export()
 @discriminator('type')
-type OutboundRuleType = FqdnOutboundRuleType | PrivateEndpointOutboundRule | ServiceTagOutboundRule
+type outboundRuleType = fqdnoutboundRuleType | privateEndpointoutboundRuleType | serviceTagoutboundRuleType
 
-type FqdnOutboundRuleType = {
+@export()
+type fqdnoutboundRuleType = {
   @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
   type: 'FQDN'
 
@@ -615,7 +491,8 @@ type FqdnOutboundRuleType = {
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
-type PrivateEndpointOutboundRule = {
+@export()
+type privateEndpointoutboundRuleType = {
   @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\' or \'AllowInternetOutbound\'.')
   type: 'PrivateEndpoint'
 
@@ -635,7 +512,8 @@ type PrivateEndpointOutboundRule = {
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
-type ServiceTagOutboundRule = {
+@export()
+type serviceTagoutboundRuleType = {
   @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
   type: 'ServiceTag'
 
@@ -655,6 +533,7 @@ type ServiceTagOutboundRule = {
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
+@export()
 type managedNetworkSettingType = {
   @sys.description('Required. Isolation mode for the managed network of a machine learning workspace.')
   isolationMode: 'AllowInternetOutbound' | 'AllowOnlyApprovedOutbound' | 'Disabled'
@@ -662,86 +541,31 @@ type managedNetworkSettingType = {
   @sys.description('Optional. Outbound rules for the managed network of a machine learning workspace.')
   outboundRules: {
     @sys.description('Required. The outbound rule. The name of the rule is the object key.')
-    *: OutboundRuleType
+    *: outboundRuleType
   }?
-}?
+}
 
+@export()
 type serverlessComputeSettingType = {
   @sys.description('Optional. The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed.')
   serverlessComputeCustomSubnet: string?
 
   @sys.description('Optional. The flag to signal if serverless compute nodes deployed in custom vNet would have no public IP addresses for a workspace with private endpoint.')
   serverlessComputeNoPublicIP: bool?
-}?
+}
 
+@export()
 type workspaceHubConfigType = {
   @sys.description('Optional. The resource IDs of additional storage accounts to attach to the workspace.')
   additionalWorkspaceStorageAccounts: string[]?
 
   @sys.description('Optional. The resource ID of the default resource group for projects created in the workspace hub.')
   defaultWorkspaceResourceGroup: string?
-}?
-
-type diagnosticSettingType = {
-  @sys.description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @sys.description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @sys.description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @sys.description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type customerManagedKeyType = {
-  @sys.description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @sys.description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @sys.description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @sys.description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
-  userAssignedIdentityResourceId: string?
-}?
+}
 
 import { categoryType, connectionPropertyType } from 'connection/main.bicep'
 
+@export()
 type connectionType = {
   @sys.description('Required. Name of the connection to create.')
   name: string

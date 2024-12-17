@@ -203,6 +203,9 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    dependsOn: [
+      privateLinkScope_scopedResource
+    ]
   }
 ]
 
@@ -323,7 +326,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')

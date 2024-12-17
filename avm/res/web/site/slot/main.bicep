@@ -57,6 +57,9 @@ param siteConfig object = {
   alwaysOn: true
 }
 
+@description('Optional. The Function App config object.')
+param functionAppConfig object?
+
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
 
@@ -212,11 +215,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource app 'Microsoft.Web/sites@2021-03-01' existing = {
+resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   name: appName
 }
 
-resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
+resource slot 'Microsoft.Web/sites/slots@2023-12-01' = {
   name: name
   parent: app
   location: location
@@ -236,6 +239,7 @@ resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
     keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
     virtualNetworkSubnetId: virtualNetworkSubnetId
     siteConfig: siteConfig
+    functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
     clientCertExclusionPaths: clientCertExclusionPaths
     clientCertMode: clientCertMode
@@ -264,6 +268,7 @@ module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSetting
     storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
     appInsightResourceId: appInsightResourceId
     appSettingsKeyValuePairs: appSettingsKeyValuePairs
+    currentAppSettings: !empty(slot.id) ? list('${slot.id}/config/appsettings', '2023-12-01').properties : {}
   }
 }
 
@@ -529,7 +534,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')

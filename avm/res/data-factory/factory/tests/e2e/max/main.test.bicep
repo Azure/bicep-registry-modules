@@ -45,7 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -136,7 +136,7 @@ module testDeployment '../../../main.bicep' = [
           }
           type: 'AzureBlobFS'
           typeProperties: {
-            url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.core.windows.net\')}'
+            url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.${environment().suffixes.storage}\')}'
           }
         }
       ]
@@ -157,6 +157,7 @@ module testDeployment '../../../main.bicep' = [
       managedVirtualNetworkName: 'default'
       privateEndpoints: [
         {
+          service: 'dataFactory'
           privateDnsZoneGroup: {
             privateDnsZoneGroupConfigs: [
               {
@@ -171,6 +172,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
+          service: 'portal'
           privateDnsZoneGroup: {
             privateDnsZoneGroupConfigs: [
               {

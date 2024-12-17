@@ -15,7 +15,7 @@ on:
         type: string
         description: "RegEx which workflows are included"
         required: false
-        default: "avm\\.(?:res|ptn)"
+        default: "avm\\.(?:res|ptn|utl)"
       excludePattern:
         type: string
         description: "RegEx which workflows are excluded"
@@ -37,7 +37,7 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'platform' 'Switch-WorkflowState.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'platform' 'Switch-WorkflowState.ps1')
 
           $functionInput = @{
             RepositoryOwner = '${{ github.repository_owner }}'

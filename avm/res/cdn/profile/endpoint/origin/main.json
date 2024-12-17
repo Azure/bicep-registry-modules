@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "11976988406992266750"
+      "version": "0.32.4.45862",
+      "templateHash": "1967881427631941882"
     },
     "name": "CDN Profiles Endpoints Origins",
     "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -113,19 +113,13 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/endpoints",
       "apiVersion": "2021-06-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]"
     },
     "origin": {
       "type": "Microsoft.Cdn/profiles/endpoints/origins",
       "apiVersion": "2021-06-01",
       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
-      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]",
-      "dependsOn": [
-        "endpoint"
-      ]
+      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]"
     }
   },
   "outputs": {

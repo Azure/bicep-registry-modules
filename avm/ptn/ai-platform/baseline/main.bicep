@@ -17,35 +17,35 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Configuration for the user-assigned managed identities.')
-param managedIdentityConfiguration managedIdentityConfigurationType
+@description('Optional. The name of the user-assigned identity for the AI Studio hub. If not provided, the hub will use a system-assigned identity.')
+param managedIdentityName string?
 
 @description('Optional. Configuration for the Log Analytics workspace.')
-param logAnalyticsConfiguration logAnalyticsConfigurationType
+param logAnalyticsConfiguration logAnalyticsConfigurationType?
 
 @description('Optional. Configuration for the key vault.')
-param keyVaultConfiguration keyVaultConfigurationType
+param keyVaultConfiguration keyVaultConfigurationType?
 
 @description('Optional. Configuration for the storage account.')
-param storageAccountConfiguration storageAccountConfigurationType
+param storageAccountConfiguration storageAccountConfigurationType?
 
 @description('Optional. Configuration for the container registry.')
-param containerRegistryConfiguration containerRegistryConfigurationType
+param containerRegistryConfiguration containerRegistryConfigurationType?
 
 @description('Optional. Configuration for Application Insights.')
-param applicationInsightsConfiguration applicationInsightsConfigurationType
+param applicationInsightsConfiguration applicationInsightsConfigurationType?
 
 @description('Optional. Configuration for the AI Studio workspace.')
-param workspaceConfiguration workspaceConfigurationType
+param workspaceConfiguration workspaceConfigurationType?
 
 @description('Optional. Configuration for the virtual network.')
-param virtualNetworkConfiguration virtualNetworkConfigurationType
+param virtualNetworkConfiguration virtualNetworkConfigurationType?
 
 @description('Optional. Configuration for the Azure Bastion host.')
-param bastionConfiguration bastionConfigurationType
+param bastionConfiguration bastionConfigurationType?
 
 @description('Optional. Configuration for the virtual machine.')
-param virtualMachineConfiguration virtualMachineConfigurationType
+param virtualMachineConfiguration virtualMachineConfigurationType?
 
 // ============== //
 // Variables      //
@@ -59,7 +59,7 @@ var createVirtualMachine = createVirtualNetwork && virtualMachineConfiguration.?
 
 var createDefaultNsg = virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId == null
 
-var subnetResourceId = createVirtualNetwork ? virtualNetwork::defaultSubnet.id : null
+var subnetResourceId = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : null
 
 var mlTargetSubResource = 'amlworkspace'
 
@@ -103,7 +103,7 @@ module storageAccount_privateDnsZones 'br/public:avm/res/network/private-dns-zon
       name: zone
       virtualNetworkLinks: [
         {
-          virtualNetworkResourceId: virtualNetwork.id
+          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
         }
       ]
     }
@@ -117,16 +117,18 @@ module workspaceHub_privateDnsZones 'br/public:avm/res/network/private-dns-zone:
       name: zone
       virtualNetworkLinks: [
         {
-          virtualNetworkResourceId: virtualNetwork.id
+          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
         }
       ]
-      roleAssignments: [
-        {
-          principalId: managedIdentityHub.properties.principalId
-          roleDefinitionIdOrName: 'Contributor'
-          principalType: 'ServicePrincipal'
-        }
-      ]
+      roleAssignments: managedIdentityName != null
+        ? [
+            {
+              principalId: userAssignedIdentity.properties.principalId
+              roleDefinitionIdOrName: 'Contributor'
+              principalType: 'ServicePrincipal'
+            }
+          ]
+        : null
     }
   }
 ]
@@ -158,47 +160,37 @@ module defaultNetworkSecurityGroup 'br/public:avm/res/network/network-security-g
   }
 }
 
-// Not using the br/public:avm/res/network/virtual-network module here to
-// allow consumers of the module to add subnets from outside of the module
-// https://github.com/Azure/bicep-registry-modules/issues/2689
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = if (createVirtualNetwork) {
-  name: virtualNetworkConfiguration.?name ?? 'vnet-${name}'
-  location: location
-  tags: tags
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        virtualNetworkConfiguration.?addressPrefix ?? '10.0.0.0/16'
-      ]
-    }
-  }
-
-  resource defaultSubnet 'subnets@2024-01-01' = {
-    name: virtualNetworkConfiguration.?subnet.name ?? 'default'
-    properties: {
-      addressPrefix: virtualNetworkConfiguration.?subnet.addressPrefix ?? '10.0.0.0/24'
-      networkSecurityGroup: {
-        id: createDefaultNsg
-          ? defaultNetworkSecurityGroup.outputs.resourceId
-          : virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId
-      }
-    }
-  }
-
-  resource bastionSubnet 'subnets@2024-01-01' = if (createBastion) {
-    name: 'AzureBastionSubnet'
-    properties: {
-      addressPrefix: bastionConfiguration.?subnetAddressPrefix ?? '10.0.1.0/26'
-      networkSecurityGroup: bastionConfiguration.?networkSecurityGroupResourceId != null
-        ? {
-            id: bastionConfiguration.?networkSecurityGroupResourceId
-          }
-        : null
-    }
-
-    dependsOn: [
-      defaultSubnet
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.4.0' = if (createVirtualNetwork) {
+  name: '${uniqueString(deployment().name, location)}-virtual-network'
+  params: {
+    name: virtualNetworkConfiguration.?name ?? 'vnet-${name}'
+    location: location
+    enableTelemetry: enableTelemetry
+    addressPrefixes: [
+      virtualNetworkConfiguration.?addressPrefix ?? '10.0.0.0/16'
     ]
+    subnets: union(
+      // The default subnet **must** be the first in the subnets array
+      [
+        {
+          addressPrefix: virtualNetworkConfiguration.?subnet.addressPrefix ?? '10.0.0.0/24'
+          name: virtualNetworkConfiguration.?subnet.name ?? 'default'
+          networkSecurityGroupResourceId: createDefaultNsg
+            ? defaultNetworkSecurityGroup.outputs.resourceId
+            : virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId
+        }
+      ],
+      createBastion
+        ? [
+            {
+              addressPrefix: bastionConfiguration.?subnetAddressPrefix ?? '10.0.1.0/26'
+              name: 'AzureBastionSubnet'
+              networkSecurityGroupResourceId: bastionConfiguration.?networkSecurityGroupResourceId
+            }
+          ]
+        : []
+    )
+    tags: tags
   }
 }
 
@@ -209,7 +201,7 @@ module bastion 'br/public:avm/res/network/bastion-host:0.2.2' = if (createBastio
     location: location
     skuName: bastionConfiguration.?sku ?? 'Standard'
     enableTelemetry: enableTelemetry
-    virtualNetworkResourceId: virtualNetwork.id
+    virtualNetworkResourceId: virtualNetwork.outputs.resourceId
     disableCopyPaste: bastionConfiguration.?disableCopyPaste
     enableFileCopy: bastionConfiguration.?enableFileCopy
     enableIpConnect: bastionConfiguration.?enableIpConnect
@@ -238,7 +230,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (cr
           {
             name: virtualMachineConfiguration.?nicConfigurationConfiguration.ipConfigName ?? 'nic-vm-${name}-ipconfig'
             privateIPAllocationMethod: virtualMachineConfiguration.?nicConfigurationConfiguration.privateIPAllocationMethod ?? 'Dynamic'
-            subnetResourceId: virtualNetwork::defaultSubnet.id
+            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
           }
         ]
       }
@@ -278,16 +270,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (cr
   }
 }
 
-resource managedIdentityHub 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: managedIdentityConfiguration.?hubName ?? 'id-hub-${name}'
-  location: location
-  tags: tags
-}
-
-resource managedIdentityProject 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: managedIdentityConfiguration.?projectName ?? 'id-project-${name}'
-  location: location
-  tags: tags
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityName != null) {
+  name: managedIdentityName ?? 'null'
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -296,14 +280,14 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
   tags: tags
 }
 
-resource resourceGroup_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource resourceGroup_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (managedIdentityName != null) {
   name: guid(resourceGroup().id, name)
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
     )
-    principalId: managedIdentityHub.properties.principalId
+    principalId: userAssignedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
@@ -324,28 +308,20 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
     }
     publicNetworkAccess: 'Disabled'
     enablePurgeProtection: keyVaultConfiguration.?enablePurgeProtection ?? true
-    roleAssignments: [
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'Key Vault Administrator'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Key Vault Administrator'
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    roleAssignments: managedIdentityName != null
+      ? [
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'Contributor'
+            principalType: 'ServicePrincipal'
+          }
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'Key Vault Administrator'
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      : null
     diagnosticSettings: [
       {
         workspaceResourceId: logAnalyticsWorkspace.id
@@ -385,48 +361,25 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
           privateDnsZoneResourceIds: [resourceId('Microsoft.Network/privateDnsZones', zone.key)]
         })
       : null
-    roleAssignments: [
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Reader'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Storage Account Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Storage Table Data Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    roleAssignments: managedIdentityName != null
+      ? [
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'Contributor'
+            principalType: 'ServicePrincipal'
+          }
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+            principalType: 'ServicePrincipal'
+          }
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      : null
     tags: tags
   }
 
@@ -444,28 +397,20 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' =
     networkRuleBypassOptions: 'AzureServices'
     zoneRedundancy: 'Enabled'
     trustPolicyStatus: containerRegistryConfiguration.?trustPolicyStatus ?? 'enabled'
-    roleAssignments: [
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'AcrPull'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'AcrPull'
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    roleAssignments: managedIdentityName != null
+      ? [
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'Contributor'
+            principalType: 'ServicePrincipal'
+          }
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'AcrPull'
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      : null
     tags: tags
   }
 }
@@ -478,18 +423,15 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
     kind: 'web'
     enableTelemetry: enableTelemetry
     workspaceResourceId: logAnalyticsWorkspace.id
-    roleAssignments: [
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    roleAssignments: managedIdentityName != null
+      ? [
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'Contributor'
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      : null
     tags: tags
   }
 }
@@ -509,12 +451,14 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0
     workspaceHubConfig: {
       defaultWorkspaceResourceGroup: resourceGroup().id
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        managedIdentityHub.id
-      ]
-    }
-    primaryUserAssignedIdentity: managedIdentityHub.id
+    managedIdentities: managedIdentityName != null
+      ? {
+          userAssignedResourceIds: [
+            userAssignedIdentity.id
+          ]
+        }
+      : null
+    primaryUserAssignedIdentity: managedIdentityName != null ? userAssignedIdentity.id : null
     computes: workspaceConfiguration.?computes
     managedNetworkSettings: {
       isolationMode: workspaceConfiguration.?networkIsolationMode ?? 'AllowInternetOutbound'
@@ -537,19 +481,22 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0
         ]
       : null
     systemDatastoresAuthMode: 'identity'
-    roleAssignments: [
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    roleAssignments: managedIdentityName != null
+      ? [
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'Contributor'
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      : null
     tags: tags
   }
 
   dependsOn: workspaceHub_privateDnsZones
 }
 
+// The workspace project uses a system assigned managed identity, so it can authenticate with the container registry
 module workspaceProject 'br/public:avm/res/machine-learning-services/workspace:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-project'
   params: {
@@ -559,24 +506,15 @@ module workspaceProject 'br/public:avm/res/machine-learning-services/workspace:0
     enableTelemetry: enableTelemetry
     kind: 'Project'
     hubResourceId: workspaceHub.outputs.resourceId
-    managedIdentities: {
-      userAssignedResourceIds: [
-        managedIdentityProject.id
-      ]
-    }
-    primaryUserAssignedIdentity: managedIdentityProject.id
-    roleAssignments: [
-      {
-        principalId: managedIdentityHub.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: managedIdentityProject.properties.principalId
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    roleAssignments: managedIdentityName != null
+      ? [
+          {
+            principalId: userAssignedIdentity.properties.principalId
+            roleDefinitionIdOrName: 'Contributor'
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      : null
     tags: tags
   }
 }
@@ -612,30 +550,6 @@ output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
 @description('The name of the log analytics workspace.')
 output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.name
 
-@description('The resource ID of the workspace hub user assigned managed identity.')
-output managedIdentityHubResourceId string = managedIdentityHub.id
-
-@description('The name of the workspace hub user assigned managed identity.')
-output managedIdentityHubName string = managedIdentityHub.name
-
-@description('The principal ID of the workspace hub user assigned managed identity.')
-output managedIdentityHubPrincipalId string = managedIdentityHub.properties.principalId
-
-@description('The client ID of the workspace hub user assigned managed identity.')
-output managedIdentityHubClientId string = managedIdentityHub.properties.clientId
-
-@description('The resource ID of the workspace project user assigned managed identity.')
-output managedIdentityProjectResourceId string = managedIdentityProject.id
-
-@description('The name of the workspace project user assigned managed identity.')
-output managedIdentityProjectName string = managedIdentityProject.name
-
-@description('The principal ID of the workspace project user assigned managed identity.')
-output managedIdentityProjectPrincipalId string = managedIdentityProject.properties.principalId
-
-@description('The client ID of the workspace project user assigned managed identity.')
-output managedIdentityProjectClientId string = managedIdentityProject.properties.clientId
-
 @description('The resource ID of the key vault.')
 output keyVaultResourceId string = keyVault.outputs.resourceId
 
@@ -663,6 +577,12 @@ output workspaceHubResourceId string = workspaceHub.outputs.resourceId
 @description('The name of the workspace hub.')
 output workspaceHubName string = workspaceHub.outputs.name
 
+@description('The principal ID of the workspace hub system assigned identity, if applicable.')
+output workspaceHubManagedIdentityPrincipalId string = workspaceHub.outputs.systemAssignedMIPrincipalId
+
+@description('The principal ID of the workspace project system assigned identity.')
+output workspaceProjectManagedIdentityPrincipalId string = workspaceProject.outputs.systemAssignedMIPrincipalId
+
 @description('The resource ID of the workspace project.')
 output workspaceProjectResourceId string = workspaceProject.outputs.resourceId
 
@@ -670,16 +590,16 @@ output workspaceProjectResourceId string = workspaceProject.outputs.resourceId
 output workspaceProjectName string = workspaceProject.outputs.name
 
 @description('The resource ID of the virtual network.')
-output virtualNetworkResourceId string = createVirtualNetwork ? virtualNetwork.id : ''
+output virtualNetworkResourceId string = createVirtualNetwork ? virtualNetwork.outputs.resourceId : ''
 
 @description('The name of the virtual network.')
-output virtualNetworkName string = createVirtualNetwork ? virtualNetwork.name : ''
+output virtualNetworkName string = createVirtualNetwork ? virtualNetwork.outputs.name : ''
 
 @description('The resource ID of the subnet in the virtual network.')
-output virtualNetworkSubnetResourceId string = createVirtualNetwork ? virtualNetwork::defaultSubnet.id : ''
+output virtualNetworkSubnetResourceId string = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : ''
 
 @description('The name of the subnet in the virtual network.')
-output virtualNetworkSubnetName string = createVirtualNetwork ? virtualNetwork::defaultSubnet.name : ''
+output virtualNetworkSubnetName string = createVirtualNetwork ? virtualNetwork.outputs.subnetNames[0] : ''
 
 @description('The resource ID of the Azure Bastion host.')
 output bastionResourceId string = createBastion ? bastion.outputs.resourceId : ''
@@ -697,27 +617,22 @@ output virtualMachineName string = createVirtualMachine ? virtualMachine.outputs
 // Definitions      //
 // ================ //
 
-type managedIdentityConfigurationType = {
-  @description('Optional. The name of the workspace hub user-assigned managed identity.')
-  hubName: string?
-
-  @description('Optional. The name of the workspace project user-assigned managed identity.')
-  projectName: string?
-}?
-
+@export()
 type logAnalyticsConfigurationType = {
   @description('Optional. The name of the Log Analytics workspace.')
   name: string?
-}?
+}
 
+@export()
 type keyVaultConfigurationType = {
   @description('Optional. The name of the key vault.')
   name: string?
 
   @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature. Defaults to \'true\'.')
   enablePurgeProtection: bool?
-}?
+}
 
+@export()
 type storageAccountConfigurationType = {
   @description('Optional. The name of the storage account.')
   name: string?
@@ -735,21 +650,24 @@ type storageAccountConfigurationType = {
 
   @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to \'false\'.')
   allowSharedKeyAccess: bool?
-}?
+}
 
+@export()
 type containerRegistryConfigurationType = {
   @description('Optional. The name of the container registry.')
   name: string?
 
   @description('Optional. Whether the trust policy is enabled for the container registry. Defaults to \'enabled\'.')
   trustPolicyStatus: 'enabled' | 'disabled'?
-}?
+}
 
+@export()
 type applicationInsightsConfigurationType = {
   @description('Optional. The name of the Application Insights resource.')
   name: string?
-}?
+}
 
+@export()
 type workspaceConfigurationType = {
   @description('Optional. The name of the AI Studio workspace hub.')
   name: string?
@@ -764,8 +682,8 @@ type workspaceConfigurationType = {
   networkIsolationMode: 'AllowInternetOutbound' | 'AllowOnlyApprovedOutbound'?
 
   @description('Optional. The outbound rules for the managed network of the workspace hub.')
-  networkOutboundRules: networkOutboundRuleType
-}?
+  networkOutboundRules: networkOutboundRuleType?
+}
 
 type virtualNetworkSubnetConfigurationType = {
   @description('Optional. The name of the subnet to create.')
@@ -776,8 +694,9 @@ type virtualNetworkSubnetConfigurationType = {
 
   @description('Optional. The resource ID of an existing network security group to associate with the subnet.')
   networkSecurityGroupResourceId: string?
-}?
+}
 
+@export()
 type virtualNetworkConfigurationType = {
   @description('Optional. Whether to create an associated virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -789,9 +708,10 @@ type virtualNetworkConfigurationType = {
   addressPrefix: string?
 
   @description('Optional. Configuration for the virual network subnet.')
-  subnet: virtualNetworkSubnetConfigurationType
-}?
+  subnet: virtualNetworkSubnetConfigurationType?
+}
 
+@export()
 type bastionConfigurationType = {
   @description('Optional. Whether to create a Bastion host in the virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -825,7 +745,7 @@ type bastionConfigurationType = {
 
   @description('Optional. The scale units for the Bastion Host resource.')
   scaleUnits: int?
-}?
+}
 
 type nicConfigurationConfigurationType = {
   @description('Optional. The name of the network interface.')
@@ -839,7 +759,7 @@ type nicConfigurationConfigurationType = {
 
   @description('Optional. The resource ID of an existing network security group to associate with the network interface.')
   networkSecurityGroupResourceId: string?
-}?
+}
 
 type osDiskType = {
   @description('Optional. The disk name.')
@@ -872,9 +792,9 @@ type osDiskType = {
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
   }
-}?
+}
 
-@secure()
+@export()
 type virtualMachineConfigurationType = {
   @description('Optional. Whether to create a virtual machine in the associated virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -886,23 +806,24 @@ type virtualMachineConfigurationType = {
   @description('Optional. The availability zone of the virtual machine. If set to 0, no availability zone is used (default).')
   zone: 0 | 1 | 2 | 3?
 
-  @description('Required. The virtual machine size. Defaults to \'Standard_D2s_v3\'.')
+  @description('Optional. The virtual machine size. Defaults to \'Standard_D2s_v3\'.')
   size: string?
 
   @description('Conditional. The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
   adminUsername: string?
 
   @description('Conditional. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
+  @secure()
   adminPassword: string?
 
   @description('Optional. Configuration for the virtual machine network interface.')
-  nicConfigurationConfiguration: nicConfigurationConfigurationType
+  nicConfigurationConfiguration: nicConfigurationConfigurationType?
 
   @description('Optional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
   imageReference: object?
 
   @description('Optional. Specifies the OS disk.')
-  osDisk: osDiskType
+  osDisk: osDiskType?
 
   @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to \'true\'.')
   encryptionAtHost: bool?
@@ -918,7 +839,7 @@ type virtualMachineConfigurationType = {
 
   @description('Optional. The resource Id of a maintenance configuration for the virtual machine.')
   maintenanceConfigurationResourceId: string?
-}?
+}
 
 @discriminator('type')
 type OutboundRuleType = FqdnOutboundRuleType | PrivateEndpointOutboundRule | ServiceTagOutboundRule
@@ -978,4 +899,4 @@ type ServiceTagOutboundRule = {
 type networkOutboundRuleType = {
   @sys.description('Required. The outbound rule. The name of the rule is the object key.')
   *: OutboundRuleType
-}?
+}

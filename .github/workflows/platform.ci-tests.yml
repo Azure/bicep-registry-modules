@@ -13,7 +13,7 @@ on:
       - main
     paths:
       - ".github/workflows/platform.ci-tests.yml"
-      - "avm/utilities/**"
+      - "utilities/**"
       - "!*/**/README.md"
   schedule:
     - cron: "0 0 * * Sun" # Every Sunday
@@ -65,7 +65,7 @@ jobs:
         with:
           inlineScript: |
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'tests' 'Test-CI.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'Test-CI.ps1')
 
             $functionInput = @{
               RepoRootPath      = $env:GITHUB_WORKSPACE

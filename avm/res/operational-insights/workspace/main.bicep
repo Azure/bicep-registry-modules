@@ -27,28 +27,31 @@ param skuName string = 'PerGB2018'
 param skuCapacityReservationLevel int = 100
 
 @description('Optional. List of storage accounts to be read by the workspace.')
-param storageInsightsConfigs array = []
+param storageInsightsConfigs storageInsightsConfigType[]?
 
 @description('Optional. List of services to be linked.')
-param linkedServices array = []
+param linkedServices linkedServiceType[]?
 
 @description('Conditional. List of Storage Accounts to be linked. Required if \'forceCmkForQuery\' is set to \'true\' and \'savedSearches\' is not empty.')
-param linkedStorageAccounts array = []
+param linkedStorageAccounts linkedStorageAccountType[]?
 
 @description('Optional. Kusto Query Language searches to save.')
-param savedSearches array = []
+param savedSearches savedSearchType[]?
 
 @description('Optional. LAW data export instances to be deployed.')
-param dataExports array = []
+param dataExports dataExportType[]?
 
 @description('Optional. LAW data sources to configure.')
-param dataSources array = []
+param dataSources dataSourceType[]?
 
 @description('Optional. LAW custom tables to be deployed.')
-param tables array = []
+param tables tableType[]?
 
 @description('Optional. List of gallerySolutions to be created in the log analytics workspace.')
-param gallerySolutions array = []
+param gallerySolutions gallerySolutionType[]?
+
+@description('Optional. Onboard the Log Analytics Workspace to Sentinel. Requires \'SecurityInsights\' solution to be in gallerySolutions.')
+param onboardWorkspaceToSentinel bool = false
 
 @description('Optional. Number of days data will be retained for.')
 @minValue(0)
@@ -73,23 +76,26 @@ param publicNetworkAccessForIngestion string = 'Enabled'
 ])
 param publicNetworkAccessForQuery string = 'Enabled'
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Set to \'true\' to use resource or workspace permissions and \'false\' (or leave empty) to require workspace permissions.')
 param useResourcePermissions bool = false
 
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingType[]?
 
 @description('Optional. Indicates whether customer managed storage is mandatory for query management.')
 param forceCmkForQuery bool = true
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -236,7 +242,7 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
 ]
 
 module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.bicep' = [
-  for (storageInsightsConfig, index) in storageInsightsConfigs: {
+  for (storageInsightsConfig, index) in storageInsightsConfigs ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-StorageInsightsConfig-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
@@ -248,7 +254,7 @@ module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.
 ]
 
 module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
-  for (linkedService, index) in linkedServices: {
+  for (linkedService, index) in linkedServices ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-LinkedService-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
@@ -260,18 +266,18 @@ module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
 ]
 
 module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.bicep' = [
-  for (linkedStorageAccount, index) in linkedStorageAccounts: {
+  for (linkedStorageAccount, index) in linkedStorageAccounts ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-LinkedStorageAccount-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedStorageAccount.name
-      resourceId: linkedStorageAccount.resourceId
+      storageAccountIds: linkedStorageAccount.storageAccountIds
     }
   }
 ]
 
 module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
-  for (savedSearch, index) in savedSearches: {
+  for (savedSearch, index) in savedSearches ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-SavedSearch-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
@@ -282,6 +288,7 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
       query: savedSearch.query
       functionAlias: savedSearch.?functionAlias
       functionParameters: savedSearch.?functionParameters
+      tags: savedSearch.?tags
       version: savedSearch.?version
     }
     dependsOn: [
@@ -291,7 +298,7 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
 ]
 
 module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
-  for (dataExport, index) in dataExports: {
+  for (dataExport, index) in dataExports ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-DataExport-${index}'
     params: {
       workspaceName: logAnalyticsWorkspace.name
@@ -304,7 +311,7 @@ module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
 ]
 
 module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
-  for (dataSource, index) in dataSources: {
+  for (dataSource, index) in dataSources ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-DataSource-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
@@ -321,12 +328,13 @@ module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
       syslogName: dataSource.?syslogName
       syslogSeverities: dataSource.?syslogSeverities
       performanceCounters: dataSource.?performanceCounters
+      tags: dataSource.?tags
     }
   }
 ]
 
 module logAnalyticsWorkspace_tables 'table/main.bicep' = [
-  for (table, index) in tables: {
+  for (table, index) in tables ?? []: {
     name: '${uniqueString(deployment().name, location)}-LAW-Table-${index}'
     params: {
       workspaceName: logAnalyticsWorkspace.name
@@ -342,19 +350,28 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
   }
 ]
 
-module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.1.0' = [
-  for (gallerySolution, index) in gallerySolutions: if (!empty(gallerySolutions)) {
+module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.3.0' = [
+  for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(gallerySolutions)) {
     name: '${uniqueString(deployment().name, location)}-LAW-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
-      product: gallerySolution.?product
-      publisher: gallerySolution.?publisher
+      plan: gallerySolution.plan
       enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
     }
   }
 ]
+
+// Onboard the Log Analytics Workspace to Sentinel if SecurityInsights is in gallerySolutions and onboardWorkspaceToSentinel is set to true
+resource logAnalyticsWorkspace_sentinelOnboarding 'Microsoft.SecurityInsights/onboardingStates@2024-03-01' = if (!empty(filter(
+  gallerySolutions ?? [],
+  item => startsWith(item.name, 'SecurityInsights')
+)) && onboardWorkspaceToSentinel) {
+  name: 'default'
+  scope: logAnalyticsWorkspace
+  properties: {}
+}
 
 resource logAnalyticsWorkspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -409,48 +426,6 @@ output systemAssignedMIPrincipalId string = logAnalyticsWorkspace.?identity.?pri
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -496,4 +471,181 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
-}[]?
+}
+
+import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.0'
+
+@export()
+@description('Properties of the gallery solutions to be created in the log analytics workspace.')
+type gallerySolutionType = {
+  @description('''Required. Name of the solution.
+  For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
+  For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.
+  The solution type is case-sensitive.''')
+  name: string
+
+  @description('Required. Plan for solution object supported by the OperationsManagement resource provider.')
+  plan: solutionPlanType
+}
+
+@export()
+@description('Properties of the storage insights configuration.')
+type storageInsightsConfigType = {
+  @description('Required. Resource ID of the storage account to be linked.')
+  storageAccountResourceId: string
+
+  @description('Optional. The names of the blob containers that the workspace should read.')
+  containers: string[]?
+
+  @description('Optional. List of tables to be read by the workspace.')
+  tables: string[]?
+}
+
+@export()
+@description('Properties of the linked service.')
+type linkedServiceType = {
+  @description('Required. Name of the linked service.')
+  name: string
+
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.')
+  resourceId: string?
+
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.')
+  writeAccessResourceId: string?
+}
+
+@export()
+@description('Properties of the linked storage account.')
+type linkedStorageAccountType = {
+  @description('Required. Name of the link.')
+  name: string
+
+  @minLength(1)
+  @description('Required. Linked storage accounts resources Ids.')
+  storageAccountIds: string[]
+}
+
+@export()
+@description('Properties of the saved search.')
+type savedSearchType = {
+  @description('Required. Name of the saved search.')
+  name: string
+
+  @description('Optional. The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag.')
+  etag: string?
+
+  @description('Required. The category of the saved search. This helps the user to find a saved search faster.')
+  category: string
+
+  @description('Required. Display name for the search.')
+  displayName: string
+
+  @description('Optional. The function alias if query serves as a function.')
+  functionAlias: string?
+
+  @description('Optional. The optional function parameters if query serves as a function. Value should be in the following format: \'param-name1:type1 = default_value1, param-name2:type2 = default_value2\'. For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions.')
+  functionParameters: string?
+
+  @description('Required. The query expression for the saved search.')
+  query: string
+
+  @description('Optional. The tags attached to the saved search.')
+  tags: array?
+
+  @description('Optional. The version number of the query language. The current version is 2 and is the default.')
+  version: int?
+}
+
+import { destinationType } from 'data-export/main.bicep'
+
+@export()
+@description('Properties of the data export.')
+type dataExportType = {
+  @description('Required. Name of the data export.')
+  name: string
+
+  @description('Optional. The destination of the data export.')
+  destination: destinationType?
+
+  @description('Optional. Enable or disable the data export.')
+  enable: bool?
+
+  @description('Required. The list of table names to export.')
+  tableNames: string[]
+}
+
+@export()
+@description('Properties of the data source.')
+type dataSourceType = {
+  @description('Required. Name of the data source.')
+  name: string
+
+  @description('Required. The kind of data source.')
+  kind: string
+
+  @description('Optional. The resource id of the resource that will be linked to the workspace.')
+  linkedResourceId: string?
+
+  @description('Optional. The name of the event log to configure when kind is WindowsEvent.')
+  eventLogName: string?
+
+  @description('Optional. The event types to configure when kind is WindowsEvent.')
+  eventTypes: array?
+
+  @description('Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.')
+  objectName: string?
+
+  @description('Optional. Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.')
+  instanceName: string?
+
+  @description('Optional. Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject.')
+  intervalSeconds: int?
+
+  @description('Optional. List of counters to configure when the kind is LinuxPerformanceObject.')
+  performanceCounters: array?
+
+  @description('Optional. Counter name to configure when kind is WindowsPerformanceCounter.')
+  counterName: string?
+
+  @description('Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection.')
+  state: string?
+
+  @description('Optional. System log to configure when kind is LinuxSyslog.')
+  syslogName: string?
+
+  @description('Optional. Severities to configure when kind is LinuxSyslog.')
+  syslogSeverities: array?
+
+  @description('Optional. Tags to configure in the resource.')
+  tags: object?
+}
+
+import { schemaType, restoredLogsType, searchResultsType } from 'table/main.bicep'
+
+@export()
+@description('Properties of the custom table.')
+type tableType = {
+  @description('Required. The name of the table.')
+  name: string
+
+  @description('Optional. The plan for the table.')
+  plan: string?
+
+  @description('Optional. The restored logs for the table.')
+  restoredLogs: restoredLogsType?
+
+  @description('Optional. The schema for the table.')
+  schema: schemaType?
+
+  @description('Optional. The search results for the table.')
+  searchResults: searchResultsType?
+
+  @description('Optional. The retention in days for the table.')
+  retentionInDays: int?
+
+  @description('Optional. The total retention in days for the table.')
+  totalRetentionInDays: int?
+
+  @description('Optional. The role assignments for the table.')
+  roleAssignments: roleAssignmentType[]?
+}

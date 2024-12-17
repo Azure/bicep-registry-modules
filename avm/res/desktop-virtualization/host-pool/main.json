@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "988183823258334261"
+      "version": "0.30.23.60470",
+      "templateHash": "15143229112798242850"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -284,7 +284,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {

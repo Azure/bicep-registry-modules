@@ -5,14 +5,34 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "2074867794511783977"
+      "version": "0.30.23.60470",
+      "templateHash": "12984545577624848737"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "ipTagType": {
+      "type": "object",
+      "properties": {
+        "ipTagType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The IP tag type."
+          }
+        },
+        "tag": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The IP tag."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -36,80 +56,87 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -118,6 +145,17 @@
       "minLength": 1,
       "metadata": {
         "description": "Required. The name of the Public IP Prefix."
+      }
+    },
+    "tier": {
+      "type": "string",
+      "defaultValue": "Regional",
+      "allowedValues": [
+        "Global",
+        "Regional"
+      ],
+      "metadata": {
+        "description": "Optional. Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty."
       }
     },
     "location": {
@@ -129,20 +167,36 @@
     },
     "prefixLength": {
       "type": "int",
-      "minValue": 28,
-      "maxValue": 31,
+      "minValue": 21,
+      "maxValue": 127,
       "metadata": {
         "description": "Required. Length of the Public IP Prefix."
       }
     },
+    "publicIPAddressVersion": {
+      "type": "string",
+      "defaultValue": "IPv4",
+      "allowedValues": [
+        "IPv4",
+        "IPv6"
+      ],
+      "metadata": {
+        "description": "Optional. The public IP address version."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -161,6 +215,16 @@
         "description": "Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range."
       }
     },
+    "ipTags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ipTagType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of tags associated with the public IP prefix."
+      }
+    },
     "zones": {
       "type": "array",
       "items": {
@@ -177,7 +241,7 @@
         3
       ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
+        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes."
       }
     },
     "enableTelemetry": {
@@ -228,18 +292,20 @@
     },
     "publicIpPrefix": {
       "type": "Microsoft.Network/publicIPPrefixes",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "name": "Standard"
+        "name": "Standard",
+        "tier": "[parameters('tier')]"
       },
       "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
       "properties": {
         "customIPPrefix": "[if(not(empty(parameters('customIPPrefix'))), parameters('customIPPrefix'), null())]",
-        "publicIPAddressVersion": "IPv4",
-        "prefixLength": "[parameters('prefixLength')]"
+        "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
+        "prefixLength": "[parameters('prefixLength')]",
+        "ipTags": "[parameters('ipTags')]"
       }
     },
     "publicIpPrefix_lock": {
@@ -306,7 +372,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('publicIpPrefix', '2023-09-01', 'full').location]"
+      "value": "[reference('publicIpPrefix', '2024-01-01', 'full').location]"
     }
   }
 }

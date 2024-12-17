@@ -34,7 +34,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Private endpoint-enabled deployment](#example-3-private-endpoint-enabled-deployment)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -50,7 +52,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'akcmin0001'
+    name: 'kcmin0001'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     location: '<location>'
@@ -63,7 +65,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -72,7 +74,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "akcmin0001"
+      "value": "kcmin0001"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -83,6 +85,23 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcmin0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -102,7 +121,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'akcmax0001'
+    name: 'kcmax0001'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     acceptedAudiences: [
@@ -142,7 +161,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     principalAssignments: [
       {
         principalId: '<principalId>'
-        principalType: 'Group'
+        principalType: 'App'
         role: 'AllDatabasesViewer'
       }
     ]
@@ -175,7 +194,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -184,7 +203,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "akcmax0001"
+      "value": "kcmax0001"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -266,7 +285,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": [
         {
           "principalId": "<principalId>",
-          "principalType": "Group",
+          "principalType": "App",
           "role": "AllDatabasesViewer"
         }
       ]
@@ -302,6 +321,83 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcmax0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param acceptedAudiences = [
+  {
+    value: 'https://contoso.com'
+  }
+]
+param allowedFqdnList = [
+  'contoso.com'
+]
+param allowedIpRangeList = [
+  '192.168.1.1'
+]
+param autoScaleMax = 6
+param autoScaleMin = 3
+param capacity = 3
+param enableAutoScale = true
+param enableAutoStop = true
+param enableDiskEncryption = true
+param enableDoubleEncryption = true
+param enablePublicNetworkAccess = true
+param enablePurge = true
+param enableRestrictOutboundNetworkAccess = true
+param enableStreamingIngest = true
+param enableZoneRedundant = true
+param engineType = 'V3'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param principalAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'App'
+    role: 'AllDatabasesViewer'
+  }
+]
+param publicIPType = 'DualStack'
+param roleAssignments = [
+  {
+    name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
@@ -316,7 +412,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'akcpe0001'
+    name: 'kcpe0001'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     enablePublicNetworkAccess: false
@@ -360,7 +456,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -369,7 +465,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "akcpe0001"
+      "value": "kcpe0001"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -424,7 +520,242 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcpe0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param enablePublicNetworkAccess = false
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'cluster'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'cluster'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicIPType = 'IPv4'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    name: '<name>'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = '<name>'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    name: 'kcuencr0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcuencr0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcuencr0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -438,7 +769,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'akcwaf0001'
+    name: 'kcwaf0001'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     autoScaleMax: 10
@@ -451,10 +782,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     enablePublicNetworkAccess: false
     enableZoneRedundant: true
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -474,7 +801,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -483,7 +810,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "akcwaf0001"
+      "value": "kcwaf0001"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -519,12 +846,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -543,6 +864,42 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcwaf0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param autoScaleMax = 10
+param autoScaleMin = 3
+param capacity = 3
+param enableAutoScale = true
+param enableAutoStop = true
+param enableDiskEncryption = true
+param enableDoubleEncryption = true
+param enablePublicNetworkAccess = false
+param enableZoneRedundant = true
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param tier = 'Standard'
 ```
 
 </details>
@@ -616,7 +973,7 @@ The Kusto Cluster's accepted audiences.
 - Type: array
 - Default: `[]`
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -682,13 +1039,13 @@ The customer managed key definition.
 | :-- | :-- | :-- |
 | [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
 | [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
 
@@ -704,16 +1061,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
-
-User assigned identity to use when fetching the customer managed key.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
 - Required: No
 - Type: string
@@ -735,7 +1092,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -845,7 +1202,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -1069,7 +1426,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource id(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1080,9 +1437,9 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource id(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `principalAssignments`
@@ -1091,7 +1448,63 @@ The Principal Assignments for the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-principalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name. |
+| [`principalType`](#parameter-principalassignmentsprincipaltype) | string | The principal type of the principal id. |
+| [`role`](#parameter-principalassignmentsrole) | string | The Kusto Cluster role to be assigned to the principal id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tenantId`](#parameter-principalassignmentstenantid) | string | The tenant id of the principal. |
+
+### Parameter: `principalAssignments.principalId`
+
+The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `principalAssignments.principalType`
+
+The principal type of the principal id.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'App'
+    'Group'
+    'User'
+  ]
+  ```
+
+### Parameter: `principalAssignments.role`
+
+The Kusto Cluster role to be assigned to the principal id.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AllDatabasesAdmin'
+    'AllDatabasesViewer'
+  ]
+  ```
+
+### Parameter: `principalAssignments.tenantId`
+
+The tenant id of the principal.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints`
 
@@ -1104,7 +1517,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1129,7 +1542,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
@@ -1159,15 +1572,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -1175,6 +1586,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1322,7 +1740,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -1332,7 +1750,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -1347,7 +1765,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -1358,7 +1776,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -1390,6 +1808,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1510,6 +1939,10 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
 
 **Required parameters**
 
@@ -1662,33 +2095,25 @@ The virtual network configuration of the Kusto Cluster.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataManagementPublicIpId`](#parameter-virtualnetworkconfigurationdatamanagementpublicipid) | string | The public IP address resource id of the data management service.. |
-| [`enableVirtualNetworkInjection`](#parameter-virtualnetworkconfigurationenablevirtualnetworkinjection) | bool | Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet. |
-| [`enginePublicIpId`](#parameter-virtualnetworkconfigurationenginepublicipid) | string | The public IP address resource id of the engine service. |
-| [`subnetId`](#parameter-virtualnetworkconfigurationsubnetid) | string | The resource ID of the subnet to which to deploy the Kusto Cluster. |
+| [`dataManagementPublicIpResourceId`](#parameter-virtualnetworkconfigurationdatamanagementpublicipresourceid) | string | The public IP address resource id of the data management service.. |
+| [`enginePublicIpResourceId`](#parameter-virtualnetworkconfigurationenginepublicipresourceid) | string | The public IP address resource id of the engine service. |
+| [`subnetResourceId`](#parameter-virtualnetworkconfigurationsubnetresourceid) | string | The resource ID of the subnet to which to deploy the Kusto Cluster. |
 
-### Parameter: `virtualNetworkConfiguration.dataManagementPublicIpId`
+### Parameter: `virtualNetworkConfiguration.dataManagementPublicIpResourceId`
 
 The public IP address resource id of the data management service..
 
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualNetworkConfiguration.enableVirtualNetworkInjection`
-
-Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `virtualNetworkConfiguration.enginePublicIpId`
+### Parameter: `virtualNetworkConfiguration.enginePublicIpResourceId`
 
 The public IP address resource id of the engine service.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualNetworkConfiguration.subnetId`
+### Parameter: `virtualNetworkConfiguration.subnetResourceId`
 
 The resource ID of the subnet to which to deploy the Kusto Cluster.
 
@@ -1713,6 +2138,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 

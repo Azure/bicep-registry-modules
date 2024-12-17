@@ -25,14 +25,13 @@ on:
   push:
     branches:
       - main
-      - avm-application-gateway
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.network.application-gateway.yml"
       - "avm/res/network/application-gateway/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

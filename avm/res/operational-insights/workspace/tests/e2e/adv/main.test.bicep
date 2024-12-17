@@ -46,7 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -186,9 +186,10 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'AzureAutomation'
-          product: 'OMSGallery'
-          publisher: 'Microsoft'
+          name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
+          plan: {
+            product: 'OMSGallery/AzureAutomation'
+          }
         }
       ]
       linkedServices: [
@@ -200,7 +201,9 @@ module testDeployment '../../../main.bicep' = [
       linkedStorageAccounts: [
         {
           name: 'Query'
-          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountIds: [
+            nestedDependencies.outputs.storageAccountResourceId
+          ]
         }
       ]
       publicNetworkAccessForIngestion: 'Disabled'
@@ -233,11 +236,11 @@ module testDeployment '../../../main.bicep' = [
             columns: [
               {
                 name: 'TimeGenerated'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'RawData'
-                type: 'String'
+                type: 'string'
               }
             ]
           }
@@ -271,27 +274,27 @@ module testDeployment '../../../main.bicep' = [
             columns: [
               {
                 name: 'TimeGenerated'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'EventTime'
-                type: 'DateTime'
+                type: 'dateTime'
               }
               {
                 name: 'EventLevel'
-                type: 'String'
+                type: 'string'
               }
               {
                 name: 'EventCode'
-                type: 'Int'
+                type: 'int'
               }
               {
                 name: 'Message'
-                type: 'String'
+                type: 'string'
               }
               {
                 name: 'RawData'
-                type: 'String'
+                type: 'string'
               }
             ]
           }

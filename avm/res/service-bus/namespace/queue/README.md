@@ -7,6 +7,7 @@ This module deploys a Service Bus Namespace Queue.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -236,6 +237,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Service Bus Data Owner'`
+  - `'Azure Service Bus Data Receiver'`
+  - `'Azure Service Bus Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -356,3 +366,11 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 | `name` | string | The name of the deployed queue. |
 | `resourceGroupName` | string | The resource group of the deployed queue. |
 | `resourceId` | string | The resource ID of the deployed queue. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
