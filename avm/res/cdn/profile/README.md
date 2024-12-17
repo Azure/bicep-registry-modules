@@ -42,7 +42,7 @@ The following section provides usage examples for the module, which were used to
 - [As Azure Front Door Premium](#example-1-as-azure-front-door-premium)
 - [As Azure Front Door](#example-2-as-azure-front-door)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Max](#example-4-max)
+- [Using large parameter set](#example-4-using-large-parameter-set)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _As Azure Front Door Premium_
@@ -750,7 +750,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 4: _Max_
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
