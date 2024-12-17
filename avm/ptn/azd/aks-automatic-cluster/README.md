@@ -50,7 +50,7 @@ module aksAutomaticCluster 'br/public:avm/ptn/azd/aks-automatic-cluster:<version
   name: 'aksAutomaticClusterDeployment'
   params: {
     // Required parameters
-    name: 'csauto001'
+    name: 'csautomin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +71,7 @@ module aksAutomaticCluster 'br/public:avm/ptn/azd/aks-automatic-cluster:<version
   "parameters": {
     // Required parameters
     "name": {
-      "value": "csauto001"
+      "value": "csautomin001"
     },
     // Non-required parameters
     "location": {
@@ -92,7 +92,7 @@ module aksAutomaticCluster 'br/public:avm/ptn/azd/aks-automatic-cluster:<version
 using 'br/public:avm/ptn/azd/aks-automatic-cluster:<version>'
 
 // Required parameters
-param name = 'csauto001'
+param name = 'csautomin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -106,18 +106,18 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name for the AKS managed cluster |
+| [`name`](#parameter-name) | string | The name for the AKS managed cluster. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | The Azure region/location for the AKS resources |
+| [`location`](#parameter-location) | string | The Azure region/location for the AKS resources. |
 
 ### Parameter: `name`
 
-The name for the AKS managed cluster
+The name for the AKS managed cluster.
 
 - Required: Yes
 - Type: string
@@ -132,7 +132,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `location`
 
-The Azure region/location for the AKS resources
+The Azure region/location for the AKS resources.
 
 - Required: No
 - Type: string
@@ -142,8 +142,8 @@ The Azure region/location for the AKS resources
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `clusterIdentity` | object | The AKS cluster identity |
-| `clusterName` | string | The resource name of the AKS cluster |
+| `clusterIdentity` | object | The AKS cluster identity. |
+| `clusterName` | string | The resource name of the AKS cluster. |
 | `resourceGroupName` | string | The resource group the AKS cluster were deployed into. |
 
 ## Cross-referenced modules

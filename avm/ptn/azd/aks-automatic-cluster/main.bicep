@@ -4,10 +4,10 @@ metadata description = '''Creates an Azure Kubernetes Service (AKS) cluster with
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case'''
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name for the AKS managed cluster')
+@description('Required. The name for the AKS managed cluster.')
 param name string
 
-@description('Optional. The Azure region/location for the AKS resources')
+@description('Optional. The Azure region/location for the AKS resources.')
 param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -97,10 +97,10 @@ module aks 'br/public:avm/res/container-service/managed-cluster:0.5.3' = {
 @description('The resource group the AKS cluster were deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The resource name of the AKS cluster')
+@description('The resource name of the AKS cluster.')
 output clusterName string = aks.name
 
-@description('The AKS cluster identity')
+@description('The AKS cluster identity.')
 output clusterIdentity object = {
   clientId: aks.outputs.kubeletIdentityClientId
   objectId: aks.outputs.kubeletIdentityObjectId
