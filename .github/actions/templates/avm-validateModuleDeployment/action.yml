@@ -61,12 +61,12 @@ runs:
   steps:
     - name: Azure Login
       uses: azure/login@v2
-      if: {{ '' == env.AZURE_CLIENT_ID && '' == env.AZURE_SUBSCRIPTION_ID && '' == env.AZURE_TENANT_ID }}
+      if: ${{ '' == env.AZURE_CLIENT_ID && '' == env.AZURE_SUBSCRIPTION_ID && '' == env.AZURE_TENANT_ID }}
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
     - name: Azure Login
-      if: {{ '' != env.AZURE_CLIENT_ID || '' != env.AZURE_SUBSCRIPTION_ID || '' != env.AZURE_TENANT_ID }}
+      if: ${{ '' != env.AZURE_CLIENT_ID || '' != env.AZURE_SUBSCRIPTION_ID || '' != env.AZURE_TENANT_ID }}
       uses: azure/login@v2
       with:
         auth-type: 'IDENTITY'
