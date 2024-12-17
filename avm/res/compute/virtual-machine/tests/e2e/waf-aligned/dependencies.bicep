@@ -31,7 +31,7 @@ param proximityPlacementGroupName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The object ID of the Backup Management Service Enterprise Application. Required for Customer-Managed-Keys.')
+@description('Required. The object ID of the Backup Management Service Enterprise Application.')
 param backupManagementServiceApplicationObjectId string
 
 @description('Required. The name of the data collection rule.')
@@ -318,7 +318,7 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
     arguments: '-StorageAccountName ${storageAccount.name} -ResourceGroupName ${resourceGroup().name} -ContainerName ${storageAccount::blobService::container.name} -FileName ${storageAccountCSEFileName}'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
   }
   dependsOn: [
     msiRGContrRoleAssignment

@@ -18,7 +18,7 @@ param serviceShort string = 'wsfwaf'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'australiaeast'
 
 // ============ //
 // Dependencies //
@@ -31,7 +31,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
@@ -56,9 +56,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       skuName: 'P1v3'
-      skuCapacity: 2
-      zoneRedundant: false
-      kind: 'App'
+      skuCapacity: 3
+      zoneRedundant: true
+      kind: 'app'
       lock: {
         name: 'lock'
         kind: 'CanNotDelete'

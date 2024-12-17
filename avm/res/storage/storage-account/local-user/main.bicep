@@ -22,10 +22,10 @@ param hasSshPassword bool
 param homeDirectory string = ''
 
 @description('Required. The permission scopes of the local user.')
-param permissionScopes array
+param permissionScopes permissionScopeType[]
 
 @description('Optional. The local user SSH authorized keys for SFTP.')
-param sshAuthorizedKeys sshAuthorizedKeysType
+param sshAuthorizedKeys sshAuthorizedKeyType[]?
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
   name: storageAccountName
@@ -40,7 +40,7 @@ resource localUsers 'Microsoft.Storage/storageAccounts/localUsers@2023-04-01' = 
     hasSshPassword: hasSshPassword
     homeDirectory: homeDirectory
     permissionScopes: permissionScopes
-    sshAuthorizedKeys: sshAuthorizedKeys.?secureList
+    sshAuthorizedKeys: sshAuthorizedKeys
   }
 }
 
@@ -56,15 +56,24 @@ output resourceId string = localUsers.id
 // =============== //
 //   Definitions   //
 // =============== //
+@export()
+type sshAuthorizedKeyType = {
+  @description('Optional. Description used to store the function/usage of the key.')
+  description: string?
 
-@secure()
-type sshAuthorizedKeysType = {
-  @description('Optional. The list of SSH authorized keys.')
-  secureList: {
-    @description('Optional. Description used to store the function/usage of the key.')
-    description: string?
+  @secure()
+  @description('Required. SSH public key base64 encoded. The format should be: \'{keyType} {keyData}\', e.g. ssh-rsa AAAABBBB.')
+  key: string
+}
 
-    @description('Required. SSH public key base64 encoded. The format should be: \'{keyType} {keyData}\', e.g. ssh-rsa AAAABBBB.')
-    key: string
-  }[]
-}?
+@export()
+type permissionScopeType = {
+  @description('Required. The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c).')
+  permissions: string
+
+  @description('Required. The name of resource, normally the container name or the file share name, used by the local user.')
+  resourceName: string
+
+  @description('Required. The service used by the local user, e.g. blob, file.')
+  service: string
+}

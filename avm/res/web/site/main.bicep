@@ -64,10 +64,15 @@ param vnetRouteAllEnabled bool = false
 @description('Optional. Stop SCM (KUDU) site when the app is stopped.')
 param scmSiteAlsoStopped bool = false
 
-@description('Optional. The site config object.')
+@description('Optional. The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: \'1.2\', ftpsState: \'FtpsOnly\'.')
 param siteConfig object = {
   alwaysOn: true
+  minTlsVersion: '1.2'
+  ftpsState: 'FtpsOnly'
 }
+
+@description('Optional. The Function App configuration object.')
+param functionAppConfig object?
 
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
@@ -245,7 +250,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource app 'Microsoft.Web/sites@2022-09-01' = {
+resource app 'Microsoft.Web/sites@2023-12-01' = {
   name: name
   location: location
   kind: kind
@@ -265,6 +270,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
     virtualNetworkSubnetId: virtualNetworkSubnetId
     siteConfig: siteConfig
+    functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
     clientCertExclusionPaths: clientCertExclusionPaths
     clientCertMode: clientCertMode
@@ -294,6 +300,7 @@ module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettings
     storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
     appInsightResourceId: appInsightResourceId
     appSettingsKeyValuePairs: appSettingsKeyValuePairs
+    currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
   }
 }
 
@@ -351,6 +358,7 @@ module app_slots 'slot/main.bicep' = [
       storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
       virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
       siteConfig: slot.?siteConfig ?? siteConfig
+      functionAppConfig: slot.?functionAppConfig ?? functionAppConfig
       storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
       storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
       appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
@@ -649,7 +657,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')

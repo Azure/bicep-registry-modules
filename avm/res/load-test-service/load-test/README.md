@@ -8,6 +8,7 @@ This module deploys a Load test.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -57,7 +58,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +75,22 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/load-test-service/load-test:<version>'
+
+// Required parameters
+param name = 'ltmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -136,7 +153,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -199,6 +216,53 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/load-test-service/load-test:<version>'
+
+// Required parameters
+param name = 'ltmax001'
+// Non-required parameters
+param loadTestDescription = 'This is a test load test to validate the module.'
+param location = '<location>'
+param lock = {
+  kind: 'None'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param roleAssignments = [
+  {
+    name: 'd37a15bc-8634-4f4f-a736-700c1b955cd7'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
@@ -235,7 +299,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -265,6 +329,32 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/load-test-service/load-test:<version>'
+
+// Required parameters
+param name = 'ltucmk001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
@@ -304,7 +394,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -333,6 +423,29 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/load-test-service/load-test:<version>'
+
+// Required parameters
+param name = 'ltwaf001'
+// Non-required parameters
+param enableTelemetry = '<enableTelemetry>'
+param loadTestDescription = 'This is a sample load test.'
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -385,26 +498,26 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
 
 The name of the customer managed key to use for encryption.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
 The resource ID of a key vault to reference a customer managed key for encryption from.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
 
 - Required: No
 - Type: string
@@ -509,6 +622,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -616,6 +735,14 @@ Resource tags.
 | `resourceGroupName` | string | The resource group the load test was deployed into. |
 | `resourceId` | string | The resource ID of the load test. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 

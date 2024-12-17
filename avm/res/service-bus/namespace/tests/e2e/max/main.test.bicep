@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -76,7 +76,6 @@ module testDeployment '../../../main.bicep' = [
         capacity: 16
       }
       premiumMessagingPartitions: 1
-      zoneRedundant: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -300,7 +299,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       managedIdentities: {
         systemAssigned: true
-        userAssignedResourcesIds: [
+        userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
@@ -308,9 +307,5 @@ module testDeployment '../../../main.bicep' = [
       publicNetworkAccess: 'Enabled'
       minimumTlsVersion: '1.2'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

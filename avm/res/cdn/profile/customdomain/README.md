@@ -49,6 +49,7 @@ The type of the certificate used for secure delivery.
 - Allowed:
   ```Bicep
   [
+    'AzureFirstPartyManagedCertificate'
     'CustomerCertificate'
     'ManagedCertificate'
   ]
@@ -126,6 +127,7 @@ Resource reference to the Azure DNS zone.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `dnsValidation` |  | The DNS validation records. |
 | `name` | string | The name of the custom domain. |
 | `resourceGroupName` | string | The name of the resource group the custom domain was created in. |
 | `resourceId` | string | The resource id of the custom domain. |

@@ -7,6 +7,7 @@ This module deploys an Event Hub Namespace Event Hub.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -273,6 +274,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Event Hubs Data Owner'`
+  - `'Azure Event Hubs Data Receiver'`
+  - `'Azure Event Hubs Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -393,3 +403,11 @@ Enumerates the possible values for the status of the Event Hub.
 | `name` | string | The name of the event hub. |
 | `resourceGroupName` | string | The resource group the event hub was deployed into. |
 | `resourceId` | string | The resource ID of the event hub. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |

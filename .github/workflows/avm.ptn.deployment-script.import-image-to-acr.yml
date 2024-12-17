@@ -1,8 +1,6 @@
 name: "avm.ptn.deployment-script.import-image-to-acr"
 
 on:
-  schedule:
-    - cron: "0 12 1/15 * *" # Bi-Weekly Test (on 1st & 15th of month)
   workflow_dispatch:
     inputs:
       staticValidation:
@@ -32,8 +30,8 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.deployment-script.import-image-to-acr.yml"
       - "avm/ptn/deployment-script/import-image-to-acr/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

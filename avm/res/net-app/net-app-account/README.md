@@ -8,6 +8,7 @@ This module deploys an Azure NetApp File.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -63,7 +64,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -80,6 +81,22 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaamin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -161,6 +178,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             protocolTypes: [
               'NFSv4.1'
             ]
+            smbContinuouslyAvailable: false
+            smbEncryption: false
+            smbNonBrowsable: 'Disabled'
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
             zones: [
@@ -226,7 +246,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -299,6 +319,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "protocolTypes": [
                 "NFSv4.1"
               ],
+              "smbContinuouslyAvailable": false,
+              "smbEncryption": false,
+              "smbNonBrowsable": "Disabled",
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
               "zones": [
@@ -365,6 +388,140 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaamax001'
+// Non-required parameters
+param capacityPools = [
+  {
+    name: 'nanaamax-cp-001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: [
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        exportPolicyRules: [
+          {
+            allowedClients: '0.0.0.0/0'
+            nfsv3: false
+            nfsv41: true
+            ruleIndex: 1
+            unixReadOnly: false
+            unixReadWrite: true
+          }
+        ]
+        name: 'nanaamax-vol-001'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv4.1'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          '1'
+        ]
+      }
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        exportPolicyRules: [
+          {
+            allowedClients: '0.0.0.0/0'
+            nfsv3: false
+            nfsv41: true
+            ruleIndex: 1
+            unixReadOnly: false
+            unixReadWrite: true
+          }
+        ]
+        name: 'nanaamax-vol-002'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv4.1'
+        ]
+        smbContinuouslyAvailable: false
+        smbEncryption: false
+        smbNonBrowsable: 'Disabled'
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          '1'
+        ]
+      }
+    ]
+  }
+  {
+    name: 'nanaamax-cp-002'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: []
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: '18051111-2a33-4f8e-8b24-441aac1e6562'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Contact: 'test.user@testcompany.com'
+  CostCenter: '7890'
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  PurchaseOrder: '1234'
+  Role: 'DeploymentValidation'
+  ServiceName: 'DeploymentValidation'
 }
 ```
 
@@ -499,7 +656,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -631,6 +788,124 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaanfs3001'
+// Non-required parameters
+param capacityPools = [
+  {
+    name: 'nanaanfs3-cp-001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: [
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        exportPolicyRules: [
+          {
+            allowedClients: '0.0.0.0/0'
+            nfsv3: true
+            nfsv41: false
+            ruleIndex: 1
+            unixReadOnly: false
+            unixReadWrite: true
+          }
+        ]
+        name: 'nanaanfs3-vol-001'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv3'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          '1'
+        ]
+      }
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        name: 'nanaanfs3-vol-002'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv3'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          '1'
+        ]
+      }
+    ]
+  }
+  {
+    name: 'nanaanfs3-cp-002'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: []
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Contact: 'test.user@testcompany.com'
+  CostCenter: '7890'
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  PurchaseOrder: '1234'
+  Role: 'DeploymentValidation'
+  ServiceName: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -660,7 +935,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -681,6 +956,25 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaawaf001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  service: 'netapp'
 }
 ```
 
@@ -770,7 +1064,7 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -789,7 +1083,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
 
 - Required: No
 - Type: string
@@ -936,13 +1230,13 @@ The managed identity definition for this resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `roleAssignments`
@@ -951,6 +1245,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1074,6 +1374,14 @@ Tags for all resources.
 | `resourceGroupName` | string | The name of the Resource Group the NetApp account was created in. |
 | `resourceId` | string | The Resource ID of the NetApp account. |
 | `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 

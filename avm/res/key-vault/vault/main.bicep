@@ -13,13 +13,13 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. All access policies to create.')
-param accessPolicies accessPoliciesType
+param accessPolicies accessPolicyType[]?
 
 @description('Optional. All secrets to create.')
-param secrets secretsType?
+param secrets secretType[]?
 
 @description('Optional. All keys to create.')
-param keys keysType?
+param keys keyType[]?
 
 @description('Optional. Specifies if the vault is enabled for deployment by script or compute.')
 param enableVaultForDeployment bool = true
@@ -63,20 +63,24 @@ param networkAcls object?
 ])
 param publicNetworkAccess string = ''
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Resource tags.')
 param tags object?
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -301,7 +305,7 @@ module keyVault_keys 'key/main.bicep' = [
   }
 ]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -388,186 +392,76 @@ output uri string = keyVault.properties.vaultUri
 output location string = keyVault.location
 
 @description('The private endpoints of the key vault.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: keyVault_privateEndpoints[i].outputs.name
-    resourceId: keyVault_privateEndpoints[i].outputs.resourceId
-    groupId: keyVault_privateEndpoints[i].outputs.groupId
-    customDnsConfig: keyVault_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: keyVault_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: keyVault_privateEndpoints[index].outputs.name
+    resourceId: keyVault_privateEndpoints[index].outputs.resourceId
+    groupId: keyVault_privateEndpoints[index].outputs.groupId
+    customDnsConfigs: keyVault_privateEndpoints[index].outputs.customDnsConfig
+    networkInterfaceResourceIds: keyVault_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
+@description('The properties of the created secrets.')
+output secrets credentialOutputType[] = [
+  #disable-next-line outputs-should-not-contain-secrets // Only returning the references, not any secret value
+  for index in range(0, length(secrets ?? [])): {
+    resourceId: keyVault_secrets[index].outputs.resourceId
+    uri: keyVault_secrets[index].outputs.secretUri
+    uriWithVersion: keyVault_secrets[index].outputs.secretUriWithVersion
+  }
+]
+
+@description('The properties of the created keys.')
+output keys credentialOutputType[] = [
+  for index in range(0, length(keys ?? [])): {
+    resourceId: keyVault_keys[index].outputs.resourceId
+    uri: keyVault_keys[index].outputs.keyUri
+    uriWithVersion: keyVault_keys[index].outputs.keyUriWithVersion
   }
 ]
 
 // ================ //
 // Definitions      //
 // ================ //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
 
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type privateEndpointType = {
-  @description('Optional. The name of the private endpoint.')
-  name: string?
-
-  @description('Optional. The location to deploy the private endpoint to.')
-  location: string?
-
-  @description('Optional. The name of the private link connection to create.')
-  privateLinkServiceConnectionName: string?
-
-  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
-  service: string?
-
-  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
-
-  @description('Optional. The private DNS zone group to configure for the private endpoint.')
-  privateDnsZoneGroup: {
-    @description('Optional. The name of the Private DNS Zone Group.')
-    name: string?
-
-    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
-    privateDnsZoneGroupConfigs: {
-      @description('Optional. The name of the private DNS zone group config.')
-      name: string?
-
-      @description('Required. The resource id of the private DNS zone.')
-      privateDnsZoneResourceId: string
-    }[]
-  }?
-
-  @description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
-
-  @description('Optional. Custom DNS configurations.')
+  @description('The custom DNS configurations of the private endpoint.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private IP addresses of the private endpoint.')
+    @description('A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
-  }[]?
+  }[]
 
-  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @description('Required. The name of the resource that is unique within a resource group.')
-    name: string
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
-    @description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
+@export()
+type credentialOutputType = {
+  @description('The item\'s resourceId.')
+  resourceId: string
 
-      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
+  @description('The item\'s uri.')
+  uri: string
 
-      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
+  @description('The item\'s uri with version.')
+  uriWithVersion: string
+}
 
-  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
-
-  @description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
-
-  @description('Optional. Specify the type of lock.')
-  lock: lockType
-
-  @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
-
-  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
-}[]?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type accessPoliciesType = {
+@export()
+type accessPolicyType = {
   @description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
   tenantId: string?
 
@@ -644,9 +538,10 @@ type accessPoliciesType = {
       | 'setsas'
       | 'update')[]?
   }
-}[]?
+}
 
-type secretsType = {
+@export()
+type secretType = {
   @description('Required. The name of the secret.')
   name: string
 
@@ -672,10 +567,11 @@ type secretsType = {
   value: string
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType?
-}[]?
+  roleAssignments: roleAssignmentType[]?
+}
 
-type keysType = {
+@export()
+type keyType = {
   @description('Required. The name of the key.')
   name: string
 
@@ -715,13 +611,13 @@ type keysType = {
   }?
 
   @description('Optional. Key rotation policy.')
-  rotationPolicy: rotationPoliciesType?
+  rotationPolicy: rotationPolicyType?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType?
-}[]?
+  roleAssignments: roleAssignmentType[]?
+}
 
-type rotationPoliciesType = {
+type rotationPolicyType = {
   @description('Optional. The attributes of key rotation policy.')
   attributes: {
     @description('Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y".')
@@ -745,4 +641,4 @@ type rotationPoliciesType = {
       timeBeforeExpiry: string?
     }?
   }[]?
-}?
+}

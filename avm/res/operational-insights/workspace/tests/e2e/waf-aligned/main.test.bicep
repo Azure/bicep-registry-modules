@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -168,9 +168,10 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'AzureAutomation'
-          product: 'OMSGallery'
-          publisher: 'Microsoft'
+          name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
+          plan: {
+            product: 'OMSGallery/AzureAutomation'
+          }
         }
       ]
       linkedServices: [
@@ -182,7 +183,9 @@ module testDeployment '../../../main.bicep' = [
       linkedStorageAccounts: [
         {
           name: 'Query'
-          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountIds: [
+            nestedDependencies.outputs.storageAccountResourceId
+          ]
         }
       ]
       publicNetworkAccessForIngestion: 'Disabled'

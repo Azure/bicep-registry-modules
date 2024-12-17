@@ -62,7 +62,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -92,6 +92,26 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
+
+// Required parameters
+param name = 'apamgmin001'
+param policyDefinitionId = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+// Non-required parameters
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+}
+```
+
+</details>
+<p>
+
 ### Example 2: _Policy Assignments (Management Group scope)_
 
 This module deploys a Policy Assignment at a Management Group scope using common parameters.
@@ -109,6 +129,15 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     name: 'apamgmax001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
+    additionalManagementGroupsIDsToAssignRbacTo: [
+      '<name>'
+    ]
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      '<resourceId>'
+    ]
+    additionalSubscriptionIDsToAssignRbacTo: [
+      '<subscriptionId>'
+    ]
     description: '[Description] Policy Assignment at the management group scope'
     displayName: '[Display Name] Policy Assignment at the management group scope'
     enforcementMode: 'DoNotEnforce'
@@ -126,7 +155,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       }
     ]
     notScopes: [
-      '/subscriptions/<value>/resourceGroups/validation-rg'
+      '<resourceId>'
     ]
     overrides: [
       {
@@ -182,7 +211,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -197,6 +226,21 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
     },
     // Non-required parameters
+    "additionalManagementGroupsIDsToAssignRbacTo": {
+      "value": [
+        "<name>"
+      ]
+    },
+    "additionalResourceGroupResourceIDsToAssignRbacTo": {
+      "value": [
+        "<resourceId>"
+      ]
+    },
+    "additionalSubscriptionIDsToAssignRbacTo": {
+      "value": [
+        "<subscriptionId>"
+      ]
+    },
     "description": {
       "value": "[Description] Policy Assignment at the management group scope"
     },
@@ -231,7 +275,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "notScopes": {
       "value": [
-        "/subscriptions/<value>/resourceGroups/validation-rg"
+        "<resourceId>"
       ]
     },
     "overrides": {
@@ -294,6 +338,95 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
+
+// Required parameters
+param name = 'apamgmax001'
+param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+// Non-required parameters
+param additionalManagementGroupsIDsToAssignRbacTo = [
+  '<name>'
+]
+param additionalResourceGroupResourceIDsToAssignRbacTo = [
+  '<resourceId>'
+]
+param additionalSubscriptionIDsToAssignRbacTo = [
+  '<subscriptionId>'
+]
+param description = '[Description] Policy Assignment at the management group scope'
+param displayName = '[Display Name] Policy Assignment at the management group scope'
+param enforcementMode = 'DoNotEnforce'
+param identity = 'SystemAssigned'
+param location = '<location>'
+param managementGroupId = '<managementGroupId>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+  version: '1.0'
+}
+param nonComplianceMessages = [
+  {
+    message: 'Violated Policy Assignment - This is a Non Compliance Message'
+  }
+]
+param notScopes = [
+  '<resourceId>'
+]
+param overrides = [
+  {
+    kind: 'policyEffect'
+    selectors: [
+      {
+        in: [
+          'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+          'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+        ]
+        kind: 'policyDefinitionReferenceId'
+      }
+    ]
+    value: 'Disabled'
+  }
+]
+param parameters = {
+  effect: {
+    value: 'Disabled'
+  }
+  enableCollectionOfSqlQueriesForSecurityResearch: {
+    value: false
+  }
+}
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+param roleDefinitionIds = [
+  '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _Policy Assignments (Resource Group)_
 
 This module deploys a Policy Assignment at a Resource Group scope using minimal parameters.
@@ -326,7 +459,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -357,6 +490,28 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
+
+// Required parameters
+param name = 'apargmin001'
+param policyDefinitionId = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+// Non-required parameters
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+}
+param resourceGroupName = '<resourceGroupName>'
+param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -454,7 +609,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -572,6 +727,88 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
+
+// Required parameters
+param name = 'apargmax001'
+param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+// Non-required parameters
+param description = '[Description] Policy Assignment at the resource group scope'
+param displayName = '[Display Name] Policy Assignment at the resource group scope'
+param enforcementMode = 'DoNotEnforce'
+param identity = 'UserAssigned'
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+  version: '1.0'
+}
+param nonComplianceMessages = [
+  {
+    message: 'Violated Policy Assignment - This is a Non Compliance Message'
+  }
+]
+param notScopes = [
+  '<keyVaultResourceId>'
+]
+param overrides = [
+  {
+    kind: 'policyEffect'
+    selectors: [
+      {
+        in: [
+          'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+          'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+        ]
+        kind: 'policyDefinitionReferenceId'
+      }
+    ]
+    value: 'Disabled'
+  }
+]
+param parameters = {
+  effect: {
+    value: 'Disabled'
+  }
+  enableCollectionOfSqlQueriesForSecurityResearch: {
+    value: false
+  }
+}
+param resourceGroupName = '<resourceGroupName>'
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+param roleDefinitionIds = [
+  '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
+param subscriptionId = '<subscriptionId>'
+param userAssignedIdentityId = '<userAssignedIdentityId>'
+```
+
+</details>
+<p>
+
 ### Example 5: _Policy Assignments (Subscription)_
 
 This module deploys a Policy Assignment at a Subscription scope using common parameters.
@@ -605,7 +842,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -635,6 +872,29 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
+
+// Required parameters
+param name = 'apasubmin001'
+param policyDefinitionId = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+// Non-required parameters
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+  version: '1.0'
+}
+param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -731,7 +991,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -846,6 +1106,87 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
+
+// Required parameters
+param name = 'apasubmax001'
+param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+// Non-required parameters
+param description = '[Description] Policy Assignment at the subscription scope'
+param displayName = '[Display Name] Policy Assignment at the subscription scope'
+param enforcementMode = 'DoNotEnforce'
+param identity = 'UserAssigned'
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+  version: '1.0'
+}
+param nonComplianceMessages = [
+  {
+    message: 'Violated Policy Assignment - This is a Non Compliance Message'
+  }
+]
+param notScopes = [
+  '/subscriptions/<value>/resourceGroups/validation-rg'
+]
+param overrides = [
+  {
+    kind: 'policyEffect'
+    selectors: [
+      {
+        in: [
+          'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+          'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+        ]
+        kind: 'policyDefinitionReferenceId'
+      }
+    ]
+    value: 'Disabled'
+  }
+]
+param parameters = {
+  effect: {
+    value: 'Disabled'
+  }
+  enableCollectionOfSqlQueriesForSecurityResearch: {
+    value: false
+  }
+}
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+param roleDefinitionIds = [
+  '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
+param subscriptionId = '<subscriptionId>'
+param userAssignedIdentityId = '<userAssignedIdentityId>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -859,6 +1200,9 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`additionalManagementGroupsIDsToAssignRbacTo`](#parameter-additionalmanagementgroupsidstoassignrbacto) | array | An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity. |
+| [`additionalResourceGroupResourceIDsToAssignRbacTo`](#parameter-additionalresourcegroupresourceidstoassignrbacto) | array | An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
+| [`additionalSubscriptionIDsToAssignRbacTo`](#parameter-additionalsubscriptionidstoassignrbacto) | array | An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
 | [`description`](#parameter-description) | string | This message will be part of response in case of policy violation. |
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -890,6 +1234,30 @@ Specifies the ID of the policy definition or policy set definition being assigne
 
 - Required: Yes
 - Type: string
+
+### Parameter: `additionalManagementGroupsIDsToAssignRbacTo`
+
+An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `additionalResourceGroupResourceIDsToAssignRbacTo`
+
+An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `additionalSubscriptionIDsToAssignRbacTo`
+
+An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `description`
 

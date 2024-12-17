@@ -56,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      description: 'This is a test deployment.'
       applications: [
         {
           name: '${namePrefix}-${serviceShort}-appd-001'
@@ -135,7 +136,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-az-imgd-wdtl-003'
-          securityType: 'TrustedLaunch'
+          securityType: 'Standard'
           osType: 'Windows'
           osState: 'Generalized'
           hyperVGeneration: 'V2'

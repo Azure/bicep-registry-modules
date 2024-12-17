@@ -12,7 +12,7 @@ This module deploys a Storage Account Local User, which is used for SFTP authent
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 
 ## Parameters
 
@@ -37,7 +37,7 @@ This module deploys a Storage Account Local User, which is used for SFTP authent
 | :-- | :-- | :-- |
 | [`hasSharedKey`](#parameter-hassharedkey) | bool | Indicates whether shared key exists. Set it to false to remove existing shared key. |
 | [`homeDirectory`](#parameter-homedirectory) | string | The local user home directory. |
-| [`sshAuthorizedKeys`](#parameter-sshauthorizedkeys) | secureObject | The local user SSH authorized keys for SFTP. |
+| [`sshAuthorizedKeys`](#parameter-sshauthorizedkeys) | array | The local user SSH authorized keys for SFTP. |
 
 ### Parameter: `hasSshKey`
 
@@ -67,6 +67,35 @@ The permission scopes of the local user.
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`permissions`](#parameter-permissionscopespermissions) | string | The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c). |
+| [`resourceName`](#parameter-permissionscopesresourcename) | string | The name of resource, normally the container name or the file share name, used by the local user. |
+| [`service`](#parameter-permissionscopesservice) | string | The service used by the local user, e.g. blob, file. |
+
+### Parameter: `permissionScopes.permissions`
+
+The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `permissionScopes.resourceName`
+
+The name of resource, normally the container name or the file share name, used by the local user.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `permissionScopes.service`
+
+The service used by the local user, e.g. blob, file.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `storageAccountName`
 
 The name of the parent Storage Account. Required if the template is used in a standalone deployment.
@@ -95,7 +124,33 @@ The local user home directory.
 The local user SSH authorized keys for SFTP.
 
 - Required: No
-- Type: secureObject
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-sshauthorizedkeyskey) | securestring | SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-sshauthorizedkeysdescription) | string | Description used to store the function/usage of the key. |
+
+### Parameter: `sshAuthorizedKeys.key`
+
+SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `sshAuthorizedKeys.description`
+
+Description used to store the function/usage of the key.
+
+- Required: No
+- Type: string
 
 ## Outputs
 

@@ -7,13 +7,14 @@ This module deploys a Storage Account Queue.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
 
 ## Parameters
 
@@ -21,7 +22,6 @@ This module deploys a Storage Account Queue.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`metadata`](#parameter-metadata) | object | A name-value pair that represents queue metadata. |
 | [`name`](#parameter-name) | string | The name of the storage queue to deploy. |
 
 **Conditional parameters**
@@ -34,15 +34,8 @@ This module deploys a Storage Account Queue.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`metadata`](#parameter-metadata) | object | A name-value pair that represents queue metadata. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-
-### Parameter: `metadata`
-
-A name-value pair that represents queue metadata.
-
-- Required: No
-- Type: object
-- Default: `{}`
 
 ### Parameter: `name`
 
@@ -58,12 +51,34 @@ The name of the parent Storage Account. Required if the template is used in a st
 - Required: Yes
 - Type: string
 
+### Parameter: `metadata`
+
+A name-value pair that represents queue metadata.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reader and Data Access'`
+  - `'Role Based Access Control Administrator'`
+  - `'Storage Account Backup Contributor'`
+  - `'Storage Account Contributor'`
+  - `'Storage Account Key Operator Service Role'`
+  - `'Storage Queue Data Contributor'`
+  - `'Storage Queue Data Message Processor'`
+  - `'Storage Queue Data Message Sender'`
+  - `'Storage Queue Data Reader'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -162,3 +177,11 @@ The principal type of the assigned principal ID.
 | `name` | string | The name of the deployed queue. |
 | `resourceGroupName` | string | The resource group of the deployed queue. |
 | `resourceId` | string | The resource ID of the deployed queue. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |

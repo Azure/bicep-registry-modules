@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -76,9 +76,11 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'Updates'
-          product: 'OMSGallery'
-          publisher: 'Microsoft'
+          name: 'Updates(${last(split(diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId, '/'))})'
+          plan: {
+            product: 'OMSGallery/Updates'
+            publisher: 'Microsoft'
+          }
         }
       ]
       jobSchedules: [

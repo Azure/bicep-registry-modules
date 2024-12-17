@@ -23,9 +23,6 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
-@description('Required. Network features available to the volume, or current state of update (Basic/Standard).')
-param networkFeatures string = 'Standard'
-
 @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
 param size int
 
@@ -42,8 +39,9 @@ param volumes array = []
 @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
 param coolAccess bool = false
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool.')
 @allowed([
@@ -122,7 +120,6 @@ module capacityPool_volumes 'volume/main.bicep' = [
       remoteVolumeRegion: volume.?remoteVolumeRegion ?? ''
       remoteVolumeResourceId: volume.?remoteVolumeResourceId ?? ''
       replicationSchedule: volume.?replicationSchedule ?? ''
-      snapshotPolicyId: volume.?snapshotPolicyId ?? ''
       snapshotPolicyName: volume.?snapshotPolicyName ?? 'snapshotPolicy'
       snapshotPolicyLocation: volume.?snapshotPolicyLocation ?? ''
       snapEnabled: volume.?snapEnabled ?? false
@@ -157,6 +154,8 @@ module capacityPool_volumes 'volume/main.bicep' = [
       useExistingSnapshot: volume.?useExistingSnapshot ?? false
       volumeResourceId: volume.?volumeResourceId ?? ''
       volumeType: volume.?volumeType ?? ''
+      backupVaultResourceId: volume.?backupVaultResourceId ?? ''
+      replicationEnabled: volume.?replicationEnabled ?? false
     }
   }
 ]
@@ -191,33 +190,3 @@ output location string = capacityPool.location
 
 @description('The resource IDs of the volume created in the capacity pool.')
 output volumeResourceId string = (volumes != []) ? capacityPool_volumes[0].outputs.resourceId : ''
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?

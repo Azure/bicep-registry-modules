@@ -20,16 +20,18 @@ param enableTelemetry bool = true
 param description string?
 
 @sys.description('Optional. Applications to create.')
-param applications array?
+param applications applicationsType[]?
 
 @sys.description('Optional. Images to create.')
 param images imageType[]? // use a UDT here to not overload the main module, as it has images and applications parameters
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType?
+param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Tags for all resources.')
 @metadata({
@@ -214,41 +216,8 @@ output imageResourceIds array = [
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
-
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}
-
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
-
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]
-
 import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
+@export()
 type imageType = {
   @sys.description('Required. Name of the image definition.')
   @minLength(1)
@@ -277,12 +246,18 @@ type imageType = {
   hyperVGeneration: ('V1' | 'V2')?
 
   @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.')
-  securityType: ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
+  securityType: (
+    | 'Standard'
+    | 'ConfidentialVM'
+    | 'TrustedLaunchSupported'
+    | 'TrustedLaunch'
+    | 'TrustedLaunchAndConfidentialVmSupported'
+    | 'ConfidentialVMSupported')?
 
   @sys.description('Optional. Specify if the image supports accelerated networking. Defaults to true.')
   isAcceleratedNetworkSupported: bool?
 
-  @sys.description('Optional. Specifiy if the image supports hibernation.')
+  @sys.description('Optional. Specify if the image supports hibernation.')
   isHibernateSupported: bool?
 
   @sys.description('Optional. The architecture of the image. Applicable to OS disks only.')
@@ -305,4 +280,39 @@ type imageType = {
 
   @sys.description('Optional. Describes the disallowed disk types.')
   excludedDiskTypes: string[]?
+}
+
+import { customActionType } from './application/main.bicep'
+type applicationsType = {
+  @sys.description('Required. Name of the application definition.')
+  @minLength(1)
+  @maxLength(80)
+  name: string
+
+  @sys.description('Required. The OS type of the application.')
+  supportedOSType: 'Linux' | 'Windows'
+
+  @sys.description('Optional. The description of this gallery application definition resource. This property is updatable.')
+  description: string?
+
+  @sys.description('Optional. The Eula agreement for the gallery application definition.')
+  eula: string?
+
+  @sys.description('Optional. The privacy statement uri.')
+  privacyStatementUri: string?
+
+  @sys.description('Optional. The release note uri. Has to be a valid URL.')
+  releaseNoteUri: string?
+
+  @sys.description('Optional. The end of life date of the gallery application definition. This property can be used for decommissioning purposes. This property is updatable.')
+  endOfLifeDate: string?
+
+  @sys.description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
+  customActions: customActionType[]?
+
+  @sys.description('Optional. Tags for all resources.')
+  tags: object?
 }

@@ -31,9 +31,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/nat-gateway:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Combine a generated and provided Public IP Prefix](#example-3-combine-a-generated-and-provided-public-ip-prefix)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using an existing Public IP](#example-2-using-an-existing-public-ip)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Combine a generated and provided Public IP Prefix](#example-4-combine-a-generated-and-provided-public-ip-prefix)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -62,7 +63,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -87,7 +88,98 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngmin001'
+param zone = 1
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using an existing Public IP_
+
+This instance deploys the module using an existing Public IP address.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
+  name: 'natGatewayDeployment'
+  params: {
+    // Required parameters
+    name: 'nngepip001'
+    zone: 1
+    // Non-required parameters
+    location: '<location>'
+    publicIpResourceIds: '<publicIpResourceIds>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nngepip001"
+    },
+    "zone": {
+      "value": 1
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpResourceIds": {
+      "value": "<publicIpResourceIds>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngepip001'
+param zone = 1
+// Non-required parameters
+param location = '<location>'
+param publicIpResourceIds = '<publicIpResourceIds>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -184,7 +276,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -287,7 +379,94 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 3: _Combine a generated and provided Public IP Prefix_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngmax001'
+param zone = 1
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param publicIPAddressObjects = [
+  {
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    name: 'nngmax001-pip'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    skuTier: 'Regional'
+    zones: [
+      1
+      2
+      3
+    ]
+  }
+]
+param roleAssignments = [
+  {
+    name: '69d7ed51-8af4-4eed-bcea-bdadcccb1200'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Combine a generated and provided Public IP Prefix_
 
 This example shows how you can provide a Public IP Prefix to the module, while also generating one in the module.
 
@@ -323,7 +502,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -359,7 +538,33 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngcprx001'
+param zone = 0
+// Non-required parameters
+param location = '<location>'
+param publicIPPrefixObjects = [
+  {
+    name: 'nngcprx001-pippre'
+    prefixLength: 30
+    tags: {
+      'hidden-title': 'CustomTag'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -420,7 +625,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -479,6 +684,57 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngwaf001'
+param zone = 1
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param publicIPAddressObjects = [
+  {
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    name: 'nngwaf001-pip'
+    skuTier: 'Regional'
+    zones: [
+      1
+      2
+      3
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -628,6 +884,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

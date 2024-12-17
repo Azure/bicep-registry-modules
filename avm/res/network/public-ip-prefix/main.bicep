@@ -6,19 +6,35 @@ metadata owner = 'Azure/module-maintainers'
 @minLength(1)
 param name string
 
+@description('Optional. Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.')
+@allowed([
+  'Global'
+  'Regional'
+])
+param tier string = 'Regional'
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
 @description('Required. Length of the Public IP Prefix.')
-@minValue(28)
-@maxValue(31)
+@minValue(21)
+@maxValue(127)
 param prefixLength int
 
-@description('Optional. The lock settings of the service.')
-param lock lockType
+@description('Optional. The public IP address version.')
+@allowed([
+  'IPv4'
+  'IPv6'
+])
+param publicIPAddressVersion string = 'IPv4'
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -26,7 +42,10 @@ param tags object?
 @description('Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
 param customIPPrefix object = {}
 
-@description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
+@description('Optional. The list of tags associated with the public IP prefix.')
+param ipTags ipTagType[]?
+
+@description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes.')
 @allowed([
   1
   2
@@ -89,18 +108,20 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-09-01' = {
+resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2024-01-01' = {
   name: name
   location: location
   tags: tags
   sku: {
     name: 'Standard'
+    tier: tier
   }
   zones: map(zones, zone => string(zone))
   properties: {
     customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
-    publicIPAddressVersion: 'IPv4'
+    publicIPAddressVersion: publicIPAddressVersion
     prefixLength: prefixLength
+    ipTags: ipTags
   }
 }
 
@@ -147,36 +168,11 @@ output location string = publicIpPrefix.location
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+@export()
+type ipTagType = {
+  @description('Required. The IP tag type.')
+  ipTagType: string
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Required. The IP tag.')
+  tag: string
+}
