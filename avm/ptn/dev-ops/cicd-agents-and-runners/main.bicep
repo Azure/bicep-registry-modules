@@ -59,7 +59,7 @@ var acaGitHubRules = (selfHostedConfig.selfHostedType == 'github')
         type: 'github-runner'
         metadata: {
           owner: selfHostedConfig.githubOrganization
-          repos: selfHostedConfig.githubRepository
+          repos: selfHostedConfig.?runnerScope != 'repo' ? null : selfHostedConfig.?githubRepository
           targetWorkflowQueueLength: selfHostedConfig.?targetWorkflowQueueLength ?? '1'
           runnerScope: selfHostedConfig.?runnerScope ?? 'repo'
         }
@@ -83,36 +83,42 @@ var acaGitHubSecrets = (selfHostedConfig.selfHostedType == 'github')
   : []
 
 var acaGitHubEnvVariables = (selfHostedConfig.selfHostedType == 'github')
-  ? [
-      {
-        name: 'RUNNER_NAME_PREFIX'
-        value: selfHostedConfig.?runnerNamePrefix ?? 'gh-runner'
-      }
-      {
-        name: 'REPO_URL'
-        value: gitHubRunnerURL
-      }
-      {
-        name: 'RUNNER_SCOPE'
-        value: selfHostedConfig.?runnerScope ?? 'repo'
-      }
-      {
-        name: 'EPHEMERAL'
-        value: selfHostedConfig.?ephemeral ?? 'true'
-      }
-      {
-        name: 'ORG_NAME'
-        value: selfHostedConfig.?gitHubOrganization
-      }
-      {
-        name: 'RUNNER_GROUP'
-        value: selfHostedConfig.?runnerGroup ?? ''
-      }
-      {
-        name: 'ACCESS_TOKEN'
-        secretRef: 'personal-access-token'
-      }
-    ]
+  ? union(
+      selfHostedConfig.?runnerScope == 'repo'
+        ? [
+            {
+              name: 'REPO_URL'
+              value: gitHubRunnerURL
+            }
+          ]
+        : [],
+      [
+        {
+          name: 'RUNNER_NAME_PREFIX'
+          value: selfHostedConfig.?runnerNamePrefix ?? 'gh-runner'
+        }
+        {
+          name: 'RUNNER_SCOPE'
+          value: selfHostedConfig.?runnerScope ?? 'repo'
+        }
+        {
+          name: 'EPHEMERAL'
+          value: selfHostedConfig.?ephemeral ?? 'true'
+        }
+        {
+          name: 'ORG_NAME'
+          value: selfHostedConfig.?gitHubOrganization
+        }
+        {
+          name: 'RUNNER_GROUP'
+          value: selfHostedConfig.?runnerGroup ?? ''
+        }
+        {
+          name: 'ACCESS_TOKEN'
+          secretRef: 'personal-access-token'
+        }
+      ]
+    )
   : []
 
 var acaAzureDevOpsEnvVariables = (selfHostedConfig.selfHostedType == 'azuredevops')
@@ -936,7 +942,7 @@ type gitHubRunnersType = {
   githubOrganization: string
 
   @description('Required. The GitHub repository name.')
-  githubRepository: string
+  githubRepository: string?
 
   @description('Optional. The GitHub runner name.')
   runnerName: string?
@@ -947,7 +953,7 @@ type gitHubRunnersType = {
   @description('Optional. The GitHub runner name prefix.')
   runnerNamePrefix: string?
 
-  @description('Optional. The GitHub runner scope.')
+  @description('Optional. The GitHub runner scope. Depending on the scope, you would need to set the right permissions for your Personal Access Token.')
   runnerScope: 'repo' | 'org' | 'ent'?
 
   @description('Optional. Deploy ephemeral runners.')
