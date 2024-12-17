@@ -5,14 +5,52 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "17763488971312324293"
+      "version": "0.32.4.45862",
+      "templateHash": "15037909642602435679"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "replicaType": {
+      "type": "object",
+      "properties": {
+        "promoteMode": {
+          "type": "string",
+          "allowedValues": [
+            "standalone",
+            "switchover"
+          ],
+          "metadata": {
+            "description": "Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'\n'switchover'."
+          }
+        },
+        "promoteOption": {
+          "type": "string",
+          "allowedValues": [
+            "forced",
+            "planned"
+          ],
+          "metadata": {
+            "description": "Conditional. Sets the promote options for a replica server. This is a write only property.\t'forced'\n'planned'."
+          }
+        },
+        "role": {
+          "type": "string",
+          "allowedValues": [
+            "AsyncReplica",
+            "GeoAsyncReplica",
+            "None",
+            "Primary"
+          ],
+          "metadata": {
+            "description": "Conditional. Used to indicate role of the server in replication set.\t'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'."
+          }
+        }
+      },
+      "nullable": true
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -800,6 +838,12 @@
         "description": "Optional. The configurations to create in the server."
       }
     },
+    "replica": {
+      "$ref": "#/definitions/replicaType",
+      "metadata": {
+        "description": "Conditional. The replication settings for the server. Can only be set on existing flexible servers."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
@@ -848,7 +892,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used."
+        "description": "Optional. Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used."
       }
     }
   },
@@ -878,10 +922,7 @@
       "apiVersion": "2023-07-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -954,6 +995,7 @@
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
         "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneArmResourceId', parameters('privateDnsZoneArmResourceId')), null())]",
         "pointInTimeUTC": "[if(equals(parameters('createMode'), 'PointInTimeRestore'), parameters('pointInTimeUTC'), null())]",
+        "replica": "[parameters('replica')]",
         "sourceServerResourceId": "[if(or(equals(parameters('createMode'), 'PointInTimeRestore'), equals(parameters('createMode'), 'Replica')), parameters('sourceServerResourceId'), null())]",
         "storage": {
           "storageSizeGB": "[parameters('storageSizeGB')]",
@@ -962,8 +1004,7 @@
         "version": "[parameters('version')]"
       },
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
+        "cMKKeyVault::cMKKey"
       ]
     },
     "flexibleServer_lock": {
@@ -1077,8 +1118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "9727749658752104599"
+              "version": "0.32.4.45862",
+              "templateHash": "12665965031871834086"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -1126,10 +1167,7 @@
               "properties": {
                 "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
                 "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
-              },
-              "dependsOn": [
-                "flexibleServer"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1194,8 +1232,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "6379250023868980103"
+              "version": "0.32.4.45862",
+              "templateHash": "12221906194129831148"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
@@ -1304,8 +1342,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "8957023200335864723"
+              "version": "0.32.4.45862",
+              "templateHash": "8692991969370260536"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -1353,10 +1391,7 @@
               "properties": {
                 "source": "[if(not(empty(parameters('source'))), parameters('source'), null())]",
                 "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
-              },
-              "dependsOn": [
-                "flexibleServer"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1425,8 +1460,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17553479172045066016"
+              "version": "0.32.4.45862",
+              "templateHash": "18332216191723325884"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",
@@ -1536,8 +1571,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "11267804074285843191"
+              "version": "0.32.4.45862",
+              "templateHash": "16472244225874840702"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection.",

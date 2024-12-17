@@ -149,6 +149,9 @@ param databases array = []
 @description('Optional. The configurations to create in the server.')
 param configurations array = []
 
+@description('Conditional. The replication settings for the server. Can only be set on existing flexible servers.')
+param replica replicaType
+
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -168,7 +171,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@description('Optional. Configuration details for private endpoints. Used when the desired connectivy mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
+@description('Optional. Configuration details for private endpoints. Used when the desired connectivity mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 var formattedUserAssignedIdentities = reduce(
@@ -299,6 +302,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
         }
       : null
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
+    replica: replica
     sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica')
       ? sourceServerResourceId
       : null
@@ -499,3 +503,16 @@ output location string = flexibleServer.location
 
 @description('The FQDN of the PostgreSQL Flexible server.')
 output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
+
+type replicaType = {
+  @description('''Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'
+'switchover'.''')
+  promoteMode: ('standalone' | 'switchover')
+
+  @description('''Conditional. Sets the promote options for a replica server. This is a write only property.	'forced'
+'planned'.''')
+  promoteOption: ('forced' | 'planned')
+
+  @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'.''')
+  role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
+}?

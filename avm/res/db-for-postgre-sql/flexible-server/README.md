@@ -1322,6 +1322,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Required if 'cMKKeyName' is not empty. |
 | [`pointInTimeUTC`](#parameter-pointintimeutc) | string | Required if 'createMode' is set to 'PointInTimeRestore'. |
+| [`replica`](#parameter-replica) | object | The replication settings for the server. Can only be set on existing flexible servers. |
 | [`sourceServerResourceId`](#parameter-sourceserverresourceid) | string | Required if 'createMode' is set to 'PointInTimeRestore'. |
 
 **Optional parameters**
@@ -1348,7 +1349,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
 | [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be linked to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverThreatProtection`](#parameter-serverthreatprotection) | string | Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server. |
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
@@ -1412,6 +1413,65 @@ Required if 'createMode' is set to 'PointInTimeRestore'.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `replica`
+
+The replication settings for the server. Can only be set on existing flexible servers.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`promoteMode`](#parameter-replicapromotemode) | string | Sets the promote mode for a replica server. This is a write only property. 'standalone'<p>'switchover'. |
+| [`promoteOption`](#parameter-replicapromoteoption) | string | Sets the promote options for a replica server. This is a write only property.	'forced'<p>'planned'. |
+| [`role`](#parameter-replicarole) | string | Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. |
+
+### Parameter: `replica.promoteMode`
+
+Sets the promote mode for a replica server. This is a write only property. 'standalone'<p>'switchover'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'standalone'
+    'switchover'
+  ]
+  ```
+
+### Parameter: `replica.promoteOption`
+
+Sets the promote options for a replica server. This is a write only property.	'forced'<p>'planned'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'forced'
+    'planned'
+  ]
+  ```
+
+### Parameter: `replica.role`
+
+Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AsyncReplica'
+    'GeoAsyncReplica'
+    'None'
+    'Primary'
+  ]
+  ```
 
 ### Parameter: `sourceServerResourceId`
 
@@ -1837,7 +1897,7 @@ Private dns zone arm resource ID. Used when the desired connectivity mode is 'Pr
 
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used.
+Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used.
 
 - Required: No
 - Type: array
