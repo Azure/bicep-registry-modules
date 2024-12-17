@@ -14,7 +14,7 @@ param tags object?
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
-@description('Optional. Default to Standard. The offer type for the Cosmos DB database account.')
+@description('Optional. Default to Standard. The offer type for the Azure Cosmos DB database account.')
 @allowed([
   'Standard'
 ])
@@ -33,23 +33,23 @@ param locations failoverLocationsType[] = []
 @description('Optional. Default to Session. The default consistency level of the Cosmos DB account.')
 param defaultConsistencyLevel string = 'Session'
 
-@description('Optional. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
+@description('Optional. Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
 param disableLocalAuth bool = true
 
-@description('Optional. Flag to indicate whether to enable storage analytics.')
+@description('Optional. Default to false. Flag to indicate whether to enable storage analytics.')
 param enableAnalyticalStorage bool = false
 
-@description('Optional. Enable automatic failover for regions.')
+@description('Optional. Default to true. Enable automatic failover for regions.')
 param automaticFailover bool = true
 
-@description('Optional. Flag to indicate whether Free Tier is enabled.')
+@description('Optional. Default to false. Flag to indicate whether Free Tier is enabled.')
 param enableFreeTier bool = false
 
-@description('Optional. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
+@description('Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
 param enableMultipleWriteLocations bool = false
 
-@description('Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
-param disableKeyBasedMetadataWriteAccess bool = false
+@description('Optional. Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
+param disableKeyBasedMetadataWriteAccess bool = true
 
 @minValue(1)
 @maxValue(2147483647)
@@ -67,6 +67,9 @@ param maxIntervalInSeconds int = 300
   '3.6'
   '4.0'
   '4.2'
+  '5.0'
+  '6.0'
+  '7.0'
 ])
 param serverVersion string = '4.2'
 
@@ -85,8 +88,14 @@ param mongodbDatabases array = []
 @description('Optional. Gremlin Databases configurations.')
 param gremlinDatabases array = []
 
+@description('Optional. Table configurations.')
+param tables array = []
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s).')
+param totalThroughputLimit int = -1
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -104,6 +113,9 @@ param diagnosticSettings diagnosticSettingType
   'EnableMongo'
   'DisableRateLimitingResponses'
   'EnableServerless'
+  'EnableNoSQLVectorSearch'
+  'EnableNoSQLFullTextSearch'
+  'EnableMaterializedViews'
 ])
 @description('Optional. List of Cosmos DB capabilities for the account.')
 param capabilitiesToAdd string[] = []
@@ -146,8 +158,18 @@ param privateEndpoints privateEndpointType
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. The network configuration of this module.')
-param networkRestrictions networkRestrictionsType?
+@description('Optional. The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: \'Disabled\' }`.')
+param networkRestrictions networkRestrictionsType = {
+  ipRules: []
+  virtualNetworkRules: []
+  publicNetworkAccess: 'Disabled'
+}
+
+@allowed([
+  'Tls12'
+])
+@description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
+param minimumTlsVersion string = 'Tls12'
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -243,36 +265,40 @@ var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
+    capabilities: capabilities
+    minimalTlsVersion: minimumTlsVersion
+    capacity: {
+      totalThrougputLimit: totalThroughputLimit
+    }
   },
-  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
+  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
     ? {
-        // Common properties
+        // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
         consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
         enableMultipleWriteLocations: enableMultipleWriteLocations
         locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
 
         ipRules: ipRules
         virtualNetworkRules: virtualNetworkRules
-        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
-        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
+        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
+        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
         isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
 
-        capabilities: capabilities
         enableFreeTier: enableFreeTier
         enableAutomaticFailover: automaticFailover
         enableAnalyticalStorage: enableAnalyticalStorage
       }
     : {}),
-  (!empty(sqlDatabases)
+  ((!empty(sqlDatabases) || !empty(tables))
     ? {
-        // SQLDB properties
+        // NoSQL and Table properties
         disableLocalAuth: disableLocalAuth
         disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
       }
     : {}),
   (!empty(mongodbDatabases)
     ? {
-        // MongoDb properties
+        // MongoDB RU properties
         apiProperties: {
           serverVersion: serverVersion
         }
@@ -459,6 +485,19 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
       graphs: gremlinDatabase.?graphs
       maxThroughput: gremlinDatabase.?maxThroughput
       throughput: gremlinDatabase.?throughput
+    }
+  }
+]
+
+module databaseAccount_tables 'table/main.bicep' = [
+  for table in tables: {
+    name: '${uniqueString(deployment().name, location)}-table-${table.name}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      name: table.name
+      tags: table.?tags ?? tags
+      maxThroughput: table.?maxThroughput
+      throughput: table.?throughput
     }
   }
 ]
@@ -713,7 +752,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private ip addresses of the private endpoint.')
@@ -929,18 +968,18 @@ type secretsOutputType = {
 }
 
 type networkRestrictionsType = {
-  @description('Optional. Default to []. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
-  ipRules: string[]
+  @description('Optional. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
+  ipRules: string[]?
 
-  @description('Optional. Default to AzureServices. Specifies the network ACL bypass for Azure services.')
+  @description('Optional. Default to None. Specifies the network ACL bypass for Azure services.')
   networkAclBypass: ('AzureServices' | 'None')?
 
-  @description('Optional. Default to Enabled. Whether requests from Public Network are allowed.')
+  @description('Optional. Default to Disabled. Whether requests from Public Network are allowed.')
   publicNetworkAccess: ('Enabled' | 'Disabled')?
 
-  @description('Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account..')
+  @description('Optional. List of Virtual Network ACL rules configured for the Cosmos DB account..')
   virtualNetworkRules: {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string
-  }[]
+  }[]?
 }

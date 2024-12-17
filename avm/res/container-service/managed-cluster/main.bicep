@@ -38,6 +38,7 @@ param networkPluginMode string?
 @allowed([
   'azure'
   'calico'
+  'cilium'
 ])
 param networkPolicy string?
 
@@ -76,6 +77,13 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
+@description('Optional. Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
+@allowed([
+  'Base'
+  'Automatic'
+])
+param skuName string = 'Base'
+
 @description('Optional. Tier of a managed cluster SKU.')
 @allowed([
   'Free'
@@ -93,39 +101,30 @@ param adminUsername string = 'azureuser'
 @description('Optional. Specifies the SSH RSA public key string for the Linux nodes.')
 param sshPublicKey string?
 
+@description('Optional. Enable Azure Active Directory integration.')
+param aadProfile aadProfileType?
+
 @description('Conditional. Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster.')
 param aksServicePrincipalProfile object?
-
-@description('Optional. The client AAD application ID.')
-param aadProfileClientAppID string?
-
-@description('Optional. The server AAD application ID.')
-param aadProfileServerAppID string?
-
-@description('Optional. The server AAD application secret.')
-#disable-next-line secure-secrets-in-params // Not a secret
-param aadProfileServerAppSecret string?
-
-@description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
-param aadProfileTenantId string = subscription().tenantId
-
-@description('Optional. Specifies the AAD group object IDs that will have admin role of the cluster.')
-param aadProfileAdminGroupObjectIDs string[]?
-
-@description('Optional. Specifies whether to enable managed AAD integration.')
-param aadProfileManaged bool = true
 
 @description('Optional. Whether to enable Kubernetes Role-Based Access Control.')
 param enableRBAC bool = true
 
-@description('Optional. Specifies whether to enable Azure RBAC for Kubernetes authorization.')
-param aadProfileEnableAzureRBAC bool = enableRBAC
-
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
 param disableLocalAccounts bool = true
 
+@description('Optional. Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
+@allowed([
+  'Auto'
+  'Manual'
+])
+param nodeProvisioningProfileMode string?
+
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
+
+@description('Optional. The node resource group configuration profile.')
+param nodeResourceGroupProfile object?
 
 @description('Optional. IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.')
 param authorizedIPRanges string[]?
@@ -392,6 +391,21 @@ param metricLabelsAllowlist string = ''
 @description('Optional. A comma-separated list of Kubernetes cluster metrics annotations.')
 param metricAnnotationsAllowList string = ''
 
+@description('Optional. Specifies whether the Istio ServiceMesh add-on is enabled or not.')
+param istioServiceMeshEnabled bool = false
+
+@description('Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values.')
+param istioServiceMeshRevisions array?
+
+@description('Optional. Specifies whether the Internal Istio Ingress Gateway is enabled or not.')
+param istioServiceMeshInternalIngressGatewayEnabled bool = false
+
+@description('Optional. Specifies whether the External Istio Ingress Gateway is enabled or not.')
+param istioServiceMeshExternalIngressGatewayEnabled bool = false
+
+@description('Optional. The Istio Certificate Authority definition.')
+param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityType
+
 // =========== //
 // Variables   //
 // =========== //
@@ -537,7 +551,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
   tags: tags
   identity: identity
   sku: {
-    name: 'Base'
+    name: skuName
     tier: skuTier
   }
   properties: {
@@ -678,6 +692,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     enableRBAC: enableRBAC
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
+    nodeResourceGroupProfile: nodeResourceGroupProfile
+    nodeProvisioningProfile: !empty(nodeProvisioningProfileMode)
+      ? {
+          mode: nodeProvisioningProfileMode
+        }
+      : null
     enablePodSecurityPolicy: enablePodSecurityPolicy
     workloadAutoScalerProfile: {
       keda: {
@@ -690,8 +710,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     networkProfile: {
       networkDataplane: networkDataplane
       networkPlugin: networkPlugin
-      networkPluginMode: networkPluginMode
-      networkPolicy: networkPolicy
+      networkPluginMode: networkDataplane == 'cilium' ? 'overlay' : networkPluginMode
+      networkPolicy: networkDataplane == 'cilium' ? 'cilium' : networkPolicy
       podCidr: podCidr
       serviceCidr: serviceCidr
       dnsServiceIP: dnsServiceIP
@@ -708,15 +728,17 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     publicNetworkAccess: publicNetworkAccess
-    aadProfile: {
-      clientAppID: aadProfileClientAppID
-      serverAppID: aadProfileServerAppID
-      serverAppSecret: aadProfileServerAppSecret
-      managed: aadProfileManaged
-      enableAzureRBAC: aadProfileEnableAzureRBAC
-      adminGroupObjectIDs: aadProfileAdminGroupObjectIDs
-      tenantID: aadProfileTenantId
-    }
+    aadProfile: !empty(aadProfile)
+      ? {
+          clientAppID: aadProfile.?aadProfileClientAppID
+          serverAppID: aadProfile.?aadProfileServerAppID
+          serverAppSecret: aadProfile.?aadProfileServerAppSecret
+          managed: aadProfile.?aadProfileManaged
+          enableAzureRBAC: aadProfile.?aadProfileEnableAzureRBAC
+          adminGroupObjectIDs: aadProfile.?aadProfileAdminGroupObjectIDs
+          tenantID: aadProfile.?aadProfileTenantId
+        }
+      : null
     autoScalerProfile: {
       'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
       expander: autoScalerProfileExpander
@@ -811,6 +833,37 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     supportPlan: supportPlan
+    serviceMeshProfile: istioServiceMeshEnabled
+      ? {
+          istio: {
+            revisions: !empty(istioServiceMeshRevisions) ? istioServiceMeshRevisions : null
+            components: {
+              ingressGateways: [
+                {
+                  enabled: istioServiceMeshInternalIngressGatewayEnabled
+                  mode: 'Internal'
+                }
+                {
+                  enabled: istioServiceMeshExternalIngressGatewayEnabled
+                  mode: 'External'
+                }
+              ]
+            }
+            certificateAuthority: !empty(istioServiceMeshCertificateAuthority)
+              ? {
+                  plugin: {
+                    certChainObjectName: istioServiceMeshCertificateAuthority.?certChainObjectName
+                    certObjectName: istioServiceMeshCertificateAuthority.?certObjectName
+                    keyObjectName: istioServiceMeshCertificateAuthority.?keyObjectName
+                    keyVaultId: istioServiceMeshCertificateAuthority.?keyVaultResourceId
+                    rootCertObjectName: istioServiceMeshCertificateAuthority.?rootCertObjectName
+                  }
+                }
+              : null
+          }
+          mode: 'Istio'
+        }
+      : null
   }
 }
 
@@ -879,7 +932,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
-    name: 'flux'
+    name: fluxExtension.?name ?? 'flux'
     releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
     releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
     version: fluxExtension.?version
@@ -1229,7 +1282,7 @@ type fluxConfigurationProtectedSettingsType = {
 
 @export()
 type extensionType = {
-  @description('Required. The name of the extension.')
+  @description('Optional. The name of the extension.')
   name: string?
 
   @description('Optional. Namespace where the extension Release must be placed.')
@@ -1238,7 +1291,7 @@ type extensionType = {
   @description('Optional. Namespace where the extension will be created for an Namespace scoped extension.')
   targetNamespace: string?
 
-  @description('Required. The release train of the extension.')
+  @description('Optional. The release train of the extension.')
   releaseTrain: string?
 
   @description('Optional. The configuration protected settings of the extension.')
@@ -1276,4 +1329,45 @@ type maintenanceConfigurationType = {
 
   @description('Required. Maintenance window for the maintenance configuration.')
   maintenanceWindow: object
-}
+}?
+
+type istioServiceMeshCertificateAuthorityType = {
+  @description('Required. The resource ID of a key vault to reference a Certificate Authority from.')
+  keyVaultResourceId: string
+
+  @description('Required. The Certificate chain object name in Azure Key Vault.')
+  certChainObjectName: string
+
+  @description('Required. The Intermediate certificate object name in Azure Key Vault.')
+  certObjectName: string
+
+  @description('Required. The Intermediate certificate private key object name in Azure Key Vault.')
+  keyObjectName: string
+
+  @description('Required. Root certificate object name in Azure Key Vault.')
+  rootCertObjectName: string
+}?
+
+@export()
+type aadProfileType = {
+  @description('Optional. The client AAD application ID.')
+  aadProfileClientAppID: string?
+
+  @description('Optional. The server AAD application ID.')
+  aadProfileServerAppID: string?
+
+  @description('Optional. The server AAD application secret.')
+  aadProfileServerAppSecret: string?
+
+  @description('Required. Specifies whether to enable managed AAD integration.')
+  aadProfileManaged: bool
+
+  @description('Required. Specifies whether to enable Azure RBAC for Kubernetes authorization.')
+  aadProfileEnableAzureRBAC: bool
+
+  @description('Optional. Specifies the AAD group object IDs that will have admin role of the cluster.')
+  aadProfileAdminGroupObjectIDs: string[]?
+
+  @description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
+  aadProfileTenantId: string?
+}?

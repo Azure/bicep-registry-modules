@@ -79,7 +79,7 @@ resource getRegistrationTokenDeploymentScript 'Microsoft.Resources/deploymentScr
   properties: {
     azPowerShellVersion: '10.0'
     arguments: '-HostPoolName "${hostPool.name}" -HostPoolResourceGroupName "${resourceGroup().name}" -SubscriptionId "${subscription().subscriptionId}"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Get-HostPoolRegistrationKey.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-HostPoolRegistrationKey.ps1')
     retentionInterval: 'PT1H'
   }
 }

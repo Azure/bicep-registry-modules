@@ -1,7 +1,14 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults and use AKS Automatic mode'
-metadata description = 'This instance deploys the module with the set of automatic parameters.'
+metadata name = 'Using only defaults and use AKS Automatic mode (PREVIEW)'
+metadata description = '''
+This instance deploys the module with the set of automatic parameters.'
+
+Node autoprovisioning (NAP) for AKS is currently in PREVIEW.
+Register the NodeAutoProvisioningPreview feature flag using the az feature register command.
+
+MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION.
+'''
 
 // ========== //
 // Parameters //
@@ -39,6 +46,16 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
+      disableLocalAccounts: true
+      enableKeyvaultSecretsProvider: true
+      enableSecretRotation: true
+      kedaAddon: true
+      kubernetesVersion: '1.28'
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
       maintenanceConfigurations: [
         {
           name: 'aksManagedAutoUpgradeSchedule'
@@ -62,14 +79,23 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
+      nodeProvisioningProfileMode: 'Auto'
+      nodeResourceGroupProfile: {
+        restrictionLevel: 'ReadOnly'
+      }
+      outboundType: 'managedNATGateway'
       primaryAgentPoolProfiles: [
         {
           name: 'systempool'
-          count: 3
-          vmSize: 'Standard_DS2_v2'
+          count: 1
+          vmSize: 'Standard_DS4_v2'
           mode: 'System'
         }
       ]
+      publicNetworkAccess: 'Enabled'
+      skuName: 'Automatic'
+      vpaAddon: true
+      webApplicationRoutingEnabled: true
     }
   }
 ]

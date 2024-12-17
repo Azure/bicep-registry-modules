@@ -111,6 +111,12 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Array of access policies to create.')
+param accessPolicies accessPolicyType[] = []
+
+@description('Optional. Array of access policy assignments.')
+param accessPolicyAssignments accessPolicyAssignmentType[] = []
+
 var availabilityZones = skuName == 'Premium'
   ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
   : []
@@ -206,6 +212,31 @@ resource redis 'Microsoft.Cache/redis@2024-03-01' = {
   }
   zones: availabilityZones
 }
+
+resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-04-01-preview' = [
+  for policy in accessPolicies: {
+    name: policy.name
+    parent: redis
+    properties: {
+      permissions: policy.permissions
+    }
+  }
+]
+
+resource redis_accessPolicyAssignments 'Microsoft.Cache/redis/accessPolicyAssignments@2024-04-01-preview' = [
+  for assignment in accessPolicyAssignments: {
+    name: assignment.objectId
+    parent: redis
+    properties: {
+      objectId: assignment.objectId
+      objectIdAlias: assignment.objectIdAlias
+      accessPolicyName: assignment.accessPolicyName
+    }
+    dependsOn: [
+      redis_accessPolicies
+    ]
+  }
+]
 
 resource redis_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -421,7 +452,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')
@@ -537,3 +568,19 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type accessPolicyType = {
+  @description('Required. Name of the access policy.')
+  name: string
+  @description('Required. Permissions associated with the access policy.')
+  permissions: string
+}
+
+type accessPolicyAssignmentType = {
+  @description('Required. Object id to which the access policy will be assigned.')
+  objectId: string
+  @description('Required. Alias for the target object id.')
+  objectIdAlias: string
+  @description('Required. Name of the access policy to be assigned.')
+  accessPolicyName: string
+}

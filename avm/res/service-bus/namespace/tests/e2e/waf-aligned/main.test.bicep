@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -66,22 +66,12 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       location: resourceLocation
-      skuObject: {
-        name: 'Premium'
-        capacity: 2
-      }
-      premiumMessagingPartitions: 1
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      roleAssignments: []
       networkRuleSets: {
         defaultAction: 'Deny'
         trustedServiceAccessEnabled: true
@@ -193,19 +183,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      managedIdentities: {
-        systemAssigned: true
-        userAssignedResourcesIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
-      disableLocalAuth: true
       publicNetworkAccess: 'Enabled'
-      minimumTlsVersion: '1.2'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

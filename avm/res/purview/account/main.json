@@ -5,29 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14495497067965615328"
+      "version": "0.31.92.45157",
+      "templateHash": "18280782395141983115"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      },
-      "nullable": true
-    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -349,7 +334,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -465,6 +450,27 @@
         }
       },
       "nullable": true
+    },
+    "managedIdentityOnlyUserAssignedType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -491,9 +497,22 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "managedEventHubState": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "NotSpecified"
+      ],
+      "metadata": {
+        "description": "Optional. The state of the managed Event Hub."
       }
     },
     "managedResourceGroupName": {
@@ -501,6 +520,18 @@
       "defaultValue": "[format('managed-rg-{0}', parameters('name'))]",
       "metadata": {
         "description": "Optional. The Managed Resource Group Name. A managed Storage Account, and an Event Hubs will be created in the selected subscription for catalog ingestion scenarios. Default is 'managed-rg-<purview-account-name>'."
+      }
+    },
+    "managedResourcesPublicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "NotSpecified",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "NotSpecified"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not public network access is allowed for managed resources."
       }
     },
     "publicNetworkAccess": {
@@ -615,14 +646,16 @@
     },
     "account": {
       "type": "Microsoft.Purview/accounts",
-      "apiVersion": "2021-07-01",
+      "apiVersion": "2021-12-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
         "cloudConnectors": {},
+        "managedEventHubState": "[parameters('managedEventHubState')]",
         "managedResourceGroupName": "[parameters('managedResourceGroupName')]",
+        "managedResourcesPublicNetworkAccess": "[parameters('managedResourcesPublicNetworkAccess')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
       }
     },
@@ -703,9 +736,9 @@
         "account"
       ]
     },
-    "account_privateEndpoints": {
+    "account_accountPrivateEndpoints": {
       "copy": {
-        "name": "account_privateEndpoints",
+        "name": "account_accountPrivateEndpoints",
         "count": "[length(coalesce(parameters('accountPrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
@@ -1469,9 +1502,9 @@
         "account"
       ]
     },
-    "portal_privateEndpoints": {
+    "account_portalPrivateEndpoints": {
       "copy": {
-        "name": "portal_privateEndpoints",
+        "name": "account_portalPrivateEndpoints",
         "count": "[length(coalesce(parameters('portalPrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
@@ -2235,9 +2268,9 @@
         "account"
       ]
     },
-    "blob_privateEndpoints": {
+    "account_storageBlobPrivateEndpoints": {
       "copy": {
-        "name": "blob_privateEndpoints",
+        "name": "account_storageBlobPrivateEndpoints",
         "count": "[length(coalesce(parameters('storageBlobPrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
@@ -3001,9 +3034,9 @@
         "account"
       ]
     },
-    "queue_privateEndpoints": {
+    "account_storageQueuePrivateEndpoints": {
       "copy": {
-        "name": "queue_privateEndpoints",
+        "name": "account_storageQueuePrivateEndpoints",
         "count": "[length(coalesce(parameters('storageQueuePrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
@@ -3767,9 +3800,9 @@
         "account"
       ]
     },
-    "eventHub_privateEndpoints": {
+    "account_eventHubPrivateEndpoints": {
       "copy": {
-        "name": "eventHub_privateEndpoints",
+        "name": "account_eventHubPrivateEndpoints",
         "count": "[length(coalesce(parameters('eventHubPrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
@@ -4561,7 +4594,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('account', '2021-07-01', 'full').location]"
+      "value": "[reference('account', '2021-12-01', 'full').location]"
     },
     "managedResourceGroupName": {
       "type": "string",
@@ -4596,7 +4629,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('account', '2021-07-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('account', '2021-12-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "accountPrivateEndpoints": {
       "type": "array",
@@ -4606,11 +4639,11 @@
       "copy": {
         "count": "[length(if(not(empty(parameters('accountPrivateEndpoints'))), array(parameters('accountPrivateEndpoints')), createArray()))]",
         "input": {
-          "name": "[reference(format('account_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('account_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('account_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('account_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('account_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('account_accountPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('account_accountPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('account_accountPrivateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('account_accountPrivateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('account_accountPrivateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
     },
@@ -4622,11 +4655,11 @@
       "copy": {
         "count": "[length(if(not(empty(parameters('portalPrivateEndpoints'))), array(parameters('portalPrivateEndpoints')), createArray()))]",
         "input": {
-          "name": "[reference(format('portal_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('portal_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('portal_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('portal_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('portal_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('account_portalPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('account_portalPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('account_portalPrivateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('account_portalPrivateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('account_portalPrivateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
     },
@@ -4638,11 +4671,11 @@
       "copy": {
         "count": "[length(if(not(empty(parameters('storageBlobPrivateEndpoints'))), array(parameters('storageBlobPrivateEndpoints')), createArray()))]",
         "input": {
-          "name": "[reference(format('blob_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('blob_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('blob_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('blob_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('blob_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('account_storageBlobPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('account_storageBlobPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('account_storageBlobPrivateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('account_storageBlobPrivateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('account_storageBlobPrivateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
     },
@@ -4654,11 +4687,11 @@
       "copy": {
         "count": "[length(if(not(empty(parameters('storageQueuePrivateEndpoints'))), array(parameters('storageQueuePrivateEndpoints')), createArray()))]",
         "input": {
-          "name": "[reference(format('queue_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('queue_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('queue_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('queue_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('queue_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('account_storageQueuePrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('account_storageQueuePrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('account_storageQueuePrivateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('account_storageQueuePrivateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('account_storageQueuePrivateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
     },
@@ -4670,11 +4703,11 @@
       "copy": {
         "count": "[length(if(not(empty(parameters('eventHubPrivateEndpoints'))), array(parameters('eventHubPrivateEndpoints')), createArray()))]",
         "input": {
-          "name": "[reference(format('eventHub_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('eventHub_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('eventHub_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('eventHub_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('eventHub_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('account_eventHubPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('account_eventHubPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('account_eventHubPrivateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('account_eventHubPrivateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('account_eventHubPrivateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
     }

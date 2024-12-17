@@ -44,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -72,11 +72,11 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      clusterSettings:{
+      clusterSettings: {
         clusterMode: 'activeActiveBgp'
         secondPipName: '${namePrefix}${serviceShort}001-pip2'
-        customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
-        secondCustomBgpIpAddresses:  ['169.254.22.4','169.254.22.5']
+        customBgpIpAddresses: ['169.254.21.4', '169.254.21.5']
+        secondCustomBgpIpAddresses: ['169.254.22.4', '169.254.22.5']
       }
       diagnosticSettings: [
         {

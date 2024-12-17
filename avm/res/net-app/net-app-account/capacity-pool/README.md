@@ -28,7 +28,6 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the capacity pool. |
-| [`networkFeatures`](#parameter-networkfeatures) | string | Network features available to the volume, or current state of update (Basic/Standard). |
 | [`size`](#parameter-size) | int | Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104). |
 
 **Conditional parameters**
@@ -56,14 +55,6 @@ The name of the capacity pool.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `networkFeatures`
-
-Network features available to the volume, or current state of update (Basic/Standard).
-
-- Required: No
-- Type: string
-- Default: `'Standard'`
 
 ### Parameter: `size`
 
@@ -278,3 +269,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `res/net-app/net-app-account/backup-policies` | Local reference |
 | `res/net-app/net-app-account/snapshot-policies` | Local reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |

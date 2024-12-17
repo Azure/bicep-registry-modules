@@ -61,7 +61,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -118,7 +118,6 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKeyManagedDisk: {
         keyName: nestedDependencies.outputs.keyVaultDiskKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
-        rotationToLatestKeyVersionEnabled: true
       }
       storageAccountName: 'sa${namePrefix}${serviceShort}001'
       storageAccountSkuName: 'Standard_ZRS'
@@ -137,9 +136,13 @@ module testDeployment '../../../main.bicep' = [
       customVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'databricks_ui_api'
           subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
           tags: {
@@ -171,6 +174,9 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      complianceSecurityProfileValue: 'Disabled'
+      enhancedSecurityMonitoring: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
+      automaticClusterUpdate: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
     }
     dependsOn: [
       nestedDependencies

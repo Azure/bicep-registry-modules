@@ -18,7 +18,7 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' ex
   name: hostingEnvironmentName
 }
 
-resource configuration 'Microsoft.Web/hostingEnvironments/configurations@2022-03-01' = {
+resource configuration 'Microsoft.Web/hostingEnvironments/configurations@2023-12-01' = {
   name: 'customdnssuffix'
   parent: appServiceEnvironment
   properties: {

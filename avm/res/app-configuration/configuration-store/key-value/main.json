@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "11258786733278014615"
+      "version": "0.32.4.45862",
+      "templateHash": "1257304987024829675"
     },
     "name": "App Configuration Stores Key Values",
     "description": "This module deploys an App Configuration Store Key Value.",
@@ -50,21 +50,18 @@
     "appConfiguration": {
       "existing": true,
       "type": "Microsoft.AppConfiguration/configurationStores",
-      "apiVersion": "2023-03-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('appConfigurationName')]"
     },
     "keyValues": {
       "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
-      "apiVersion": "2023-03-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('appConfigurationName'), parameters('name'))]",
       "properties": {
         "contentType": "[parameters('contentType')]",
         "tags": "[parameters('tags')]",
         "value": "[parameters('value')]"
-      },
-      "dependsOn": [
-        "appConfiguration"
-      ]
+      }
     }
   },
   "outputs": {

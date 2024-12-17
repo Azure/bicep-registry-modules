@@ -7,6 +7,7 @@ This module deploys a Storage Account Blob Container.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -265,3 +266,11 @@ The principal type of the assigned principal ID.
 | `name` | string | The name of the deployed container. |
 | `resourceGroupName` | string | The resource group of the deployed container. |
 | `resourceId` | string | The resource ID of the deployed container. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |

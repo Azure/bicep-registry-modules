@@ -69,7 +69,7 @@ jobs:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "Azure.Default"
 
   job_psrule_test_waf_reliability: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
@@ -91,8 +91,52 @@ jobs:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "Azure.Pillar.Reliability"
+
+  job_psrule_test_waf_security_cb: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "PSRule - WAF Security - AVM Custom Baseline [${{ matrix.testCases.name }}]"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psruleBaseline: "CB.AVM.WAF.Security"
+
+  job_psrule_test_waf_security: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "PSRule - WAF Security [${{ matrix.testCases.name }}]"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psruleBaseline: "Azure.Pillar.Security"
 
   #############################
   #   Deployment validation   #
@@ -104,10 +148,12 @@ jobs:
       !cancelled() &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
       needs.job_module_static_validation.result != 'failure' &&
-      needs.job_psrule_test_waf_reliability.result != 'failure'
+      needs.job_psrule_test_waf_reliability.result != 'failure' &&
+      needs.job_psrule_test_waf_security_cb.result != 'failure'
     needs:
       - job_module_static_validation
       - job_psrule_test_waf_reliability
+      - job_psrule_test_waf_security_cb
     strategy:
       fail-fast: false
       matrix:

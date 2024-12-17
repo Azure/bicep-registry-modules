@@ -60,7 +60,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -139,7 +139,7 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKeyManagedDisk: {
         keyName: nestedDependencies.outputs.keyVaultDiskKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
-        rotationToLatestKeyVersionEnabled: true
+        autoRotationDisabled: true
       }
       storageAccountName: 'sa${namePrefix}${serviceShort}001'
       storageAccountSkuName: 'Standard_ZRS'
@@ -192,6 +192,10 @@ module testDeployment '../../../main.bicep' = [
         //initialName: '' Cannot be set to anything other than an empty string. {"code":"InvalidInitialCatalogName","message":"Currently custom initial catalog name is not supported. This capability will be added in future."}
         initialType: 'UnityCatalog' // Choose between 'HiveCatalog' OR 'UnityCatalog'
       }
+      complianceSecurityProfileValue: 'Enabled' // If this is set to 'Enabled', then the complianceStandards must be set to 'HIPAA', 'NONE' or 'PCI_DSS' and the enhancedSecurityMonitoring must be set to 'Enabled' as well as the automaticClusterUpdate
+      complianceStandards: ['HIPAA', 'PCI_DSS'] // Options are HIPAA, PCI_DSS or NONE. However NONE cannot be selected in addition to other compliance standards
+      enhancedSecurityMonitoring: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
+      automaticClusterUpdate: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
     }
     dependsOn: [
       nestedDependencies

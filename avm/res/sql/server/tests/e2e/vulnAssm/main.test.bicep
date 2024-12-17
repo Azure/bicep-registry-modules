@@ -59,13 +59,15 @@ module testDeployment '../../../main.bicep' = {
     administratorLoginPassword: password
     location: resourceLocation
     vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       useStorageAccountAccessKey: false
       createStorageRoleAssignment: true

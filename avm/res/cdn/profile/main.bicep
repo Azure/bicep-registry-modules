@@ -38,16 +38,16 @@ param endpointProperties object?
 param secrets array = []
 
 @description('Optional. Array of custom domain objects.')
-param customDomains array = []
+param customDomains customDomainType[] = []
 
 @description('Conditional. Array of origin group objects. Required if the afdEndpoints is specified.')
-param originGroups array = []
+param originGroups originGroupType[] = []
 
 @description('Optional. Array of rule set objects.')
-param ruleSets array = []
+param ruleSets ruleSetType[] = []
 
 @description('Optional. Array of AFD endpoint objects.')
-param afdEndpoints array = []
+param afdEndpoints afdEndpointType[] = []
 
 @description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
 param securityPolicies securityPolicyType = []
@@ -316,9 +316,28 @@ output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
 
+@description('The list of records required for custom domains validation.')
+output dnsValidation dnsValidationType[] = [
+  for (customDomain, index) in customDomains: profile_customDomains[index].outputs.dnsValidation
+]
+
+@description('The list of AFD endpoint host names.')
+output frontDoorEndpointHostNames array = [
+  for (afdEndpoint, index) in afdEndpoints: profile_afdEndpoints[index].outputs.frontDoorEndpointHostName
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { afdEndpointType } from 'afdEndpoint/main.bicep'
+import { customDomainType } from 'customdomain/main.bicep'
+import { originGroupType } from 'origingroup/main.bicep'
+import { originType } from 'origingroup//origin/main.bicep'
+import { associationsType } from 'securityPolicies/main.bicep'
+import { ruleSetType } from 'ruleset/main.bicep'
+import { ruleType } from 'ruleset/rule/main.bicep'
+import { dnsValidationType } from 'customdomain/main.bicep'
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
@@ -328,12 +347,12 @@ type managedIdentitiesType = {
   userAssignedResourceIds: string[]?
 }?
 
-import { associationsType } from 'securityPolicies/main.bicep'
+@export()
 type securityPolicyType = {
   @description('Required. Name of the security policy.')
   name: string
 
-  @description('Required. Domain names and URL patterns to math with this association.')
+  @description('Required. Domain names and URL patterns to match with this association.')
   associations: associationsType
 
   @description('Required. Resource ID of WAF policy.')
