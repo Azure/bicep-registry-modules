@@ -31,16 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-// Added to test diagnostic settings
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.9.0' = {
-  name: 'logAnalyticsWorkspace'
-  scope: resourceGroup
-  params: {
-    name: 'law-${uniqueString(deployment().name, resourceLocation)}-test'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -122,23 +112,6 @@ module testDeployment '../../../main.bicep' = [
                   name: 'dep${namePrefix}test${serviceShort}ruleset'
                 }
               ]
-            }
-          ]
-        }
-      ]
-      diagnosticSettings: [
-        {
-          workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-              enabled: true
-            }
-          ]
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-              enabled: true
             }
           ]
         }

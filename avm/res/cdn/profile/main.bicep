@@ -9,9 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @allowed([
-  'Custom_Verizon'
   'Premium_AzureFrontDoor'
-  'Premium_Verizon'
   'StandardPlus_955BandWidth_ChinaCdn'
   'StandardPlus_AvgBandWidth_ChinaCdn'
   'StandardPlus_ChinaCdn'
@@ -20,7 +18,6 @@ param location string = resourceGroup().location
   'Standard_AzureFrontDoor'
   'Standard_ChinaCdn'
   'Standard_Microsoft'
-  'Standard_Verizon'
 ])
 @description('Required. The pricing tier (defines a CDN provider, feature list and rate) of the CDN profile.')
 param sku string
