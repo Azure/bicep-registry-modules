@@ -426,23 +426,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         name: 'dep-test2-cdnpafd-custom-domain'
       }
     ]
-    diagnosticSettings: [
-      {
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-            enabled: true
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-            enabled: true
-          }
-        ]
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     location: 'global'
     managedIdentities: {
       systemAssigned: true
@@ -543,25 +526,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           "certificateType": "ManagedCertificate",
           "hostName": "dep-test2-cdnpafd-custom-domain.azurewebsites.net",
           "name": "dep-test2-cdnpafd-custom-domain"
-        }
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "logCategoriesAndGroups": [
-            {
-              "categoryGroup": "allLogs",
-              "enabled": true
-            }
-          ],
-          "metricCategories": [
-            {
-              "category": "AllMetrics",
-              "enabled": true
-            }
-          ],
-          "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
     },
@@ -666,23 +630,6 @@ param customDomains = [
     certificateType: 'ManagedCertificate'
     hostName: 'dep-test2-cdnpafd-custom-domain.azurewebsites.net'
     name: 'dep-test2-cdnpafd-custom-domain'
-  }
-]
-param diagnosticSettings = [
-  {
-    logCategoriesAndGroups: [
-      {
-        categoryGroup: 'allLogs'
-        enabled: true
-      }
-    ]
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-      }
-    ]
-    workspaceResourceId: '<workspaceResourceId>'
   }
 ]
 param location = 'global'
@@ -818,8 +765,29 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'
-    sku: 'Standard_Verizon'
+    sku: 'Standard_Microsoft'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+            enabled: true
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+            enabled: true
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     endpointProperties: {
       contentTypesToCompress: [
         'application/javascript'
@@ -896,9 +864,32 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpmax"
     },
     "sku": {
-      "value": "Standard_Verizon"
+      "value": "Standard_Microsoft"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs",
+              "enabled": true
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics",
+              "enabled": true
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "endpointProperties": {
       "value": {
         "contentTypesToCompress": [
@@ -980,8 +971,29 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpmax'
-param sku = 'Standard_Verizon'
+param sku = 'Standard_Microsoft'
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param endpointProperties = {
   contentTypesToCompress: [
     'application/javascript'
@@ -1057,7 +1069,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpwaf'
-    sku: 'Standard_Verizon'
+    sku: 'Standard_Microsoft'
     // Non-required parameters
     endpointProperties: {
       contentTypesToCompress: [
@@ -1112,7 +1124,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpwaf"
     },
     "sku": {
-      "value": "Standard_Verizon"
+      "value": "Standard_Microsoft"
     },
     // Non-required parameters
     "endpointProperties": {
@@ -1169,7 +1181,7 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpwaf'
-param sku = 'Standard_Verizon'
+param sku = 'Standard_Microsoft'
 // Non-required parameters
 param endpointProperties = {
   contentTypesToCompress: [
@@ -1259,15 +1271,12 @@ The pricing tier (defines a CDN provider, feature list and rate) of the CDN prof
 - Allowed:
   ```Bicep
   [
-    'Custom_Verizon'
     'Premium_AzureFrontDoor'
-    'Premium_Verizon'
     'Standard_955BandWidth_ChinaCdn'
     'Standard_AvgBandWidth_ChinaCdn'
     'Standard_AzureFrontDoor'
     'Standard_ChinaCdn'
     'Standard_Microsoft'
-    'Standard_Verizon'
     'StandardPlus_955BandWidth_ChinaCdn'
     'StandardPlus_AvgBandWidth_ChinaCdn'
     'StandardPlus_ChinaCdn'

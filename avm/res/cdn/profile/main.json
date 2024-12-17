@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6753149008142821275"
+      "templateHash": "12837041705717919191"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -1035,9 +1035,7 @@
     "sku": {
       "type": "string",
       "allowedValues": [
-        "Custom_Verizon",
         "Premium_AzureFrontDoor",
-        "Premium_Verizon",
         "StandardPlus_955BandWidth_ChinaCdn",
         "StandardPlus_AvgBandWidth_ChinaCdn",
         "StandardPlus_ChinaCdn",
@@ -1045,8 +1043,7 @@
         "Standard_AvgBandWidth_ChinaCdn",
         "Standard_AzureFrontDoor",
         "Standard_ChinaCdn",
-        "Standard_Microsoft",
-        "Standard_Verizon"
+        "Standard_Microsoft"
       ],
       "metadata": {
         "description": "Required. The pricing tier (defines a CDN provider, feature list and rate) of the CDN profile."
