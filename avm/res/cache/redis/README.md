@@ -18,10 +18,10 @@ This module deploys a Redis Cache.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Cache/redis` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis) |
-| `Microsoft.Cache/redis/accessPolicies` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/accessPolicies) |
-| `Microsoft.Cache/redis/accessPolicyAssignments` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/accessPolicyAssignments) |
-| `Microsoft.Cache/redis/linkedServers` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/linkedServers) |
+| `Microsoft.Cache/redis` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-03-01/redis) |
+| `Microsoft.Cache/redis/accessPolicies` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-04-01-preview/redis/accessPolicies) |
+| `Microsoft.Cache/redis/accessPolicyAssignments` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-04-01-preview/redis/accessPolicyAssignments) |
+| `Microsoft.Cache/redis/linkedServers` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-03-01/redis/linkedServers) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -1066,6 +1066,7 @@ The name of the Redis cache resource.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessPolicies`
 
@@ -1073,6 +1074,7 @@ Array of access policies to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 **Required parameters**
@@ -1088,6 +1090,7 @@ Name of the access policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessPolicies.permissions`
 
@@ -1095,6 +1098,7 @@ Permissions associated with the access policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessPolicyAssignments`
 
@@ -1102,6 +1106,7 @@ Array of access policy assignments.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 **Required parameters**
@@ -1118,6 +1123,7 @@ Name of the access policy to be assigned.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessPolicyAssignments.objectId`
 
@@ -1125,6 +1131,7 @@ Object id to which the access policy will be assigned.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessPolicyAssignments.objectIdAlias`
 
@@ -1132,6 +1139,7 @@ Alias for the target object id.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `capacity`
 
@@ -1139,6 +1147,7 @@ The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) fami
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1`
 - Allowed:
   ```Bicep
@@ -1159,6 +1168,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -1180,6 +1190,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1187,6 +1198,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1194,6 +1206,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1208,6 +1221,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1223,6 +1237,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1230,6 +1245,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1237,6 +1253,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1244,6 +1261,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1251,6 +1269,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1270,6 +1289,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1277,6 +1297,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1284,6 +1305,7 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1291,6 +1313,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1298,6 +1321,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `disableAccessKeyAuthentication`
 
@@ -1305,6 +1329,7 @@ Disable authentication via access keys.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableNonSslPort`
@@ -1313,6 +1338,7 @@ Specifies whether the non-ssl Redis server port (6379) is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -1321,6 +1347,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `geoReplicationObject`
@@ -1329,6 +1356,7 @@ The geo-replication settings of the service. Requires a Premium SKU. Geo-replica
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `location`
@@ -1337,6 +1365,7 @@ The location to deploy the Redis cache service.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1345,6 +1374,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1359,6 +1389,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1374,6 +1405,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1381,6 +1413,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1395,6 +1428,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1402,6 +1436,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `minimumTlsVersion`
 
@@ -1409,6 +1444,7 @@ Requires clients to use a specified TLS version (or higher) to connect.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'1.2'`
 - Allowed:
   ```Bicep
@@ -1425,6 +1461,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1459,6 +1496,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1466,6 +1504,7 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -1473,6 +1512,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1492,6 +1532,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -1499,6 +1540,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1506,6 +1548,7 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -1513,6 +1556,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -1520,6 +1564,7 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1534,6 +1579,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -1541,6 +1587,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1556,6 +1603,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -1563,6 +1611,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -1570,6 +1619,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -1577,6 +1627,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1584,6 +1635,7 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -1591,6 +1643,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1605,6 +1658,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1620,6 +1674,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -1627,6 +1682,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1634,6 +1690,7 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -1641,6 +1698,7 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1660,6 +1718,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1679,6 +1738,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -1686,6 +1746,7 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -1693,6 +1754,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1700,6 +1762,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -1707,6 +1770,7 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -1714,6 +1778,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -1750,6 +1815,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -1757,6 +1823,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -1764,6 +1831,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -1771,6 +1839,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1784,6 +1853,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -1791,6 +1861,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -1798,6 +1869,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -1805,6 +1877,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1822,6 +1895,7 @@ The subresource to deploy the private endpoint for. For example "vault", "mysqlS
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -1829,6 +1903,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -1836,6 +1911,7 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -1852,6 +1928,7 @@ All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `redisVersion`
@@ -1860,6 +1937,7 @@ Redis version. Only major version will be used in PUT/PATCH request with current
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'6'`
 - Allowed:
   ```Bicep
@@ -1875,7 +1953,9 @@ The number of replicas to be created per primary.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `3`
+- MinValue: 1
 
 ### Parameter: `replicasPerPrimary`
 
@@ -1883,7 +1963,9 @@ The number of replicas to be created per primary. Needs to be the same as replic
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `3`
+- MinValue: 1
 
 ### Parameter: `roleAssignments`
 
@@ -1891,6 +1973,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 1
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1923,6 +2007,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1930,6 +2016,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1937,6 +2025,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1944,12 +2034,14 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: 1
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1957,6 +2049,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
 
 ### Parameter: `roleAssignments.description`
 
@@ -1964,6 +2058,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
 
 ### Parameter: `roleAssignments.name`
 
@@ -1971,6 +2067,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1978,6 +2076,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1988,6 +2087,7 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
 
 ### Parameter: `shardCount`
 
@@ -1995,7 +2095,9 @@ The number of shards to be created on a Premium Cluster Cache.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1`
+- MinValue: 1
 
 ### Parameter: `skuName`
 
@@ -2003,6 +2105,7 @@ The type of Redis cache to deploy.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Premium'`
 - Allowed:
   ```Bicep
@@ -2012,6 +2115,7 @@ The type of Redis cache to deploy.
     'Standard'
   ]
   ```
+- MinValue: 1
 
 ### Parameter: `staticIP`
 
@@ -2019,7 +2123,9 @@ Static IP address. Optionally, may be specified when deploying a Redis cache ins
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 1
 
 ### Parameter: `subnetResourceId`
 
@@ -2027,7 +2133,9 @@ The full resource ID of a subnet in a virtual network to deploy the Redis cache 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 1
 
 ### Parameter: `tags`
 
@@ -2035,6 +2143,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 1
 
 ### Parameter: `tenantSettings`
 
@@ -2042,7 +2152,9 @@ A dictionary of tenant settings.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
+- MinValue: 1
 
 ### Parameter: `zoneRedundant`
 
@@ -2050,7 +2162,9 @@ When true, replicas will be provisioned in availability zones specified in the z
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 1
 
 ### Parameter: `zones`
 
@@ -2058,6 +2172,7 @@ If the zoneRedundant parameter is true, replicas will be provisioned in the avai
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -2066,6 +2181,7 @@ If the zoneRedundant parameter is true, replicas will be provisioned in the avai
     3
   ]
   ```
+- MinValue: 1
 
 ## Outputs
 

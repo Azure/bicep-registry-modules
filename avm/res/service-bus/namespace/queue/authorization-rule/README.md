@@ -41,6 +41,7 @@ The name of the service bus namepace queue.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -48,6 +49,7 @@ The name of the parent Service Bus Namespace. Required if the template is used i
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `queueName`
 
@@ -55,6 +57,7 @@ The name of the parent Service Bus Namespace Queue. Required if the template is 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `rights`
 
@@ -62,6 +65,7 @@ The rights associated with the rule.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep

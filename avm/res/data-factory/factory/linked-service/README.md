@@ -44,6 +44,7 @@ The name of the Linked Service.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `type`
 
@@ -51,6 +52,7 @@ The type of Linked Service. See https://learn.microsoft.com/en-us/azure/template
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `dataFactoryName`
 
@@ -58,6 +60,7 @@ The name of the parent Azure Data Factory. Required if the template is used in a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `description`
 
@@ -65,6 +68,7 @@ The description of the Integration Runtime.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Linked Service created by avm-res-datafactory-factories'`
 
 ### Parameter: `integrationRuntimeName`
@@ -73,6 +77,7 @@ The name of the Integration Runtime to use.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'none'`
 
 ### Parameter: `parameters`
@@ -81,6 +86,7 @@ Use this to add parameters for a linked service connection string.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `typeProperties`
@@ -89,6 +95,7 @@ Used to add connection properties for your linked services.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ## Outputs

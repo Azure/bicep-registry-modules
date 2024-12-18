@@ -44,6 +44,7 @@ The name of the CAA record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `dnsZoneName`
 
@@ -51,6 +52,7 @@ The name of the parent DNS zone. Required if the template is used in a standalon
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `caaRecords`
 
@@ -58,6 +60,7 @@ The list of CAA records in the record set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `metadata`
 
@@ -65,6 +68,7 @@ The metadata attached to the record set.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -72,6 +76,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -109,6 +114,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -116,6 +122,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -123,6 +130,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -130,6 +138,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -143,6 +152,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -150,6 +160,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -157,6 +168,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -164,6 +176,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -181,6 +194,7 @@ The TTL (time-to-live) of the records in the record set.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `3600`
 
 ## Outputs

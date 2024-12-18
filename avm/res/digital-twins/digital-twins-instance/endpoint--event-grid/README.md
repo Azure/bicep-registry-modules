@@ -43,6 +43,7 @@ The resource ID of the Event Grid to get access keys from.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `topicEndpoint`
 
@@ -50,6 +51,7 @@ EventGrid Topic Endpoint.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `digitalTwinInstanceName`
 
@@ -57,6 +59,7 @@ The name of the parent Digital Twin Instance resource. Required if the template 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `deadLetterSecret`
 
@@ -64,6 +67,7 @@ Dead letter storage secret for key-based authentication. Will be obfuscated duri
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `deadLetterUri`
@@ -72,6 +76,7 @@ Dead letter storage URL for identity-based authentication.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `name`
@@ -80,6 +85,7 @@ The name of the Digital Twin Endpoint.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'EventGridEndpoint'`
 
 ## Outputs

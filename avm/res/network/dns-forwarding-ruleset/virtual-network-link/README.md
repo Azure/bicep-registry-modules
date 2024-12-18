@@ -41,6 +41,7 @@ Link to another virtual network resource ID.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `dnsForwardingRulesetName`
 
@@ -48,6 +49,7 @@ The name of the parent DNS Fowarding Rule Set. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `metadata`
 
@@ -55,6 +57,7 @@ Metadata attached to the forwarding rule.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `name`
 
@@ -62,6 +65,7 @@ The name of the virtual network link.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

@@ -12,7 +12,7 @@ This module deploys an Azure Container Registry (ACR) Replication.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
 
 ## Parameters
 
@@ -43,6 +43,7 @@ The name of the replication.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `registryName`
 
@@ -50,6 +51,7 @@ The name of the parent registry. Required if the template is used in a standalon
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `location`
 
@@ -57,6 +59,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `regionEndpointEnabled`
@@ -65,6 +68,7 @@ Specifies whether the replication regional endpoint is enabled. Requests will no
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `tags`
@@ -73,6 +77,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `zoneRedundancy`
 
@@ -80,6 +85,7 @@ Whether or not zone redundancy is enabled for this container registry.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep

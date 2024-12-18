@@ -3185,6 +3185,7 @@ Name of the Storage Account. Must be lower-case.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessTier`
 
@@ -3192,6 +3193,7 @@ Required if the Storage Account kind is set to BlobStorage. The access tier is u
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Hot'`
 - Allowed:
   ```Bicep
@@ -3209,6 +3211,7 @@ If true, enables Hierarchical Namespace for the storage account. Required if ena
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `allowBlobPublicAccess`
@@ -3217,6 +3220,7 @@ Indicates whether public access is enabled for all blobs or containers in the st
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `allowCrossTenantReplication`
@@ -3225,6 +3229,7 @@ Allow or disallow cross AAD tenant object replication.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `allowedCopyScope`
@@ -3233,6 +3238,7 @@ Restrict copy to and from Storage Accounts within an AAD tenant or with Private 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -3249,6 +3255,7 @@ Indicates whether the storage account permits requests to be authorized with the
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `azureFilesIdentityBasedAuthentication`
@@ -3257,6 +3264,7 @@ Provides the identity based authentication settings for Azure Files.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `blobServices`
@@ -3265,6 +3273,7 @@ Blob service and containers to deploy.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `[if(not(equals(parameters('kind'), 'FileStorage')), createObject('containerDeleteRetentionPolicyEnabled', true(), 'containerDeleteRetentionPolicyDays', 7, 'deleteRetentionPolicyEnabled', true(), 'deleteRetentionPolicyDays', 6), createObject())]`
 
 ### Parameter: `customDomainName`
@@ -3273,6 +3282,7 @@ Sets the custom domain name assigned to the storage account. Name is the CNAME s
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `customDomainUseSubDomainName`
@@ -3281,6 +3291,7 @@ Indicates whether indirect CName validation is enabled. This should only be set 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `customerManagedKey`
@@ -3289,6 +3300,7 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3311,6 +3323,7 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -3318,6 +3331,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customerManagedKey.autoRotationEnabled`
 
@@ -3325,6 +3339,7 @@ Enable or disable auto-rotating to the latest key version. Default is `true`. If
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -3332,6 +3347,7 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -3339,6 +3355,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `defaultToOAuthAuthentication`
 
@@ -3346,6 +3363,7 @@ A boolean flag which indicates whether the default authentication is OAuth or no
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `diagnosticSettings`
@@ -3354,6 +3372,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -3375,6 +3394,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -3382,6 +3402,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -3389,6 +3410,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3403,6 +3425,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -3418,6 +3441,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -3425,6 +3449,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -3432,6 +3457,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -3439,6 +3465,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -3446,6 +3473,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3465,6 +3493,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -3472,6 +3501,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -3479,6 +3509,7 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -3486,6 +3517,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -3493,6 +3525,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `dnsEndpointType`
 
@@ -3500,6 +3533,7 @@ Allows you to specify the type of endpoint. Set this to AzureDNSZone to create a
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -3516,6 +3550,7 @@ If true, enables NFS 3.0 support for the storage account. Requires enableHierarc
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableSftp`
@@ -3524,6 +3559,7 @@ If true, enables Secure File Transfer Protocol for the storage account. Requires
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -3532,6 +3568,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `fileServices`
@@ -3540,6 +3577,7 @@ File service and shares to deploy.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `isLocalUserEnabled`
@@ -3548,6 +3586,7 @@ Enables local users feature, if set to true.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `keyType`
@@ -3556,6 +3595,7 @@ The keyType to use with Queue & Table services.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3570,6 +3610,7 @@ Type of Storage Account to create.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'StorageV2'`
 - Allowed:
   ```Bicep
@@ -3588,6 +3629,7 @@ Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is e
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -3603,6 +3645,7 @@ Local users to deploy for SFTP authentication.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3627,6 +3670,7 @@ Indicates whether SSH key exists. Set it to false to remove existing SSH key.
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `localUsers.hasSshPassword`
 
@@ -3634,6 +3678,7 @@ Indicates whether SSH password exists. Set it to false to remove existing SSH pa
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `localUsers.name`
 
@@ -3641,6 +3686,7 @@ The name of the local user used for SFTP Authentication.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `localUsers.permissionScopes`
 
@@ -3648,6 +3694,7 @@ The permission scopes of the local user.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -3663,6 +3710,7 @@ The permissions for the local user. Possible values include: Read (r), Write (w)
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `localUsers.permissionScopes.resourceName`
 
@@ -3670,6 +3718,7 @@ The name of resource, normally the container name or the file share name, used b
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `localUsers.permissionScopes.service`
 
@@ -3677,6 +3726,7 @@ The service used by the local user, e.g. blob, file.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `localUsers.hasSharedKey`
 
@@ -3684,6 +3734,7 @@ Indicates whether shared key exists. Set it to false to remove existing shared k
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `localUsers.homeDirectory`
 
@@ -3691,6 +3742,7 @@ The local user home directory.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `localUsers.sshAuthorizedKeys`
 
@@ -3698,6 +3750,7 @@ The local user SSH authorized keys for SFTP.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3717,6 +3770,7 @@ SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g.
 
 - Required: Yes
 - Type: securestring
+- Nullable: No
 
 ### Parameter: `localUsers.sshAuthorizedKeys.description`
 
@@ -3724,6 +3778,7 @@ Description used to store the function/usage of the key.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -3731,6 +3786,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -3739,6 +3795,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -3753,6 +3810,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3768,6 +3826,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -3775,6 +3834,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -3789,6 +3849,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -3796,6 +3857,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `managementPolicyRules`
 
@@ -3803,6 +3865,7 @@ The Storage Account ManagementPolicies Rules.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `minimumTlsVersion`
 
@@ -3810,6 +3873,7 @@ Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'TLS1_2'`
 - Allowed:
   ```Bicep
@@ -3825,6 +3889,7 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -3842,6 +3907,7 @@ Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possibl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3862,6 +3928,7 @@ Specifies the default action of allow or deny when no other rules match.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3876,6 +3943,7 @@ Sets the IP ACL rules.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `networkAcls.resourceAccessRules`
 
@@ -3883,6 +3951,7 @@ Sets the resource access rules. Array entries must consist of "tenantId" and "re
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3897,6 +3966,7 @@ The resource ID of the target service. Can also contain a wildcard, if multiple 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `networkAcls.resourceAccessRules.tenantId`
 
@@ -3904,6 +3974,7 @@ The ID of the tenant in which the resource resides in.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `networkAcls.virtualNetworkRules`
 
@@ -3911,6 +3982,7 @@ Sets the virtual network rules.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints`
 
@@ -3918,6 +3990,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3952,6 +4025,7 @@ The subresource to deploy the private endpoint for. For example "blob", "table",
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -3959,6 +4033,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -3966,6 +4041,7 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -3973,6 +4049,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3992,6 +4069,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -3999,6 +4077,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -4006,6 +4085,7 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -4013,6 +4093,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -4020,6 +4101,7 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -4034,6 +4116,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -4041,6 +4124,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -4056,6 +4140,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -4063,6 +4148,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -4070,6 +4156,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -4077,6 +4164,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.location`
 
@@ -4084,6 +4172,7 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -4091,6 +4180,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -4105,6 +4195,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4120,6 +4211,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -4127,6 +4219,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.name`
 
@@ -4134,6 +4227,7 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -4141,6 +4235,7 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -4160,6 +4255,7 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -4179,6 +4275,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -4186,6 +4283,7 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -4193,6 +4291,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -4200,6 +4299,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -4207,6 +4307,7 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -4214,6 +4315,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -4250,6 +4352,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -4257,6 +4360,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -4264,6 +4368,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -4271,6 +4376,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4284,6 +4390,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -4291,6 +4398,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -4298,6 +4406,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -4305,6 +4414,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4322,6 +4432,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -4329,6 +4440,7 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -4345,6 +4457,7 @@ Queue service and queues to create.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `requireInfrastructureEncryption`
@@ -4353,6 +4466,7 @@ A Boolean indicating whether or not the service applies a secondary layer of enc
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `roleAssignments`
@@ -4361,6 +4475,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -4411,6 +4526,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -4418,6 +4534,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -4425,6 +4542,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -4432,6 +4550,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4445,6 +4564,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -4452,6 +4572,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -4459,6 +4580,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -4466,6 +4588,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4483,6 +4606,7 @@ The SAS expiration period. DD.HH:MM:SS.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `secretsExportConfiguration`
@@ -4491,6 +4615,7 @@ Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -4513,6 +4638,7 @@ The key vault name where to store the keys and connection strings generated by t
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `secretsExportConfiguration.accessKey1`
 
@@ -4520,6 +4646,7 @@ The accessKey1 secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `secretsExportConfiguration.accessKey2`
 
@@ -4527,6 +4654,7 @@ The accessKey2 secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `secretsExportConfiguration.connectionString1`
 
@@ -4534,6 +4662,7 @@ The connectionString1 secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `secretsExportConfiguration.connectionString2`
 
@@ -4541,6 +4670,7 @@ The connectionString2 secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `skuName`
 
@@ -4548,6 +4678,7 @@ Storage Account Sku Name.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard_GRS'`
 - Allowed:
   ```Bicep
@@ -4569,6 +4700,7 @@ Allows HTTPS traffic only to storage service if sets to true.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `tableServices`
@@ -4577,6 +4709,7 @@ Table service and tables to create.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `tags`
@@ -4585,6 +4718,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

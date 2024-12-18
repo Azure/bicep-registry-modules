@@ -46,6 +46,7 @@ The name of the AFD endpoint.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -53,6 +54,7 @@ The name of the route.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `originGroupName`
 
@@ -60,6 +62,7 @@ The name of the origin group. The origin group must be defined in the profile or
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `profileName`
 
@@ -67,6 +70,7 @@ The name of the parent CDN profile.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `cacheConfiguration`
 
@@ -74,6 +78,7 @@ The caching configuration for this route. To disable caching, do not provide a c
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `customDomainNames`
 
@@ -81,6 +86,7 @@ The names of the custom domains. The custom domains must be defined in the profi
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `enabledState`
 
@@ -88,6 +94,7 @@ Whether this route is enabled.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -103,6 +110,7 @@ The protocol this rule will use when forwarding traffic to backends.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'MatchRequest'`
 - Allowed:
   ```Bicep
@@ -119,6 +127,7 @@ Whether to automatically redirect HTTP traffic to HTTPS traffic.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -134,6 +143,7 @@ Whether this route will be linked to the default endpoint domain.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -149,6 +159,7 @@ A directory path on the origin that AzureFrontDoor can use to retrieve content f
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `patternsToMatch`
 
@@ -156,6 +167,7 @@ The route patterns of the rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `ruleSets`
 
@@ -163,6 +175,7 @@ The rule sets of the rule. The rule sets must be defined in the profile ruleSets
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `supportedProtocols`
@@ -171,6 +184,7 @@ The supported protocols of the rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [

@@ -12,7 +12,7 @@ This module deploys an Sender
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains/senderUsernames) |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains/senderUsernames) |
 
 ## Parameters
 
@@ -42,6 +42,7 @@ Name of the sender username resource to create.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `username`
 
@@ -49,6 +50,7 @@ A sender username to be used when sending emails.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `domainName`
 
@@ -56,6 +58,7 @@ The name of the parent domain. Required if the template is used in a standalone 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `emailServiceName`
 
@@ -63,6 +66,7 @@ The name of the parent email service. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `displayName`
 
@@ -70,6 +74,7 @@ The display name for the senderUsername.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[parameters('username')]`
 
 ## Outputs

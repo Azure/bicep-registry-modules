@@ -436,6 +436,7 @@ Remote connection name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `virtualNetworkGateway1`
 
@@ -443,6 +444,7 @@ The primary Virtual Network Gateway.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `authorizationKey`
 
@@ -450,6 +452,7 @@ The Authorization Key to connect to an Express Route Circuit. Used for connectio
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `connectionMode`
@@ -458,6 +461,7 @@ The connection connectionMode for this connection. Available for IPSec connectio
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Default'`
 - Allowed:
   ```Bicep
@@ -474,6 +478,7 @@ Connection connectionProtocol used for this connection. Available for IPSec conn
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'IKEv2'`
 - Allowed:
   ```Bicep
@@ -489,6 +494,7 @@ Gateway connection connectionType.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'IPsec'`
 - Allowed:
   ```Bicep
@@ -506,6 +512,7 @@ The IPSec Policies to be considered by this connection.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -526,7 +533,10 @@ The dead peer detection timeout of this connection in seconds. Setting the timeo
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `45`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `enableBgp`
 
@@ -534,7 +544,10 @@ Value to specify if BGP is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `enablePrivateLinkFastPath`
 
@@ -542,7 +555,10 @@ Bypass the ExpressRoute gateway when accessing private-links. ExpressRoute FastP
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `enableTelemetry`
 
@@ -550,7 +566,10 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `expressRouteGatewayBypass`
 
@@ -558,7 +577,10 @@ Bypass ExpressRoute Gateway for data forwarding. Only available when connection 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `localNetworkGateway2`
 
@@ -566,7 +588,10 @@ The local network gateway. Used for connection type [IPsec].
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `location`
 
@@ -574,7 +599,10 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `lock`
 
@@ -582,6 +610,9 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 9
+- MaxValue: 3600
 
 **Optional parameters**
 
@@ -596,6 +627,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -604,6 +636,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `lock.name`
 
@@ -611,6 +645,9 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `peer`
 
@@ -618,7 +655,10 @@ The remote peer. Used for connection connectionType [ExpressRoute].
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `routingWeight`
 
@@ -626,6 +666,9 @@ The weight added to routes learned from this BGP speaker.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `tags`
 
@@ -633,6 +676,9 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `trafficSelectorPolicies`
 
@@ -640,7 +686,10 @@ The traffic selector policies to be considered by this connection.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `useLocalAzureIpAddress`
 
@@ -648,7 +697,10 @@ Use private local Azure IP for the connection. Only available for IPSec Virtual 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `usePolicyBasedTrafficSelectors`
 
@@ -656,7 +708,10 @@ Enable policy-based traffic selectors.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `virtualNetworkGateway2`
 
@@ -664,7 +719,10 @@ The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vne
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `vpnSharedKey`
 
@@ -672,7 +730,10 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
+- MinValue: 9
+- MaxValue: 3600
 
 ## Outputs
 

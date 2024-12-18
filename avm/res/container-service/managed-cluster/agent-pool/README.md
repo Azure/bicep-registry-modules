@@ -73,6 +73,7 @@ Name of the agent pool.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `managedClusterName`
 
@@ -80,6 +81,7 @@ The name of the parent managed cluster. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `availabilityZones`
 
@@ -87,6 +89,7 @@ The list of Availability zones to use for nodes. This can only be specified if t
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -102,7 +105,10 @@ Desired Number of agents (VMs) specified to host docker containers. Allowed valu
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1`
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `enableAutoScaling`
 
@@ -110,7 +116,10 @@ Whether to enable auto-scaler.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `enableEncryptionAtHost`
 
@@ -118,7 +127,10 @@ This is only supported on certain VM sizes and in certain Azure regions. For mor
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `enableFIPS`
 
@@ -126,7 +138,10 @@ See Add a FIPS-enabled node pool (https://learn.microsoft.com/en-us/azure/aks/us
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `enableNodePublicIP`
 
@@ -134,7 +149,10 @@ Some scenarios may require nodes in a node pool to receive their own dedicated p
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `enableUltraSSD`
 
@@ -142,7 +160,10 @@ Whether to enable UltraSSD.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `gpuInstanceProfile`
 
@@ -150,6 +171,7 @@ GPUInstanceProfile to be used to specify GPU MIG instance profile for supported 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -160,6 +182,8 @@ GPUInstanceProfile to be used to specify GPU MIG instance profile for supported 
     'MIG7g'
   ]
   ```
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `kubeletDiskType`
 
@@ -167,6 +191,9 @@ Determines the placement of emptyDir volumes, container runtime data root, and K
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `maxCount`
 
@@ -174,6 +201,9 @@ The maximum number of nodes for auto-scaling.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `maxPods`
 
@@ -181,6 +211,9 @@ The maximum number of pods that can run on a node.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `maxSurge`
 
@@ -188,6 +221,9 @@ This can either be set to an integer (e.g. "5") or a percentage (e.g. "50%"). If
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `minCount`
 
@@ -195,6 +231,9 @@ The minimum number of nodes for auto-scaling.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `mode`
 
@@ -202,6 +241,9 @@ A cluster must have at least one "System" Agent Pool at all times. For additiona
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `nodeLabels`
 
@@ -209,6 +251,9 @@ The node labels to be persisted across all nodes in agent pool.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `nodePublicIpPrefixResourceId`
 
@@ -216,6 +261,9 @@ ResourceId of the node PublicIPPrefix.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `nodeTaints`
 
@@ -223,6 +271,9 @@ The taints added to new nodes during node pool create and scale. For example, ke
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `orchestratorVersion`
 
@@ -230,6 +281,9 @@ As a best practice, you should upgrade all node pools in an AKS cluster to the s
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `osDiskSizeGB`
 
@@ -237,6 +291,9 @@ OS Disk Size in GB to be used to specify the disk size for every machine in the 
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `osDiskType`
 
@@ -244,6 +301,7 @@ The default is "Ephemeral" if the VM supports it and has a cache disk larger tha
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -251,6 +309,8 @@ The default is "Ephemeral" if the VM supports it and has a cache disk larger tha
     'Managed'
   ]
   ```
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `osSku`
 
@@ -258,6 +318,7 @@ Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -268,6 +329,8 @@ Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is 
     'Windows2022'
   ]
   ```
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `osType`
 
@@ -275,6 +338,7 @@ The operating system type. The default is Linux.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Linux'`
 - Allowed:
   ```Bicep
@@ -283,6 +347,8 @@ The operating system type. The default is Linux.
     'Windows'
   ]
   ```
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `podSubnetResourceId`
 
@@ -290,6 +356,9 @@ Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `proximityPlacementGroupResourceId`
 
@@ -297,6 +366,9 @@ The ID for the Proximity Placement Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `scaleDownMode`
 
@@ -304,6 +376,7 @@ Describes how VMs are added to or removed from Agent Pools. See [billing states]
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Delete'`
 - Allowed:
   ```Bicep
@@ -312,6 +385,8 @@ Describes how VMs are added to or removed from Agent Pools. See [billing states]
     'Delete'
   ]
   ```
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `scaleSetEvictionPolicy`
 
@@ -319,6 +394,7 @@ The eviction policy specifies what to do with the VM when it is evicted. The def
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Delete'`
 - Allowed:
   ```Bicep
@@ -327,6 +403,8 @@ The eviction policy specifies what to do with the VM when it is evicted. The def
     'Delete'
   ]
   ```
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `scaleSetPriority`
 
@@ -334,6 +412,7 @@ The Virtual Machine Scale Set priority.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -341,6 +420,8 @@ The Virtual Machine Scale Set priority.
     'Spot'
   ]
   ```
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `sourceResourceId`
 
@@ -348,6 +429,9 @@ This is the ARM ID of the source object to be used to create the target object.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `spotMaxPrice`
 
@@ -355,6 +439,9 @@ Possible values are any decimal value greater than zero or -1 which indicates th
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `tags`
 
@@ -362,6 +449,9 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `type`
 
@@ -369,6 +459,9 @@ The type of Agent Pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `vmSize`
 
@@ -376,7 +469,10 @@ VM size. VM size availability varies by region. If a node contains insufficient 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard_D2s_v3'`
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `vnetSubnetResourceId`
 
@@ -384,6 +480,9 @@ Node Subnet ID. If this is not specified, a VNET and subnet will be generated an
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `workloadRuntime`
 
@@ -391,6 +490,9 @@ Determines the type of workload a node can run.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 1000
 
 ## Outputs
 

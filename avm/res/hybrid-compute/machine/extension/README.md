@@ -12,7 +12,7 @@ This module deploys a Arc Machine Extension. This module should be used as a sta
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.HybridCompute/machines/extensions` | [2024-03-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/machines/extensions) |
+| `Microsoft.HybridCompute/machines/extensions` | [2024-03-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-03-31-preview/machines/extensions) |
 
 ## Parameters
 
@@ -44,6 +44,7 @@ The name of the parent Arc Machine that extension is provisioned for.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `autoUpgradeMinorVersion`
 
@@ -51,6 +52,7 @@ Indicates whether the extension should use a newer minor version if one is avail
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `enableAutomaticUpgrade`
 
@@ -58,6 +60,7 @@ Indicates whether the extension should be automatically upgraded by the platform
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -65,6 +68,7 @@ The name of the Arc Machine extension.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `publisher`
 
@@ -72,6 +76,7 @@ The name of the extension handler publisher.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `type`
 
@@ -79,6 +84,7 @@ Specifies the type of the extension; an example is "CustomScriptExtension".
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `typeHandlerVersion`
 
@@ -86,6 +92,7 @@ Specifies the version of the script handler.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `forceUpdateTag`
 
@@ -93,6 +100,7 @@ How the extension handler should be forced to update even if the extension confi
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `location`
@@ -101,6 +109,7 @@ The location the extension is deployed to.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `protectedSettings`
@@ -109,6 +118,7 @@ Any object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `settings`
@@ -117,6 +127,7 @@ Any object that contains the extension specific settings.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `tags`
@@ -125,6 +136,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

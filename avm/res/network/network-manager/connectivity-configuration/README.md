@@ -46,6 +46,7 @@ Network Groups for the configuration. A connectivity configuration must be assoc
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -67,6 +68,7 @@ Group connectivity type.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -81,6 +83,7 @@ Resource Id of the network group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `appliesToGroups.isGlobal`
 
@@ -88,6 +91,7 @@ Flag if global is supported.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `appliesToGroups.useHubGateway`
 
@@ -95,6 +99,7 @@ Flag if use hub gateway.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `connectivityTopology`
 
@@ -102,6 +107,7 @@ Connectivity topology type.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -116,6 +122,7 @@ The name of the connectivity configuration.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `hubs`
 
@@ -123,6 +130,7 @@ List of hub items. This will create peerings between the specified hub and the v
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -137,6 +145,7 @@ Resource Id of the hub.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `hubs.resourceType`
 
@@ -144,6 +153,7 @@ Resource type of the hub.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -157,6 +167,7 @@ The name of the parent network manager. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `deleteExistingPeering`
 
@@ -164,6 +175,7 @@ Flag if need to remove current existing peerings. If set to "True", all peerings
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `description`
@@ -172,6 +184,7 @@ A description of the connectivity configuration.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `isGlobal`
 
@@ -179,6 +192,7 @@ Flag if global mesh is supported. By default, mesh connectivity is applied to vi
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ## Outputs

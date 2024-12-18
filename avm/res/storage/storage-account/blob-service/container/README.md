@@ -53,6 +53,7 @@ The name of the storage container to deploy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageAccountName`
 
@@ -60,6 +61,7 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `blobServiceName`
 
@@ -67,6 +69,7 @@ The name of the parent Blob Service. Required if the template is used in a stand
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'default'`
 
 ### Parameter: `defaultEncryptionScope`
@@ -75,6 +78,7 @@ Default the container to use specified encryption scope for all writes.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `denyEncryptionScopeOverride`
@@ -83,6 +87,7 @@ Block override of encryption scope from the container default.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableNfsV3AllSquash`
@@ -91,6 +96,7 @@ Enable NFSv3 all squash on blob container.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableNfsV3RootSquash`
@@ -99,6 +105,7 @@ Enable NFSv3 root squash on blob container.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `immutabilityPolicyName`
@@ -107,6 +114,7 @@ Name of the immutable policy.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'default'`
 
 ### Parameter: `immutabilityPolicyProperties`
@@ -115,6 +123,7 @@ Configure immutability policy.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `immutableStorageWithVersioningEnabled`
 
@@ -122,6 +131,7 @@ This is an immutable property, when set to true it enables object level immutabi
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `metadata`
@@ -130,6 +140,7 @@ A name-value pair to associate with the container as metadata.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `publicAccess`
@@ -138,6 +149,7 @@ Specifies whether data in the container may be accessed publicly and the level o
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'None'`
 - Allowed:
   ```Bicep
@@ -154,6 +166,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -193,6 +206,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -200,6 +214,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -207,6 +222,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -214,6 +230,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -227,6 +244,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -234,6 +252,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -241,6 +260,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -248,6 +268,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [

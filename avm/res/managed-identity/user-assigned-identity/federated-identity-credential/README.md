@@ -37,6 +37,7 @@ The list of audiences that can appear in the issued token. Should be set to api:
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `issuer`
 
@@ -44,6 +45,7 @@ The URL of the issuer to be trusted. Must match the issuer claim of the external
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -51,6 +53,7 @@ The name of the secret.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `subject`
 
@@ -58,6 +61,7 @@ The identifier of the external software workload within the external identity pr
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `userAssignedIdentityName`
 
@@ -65,6 +69,7 @@ The name of the parent user assigned identity. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

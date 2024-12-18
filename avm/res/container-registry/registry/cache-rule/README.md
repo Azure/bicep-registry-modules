@@ -12,7 +12,7 @@ Cache for Azure Container Registry (Preview) feature allows users to cache conta
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
 
 ## Parameters
 
@@ -37,6 +37,7 @@ The resource ID of the credential store which is associated with the cache rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `registryName`
 
@@ -44,6 +45,7 @@ The name of the parent registry. Required if the template is used in a standalon
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `sourceRepository`
 
@@ -51,6 +53,7 @@ Source repository pulled from upstream.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -58,6 +61,7 @@ The name of the cache rule. Will be derived from the source repository name if n
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-')]`
 
 ### Parameter: `targetRepository`
@@ -66,6 +70,7 @@ Target repository specified in docker pull command. E.g.: docker pull myregistry
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[parameters('sourceRepository')]`
 
 ## Outputs

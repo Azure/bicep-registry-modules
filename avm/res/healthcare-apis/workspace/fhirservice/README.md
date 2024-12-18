@@ -15,7 +15,7 @@ This module deploys a Healthcare API Workspace FHIR Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.HealthcareApis/workspaces/fhirservices` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/workspaces) |
+| `Microsoft.HealthcareApis/workspaces/fhirservices` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/2022-06-01/workspaces/fhirservices) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Parameters
@@ -68,6 +68,7 @@ The name of the FHIR service.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `workspaceName`
 
@@ -75,6 +76,7 @@ The name of the parent health data services workspace. Required if the template 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessPolicyObjectIds`
 
@@ -82,6 +84,7 @@ List of Azure AD object IDs (User or Apps) that is allowed access to the FHIR se
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `acrLoginServers`
 
@@ -89,6 +92,7 @@ The list of the Azure container registry login servers.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `acrOciArtifacts`
 
@@ -96,6 +100,7 @@ The list of Open Container Initiative (OCI) artifacts.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `authenticationAudience`
 
@@ -103,6 +108,7 @@ The audience url for the service.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('https://{0}-{1}.fhir.azurehealthcareapis.com', parameters('workspaceName'), parameters('name'))]`
 
 ### Parameter: `authenticationAuthority`
@@ -111,6 +117,7 @@ The authority url for the service.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[uri(environment().authentication.loginEndpoint, subscription().tenantId)]`
 
 ### Parameter: `corsAllowCredentials`
@@ -119,6 +126,7 @@ Use this setting to indicate that cookies should be included in CORS requests.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `corsHeaders`
@@ -127,6 +135,7 @@ Specify HTTP headers which can be used during the request. Use "*" for any heade
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `corsMaxAge`
 
@@ -134,6 +143,7 @@ Specify how long a result from a request can be cached in seconds. Example: 600 
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `corsMethods`
 
@@ -141,6 +151,7 @@ Specify the allowed HTTP methods.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -159,6 +170,7 @@ Specify URLs of origin sites that can access this API, or use "*" to allow acces
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings`
 
@@ -166,6 +178,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -187,6 +200,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -194,6 +208,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -201,6 +216,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -215,6 +231,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -230,6 +247,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -237,6 +255,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -244,6 +263,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -251,6 +271,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -258,6 +279,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -277,6 +299,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -284,6 +307,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -291,6 +315,7 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -298,6 +323,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -305,6 +331,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `exportStorageAccountName`
 
@@ -312,6 +339,7 @@ The name of the default export storage account.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `importEnabled`
 
@@ -319,6 +347,7 @@ If the import operation is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `importStorageAccountName`
@@ -327,6 +356,7 @@ The name of the default integration storage account.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `initialImportMode`
@@ -335,6 +365,7 @@ If the FHIR service is in InitialImportMode.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `kind`
@@ -343,6 +374,7 @@ The kind of the service. Defaults to R4.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'fhir-R4'`
 - Allowed:
   ```Bicep
@@ -358,6 +390,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -366,6 +399,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -380,6 +414,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -395,6 +430,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -402,6 +438,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -416,6 +453,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -423,6 +461,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -430,6 +469,7 @@ Control permission for data plane traffic coming from public networks while priv
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -445,6 +485,7 @@ A list of FHIR Resources and their version policy overrides.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `resourceVersionPolicy`
 
@@ -452,6 +493,7 @@ The default value for tracking history across all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'versioned'`
 - Allowed:
   ```Bicep
@@ -468,6 +510,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DICOM Data Owner'`
@@ -508,6 +551,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -515,6 +559,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -522,6 +567,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -529,6 +575,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -542,6 +589,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -549,6 +597,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -556,6 +605,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -563,6 +613,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -580,6 +631,7 @@ If the SMART on FHIR proxy is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `tags`
@@ -588,6 +640,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

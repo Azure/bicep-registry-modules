@@ -43,6 +43,7 @@ The name of the network group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `networkManagerName`
 
@@ -50,6 +51,7 @@ The name of the parent network manager. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `description`
 
@@ -57,6 +59,7 @@ A description of the network group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `staticMembers`
 
@@ -64,6 +67,7 @@ Static Members to create for the network group. Contains virtual networks to add
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -78,6 +82,7 @@ The name of the static member.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `staticMembers.resourceId`
 
@@ -85,6 +90,7 @@ Resource ID of the virtual network.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

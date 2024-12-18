@@ -62,6 +62,7 @@ Name of the Service Bus Queue.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -69,6 +70,7 @@ The name of the parent Service Bus Namespace for the Service Bus Queue. Required
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `authorizationRules`
 
@@ -76,6 +78,7 @@ Authorization Rules for the Service Bus Queue.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `autoDeleteOnIdle`
@@ -84,6 +87,7 @@ ISO 8061 timeSpan idle interval after which the queue is automatically deleted. 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `deadLetteringOnMessageExpiration`
 
@@ -91,6 +95,7 @@ A value that indicates whether this queue has dead letter support when a message
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `defaultMessageTimeToLive`
@@ -99,6 +104,7 @@ ISO 8601 default message timespan to live value. This is the duration after whic
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'P14D'`
 
 ### Parameter: `duplicateDetectionHistoryTimeWindow`
@@ -107,6 +113,7 @@ ISO 8601 timeSpan structure that defines the duration of the duplicate detection
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'PT10M'`
 
 ### Parameter: `enableBatchedOperations`
@@ -115,6 +122,7 @@ Value that indicates whether server-side batched operations are enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableExpress`
@@ -123,6 +131,7 @@ A value that indicates whether Express Entities are enabled. An express queue ho
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enablePartitioning`
@@ -131,6 +140,7 @@ A value that indicates whether the queue is to be partitioned across multiple me
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `forwardDeadLetteredMessagesTo`
@@ -139,6 +149,7 @@ Queue/Topic name to forward the Dead Letter message.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `forwardTo`
 
@@ -146,6 +157,7 @@ Queue/Topic name to forward the messages.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `lock`
 
@@ -153,6 +165,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -167,6 +180,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -182,6 +196,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `lockDuration`
 
@@ -189,6 +204,7 @@ ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'PT1M'`
 
 ### Parameter: `maxDeliveryCount`
@@ -197,6 +213,7 @@ The maximum delivery count. A message is automatically deadlettered after this n
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `10`
 
 ### Parameter: `maxMessageSizeInKilobytes`
@@ -205,6 +222,7 @@ Maximum size (in KB) of the message payload that can be accepted by the queue. T
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1024`
 
 ### Parameter: `maxSizeInMegabytes`
@@ -213,6 +231,7 @@ The maximum size of the queue in megabytes, which is the size of memory allocate
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1024`
 
 ### Parameter: `requiresDuplicateDetection`
@@ -221,6 +240,7 @@ A value indicating if this queue requires duplicate detection.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `requiresSession`
@@ -229,6 +249,7 @@ A value that indicates whether the queue supports the concept of sessions.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `roleAssignments`
@@ -237,6 +258,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Azure Service Bus Data Owner'`
   - `'Azure Service Bus Data Receiver'`
@@ -271,6 +293,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -278,6 +301,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -285,6 +309,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -292,6 +317,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -305,6 +331,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -312,6 +339,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -319,6 +347,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -326,6 +355,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -343,6 +373,7 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Active'`
 - Allowed:
   ```Bicep

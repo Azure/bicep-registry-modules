@@ -14,8 +14,8 @@ This module deploys an Email Service Domain
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Communication/emailServices/domains` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains) |
-| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains/senderUsernames) |
+| `Microsoft.Communication/emailServices/domains` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains) |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains/senderUsernames) |
 
 ## Parameters
 
@@ -49,6 +49,7 @@ Name of the domain to create.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `emailServiceName`
 
@@ -56,6 +57,7 @@ The name of the parent email service. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `domainManagement`
 
@@ -63,6 +65,7 @@ Describes how the Domain resource is being managed.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'AzureManaged'`
 - Allowed:
   ```Bicep
@@ -79,6 +82,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'global'`
 
 ### Parameter: `lock`
@@ -87,6 +91,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -101,6 +106,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -116,6 +122,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -123,6 +130,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -154,6 +162,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -161,6 +170,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -168,6 +178,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -175,6 +186,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -188,6 +200,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -195,6 +208,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -202,6 +216,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -209,6 +224,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -226,6 +242,7 @@ The domains to deploy into this namespace.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -233,6 +250,7 @@ Endpoint tags.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `userEngagementTracking`
 
@@ -240,6 +258,7 @@ Describes whether user engagement tracking is enabled or disabled.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep

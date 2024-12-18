@@ -42,6 +42,7 @@ The name of the parent Digital Twin Instance resource. Required if the template 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `primaryConnectionString`
 
@@ -49,6 +50,7 @@ PrimaryConnectionString of the endpoint for key-based authentication. Will be ob
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `authenticationType`
@@ -57,6 +59,7 @@ Specifies the authentication type being used for connecting to the endpoint. If 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'IdentityBased'`
 - Allowed:
   ```Bicep
@@ -72,6 +75,7 @@ Dead letter storage secret for key-based authentication. Will be obfuscated duri
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `deadLetterUri`
@@ -80,6 +84,7 @@ Dead letter storage URL for identity-based authentication.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `endpointUri`
@@ -88,6 +93,7 @@ The URL of the ServiceBus namespace for identity-based authentication. It must i
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `entityPath`
@@ -96,6 +102,7 @@ The ServiceBus Topic name for identity-based authentication.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `managedIdentities`
@@ -104,6 +111,7 @@ The managed identity definition for this resource. Only one type of identity is 
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -118,6 +126,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceId`
 
@@ -125,6 +134,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `name`
 
@@ -132,6 +142,7 @@ The name of the Digital Twin Endpoint.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'ServiceBusEndpoint'`
 
 ### Parameter: `secondaryConnectionString`
@@ -140,6 +151,7 @@ SecondaryConnectionString of the endpoint for key-based authentication. Will be 
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ## Outputs

@@ -40,6 +40,7 @@ The name of the parent database.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -47,6 +48,7 @@ The name of the parent SQL Server.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `backupStorageAccessTier`
 
@@ -54,6 +56,7 @@ The BackupStorageAccessTier for the LTR backups.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -68,6 +71,7 @@ The setting whether to make LTR backups immutable.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `monthlyRetention`
 
@@ -75,6 +79,7 @@ Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `weeklyRetention`
 
@@ -82,6 +87,7 @@ Weekly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `weekOfYear`
 
@@ -89,6 +95,7 @@ Week of year backup to keep for yearly retention.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1`
 
 ### Parameter: `yearlyRetention`
@@ -97,6 +104,7 @@ Yearly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

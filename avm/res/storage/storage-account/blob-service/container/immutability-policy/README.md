@@ -37,6 +37,7 @@ The name of the parent container to apply the policy to. Required if the templat
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageAccountName`
 
@@ -44,6 +45,7 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `allowProtectedAppendWrites`
 
@@ -51,6 +53,7 @@ This property can only be changed for unlocked time-based retention policies. Wh
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `allowProtectedAppendWritesAll`
@@ -59,6 +62,7 @@ This property can only be changed for unlocked time-based retention policies. Wh
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `immutabilityPeriodSinceCreationInDays`
@@ -67,6 +71,7 @@ The immutability period for the blobs in the container since the policy creation
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `365`
 
 ## Outputs

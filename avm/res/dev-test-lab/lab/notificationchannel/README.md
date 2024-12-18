@@ -47,6 +47,7 @@ The list of event for which this notification is enabled.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -54,6 +55,7 @@ The name of the notification channel.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -68,6 +70,7 @@ The email recipient to send notifications to (can be a list of semi-colon separa
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `labName`
 
@@ -75,6 +78,7 @@ The name of the parent lab. Required if the template is used in a standalone dep
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `webHookUrl`
 
@@ -82,6 +86,7 @@ The webhook URL to which the notification will be sent. Required if "emailRecipi
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `description`
@@ -90,6 +95,7 @@ Description of notification.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `notificationLocale`
@@ -98,6 +104,7 @@ The locale to use when sending a notification (fallback for unsupported language
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'en'`
 
 ### Parameter: `tags`
@@ -106,6 +113,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

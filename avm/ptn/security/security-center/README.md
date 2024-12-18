@@ -309,6 +309,7 @@ All the VMs in this scope will send their security data to the mentioned workspa
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `workspaceResourceId`
 
@@ -316,6 +317,7 @@ The full resource Id of the Log Analytics workspace to save the data in.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `appServicesPricingTier`
 
@@ -323,6 +325,7 @@ The pricing tier value for AppServices. Azure Security Center is provided in two
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -338,6 +341,7 @@ The pricing tier value for ARM. Azure Security Center is provided in two pricing
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -353,6 +357,7 @@ Describes what kind of security agent provisioning action to take. - On or Off.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'On'`
 - Allowed:
   ```Bicep
@@ -368,6 +373,7 @@ The pricing tier value for ContainerRegistry. Azure Security Center is provided 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -383,6 +389,7 @@ The pricing tier value for containers. Azure Security Center is provided in two 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -398,6 +405,7 @@ The pricing tier value for CosmosDbs. Azure Security Center is provided in two p
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -413,6 +421,7 @@ Device Security group data.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `dnsPricingTier`
@@ -421,6 +430,7 @@ The pricing tier value for DNS. Azure Security Center is provided in two pricing
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -436,6 +446,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `ioTSecuritySolutionProperties`
@@ -444,6 +455,7 @@ Security Solution data.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `keyVaultsPricingTier`
@@ -452,6 +464,7 @@ The pricing tier value for KeyVaults. Azure Security Center is provided in two p
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -467,6 +480,7 @@ The pricing tier value for KubernetesService. Azure Security Center is provided 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -482,6 +496,7 @@ Location deployment metadata.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `openSourceRelationalDatabasesTier`
@@ -490,6 +505,7 @@ The pricing tier value for OpenSourceRelationalDatabases. Azure Security Center 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -505,6 +521,7 @@ Security contact data.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `sqlServersPricingTier`
@@ -513,6 +530,7 @@ The pricing tier value for SqlServers. Azure Security Center is provided in two 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -528,6 +546,7 @@ The pricing tier value for SqlServerVirtualMachines. Azure Security Center is pr
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -543,6 +562,7 @@ The pricing tier value for StorageAccounts. Azure Security Center is provided in
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep
@@ -558,6 +578,7 @@ The pricing tier value for VMs. Azure Security Center is provided in two pricing
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Free'`
 - Allowed:
   ```Bicep

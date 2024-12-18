@@ -45,6 +45,7 @@ The name of the replication policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `recoveryVaultName`
 
@@ -52,6 +53,7 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `appConsistentFrequencyInMinutes`
 
@@ -59,6 +61,7 @@ The app consistent snapshot frequency (in minutes).
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `60`
 
 ### Parameter: `crashConsistentFrequencyInMinutes`
@@ -67,6 +70,7 @@ The crash consistent snapshot frequency (in minutes).
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `5`
 
 ### Parameter: `multiVmSyncStatus`
@@ -75,6 +79,7 @@ A value indicating whether multi-VM sync has to be enabled.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enable'`
 - Allowed:
   ```Bicep
@@ -90,6 +95,7 @@ The duration in minutes until which the recovery points need to be stored.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1440`
 
 ## Outputs

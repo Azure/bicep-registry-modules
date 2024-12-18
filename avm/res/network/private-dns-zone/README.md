@@ -1066,6 +1066,7 @@ Private DNS zone name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `a`
 
@@ -1073,6 +1074,7 @@ Array of A records.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1095,6 +1097,7 @@ The name of the record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `a.aRecords`
 
@@ -1102,6 +1105,7 @@ The list of A records in the record set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1115,6 +1119,7 @@ The IPv4 address of this A record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `a.metadata`
 
@@ -1122,6 +1127,7 @@ The metadata of the record.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `a.roleAssignments`
 
@@ -1129,6 +1135,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Private DNS Zone Contributor'`
@@ -1162,6 +1169,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `a.roleAssignments.roleDefinitionIdOrName`
 
@@ -1169,6 +1177,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `a.roleAssignments.condition`
 
@@ -1176,6 +1185,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `a.roleAssignments.conditionVersion`
 
@@ -1183,6 +1193,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1196,6 +1207,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `a.roleAssignments.description`
 
@@ -1203,6 +1215,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `a.roleAssignments.name`
 
@@ -1210,6 +1223,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `a.roleAssignments.principalType`
 
@@ -1217,6 +1231,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1234,6 +1249,7 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `aaaa`
 
@@ -1241,6 +1257,7 @@ Array of AAAA records.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1263,6 +1280,7 @@ The name of the record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `aaaa.aaaaRecords`
 
@@ -1270,6 +1288,7 @@ The list of AAAA records in the record set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1283,6 +1302,7 @@ The IPv6 address of this AAAA record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `aaaa.metadata`
 
@@ -1290,6 +1310,7 @@ The metadata of the record.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `aaaa.roleAssignments`
 
@@ -1297,6 +1318,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Private DNS Zone Contributor'`
@@ -1330,6 +1352,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `aaaa.roleAssignments.roleDefinitionIdOrName`
 
@@ -1337,6 +1360,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `aaaa.roleAssignments.condition`
 
@@ -1344,6 +1368,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aaaa.roleAssignments.conditionVersion`
 
@@ -1351,6 +1376,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1364,6 +1390,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aaaa.roleAssignments.description`
 
@@ -1371,6 +1398,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aaaa.roleAssignments.name`
 
@@ -1378,6 +1406,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aaaa.roleAssignments.principalType`
 
@@ -1385,6 +1414,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1402,6 +1432,7 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `cname`
 
@@ -1409,6 +1440,7 @@ Array of CNAME records.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1431,6 +1463,7 @@ The name of the record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `cname.cnameRecord`
 
@@ -1438,6 +1471,7 @@ The CNAME record in the record set.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1451,6 +1485,7 @@ The canonical name of the CNAME record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `cname.metadata`
 
@@ -1458,6 +1493,7 @@ The metadata of the record.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `cname.roleAssignments`
 
@@ -1465,6 +1501,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Private DNS Zone Contributor'`
@@ -1498,6 +1535,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `cname.roleAssignments.roleDefinitionIdOrName`
 
@@ -1505,6 +1543,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `cname.roleAssignments.condition`
 
@@ -1512,6 +1551,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `cname.roleAssignments.conditionVersion`
 
@@ -1519,6 +1559,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1532,6 +1573,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `cname.roleAssignments.description`
 
@@ -1539,6 +1581,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `cname.roleAssignments.name`
 
@@ -1546,6 +1589,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `cname.roleAssignments.principalType`
 
@@ -1553,6 +1597,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1570,6 +1615,7 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -1577,6 +1623,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -1585,6 +1632,7 @@ The location of the PrivateDNSZone. Should be global.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'global'`
 
 ### Parameter: `lock`
@@ -1593,6 +1641,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1607,6 +1656,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1622,6 +1672,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `mx`
 
@@ -1629,6 +1680,7 @@ Array of MX records.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1651,6 +1703,7 @@ The name of the record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `mx.metadata`
 
@@ -1658,6 +1711,7 @@ The metadata of the record.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `mx.mxRecords`
 
@@ -1665,6 +1719,7 @@ The list of MX records in the record set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1679,6 +1734,7 @@ The domain name of the mail host for this MX record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `mx.mxRecords.preference`
 
@@ -1686,6 +1742,7 @@ The preference value for this MX record.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `mx.roleAssignments`
 
@@ -1693,6 +1750,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Private DNS Zone Contributor'`
@@ -1726,6 +1784,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `mx.roleAssignments.roleDefinitionIdOrName`
 
@@ -1733,6 +1792,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `mx.roleAssignments.condition`
 
@@ -1740,6 +1800,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `mx.roleAssignments.conditionVersion`
 
@@ -1747,6 +1808,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1760,6 +1822,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `mx.roleAssignments.description`
 
@@ -1767,6 +1830,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `mx.roleAssignments.name`
 
@@ -1774,6 +1838,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `mx.roleAssignments.principalType`
 
@@ -1781,6 +1846,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1798,6 +1864,7 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `ptr`
 
@@ -1805,6 +1872,7 @@ Array of PTR records.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1827,6 +1895,7 @@ The name of the record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `ptr.metadata`
 
@@ -1834,6 +1903,7 @@ The metadata of the record.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `ptr.ptrRecords`
 
@@ -1841,6 +1911,7 @@ The list of PTR records in the record set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1854,6 +1925,7 @@ The PTR target domain name for this PTR record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `ptr.roleAssignments`
 
@@ -1861,6 +1933,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Private DNS Zone Contributor'`
@@ -1894,6 +1967,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `ptr.roleAssignments.roleDefinitionIdOrName`
 
@@ -1901,6 +1975,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `ptr.roleAssignments.condition`
 
@@ -1908,6 +1983,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `ptr.roleAssignments.conditionVersion`
 
@@ -1915,6 +1991,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1928,6 +2005,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `ptr.roleAssignments.description`
 
@@ -1935,6 +2013,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `ptr.roleAssignments.name`
 
@@ -1942,6 +2021,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `ptr.roleAssignments.principalType`
 
@@ -1949,6 +2029,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1966,6 +2047,7 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -1973,6 +2055,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Network Contributor'`
@@ -2005,6 +2088,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2012,6 +2096,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2019,6 +2104,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2026,6 +2112,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2039,6 +2126,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2046,6 +2134,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2053,6 +2142,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2060,6 +2150,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2077,6 +2168,7 @@ Array of SOA records.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2099,6 +2191,7 @@ The name of the record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `soa.metadata`
 
@@ -2106,6 +2199,7 @@ The metadata of the record.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `soa.roleAssignments`
 
@@ -2113,6 +2207,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Private DNS Zone Contributor'`
@@ -2146,6 +2241,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `soa.roleAssignments.roleDefinitionIdOrName`
 
@@ -2153,6 +2249,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `soa.roleAssignments.condition`
 
@@ -2160,6 +2257,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `soa.roleAssignments.conditionVersion`
 
@@ -2167,6 +2265,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2180,6 +2279,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `soa.roleAssignments.description`
 
@@ -2187,6 +2287,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `soa.roleAssignments.name`
 
@@ -2194,6 +2295,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `soa.roleAssignments.principalType`
 
@@ -2201,6 +2303,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2218,6 +2321,7 @@ The SOA record in the record set.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2237,6 +2341,7 @@ The email contact for this SOA record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `soa.soaRecord.expireTime`
 
@@ -2244,6 +2349,7 @@ The expire time for this SOA record.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `soa.soaRecord.host`
 
@@ -2251,6 +2357,7 @@ The domain name of the authoritative name server for this SOA record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `soa.soaRecord.minimumTtl`
 
@@ -2258,6 +2365,7 @@ The minimum value for this SOA record. By convention this is used to determine t
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `soa.soaRecord.refreshTime`
 
@@ -2265,6 +2373,7 @@ The refresh value for this SOA record.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `soa.soaRecord.retryTime`
 
@@ -2272,6 +2381,7 @@ The retry time for this SOA record.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `soa.soaRecord.serialNumber`
 
@@ -2279,6 +2389,7 @@ The serial number for this SOA record.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `soa.ttl`
 
@@ -2286,6 +2397,7 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `srv`
 
@@ -2293,6 +2405,7 @@ Array of SRV records.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2315,6 +2428,7 @@ The name of the record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `srv.metadata`
 
@@ -2322,6 +2436,7 @@ The metadata of the record.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `srv.roleAssignments`
 
@@ -2329,6 +2444,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Private DNS Zone Contributor'`
@@ -2362,6 +2478,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `srv.roleAssignments.roleDefinitionIdOrName`
 
@@ -2369,6 +2486,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `srv.roleAssignments.condition`
 
@@ -2376,6 +2494,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `srv.roleAssignments.conditionVersion`
 
@@ -2383,6 +2502,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2396,6 +2516,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `srv.roleAssignments.description`
 
@@ -2403,6 +2524,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `srv.roleAssignments.name`
 
@@ -2410,6 +2532,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `srv.roleAssignments.principalType`
 
@@ -2417,6 +2540,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2434,6 +2558,7 @@ The list of SRV records in the record set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2450,6 +2575,7 @@ The port value for this SRV record.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `srv.srvRecords.priority`
 
@@ -2457,6 +2583,7 @@ The priority value for this SRV record.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `srv.srvRecords.target`
 
@@ -2464,6 +2591,7 @@ The target domain name for this SRV record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `srv.srvRecords.weight`
 
@@ -2471,6 +2599,7 @@ The weight value for this SRV record.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `srv.ttl`
 
@@ -2478,6 +2607,7 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -2485,6 +2615,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `txt`
 
@@ -2492,6 +2623,7 @@ Array of TXT records.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2514,6 +2646,7 @@ The name of the record.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `txt.metadata`
 
@@ -2521,6 +2654,7 @@ The metadata of the record.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `txt.roleAssignments`
 
@@ -2528,6 +2662,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Private DNS Zone Contributor'`
@@ -2561,6 +2696,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `txt.roleAssignments.roleDefinitionIdOrName`
 
@@ -2568,6 +2704,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `txt.roleAssignments.condition`
 
@@ -2575,6 +2712,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `txt.roleAssignments.conditionVersion`
 
@@ -2582,6 +2720,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2595,6 +2734,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `txt.roleAssignments.description`
 
@@ -2602,6 +2742,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `txt.roleAssignments.name`
 
@@ -2609,6 +2750,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `txt.roleAssignments.principalType`
 
@@ -2616,6 +2758,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2633,6 +2776,7 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `txt.txtRecords`
 
@@ -2640,6 +2784,7 @@ The list of TXT records in the record set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2653,6 +2798,7 @@ The text value of this TXT record.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `virtualNetworkLinks`
 
@@ -2660,6 +2806,7 @@ Array of custom objects describing vNet links of the DNS zone. Each object shoul
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2683,6 +2830,7 @@ The resource ID of the virtual network to link.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `virtualNetworkLinks.location`
 
@@ -2690,6 +2838,7 @@ The Azure Region where the resource lives.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `virtualNetworkLinks.name`
 
@@ -2697,6 +2846,7 @@ The resource name.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `virtualNetworkLinks.registrationEnabled`
 
@@ -2704,6 +2854,7 @@ Is auto-registration of virtual machine records in the virtual network in the Pr
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `virtualNetworkLinks.resolutionPolicy`
 
@@ -2711,6 +2862,7 @@ The resolution type of the private-dns-zone fallback machanism.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2725,6 +2877,7 @@ Resource tags.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

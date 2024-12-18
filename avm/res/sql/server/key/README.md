@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Key.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/keys) |
+| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/keys) |
 
 ## Parameters
 
@@ -36,6 +36,7 @@ The name of the parent SQL server. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -43,6 +44,7 @@ The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pat
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `serverKeyType`
 
@@ -50,6 +52,7 @@ The server key type.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'ServiceManaged'`
 - Allowed:
   ```Bicep
@@ -65,6 +68,7 @@ The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI i
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ## Outputs

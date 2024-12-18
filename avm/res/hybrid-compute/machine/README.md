@@ -17,7 +17,7 @@ This module deploys an Arc Machine for use with Arc Resource Bridge for Azure St
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
-| `Microsoft.HybridCompute/machines` | [2024-03-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/machines) |
+| `Microsoft.HybridCompute/machines` | [2024-03-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-03-31-preview/machines) |
 
 ## Usage examples
 
@@ -471,6 +471,7 @@ Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -478,6 +479,7 @@ The name of the Arc machine to be created. You should use a unique prefix to red
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `osType`
 
@@ -485,6 +487,7 @@ Required if you are providing OS-type specified configurations, such as patch se
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -499,6 +502,7 @@ The resource ID of an Arc Private Link Scope which which to associate this machi
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `clientPublicKey`
@@ -507,6 +511,7 @@ The Public Key that the client provides to be used during initial resource onboa
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -515,6 +520,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `guestConfiguration`
@@ -523,6 +529,7 @@ The guest configuration for the Arc machine. Needs the Guest Configuration exten
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `location`
@@ -531,6 +538,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -539,6 +547,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -553,6 +562,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -568,6 +578,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `parentClusterResourceId`
 
@@ -575,6 +586,7 @@ Parent cluster resource ID (Azure Stack HCI).
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `patchAssessmentMode`
@@ -583,6 +595,7 @@ VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable aut
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'ImageDefault'`
 - Allowed:
   ```Bicep
@@ -598,6 +611,7 @@ VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -614,6 +628,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -649,6 +664,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -656,6 +672,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -663,6 +680,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -670,6 +688,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -683,6 +702,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -690,6 +710,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -697,6 +718,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -704,6 +726,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -721,6 +744,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `vmId`
 
@@ -728,6 +752,7 @@ The GUID of the on-premises virtual machine from your hypervisor.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ## Outputs

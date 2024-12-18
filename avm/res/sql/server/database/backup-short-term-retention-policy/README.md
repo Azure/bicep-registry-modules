@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Database Short-Term Backup Retention Pol
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies) |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases/backupShortTermRetentionPolicies) |
 
 ## Parameters
 
@@ -36,6 +36,7 @@ The name of the parent database.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -43,6 +44,7 @@ The name of the parent SQL Server.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diffBackupIntervalInHours`
 
@@ -50,6 +52,7 @@ Differential backup interval in hours. For Hyperscal tiers this value will be ig
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `24`
 
 ### Parameter: `retentionDays`
@@ -58,6 +61,7 @@ Poin-in-time retention in days.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `7`
 
 ## Outputs

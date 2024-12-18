@@ -42,6 +42,7 @@ Name of the table.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `databaseAccountName`
 
@@ -49,6 +50,7 @@ The name of the parent Azure Cosmos DB account. Required if the template is used
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `maxThroughput`
 
@@ -56,6 +58,7 @@ Represents maximum throughput, the resource can scale up to. Cannot be set toget
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `4000`
 
 ### Parameter: `tags`
@@ -64,6 +67,7 @@ Tags for the table.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `throughput`
 
@@ -71,6 +75,7 @@ Request Units per second (for example 10000). Cannot be set together with `maxTh
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ## Outputs
 

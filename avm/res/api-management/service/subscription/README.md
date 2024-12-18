@@ -46,6 +46,7 @@ API Management Service Subscriptions name. Must be 1 to 100 characters long.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -53,6 +54,7 @@ Subscription name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -60,6 +62,7 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `allowTracing`
 
@@ -67,6 +70,7 @@ Determines whether tracing can be enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `ownerId`
@@ -75,6 +79,7 @@ User (user ID path) for whom subscription is being created in form /users/{userI
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryKey`
 
@@ -82,6 +87,7 @@ Primary subscription key. If not specified during request key will be generated 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `scope`
 
@@ -89,6 +95,7 @@ Scope type to choose between a product, "allAPIs" or a specific API. Scope like 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'/apis'`
 
 ### Parameter: `secondaryKey`
@@ -97,6 +104,7 @@ Secondary subscription key. If not specified during request key will be generate
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `state`
 
@@ -104,6 +112,7 @@ Initial subscription state. If no value is specified, subscription is created wi
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

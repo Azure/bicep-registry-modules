@@ -35,6 +35,7 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -42,6 +43,7 @@ API Version set name.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'default'`
 
 ### Parameter: `properties`
@@ -50,6 +52,7 @@ API Version set properties.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ## Outputs
