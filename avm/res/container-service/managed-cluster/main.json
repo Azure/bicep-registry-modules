@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "10108574510278935914"
+      "version": "0.32.4.45862",
+      "templateHash": "15234959045281729347"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -800,7 +800,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
@@ -946,7 +949,7 @@
         "Automatic"
       ],
       "metadata": {
-        "description": "Optional. Name of a managed cluster SKU."
+        "description": "Optional. Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION."
       }
     },
     "skuTier": {
@@ -1010,11 +1013,15 @@
         "description": "Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled."
       }
     },
-    "nodeProvisioningProfile": {
-      "type": "object",
+    "nodeProvisioningProfileMode": {
+      "type": "string",
       "nullable": true,
+      "allowedValues": [
+        "Auto",
+        "Manual"
+      ],
       "metadata": {
-        "description": "Optional. Node provisioning settings that apply to the whole cluster."
+        "description": "Optional. Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION."
       }
     },
     "nodeResourceGroup": {
@@ -1689,10 +1696,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1790,7 +1794,7 @@
         "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "nodeResourceGroupProfile": "[parameters('nodeResourceGroupProfile')]",
-        "nodeProvisioningProfile": "[parameters('nodeProvisioningProfile')]",
+        "nodeProvisioningProfile": "[if(not(empty(parameters('nodeProvisioningProfileMode'))), createObject('mode', parameters('nodeProvisioningProfileMode')), null())]",
         "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
         "workloadAutoScalerProfile": {
           "keda": {
@@ -1977,7 +1981,6 @@
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "dnsZone",
         "managedCluster"
       ]
     },
@@ -2011,8 +2014,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17300977997310482979"
+              "version": "0.32.4.45862",
+              "templateHash": "14523573481456452623"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -2208,8 +2211,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "10548754747426289718"
+              "version": "0.32.4.45862",
+              "templateHash": "8195372149835761348"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -2558,10 +2561,7 @@
                 "vmSize": "[parameters('vmSize')]",
                 "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
                 "workloadRuntime": "[parameters('workloadRuntime')]"
-              },
-              "dependsOn": [
-                "managedCluster"
-              ]
+              }
             }
           },
           "outputs": {

@@ -12,10 +12,10 @@ param managedVirtualNetworkName string = ''
 param managedPrivateEndpoints managedPrivateEndpointType[] = []
 
 @description('Optional. An array of objects for the configuration of an Integration Runtime.')
-param integrationRuntimes integrationRuntimesType = []
+param integrationRuntimes integrationRuntimesType[] = []
 
 @description('Optional. An array of objects for the configuration of Linked Services.')
-param linkedServices linkedServicesType = []
+param linkedServices linkedServicesType[] = []
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -76,13 +76,13 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
+
 import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
-
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
-@description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
@@ -218,7 +218,9 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
           keyName: customerManagedKey!.keyName
           keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
             ? customerManagedKey!.keyVersion
-            : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+            : (customerManagedKey.?autoRotationEnabled ?? true)
+                ? null
+                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
           vaultBaseUrl: cMKKeyVault.properties.vaultUri
         }
       : null
@@ -438,7 +440,7 @@ type integrationRuntimesType = {
 
   @description('Optional. Integration Runtime type properties. Required if type is "Managed".')
   typeProperties: object?
-}[]
+}
 
 @export()
 type linkedServicesType = {
@@ -459,4 +461,4 @@ type linkedServicesType = {
 
   @description('Optional. The description of the Integration Runtime.')
   description: string?
-}[]
+}
