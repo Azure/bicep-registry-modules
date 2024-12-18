@@ -506,13 +506,13 @@ output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
 
 type replicaType = {
   @description('''Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'
-'switchover'.''')
+'switchover'. Required if enabling replication.''')
   promoteMode: ('standalone' | 'switchover')
 
   @description('''Conditional. Sets the promote options for a replica server. This is a write only property.	'forced'
-'planned'.''')
+'planned'. Required if enabling replication.''')
   promoteOption: ('forced' | 'planned')
 
-  @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'.''')
+  @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication.''')
   role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
-}
+}?

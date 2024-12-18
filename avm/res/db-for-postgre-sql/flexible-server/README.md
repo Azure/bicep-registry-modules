@@ -2258,13 +2258,13 @@ The replication settings for the server. Can only be set on existing flexible se
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`promoteMode`](#parameter-replicapromotemode) | string | Sets the promote mode for a replica server. This is a write only property. 'standalone'<p>'switchover'. |
-| [`promoteOption`](#parameter-replicapromoteoption) | string | Sets the promote options for a replica server. This is a write only property.	'forced'<p>'planned'. |
-| [`role`](#parameter-replicarole) | string | Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. |
+| [`promoteMode`](#parameter-replicapromotemode) | string | Sets the promote mode for a replica server. This is a write only property. 'standalone'<p>'switchover'. Required if enabling replication. |
+| [`promoteOption`](#parameter-replicapromoteoption) | string | Sets the promote options for a replica server. This is a write only property.	'forced'<p>'planned'. Required if enabling replication. |
+| [`role`](#parameter-replicarole) | string | Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication. |
 
 ### Parameter: `replica.promoteMode`
 
-Sets the promote mode for a replica server. This is a write only property. 'standalone'<p>'switchover'.
+Sets the promote mode for a replica server. This is a write only property. 'standalone'<p>'switchover'. Required if enabling replication.
 
 - Required: Yes
 - Type: string
@@ -2278,7 +2278,7 @@ Sets the promote mode for a replica server. This is a write only property. 'stan
 
 ### Parameter: `replica.promoteOption`
 
-Sets the promote options for a replica server. This is a write only property.	'forced'<p>'planned'.
+Sets the promote options for a replica server. This is a write only property.	'forced'<p>'planned'. Required if enabling replication.
 
 - Required: Yes
 - Type: string
@@ -2292,7 +2292,7 @@ Sets the promote options for a replica server. This is a write only property.	'f
 
 ### Parameter: `replica.role`
 
-Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'.
+Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication.
 
 - Required: Yes
 - Type: string

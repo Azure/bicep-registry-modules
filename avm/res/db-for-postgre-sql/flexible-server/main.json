@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5966963229305860226"
+      "templateHash": "7570338402660535127"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -23,7 +23,7 @@
             "switchover"
           ],
           "metadata": {
-            "description": "Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'\n'switchover'."
+            "description": "Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'\n'switchover'. Required if enabling replication."
           }
         },
         "promoteOption": {
@@ -33,7 +33,7 @@
             "planned"
           ],
           "metadata": {
-            "description": "Conditional. Sets the promote options for a replica server. This is a write only property.\t'forced'\n'planned'."
+            "description": "Conditional. Sets the promote options for a replica server. This is a write only property.\t'forced'\n'planned'. Required if enabling replication."
           }
         },
         "role": {
@@ -45,10 +45,11 @@
             "Primary"
           ],
           "metadata": {
-            "description": "Conditional. Used to indicate role of the server in replication set.\t'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'."
+            "description": "Conditional. Used to indicate role of the server in replication set.\t'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication."
           }
         }
-      }
+      },
+      "nullable": true
     },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
