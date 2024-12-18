@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6920720962396336725"
+      "templateHash": "7669093066934147602"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups ",
@@ -40,7 +40,6 @@
   "parameters": {
     "parSubscriptionPlacement": {
       "$ref": "#/definitions/subscriptionPlacementType",
-      "defaultValue": [],
       "metadata": {
         "description": "Required. The management group IDs along with the subscriptions to be placed underneath them."
       }

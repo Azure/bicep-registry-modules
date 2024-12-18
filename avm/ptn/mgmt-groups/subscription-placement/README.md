@@ -122,9 +122,8 @@ param parSubscriptionPlacement = [
 
 The management group IDs along with the subscriptions to be placed underneath them.
 
-- Required: No
+- Required: Yes
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
