@@ -268,7 +268,7 @@ var databaseAccountProperties = union(
     capabilities: capabilities
     minimalTlsVersion: minimumTlsVersion
     capacity: {
-      totalThrougputLimit: totalThroughputLimit
+      totalThroughputLimit: totalThroughputLimit
     }
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
