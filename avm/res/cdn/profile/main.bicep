@@ -316,6 +316,16 @@ output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
 
+@description('The list of records required for custom domains validation.')
+output dnsValidation dnsValidationType[] = [
+  for (customDomain, index) in customDomains: profile_customDomains[index].outputs.dnsValidation
+]
+
+@description('The list of AFD endpoint host names.')
+output frontDoorEndpointHostNames array = [
+  for (afdEndpoint, index) in afdEndpoints: profile_afdEndpoints[index].outputs.frontDoorEndpointHostName
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -327,6 +337,7 @@ import { originType } from 'origingroup//origin/main.bicep'
 import { associationsType } from 'securityPolicies/main.bicep'
 import { ruleSetType } from 'ruleset/main.bicep'
 import { ruleType } from 'ruleset/rule/main.bicep'
+import { dnsValidationType } from 'customdomain/main.bicep'
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
