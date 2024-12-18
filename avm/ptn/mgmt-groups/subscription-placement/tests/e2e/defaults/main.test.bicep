@@ -14,18 +14,24 @@ param serviceShort string = 'subplmin'
 param managementGroupId string = ''
 
 @description('Required. The first subscription ID to be placed.')
-@secure()
 param subscriptionId1 string = ''
 
-
 @description('Required. The second subscription ID to be placed.')
-@secure()
 param subscriptionId2 string = ''
-
 
 // ============== //
 // Test Execution //
 // ============== //
+
+resource subscription1 'Microsoft.Subscription/aliases@2024-08-01-preview' existing = {
+  name: subscriptionId1
+  scope: tenant()
+}
+
+resource subscription2 'Microsoft.Subscription/aliases@2024-08-01-preview' existing = {
+  name: subscriptionId2
+  scope: tenant()
+}
 
 module testDeployment '../../../main.bicep' = {
   name: '${namePrefix}-test-${serviceShort}'
@@ -34,12 +40,13 @@ module testDeployment '../../../main.bicep' = {
       {
         managementGroupId: managementGroupId
         subscriptionIds: [
-          subscriptionId1
-          subscriptionId2
+          subscription1.id
+          subscription2.id
         ]
       }
     ]
   }
 }
+
 @description('This output retrieves the subscription placement summary from the test deployment outputs.')
 output subscriptionPlacementSummary string = testDeployment.outputs.subscriptionPlacementSummary
