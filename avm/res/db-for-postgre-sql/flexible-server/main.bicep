@@ -150,7 +150,7 @@ param databases array = []
 param configurations array = []
 
 @description('Optional. The replication settings for the server. Can only be set on existing flexible servers.')
-param replica replicaType
+param replica replicaType?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
@@ -515,4 +515,4 @@ type replicaType = {
 
   @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'.''')
   role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
-}?
+}

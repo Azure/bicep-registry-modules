@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11860646535999860374"
+      "templateHash": "8217656275611975481"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -48,8 +48,7 @@
             "description": "Conditional. Used to indicate role of the server in replication set.\t'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
@@ -840,6 +839,7 @@
     },
     "replica": {
       "$ref": "#/definitions/replicaType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The replication settings for the server. Can only be set on existing flexible servers."
       }
