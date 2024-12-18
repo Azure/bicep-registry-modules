@@ -35,10 +35,9 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     location: resourceLocation
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    acrName: '${namePrefix}${serviceShort}001'
+    managedIdentityName: 'dep-${namePrefix}-${resourceLocation}-msi-${serviceShort}'
   }
 }
 
@@ -52,32 +51,55 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: nestedDependencies.outputs.acrName
+      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       acrAdminUserEnabled: false
       acrSku: 'Standard'
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      roleAssignments: [
+        {
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6' // Key Vault Secrets User
+        }
+      ]
       credentialSets: [
         {
-          name: 'default'
-          managedIdentities: {
-            systemAssigned: true
-          }
+          name: 'docker-credential-set'
           authCredentials: [
             {
               name: 'Credential1'
-              usernameSecretIdentifier: nestedDependencies.outputs.userNameSecretURI
               passwordSecretIdentifier: nestedDependencies.outputs.pwdSecretURI
+              usernameSecretIdentifier: nestedDependencies.outputs.userNameSecretURI
             }
           ]
           loginServer: 'docker.io'
+          managedIdentities: {
+            systemAssigned: true
+          }
         }
       ]
       cacheRules: [
         {
-          name: 'customRule'
+          name: 'docker-rule-with-credentials'
           sourceRepository: 'docker.io/library/hello-world'
           targetRepository: 'cached-docker-hub/hello-world'
-          credentialSetResourceId: nestedDependencies.outputs.acrCredentialSetResourceId
+          credentialSetResourceId: resourceId(
+            subscription().subscriptionId,
+            resourceGroup.name,
+            'Microsoft.ContainerRegistry/registries/credentialSets',
+            '${namePrefix}${serviceShort}001',
+            'docker-credential-set'
+          )
+        }
+        {
+          name: 'mcr-rule-anonymous'
+          sourceRepository: 'mcr.microsoft.com/*'
+          targetRepository: 'cached-mcr/*'
         }
       ]
     }
