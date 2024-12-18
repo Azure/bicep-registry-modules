@@ -27,11 +27,188 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/service-fabric/cluster:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using client and server certificate parameter set](#example-1-using-client-and-server-certificate-parameter-set)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using client and server certificate parameter set_
+
+This instance deploys the module with client and server certificates using thumbprints and common names.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    managementEndpoint: 'https://sfccrt001.westeurope.cloudapp.azure.com:19080'
+    name: 'sfccrt001'
+    nodeTypes: [
+      {
+        applicationPorts: {
+          endPort: 30000
+          startPort: 20000
+        }
+        clientConnectionEndpointPort: 19000
+        durabilityLevel: 'Bronze'
+        ephemeralPorts: {
+          endPort: 65534
+          startPort: 49152
+        }
+        httpGatewayEndpointPort: 19080
+        isPrimary: true
+        name: 'Node01'
+      }
+    ]
+    reliabilityLevel: 'None'
+    // Non-required parameters
+    certificateCommonNames: {
+      commonNames: [
+        {
+          certificateCommonName: 'certcommon'
+          certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+        }
+      ]
+      x509StoreName: 'My'
+    }
+    clientCertificateThumbprints: [
+      {
+        certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
+        isAdmin: true
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "managementEndpoint": {
+      "value": "https://sfccrt001.westeurope.cloudapp.azure.com:19080"
+    },
+    "name": {
+      "value": "sfccrt001"
+    },
+    "nodeTypes": {
+      "value": [
+        {
+          "applicationPorts": {
+            "endPort": 30000,
+            "startPort": 20000
+          },
+          "clientConnectionEndpointPort": 19000,
+          "durabilityLevel": "Bronze",
+          "ephemeralPorts": {
+            "endPort": 65534,
+            "startPort": 49152
+          },
+          "httpGatewayEndpointPort": 19080,
+          "isPrimary": true,
+          "name": "Node01"
+        }
+      ]
+    },
+    "reliabilityLevel": {
+      "value": "None"
+    },
+    // Non-required parameters
+    "certificateCommonNames": {
+      "value": {
+        "commonNames": [
+          {
+            "certificateCommonName": "certcommon",
+            "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
+          }
+        ],
+        "x509StoreName": "My"
+      }
+    },
+    "clientCertificateThumbprints": {
+      "value": [
+        {
+          "certificateThumbprint": "D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE",
+          "isAdmin": true
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfccrt001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfccrt001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    name: 'Node01'
+  }
+]
+param reliabilityLevel = 'None'
+// Non-required parameters
+param certificateCommonNames = {
+  commonNames: [
+    {
+      certificateCommonName: 'certcommon'
+      certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    }
+  ]
+  x509StoreName: 'My'
+}
+param clientCertificateThumbprints = [
+  {
+    certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
+    isAdmin: true
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -169,7 +346,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -768,7 +945,7 @@ param vmImage = 'Linux'
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
