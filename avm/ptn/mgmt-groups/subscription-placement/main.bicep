@@ -37,7 +37,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module customsubscriptionPlacement './modules/helper.bicep' = [
+module customSubscriptionPlacement './modules/helper.bicep' = [
   for (subscriptionPlacement, index) in parSubscriptionPlacement: {
     name: 'subPlacement${index}'
     params: {
@@ -53,7 +53,6 @@ module customsubscriptionPlacement './modules/helper.bicep' = [
 
 @description('Output of number of management groups that have been configured with subscription placements.')
 output subscriptionPlacementSummary string = 'Subscription placements have been configured for ${length(parSubscriptionPlacement)} management groups.'
-
 
 // =============== //
 //   Definitions   //

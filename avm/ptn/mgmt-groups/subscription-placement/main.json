@@ -81,9 +81,9 @@
         }
       }
     },
-    "customsubscriptionPlacement": {
+    "customSubscriptionPlacement": {
       "copy": {
-        "name": "customsubscriptionPlacement",
+        "name": "customSubscriptionPlacement",
         "count": "[length(parameters('parSubscriptionPlacement'))]"
       },
       "type": "Microsoft.Resources/deployments",
@@ -130,7 +130,7 @@
           "resources": [
             {
               "copy": {
-                "name": "customsubscriptionPlacement",
+                "name": "customSubscriptionPlacement",
                 "count": "[length(parameters('subscriptionIds'))]"
               },
               "type": "Microsoft.Management/managementGroups/subscriptions",
