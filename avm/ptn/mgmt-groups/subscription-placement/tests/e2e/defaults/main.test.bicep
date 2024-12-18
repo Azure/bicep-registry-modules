@@ -9,6 +9,19 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'subplmin'
 
+@description('Required. The management group ID where the subscriptions will be placed.')
+param managementGroupId string = ''
+
+@description('Required. The first subscription ID to be placed.')
+@secure()
+param subscriptionId1 string = ''
+
+
+@description('Required. The second subscription ID to be placed.')
+@secure()
+param subscriptionId2 string = ''
+
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -18,10 +31,10 @@ module testDeployment '../../../main.bicep' = {
   params: {
     parSubscriptionPlacement: [
       {
-        managementGroupId: 'testmg1'
+        managementGroupId: managementGroupId
         subscriptionIds: [
-          '00000000-0000-0000-0000-000000000001'
-          '00000000-0000-0000-0000-000000000002'
+          subscriptionId1
+          subscriptionId2
         ]
       }
     ]
