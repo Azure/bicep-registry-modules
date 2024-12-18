@@ -31,6 +31,16 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
+  params: {
+    location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    // entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -44,6 +54,12 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}0001'
       location: resourceLocation
       sku: 'Standard_E2ads_v5'
+      enableDiskEncryption: true
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
     }
   }
 ]
