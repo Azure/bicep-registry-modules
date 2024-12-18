@@ -302,7 +302,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
         }
       : null
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
-    replica: replica
+    replica: !empty(replica) ? replica : null
     sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica')
       ? sourceServerResourceId
       : null
