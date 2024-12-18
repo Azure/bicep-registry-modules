@@ -178,6 +178,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             protocolTypes: [
               'NFSv4.1'
             ]
+            smbContinuouslyAvailable: false
+            smbEncryption: false
+            smbNonBrowsable: 'Disabled'
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
             zones: [
@@ -316,6 +319,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "protocolTypes": [
                 "NFSv4.1"
               ],
+              "smbContinuouslyAvailable": false,
+              "smbEncryption": false,
+              "smbNonBrowsable": "Disabled",
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
               "zones": [
@@ -458,6 +464,9 @@ param capacityPools = [
         protocolTypes: [
           'NFSv4.1'
         ]
+        smbContinuouslyAvailable: false
+        smbEncryption: false
+        smbNonBrowsable: 'Disabled'
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
         zones: [
