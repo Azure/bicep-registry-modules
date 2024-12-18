@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Align to WAF'
-metadata description = 'This instance deploys the module with private networking and a workload plan.'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //

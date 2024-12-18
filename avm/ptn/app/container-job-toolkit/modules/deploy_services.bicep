@@ -546,7 +546,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (zoneRedundan
   }
 }
 
-module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (deployInVnet && deployDnsZoneKeyVault) {
+module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (deployInVnet && deployDnsZoneKeyVault) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-dnsZoneKeyVault'
   params: {
     name: 'privatelink.vaultcore.azure.net'
@@ -579,7 +579,7 @@ resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetw
   }
 }
 
-module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (deployInVnet && deployDnsZoneContainerRegistry) {
+module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (deployInVnet && deployDnsZoneContainerRegistry) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-dnsZoneContainerRegistry'
   params: {
     name: 'privatelink.azurecr.io'
@@ -776,7 +776,7 @@ module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0
   }
 ]
 
-module storage 'br/public:avm/res/storage/storage-account:0.14.3' = if (deployInVnet) {
+module storage 'br/public:avm/res/storage/storage-account:0.15.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-storage'
   params: {
     name: uniqueString('sa', name, location, resourceGroupName, subscription().subscriptionId)
