@@ -143,6 +143,13 @@ param privateDnsZoneArmResourceId string = ''
 @description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
 param firewallRules array = []
 
+@description('Optional. Determines whether or not public network access is enabled or not.')
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+param publicNetworkAccess string = 'Disabled'
+
 @description('Optional. The databases to create in the server.')
 param databases array = []
 
@@ -299,6 +306,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
       ? {
           delegatedSubnetResourceId: delegatedSubnetResourceId
           privateDnsZoneArmResourceId: privateDnsZoneArmResourceId
+          publicNetworkAccess: publicNetworkAccess
         }
       : null
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
