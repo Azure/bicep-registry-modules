@@ -10,6 +10,7 @@ param namePrefix string = '#_namePrefix_#'
 param serviceShort string = 'subplmin'
 
 @description('Required. The management group ID where the subscriptions will be placed.')
+@secure()
 param managementGroupId string = ''
 
 @description('Required. The first subscription ID to be placed.')
