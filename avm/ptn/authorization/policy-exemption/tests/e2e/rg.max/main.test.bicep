@@ -12,9 +12,6 @@ param serviceShort string = 'apergmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The policy definition ID to assign the policy to.')
-param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-
 @description('Optional. The target scope for the policy exemption. If not provided, will use the current scope for deployment.')
 param subscriptionId string = '#_subscriptionId_#'
 
@@ -37,6 +34,11 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   }
 }
 
+resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2025-01-01' existing = {
+  name: '06a78e20-9358-41c9-923c-fb736d382a4d'
+  scope: tenant()
+}
+
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-04-01' = {
   name: 'audit-vm-managed-disks'
   scope: managementGroup()
@@ -44,7 +46,7 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-04-01'
     metadata: {
       assignedBy: 'Bicep'
     }
-    policyDefinitionId: policyDefinitionID
+    policyDefinitionId: policyDefinition.id
     description: ' 	This policy audits VMs that do not use managed disks'
     displayName: 'Audit VMs that do not use managed disks'
     enforcementMode: 'DoNotEnforce'
