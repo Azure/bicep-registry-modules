@@ -9,7 +9,7 @@ metadata owner = 'Azure/module-maintainers'
 // ------------------
 
 @description('Required. The management group IDs along with the subscriptions to be placed underneath them.')
-param parSubscriptionPlacement subscriptionPlacementType = []
+param parSubscriptionPlacement subscriptionPlacementType
 
 @description('Optional. Location for all resources.')
 param location string = deployment().location
