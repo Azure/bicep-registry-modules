@@ -16,3 +16,6 @@ resource server 'Microsoft.Sql/servers@2021-11-01' = {
     administratorLoginPassword: password
   }
 }
+
+@description('The name of the deployed secondary server.')
+output secondaryServerName string = server.name
