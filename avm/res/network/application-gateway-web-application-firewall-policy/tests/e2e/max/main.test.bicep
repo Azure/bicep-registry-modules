@@ -47,6 +47,9 @@ module testDeployment '../../../main.bicep' = [
         fileUploadLimitInMb: 10
         state: 'Enabled'
         mode: 'Prevention'
+        customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
+        customBlockResponseStatusCode: 403
+        jsChallengeCookieExpirationInMins: 60
       }
       managedRules: {
         managedRuleSets: [
