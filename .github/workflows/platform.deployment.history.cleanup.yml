@@ -83,7 +83,7 @@ jobs:
         with:
           inlineScript: |
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-SubscriptionDeploymentHistory.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-SubscriptionDeploymentHistory.ps1')
 
             $functionInput = @{
               SubscriptionId               = '${{ secrets.ARM_SUBSCRIPTION_ID }}'
@@ -132,7 +132,7 @@ jobs:
         with:
           inlineScript: |
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-ManagementGroupDeploymentHistory.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-ManagementGroupDeploymentHistory.ps1')
 
             $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
 
