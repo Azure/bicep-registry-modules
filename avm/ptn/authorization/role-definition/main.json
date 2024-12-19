@@ -1,0 +1,151 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "4698417116112222192"
+    },
+    "name": "avm/ptn/authorization/role-definition",
+    "description": "This module deploys a custom role definition to a Management Group.",
+    "owner": "@jtracey93"
+  },
+  "parameters": {
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. The location of the telemetry deployment to be created. Default is location of deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the custom role definition."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The description of the custom role definition."
+      }
+    },
+    "assignableScopes": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used."
+      }
+    },
+    "actions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The permission actions of the custom role definition."
+      }
+    },
+    "notActions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The permission not actions of the custom role definition."
+      }
+    },
+    "dataActions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The permission data actions of the custom role definition."
+      }
+    },
+    "notDataActions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The permission not data actions of the custom role definition."
+      }
+    },
+    "roleName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The display name of the custom role definition. If not specified, the name will be used."
+      }
+    }
+  },
+  "variables": {
+    "roleDefNameFinalGuid": "[if(and(and(contains(parameters('name'), '-'), equals(length(parameters('name')), 36)), equals(length(split(parameters('name'), '-')), 5)), parameters('name'), guid(parameters('name')))]"
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.authorization-roledefinition.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "res_roleDefinition_mg": {
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[variables('roleDefNameFinalGuid')]",
+      "properties": {
+        "roleName": "[coalesce(parameters('roleName'), variables('roleDefNameFinalGuid'))]",
+        "description": "[parameters('description')]",
+        "type": "CustomRole",
+        "assignableScopes": "[if(not(empty(parameters('assignableScopes'))), parameters('assignableScopes'), createArray(managementGroup().id))]",
+        "permissions": [
+          {
+            "actions": "[coalesce(parameters('actions'), createArray())]",
+            "notActions": "[coalesce(parameters('notActions'), createArray())]",
+            "dataActions": "[coalesce(parameters('dataActions'), createArray())]",
+            "notDataActions": "[coalesce(parameters('notDataActions'), createArray())]"
+          }
+        ]
+      }
+    }
+  },
+  "outputs": {
+    "managementGroupCustomRoleDefinitionIds": {
+      "type": "object",
+      "metadata": {
+        "description": "An object containing the resourceId, roleDefinitionId, and displayName of the custom role definition."
+      },
+      "value": {
+        "resourceId": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleDefinitions', variables('roleDefNameFinalGuid'))]",
+        "roleDefinitionIdName": "[variables('roleDefNameFinalGuid')]",
+        "displayName": "[reference('res_roleDefinition_mg').roleName]"
+      }
+    },
+    "roleDefinitionIdName": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID/name of the custom role definition created."
+      },
+      "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleDefinitions', variables('roleDefNameFinalGuid'))]"
+    }
+  }
+}
