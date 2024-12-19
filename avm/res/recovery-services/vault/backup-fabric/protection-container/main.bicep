@@ -32,7 +32,7 @@ param sourceResourceId string?
 param friendlyName string?
 
 @description('Optional. Protected items to register in the container.')
-param protectedItems array = []
+param protectedItems protectedItem[]?
 
 @description('Optional. Type of the container.')
 @allowed([
@@ -59,7 +59,7 @@ resource protectionContainer 'Microsoft.RecoveryServices/vaults/backupFabrics/pr
 }
 
 module protectionContainer_protectedItems 'protected-item/main.bicep' = [
-  for (protectedItem, index) in protectedItems: {
+  for (protectedItem, index) in (protectedItems ?? []): {
     name: '${uniqueString(deployment().name, location)}-ProtectedItem-${index}'
     params: {
       policyResourceId: protectedItem.policyResourceId
@@ -81,3 +81,32 @@ output resourceId string = protectionContainer.id
 
 @description('The Name of the Protection Container.')
 output name string = protectionContainer.name
+
+@export()
+@description('The type for a protected item')
+type protectedItem = {
+  @description('Required. Name of the resource.')
+  name: string
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Required. The backup item type.')
+  protectedItemType: (
+    | 'AzureFileShareProtectedItem'
+    | 'AzureVmWorkloadSAPAseDatabase'
+    | 'AzureVmWorkloadSAPHanaDatabase'
+    | 'AzureVmWorkloadSQLDatabase'
+    | 'DPMProtectedItem'
+    | 'GenericProtectedItem'
+    | 'MabFileFolderProtectedItem'
+    | 'Microsoft.ClassicCompute/virtualMachines'
+    | 'Microsoft.Compute/virtualMachines'
+    | 'Microsoft.Sql/servers/databases')
+
+  @description('Required. Resource ID of the backup policy with which this item is backed up.')
+  policyResourceId: string
+
+  @description('Required. Resource ID of the resource to back up.')
+  sourceResourceId: string
+}

@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Optional. The storage configuration for the Azure Recovery Service Vault.')
-param backupStorageConfig object?
+param backupStorageConfig backupStorageConfigType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -15,22 +15,22 @@ param enableTelemetry bool = true
 param location string = resourceGroup().location
 
 @description('Optional. List of all backup policies.')
-param backupPolicies array?
+param backupPolicies backupPolicyType[]?
 
 @description('Optional. The backup configuration.')
-param backupConfig object?
+param backupConfig backupConfigType?
 
 @description('Optional. List of all protection containers.')
-param protectionContainers array?
+param protectionContainers protectionContainerType[]?
 
 @description('Optional. List of all replication fabrics.')
 param replicationFabrics replicationFabricType[]?
 
 @description('Optional. List of all replication policies.')
-param replicationPolicies array?
+param replicationPolicies replicationPolicyType[]?
 
 @description('Optional. Replication alert settings.')
-param replicationAlertSettings object?
+param replicationAlertSettings replicationAlertSettingsType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The diagnostic settings of the service.')
@@ -56,10 +56,10 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Monitoring Settings of the vault.')
-param monitoringSettings object?
+param monitoringSettings monitoringSettingsType?
 
 @description('Optional. Security Settings of the vault.')
-param securitySettings object?
+param securitySettings securitySettingType?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
 @allowed([
@@ -190,7 +190,23 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
     tier: 'Standard'
   }
   properties: {
-    monitoringSettings: monitoringSettings
+    monitoringSettings: !empty(monitoringSettings)
+      ? {
+          azureMonitorAlertSettings: !empty(monitoringSettings.?azureMonitorAlertSettings)
+            ? {
+                alertsForAllFailoverIssues: monitoringSettings!.azureMonitorAlertSettings.?alertsForAllFailoverIssues ?? 'Enabled'
+                alertsForAllJobFailures: monitoringSettings!.azureMonitorAlertSettings.?alertsForAllJobFailures ?? 'Enabled'
+                alertsForAllReplicationIssues: monitoringSettings!.azureMonitorAlertSettings.?alertsForAllReplicationIssues ?? 'Enabled'
+              }
+            : null
+          classicAlertSettings: !empty(monitoringSettings.?classicAlertSettings)
+            ? {
+                alertsForCriticalOperations: monitoringSettings!.classicAlertSettings.?alertsForCriticalOperations ?? 'Enabled'
+                emailNotificationsForSiteRecovery: monitoringSettings!.classicAlertSettings.?emailNotificationsForSiteRecovery ?? 'Enabled'
+              }
+            : null
+        }
+      : null
     securitySettings: securitySettings
     publicNetworkAccess: publicNetworkAccess
     redundancySettings: redundancySettings
@@ -487,4 +503,179 @@ type replicationFabricType = {
 
   @description('Optional. Replication containers to create.')
   replicationContainers: containerType[]?
+}
+
+@export()
+@description('The type for replication policies.')
+type replicationPolicyType = {
+  @description('Required. The name of the replication policy.')
+  name: string
+
+  @description('Optional. The app consistent snapshot frequency (in minutes).')
+  appConsistentFrequencyInMinutes: int?
+
+  @description('Optional. The crash consistent snapshot frequency (in minutes).')
+  crashConsistentFrequencyInMinutes: int?
+
+  @description('Optional. A value indicating whether multi-VM sync has to be enabled.')
+  multiVmSyncStatus: ('Enable' | 'Disable')?
+
+  @description('Optional. The duration in minutes until which the recovery points need to be stored.')
+  recoveryPointHistory: int?
+}
+
+@export()
+@description('The type for a backup storage config.')
+type backupStorageConfigType = {
+  @description('Optional. The name of the backup storage config.')
+  name: string?
+
+  @description('Optional. Change Vault Storage Type (Works if vault has not registered any backup instance).')
+  storageModelType: ('GeoRedundant' | 'LocallyRedundant' | 'ReadAccessGeoZoneRedundant' | 'ZoneRedundant')?
+
+  @description('Optional. Opt in details of Cross Region Restore feature.')
+  crossRegionRestoreFlag: bool?
+}
+
+@export()
+@description('The type for a backup configuration.')
+type backupConfigType = {
+  @description('Optional. Name of the Azure Recovery Service Vault Backup Policy.')
+  name: string?
+
+  @description('Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations.')
+  enhancedSecurityState: ('Disabled' | 'Enabled')?
+
+  @description('Optional. ResourceGuard Operation Requests.')
+  resourceGuardOperationRequests: object[]?
+
+  @description('Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.')
+  softDeleteFeatureState: ('Disabled' | 'Enabled')?
+
+  @description('Optional. Storage type.')
+  storageModelType: ('GeoRedundant' | 'LocallyRedundant' | 'ReadAccessGeoZoneRedundant' | 'ZoneRedundant')?
+
+  @description('Optional. Storage type.')
+  storageType: ('GeoRedundant' | 'LocallyRedundant' | 'ReadAccessGeoZoneRedundant' | 'ZoneRedundant')?
+
+  @description('Optional. Once a machine is registered against a resource, the storageTypeState is always Locked.')
+  storageTypeState: ('Locked' | 'Unlocked')?
+
+  @description('Optional. Is soft delete feature state editable.')
+  isSoftDeleteFeatureStateEditable: bool?
+}
+
+@export()
+@description('The type for replication alert settings')
+type replicationAlertSettingsType = {
+  @description('Optional. The name of the replication Alert Setting.')
+  name: string?
+
+  @description('Optional. The custom email address for sending emails.')
+  customEmailAddresses: string[]?
+
+  @description('Optional. The locale for the email notification.')
+  locale: string?
+
+  @description('Optional. The value indicating whether to send email to subscription administrator.')
+  sendToOwners: ('DoNotSend' | 'Send')?
+}
+
+import { protectedItem } from './backup-fabric/protection-container/main.bicep'
+@description('The type for a protection container.')
+type protectionContainerType = {
+  @description('Required. Name of the Azure Recovery Service Vault Protection Container.')
+  name: string
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Backup management type to execute the current Protection Container job.')
+  backupManagementType: (
+    | 'AzureBackupServer'
+    | 'AzureIaasVM'
+    | 'AzureSql'
+    | 'AzureStorage'
+    | 'AzureWorkload'
+    | 'DPM'
+    | 'DefaultBackup'
+    | 'Invalid'
+    | 'MAB')?
+
+  @description('Optional. Resource ID of the target resource for the Protection Container.')
+  sourceResourceId: string?
+
+  @description('Optional. Friendly name of the Protection Container.')
+  friendlyName: string?
+
+  @description('Optional. Protected items to register in the container.')
+  protectedItems: protectedItem[]?
+
+  @description('Optional. Type of the container.')
+  containerType: (
+    | 'AzureBackupServerContainer'
+    | 'AzureSqlContainer'
+    | 'GenericContainer'
+    | 'Microsoft.ClassicCompute/virtualMachines'
+    | 'Microsoft.Compute/virtualMachines'
+    | 'SQLAGWorkLoadContainer'
+    | 'StorageContainer'
+    | 'VMAppContainer'
+    | 'Windows')?
+}
+
+@export()
+@description('The type of a backup policy.')
+type backupPolicyType = {
+  @description('Required. Name of the Azure Recovery Service Vault Backup Policy.')
+  name: string
+
+  @description('Required. Configuration of the Azure Recovery Service Vault Backup Policy.')
+  properties: object
+}
+
+@export()
+type monitoringSettingsType = {
+  @description('Optional. The alert settings.')
+  azureMonitorAlertSettings: {
+    @description('Optional. Enable / disable alerts for all failover issues.')
+    alertsForAllFailoverIssues: ('Enabled' | 'Disabled')
+
+    @description('Optional. Enable / disable alerts for all job failures.')
+    alertsForAllJobFailures: ('Enabled' | 'Disabled')
+
+    @description('Optional. Enable / disable alerts for all replication issues.')
+    alertsForAllReplicationIssues: ('Enabled' | 'Disabled')
+  }?
+
+  @description('Optional. The classic alert settings')
+  classicAlertSettings: {
+    @description('Optional. Enable / disable alerts for critical operations.')
+    alertsForCriticalOperations: ('Enabled' | 'Disabled')
+
+    @description('Optional. Enable / disable email notifications for site recovery.')
+    emailNotificationsForSiteRecovery: ('Enabled' | 'Disabled')
+  }?
+}
+
+@export()
+@description('The type for security settings.')
+type securitySettingType = {
+  @description('Optional. Immutability settings of a vault.')
+  immutabilitySettings: {
+    @description('Required. The immmutability setting of the vault')
+    state: ('Disabled' | 'Locked' | 'Unlocked')
+  }?
+
+  @description('Optional. Soft delete settings of a vault')
+  softDeleteSettings: {
+    @description('Required. The enhanced security state.')
+    enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
+
+    @description('Required. The soft delete retention period in days.')
+    softDeleteRetentionPeriodInDays: int
+
+    @description('Required. The soft delete state.')
+    softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
+  }?
 }
