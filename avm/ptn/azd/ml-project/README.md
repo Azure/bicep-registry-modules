@@ -149,6 +149,7 @@ The resource ID of the AI Studio Hub Resource where this project should be creat
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `keyVaultName`
 
@@ -156,6 +157,7 @@ The name of the key vault.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -163,6 +165,7 @@ The name of the machine learning workspace.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `userAssignedName`
 
@@ -170,6 +173,7 @@ The name of the user assigned identity.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `enableTelemetry`
 
@@ -177,6 +181,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `hbiWorkspace`
@@ -185,6 +190,7 @@ The flag to signal HBI data in the workspace and reduce diagnostic data collecte
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `location`
@@ -193,6 +199,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `projectKind`
@@ -201,6 +208,7 @@ The type of Azure Machine Learning workspace to create.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Project'`
 - Allowed:
   ```Bicep
@@ -218,6 +226,7 @@ The managed identity definition for the machine learning resource. At least one 
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -238,6 +247,7 @@ Enables system assigned managed identity on the resource. Must be false if `prim
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `projectManagedIdentities.userAssignedResourceIds`
 
@@ -245,6 +255,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `projectSku`
 
@@ -252,6 +263,7 @@ Specifies the SKU, also referred as 'edition' of the Azure Machine Learning work
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Basic'`
 - Allowed:
   ```Bicep
@@ -269,6 +281,7 @@ Whether or not public network access is allowed for this machine learning worksp
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -284,6 +297,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -298,6 +312,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 - Example:
   ```Bicep
   {

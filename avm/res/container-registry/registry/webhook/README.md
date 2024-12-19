@@ -12,7 +12,7 @@ This module deploys an Azure Container Registry (ACR) Webhook.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 
 ## Parameters
 
@@ -46,6 +46,7 @@ The service URI for the webhook to post notifications.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `registryName`
 
@@ -53,6 +54,7 @@ The name of the parent registry. Required if the template is used in a standalon
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `action`
 
@@ -60,6 +62,7 @@ The list of actions that trigger the webhook to post notifications.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -77,6 +80,7 @@ Custom headers that will be added to the webhook notifications.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -84,6 +88,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
@@ -92,6 +97,7 @@ The name of the registry webhook.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('{0}webhook', parameters('registryName'))]`
 
 ### Parameter: `scope`
@@ -100,6 +106,7 @@ The scope of repositories where the event can be triggered. For example, 'foo:*'
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `status`
 
@@ -107,6 +114,7 @@ The status of the webhook at the time the operation was called.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'enabled'`
 - Allowed:
   ```Bicep
@@ -122,6 +130,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

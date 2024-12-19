@@ -209,6 +209,7 @@ The Principal or Object ID of the Security Principal (User, Group, Service Princ
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `resourceId`
 
@@ -216,6 +217,7 @@ The scope for the role assignment, fully qualified resourceId.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleDefinitionId`
 
@@ -223,6 +225,7 @@ The role definition ID for the role assignment.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `description`
 
@@ -230,6 +233,7 @@ The description of role assignment.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -238,6 +242,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `name`
@@ -246,6 +251,7 @@ The unique guid name for the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))))]`
 
 ### Parameter: `principalType`
@@ -254,6 +260,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -273,6 +280,7 @@ The name for the role, used for logging.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ## Outputs

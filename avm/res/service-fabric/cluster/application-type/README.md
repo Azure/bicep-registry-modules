@@ -35,6 +35,7 @@ The name of the parent Service Fabric cluster. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -42,6 +43,7 @@ Application type name.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'defaultApplicationType'`
 
 ### Parameter: `tags`
@@ -50,6 +52,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8014779167577667866"
+      "version": "0.32.4.45862",
+      "templateHash": "14150480546717020778"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service",
@@ -300,8 +300,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "8505145703963186641"
+              "version": "0.32.4.45862",
+              "templateHash": "13257581356656266104"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain",
@@ -511,10 +511,7 @@
               "properties": {
                 "domainManagement": "[parameters('domainManagement')]",
                 "userEngagementTracking": "[parameters('userEngagementTracking')]"
-              },
-              "dependsOn": [
-                "emailService"
-              ]
+              }
             },
             "domain_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -588,8 +585,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "13801162652865106188"
+                      "version": "0.32.4.45862",
+                      "templateHash": "15079268999081259084"
                     },
                     "name": "Sender Usernames",
                     "description": "This module deploys an Sender",
@@ -665,8 +662,7 @@
                 }
               },
               "dependsOn": [
-                "domain",
-                "emailService"
+                "domain"
               ]
             }
           },

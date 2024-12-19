@@ -198,6 +198,7 @@ The name of the instance pool.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `subnetResourceId`
 
@@ -205,6 +206,7 @@ The subnet resource ID for the instance pool.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `enableTelemetry`
 
@@ -212,6 +214,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `licenseType`
@@ -220,6 +223,7 @@ The license type to apply for this database.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'BasePrice'`
 - Allowed:
   ```Bicep
@@ -235,6 +239,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `skuFamily`
@@ -243,6 +248,7 @@ If the service has different generations of hardware, for the same SKU, then tha
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Gen5'`
 
 ### Parameter: `skuName`
@@ -251,6 +257,7 @@ The SKU name for the instance pool.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'GP_Gen5'`
 
 ### Parameter: `tags`
@@ -259,6 +266,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `tier`
 
@@ -266,6 +274,7 @@ The vCore service tier for the instance pool.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'GeneralPurpose'`
 - Allowed:
   ```Bicep
@@ -280,6 +289,7 @@ The number of vCores for the instance pool.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `8`
 - Allowed:
   ```Bicep

@@ -338,6 +338,7 @@ function Set-DefinitionSection {
                 $rawAllowedValues = $parameter.allowedValues
             }
 
+            $isNullable = $parameter.nullable -eq $true ? 'Yes' : 'No'
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
             $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
             $example = ($parameter.ContainsKey('metadata') -and $parameter['metadata'].ContainsKey('example')) ? $parameter['metadata']['example'] : $null
@@ -423,6 +424,14 @@ function Set-DefinitionSection {
                 $formattedAllowedValues = $null # Reset value for future iterations
             }
 
+            # add MinValue and maxValue to the description
+            if ($parameter.ContainsKey('minValue')) {
+                $formattedMinValue = "- MinValue: $($parameter['minValue'])"
+            }
+            if ($parameter.ContainsKey('maxValue')) {
+                $formattedMaxValue = "- MaxValue: $($parameter['maxValue'])"
+            }
+
             # Special case for 'roleAssignments' parameter
             if (($parameter.name -eq 'roleAssignments') -and ($TemplateFileContent.variables.keys -contains 'builtInRoleNames')) {
                 if ([String]::IsNullOrEmpty($ParentName)) {
@@ -479,8 +488,11 @@ function Set-DefinitionSection {
             ($parameter.ContainsKey('metadata') ? '' : $null),
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),
+            ('- Nullable: {0}' -f $isNullable),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+            ((-not [String]::IsNullOrEmpty($formattedMinValue)) ? $formattedMinValue : $null),
+            ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
             ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
                 ''

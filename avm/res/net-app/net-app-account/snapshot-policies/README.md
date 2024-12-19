@@ -58,6 +58,7 @@ The daily snapshot hour.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dailyMinute`
 
@@ -65,6 +66,7 @@ The daily snapshot minute.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dailySnapshotsToKeep`
 
@@ -72,6 +74,7 @@ Daily snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dailyUsedBytes`
 
@@ -79,6 +82,7 @@ Daily snapshot used bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `daysOfMonth`
 
@@ -86,6 +90,7 @@ The monthly snapshot day.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `hourlyMinute`
 
@@ -93,6 +98,7 @@ The hourly snapshot minute.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `hourlySnapshotsToKeep`
 
@@ -100,6 +106,7 @@ Hourly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `hourlyUsedBytes`
 
@@ -107,6 +114,7 @@ Hourly snapshot used bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `monthlyHour`
 
@@ -114,6 +122,7 @@ The monthly snapshot hour.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `monthlyMinute`
 
@@ -121,6 +130,7 @@ The monthly snapshot minute.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `monthlySnapshotsToKeep`
 
@@ -128,6 +138,7 @@ Monthly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `monthlyUsedBytes`
 
@@ -135,6 +146,7 @@ Monthly snapshot used bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `snapshotPolicyName`
 
@@ -142,6 +154,7 @@ The name of the snapshot policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `weeklyDay`
 
@@ -149,6 +162,7 @@ The weekly snapshot day.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `weeklyHour`
 
@@ -156,6 +170,7 @@ The weekly snapshot hour.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `weeklyMinute`
 
@@ -163,6 +178,7 @@ The weekly snapshot minute.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `weeklySnapshotsToKeep`
 
@@ -170,6 +186,7 @@ Weekly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `weeklyUsedBytes`
 
@@ -177,6 +194,7 @@ Weekly snapshot used bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `netAppAccountName`
 
@@ -184,6 +202,7 @@ The name of the parent NetApp account. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `snapEnabled`
 
@@ -191,6 +210,7 @@ Indicates whether the snapshot policy is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `snapshotPolicyLocation`
@@ -199,6 +219,7 @@ The location of the snapshot policy.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

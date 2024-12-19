@@ -44,6 +44,7 @@ Link to another virtual network resource ID.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateDnsZoneName`
 
@@ -51,6 +52,7 @@ The name of the parent Private DNS zone. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `location`
 
@@ -58,6 +60,7 @@ The location of the PrivateDNSZone. Should be global.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'global'`
 
 ### Parameter: `name`
@@ -66,6 +69,7 @@ The name of the virtual network link.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))]`
 
 ### Parameter: `registrationEnabled`
@@ -74,6 +78,7 @@ Is auto-registration of virtual machine records in the virtual network in the Pr
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `resolutionPolicy`
@@ -82,6 +87,7 @@ The resolution policy on the virtual network link. Only applicable for virtual n
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -89,6 +95,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

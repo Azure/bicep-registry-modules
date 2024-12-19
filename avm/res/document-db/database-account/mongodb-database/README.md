@@ -43,6 +43,7 @@ Name of the mongodb database.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `databaseAccountName`
 
@@ -50,6 +51,7 @@ The name of the parent Cosmos DB database account. Required if the template is u
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `collections`
 
@@ -57,6 +59,7 @@ Collections in the mongodb database.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `tags`
@@ -65,6 +68,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `throughput`
 
@@ -72,6 +76,7 @@ Request Units per second.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `400`
 
 ## Outputs

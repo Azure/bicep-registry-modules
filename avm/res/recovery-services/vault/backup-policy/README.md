@@ -35,6 +35,7 @@ Name of the Azure Recovery Service Vault Backup Policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `properties`
 
@@ -42,6 +43,7 @@ Configuration of the Azure Recovery Service Vault Backup Policy.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `recoveryVaultName`
 
@@ -49,6 +51,7 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

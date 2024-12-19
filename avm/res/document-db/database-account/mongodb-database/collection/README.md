@@ -44,6 +44,7 @@ Indexes for the collection.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -51,6 +52,7 @@ Name of the collection.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `shardKey`
 
@@ -58,6 +60,7 @@ ShardKey for the collection.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `databaseAccountName`
 
@@ -65,6 +68,7 @@ The name of the parent Cosmos DB database account. Required if the template is u
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `mongodbDatabaseName`
 
@@ -72,6 +76,7 @@ The name of the parent mongodb database. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `throughput`
 
@@ -79,6 +84,7 @@ Request Units per second.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `400`
 
 ## Outputs

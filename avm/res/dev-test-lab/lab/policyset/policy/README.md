@@ -47,6 +47,7 @@ The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy).
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -61,6 +62,7 @@ The fact name of the policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -83,6 +85,7 @@ The name of the policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `threshold`
 
@@ -90,6 +93,7 @@ The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `labName`
 
@@ -97,6 +101,7 @@ The name of the parent lab. Required if the template is used in a standalone dep
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `description`
 
@@ -104,6 +109,7 @@ The description of the policy.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `factData`
@@ -112,6 +118,7 @@ The fact data of the policy.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `status`
@@ -120,6 +127,7 @@ The status of the policy.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep

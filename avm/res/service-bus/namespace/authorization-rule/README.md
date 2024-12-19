@@ -40,6 +40,7 @@ The name of the authorization rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -47,6 +48,7 @@ The name of the parent Service Bus Namespace for the Service Bus Queue. Required
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `rights`
 
@@ -54,6 +56,7 @@ The rights associated with the rule.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep

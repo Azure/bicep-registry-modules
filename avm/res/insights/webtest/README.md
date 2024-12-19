@@ -476,6 +476,7 @@ Resource ID of the App Insights resource to link with this webtest.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -483,6 +484,7 @@ Name of the webtest.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `request`
 
@@ -490,6 +492,7 @@ The collection of request properties.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `webTestName`
 
@@ -497,6 +500,7 @@ User defined name if this WebTest.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `configuration`
 
@@ -504,6 +508,7 @@ An XML configuration specification for a WebTest.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `description`
 
@@ -511,6 +516,7 @@ User defined description for this WebTest.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `enabled`
@@ -519,6 +525,7 @@ Is the test actively being monitored.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableTelemetry`
@@ -527,6 +534,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `frequency`
@@ -535,6 +543,7 @@ Interval in seconds between test runs for this WebTest.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `300`
 
 ### Parameter: `kind`
@@ -543,6 +552,7 @@ The kind of WebTest that this web test watches.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'standard'`
 - Allowed:
   ```Bicep
@@ -559,6 +569,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `locations`
@@ -567,6 +578,7 @@ List of where to physically run the tests from to give global coverage for acces
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -594,6 +606,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -608,6 +621,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -623,6 +637,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `retryEnabled`
 
@@ -630,6 +645,7 @@ Allow for retries should this WebTest fail.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `roleAssignments`
@@ -638,6 +654,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -669,6 +686,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -676,6 +694,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -683,6 +702,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -690,6 +710,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -703,6 +724,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -710,6 +732,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -717,6 +740,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -724,6 +748,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -741,6 +766,7 @@ Unique ID of this WebTest.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[parameters('name')]`
 
 ### Parameter: `tags`
@@ -749,6 +775,7 @@ Resource tags. Note: a mandatory tag 'hidden-link' based on the 'appInsightResou
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `timeout`
 
@@ -756,6 +783,7 @@ Seconds until this WebTest will timeout and fail.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `30`
 
 ### Parameter: `validationRules`
@@ -764,6 +792,7 @@ The collection of validation rule properties.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ## Outputs

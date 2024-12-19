@@ -40,6 +40,7 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `location`
 
@@ -47,6 +48,7 @@ The recovery location the fabric represents.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
@@ -55,6 +57,7 @@ The name of the fabric.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[parameters('location')]`
 
 ### Parameter: `replicationContainers`
@@ -63,6 +66,7 @@ Replication containers to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ## Outputs

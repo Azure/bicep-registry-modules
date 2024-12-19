@@ -105,6 +105,7 @@ The label of the backup.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `backupName`
 
@@ -112,6 +113,7 @@ The name of the backup.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `backupPolicyLocation`
 
@@ -119,6 +121,7 @@ The backup policy location.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `backupVaultResourceId`
 
@@ -126,6 +129,7 @@ The Id of the Backup Vault.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `coolAccess`
 
@@ -133,6 +137,7 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `coolnessPeriod`
 
@@ -140,6 +145,7 @@ Specifies the number of days after which data that is not accessed by clients wi
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dailyBackupsToKeep`
 
@@ -147,6 +153,7 @@ The daily backups to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dailyHour`
 
@@ -154,6 +161,7 @@ The daily snapshot hour.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dailyMinute`
 
@@ -161,6 +169,7 @@ The daily snapshot minute.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dailySnapshotsToKeep`
 
@@ -168,6 +177,7 @@ Daily snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dailyUsedBytes`
 
@@ -175,6 +185,7 @@ Daily snapshot used bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `daysOfMonth`
 
@@ -182,6 +193,7 @@ The monthly snapshot day.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `encryptionKeySource`
 
@@ -189,6 +201,7 @@ The source of the encryption key.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `endpointType`
 
@@ -196,6 +209,7 @@ Indicates whether the local volume is the source or destination for the Volume R
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `hourlyMinute`
 
@@ -203,6 +217,7 @@ The hourly snapshot minute.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `hourlySnapshotsToKeep`
 
@@ -210,6 +225,7 @@ Hourly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `hourlyUsedBytes`
 
@@ -217,6 +233,7 @@ Hourly snapshot used bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `keyVaultPrivateEndpointResourceId`
 
@@ -224,6 +241,7 @@ The resource ID of the key vault private endpoint.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `monthlyBackupsToKeep`
 
@@ -231,6 +249,7 @@ The monthly backups to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `monthlyHour`
 
@@ -238,6 +257,7 @@ The monthly snapshot hour.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `monthlyMinute`
 
@@ -245,6 +265,7 @@ The monthly snapshot minute.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `monthlySnapshotsToKeep`
 
@@ -252,6 +273,7 @@ Monthly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `monthlyUsedBytes`
 
@@ -259,6 +281,7 @@ Monthly snapshot used bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -266,6 +289,7 @@ The name of the pool volume.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `remoteVolumeRegion`
 
@@ -273,6 +297,7 @@ The remote region for the other end of the Volume Replication.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `remoteVolumeResourceId`
 
@@ -280,6 +305,7 @@ The resource ID of the remote volume.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `replicationSchedule`
 
@@ -287,6 +313,7 @@ The replication schedule for the volume.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `snapshotName`
 
@@ -294,6 +321,7 @@ The name of the snapshot.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `snapshotPolicyLocation`
 
@@ -301,6 +329,7 @@ The location of snashot policies.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `snapshotPolicyName`
 
@@ -308,6 +337,7 @@ The name of the snapshot policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `subnetResourceId`
 
@@ -315,6 +345,7 @@ The Azure Resource URI for a delegated subnet. Must have the delegation Microsof
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `usageThreshold`
 
@@ -322,6 +353,7 @@ Maximum storage quota allowed for a file system in bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `useExistingSnapshot`
 
@@ -329,6 +361,7 @@ Indicates whether to use an existing snapshot.
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `volumeResourceId`
 
@@ -336,6 +369,7 @@ The resource ID of the volume.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `volumeType`
 
@@ -343,6 +377,7 @@ The type of the volume. DataProtection volumes are used for replication.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `weeklyBackupsToKeep`
 
@@ -350,6 +385,7 @@ The weekly backups to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `weeklyDay`
 
@@ -357,6 +393,7 @@ The weekly snapshot day.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `weeklyHour`
 
@@ -364,6 +401,7 @@ The weekly snapshot hour.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `weeklyMinute`
 
@@ -371,6 +409,7 @@ The weekly snapshot minute.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `weeklySnapshotsToKeep`
 
@@ -378,6 +417,7 @@ Weekly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `weeklyUsedBytes`
 
@@ -385,6 +425,7 @@ Weekly snapshot used bytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `capacityPoolName`
 
@@ -392,6 +433,7 @@ The name of the parent capacity pool. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `netAppAccountName`
 
@@ -399,6 +441,7 @@ The name of the parent NetApp account. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `backupEnabled`
 
@@ -406,6 +449,7 @@ Indicates whether the backup policy is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `backupPolicyName`
@@ -414,6 +458,7 @@ The name of the backup policy.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'backupPolicy'`
 
 ### Parameter: `backupVaultLocation`
@@ -422,6 +467,7 @@ The location of the backup vault.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `backupVaultName`
@@ -430,6 +476,7 @@ The name of the backup vault.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'vault'`
 
 ### Parameter: `coolAccessRetrievalPolicy`
@@ -438,6 +485,7 @@ determines the data retrieval behavior from the cool tier to standard storage ba
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Default'`
 
 ### Parameter: `creationToken`
@@ -446,6 +494,7 @@ A unique file path for the volume. This is the name of the volume export. A volu
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[parameters('name')]`
 
 ### Parameter: `exportPolicyRules`
@@ -454,6 +503,7 @@ Export policy rules.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `location`
@@ -462,6 +512,7 @@ Location of the pool volume.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `networkFeatures`
@@ -470,6 +521,7 @@ Network feature for the volume.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -487,6 +539,7 @@ If Backup policy is enforced.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `protocolTypes`
@@ -495,6 +548,7 @@ Set of protocol types.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `replicationEnabled`
@@ -503,6 +557,7 @@ Enables replication.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `roleAssignments`
@@ -511,6 +566,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -542,6 +598,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -549,6 +606,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -556,6 +614,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -563,6 +622,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -576,6 +636,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -583,6 +644,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -590,6 +652,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -597,6 +660,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -614,6 +678,7 @@ The pool service level. Must match the one of the parent capacity pool.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -631,6 +696,7 @@ Enables continuously available share property for SMB volume. Only applicable fo
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `smbEncryption`
@@ -639,6 +705,7 @@ Enables SMB encryption. Only applicable for SMB/DualProtocol volume.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `smbNonBrowsable`
@@ -647,6 +714,7 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -662,6 +730,7 @@ Indicates whether the snapshot policy is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `zones`
@@ -670,6 +739,7 @@ Zone where the volume will be placed.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -692,6 +762,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `res/net-app/net-app-account/backup-policies` | Local reference |
-| `res/net-app/net-app-account/snapshot-policies` | Local reference |
+| `avm/res/net-app/net-app-account/backup-policies` | Local reference |
+| `avm/res/net-app/net-app-account/snapshot-policies` | Local reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |

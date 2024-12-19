@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "1500434239147541571"
+      "version": "0.32.4.45862",
+      "templateHash": "4983644790291723565"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension.",
@@ -138,10 +138,7 @@
           "namespace": "[if(not(empty(coalesce(parameters('targetNamespace'), ''))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
         },
         "version": "[parameters('version')]"
-      },
-      "dependsOn": [
-        "managedCluster"
-      ]
+      }
     },
     "fluxConfiguration": {
       "copy": {
@@ -364,8 +361,7 @@
         }
       },
       "dependsOn": [
-        "extension",
-        "managedCluster"
+        "extension"
       ]
     }
   },

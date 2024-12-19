@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "2627482903423190891"
+      "version": "0.32.4.45862",
+      "templateHash": "6147059661452531763"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",
@@ -508,8 +508,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "16330852520711792816"
+              "version": "0.32.4.45862",
+              "templateHash": "14705419803255524703"
             },
             "name": "Application Insights Linked Storage Account",
             "description": "This component deploys an Application Insights Linked Storage Account.",

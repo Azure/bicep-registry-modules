@@ -45,6 +45,7 @@ Unique name of NamedValue. It may contain only letters, digits, period, dash, an
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -52,6 +53,7 @@ Named value Name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -59,6 +61,7 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `keyVault`
 
@@ -66,6 +69,7 @@ KeyVault location details of the namedValue.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `secret`
@@ -74,6 +78,7 @@ Determines whether the value is a secret and should be encrypted or not. Default
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `tags`
@@ -82,6 +87,7 @@ Tags that when provided can be used to filter the NamedValue list. - string.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `value`
 
@@ -89,6 +95,7 @@ Value of the NamedValue. Can contain policy expressions. It may not be empty or 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[newGuid()]`
 
 ## Outputs

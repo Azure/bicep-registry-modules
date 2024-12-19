@@ -49,6 +49,7 @@ Backend Name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `url`
 
@@ -56,6 +57,7 @@ Runtime URL of the Backend.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -63,6 +65,7 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `credentials`
 
@@ -70,6 +73,7 @@ Backend Credentials Contract Properties.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `description`
 
@@ -77,6 +81,7 @@ Backend Description.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `protocol`
 
@@ -84,6 +89,7 @@ Backend communication protocol. - http or soap.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'http'`
 
 ### Parameter: `proxy`
@@ -92,6 +98,7 @@ Backend Proxy Contract Properties.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `resourceId`
 
@@ -99,6 +106,7 @@ Management Uri of the Resource in External System. This URL can be the Arm Resou
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `serviceFabricCluster`
 
@@ -106,6 +114,7 @@ Backend Service Fabric Cluster Properties.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `title`
 
@@ -113,6 +122,7 @@ Backend Title.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `tls`
 
@@ -120,6 +130,7 @@ Backend TLS Properties.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {

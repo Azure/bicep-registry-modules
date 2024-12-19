@@ -36,6 +36,7 @@ The auth settings V2 configuration.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `kind`
 
@@ -43,6 +44,7 @@ Type of site to deploy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -67,6 +69,7 @@ Slot name to be configured.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `appName`
 
@@ -74,6 +77,7 @@ The name of the parent site resource. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

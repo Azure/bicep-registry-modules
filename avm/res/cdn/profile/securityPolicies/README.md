@@ -36,6 +36,7 @@ Waf associations (see https://learn.microsoft.com/en-us/azure/templates/microsof
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -50,6 +51,7 @@ List of domain resource id to associate with this resource.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -63,6 +65,7 @@ ResourceID to domain that will be associated.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `associations.patternsToMatch`
 
@@ -70,6 +73,7 @@ List of patterns to match with this association.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -77,6 +81,7 @@ The resource name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `wafPolicyResourceId`
 
@@ -84,6 +89,7 @@ Resource ID of WAF Policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `profileName`
 
@@ -91,6 +97,7 @@ The name of the parent CDN profile. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

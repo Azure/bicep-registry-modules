@@ -59,6 +59,7 @@ Name of the Service Bus Topic.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -66,6 +67,7 @@ The name of the parent Service Bus Namespace for the Service Bus Topic. Required
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `authorizationRules`
 
@@ -73,6 +75,7 @@ Authorization Rules for the Service Bus Topic.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `autoDeleteOnIdle`
@@ -81,6 +84,7 @@ ISO 8601 timespan idle interval after which the topic is automatically deleted. 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `defaultMessageTimeToLive`
 
@@ -88,6 +92,7 @@ ISO 8601 default message timespan to live value. This is the duration after whic
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'P14D'`
 
 ### Parameter: `duplicateDetectionHistoryTimeWindow`
@@ -96,6 +101,7 @@ ISO 8601 timeSpan structure that defines the duration of the duplicate detection
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'PT10M'`
 
 ### Parameter: `enableBatchedOperations`
@@ -104,6 +110,7 @@ Value that indicates whether server-side batched operations are enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableExpress`
@@ -112,6 +119,7 @@ A value that indicates whether Express Entities are enabled. An express topic ho
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enablePartitioning`
@@ -120,6 +128,7 @@ A value that indicates whether the topic is to be partitioned across multiple me
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `lock`
@@ -128,6 +137,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -142,6 +152,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -157,6 +168,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `maxMessageSizeInKilobytes`
 
@@ -164,6 +176,7 @@ Maximum size (in KB) of the message payload that can be accepted by the topic. T
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1024`
 
 ### Parameter: `maxSizeInMegabytes`
@@ -172,6 +185,7 @@ The maximum size of the topic in megabytes, which is the size of memory allocate
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1024`
 
 ### Parameter: `requiresDuplicateDetection`
@@ -180,6 +194,7 @@ A value indicating if this topic requires duplicate detection.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `roleAssignments`
@@ -188,6 +203,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Azure Service Bus Data Owner'`
   - `'Azure Service Bus Data Receiver'`
@@ -222,6 +238,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -229,6 +246,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -236,6 +254,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -243,6 +262,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -256,6 +276,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -263,6 +284,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -270,6 +292,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -277,6 +300,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -294,6 +318,7 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Active'`
 - Allowed:
   ```Bicep
@@ -316,6 +341,7 @@ The subscriptions of the topic.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -348,6 +374,7 @@ The name of the service bus namespace topic subscription.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `subscriptions.autoDeleteOnIdle`
 
@@ -355,6 +382,7 @@ ISO 8601 timespan idle interval after which the syubscription is automatically d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `subscriptions.clientAffineProperties`
 
@@ -362,6 +390,7 @@ The properties that are associated with a subscription that is client-affine.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -382,6 +411,7 @@ Indicates the Client ID of the application that created the client-affine subscr
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `subscriptions.clientAffineProperties.isDurable`
 
@@ -389,6 +419,7 @@ For client-affine subscriptions, this value indicates whether the subscription i
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `subscriptions.clientAffineProperties.isShared`
 
@@ -396,6 +427,7 @@ For client-affine subscriptions, this value indicates whether the subscription i
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `subscriptions.deadLetteringOnFilterEvaluationExceptions`
 
@@ -403,6 +435,7 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `subscriptions.deadLetteringOnMessageExpiration`
 
@@ -410,6 +443,7 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `subscriptions.defaultMessageTimeToLive`
 
@@ -417,6 +451,7 @@ ISO 8601 timespan idle interval after which the message expires. The minimum dur
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `subscriptions.duplicateDetectionHistoryTimeWindow`
 
@@ -424,6 +459,7 @@ ISO 8601 timespan that defines the duration of the duplicate detection history. 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `subscriptions.enableBatchedOperations`
 
@@ -431,6 +467,7 @@ A value that indicates whether server-side batched operations are enabled.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `subscriptions.forwardDeadLetteredMessagesTo`
 
@@ -438,6 +475,7 @@ The name of the recipient entity to which all the messages sent to the subscript
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `subscriptions.forwardTo`
 
@@ -445,6 +483,7 @@ The name of the recipient entity to which all the messages sent to the subscript
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `subscriptions.isClientAffine`
 
@@ -452,6 +491,7 @@ A value that indicates whether the subscription supports the concept of session.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `subscriptions.lockDuration`
 
@@ -459,6 +499,7 @@ ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `subscriptions.maxDeliveryCount`
 
@@ -466,6 +507,7 @@ Number of maximum deliveries. A message is automatically deadlettered after this
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `subscriptions.requiresSession`
 
@@ -473,6 +515,7 @@ A value that indicates whether the subscription supports the concept of session.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `subscriptions.status`
 
@@ -480,6 +523,7 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -501,6 +545,7 @@ Value that indicates whether the topic supports ordering.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ## Outputs

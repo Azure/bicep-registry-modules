@@ -39,6 +39,7 @@ The name of the parent event hub namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `defaultAction`
 
@@ -46,6 +47,7 @@ Default Action for Network Rule Set. Default is "Allow". It will not be set if p
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Allow'`
 - Allowed:
   ```Bicep
@@ -61,6 +63,7 @@ An array of objects for the public IP ranges you want to allow via the Event Hub
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `networkRuleSetName`
@@ -69,6 +72,7 @@ The name of the network ruleset.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'default'`
 
 ### Parameter: `publicNetworkAccess`
@@ -77,6 +81,7 @@ This determines if traffic is allowed over public network. Default is "Enabled".
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -92,6 +97,7 @@ Value that indicates whether Trusted Service Access is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `virtualNetworkRules`
@@ -100,6 +106,7 @@ An array of subnet resource ID objects that this Event Hub Namespace is exposed 
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ## Outputs

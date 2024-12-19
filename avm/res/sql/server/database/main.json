@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "10088627667414343400"
+      "version": "0.32.4.45862",
+      "templateHash": "8657415553449823149"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -645,10 +645,7 @@
         "sourceResourceId": "[parameters('sourceResourceId')]",
         "useFreeLimit": "[parameters('useFreeLimit')]",
         "zoneRedundant": "[parameters('zoneRedundant')]"
-      },
-      "dependsOn": [
-        "server"
-      ]
+      }
     },
     "database_diagnosticSettings": {
       "copy": {
@@ -721,8 +718,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "1465086214783345027"
+              "version": "0.32.4.45862",
+              "templateHash": "2726045612900421237"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -839,8 +836,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3060709558343951533"
+              "version": "0.32.4.45862",
+              "templateHash": "1446282995445489550"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -911,10 +908,7 @@
               "existing": true,
               "type": "Microsoft.Sql/servers/databases",
               "apiVersion": "2023-08-01-preview",
-              "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]",
-              "dependsOn": [
-                "server"
-              ]
+              "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
             },
             "server": {
               "existing": true,
@@ -933,10 +927,7 @@
                 "weeklyRetention": "[parameters('weeklyRetention')]",
                 "weekOfYear": "[parameters('weekOfYear')]",
                 "yearlyRetention": "[parameters('yearlyRetention')]"
-              },
-              "dependsOn": [
-                "server::database"
-              ]
+              }
             }
           },
           "outputs": {

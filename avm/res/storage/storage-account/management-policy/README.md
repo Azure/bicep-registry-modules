@@ -34,6 +34,7 @@ The Storage Account ManagementPolicies Rules.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `storageAccountName`
 
@@ -41,6 +42,7 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

@@ -43,6 +43,7 @@ Name of the Automation Account module.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `uri`
 
@@ -50,6 +51,7 @@ Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `automationAccountName`
 
@@ -57,6 +59,7 @@ The name of the parent Automation Account. Required if the template is used in a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `location`
 
@@ -64,6 +67,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `tags`
@@ -72,6 +76,7 @@ Tags of the Automation Account resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `version`
 
@@ -79,6 +84,7 @@ Module version or specify latest to get the latest version.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'latest'`
 
 ## Outputs

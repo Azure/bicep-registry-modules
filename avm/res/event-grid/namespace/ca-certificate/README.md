@@ -41,6 +41,7 @@ Base64 encoded PEM (Privacy Enhanced Mail) format certificate data.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -48,6 +49,7 @@ Name of the CA certificate.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -55,6 +57,7 @@ The name of the parent EventGrid namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `description`
 
@@ -62,6 +65,7 @@ Description for the CA Certificate resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

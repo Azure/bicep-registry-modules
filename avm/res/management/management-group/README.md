@@ -268,6 +268,7 @@ The group ID of the Management group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `displayName`
 
@@ -275,6 +276,7 @@ The friendly name of the management group. If no value is passed then this field
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -283,6 +285,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -291,6 +294,7 @@ Location deployment metadata.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `parentId`
@@ -299,6 +303,7 @@ The management group parent ID. Defaults to current scope.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[last(split(managementGroup().id, '/'))]`
 
 ## Outputs

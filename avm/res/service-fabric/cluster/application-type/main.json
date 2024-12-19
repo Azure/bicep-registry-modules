@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8632559494589711330"
+      "version": "0.32.4.45862",
+      "templateHash": "4770865885039578272"
     },
     "name": "Service Fabric Cluster Application Types",
     "description": "This module deploys a Service Fabric Cluster Application Type.",
@@ -45,10 +45,7 @@
       "type": "Microsoft.ServiceFabric/clusters/applicationTypes",
       "apiVersion": "2021-06-01",
       "name": "[format('{0}/{1}', parameters('serviceFabricClusterName'), parameters('name'))]",
-      "tags": "[parameters('tags')]",
-      "dependsOn": [
-        "serviceFabricCluster"
-      ]
+      "tags": "[parameters('tags')]"
     }
   },
   "outputs": {

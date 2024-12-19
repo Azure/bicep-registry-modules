@@ -48,6 +48,7 @@ Indicates whether the extension should use a newer minor version if one is avail
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `enableAutomaticUpgrade`
 
@@ -55,6 +56,7 @@ Indicates whether the extension should be automatically upgraded by the platform
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -62,6 +64,7 @@ The name of the virtual machine scale set extension.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `publisher`
 
@@ -69,6 +72,7 @@ The name of the extension handler publisher.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `type`
 
@@ -76,6 +80,7 @@ Specifies the type of the extension; an example is "CustomScriptExtension".
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `typeHandlerVersion`
 
@@ -83,6 +88,7 @@ Specifies the version of the script handler.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `virtualMachineScaleSetName`
 
@@ -90,6 +96,7 @@ The name of the parent virtual machine scale set that extension is provisioned f
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `forceUpdateTag`
 
@@ -97,6 +104,7 @@ How the extension handler should be forced to update even if the extension confi
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `protectedSettings`
@@ -105,6 +113,7 @@ Any object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `settings`
@@ -113,6 +122,7 @@ Any object that contains the extension specific settings.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `supressFailures`
@@ -121,6 +131,7 @@ Indicates whether failures stemming from the extension will be suppressed (Opera
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ## Outputs

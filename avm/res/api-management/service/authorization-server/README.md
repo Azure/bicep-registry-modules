@@ -55,6 +55,7 @@ OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `clientId`
 
@@ -62,6 +63,7 @@ Client or app ID registered with this authorization server.
 
 - Required: Yes
 - Type: securestring
+- Nullable: No
 
 ### Parameter: `clientSecret`
 
@@ -69,6 +71,7 @@ Client or app secret registered with this authorization server. This property wi
 
 - Required: Yes
 - Type: securestring
+- Nullable: No
 
 ### Parameter: `displayName`
 
@@ -76,6 +79,7 @@ API Management Service Authorization Servers name. Must be 1 to 50 characters lo
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `grantTypes`
 
@@ -83,6 +87,7 @@ Form of an authorization grant, which the client uses to request the access toke
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -90,6 +95,7 @@ Identifier of the authorization server.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -97,6 +103,7 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `authorizationMethods`
 
@@ -104,6 +111,7 @@ HTTP verbs supported by the authorization endpoint. GET must be always present. 
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -117,6 +125,7 @@ Specifies the mechanism by which access token is passed to the API. - authorizat
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -130,6 +139,7 @@ Method of authentication supported by the token endpoint of this authorization s
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -143,6 +153,7 @@ Optional reference to a page where client or app registration for this authoriza
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `defaultScope`
@@ -151,6 +162,7 @@ Access token scope that is going to be requested by default. Can be overridden a
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `resourceOwnerPassword`
@@ -159,6 +171,7 @@ Can be optionally specified when resource owner password grant type is supported
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `resourceOwnerUsername`
@@ -167,6 +180,7 @@ Can be optionally specified when resource owner password grant type is supported
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `serverDescription`
@@ -175,6 +189,7 @@ Description of the authorization server. Can contain HTML formatting tags.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `supportState`
@@ -183,6 +198,7 @@ If true, authorization server will include state parameter from the authorizatio
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `tokenBodyParameters`
@@ -191,6 +207,7 @@ Additional parameters required by the token endpoint of this authorization serve
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `tokenEndpoint`
@@ -199,6 +216,7 @@ OAuth token endpoint. Contains absolute URI to entity being referenced.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ## Outputs

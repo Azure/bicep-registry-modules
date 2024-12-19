@@ -41,6 +41,7 @@ The name of the rule collection group to deploy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `priority`
 
@@ -48,6 +49,7 @@ Priority of the Firewall Policy Rule Collection Group resource.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `firewallPolicyName`
 
@@ -55,6 +57,7 @@ The name of the parent Firewall Policy. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `ruleCollections`
 
@@ -62,6 +65,7 @@ Group of Firewall Policy rule collections.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ## Outputs
 

@@ -40,6 +40,7 @@ Array of private DNS zone configurations of the private DNS zone group. A DNS zo
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -59,6 +60,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateDnsZoneConfigs.name`
 
@@ -66,6 +68,7 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpointName`
 
@@ -73,6 +76,7 @@ The name of the parent private endpoint. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -80,6 +84,7 @@ The name of the private DNS zone group.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'default'`
 
 ## Outputs

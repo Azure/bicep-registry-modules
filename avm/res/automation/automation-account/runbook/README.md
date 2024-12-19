@@ -53,6 +53,7 @@ Name of the Automation Account runbook.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `type`
 
@@ -60,6 +61,7 @@ The type of the runbook.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -81,6 +83,7 @@ The name of the parent Automation Account. Required if the template is used in a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `description`
 
@@ -88,6 +91,7 @@ The description of the runbook.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `location`
@@ -96,6 +100,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `sasTokenValidityLength`
@@ -104,6 +109,7 @@ SAS token validity length. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'PT8H'`
 
 ### Parameter: `scriptStorageAccountResourceId`
@@ -112,6 +118,7 @@ Resource Id of the runbook storage account.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -119,6 +126,7 @@ Tags of the Automation Account resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `uri`
 
@@ -126,6 +134,7 @@ The uri of the runbook content.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `version`
@@ -134,6 +143,7 @@ The version of the runbook content.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `baseTime`
@@ -142,6 +152,7 @@ Time used as a basis for e.g. the schedule start date.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[utcNow('u')]`
 
 ## Outputs

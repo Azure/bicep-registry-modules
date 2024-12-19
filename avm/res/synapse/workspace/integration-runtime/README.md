@@ -36,6 +36,7 @@ The name of the Integration Runtime.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `type`
 
@@ -43,6 +44,7 @@ The type of Integration Runtime.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -57,6 +59,7 @@ Integration Runtime type properties. Required if type is "Managed".
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `workspaceName`
@@ -65,6 +68,7 @@ The name of the parent Synapse Workspace. Required if the template is used in a 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

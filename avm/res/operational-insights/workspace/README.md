@@ -27,7 +27,7 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
 | `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
-| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/onboardingStates) |
+| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
 
 ## Usage examples
 
@@ -2579,6 +2579,7 @@ Name of the Log Analytics workspace.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `linkedStorageAccounts`
 
@@ -2586,6 +2587,7 @@ List of Storage Accounts to be linked. Required if 'forceCmkForQuery' is set to 
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2600,6 +2602,7 @@ Name of the link.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `linkedStorageAccounts.storageAccountIds`
 
@@ -2607,6 +2610,7 @@ Linked storage accounts resources Ids.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `dailyQuotaGb`
 
@@ -2614,7 +2618,9 @@ The workspace daily quota for ingestion.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `-1`
+- MinValue: -1
 
 ### Parameter: `dataExports`
 
@@ -2622,6 +2628,8 @@ LAW data export instances to be deployed.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: -1
 
 **Required parameters**
 
@@ -2643,6 +2651,8 @@ Name of the data export.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: -1
 
 ### Parameter: `dataExports.tableNames`
 
@@ -2650,6 +2660,8 @@ The list of table names to export.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: -1
 
 ### Parameter: `dataExports.destination`
 
@@ -2657,6 +2669,8 @@ The destination of the data export.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: -1
 
 **Required parameters**
 
@@ -2676,6 +2690,8 @@ The destination resource ID.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: -1
 
 ### Parameter: `dataExports.destination.metaData`
 
@@ -2683,6 +2699,8 @@ The destination metadata.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: -1
 
 **Optional parameters**
 
@@ -2696,6 +2714,8 @@ Allows to define an Event Hub name. Not applicable when destination is Storage A
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
 
 ### Parameter: `dataExports.enable`
 
@@ -2703,6 +2723,8 @@ Enable or disable the data export.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: -1
 
 ### Parameter: `dataRetention`
 
@@ -2710,7 +2732,10 @@ Number of days data will be retained for.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `365`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources`
 
@@ -2718,6 +2743,9 @@ LAW data sources to configure.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Required parameters**
 
@@ -2749,6 +2777,9 @@ The kind of data source.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.name`
 
@@ -2756,6 +2787,9 @@ Name of the data source.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.counterName`
 
@@ -2763,6 +2797,9 @@ Counter name to configure when kind is WindowsPerformanceCounter.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.eventLogName`
 
@@ -2770,6 +2807,9 @@ The name of the event log to configure when kind is WindowsEvent.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.eventTypes`
 
@@ -2777,6 +2817,9 @@ The event types to configure when kind is WindowsEvent.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.instanceName`
 
@@ -2784,6 +2827,9 @@ Name of the instance to configure when kind is WindowsPerformanceCounter or Linu
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.intervalSeconds`
 
@@ -2791,6 +2837,9 @@ Interval in seconds to configure when kind is WindowsPerformanceCounter or Linux
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.linkedResourceId`
 
@@ -2798,6 +2847,9 @@ The resource id of the resource that will be linked to the workspace.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.objectName`
 
@@ -2805,6 +2857,9 @@ Name of the object to configure when kind is WindowsPerformanceCounter or LinuxP
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.performanceCounters`
 
@@ -2812,6 +2867,9 @@ List of counters to configure when the kind is LinuxPerformanceObject.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.state`
 
@@ -2819,6 +2877,9 @@ State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerform
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.syslogName`
 
@@ -2826,6 +2887,9 @@ System log to configure when kind is LinuxSyslog.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.syslogSeverities`
 
@@ -2833,6 +2897,9 @@ Severities to configure when kind is LinuxSyslog.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dataSources.tags`
 
@@ -2840,6 +2907,9 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings`
 
@@ -2847,6 +2917,9 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Optional parameters**
 
@@ -2869,6 +2942,9 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -2876,6 +2952,9 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -2883,6 +2962,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2890,6 +2970,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -2897,6 +2979,9 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Optional parameters**
 
@@ -2912,6 +2997,9 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -2919,6 +3007,9 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -2926,6 +3017,9 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -2933,6 +3027,9 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -2940,6 +3037,9 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Required parameters**
 
@@ -2959,6 +3059,9 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -2966,6 +3069,9 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -2973,6 +3079,9 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -2980,6 +3089,9 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.useThisWorkspace`
 
@@ -2987,6 +3099,9 @@ Instead of using an external reference, use the deployed instance as the target 
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -2994,6 +3109,9 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `enableTelemetry`
 
@@ -3001,7 +3119,10 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `forceCmkForQuery`
 
@@ -3009,7 +3130,10 @@ Indicates whether customer managed storage is mandatory for query management.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `gallerySolutions`
 
@@ -3017,6 +3141,9 @@ List of gallerySolutions to be created in the log analytics workspace.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Required parameters**
 
@@ -3031,6 +3158,9 @@ Name of the solution.<p>For solutions authored by Microsoft, the name must be in
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `gallerySolutions.plan`
 
@@ -3038,6 +3168,9 @@ Plan for solution object supported by the OperationsManagement resource provider
 
 - Required: Yes
 - Type: object
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 **Required parameters**
 
@@ -3058,6 +3191,9 @@ The product name of the deployed solution.<p>For Microsoft published gallery sol
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `gallerySolutions.plan.name`
 
@@ -3065,6 +3201,9 @@ Name of the solution to be created.<p>For solutions authored by Microsoft, the n
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `gallerySolutions.plan.publisher`
 
@@ -3072,6 +3211,9 @@ The publisher name of the deployed solution. For Microsoft published gallery sol
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `linkedServices`
 
@@ -3079,6 +3221,9 @@ List of services to be linked.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Required parameters**
 
@@ -3099,6 +3244,9 @@ Name of the linked service.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `linkedServices.resourceId`
 
@@ -3106,6 +3254,9 @@ The resource id of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `linkedServices.writeAccessResourceId`
 
@@ -3113,6 +3264,9 @@ The resource id of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `location`
 
@@ -3120,7 +3274,10 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `lock`
 
@@ -3128,6 +3285,9 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Optional parameters**
 
@@ -3142,6 +3302,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3150,6 +3311,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `lock.name`
 
@@ -3157,6 +3320,9 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `managedIdentities`
 
@@ -3164,6 +3330,9 @@ The managed identity definition for this resource. Only one type of identity is 
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Optional parameters**
 
@@ -3178,6 +3347,9 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -3185,6 +3357,9 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `onboardWorkspaceToSentinel`
 
@@ -3192,7 +3367,10 @@ Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' sol
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `publicNetworkAccessForIngestion`
 
@@ -3200,6 +3378,7 @@ The network access type for accessing Log Analytics ingestion.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -3208,6 +3387,8 @@ The network access type for accessing Log Analytics ingestion.
     'Enabled'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `publicNetworkAccessForQuery`
 
@@ -3215,6 +3396,7 @@ The network access type for accessing Log Analytics query.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -3223,6 +3405,8 @@ The network access type for accessing Log Analytics query.
     'Enabled'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `roleAssignments`
 
@@ -3230,6 +3414,9 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 - Roles configurable by name:
   - `'Contributor'`
   - `'Log Analytics Contributor'`
@@ -3267,6 +3454,9 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -3274,6 +3464,9 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.condition`
 
@@ -3281,6 +3474,9 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -3288,12 +3484,15 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -3301,6 +3500,9 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.description`
 
@@ -3308,6 +3510,9 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.name`
 
@@ -3315,6 +3520,9 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -3322,6 +3530,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3332,6 +3541,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches`
 
@@ -3339,6 +3550,9 @@ Kusto Query Language searches to save.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 **Required parameters**
 
@@ -3365,6 +3579,9 @@ The category of the saved search. This helps the user to find a saved search fas
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches.displayName`
 
@@ -3372,6 +3589,9 @@ Display name for the search.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches.name`
 
@@ -3379,6 +3599,9 @@ Name of the saved search.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches.query`
 
@@ -3386,6 +3609,9 @@ The query expression for the saved search.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches.etag`
 
@@ -3393,6 +3619,9 @@ The ETag of the saved search. To override an existing saved search, use "*" or s
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches.functionAlias`
 
@@ -3400,6 +3629,9 @@ The function alias if query serves as a function.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches.functionParameters`
 
@@ -3407,6 +3639,9 @@ The optional function parameters if query serves as a function. Value should be 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches.tags`
 
@@ -3414,6 +3649,9 @@ The tags attached to the saved search.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `savedSearches.version`
 
@@ -3421,6 +3659,9 @@ The version number of the query language. The current version is 2 and is the de
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `skuCapacityReservationLevel`
 
@@ -3428,7 +3669,10 @@ The capacity reservation level in GB for this workspace, when CapacityReservatio
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `100`
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `skuName`
 
@@ -3436,6 +3680,7 @@ The name of the SKU.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'PerGB2018'`
 - Allowed:
   ```Bicep
@@ -3450,6 +3695,8 @@ The name of the SKU.
     'Standard'
   ]
   ```
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `storageInsightsConfigs`
 
@@ -3457,6 +3704,9 @@ List of storage accounts to be read by the workspace.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 **Required parameters**
 
@@ -3477,6 +3727,9 @@ Resource ID of the storage account to be linked.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `storageInsightsConfigs.containers`
 
@@ -3484,6 +3737,9 @@ The names of the blob containers that the workspace should read.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `storageInsightsConfigs.tables`
 
@@ -3491,6 +3747,9 @@ List of tables to be read by the workspace.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables`
 
@@ -3498,6 +3757,9 @@ LAW custom tables to be deployed.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 **Required parameters**
 
@@ -3523,6 +3785,9 @@ The name of the table.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.plan`
 
@@ -3530,6 +3795,9 @@ The plan for the table.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.restoredLogs`
 
@@ -3537,6 +3805,9 @@ The restored logs for the table.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 **Optional parameters**
 
@@ -3552,6 +3823,9 @@ The timestamp to end the restore by (UTC).
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.restoredLogs.sourceTable`
 
@@ -3559,6 +3833,9 @@ The table to restore data from.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.restoredLogs.startRestoreTime`
 
@@ -3566,6 +3843,9 @@ The timestamp to start the restore from (UTC).
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.retentionInDays`
 
@@ -3573,6 +3853,9 @@ The retention in days for the table.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments`
 
@@ -3580,6 +3863,9 @@ The role assignments for the table.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 - Roles configurable by name:
   - `'Contributor'`
   - `'Log Analytics Contributor'`
@@ -3615,6 +3901,9 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.roleDefinitionIdOrName`
 
@@ -3622,6 +3911,9 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.condition`
 
@@ -3629,6 +3921,9 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.conditionVersion`
 
@@ -3636,12 +3931,15 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -3649,6 +3947,9 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.description`
 
@@ -3656,6 +3957,9 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.name`
 
@@ -3663,6 +3967,9 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.principalType`
 
@@ -3670,6 +3977,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3680,6 +3988,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.schema`
 
@@ -3687,6 +3997,9 @@ The schema for the table.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 **Required parameters**
 
@@ -3708,6 +4021,9 @@ A list of table custom columns.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 100
+- MaxValue: 5000
 
 **Required parameters**
 
@@ -3730,6 +4046,9 @@ The column name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.schema.columns.type`
 
@@ -3737,6 +4056,7 @@ The column type.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -3750,6 +4070,8 @@ The column type.
     'string'
   ]
   ```
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.schema.columns.dataTypeHint`
 
@@ -3757,6 +4079,7 @@ The column data type logical hint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3766,6 +4089,8 @@ The column data type logical hint.
     'uri'
   ]
   ```
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.schema.columns.description`
 
@@ -3773,6 +4098,9 @@ The column description.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.schema.columns.displayName`
 
@@ -3780,6 +4108,9 @@ Column display name.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.schema.name`
 
@@ -3787,6 +4118,9 @@ The table name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.schema.description`
 
@@ -3794,6 +4128,9 @@ The table description.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.schema.displayName`
 
@@ -3801,6 +4138,9 @@ The table display name.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.searchResults`
 
@@ -3808,6 +4148,9 @@ The search results for the table.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 **Required parameters**
 
@@ -3830,6 +4173,9 @@ The search job query.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.searchResults.description`
 
@@ -3837,6 +4183,9 @@ The search description.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.searchResults.endSearchTime`
 
@@ -3844,6 +4193,9 @@ The timestamp to end the search by (UTC).
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.searchResults.limit`
 
@@ -3851,6 +4203,9 @@ Limit the search job to return up to specified number of rows.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.searchResults.startSearchTime`
 
@@ -3858,6 +4213,9 @@ The timestamp to start the search from (UTC).
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tables.totalRetentionInDays`
 
@@ -3865,6 +4223,9 @@ The total retention in days for the table.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `tags`
 
@@ -3872,6 +4233,9 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 5000
 
 ### Parameter: `useResourcePermissions`
 
@@ -3879,7 +4243,10 @@ Set to 'true' to use resource or workspace permissions and 'false' (or leave emp
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 100
+- MaxValue: 5000
 
 ## Outputs
 

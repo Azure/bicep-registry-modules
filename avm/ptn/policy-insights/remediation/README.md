@@ -606,6 +606,7 @@ Specifies the name of the policy remediation.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `policyAssignmentId`
 
@@ -613,6 +614,7 @@ The resource ID of the policy assignment that should be remediated.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `enableTelemetry`
 
@@ -620,6 +622,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `failureThresholdPercentage`
@@ -628,6 +631,7 @@ The remediation failure threshold settings. A number between 0.0 to 1.0 represen
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'1'`
 
 ### Parameter: `filtersLocations`
@@ -636,6 +640,7 @@ The filters that will be applied to determine which resources to remediate.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `location`
@@ -644,6 +649,7 @@ Location deployment metadata.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `managementGroupId`
@@ -652,6 +658,7 @@ The target scope for the remediation. The name of the management group for the p
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[managementGroup().name]`
 
 ### Parameter: `parallelDeployments`
@@ -660,7 +667,10 @@ Determines how many resources to remediate at any given time. Can be used to inc
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `10`
+- MinValue: 1
+- MaxValue: 30
 
 ### Parameter: `policyDefinitionReferenceId`
 
@@ -668,7 +678,10 @@ The policy definition reference ID of the individual definition that should be r
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 1
+- MaxValue: 30
 
 ### Parameter: `resourceCount`
 
@@ -676,7 +689,10 @@ Determines the max number of resources that can be remediated by the remediation
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `500`
+- MinValue: 1
+- MaxValue: 50000
 
 ### Parameter: `resourceDiscoveryMode`
 
@@ -684,6 +700,7 @@ The way resources to remediate are discovered. Defaults to ExistingNonCompliant 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'ExistingNonCompliant'`
 - Allowed:
   ```Bicep
@@ -692,6 +709,8 @@ The way resources to remediate are discovered. Defaults to ExistingNonCompliant 
     'ReEvaluateCompliance'
   ]
   ```
+- MinValue: 1
+- MaxValue: 50000
 
 ### Parameter: `resourceGroupName`
 
@@ -699,7 +718,10 @@ The target scope for the remediation. The name of the resource group for the pol
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 1
+- MaxValue: 50000
 
 ### Parameter: `subscriptionId`
 
@@ -707,7 +729,10 @@ The target scope for the remediation. The subscription ID of the subscription fo
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 1
+- MaxValue: 50000
 
 ## Outputs
 
