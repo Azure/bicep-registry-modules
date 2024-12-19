@@ -307,10 +307,15 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
         properties: {
           ruleType: 'Basic'
           priority: 100
-          httpListener: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpListener'
-          }
+          httpListener: (empty(base64Certificate))
+            ? {
+                #disable-next-line use-resource-id-functions
+                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpListener'
+              }
+            : {
+                #disable-next-line use-resource-id-functions
+                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpsListener'
+              }
           backendAddressPool: {
             #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
