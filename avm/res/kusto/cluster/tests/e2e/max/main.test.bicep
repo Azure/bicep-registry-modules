@@ -117,6 +117,16 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      databases: [
+        {
+          name: 'myReadWriteDatabase'
+          kind: 'ReadWrite'
+          readWriteProperties: {
+            softDeletePeriod: 'P7D'
+            hotCachePeriod: 'P1D'
+          }
+        }
+      ]
     }
   }
 ]
