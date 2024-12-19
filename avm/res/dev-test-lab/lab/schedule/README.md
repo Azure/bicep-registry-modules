@@ -50,6 +50,7 @@ The name of the schedule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -64,6 +65,7 @@ The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask).
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -78,6 +80,7 @@ The name of the parent lab. Required if the template is used in a standalone dep
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `dailyRecurrence`
 
@@ -85,6 +88,7 @@ If the schedule will occur once each day of the week, specify the daily recurren
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -98,6 +102,7 @@ The time of day the schedule will occur.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `hourlyRecurrence`
 
@@ -105,6 +110,7 @@ If the schedule will occur multiple times a day, specify the hourly recurrence.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -118,6 +124,7 @@ Minutes of the hour the schedule will run.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `notificationSettings`
 
@@ -125,6 +132,7 @@ The notification settings for the schedule.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Conditional parameters**
 
@@ -147,6 +155,7 @@ The email recipient to send notifications to (can be a list of semi-colon separa
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `notificationSettings.webHookUrl`
 
@@ -154,6 +163,7 @@ The webhook URL to which the notification will be sent. Required if "emailRecipi
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `notificationSettings.notificationLocale`
 
@@ -161,6 +171,7 @@ The locale to use when sending a notification (fallback for unsupported language
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `notificationSettings.status`
 
@@ -168,6 +179,7 @@ If notifications are enabled for this schedule (i.e. Enabled, Disabled). Default
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -182,6 +194,7 @@ Time in minutes before event at which notification will be sent. Default is 30 m
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `status`
 
@@ -189,6 +202,7 @@ The status of the schedule (i.e. Enabled, Disabled).
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -204,6 +218,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `targetResourceId`
 
@@ -211,6 +226,7 @@ The resource ID to which the schedule belongs.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `timeZoneId`
 
@@ -218,6 +234,7 @@ The time zone ID (e.g. Pacific Standard time).
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Pacific Standard time'`
 
 ### Parameter: `weeklyRecurrence`
@@ -226,6 +243,7 @@ If the schedule will occur only some days of the week, specify the weekly recurr
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -240,6 +258,7 @@ The time of day the schedule will occur.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `weeklyRecurrence.weekdays`
 
@@ -247,6 +266,7 @@ The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ## Outputs
 

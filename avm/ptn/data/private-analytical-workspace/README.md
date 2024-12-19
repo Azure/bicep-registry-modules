@@ -1382,6 +1382,7 @@ Name of the private analytical workspace solution and its components. Used to en
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `advancedOptions`
 
@@ -1389,6 +1390,7 @@ Additional options that can affect some components of the solution and how they 
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1406,6 +1408,7 @@ This parameter allows you to specify additional settings for Azure Databricks if
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1420,6 +1423,7 @@ The name of the existing backend Subnet for Azure Databricks within the Virtual 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `advancedOptions.databricks.subnetNameFrontend`
 
@@ -1427,6 +1431,7 @@ The name of the existing frontend Subnet for Azure Databricks within the Virtual
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `advancedOptions.keyVault`
 
@@ -1434,6 +1439,7 @@ This parameter allows you to specify additional settings for Azure Key Vault if 
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1451,6 +1457,7 @@ The vault's create mode to indicate whether the vault need to be recovered or no
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1465,6 +1472,7 @@ Provide 'true' to enable Key Vault's purge protection feature. The default value
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `advancedOptions.keyVault.enableSoftDelete`
 
@@ -1472,6 +1480,7 @@ Switch to enable/disable Key Vault's soft delete feature. The default value is: 
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `advancedOptions.keyVault.sku`
 
@@ -1479,6 +1488,7 @@ Specifies the SKU for the vault. The default value is: 'premium'.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1493,6 +1503,7 @@ Soft delete data retention days. It accepts >=7 and <=90. The default value is: 
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace`
 
@@ -1500,6 +1511,7 @@ This parameter allows you to specify additional settings for Azure Log Analytics
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1514,6 +1526,8 @@ The workspace daily quota for ingestion. The default value is: '-1' (not limited
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: -1
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dataRetention`
 
@@ -1521,6 +1535,9 @@ Number of days data will be retained for. The default value is: '365'.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `advancedOptions.networkAcls`
 
@@ -1528,6 +1545,7 @@ Networks Access Control Lists. This value has public IP addresses or ranges that
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1541,6 +1559,7 @@ Sets the public IP addresses or ranges that are allowed to access resources in t
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `advancedOptions.virtualNetwork`
 
@@ -1548,6 +1567,7 @@ You can use this parameter to integrate the solution with an existing Azure Virt
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1561,6 +1581,7 @@ The name of the existing Private Link Subnet within the Virtual Network in the p
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `enableDatabricks`
 
@@ -1568,6 +1589,7 @@ Enable/Disable Azure Databricks service within the solution.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -1576,6 +1598,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `keyVaultResourceId`
@@ -1584,6 +1607,7 @@ If you already have a Key Vault that you want to use with the solution, you can 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -1591,6 +1615,7 @@ Location for all Resources in the solution.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1599,6 +1624,7 @@ The lock settings for all Resources in the solution.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1613,6 +1639,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1628,6 +1655,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
@@ -1635,6 +1663,7 @@ If you already have a Log Analytics Workspace that you want to use with the solu
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `solutionAdministrators`
 
@@ -1642,6 +1671,7 @@ Array of users or groups who are in charge of the solution.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1656,6 +1686,7 @@ The principal ID of the principal (user/group) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `solutionAdministrators.principalType`
 
@@ -1663,6 +1694,7 @@ The principal type of the assigned principal ID.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1677,6 +1709,7 @@ Tags for all Resources in the solution.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `virtualNetworkResourceId`
 
@@ -1684,6 +1717,7 @@ This option allows the solution to be connected to a VNET that the customer prov
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

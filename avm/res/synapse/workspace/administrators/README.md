@@ -42,6 +42,7 @@ Workspace active directory administrator type.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `login`
 
@@ -49,6 +50,7 @@ Login of the workspace active directory administrator.
 
 - Required: Yes
 - Type: securestring
+- Nullable: No
 
 ### Parameter: `sid`
 
@@ -56,6 +58,7 @@ Object ID of the workspace active directory administrator.
 
 - Required: Yes
 - Type: securestring
+- Nullable: No
 
 ### Parameter: `workspaceName`
 
@@ -63,6 +66,7 @@ The name of the parent Synapse Workspace. Required if the template is used in a 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `tenantId`
 
@@ -70,6 +74,7 @@ Tenant ID of the workspace active directory administrator.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[tenant().tenantId]`
 
 ## Outputs

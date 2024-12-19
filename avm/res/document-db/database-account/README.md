@@ -3077,6 +3077,7 @@ Name of the Database Account.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `automaticFailover`
 
@@ -3084,6 +3085,7 @@ Default to true. Enable automatic failover for regions.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `backupIntervalInMinutes`
@@ -3092,7 +3094,10 @@ Default to 240. An integer representing the interval in minutes between two back
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `240`
+- MinValue: 60
+- MaxValue: 1440
 
 ### Parameter: `backupPolicyContinuousTier`
 
@@ -3100,6 +3105,7 @@ Default to Continuous30Days. Configuration values for continuous mode backup.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Continuous30Days'`
 - Allowed:
   ```Bicep
@@ -3108,6 +3114,8 @@ Default to Continuous30Days. Configuration values for continuous mode backup.
     'Continuous7Days'
   ]
   ```
+- MinValue: 60
+- MaxValue: 1440
 
 ### Parameter: `backupPolicyType`
 
@@ -3115,6 +3123,7 @@ Default to Continuous. Describes the mode of backups. Periodic backup must be us
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Continuous'`
 - Allowed:
   ```Bicep
@@ -3123,6 +3132,8 @@ Default to Continuous. Describes the mode of backups. Periodic backup must be us
     'Periodic'
   ]
   ```
+- MinValue: 60
+- MaxValue: 1440
 
 ### Parameter: `backupRetentionIntervalInHours`
 
@@ -3130,7 +3141,10 @@ Default to 8. An integer representing the time (in hours) that each backup is re
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `8`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `backupStorageRedundancy`
 
@@ -3138,6 +3152,7 @@ Default to Local. Enum to indicate type of backup residency. Only applies to per
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Local'`
 - Allowed:
   ```Bicep
@@ -3147,6 +3162,8 @@ Default to Local. Enum to indicate type of backup residency. Only applies to per
     'Zone'
   ]
   ```
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `capabilitiesToAdd`
 
@@ -3154,6 +3171,7 @@ List of Cosmos DB capabilities for the account.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep
@@ -3169,6 +3187,8 @@ List of Cosmos DB capabilities for the account.
     'EnableTable'
   ]
   ```
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `databaseAccountOfferType`
 
@@ -3176,6 +3196,7 @@ Default to Standard. The offer type for the Azure Cosmos DB database account.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -3183,6 +3204,8 @@ Default to Standard. The offer type for the Azure Cosmos DB database account.
     'Standard'
   ]
   ```
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `defaultConsistencyLevel`
 
@@ -3190,6 +3213,7 @@ Default to Session. The default consistency level of the Cosmos DB account.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Session'`
 - Allowed:
   ```Bicep
@@ -3201,6 +3225,8 @@ Default to Session. The default consistency level of the Cosmos DB account.
     'Strong'
   ]
   ```
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings`
 
@@ -3208,6 +3234,9 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 2
+- MaxValue: 720
 
 **Optional parameters**
 
@@ -3229,6 +3258,9 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -3236,6 +3268,9 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -3243,6 +3278,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3250,6 +3286,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -3257,6 +3295,9 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 **Optional parameters**
 
@@ -3272,6 +3313,9 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -3279,6 +3323,9 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -3286,6 +3333,9 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -3293,6 +3343,9 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -3300,6 +3353,9 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 **Required parameters**
 
@@ -3319,6 +3375,9 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -3326,6 +3385,9 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -3333,6 +3395,9 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -3340,6 +3405,9 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -3347,6 +3415,9 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `disableKeyBasedMetadataWriteAccess`
 
@@ -3354,7 +3425,10 @@ Default to true. Disable write operations on metadata resources (databases, cont
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `disableLocalAuth`
 
@@ -3362,7 +3436,10 @@ Default to true. Opt-out of local authentication and ensure only MSI and AAD can
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `enableAnalyticalStorage`
 
@@ -3370,7 +3447,10 @@ Default to false. Flag to indicate whether to enable storage analytics.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `enableFreeTier`
 
@@ -3378,7 +3458,10 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `enableMultipleWriteLocations`
 
@@ -3386,7 +3469,10 @@ Default to false. Enables the account to write in multiple locations. Periodic b
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `enableTelemetry`
 
@@ -3394,7 +3480,10 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `gremlinDatabases`
 
@@ -3402,7 +3491,10 @@ Gremlin Databases configurations.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `location`
 
@@ -3410,7 +3502,10 @@ Default to current resource group scope location. Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `locations`
 
@@ -3418,7 +3513,10 @@ Default to the location where the account is deployed. Locations enabled for the
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 2
+- MaxValue: 720
 
 **Required parameters**
 
@@ -3439,6 +3537,9 @@ The failover priority of the region. A failover priority of 0 indicates a write 
 
 - Required: Yes
 - Type: int
+- Nullable: No
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `locations.locationName`
 
@@ -3446,6 +3547,9 @@ The name of the region.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `locations.isZoneRedundant`
 
@@ -3453,6 +3557,9 @@ Default to true. Flag to indicate whether or not this region is an AvailabilityZ
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `lock`
 
@@ -3460,6 +3567,9 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 2
+- MaxValue: 720
 
 **Optional parameters**
 
@@ -3474,6 +3584,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3482,6 +3593,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `lock.name`
 
@@ -3489,6 +3602,9 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `managedIdentities`
 
@@ -3496,6 +3612,9 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 2
+- MaxValue: 720
 
 **Optional parameters**
 
@@ -3510,6 +3629,9 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -3517,6 +3639,9 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 2
+- MaxValue: 720
 
 ### Parameter: `maxIntervalInSeconds`
 
@@ -3524,7 +3649,10 @@ Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ran
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `300`
+- MinValue: 5
+- MaxValue: 86400
 
 ### Parameter: `maxStalenessPrefix`
 
@@ -3532,7 +3660,10 @@ Default to 100000. Max stale requests. Required for BoundedStaleness. Valid rang
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `100000`
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `minimumTlsVersion`
 
@@ -3540,6 +3671,7 @@ Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosm
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Tls12'`
 - Allowed:
   ```Bicep
@@ -3547,6 +3679,8 @@ Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosm
     'Tls12'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `mongodbDatabases`
 
@@ -3554,7 +3688,10 @@ MongoDB Databases configurations.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `networkRestrictions`
 
@@ -3562,6 +3699,7 @@ The network configuration of this module. Defaults to `{ ipRules: [], virtualNet
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -3570,6 +3708,8 @@ The network configuration of this module. Defaults to `{ ipRules: [], virtualNet
       virtualNetworkRules: []
   }
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Optional parameters**
 
@@ -3586,6 +3726,9 @@ A single IPv4 address or a single IPv4 address range in CIDR format. Provided IP
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `networkRestrictions.networkAclBypass`
 
@@ -3593,6 +3736,7 @@ Default to None. Specifies the network ACL bypass for Azure services.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3600,6 +3744,8 @@ Default to None. Specifies the network ACL bypass for Azure services.
     'None'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `networkRestrictions.publicNetworkAccess`
 
@@ -3607,6 +3753,7 @@ Default to Disabled. Whether requests from Public Network are allowed.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3614,6 +3761,8 @@ Default to Disabled. Whether requests from Public Network are allowed.
     'Enabled'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `networkRestrictions.virtualNetworkRules`
 
@@ -3621,6 +3770,9 @@ List of Virtual Network ACL rules configured for the Cosmos DB account..
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3634,6 +3786,9 @@ Resource ID of a subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints`
 
@@ -3641,6 +3796,9 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3675,6 +3833,9 @@ The subresource to deploy the private endpoint for. For example "blob", "table",
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -3682,6 +3843,9 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -3689,6 +3853,9 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -3696,6 +3863,9 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3715,6 +3885,9 @@ A list of private ip addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -3722,6 +3895,9 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -3729,6 +3905,9 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -3736,6 +3915,9 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -3743,6 +3925,9 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3757,6 +3942,9 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -3764,6 +3952,9 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3779,6 +3970,9 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -3786,6 +3980,9 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -3793,6 +3990,9 @@ A private ip address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -3800,6 +4000,9 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.location`
 
@@ -3807,6 +4010,9 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -3814,6 +4020,9 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Optional parameters**
 
@@ -3828,6 +4037,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3836,6 +4046,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -3843,6 +4055,9 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -3850,6 +4065,9 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.name`
 
@@ -3857,6 +4075,9 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -3864,6 +4085,9 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3883,6 +4107,9 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3902,6 +4129,9 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -3909,6 +4139,9 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -3916,6 +4149,9 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -3923,6 +4159,9 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -3930,6 +4169,9 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -3937,6 +4179,9 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -3973,6 +4218,9 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -3980,6 +4228,9 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -3987,6 +4238,9 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -3994,12 +4248,15 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4007,6 +4264,9 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -4014,6 +4274,9 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -4021,6 +4284,9 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -4028,6 +4294,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4038,6 +4305,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -4045,6 +4314,9 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments`
 
@@ -4052,6 +4324,9 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 - Roles configurable by name:
   - `'Contributor'`
   - `'Cosmos DB Account Reader Role'`
@@ -4088,6 +4363,9 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -4095,6 +4373,9 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.condition`
 
@@ -4102,6 +4383,9 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -4109,12 +4393,15 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4122,6 +4409,9 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.description`
 
@@ -4129,6 +4419,9 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.name`
 
@@ -4136,6 +4429,9 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -4143,6 +4439,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4153,6 +4450,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration`
 
@@ -4160,6 +4459,9 @@ Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4186,6 +4488,9 @@ The resource ID of the key vault where to store the secrets of this module.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.primaryReadonlyConnectionStringSecretName`
 
@@ -4193,6 +4498,9 @@ The primary readonly connection string secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.primaryReadOnlyKeySecretName`
 
@@ -4200,6 +4508,9 @@ The primary readonly key secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.primaryWriteConnectionStringSecretName`
 
@@ -4207,6 +4518,9 @@ The primary write connection string secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.primaryWriteKeySecretName`
 
@@ -4214,6 +4528,9 @@ The primary write key secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.secondaryReadonlyConnectionStringSecretName`
 
@@ -4221,6 +4538,9 @@ The primary readonly connection string secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.secondaryReadonlyKeySecretName`
 
@@ -4228,6 +4548,9 @@ The primary readonly key secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.secondaryWriteConnectionStringSecretName`
 
@@ -4235,6 +4558,9 @@ The primary write connection string secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.secondaryWriteKeySecretName`
 
@@ -4242,6 +4568,9 @@ The primary write key secret name to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `serverVersion`
 
@@ -4249,6 +4578,7 @@ Default to 4.2. Specifies the MongoDB server version to use.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'4.2'`
 - Allowed:
   ```Bicep
@@ -4262,6 +4592,8 @@ Default to 4.2. Specifies the MongoDB server version to use.
     '7.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases`
 
@@ -4269,7 +4601,10 @@ SQL Databases configurations.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4291,6 +4626,9 @@ Name of the SQL database .
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.autoscaleSettingsMaxThroughput`
 
@@ -4298,6 +4636,9 @@ Specifies the Autoscale settings and represents maximum throughput, the resource
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers`
 
@@ -4305,6 +4646,9 @@ Array of containers to deploy in the SQL database.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4333,6 +4677,9 @@ Name of the container.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.paths`
 
@@ -4340,6 +4687,9 @@ List of paths using which data within the container can be partitioned. For kind
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.analyticalStorageTtl`
 
@@ -4347,6 +4697,9 @@ Default to 0. Indicates how long data should be retained in the analytical store
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.autoscaleSettingsMaxThroughput`
 
@@ -4354,6 +4707,9 @@ Specifies the Autoscale settings and represents maximum throughput, the resource
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 1000000
 
 ### Parameter: `sqlDatabases.containers.conflictResolutionPolicy`
 
@@ -4361,6 +4717,9 @@ The conflict resolution policy for the container. Conflicts and conflict resolut
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 1000000
 
 **Required parameters**
 
@@ -4381,6 +4740,7 @@ Indicates the conflict resolution mode.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -4388,6 +4748,8 @@ Indicates the conflict resolution mode.
     'LastWriterWins'
   ]
   ```
+- MinValue: 1
+- MaxValue: 1000000
 
 ### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
 
@@ -4395,6 +4757,9 @@ The conflict resolution path in the case of LastWriterWins mode. Required if `mo
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 1000000
 
 ### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
 
@@ -4402,6 +4767,9 @@ The procedure to resolve conflicts in the case of custom mode. Required if `mode
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 1000000
 
 ### Parameter: `sqlDatabases.containers.defaultTtl`
 
@@ -4409,6 +4777,9 @@ Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azur
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.indexingPolicy`
 
@@ -4416,6 +4787,9 @@ Indexing policy of the container.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.kind`
 
@@ -4423,6 +4797,7 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4430,6 +4805,8 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
     'MultiHash'
   ]
   ```
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.throughput`
 
@@ -4437,6 +4814,9 @@ Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMa
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys`
 
@@ -4444,6 +4824,9 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4457,6 +4840,9 @@ List of paths must be unique for each document in the Azure Cosmos DB service.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.version`
 
@@ -4464,6 +4850,7 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
 
 - Required: No
 - Type: int
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4471,6 +4858,8 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
     2
   ]
   ```
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.throughput`
 
@@ -4478,6 +4867,9 @@ Default to 400. Request units per second. Will be ignored if autoscaleSettingsMa
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleAssignmentsPrincipalIds`
 
@@ -4485,7 +4877,10 @@ SQL Role Definitions configurations.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleDefinitions`
 
@@ -4493,6 +4888,9 @@ SQL Role Definitions configurations.
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4514,6 +4912,9 @@ Name of the SQL Role Definition.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleDefinitions.dataAction`
 
@@ -4521,6 +4922,9 @@ An array of data actions that are allowed.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleDefinitions.roleName`
 
@@ -4528,6 +4932,9 @@ A user-friendly name for the Role Definition. Must be unique for the database ac
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleDefinitions.roleType`
 
@@ -4535,6 +4942,7 @@ Indicates whether the Role Definition was built-in or user created.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4542,6 +4950,8 @@ Indicates whether the Role Definition was built-in or user created.
     'CustomRole'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `tables`
 
@@ -4549,7 +4959,10 @@ Table configurations.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `tags`
 
@@ -4557,6 +4970,9 @@ Tags of the Database Account resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 2147483647
 
 ### Parameter: `totalThroughputLimit`
 
@@ -4564,7 +4980,10 @@ Default to unlimited. The total throughput limit imposed on this Cosmos DB accou
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `-1`
+- MinValue: 1
+- MaxValue: 2147483647
 
 ## Outputs
 

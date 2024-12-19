@@ -111,6 +111,23 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $false
         }
 
+        # if the child modules version has been increased, the main modules version should be increased as well
+        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) }) {
+
+            param (
+                [string] $moduleFolderPath
+            )
+
+            $subModulePathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+            if ($subModulePathExisting) {
+                $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+                $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
+                $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
+
+                ($childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
+            }
+        }
+
         It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
             param(

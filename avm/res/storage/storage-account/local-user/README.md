@@ -45,6 +45,7 @@ Indicates whether SSH key exists. Set it to false to remove existing SSH key.
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `hasSshPassword`
 
@@ -52,6 +53,7 @@ Indicates whether SSH password exists. Set it to false to remove existing SSH pa
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -59,6 +61,7 @@ The name of the local user used for SFTP Authentication.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `permissionScopes`
 
@@ -66,6 +69,7 @@ The permission scopes of the local user.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -81,6 +85,7 @@ The permissions for the local user. Possible values include: Read (r), Write (w)
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `permissionScopes.resourceName`
 
@@ -88,6 +93,7 @@ The name of resource, normally the container name or the file share name, used b
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `permissionScopes.service`
 
@@ -95,6 +101,7 @@ The service used by the local user, e.g. blob, file.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageAccountName`
 
@@ -102,6 +109,7 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `hasSharedKey`
 
@@ -109,6 +117,7 @@ Indicates whether shared key exists. Set it to false to remove existing shared k
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `homeDirectory`
@@ -117,6 +126,7 @@ The local user home directory.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `sshAuthorizedKeys`
@@ -125,6 +135,7 @@ The local user SSH authorized keys for SFTP.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -144,6 +155,7 @@ SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g.
 
 - Required: Yes
 - Type: securestring
+- Nullable: No
 
 ### Parameter: `sshAuthorizedKeys.description`
 
@@ -151,6 +163,7 @@ Description used to store the function/usage of the key.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

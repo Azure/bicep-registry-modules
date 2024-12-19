@@ -1090,6 +1090,7 @@ Name of the Purview Account.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints`
 
@@ -1097,6 +1098,7 @@ Configuration details for Purview Account private endpoints. For security reason
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1131,6 +1133,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1138,6 +1141,7 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.customDnsConfigs`
 
@@ -1145,6 +1149,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1164,6 +1169,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.customDnsConfigs.fqdn`
 
@@ -1171,6 +1177,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.customNetworkInterfaceName`
 
@@ -1178,6 +1185,7 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.enableTelemetry`
 
@@ -1185,6 +1193,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.ipConfigurations`
 
@@ -1192,6 +1201,7 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1206,6 +1216,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.ipConfigurations.properties`
 
@@ -1213,6 +1224,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1228,6 +1240,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.ipConfigurations.properties.memberName`
 
@@ -1235,6 +1248,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -1242,6 +1256,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.isManualConnection`
 
@@ -1249,6 +1264,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.location`
 
@@ -1256,6 +1272,7 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.lock`
 
@@ -1263,6 +1280,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1277,6 +1295,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1292,6 +1311,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.manualConnectionRequestMessage`
 
@@ -1299,6 +1319,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.name`
 
@@ -1306,6 +1327,7 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.privateDnsZoneGroup`
 
@@ -1313,6 +1335,7 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1332,6 +1355,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1351,6 +1375,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -1358,6 +1383,7 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.privateDnsZoneGroup.name`
 
@@ -1365,6 +1391,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.privateLinkServiceConnectionName`
 
@@ -1372,6 +1399,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.resourceGroupName`
 
@@ -1379,6 +1407,7 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.roleAssignments`
 
@@ -1386,6 +1415,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -1422,6 +1452,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -1429,6 +1460,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accountPrivateEndpoints.roleAssignments.condition`
 
@@ -1436,6 +1468,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.roleAssignments.conditionVersion`
 
@@ -1443,6 +1476,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1456,6 +1490,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.roleAssignments.description`
 
@@ -1463,6 +1498,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.roleAssignments.name`
 
@@ -1470,6 +1506,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.roleAssignments.principalType`
 
@@ -1477,6 +1514,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1494,6 +1532,7 @@ The subresource to deploy the private endpoint for. For example "vault", "mysqlS
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accountPrivateEndpoints.tags`
 
@@ -1501,6 +1540,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings`
 
@@ -1508,6 +1548,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -1529,6 +1570,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1536,6 +1578,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1543,6 +1586,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1557,6 +1601,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1572,6 +1617,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1579,6 +1625,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1586,6 +1633,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1593,6 +1641,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1600,6 +1649,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1619,6 +1669,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1626,6 +1677,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1633,6 +1685,7 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1640,6 +1693,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1647,6 +1701,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -1654,6 +1709,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `eventHubPrivateEndpoints`
@@ -1662,6 +1718,7 @@ Configuration details for Purview Managed Event Hub namespace private endpoints.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1696,6 +1753,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1703,6 +1761,7 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.customDnsConfigs`
 
@@ -1710,6 +1769,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1729,6 +1789,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.customDnsConfigs.fqdn`
 
@@ -1736,6 +1797,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.customNetworkInterfaceName`
 
@@ -1743,6 +1805,7 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.enableTelemetry`
 
@@ -1750,6 +1813,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.ipConfigurations`
 
@@ -1757,6 +1821,7 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1771,6 +1836,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.ipConfigurations.properties`
 
@@ -1778,6 +1844,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1793,6 +1860,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.ipConfigurations.properties.memberName`
 
@@ -1800,6 +1868,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -1807,6 +1876,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.isManualConnection`
 
@@ -1814,6 +1884,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.location`
 
@@ -1821,6 +1892,7 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.lock`
 
@@ -1828,6 +1900,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1842,6 +1915,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1857,6 +1931,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.manualConnectionRequestMessage`
 
@@ -1864,6 +1939,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.name`
 
@@ -1871,6 +1947,7 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.privateDnsZoneGroup`
 
@@ -1878,6 +1955,7 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1897,6 +1975,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1916,6 +1995,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -1923,6 +2003,7 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.privateDnsZoneGroup.name`
 
@@ -1930,6 +2011,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.privateLinkServiceConnectionName`
 
@@ -1937,6 +2019,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.resourceGroupName`
 
@@ -1944,6 +2027,7 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.roleAssignments`
 
@@ -1951,6 +2035,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -1987,6 +2072,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -1994,6 +2080,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubPrivateEndpoints.roleAssignments.condition`
 
@@ -2001,6 +2088,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.roleAssignments.conditionVersion`
 
@@ -2008,6 +2096,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2021,6 +2110,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.roleAssignments.description`
 
@@ -2028,6 +2118,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.roleAssignments.name`
 
@@ -2035,6 +2126,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.roleAssignments.principalType`
 
@@ -2042,6 +2134,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2059,6 +2152,7 @@ The subresource to deploy the private endpoint for. For example "vault", "mysqlS
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubPrivateEndpoints.tags`
 
@@ -2066,6 +2160,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -2073,6 +2168,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -2081,6 +2177,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -2095,6 +2192,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2110,6 +2208,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedEventHubState`
 
@@ -2117,6 +2216,7 @@ The state of the managed Event Hub.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -2133,6 +2233,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -2146,6 +2247,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `managedResourceGroupName`
 
@@ -2153,6 +2255,7 @@ The Managed Resource Group Name. A managed Storage Account, and an Event Hubs wi
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('managed-rg-{0}', parameters('name'))]`
 
 ### Parameter: `managedResourcesPublicNetworkAccess`
@@ -2161,6 +2264,7 @@ Whether or not public network access is allowed for managed resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'NotSpecified'`
 - Allowed:
   ```Bicep
@@ -2177,6 +2281,7 @@ Configuration details for Purview Portal private endpoints. For security reasons
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2211,6 +2316,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -2218,6 +2324,7 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.customDnsConfigs`
 
@@ -2225,6 +2332,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2244,6 +2352,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.customDnsConfigs.fqdn`
 
@@ -2251,6 +2360,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.customNetworkInterfaceName`
 
@@ -2258,6 +2368,7 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.enableTelemetry`
 
@@ -2265,6 +2376,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.ipConfigurations`
 
@@ -2272,6 +2384,7 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2286,6 +2399,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.ipConfigurations.properties`
 
@@ -2293,6 +2407,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -2308,6 +2423,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.ipConfigurations.properties.memberName`
 
@@ -2315,6 +2431,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -2322,6 +2439,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.isManualConnection`
 
@@ -2329,6 +2447,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.location`
 
@@ -2336,6 +2455,7 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.lock`
 
@@ -2343,6 +2463,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -2357,6 +2478,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2372,6 +2494,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.manualConnectionRequestMessage`
 
@@ -2379,6 +2502,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.name`
 
@@ -2386,6 +2510,7 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.privateDnsZoneGroup`
 
@@ -2393,6 +2518,7 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2412,6 +2538,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2431,6 +2558,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2438,6 +2566,7 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.privateDnsZoneGroup.name`
 
@@ -2445,6 +2574,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.privateLinkServiceConnectionName`
 
@@ -2452,6 +2582,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.resourceGroupName`
 
@@ -2459,6 +2590,7 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.roleAssignments`
 
@@ -2466,6 +2598,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -2502,6 +2635,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -2509,6 +2643,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `portalPrivateEndpoints.roleAssignments.condition`
 
@@ -2516,6 +2651,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.roleAssignments.conditionVersion`
 
@@ -2523,6 +2659,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2536,6 +2673,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.roleAssignments.description`
 
@@ -2543,6 +2681,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.roleAssignments.name`
 
@@ -2550,6 +2689,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.roleAssignments.principalType`
 
@@ -2557,6 +2697,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2574,6 +2715,7 @@ The subresource to deploy the private endpoint for. For example "vault", "mysqlS
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `portalPrivateEndpoints.tags`
 
@@ -2581,6 +2723,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -2588,6 +2731,7 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'NotSpecified'`
 - Allowed:
   ```Bicep
@@ -2604,6 +2748,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -2635,6 +2780,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2642,6 +2788,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2649,6 +2796,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2656,6 +2804,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2669,6 +2818,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2676,6 +2826,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2683,6 +2834,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2690,6 +2842,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2707,6 +2860,7 @@ Configuration details for Purview Managed Storage Account blob private endpoints
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2741,6 +2895,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -2748,6 +2903,7 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.customDnsConfigs`
 
@@ -2755,6 +2911,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2774,6 +2931,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.customDnsConfigs.fqdn`
 
@@ -2781,6 +2939,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.customNetworkInterfaceName`
 
@@ -2788,6 +2947,7 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.enableTelemetry`
 
@@ -2795,6 +2955,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.ipConfigurations`
 
@@ -2802,6 +2963,7 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2816,6 +2978,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.ipConfigurations.properties`
 
@@ -2823,6 +2986,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -2838,6 +3002,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.ipConfigurations.properties.memberName`
 
@@ -2845,6 +3010,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -2852,6 +3018,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.isManualConnection`
 
@@ -2859,6 +3026,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.location`
 
@@ -2866,6 +3034,7 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.lock`
 
@@ -2873,6 +3042,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -2887,6 +3057,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2902,6 +3073,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.manualConnectionRequestMessage`
 
@@ -2909,6 +3081,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.name`
 
@@ -2916,6 +3089,7 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.privateDnsZoneGroup`
 
@@ -2923,6 +3097,7 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2942,6 +3117,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2961,6 +3137,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2968,6 +3145,7 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.privateDnsZoneGroup.name`
 
@@ -2975,6 +3153,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.privateLinkServiceConnectionName`
 
@@ -2982,6 +3161,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.resourceGroupName`
 
@@ -2989,6 +3169,7 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.roleAssignments`
 
@@ -2996,6 +3177,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -3032,6 +3214,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -3039,6 +3222,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageBlobPrivateEndpoints.roleAssignments.condition`
 
@@ -3046,6 +3230,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.roleAssignments.conditionVersion`
 
@@ -3053,6 +3238,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3066,6 +3252,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.roleAssignments.description`
 
@@ -3073,6 +3260,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.roleAssignments.name`
 
@@ -3080,6 +3268,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.roleAssignments.principalType`
 
@@ -3087,6 +3276,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3104,6 +3294,7 @@ The subresource to deploy the private endpoint for. For example "vault", "mysqlS
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageBlobPrivateEndpoints.tags`
 
@@ -3111,6 +3302,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints`
 
@@ -3118,6 +3310,7 @@ Configuration details for Purview Managed Storage Account queue private endpoint
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -3152,6 +3345,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -3159,6 +3353,7 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.customDnsConfigs`
 
@@ -3166,6 +3361,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3185,6 +3381,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.customDnsConfigs.fqdn`
 
@@ -3192,6 +3389,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.customNetworkInterfaceName`
 
@@ -3199,6 +3397,7 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.enableTelemetry`
 
@@ -3206,6 +3405,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.ipConfigurations`
 
@@ -3213,6 +3413,7 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3227,6 +3428,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.ipConfigurations.properties`
 
@@ -3234,6 +3436,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -3249,6 +3452,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.ipConfigurations.properties.memberName`
 
@@ -3256,6 +3460,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -3263,6 +3468,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.isManualConnection`
 
@@ -3270,6 +3476,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.location`
 
@@ -3277,6 +3484,7 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.lock`
 
@@ -3284,6 +3492,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -3298,6 +3507,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3313,6 +3523,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.manualConnectionRequestMessage`
 
@@ -3320,6 +3531,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.name`
 
@@ -3327,6 +3539,7 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.privateDnsZoneGroup`
 
@@ -3334,6 +3547,7 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3353,6 +3567,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -3372,6 +3587,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -3379,6 +3595,7 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.privateDnsZoneGroup.name`
 
@@ -3386,6 +3603,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.privateLinkServiceConnectionName`
 
@@ -3393,6 +3611,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.resourceGroupName`
 
@@ -3400,6 +3619,7 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.roleAssignments`
 
@@ -3407,6 +3627,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -3443,6 +3664,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -3450,6 +3672,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `storageQueuePrivateEndpoints.roleAssignments.condition`
 
@@ -3457,6 +3680,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.roleAssignments.conditionVersion`
 
@@ -3464,6 +3688,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3477,6 +3702,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.roleAssignments.description`
 
@@ -3484,6 +3710,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.roleAssignments.name`
 
@@ -3491,6 +3718,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.roleAssignments.principalType`
 
@@ -3498,6 +3726,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3515,6 +3744,7 @@ The subresource to deploy the private endpoint for. For example "vault", "mysqlS
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageQueuePrivateEndpoints.tags`
 
@@ -3522,6 +3752,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -3529,6 +3760,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

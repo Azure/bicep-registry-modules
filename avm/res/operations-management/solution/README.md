@@ -468,6 +468,7 @@ Name of the Log Analytics workspace where the solution will be deployed/enabled.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -475,6 +476,7 @@ Name of the solution.<p>For solutions authored by Microsoft, the name must be in
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `plan`
 
@@ -482,6 +484,7 @@ Plan for solution object supported by the OperationsManagement resource provider
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -502,6 +505,7 @@ The product name of the deployed solution.<p>For Microsoft published gallery sol
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `plan.name`
 
@@ -509,6 +513,7 @@ Name of the solution to be created.<p>For solutions authored by Microsoft, the n
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `plan.publisher`
 
@@ -516,6 +521,7 @@ The publisher name of the deployed solution. For Microsoft published gallery sol
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -523,6 +529,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -531,6 +538,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

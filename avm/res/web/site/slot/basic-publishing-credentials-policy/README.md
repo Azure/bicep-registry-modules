@@ -42,6 +42,7 @@ The name of the resource.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -56,6 +57,7 @@ The name of the parent web site. Required if the template is used in a standalon
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `slotName`
 
@@ -63,6 +65,7 @@ The name of the parent web site slot. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `allow`
 
@@ -70,6 +73,7 @@ Set to true to enable or false to disable a publishing method.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -78,6 +82,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

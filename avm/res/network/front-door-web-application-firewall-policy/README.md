@@ -751,6 +751,7 @@ Name of the Front Door WAF policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customRules`
 
@@ -758,6 +759,7 @@ The custom rules inside the policy.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -795,6 +797,7 @@ List of rules.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -820,6 +823,7 @@ Describes what action to be applied when rule matches.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -836,6 +840,7 @@ Describes if the custom rule is in enabled or disabled state.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -850,6 +855,7 @@ List of match conditions. See https://learn.microsoft.com/en-us/azure/templates/
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `customRules.rules.name`
 
@@ -857,6 +863,7 @@ Describes the name of the rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customRules.rules.priority`
 
@@ -864,6 +871,7 @@ Describes priority of the rule. Rules with a lower value will be evaluated befor
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `customRules.rules.ruleType`
 
@@ -871,6 +879,7 @@ Describes type of rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -885,6 +894,7 @@ Time window for resetting the rate limit count. Default is 1 minute.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `customRules.rules.rateLimitThreshold`
 
@@ -892,6 +902,7 @@ Number of allowed requests per client within the time window.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -899,6 +910,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -907,6 +919,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'global'`
 
 ### Parameter: `lock`
@@ -915,6 +928,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -929,6 +943,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -944,6 +959,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedRules`
 
@@ -951,6 +967,7 @@ Describes the managedRules structure.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -984,6 +1001,7 @@ List of rule sets.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1006,6 +1024,7 @@ Defines the rule set type to use.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `managedRules.managedRuleSets.ruleSetVersion`
 
@@ -1013,6 +1032,7 @@ Defines the version of the rule set to use.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `managedRules.managedRuleSets.exclusions`
 
@@ -1020,6 +1040,7 @@ Describes the exclusions that are applied to all rules in the set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `managedRules.managedRuleSets.ruleGroupOverrides`
 
@@ -1027,6 +1048,7 @@ Defines the rule group overrides to apply to the rule set.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `managedRules.managedRuleSets.ruleSetAction`
 
@@ -1034,6 +1056,7 @@ Defines the rule set action.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1049,6 +1072,7 @@ The PolicySettings for policy.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -1063,6 +1087,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1094,6 +1119,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1101,6 +1127,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1108,6 +1135,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1115,6 +1143,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1128,6 +1157,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1135,6 +1165,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1142,6 +1173,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1149,6 +1181,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1166,6 +1199,7 @@ The pricing tier of the WAF profile.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard_AzureFrontDoor'`
 - Allowed:
   ```Bicep
@@ -1181,6 +1215,7 @@ Resource tags.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

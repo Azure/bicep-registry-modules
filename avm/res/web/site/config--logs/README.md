@@ -34,6 +34,7 @@ The name of the parent site resource.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `logsConfiguration`
 
@@ -41,6 +42,7 @@ The logs settings configuration.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

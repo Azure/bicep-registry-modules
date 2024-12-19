@@ -10,6 +10,7 @@ $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.Parent.Paren
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'ConvertTo-OrderedHashtable.ps1')
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-BRMRepositoryName.ps1')
+. (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
 
 ####################################
 #   Load test-specific functions   #

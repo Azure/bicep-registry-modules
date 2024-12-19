@@ -224,6 +224,7 @@ The name of the custom role definition.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `actions`
 
@@ -231,6 +232,7 @@ The permission actions of the custom role definition.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `assignableScopes`
 
@@ -238,6 +240,7 @@ The assignable scopes of the custom role definition. If not specified, the manag
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `dataActions`
 
@@ -245,6 +248,7 @@ The permission data actions of the custom role definition.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `description`
 
@@ -252,6 +256,7 @@ The description of the custom role definition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -259,6 +264,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -267,6 +273,7 @@ The location of the telemetry deployment to be created. Default is location of d
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `notActions`
@@ -275,6 +282,7 @@ The permission not actions of the custom role definition.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `notDataActions`
 
@@ -282,6 +290,7 @@ The permission not data actions of the custom role definition.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `roleName`
 
@@ -289,6 +298,7 @@ The display name of the custom role definition. If not specified, the name will 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

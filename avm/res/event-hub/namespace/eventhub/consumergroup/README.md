@@ -41,6 +41,7 @@ The name of the consumer group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `eventHubName`
 
@@ -48,6 +49,7 @@ The name of the parent event hub namespace event hub. Required if the template i
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -55,6 +57,7 @@ The name of the parent event hub namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `userMetadata`
 
@@ -62,6 +65,7 @@ User Metadata is a placeholder to store user-defined string data with maximum le
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ## Outputs

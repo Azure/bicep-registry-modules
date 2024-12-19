@@ -43,6 +43,7 @@ The name of the scope connection.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `resourceId`
 
@@ -50,6 +51,7 @@ Enter the subscription or management group resource ID that you want to add to t
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `tenantId`
 
@@ -57,6 +59,7 @@ Tenant ID of the subscription or management group that you want to manage.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `networkManagerName`
 
@@ -64,6 +67,7 @@ The name of the parent network manager. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `description`
 
@@ -71,6 +75,7 @@ A description of the scope connection.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

@@ -44,6 +44,7 @@ Name of the SQL database .
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `databaseAccountName`
 
@@ -51,6 +52,7 @@ The name of the parent Database Account. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `autoscaleSettingsMaxThroughput`
 
@@ -58,6 +60,7 @@ Specifies the Autoscale settings and represents maximum throughput, the resource
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `containers`
 
@@ -65,6 +68,7 @@ Array of containers to deploy in the SQL database.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `tags`
@@ -73,6 +77,7 @@ Tags of the SQL database resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `throughput`
 
@@ -80,6 +85,7 @@ Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is u
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ## Outputs
 

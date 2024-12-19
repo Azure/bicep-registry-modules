@@ -17,12 +17,12 @@ This module deploys an Azure Container Registry (ACR).
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -1123,6 +1123,7 @@ Name of your Azure Container Registry.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `acrAdminUserEnabled`
 
@@ -1130,6 +1131,7 @@ Enable admin user that have push / pull permission to the registry.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `acrSku`
@@ -1138,6 +1140,7 @@ Tier of your Azure container registry.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Premium'`
 - Allowed:
   ```Bicep
@@ -1154,6 +1157,7 @@ Enables registry-wide pull from unauthenticated clients. It's in preview and ava
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `azureADAuthenticationAsArmPolicyStatus`
@@ -1162,6 +1166,7 @@ The value that indicates whether the policy for using ARM audience token for a c
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'enabled'`
 - Allowed:
   ```Bicep
@@ -1177,6 +1182,7 @@ Array of Cache Rules.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `credentialSets`
 
@@ -1184,6 +1190,7 @@ Array of Credential Sets.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `customerManagedKey`
@@ -1192,6 +1199,7 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1213,6 +1221,7 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -1220,6 +1229,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -1227,6 +1237,7 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1234,6 +1245,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `dataEndpointEnabled`
 
@@ -1241,6 +1253,7 @@ Enable a single data endpoint per region for serving data. Not relevant in case 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `diagnosticSettings`
@@ -1249,6 +1262,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -1270,6 +1284,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1277,6 +1292,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1284,6 +1300,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1298,6 +1315,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1313,6 +1331,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1320,6 +1339,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1327,6 +1347,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1334,6 +1355,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1341,6 +1363,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1360,6 +1383,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1367,6 +1391,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1374,6 +1399,7 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1381,6 +1407,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1388,6 +1415,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -1395,6 +1423,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `exportPolicyStatus`
@@ -1403,6 +1432,7 @@ The value that indicates whether the export policy is enabled or not.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'disabled'`
 - Allowed:
   ```Bicep
@@ -1418,6 +1448,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1426,6 +1457,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1440,6 +1472,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1455,6 +1488,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1462,6 +1496,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1476,6 +1511,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1483,6 +1519,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `networkRuleBypassOptions`
 
@@ -1490,6 +1527,7 @@ Whether to allow trusted Azure services to access a network restricted registry.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'AzureServices'`
 - Allowed:
   ```Bicep
@@ -1505,6 +1543,7 @@ The default action of allow or deny when no other rules match.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Deny'`
 - Allowed:
   ```Bicep
@@ -1520,6 +1559,7 @@ The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints`
 
@@ -1527,6 +1567,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1561,6 +1602,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1568,6 +1610,7 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -1575,6 +1618,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1594,6 +1638,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -1601,6 +1646,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1608,6 +1654,7 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -1615,6 +1662,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -1622,6 +1670,7 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1636,6 +1685,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -1643,6 +1693,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1658,6 +1709,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -1665,6 +1717,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -1672,6 +1725,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -1679,6 +1733,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1686,6 +1741,7 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -1693,6 +1749,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1707,6 +1764,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1722,6 +1780,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -1729,6 +1788,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1736,6 +1796,7 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -1743,6 +1804,7 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1762,6 +1824,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1781,6 +1844,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -1788,6 +1852,7 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -1795,6 +1860,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1802,6 +1868,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -1809,6 +1876,7 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -1816,6 +1884,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -1852,6 +1921,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -1859,6 +1929,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -1866,6 +1937,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -1873,6 +1945,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1886,6 +1959,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -1893,6 +1967,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -1900,6 +1975,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -1907,6 +1983,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1924,6 +2001,7 @@ The subresource to deploy the private endpoint for. For example "vault", "mysqlS
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -1931,6 +2009,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -1938,6 +2017,7 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1952,6 +2032,7 @@ The value that indicates whether the quarantine policy is enabled or not. Note, 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'disabled'`
 - Allowed:
   ```Bicep
@@ -1967,6 +2048,7 @@ All replications to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `retentionPolicyDays`
 
@@ -1974,6 +2056,7 @@ The number of days to retain an untagged manifest after which it gets purged.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `15`
 
 ### Parameter: `retentionPolicyStatus`
@@ -1982,6 +2065,7 @@ The value that indicates whether the retention policy is enabled or not.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'enabled'`
 - Allowed:
   ```Bicep
@@ -1997,6 +2081,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'AcrDelete'`
   - `'AcrImageSigner'`
@@ -2034,6 +2119,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2041,6 +2127,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2048,6 +2135,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2055,6 +2143,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2068,6 +2157,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2075,6 +2165,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2082,6 +2173,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2089,6 +2181,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2106,6 +2199,7 @@ Scope maps setting.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2126,6 +2220,7 @@ The list of scoped permissions for registry artifacts.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `scopeMaps.description`
 
@@ -2133,6 +2228,7 @@ The user friendly description of the scope map.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `scopeMaps.name`
 
@@ -2140,6 +2236,7 @@ The name of the scope map.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `softDeletePolicyDays`
 
@@ -2147,6 +2244,7 @@ The number of days after which a soft-deleted item is permanently deleted.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `7`
 
 ### Parameter: `softDeletePolicyStatus`
@@ -2155,6 +2253,7 @@ Soft Delete policy status. Default is disabled.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'disabled'`
 - Allowed:
   ```Bicep
@@ -2170,6 +2269,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `trustPolicyStatus`
 
@@ -2177,6 +2277,7 @@ The value that indicates whether the trust policy is enabled or not. Note, requi
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'disabled'`
 - Allowed:
   ```Bicep
@@ -2192,6 +2293,7 @@ All webhooks to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `zoneRedundancy`
 
@@ -2199,6 +2301,7 @@ Whether or not zone redundancy is enabled for this container registry.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
