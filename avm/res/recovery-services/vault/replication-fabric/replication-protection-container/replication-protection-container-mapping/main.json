@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1224703613168192078"
+      "templateHash": "1452689332019027380"
     },
     "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
     "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -30,9 +31,9 @@
         "description": "Conditional. The name of the parent source Replication container. Required if the template is used in a standalone deployment."
       }
     },
-    "targetProtectionContainerId": {
+    "targetProtectionContainerResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
       }
@@ -41,17 +42,17 @@
       "type": "string",
       "defaultValue": "[parameters('replicationFabricName')]",
       "metadata": {
-        "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerId is specified, this parameter will be ignored."
+        "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
       }
     },
     "targetContainerName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerId is not. If targetProtectionContainerId is specified, this parameter will be ignored."
+        "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
       }
     },
-    "policyId": {
+    "policyResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -62,7 +63,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Name of the replication policy. Will be ignored if policyId is also specified."
+        "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
       }
     },
     "name": {
@@ -74,38 +75,56 @@
     }
   },
   "variables": {
-    "policyResourceId": "[if(not(equals(parameters('policyId'), '')), parameters('policyId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
-    "targetProtectionContainerResourceId": "[if(not(equals(parameters('targetProtectionContainerId'), '')), parameters('targetProtectionContainerId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
-    "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('targetProtectionContainerResourceId'), '/')[10]))]"
+    "calcPolicyResourceId": "[if(not(empty(parameters('policyResourceId'))), parameters('policyResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
+    "calcTargetProtectionContainerResourceId": "[if(not(empty(parameters('targetProtectionContainerResourceId'))), parameters('targetProtectionContainerResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
+    "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('calcTargetProtectionContainerResourceId'), '/')[10]))]"
   },
-  "resources": [
-    {
+  "resources": {
+    "recoveryServicesVault::replicationFabric::replicationContainer": {
+      "existing": true,
+      "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
+      "apiVersion": "2022-10-01",
+      "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'))]"
+    },
+    "recoveryServicesVault::replicationFabric": {
+      "existing": true,
+      "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
+      "apiVersion": "2022-10-01",
+      "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
+    },
+    "recoveryServicesVault": {
+      "existing": true,
+      "type": "Microsoft.RecoveryServices/vaults",
+      "apiVersion": "2024-10-01",
+      "name": "[parameters('recoveryVaultName')]"
+    },
+    "replicationContainer": {
       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings",
       "apiVersion": "2022-10-01",
       "name": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]",
       "properties": {
-        "targetProtectionContainerId": "[variables('targetProtectionContainerResourceId')]",
-        "policyId": "[variables('policyResourceId')]",
+        "targetProtectionContainerId": "[variables('calcTargetProtectionContainerResourceId')]",
+        "policyId": "[variables('calcPolicyResourceId')]",
         "providerSpecificInput": {
           "instanceType": "A2A"
         }
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the replication container."
       },
-      "value": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]"
+      "value": "[variables('mappingName')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the replication container."
       },
-      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings', split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[0], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[1], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[2], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[3])]"
+      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]"
     },
     "resourceGroupName": {
       "type": "string",

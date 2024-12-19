@@ -6,11 +6,65 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6107144281664309791"
+      "templateHash": "12837115513366278302"
     },
     "name": "Recovery Services Vault Protection Container",
     "description": "This module deploys a Recovery Services Vault Protection Container.",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "protectedItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the resource."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for all resources."
+          }
+        },
+        "protectedItemType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureFileShareProtectedItem",
+            "AzureVmWorkloadSAPAseDatabase",
+            "AzureVmWorkloadSAPHanaDatabase",
+            "AzureVmWorkloadSQLDatabase",
+            "DPMProtectedItem",
+            "GenericProtectedItem",
+            "MabFileFolderProtectedItem",
+            "Microsoft.ClassicCompute/virtualMachines",
+            "Microsoft.Compute/virtualMachines",
+            "Microsoft.Sql/servers/databases"
+          ],
+          "metadata": {
+            "description": "Required. The backup item type."
+          }
+        },
+        "policyResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the backup policy with which this item is backed up."
+          }
+        },
+        "sourceResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the resource to back up."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a protected item"
+      }
+    }
   },
   "parameters": {
     "recoveryVaultName": {
@@ -66,7 +120,10 @@
     },
     "protectedItems": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/protectedItem"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Protected items to register in the container."
       }
@@ -105,7 +162,7 @@
     "protectionContainer_protectedItems": {
       "copy": {
         "name": "protectionContainer_protectedItems",
-        "count": "[length(parameters('protectedItems'))]"
+        "count": "[length(coalesce(parameters('protectedItems'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -116,14 +173,14 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "policyId": {
-            "value": "[parameters('protectedItems')[copyIndex()].policyId]"
+          "policyResourceId": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].policyResourceId]"
           },
           "name": {
-            "value": "[parameters('protectedItems')[copyIndex()].name]"
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].name]"
           },
           "protectedItemType": {
-            "value": "[parameters('protectedItems')[copyIndex()].protectedItemType]"
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].protectedItemType]"
           },
           "protectionContainerName": {
             "value": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]"
@@ -132,7 +189,7 @@
             "value": "[parameters('recoveryVaultName')]"
           },
           "sourceResourceId": {
-            "value": "[parameters('protectedItems')[copyIndex()].sourceResourceId]"
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].sourceResourceId]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -145,7 +202,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8409556960090427141"
+              "templateHash": "14615209050475541121"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
@@ -195,10 +252,10 @@
                 "description": "Required. The backup item type."
               }
             },
-            "policyId": {
+            "policyResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Required. ID of the backup policy with which this item is backed up."
+                "description": "Required. Resource ID of the backup policy with which this item is backed up."
               }
             },
             "sourceResourceId": {
@@ -216,7 +273,7 @@
               "location": "[parameters('location')]",
               "properties": {
                 "protectedItemType": "[parameters('protectedItemType')]",
-                "policyId": "[parameters('policyId')]",
+                "policyId": "[parameters('policyResourceId')]",
                 "sourceResourceId": "[parameters('sourceResourceId')]"
               }
             }

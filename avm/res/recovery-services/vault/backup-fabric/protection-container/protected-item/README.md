@@ -21,7 +21,7 @@ This module deploys a Recovery Services Vault Protection Container Protected Ite
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the resource. |
-| [`policyId`](#parameter-policyid) | string | ID of the backup policy with which this item is backed up. |
+| [`policyResourceId`](#parameter-policyresourceid) | string | Resource ID of the backup policy with which this item is backed up. |
 | [`protectedItemType`](#parameter-protecteditemtype) | string | The backup item type. |
 | [`sourceResourceId`](#parameter-sourceresourceid) | string | Resource ID of the resource to back up. |
 
@@ -45,9 +45,9 @@ Name of the resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `policyId`
+### Parameter: `policyResourceId`
 
-ID of the backup policy with which this item is backed up.
+Resource ID of the backup policy with which this item is backed up.
 
 - Required: Yes
 - Type: string

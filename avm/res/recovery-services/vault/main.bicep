@@ -74,8 +74,9 @@ param redundancySettings redundancySettingsType?
 @description('Optional. The restore settings of the vault.')
 param restoreSettings restoreSettingsType?
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -222,7 +223,11 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
                 useSystemAssignedIdentity: empty(customerManagedKey.?userAssignedIdentityResourceId)
               }
           keyVaultProperties: {
-            keyUri: cMKKeyVault.properties.vaultUri
+            keyUri: !empty(customerManagedKey.?keyVersion)
+              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+              : (customerManagedKey.?autoRotationEnabled ?? true)
+                  ? cMKKeyVault::cMKKey.properties.keyUri
+                  : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           }
         }
       : null
@@ -458,18 +463,18 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
-@export()
-@description('The customer managed key type.')
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
+// @export()
+// @description('The customer managed key type.')
+// type customerManagedKeyType = {
+//   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+//   keyVaultResourceId: string
 
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
+//   @description('Required. The name of the customer managed key to use for encryption.')
+//   keyName: string
 
-  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
-  userAssignedIdentityResourceId: string?
-}
+//   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
+//   userAssignedIdentityResourceId: string?
+// }
 
 @export()
 @description('The type for redundancy settings.')

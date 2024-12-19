@@ -117,7 +117,71 @@ Protected items to register in the container.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-protecteditemsname) | string | Name of the resource. |
+| [`policyResourceId`](#parameter-protecteditemspolicyresourceid) | string | Resource ID of the backup policy with which this item is backed up. |
+| [`protectedItemType`](#parameter-protecteditemsprotecteditemtype) | string | The backup item type. |
+| [`sourceResourceId`](#parameter-protecteditemssourceresourceid) | string | Resource ID of the resource to back up. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-protecteditemslocation) | string | Location for all resources. |
+
+### Parameter: `protectedItems.name`
+
+Name of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `protectedItems.policyResourceId`
+
+Resource ID of the backup policy with which this item is backed up.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `protectedItems.protectedItemType`
+
+The backup item type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureFileShareProtectedItem'
+    'AzureVmWorkloadSAPAseDatabase'
+    'AzureVmWorkloadSAPHanaDatabase'
+    'AzureVmWorkloadSQLDatabase'
+    'DPMProtectedItem'
+    'GenericProtectedItem'
+    'MabFileFolderProtectedItem'
+    'Microsoft.ClassicCompute/virtualMachines'
+    'Microsoft.Compute/virtualMachines'
+    'Microsoft.Sql/servers/databases'
+  ]
+  ```
+
+### Parameter: `protectedItems.sourceResourceId`
+
+Resource ID of the resource to back up.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `protectedItems.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
 
 ### Parameter: `sourceResourceId`
 

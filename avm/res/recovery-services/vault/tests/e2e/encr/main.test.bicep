@@ -60,6 +60,7 @@ module testDeployment '../../../main.bicep' = [
         keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        autoRotationEnabled: false
       }
       managedIdentities: {
         userAssignedResourceIds: [

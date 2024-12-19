@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17490215492719435947"
+      "templateHash": "3276613868849082513"
     },
     "name": "Recovery Services Vault Replication Alert Settings",
     "description": "This module deploys a Recovery Services Vault Replication Alert Settings.",
@@ -27,9 +28,12 @@
     },
     "customEmailAddresses": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Comma separated list of custom email address for sending alert emails."
+        "description": "Optional. The custom email address for sending emails."
       }
     },
     "locale": {
@@ -51,18 +55,24 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "recoveryVault": {
+      "existing": true,
+      "type": "Microsoft.RecoveryServices/vaults",
+      "apiVersion": "2023-01-01",
+      "name": "[parameters('recoveryVaultName')]"
+    },
+    "replicationAlertSettings": {
       "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
       "apiVersion": "2022-10-01",
       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
       "properties": {
-        "customEmailAddresses": "[if(not(empty(parameters('customEmailAddresses'))), parameters('customEmailAddresses'), null())]",
+        "customEmailAddresses": "[parameters('customEmailAddresses')]",
         "locale": "[parameters('locale')]",
         "sendToOwners": "[parameters('sendToOwners')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

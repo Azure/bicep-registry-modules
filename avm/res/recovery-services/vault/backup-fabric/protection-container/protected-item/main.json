@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8409556960090427141"
+      "templateHash": "14615209050475541121"
     },
     "name": "Recovery Service Vaults Protection Container Protected Item",
     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
@@ -55,10 +55,10 @@
         "description": "Required. The backup item type."
       }
     },
-    "policyId": {
+    "policyResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. ID of the backup policy with which this item is backed up."
+        "description": "Required. Resource ID of the backup policy with which this item is backed up."
       }
     },
     "sourceResourceId": {
@@ -76,7 +76,7 @@
       "location": "[parameters('location')]",
       "properties": {
         "protectedItemType": "[parameters('protectedItemType')]",
-        "policyId": "[parameters('policyId')]",
+        "policyId": "[parameters('policyResourceId')]",
         "sourceResourceId": "[parameters('sourceResourceId')]"
       }
     }
