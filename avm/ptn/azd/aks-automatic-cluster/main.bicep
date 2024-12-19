@@ -14,7 +14,7 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.5.3'
-@description('Optional. Enable Azure Active Directory integration.')
+@description('Optional. Settigs for the Azure Active Directory integration.')
 param aadProfile aadProfileType?
 
 // ============== //
