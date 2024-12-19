@@ -1466,6 +1466,7 @@ Flag to enable / disable Storage Auto grow for flexible server.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2492,6 +2493,7 @@ Determines whether or not public network access is enabled or not.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -2500,6 +2502,8 @@ Determines whether or not public network access is enabled or not.
     'Enabled'
   ]
   ```
+- MinValue: 7
+- MaxValue: 35
 
 ### Parameter: `replica`
 
@@ -2507,6 +2511,9 @@ The replication settings for the server. Can only be set on existing flexible se
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 7
+- MaxValue: 35
 
 **Conditional parameters**
 
@@ -2522,6 +2529,7 @@ Sets the promote mode for a replica server. This is a write only property. 'stan
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2529,6 +2537,8 @@ Sets the promote mode for a replica server. This is a write only property. 'stan
     'switchover'
   ]
   ```
+- MinValue: 7
+- MaxValue: 35
 
 ### Parameter: `replica.promoteOption`
 
@@ -2536,6 +2546,7 @@ Sets the promote options for a replica server. This is a write only property.	'f
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2543,6 +2554,8 @@ Sets the promote options for a replica server. This is a write only property.	'f
     'planned'
   ]
   ```
+- MinValue: 7
+- MaxValue: 35
 
 ### Parameter: `replica.role`
 
@@ -2550,6 +2563,7 @@ Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyn
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2559,6 +2573,8 @@ Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyn
     'Primary'
   ]
   ```
+- MinValue: 7
+- MaxValue: 35
 
 ### Parameter: `roleAssignments`
 
@@ -2696,6 +2712,7 @@ Specifies the state of the Threat Protection, whether it is enabled or disabled 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -2704,6 +2721,8 @@ Specifies the state of the Threat Protection, whether it is enabled or disabled 
     'Enabled'
   ]
   ```
+- MinValue: 7
+- MaxValue: 35
 
 ### Parameter: `storageSizeGB`
 
