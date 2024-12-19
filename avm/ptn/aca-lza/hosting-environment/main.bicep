@@ -2,14 +2,11 @@ targetScope = 'subscription'
 
 metadata name = 'Container Apps Landing Zone Accelerator'
 metadata description = 'This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework'
-metadata owner = 'Azure/module-maintainers'
+metadata owner = 'Azure/avm-ptn-acalza-hostingenvironment-module-contributors-bicep'
 
 // ------------------
 //    PARAMETERS
 // ------------------
-// @description('Required. The id of the subscription to create the Azure Container Apps deployment.')
-// param subscriptionId string
-
 @description('Optional. The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
