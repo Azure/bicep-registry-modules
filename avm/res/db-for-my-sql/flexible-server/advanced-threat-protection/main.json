@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13331351712651770256"
+      "version": "0.32.4.45862",
+      "templateHash": "15590569630188816024"
     },
     "name": "DBforMySQL Flexible Server Advanced Threat Protection",
     "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server.",
@@ -33,21 +33,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the deployed administrator."
+        "description": "The name of the deployed threat protection."
       },
       "value": "Default"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the deployed administrator."
+        "description": "The resource ID of the deployed threat protection."
       },
       "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default')]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group of the deployed administrator."
+        "description": "The resource group of the deployed threat protection."
       },
       "value": "[resourceGroup().name]"
     }

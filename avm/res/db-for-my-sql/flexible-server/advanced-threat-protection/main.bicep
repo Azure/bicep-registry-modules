@@ -17,11 +17,11 @@ resource advancedThreatProtection 'Microsoft.DBforMySQL/flexibleServers/advanced
   }
 }
 
-@description('The name of the deployed administrator.')
+@description('The name of the deployed threat protection.')
 output name string = advancedThreatProtection.name
 
-@description('The resource ID of the deployed administrator.')
+@description('The resource ID of the deployed threat protection.')
 output resourceId string = advancedThreatProtection.id
 
-@description('The resource group of the deployed administrator.')
+@description('The resource group of the deployed threat protection.')
 output resourceGroupName string = resourceGroup().name

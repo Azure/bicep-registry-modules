@@ -33,6 +33,6 @@ The name of the parent DBforMySQL flexible server. Required if the template is u
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the deployed administrator. |
-| `resourceGroupName` | string | The resource group of the deployed administrator. |
-| `resourceId` | string | The resource ID of the deployed administrator. |
+| `name` | string | The name of the deployed threat protection. |
+| `resourceGroupName` | string | The resource group of the deployed threat protection. |
+| `resourceId` | string | The resource ID of the deployed threat protection. |
