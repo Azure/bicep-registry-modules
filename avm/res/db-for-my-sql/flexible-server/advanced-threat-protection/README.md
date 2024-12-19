@@ -1,0 +1,34 @@
+# DBforMySQL Flexible Server Advanced Threat Protection `[Microsoft.DBforMySQL/flexibleServers]`
+
+This module enables Advanced Threat Protection for DBforMySQL Flexible Server.
+
+## Navigation
+
+- [Resource Types](#Resource-Types)
+- [Parameters](#Parameters)
+- [Outputs](#Outputs)
+
+## Resource Types
+
+| Resource Type | API Version |
+| :-- | :-- |
+| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/advancedThreatProtectionSettings) |
+
+## Parameters
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`flexibleServerName`](#parameter-flexibleservername) | string | The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment. |
+
+### Parameter: `flexibleServerName`
+
+The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+## Outputs
+
+_None_

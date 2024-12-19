@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.31.92.45157",
+      "templateHash": "13311310515375264841"
+    },
+    "name": "DBforMySQL Flexible Server Advanced Threat Protection",
+    "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
+      "apiVersion": "2023-12-30",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
+      "properties": {
+        "state": "Enabled"
+      }
+    }
+  ]
+}

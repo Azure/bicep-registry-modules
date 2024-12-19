@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "17625741196665765886"
+      "templateHash": "3089772420646844780"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -472,6 +472,13 @@
         "description": "Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is \"Private Access\". Required if \"delegatedSubnetResourceId\" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server."
       }
     },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "metadata": {
+        "description": "Optional. Specifies whether public network access is allowed for this server. Set to \"Enabled\" to allow public access, or \"Disabled\" (default) when the server has VNet integration."
+      }
+    },
     "restorePointInTime": {
       "type": "string",
       "defaultValue": "",
@@ -572,6 +579,13 @@
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The firewall rules to create in the MySQL flexible server."
+      }
+    },
+    "advancedThreatProtectionEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable Advanced Threat Protection (Microsoft Defnder for ) for the server."
       }
     },
     "roleAssignments": {
@@ -734,7 +748,11 @@
           "standbyAvailabilityZone": "[variables('standByAvailabilityZone')]"
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
-        "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')), null())]",
+        "network": {
+          "delegatedSubnetResourceId": "[if(not(empty(parameters('delegatedSubnetResourceId'))), parameters('delegatedSubnetResourceId'), null())]",
+          "privateDnsZoneResourceId": "[if(not(empty(parameters('privateDnsZoneResourceId'))), parameters('privateDnsZoneResourceId'), null())]",
+          "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        },
         "replicationRole": "[parameters('replicationRole')]",
         "restorePointInTime": "[parameters('restorePointInTime')]",
         "sourceServerResourceId": "[if(not(empty(parameters('sourceServerResourceId'))), parameters('sourceServerResourceId'), null())]",
@@ -1157,6 +1175,58 @@
               "value": "[resourceGroup().name]"
             }
           }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_advancedThreatProtection": {
+      "condition": "[parameters('advancedThreatProtectionEnabled')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-AdvancedThreatProtection', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.31.92.45157",
+              "templateHash": "13311310515375264841"
+            },
+            "name": "DBforMySQL Flexible Server Advanced Threat Protection",
+            "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
+              "apiVersion": "2023-12-30",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
+              "properties": {
+                "state": "Enabled"
+              }
+            }
+          ]
         }
       },
       "dependsOn": [
