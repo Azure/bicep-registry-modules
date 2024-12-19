@@ -14,10 +14,15 @@ param location string = resourceGroup().location
 param name string = location
 
 @description('Optional. Replication containers to create.')
-param replicationContainers array = []
+param replicationContainers containerType[]?
+
+resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2024-10-01' existing = {
+  name: recoveryVaultName
+}
 
 resource replicationFabric 'Microsoft.RecoveryServices/vaults/replicationFabrics@2022-10-01' = {
-  name: '${recoveryVaultName}/${name}'
+  name: name
+  parent: recoveryServicesVault
   properties: {
     customDetails: {
       instanceType: 'Azure'
@@ -27,13 +32,13 @@ resource replicationFabric 'Microsoft.RecoveryServices/vaults/replicationFabrics
 }
 
 module fabric_replicationContainers 'replication-protection-container/main.bicep' = [
-  for (container, index) in replicationContainers: {
+  for (container, index) in (replicationContainers ?? []): {
     name: '${deployment().name}-RCont-${index}'
     params: {
       name: container.name
       recoveryVaultName: recoveryVaultName
       replicationFabricName: name
-      replicationContainerMappings: container.?replicationContainerMappings
+      mappings: container.?mappings
     }
     dependsOn: [
       replicationFabric
@@ -49,3 +54,18 @@ output resourceId string = replicationFabric.id
 
 @description('The name of the resource group the replication fabric was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+import { mappingType } from 'replication-protection-container/main.bicep'
+@export()
+@description('The type for a replication protection container.')
+type containerType = {
+  @description('Required. The name of the replication container.')
+  name: string
+
+  @description('Optional. Replication containers mappings to create.')
+  mappings: mappingType[]?
+}

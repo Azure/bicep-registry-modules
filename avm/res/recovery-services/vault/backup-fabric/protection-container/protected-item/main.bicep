@@ -29,8 +29,8 @@ param location string = resourceGroup().location
 @description('Required. The backup item type.')
 param protectedItemType string
 
-@description('Required. ID of the backup policy with which this item is backed up.')
-param policyId string
+@description('Required. Resource ID of the backup policy with which this item is backed up.')
+param policyResourceId string
 
 @description('Required. Resource ID of the resource to back up.')
 param sourceResourceId string
@@ -40,7 +40,7 @@ resource protectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/protecti
   location: location
   properties: {
     protectedItemType: any(protectedItemType)
-    policyId: policyId
+    policyId: policyResourceId
     sourceResourceId: sourceResourceId
   }
 }

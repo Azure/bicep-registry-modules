@@ -62,7 +62,7 @@ module protectionContainer_protectedItems 'protected-item/main.bicep' = [
   for (protectedItem, index) in protectedItems: {
     name: '${uniqueString(deployment().name, location)}-ProtectedItem-${index}'
     params: {
-      policyId: protectedItem.policyId
+      policyResourceId: protectedItem.policyResourceId
       name: protectedItem.name
       protectedItemType: protectedItem.protectedItemType
       protectionContainerName: protectionContainer.name
