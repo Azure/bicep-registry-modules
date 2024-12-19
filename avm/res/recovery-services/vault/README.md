@@ -3343,7 +3343,7 @@ The alert settings.
 
 Enable / disable alerts for all failover issues.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -3357,7 +3357,7 @@ Enable / disable alerts for all failover issues.
 
 Enable / disable alerts for all job failures.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -3371,7 +3371,7 @@ Enable / disable alerts for all job failures.
 
 Enable / disable alerts for all replication issues.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -3399,7 +3399,7 @@ The classic alert settings
 
 Enable / disable alerts for critical operations.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -3413,7 +3413,7 @@ Enable / disable alerts for critical operations.
 
 Enable / disable email notifications for site recovery.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -4427,7 +4427,7 @@ Security Settings of the vault.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`immutabilitySettings`](#parameter-securitysettingsimmutabilitysettings) | object | Immutability settings of a vault. |
-| [`softDeleteSettings`](#parameter-securitysettingssoftdeletesettings) | object | Soft delete settings of a vault |
+| [`softDeleteSettings`](#parameter-securitysettingssoftdeletesettings) | object | Soft delete settings of a vault. |
 
 ### Parameter: `securitySettings.immutabilitySettings`
 
@@ -4440,11 +4440,11 @@ Immutability settings of a vault.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-securitysettingsimmutabilitysettingsstate) | string | The immmutability setting of the vault |
+| [`state`](#parameter-securitysettingsimmutabilitysettingsstate) | string | The immmutability setting of the vault. |
 
 ### Parameter: `securitySettings.immutabilitySettings.state`
 
-The immmutability setting of the vault
+The immmutability setting of the vault.
 
 - Required: Yes
 - Type: string
@@ -4459,7 +4459,7 @@ The immmutability setting of the vault
 
 ### Parameter: `securitySettings.softDeleteSettings`
 
-Soft delete settings of a vault
+Soft delete settings of a vault.
 
 - Required: No
 - Type: object

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15685764278270982309"
+      "templateHash": "7218237609689675041"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -425,6 +425,7 @@
                 "Disabled",
                 "Enabled"
               ],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Enable / disable alerts for all failover issues."
               }
@@ -435,6 +436,7 @@
                 "Disabled",
                 "Enabled"
               ],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Enable / disable alerts for all job failures."
               }
@@ -445,6 +447,7 @@
                 "Disabled",
                 "Enabled"
               ],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Enable / disable alerts for all replication issues."
               }
@@ -464,6 +467,7 @@
                 "Disabled",
                 "Enabled"
               ],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Enable / disable alerts for critical operations."
               }
@@ -474,6 +478,7 @@
                 "Disabled",
                 "Enabled"
               ],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Enable / disable email notifications for site recovery."
               }
@@ -503,7 +508,7 @@
                 "Unlocked"
               ],
               "metadata": {
-                "description": "Required. The immmutability setting of the vault"
+                "description": "Required. The immmutability setting of the vault."
               }
             }
           },
@@ -548,7 +553,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Soft delete settings of a vault"
+            "description": "Optional. Soft delete settings of a vault."
           }
         }
       },

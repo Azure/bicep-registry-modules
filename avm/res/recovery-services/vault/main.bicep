@@ -644,22 +644,22 @@ type monitoringSettingsType = {
   @description('Optional. The alert settings.')
   azureMonitorAlertSettings: {
     @description('Optional. Enable / disable alerts for all failover issues.')
-    alertsForAllFailoverIssues: ('Enabled' | 'Disabled')
+    alertsForAllFailoverIssues: ('Enabled' | 'Disabled')?
 
     @description('Optional. Enable / disable alerts for all job failures.')
-    alertsForAllJobFailures: ('Enabled' | 'Disabled')
+    alertsForAllJobFailures: ('Enabled' | 'Disabled')?
 
     @description('Optional. Enable / disable alerts for all replication issues.')
-    alertsForAllReplicationIssues: ('Enabled' | 'Disabled')
+    alertsForAllReplicationIssues: ('Enabled' | 'Disabled')?
   }?
 
   @description('Optional. The classic alert settings')
   classicAlertSettings: {
     @description('Optional. Enable / disable alerts for critical operations.')
-    alertsForCriticalOperations: ('Enabled' | 'Disabled')
+    alertsForCriticalOperations: ('Enabled' | 'Disabled')?
 
     @description('Optional. Enable / disable email notifications for site recovery.')
-    emailNotificationsForSiteRecovery: ('Enabled' | 'Disabled')
+    emailNotificationsForSiteRecovery: ('Enabled' | 'Disabled')?
   }?
 }
 
@@ -668,11 +668,11 @@ type monitoringSettingsType = {
 type securitySettingType = {
   @description('Optional. Immutability settings of a vault.')
   immutabilitySettings: {
-    @description('Required. The immmutability setting of the vault')
+    @description('Required. The immmutability setting of the vault.')
     state: ('Disabled' | 'Locked' | 'Unlocked')
   }?
 
-  @description('Optional. Soft delete settings of a vault')
+  @description('Optional. Soft delete settings of a vault.')
   softDeleteSettings: {
     @description('Required. The enhanced security state.')
     enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
