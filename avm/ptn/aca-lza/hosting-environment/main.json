@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17167976185587785541"
+      "templateHash": "5846676341651496999"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -37290,7 +37290,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8529934732204670693"
+              "templateHash": "5392305079559653359"
             }
           },
           "parameters": {
@@ -37399,7 +37399,8 @@
             "keyVaultIdTokens": "[split(parameters('keyVaultId'), '/')]",
             "keyVaultSubscriptionId": "[variables('keyVaultIdTokens')[2]]",
             "keyVaultResourceGroupName": "[variables('keyVaultIdTokens')[4]]",
-            "keyVaultName": "[variables('keyVaultIdTokens')[8]]"
+            "keyVaultName": "[variables('keyVaultIdTokens')[8]]",
+            "certName": "[format('{0}-cert', parameters('workloadName'))]"
           },
           "resources": [
             {
@@ -38871,7 +38872,7 @@
                   "sslCertificates": {
                     "value": [
                       {
-                        "name": "[parameters('applicationGatewayFqdn')]",
+                        "name": "[variables('certName')]",
                         "properties": {
                           "keyVaultSecretId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('keyVaultSubscriptionId'), variables('keyVaultResourceGroupName')), 'Microsoft.Resources/deployments', take(format('appGatewayAddCertificates-Deployment-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.SecretUri.value]"
                         }

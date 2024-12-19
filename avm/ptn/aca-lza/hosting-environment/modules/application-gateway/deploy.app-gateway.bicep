@@ -67,6 +67,8 @@ var keyVaultResourceGroupName = keyVaultIdTokens[4]
 @description('The name of the existing Key Vault.')
 var keyVaultName = keyVaultIdTokens[8]
 
+var certName = '${workloadName}-cert'
+
 // ------------------
 // RESOURCES
 // ------------------
@@ -330,7 +332,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
     sku: 'WAF_v2'
     sslCertificates: [
       {
-        name: applicationGatewayFqdn
+        name: certName
         properties: {
           keyVaultSecretId: appGatewayAddCertificates.outputs.SecretUri
         }
