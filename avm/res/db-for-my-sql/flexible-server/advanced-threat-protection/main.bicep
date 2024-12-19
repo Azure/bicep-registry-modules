@@ -16,3 +16,12 @@ resource advancedThreatProtection 'Microsoft.DBforMySQL/flexibleServers/advanced
     state: 'Enabled'
   }
 }
+
+@description('The name of the deployed administrator.')
+output name string = advancedThreatProtection.name
+
+@description('The resource ID of the deployed administrator.')
+output resourceId string = advancedThreatProtection.id
+
+@description('The resource group of the deployed administrator.')
+output resourceGroupName string = resourceGroup().name

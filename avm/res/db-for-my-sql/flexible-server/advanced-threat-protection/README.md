@@ -31,4 +31,8 @@ The name of the parent DBforMySQL flexible server. Required if the template is u
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `name` | string | The name of the deployed administrator. |
+| `resourceGroupName` | string | The resource group of the deployed administrator. |
+| `resourceId` | string | The resource ID of the deployed administrator. |
