@@ -50,6 +50,7 @@ The name of the parent API Management service.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `apiName`
 
@@ -57,6 +58,7 @@ The name of the parent API.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `loggerName`
 
@@ -64,6 +66,7 @@ The name of the logger.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `httpCorrelationProtocol`
 
@@ -71,6 +74,7 @@ Sets correlation protocol to use for Application Insights diagnostics. Required 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Legacy'`
 - Allowed:
   ```Bicep
@@ -87,6 +91,7 @@ Emit custom metrics via emit-metric policy. Required if using Application Insigh
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `operationNameFormat`
@@ -95,6 +100,7 @@ The format of the Operation Name for Application Insights telemetries. Required 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Name'`
 - Allowed:
   ```Bicep
@@ -110,6 +116,7 @@ Specifies for what type of messages sampling settings should not apply.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'allErrors'`
 
 ### Parameter: `backend`
@@ -118,6 +125,7 @@ Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `frontend`
@@ -126,6 +134,7 @@ Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `logClientIp`
@@ -134,6 +143,7 @@ Log the ClientIP.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `name`
@@ -142,6 +152,7 @@ Type of diagnostic resource.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'local'`
 - Allowed:
   ```Bicep
@@ -158,6 +169,7 @@ Rate of sampling for fixed-rate sampling. Specifies the percentage of requests t
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `100`
 
 ### Parameter: `verbosity`
@@ -166,6 +178,7 @@ The verbosity level applied to traces emitted by trace policies.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'error'`
 - Allowed:
   ```Bicep

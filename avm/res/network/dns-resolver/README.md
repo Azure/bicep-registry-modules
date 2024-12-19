@@ -467,6 +467,7 @@ Name of the DNS Private Resolver.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `virtualNetworkResourceId`
 
@@ -474,6 +475,7 @@ ResourceId of the virtual network to attach the DNS Private Resolver to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `enableTelemetry`
 
@@ -481,6 +483,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `inboundEndpoints`
@@ -489,6 +492,7 @@ Inbound Endpoints for DNS Private Resolver.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -512,6 +516,7 @@ Name of the inbound endpoint.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `inboundEndpoints.subnetResourceId`
 
@@ -519,6 +524,7 @@ The reference to the subnet bound to the IP configuration.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `inboundEndpoints.location`
 
@@ -526,6 +532,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `inboundEndpoints.privateIpAddress`
 
@@ -533,6 +540,7 @@ Private IP address of the IP configuration.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `inboundEndpoints.privateIpAllocationMethod`
 
@@ -540,6 +548,7 @@ Private IP address allocation method.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -554,6 +563,7 @@ Tags for the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -561,6 +571,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -569,6 +580,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -583,6 +595,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -598,6 +611,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `outboundEndpoints`
 
@@ -605,6 +619,7 @@ Outbound Endpoints for DNS Private Resolver.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -626,6 +641,7 @@ Name of the outbound endpoint.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `outboundEndpoints.subnetResourceId`
 
@@ -633,6 +649,7 @@ ResourceId of the subnet to attach the outbound endpoint to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `outboundEndpoints.location`
 
@@ -640,6 +657,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `outboundEndpoints.tags`
 
@@ -647,6 +665,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -654,6 +673,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -690,6 +710,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -697,6 +718,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -704,6 +726,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -711,6 +734,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -724,6 +748,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -731,6 +756,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -738,6 +764,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -745,6 +772,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -762,6 +790,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

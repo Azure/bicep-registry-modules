@@ -46,6 +46,7 @@ The name of the file share to create.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessTier`
 
@@ -53,6 +54,7 @@ Access tier for specific share. Required if the Storage Account kind is set to F
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'TransactionOptimized'`
 - Allowed:
   ```Bicep
@@ -70,6 +72,7 @@ The name of the parent file service. Required if the template is used in a stand
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'default'`
 
 ### Parameter: `storageAccountName`
@@ -78,6 +81,7 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `enabledProtocols`
 
@@ -85,6 +89,7 @@ The authentication protocol that is used for the file share. Can only be specifi
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'SMB'`
 - Allowed:
   ```Bicep
@@ -100,6 +105,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -125,6 +131,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -132,6 +139,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -139,6 +147,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -146,6 +155,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -159,6 +169,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -166,6 +177,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -173,6 +185,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -180,6 +193,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -197,6 +211,7 @@ Permissions for NFS file shares are enforced by the client OS rather than the Az
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'NoRootSquash'`
 - Allowed:
   ```Bicep
@@ -213,6 +228,7 @@ The maximum size of the share, in gigabytes. Must be greater than 0, and less th
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `5120`
 
 ## Outputs

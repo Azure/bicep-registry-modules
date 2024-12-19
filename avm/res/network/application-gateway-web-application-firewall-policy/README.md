@@ -424,6 +424,7 @@ Describes the managedRules structure.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -431,6 +432,7 @@ Name of the Application Gateway WAF policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customRules`
 
@@ -438,6 +440,7 @@ The custom rules inside the policy.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -445,6 +448,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -453,6 +457,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `policySettings`
@@ -461,6 +466,7 @@ The PolicySettings for policy.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -468,6 +474,7 @@ Resource tags.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

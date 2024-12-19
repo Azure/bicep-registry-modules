@@ -553,6 +553,7 @@ Name of the VPN gateway.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `virtualHubResourceId`
 
@@ -560,6 +561,7 @@ The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gatewa
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `bgpSettings`
 
@@ -567,6 +569,7 @@ BGP settings details.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `enableBgpRouteTranslationForNat`
@@ -575,6 +578,7 @@ Enable BGP routes translation for NAT on this VPN gateway.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -583,6 +587,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `isRoutingPreferenceInternet`
@@ -591,6 +596,7 @@ Enable routing preference property for the public IP interface of the VPN gatewa
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `location`
@@ -599,6 +605,7 @@ Location where all resources will be created.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -607,6 +614,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -621,6 +629,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -636,6 +645,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `natRules`
 
@@ -643,6 +653,7 @@ List of all the NAT Rules to associate with the gateway.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `tags`
@@ -651,6 +662,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `vpnConnections`
 
@@ -658,6 +670,7 @@ The VPN connections to create in the VPN gateway.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `vpnGatewayScaleUnit`
@@ -666,6 +679,7 @@ The scale unit for this VPN gateway.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `2`
 
 ## Outputs

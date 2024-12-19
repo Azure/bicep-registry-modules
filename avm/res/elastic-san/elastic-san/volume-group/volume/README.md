@@ -7,6 +7,7 @@ This module deploys an Elastic SAN Volume.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -44,6 +45,7 @@ The name of the Elastic SAN Volume. The name can only contain lowercase letters,
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `sizeGiB`
 
@@ -51,6 +53,9 @@ Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges
 
 - Required: Yes
 - Type: int
+- Nullable: No
+- MinValue: 1
+- MaxValue: 65536
 
 ### Parameter: `elasticSanName`
 
@@ -58,6 +63,9 @@ The name of the parent Elastic SAN. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 65536
 
 ### Parameter: `volumeGroupName`
 
@@ -65,6 +73,9 @@ The name of the parent Elastic SAN Volume Group. Required if the template is use
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 65536
 
 ### Parameter: `location`
 
@@ -72,7 +83,10 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
+- MinValue: 1
+- MaxValue: 65536
 
 ### Parameter: `snapshots`
 
@@ -80,6 +94,9 @@ List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 1
+- MaxValue: 65536
 
 **Required parameters**
 
@@ -93,6 +110,9 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 1
+- MaxValue: 65536
 
 ## Outputs
 
@@ -107,3 +127,11 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 | `targetPortalHostname` | string | The iSCSI Target Portal Host Name of the deployed Elastic SAN Volume. |
 | `targetPortalPort` | int | The iSCSI Target Portal Port of the deployed Elastic SAN Volume. |
 | `volumeId` | string | The volume Id of the deployed Elastic SAN Volume. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `avm/res/elastic-san/elastic-san/volume-group/snapshot` | Local reference |

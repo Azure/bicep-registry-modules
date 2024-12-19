@@ -42,6 +42,7 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `elasticSanName`
 
@@ -49,6 +50,7 @@ The name of the parent Elastic SAN. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `volumeGroupName`
 
@@ -56,6 +58,7 @@ The name of the parent Elastic SAN Volume Group. Required if the template is use
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `volumeName`
 
@@ -63,6 +66,7 @@ The name of the parent Elastic SAN Volume. Required if the template is used in a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `location`
 
@@ -70,6 +74,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

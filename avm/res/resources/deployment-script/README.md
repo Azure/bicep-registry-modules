@@ -1077,6 +1077,7 @@ Specifies the Kind of the Deployment Script.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1091,6 +1092,7 @@ Name of the Deployment Script.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `arguments`
 
@@ -1098,6 +1100,7 @@ Command-line arguments to pass to the script. Arguments are separated by spaces.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `azCliVersion`
 
@@ -1105,6 +1108,7 @@ Azure CLI module version to be used. See a list of supported Azure CLI versions:
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `azPowerShellVersion`
 
@@ -1112,6 +1116,7 @@ Azure PowerShell module version to be used. See a list of supported Azure PowerS
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `cleanupPreference`
 
@@ -1119,6 +1124,7 @@ The clean up preference when the script execution gets in a terminal state. Spec
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Always'`
 - Allowed:
   ```Bicep
@@ -1135,6 +1141,7 @@ Container group name, if not specified then the name will get auto-generated. No
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -1142,6 +1149,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `environmentVariables`
@@ -1150,6 +1158,7 @@ The environment variables to pass over to the script.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1170,6 +1179,7 @@ The name of the environment variable.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `environmentVariables.secureValue`
 
@@ -1177,6 +1187,7 @@ The value of the secure environment variable. Required if `value` is null.
 
 - Required: No
 - Type: securestring
+- Nullable: Yes
 
 ### Parameter: `environmentVariables.value`
 
@@ -1184,6 +1195,7 @@ The value of the environment variable. Required if `secureValue` is null.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -1191,6 +1203,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1199,6 +1212,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1213,6 +1227,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1228,6 +1243,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1235,6 +1251,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1248,6 +1265,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `primaryScriptUri`
 
@@ -1255,6 +1273,7 @@ Uri for the external script. This is the entry point for the external script. To
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `retentionInterval`
 
@@ -1262,6 +1281,7 @@ Interval for which the service retains the script resource after it reaches a te
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'P1D'`
 
 ### Parameter: `roleAssignments`
@@ -1270,6 +1290,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1301,6 +1322,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1308,6 +1330,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1315,6 +1338,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1322,6 +1346,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1335,6 +1360,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1342,6 +1368,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1349,6 +1376,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1356,6 +1384,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1373,6 +1402,7 @@ When set to false, script will run every time the template is deployed. When set
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `scriptContent`
@@ -1381,6 +1411,7 @@ Script body. Max length: 32000 characters. To run an external script, use primar
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `storageAccountResourceId`
 
@@ -1388,6 +1419,7 @@ The resource ID of the storage account to use for this deployment script. If non
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `subnetResourceIds`
@@ -1396,6 +1428,7 @@ List of subnet IDs to use for the container group. This is required if you want 
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `supportingScriptUris`
 
@@ -1403,6 +1436,7 @@ List of supporting files for the external script (defined in primaryScriptUri). 
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -1410,6 +1444,7 @@ Resource tags.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `timeout`
 
@@ -1417,6 +1452,7 @@ Maximum allowed script execution time specified in ISO 8601 format. Default valu
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `baseTime`
 
@@ -1424,6 +1460,7 @@ Do not provide a value! This date value is used to make sure the script run ever
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
 
 ## Outputs

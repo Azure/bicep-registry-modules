@@ -45,6 +45,7 @@ Name of the Gremlin database.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `databaseAccountName`
 
@@ -52,6 +53,7 @@ The name of the parent Gremlin database. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `graphs`
 
@@ -59,6 +61,7 @@ Array of graphs to deploy in the Gremlin database.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `maxThroughput`
@@ -67,6 +70,7 @@ Represents maximum throughput, the resource can scale up to. Cannot be set toget
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `4000`
 
 ### Parameter: `tags`
@@ -75,6 +79,7 @@ Tags of the Gremlin database resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `throughput`
 
@@ -82,6 +87,7 @@ Request Units per second (for example 10000). Cannot be set together with `maxTh
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ## Outputs
 

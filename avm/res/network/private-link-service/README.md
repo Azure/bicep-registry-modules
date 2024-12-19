@@ -625,6 +625,7 @@ An array of private link service IP configurations. At least one IP configuratio
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `loadBalancerFrontendIpConfigurations`
 
@@ -632,6 +633,7 @@ An array of references to the load balancer IP configurations. The Private Link 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -639,6 +641,7 @@ The name of the private link service to create.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `autoApproval`
 
@@ -646,6 +649,7 @@ The auto-approval list of the private link service.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `enableProxyProtocol`
@@ -654,6 +658,7 @@ Lets the service provider use tcp proxy v2 to retrieve connection information ab
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -662,6 +667,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `extendedLocation`
@@ -670,6 +676,7 @@ The extended location of the load balancer.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `fqdns`
@@ -678,6 +685,7 @@ The list of Fqdn.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `location`
@@ -686,6 +694,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -694,6 +703,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -708,6 +718,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -723,6 +734,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -730,6 +742,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Network Contributor'`
@@ -763,6 +776,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -770,6 +784,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -777,6 +792,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -784,6 +800,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -797,6 +814,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -804,6 +822,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -811,6 +830,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -818,6 +838,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -835,6 +856,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `visibility`
 
@@ -842,6 +864,7 @@ Controls the exposure settings for your Private Link service. Service providers 
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ## Outputs

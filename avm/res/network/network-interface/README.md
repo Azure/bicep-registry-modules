@@ -589,6 +589,7 @@ A list of IPConfigurations of the network interface.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -596,6 +597,7 @@ The name of the network interface.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `auxiliaryMode`
 
@@ -603,6 +605,7 @@ Auxiliary mode of Network Interface resource. Not all regions are enabled for Au
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'None'`
 - Allowed:
   ```Bicep
@@ -619,6 +622,7 @@ Auxiliary sku of Network Interface resource. Not all regions are enabled for Aux
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'None'`
 - Allowed:
   ```Bicep
@@ -637,6 +641,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -658,6 +663,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -665,6 +671,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -672,6 +679,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -686,6 +694,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -701,6 +710,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -708,6 +718,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -715,6 +726,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -722,6 +734,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -729,6 +742,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -748,6 +762,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -755,6 +770,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -762,6 +778,7 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -769,6 +786,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -776,6 +794,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `disableTcpStateTracking`
 
@@ -783,6 +802,7 @@ Indicates whether to disable tcp state tracking. Subscription must be registered
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `dnsServers`
@@ -791,6 +811,7 @@ List of DNS servers IP addresses. Use 'AzureProvidedDNS' to switch to azure prov
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `enableAcceleratedNetworking`
@@ -799,6 +820,7 @@ If the network interface is accelerated networking enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableIPForwarding`
@@ -807,6 +829,7 @@ Indicates whether IP forwarding is enabled on this network interface.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -815,6 +838,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -823,6 +847,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -831,6 +856,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -845,6 +871,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -860,6 +887,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `networkSecurityGroupResourceId`
 
@@ -867,6 +895,7 @@ The network security group (NSG) to attach to the network interface.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `roleAssignments`
@@ -875,6 +904,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -909,6 +939,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -916,6 +947,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -923,6 +955,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -930,6 +963,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -943,6 +977,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -950,6 +985,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -957,6 +993,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -964,6 +1001,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -981,6 +1019,7 @@ Resource tags.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

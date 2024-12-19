@@ -44,6 +44,7 @@ The name of the NAT rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `virtualNetworkGatewayName`
 
@@ -51,6 +52,7 @@ The name of the parent Virtual Network Gateway this NAT rule is associated with.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `externalMappings`
 
@@ -58,6 +60,7 @@ An address prefix range of destination IPs on the outside network that source IP
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `internalMappings`
@@ -66,6 +69,7 @@ An address prefix range of source IPs on the inside network that will be mapped 
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `ipConfigurationId`
@@ -74,6 +78,7 @@ A NAT rule must be configured to a specific Virtual Network Gateway instance. Th
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `mode`
@@ -82,6 +87,7 @@ The type of NAT rule for Virtual Network NAT. IngressSnat mode (also known as In
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -98,6 +104,7 @@ The type of NAT rule for Virtual Network NAT. Static one-to-one NAT establishes 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep

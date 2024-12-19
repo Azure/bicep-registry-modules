@@ -42,6 +42,7 @@ Name of the link.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
@@ -49,6 +50,7 @@ The name of the parent Log Analytics workspace. Required if the template is used
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `resourceId`
 
@@ -56,6 +58,7 @@ The resource ID of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -63,6 +66,7 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `writeAccessResourceId`
 
@@ -70,6 +74,7 @@ The resource ID of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

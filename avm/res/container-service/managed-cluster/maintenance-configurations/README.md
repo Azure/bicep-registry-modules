@@ -40,6 +40,7 @@ Maintenance window for the maintenance configuration.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `managedClusterName`
 
@@ -47,6 +48,7 @@ The name of the parent managed cluster. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -54,6 +56,7 @@ Name of the maintenance configuration.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'aksManagedAutoUpgradeSchedule'`
 
 ## Outputs

@@ -8,6 +8,7 @@ This module deploys a CDN Profile.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -28,6 +29,7 @@ This module deploys a CDN Profile.
 | `Microsoft.Cdn/profiles/ruleSets/rules` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets/rules) |
 | `Microsoft.Cdn/profiles/secrets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/secrets) |
 | `Microsoft.Cdn/profiles/securityPolicies` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2024-02-01/profiles/securityPolicies) |
+| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
 
@@ -763,8 +765,29 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'
-    sku: 'Standard_Verizon'
+    sku: 'Standard_Microsoft'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+            enabled: true
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+            enabled: true
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     endpointProperties: {
       contentTypesToCompress: [
         'application/javascript'
@@ -841,9 +864,32 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpmax"
     },
     "sku": {
-      "value": "Standard_Verizon"
+      "value": "Standard_Microsoft"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs",
+              "enabled": true
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics",
+              "enabled": true
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "endpointProperties": {
       "value": {
         "contentTypesToCompress": [
@@ -925,8 +971,29 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpmax'
-param sku = 'Standard_Verizon'
+param sku = 'Standard_Microsoft'
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param endpointProperties = {
   contentTypesToCompress: [
     'application/javascript'
@@ -1002,7 +1069,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpwaf'
-    sku: 'Standard_Verizon'
+    sku: 'Standard_Microsoft'
     // Non-required parameters
     endpointProperties: {
       contentTypesToCompress: [
@@ -1057,7 +1124,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpwaf"
     },
     "sku": {
-      "value": "Standard_Verizon"
+      "value": "Standard_Microsoft"
     },
     // Non-required parameters
     "endpointProperties": {
@@ -1114,7 +1181,7 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpwaf'
-param sku = 'Standard_Verizon'
+param sku = 'Standard_Microsoft'
 // Non-required parameters
 param endpointProperties = {
   contentTypesToCompress: [
@@ -1174,6 +1241,7 @@ param originResponseTimeoutSeconds = 60
 | :-- | :-- | :-- |
 | [`afdEndpoints`](#parameter-afdendpoints) | array | Array of AFD endpoint objects. |
 | [`customDomains`](#parameter-customdomains) | array | Array of custom domain objects. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endpointName`](#parameter-endpointname) | string | Name of the endpoint under the profile which is unique globally. |
 | [`endpointProperties`](#parameter-endpointproperties) | object | Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details). |
@@ -1193,6 +1261,7 @@ Name of the CDN profile.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `sku`
 
@@ -1200,18 +1269,16 @@ The pricing tier (defines a CDN provider, feature list and rate) of the CDN prof
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
-    'Custom_Verizon'
     'Premium_AzureFrontDoor'
-    'Premium_Verizon'
     'Standard_955BandWidth_ChinaCdn'
     'Standard_AvgBandWidth_ChinaCdn'
     'Standard_AzureFrontDoor'
     'Standard_ChinaCdn'
     'Standard_Microsoft'
-    'Standard_Verizon'
     'StandardPlus_955BandWidth_ChinaCdn'
     'StandardPlus_AvgBandWidth_ChinaCdn'
     'StandardPlus_ChinaCdn'
@@ -1224,6 +1291,7 @@ Array of origin group objects. Required if the afdEndpoints is specified.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 **Required parameters**
@@ -1248,6 +1316,7 @@ Load balancing settings for a backend pool.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1263,6 +1332,7 @@ Additional latency in milliseconds for probes to the backend. Must be between 0 
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `originGroups.loadBalancingSettings.sampleSize`
 
@@ -1270,6 +1340,7 @@ Number of samples to consider for load balancing decisions.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `originGroups.loadBalancingSettings.successfulSamplesRequired`
 
@@ -1277,6 +1348,7 @@ Number of samples within the sample window that must be successful to mark the b
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `originGroups.name`
 
@@ -1284,6 +1356,7 @@ The name of the origin group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `originGroups.origins`
 
@@ -1291,6 +1364,7 @@ The list of origins within the origin group.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1318,6 +1392,7 @@ The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `originGroups.origins.name`
 
@@ -1325,6 +1400,7 @@ The name of the origion.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `originGroups.origins.enabledState`
 
@@ -1332,6 +1408,7 @@ Whether to enable health probes to be made against backends defined under backen
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1346,6 +1423,7 @@ Whether to enable certificate name check at origin level.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `originGroups.origins.httpPort`
 
@@ -1353,6 +1431,7 @@ The value of the HTTP port. Must be between 1 and 65535.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `originGroups.origins.httpsPort`
 
@@ -1360,6 +1439,7 @@ The value of the HTTPS port. Must be between 1 and 65535.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `originGroups.origins.originHostHeader`
 
@@ -1367,6 +1447,7 @@ The host header value sent to the origin with each request. If you leave this bl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `originGroups.origins.priority`
 
@@ -1374,6 +1455,7 @@ Priority of origin in given origin group for load balancing. Higher priorities w
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `originGroups.origins.sharedPrivateLinkResource`
 
@@ -1381,6 +1463,7 @@ The properties of the private link resource for private origin.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `originGroups.origins.weight`
 
@@ -1388,6 +1471,7 @@ Weight of the origin in given origin group for load balancing. Must be between 1
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `originGroups.healthProbeSettings`
 
@@ -1395,6 +1479,7 @@ Health probe settings to the origin that is used to determine the health of the 
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1411,6 +1496,7 @@ The number of seconds between health probes.Default is 240sec.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `originGroups.healthProbeSettings.probePath`
 
@@ -1418,6 +1504,7 @@ The path relative to the origin that is used to determine the health of the orig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `originGroups.healthProbeSettings.probeProtocol`
 
@@ -1425,6 +1512,7 @@ Protocol to use for health probe.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1440,6 +1528,7 @@ The request type to probe.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1455,6 +1544,7 @@ Whether to allow session affinity on this host.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1469,6 +1559,7 @@ Time in minutes to shift the traffic to the endpoint gradually when an unhealthy
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `afdEndpoints`
 
@@ -1476,6 +1567,7 @@ Array of AFD endpoint objects.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 **Required parameters**
@@ -1499,6 +1591,7 @@ The name of the AFD Endpoint.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `afdEndpoints.autoGeneratedDomainNameLabelScope`
 
@@ -1506,6 +1599,7 @@ The scope of the auto-generated domain name label.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1522,6 +1616,7 @@ The state of the AFD Endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1536,6 +1631,7 @@ The list of routes for this AFD Endpoint.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1565,6 +1661,7 @@ The name of the route.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `afdEndpoints.routes.originGroupName`
 
@@ -1572,6 +1669,7 @@ The name of the origin group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `afdEndpoints.routes.cacheConfiguration`
 
@@ -1579,6 +1677,7 @@ The caching configuration for this route. To disable caching, do not provide a c
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1594,6 +1693,7 @@ Compression settings.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1613,6 +1713,7 @@ List of content types on which compression applies. The value should be a valid 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.iscontentTypeToCompressAll`
 
@@ -1620,6 +1721,7 @@ Indicates whether content compression is enabled on AzureFrontDoor. Default valu
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `afdEndpoints.routes.cacheConfiguration.queryParameters`
 
@@ -1627,6 +1729,7 @@ Query parameters to include or exclude (comma separated).
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `afdEndpoints.routes.cacheConfiguration.queryStringCachingBehavior`
 
@@ -1634,6 +1737,7 @@ Defines how Frontdoor caches requests that include query strings.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1650,6 +1754,7 @@ The names of the custom domains.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `afdEndpoints.routes.enabledState`
 
@@ -1657,6 +1762,7 @@ Whether to enable use of this rule.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1671,6 +1777,7 @@ The protocol this rule will use when forwarding traffic to backends.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1686,6 +1793,7 @@ Whether to automatically redirect HTTP traffic to HTTPS traffic.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1700,6 +1808,7 @@ Whether this route will be linked to the default endpoint domain.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1714,6 +1823,7 @@ A directory path on the origin that AzureFrontDoor can use to retrieve content f
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `afdEndpoints.routes.patternsToMatch`
 
@@ -1721,6 +1831,7 @@ The route patterns of the rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `afdEndpoints.routes.ruleSets`
 
@@ -1728,6 +1839,7 @@ The rule sets of the rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `afdEndpoints.routes.supportedProtocols`
 
@@ -1735,6 +1847,7 @@ The supported protocols of the rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `afdEndpoints.tags`
 
@@ -1742,6 +1855,7 @@ The tags for the AFD Endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `customDomains`
 
@@ -1749,6 +1863,7 @@ Array of custom domain objects.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 **Required parameters**
@@ -1775,6 +1890,7 @@ The type of the certificate.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1790,6 +1906,7 @@ The host name of the custom domain.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customDomains.name`
 
@@ -1797,6 +1914,7 @@ The name of the custom domain.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customDomains.azureDnsZoneResourceId`
 
@@ -1804,6 +1922,7 @@ The resource ID of the Azure DNS zone.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `customDomains.extendedProperties`
 
@@ -1811,6 +1930,7 @@ Extended properties.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `customDomains.minimumTlsVersion`
 
@@ -1818,6 +1938,7 @@ The minimum TLS version.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1832,6 +1953,7 @@ The resource ID of the pre-validated custom domain.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `customDomains.secretName`
 
@@ -1839,6 +1961,168 @@ The name of the secret.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings`
+
+The diagnostic settings of the service.
+
+- Required: No
+- Type: array
+- Nullable: Yes
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Nullable: Yes
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+- Nullable: Yes
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+- Nullable: Yes
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+- Nullable: No
+
+### Parameter: `diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+- Nullable: Yes
+
+### Parameter: `diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -1846,6 +2130,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `endpointName`
@@ -1854,6 +2139,7 @@ Name of the endpoint under the profile which is unique globally.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `endpointProperties`
 
@@ -1861,6 +2147,7 @@ Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/micro
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -1868,6 +2155,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1876,6 +2164,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1890,6 +2179,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1905,6 +2195,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1912,6 +2203,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -1926,6 +2218,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1933,6 +2226,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `originResponseTimeoutSeconds`
 
@@ -1940,6 +2234,7 @@ Send and receive timeout on forwarding request to the origin.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `60`
 
 ### Parameter: `roleAssignments`
@@ -1948,6 +2243,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'CDN Endpoint Contributor'`
   - `'CDN Endpoint Reader'`
@@ -1983,6 +2279,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1990,6 +2287,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1997,6 +2295,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2004,6 +2303,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2017,6 +2317,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2024,6 +2325,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2031,6 +2333,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2038,6 +2341,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2055,6 +2359,7 @@ Array of rule set objects.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 **Required parameters**
@@ -2075,6 +2380,7 @@ Name of the rule set.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `ruleSets.rules`
 
@@ -2082,6 +2388,7 @@ Array of rules.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2104,6 +2411,7 @@ The name of the rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `ruleSets.rules.order`
 
@@ -2111,6 +2419,7 @@ The order in which the rules are applied for the endpoint.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `ruleSets.rules.actions`
 
@@ -2118,6 +2427,7 @@ A list of actions that are executed when all the conditions of a rule are satisf
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `ruleSets.rules.conditions`
 
@@ -2125,6 +2435,7 @@ A list of conditions that must be matched for the actions to be executed.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `ruleSets.rules.matchProcessingBehavior`
 
@@ -2132,6 +2443,7 @@ If this rule is a match should the rules engine continue running the remaining r
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2146,6 +2458,7 @@ Array of secret objects.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `securityPolicies`
@@ -2154,6 +2467,7 @@ Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/te
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 **Required parameters**
@@ -2170,6 +2484,7 @@ Domain names and URL patterns to match with this association.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2184,6 +2499,7 @@ List of domain resource id to associate with this resource.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2197,6 +2513,7 @@ ResourceID to domain that will be associated.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `securityPolicies.associations.patternsToMatch`
 
@@ -2204,6 +2521,7 @@ List of patterns to match with this association.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `securityPolicies.name`
 
@@ -2211,6 +2529,7 @@ Name of the security policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `securityPolicies.wafPolicyResourceId`
 
@@ -2218,6 +2537,7 @@ Resource ID of WAF policy.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `tags`
 
@@ -2225,6 +2545,7 @@ Endpoint tags.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 
@@ -2241,6 +2562,14 @@ Endpoint tags.
 | `resourceId` | string | The resource ID of the CDN profile. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `uri` | string | The uri of the CDN profile endpoint. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 

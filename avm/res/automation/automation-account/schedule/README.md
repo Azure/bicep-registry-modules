@@ -52,6 +52,7 @@ Name of the Automation Account schedule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `automationAccountName`
 
@@ -59,6 +60,7 @@ The name of the parent Automation Account. Required if the template is used in a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `advancedSchedule`
 
@@ -66,6 +68,7 @@ The properties of the create Advanced Schedule.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `description`
@@ -74,6 +77,7 @@ The description of the schedule.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `expiryTime`
@@ -82,6 +86,7 @@ The end time of the schedule.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `frequency`
@@ -90,6 +95,7 @@ The frequency of the schedule.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'OneTime'`
 - Allowed:
   ```Bicep
@@ -109,6 +115,7 @@ Anything.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `0`
 
 ### Parameter: `startTime`
@@ -117,6 +124,7 @@ The start time of the schedule.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `timeZone`
@@ -125,6 +133,7 @@ The time zone of the schedule.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `baseTime`
@@ -133,6 +142,7 @@ Time used as a basis for e.g. the schedule start date.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[utcNow('u')]`
 
 ## Outputs

@@ -2843,6 +2843,7 @@ Specifies the name of the AKS cluster.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `primaryAgentPoolProfiles`
 
@@ -2850,6 +2851,7 @@ Properties of the primary agent pool.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2904,6 +2906,7 @@ The name of the agent pool.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `primaryAgentPoolProfiles.availabilityZones`
 
@@ -2911,6 +2914,7 @@ The availability zones of the agent pool.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.count`
 
@@ -2918,6 +2922,7 @@ The number of agents (VMs) to host docker containers. Allowed values must be in 
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.enableAutoScaling`
 
@@ -2925,6 +2930,7 @@ Whether to enable auto-scaling for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.enableDefaultTelemetry`
 
@@ -2932,6 +2938,7 @@ The enable default telemetry of the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.enableEncryptionAtHost`
 
@@ -2939,6 +2946,7 @@ Whether to enable encryption at host for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.enableFIPS`
 
@@ -2946,6 +2954,7 @@ Whether to enable FIPS for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.enableNodePublicIP`
 
@@ -2953,6 +2962,7 @@ Whether to enable node public IP for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.enableUltraSSD`
 
@@ -2960,6 +2970,7 @@ Whether to enable Ultra SSD for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.gpuInstanceProfile`
 
@@ -2967,6 +2978,7 @@ The GPU instance profile of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2984,6 +2996,7 @@ The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.maxCount`
 
@@ -2991,6 +3004,7 @@ The maximum number of agents (VMs) to host docker containers. Allowed values mus
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.maxPods`
 
@@ -2998,6 +3012,7 @@ The maximum number of pods that can run on a node.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.maxSurge`
 
@@ -3005,6 +3020,7 @@ The maximum number of nodes that can be created during an upgrade.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.minCount`
 
@@ -3012,6 +3028,7 @@ The minimum number of agents (VMs) to host docker containers. Allowed values mus
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.minPods`
 
@@ -3019,6 +3036,7 @@ The minimum number of pods that can run on a node.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.mode`
 
@@ -3026,6 +3044,7 @@ The mode of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3040,6 +3059,7 @@ The node labels of the agent pool.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.nodePublicIpPrefixResourceId`
 
@@ -3047,6 +3067,7 @@ The node public IP prefix ID of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.nodeTaints`
 
@@ -3054,6 +3075,7 @@ The node taints of the agent pool.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.orchestratorVersion`
 
@@ -3061,6 +3083,7 @@ The Kubernetes version of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.osDiskSizeGB`
 
@@ -3068,6 +3091,7 @@ The OS disk size in GB of the agent pool.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.osDiskType`
 
@@ -3075,6 +3099,7 @@ The OS disk type of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.osSku`
 
@@ -3082,6 +3107,7 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.osType`
 
@@ -3089,6 +3115,7 @@ The OS type of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3103,6 +3130,7 @@ The pod subnet ID of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.proximityPlacementGroupResourceId`
 
@@ -3110,6 +3138,7 @@ The proximity placement group resource ID of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.scaleDownMode`
 
@@ -3117,6 +3146,7 @@ The scale down mode of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3131,6 +3161,7 @@ The scale set eviction policy of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3145,6 +3176,7 @@ The scale set priority of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3160,6 +3192,7 @@ The source resource ID to create the agent pool from.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.spotMaxPrice`
 
@@ -3167,6 +3200,7 @@ The spot max price of the agent pool.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.tags`
 
@@ -3174,6 +3208,7 @@ The tags of the agent pool.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.type`
 
@@ -3181,6 +3216,7 @@ The type of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3195,6 +3231,7 @@ The VM size of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.vnetSubnetResourceId`
 
@@ -3202,6 +3239,7 @@ The VNet subnet ID of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `primaryAgentPoolProfiles.workloadRuntime`
 
@@ -3209,6 +3247,7 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aksServicePrincipalProfile`
 
@@ -3216,6 +3255,7 @@ Information about a service principal identity for the cluster to use for manipu
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `appGatewayResourceId`
 
@@ -3223,6 +3263,7 @@ Specifies the resource ID of connected application gateway. Required if `ingress
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aadProfile`
 
@@ -3230,6 +3271,7 @@ Enable Azure Active Directory integration.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3254,6 +3296,7 @@ Specifies whether to enable Azure RBAC for Kubernetes authorization.
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `aadProfile.aadProfileManaged`
 
@@ -3261,6 +3304,7 @@ Specifies whether to enable managed AAD integration.
 
 - Required: Yes
 - Type: bool
+- Nullable: No
 
 ### Parameter: `aadProfile.aadProfileAdminGroupObjectIDs`
 
@@ -3268,6 +3312,7 @@ Specifies the AAD group object IDs that will have admin role of the cluster.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `aadProfile.aadProfileClientAppID`
 
@@ -3275,6 +3320,7 @@ The client AAD application ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aadProfile.aadProfileServerAppID`
 
@@ -3282,6 +3328,7 @@ The server AAD application ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aadProfile.aadProfileServerAppSecret`
 
@@ -3289,6 +3336,7 @@ The server AAD application secret.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aadProfile.aadProfileTenantId`
 
@@ -3296,6 +3344,7 @@ Specifies the tenant ID of the Azure Active Directory used by the AKS cluster fo
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `aciConnectorLinuxEnabled`
 
@@ -3303,6 +3352,7 @@ Specifies whether the aciConnectorLinux add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `adminUsername`
@@ -3311,6 +3361,7 @@ Specifies the administrator username of Linux virtual machines.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'azureuser'`
 
 ### Parameter: `agentPools`
@@ -3319,6 +3370,7 @@ Define one or more secondary/additional agent pools.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3373,6 +3425,7 @@ The name of the agent pool.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `agentPools.availabilityZones`
 
@@ -3380,6 +3433,7 @@ The availability zones of the agent pool.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `agentPools.count`
 
@@ -3387,6 +3441,7 @@ The number of agents (VMs) to host docker containers. Allowed values must be in 
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `agentPools.enableAutoScaling`
 
@@ -3394,6 +3449,7 @@ Whether to enable auto-scaling for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `agentPools.enableDefaultTelemetry`
 
@@ -3401,6 +3457,7 @@ The enable default telemetry of the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `agentPools.enableEncryptionAtHost`
 
@@ -3408,6 +3465,7 @@ Whether to enable encryption at host for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `agentPools.enableFIPS`
 
@@ -3415,6 +3473,7 @@ Whether to enable FIPS for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `agentPools.enableNodePublicIP`
 
@@ -3422,6 +3481,7 @@ Whether to enable node public IP for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `agentPools.enableUltraSSD`
 
@@ -3429,6 +3489,7 @@ Whether to enable Ultra SSD for the agent pool.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `agentPools.gpuInstanceProfile`
 
@@ -3436,6 +3497,7 @@ The GPU instance profile of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3453,6 +3515,7 @@ The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.maxCount`
 
@@ -3460,6 +3523,7 @@ The maximum number of agents (VMs) to host docker containers. Allowed values mus
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `agentPools.maxPods`
 
@@ -3467,6 +3531,7 @@ The maximum number of pods that can run on a node.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `agentPools.maxSurge`
 
@@ -3474,6 +3539,7 @@ The maximum number of nodes that can be created during an upgrade.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.minCount`
 
@@ -3481,6 +3547,7 @@ The minimum number of agents (VMs) to host docker containers. Allowed values mus
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `agentPools.minPods`
 
@@ -3488,6 +3555,7 @@ The minimum number of pods that can run on a node.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `agentPools.mode`
 
@@ -3495,6 +3563,7 @@ The mode of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3509,6 +3578,7 @@ The node labels of the agent pool.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `agentPools.nodePublicIpPrefixResourceId`
 
@@ -3516,6 +3586,7 @@ The node public IP prefix ID of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.nodeTaints`
 
@@ -3523,6 +3594,7 @@ The node taints of the agent pool.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `agentPools.orchestratorVersion`
 
@@ -3530,6 +3602,7 @@ The Kubernetes version of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.osDiskSizeGB`
 
@@ -3537,6 +3610,7 @@ The OS disk size in GB of the agent pool.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `agentPools.osDiskType`
 
@@ -3544,6 +3618,7 @@ The OS disk type of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.osSku`
 
@@ -3551,6 +3626,7 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.osType`
 
@@ -3558,6 +3634,7 @@ The OS type of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3572,6 +3649,7 @@ The pod subnet ID of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.proximityPlacementGroupResourceId`
 
@@ -3579,6 +3657,7 @@ The proximity placement group resource ID of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.scaleDownMode`
 
@@ -3586,6 +3665,7 @@ The scale down mode of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3600,6 +3680,7 @@ The scale set eviction policy of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3614,6 +3695,7 @@ The scale set priority of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3629,6 +3711,7 @@ The source resource ID to create the agent pool from.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.spotMaxPrice`
 
@@ -3636,6 +3719,7 @@ The spot max price of the agent pool.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `agentPools.tags`
 
@@ -3643,6 +3727,7 @@ The tags of the agent pool.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `agentPools.type`
 
@@ -3650,6 +3735,7 @@ The type of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3664,6 +3750,7 @@ The VM size of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.vnetSubnetResourceId`
 
@@ -3671,6 +3758,7 @@ The VNet subnet ID of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `agentPools.workloadRuntime`
 
@@ -3678,6 +3766,7 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `authorizedIPRanges`
 
@@ -3685,6 +3774,7 @@ IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is 
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `autoNodeOsUpgradeProfileUpgradeChannel`
 
@@ -3692,6 +3782,7 @@ Auto-upgrade channel on the Node Os.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Unmanaged'`
 - Allowed:
   ```Bicep
@@ -3709,6 +3800,7 @@ Specifies the balance of similar node groups for the auto-scaler of the AKS clus
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `autoScalerProfileExpander`
@@ -3717,6 +3809,7 @@ Specifies the expand strategy for the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'random'`
 - Allowed:
   ```Bicep
@@ -3734,6 +3827,7 @@ Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `10`
 
 ### Parameter: `autoScalerProfileMaxGracefulTerminationSec`
@@ -3742,6 +3836,7 @@ Specifies the max graceful termination time interval in seconds for the auto-sca
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `600`
 
 ### Parameter: `autoScalerProfileMaxNodeProvisionTime`
@@ -3750,6 +3845,7 @@ Specifies the maximum node provisioning time for the auto-scaler of the AKS clus
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'15m'`
 
 ### Parameter: `autoScalerProfileMaxTotalUnreadyPercentage`
@@ -3758,6 +3854,7 @@ Specifies the mximum total unready percentage for the auto-scaler of the AKS clu
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `45`
 
 ### Parameter: `autoScalerProfileNewPodScaleUpDelay`
@@ -3766,6 +3863,7 @@ For scenarios like burst/batch scale where you do not want CA to act before the 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'0s'`
 
 ### Parameter: `autoScalerProfileOkTotalUnreadyCount`
@@ -3774,6 +3872,7 @@ Specifies the OK total unready count for the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `3`
 
 ### Parameter: `autoScalerProfileScaleDownDelayAfterAdd`
@@ -3782,6 +3881,7 @@ Specifies the scale down delay after add of the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'10m'`
 
 ### Parameter: `autoScalerProfileScaleDownDelayAfterDelete`
@@ -3790,6 +3890,7 @@ Specifies the scale down delay after delete of the auto-scaler of the AKS cluste
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'20s'`
 
 ### Parameter: `autoScalerProfileScaleDownDelayAfterFailure`
@@ -3798,6 +3899,7 @@ Specifies scale down delay after failure of the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'3m'`
 
 ### Parameter: `autoScalerProfileScaleDownUnneededTime`
@@ -3806,6 +3908,7 @@ Specifies the scale down unneeded time of the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'10m'`
 
 ### Parameter: `autoScalerProfileScaleDownUnreadyTime`
@@ -3814,6 +3917,7 @@ Specifies the scale down unready time of the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'20m'`
 
 ### Parameter: `autoScalerProfileScanInterval`
@@ -3822,6 +3926,7 @@ Specifies the scan interval of the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'10s'`
 
 ### Parameter: `autoScalerProfileSkipNodesWithLocalStorage`
@@ -3830,6 +3935,7 @@ Specifies if nodes with local storage should be skipped for the auto-scaler of t
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `autoScalerProfileSkipNodesWithSystemPods`
@@ -3838,6 +3944,7 @@ Specifies if nodes with system pods should be skipped for the auto-scaler of the
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `autoScalerProfileUtilizationThreshold`
@@ -3846,6 +3953,7 @@ Specifies the utilization threshold of the auto-scaler of the AKS cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'0.5'`
 
 ### Parameter: `autoUpgradeProfileUpgradeChannel`
@@ -3854,6 +3962,7 @@ Auto-upgrade channel on the AKS cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'stable'`
 - Allowed:
   ```Bicep
@@ -3872,6 +3981,7 @@ Specifies whether the azurepolicy add-on is enabled or not. For security reasons
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `azurePolicyVersion`
@@ -3880,6 +3990,7 @@ Specifies the azure policy version to use.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'v2'`
 
 ### Parameter: `backendPoolType`
@@ -3888,6 +3999,7 @@ The type of the managed inbound Load Balancer BackendPool.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'NodeIPConfiguration'`
 - Allowed:
   ```Bicep
@@ -3903,6 +4015,7 @@ Specifies whether the cost analysis add-on is enabled or not. If Enabled `enable
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `customerManagedKey`
@@ -3911,6 +4024,7 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -3932,6 +4046,7 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVaultNetworkAccess`
 
@@ -3939,6 +4054,7 @@ Network access of key vault. The possible values are Public and Private. Public 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -3953,6 +4069,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -3960,6 +4077,7 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings`
 
@@ -3967,6 +4085,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -3988,6 +4107,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -3995,6 +4115,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -4002,6 +4123,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4016,6 +4138,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -4031,6 +4154,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -4038,6 +4162,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -4045,6 +4170,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -4052,6 +4178,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -4059,6 +4186,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -4078,6 +4206,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -4085,6 +4214,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -4092,6 +4222,7 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -4099,6 +4230,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -4106,6 +4238,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `disableCustomMetrics`
 
@@ -4113,6 +4246,7 @@ Indicates whether custom metrics collection has to be disabled or not. If not sp
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `disableLocalAccounts`
@@ -4121,6 +4255,7 @@ If set to true, getting static credentials will be disabled for this cluster. Th
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `disablePrometheusMetricsScraping`
@@ -4129,6 +4264,7 @@ Indicates whether prometheus metrics scraping is disabled or not. If not specifi
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `disableRunCommand`
@@ -4137,6 +4273,7 @@ Whether to disable run command for the cluster or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `diskEncryptionSetResourceId`
@@ -4145,6 +4282,7 @@ The resource ID of the disc encryption set to apply to the cluster. For security
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `dnsPrefix`
 
@@ -4152,6 +4290,7 @@ Specifies the DNS prefix specified when creating the managed cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[parameters('name')]`
 
 ### Parameter: `dnsServiceIP`
@@ -4160,6 +4299,7 @@ Specifies the IP address assigned to the Kubernetes DNS service. It must be with
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `dnsZoneResourceId`
 
@@ -4167,6 +4307,7 @@ Specifies the resource ID of connected DNS zone. It will be ignored if `webAppli
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `enableAzureDefender`
 
@@ -4174,6 +4315,7 @@ Whether to enable Azure Defender.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableAzureMonitorProfileMetrics`
@@ -4182,6 +4324,7 @@ Whether the metric state of the kubenetes cluster is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableContainerInsights`
@@ -4190,6 +4333,7 @@ Indicates if Azure Monitor Container Insights Logs Addon is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableDnsZoneContributorRoleAssignment`
@@ -4198,6 +4342,7 @@ Specifies whether assing the DNS zone contributor role to the cluster service pr
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableImageCleaner`
@@ -4206,6 +4351,7 @@ Whether to enable Image Cleaner for Kubernetes.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableKeyvaultSecretsProvider`
@@ -4214,6 +4360,7 @@ Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableOidcIssuerProfile`
@@ -4222,6 +4369,7 @@ Whether the The OIDC issuer profile of the Managed Cluster is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enablePodSecurityPolicy`
@@ -4230,6 +4378,7 @@ Whether to enable Kubernetes pod security policy. Requires enabling the pod secu
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enablePrivateCluster`
@@ -4238,6 +4387,7 @@ Specifies whether to create the cluster as a private cluster or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enablePrivateClusterPublicFQDN`
@@ -4246,6 +4396,7 @@ Whether to create additional public FQDN for private cluster or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableRBAC`
@@ -4254,6 +4405,7 @@ Whether to enable Kubernetes Role-Based Access Control.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableSecretRotation`
@@ -4262,6 +4414,7 @@ Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableStorageProfileBlobCSIDriver`
@@ -4270,6 +4423,7 @@ Whether the AzureBlob CSI Driver for the storage profile is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableStorageProfileDiskCSIDriver`
@@ -4278,6 +4432,7 @@ Whether the AzureDisk CSI Driver for the storage profile is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableStorageProfileFileCSIDriver`
@@ -4286,6 +4441,7 @@ Whether the AzureFile CSI Driver for the storage profile is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableStorageProfileSnapshotController`
@@ -4294,6 +4450,7 @@ Whether the snapshot controller for the storage profile is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -4302,6 +4459,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableWorkloadIdentity`
@@ -4310,6 +4468,7 @@ Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `fluxExtension`
@@ -4318,6 +4477,7 @@ Settings and configurations for the flux extension.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -4338,6 +4498,7 @@ The configuration protected settings of the extension.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -4351,6 +4512,7 @@ The SSH private key to use for Git authentication.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `fluxExtension.configurations`
 
@@ -4358,6 +4520,7 @@ The flux configurations of the extension.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `fluxExtension.configurationSettings`
 
@@ -4365,6 +4528,7 @@ The configuration settings of the extension.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `fluxExtension.name`
 
@@ -4372,6 +4536,7 @@ The name of the extension.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `fluxExtension.releaseNamespace`
 
@@ -4379,6 +4544,7 @@ Namespace where the extension Release must be placed.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `fluxExtension.releaseTrain`
 
@@ -4386,6 +4552,7 @@ The release train of the extension.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `fluxExtension.targetNamespace`
 
@@ -4393,6 +4560,7 @@ Namespace where the extension will be created for an Namespace scoped extension.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `fluxExtension.version`
 
@@ -4400,6 +4568,7 @@ The version of the extension.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `httpApplicationRoutingEnabled`
 
@@ -4407,6 +4576,7 @@ Specifies whether the httpApplicationRouting add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `httpProxyConfig`
@@ -4415,6 +4585,7 @@ Configurations for provisioning the cluster with HTTP proxy servers.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `identityProfile`
 
@@ -4422,6 +4593,7 @@ Identities associated with the cluster.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `imageCleanerIntervalHours`
 
@@ -4429,7 +4601,9 @@ The interval in hours Image Cleaner will run. The maximum value is three months.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `24`
+- MinValue: 24
 
 ### Parameter: `ingressApplicationGatewayEnabled`
 
@@ -4437,7 +4611,9 @@ Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority`
 
@@ -4445,6 +4621,8 @@ The Istio Certificate Authority definition.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 24
 
 **Required parameters**
 
@@ -4462,6 +4640,8 @@ The Certificate chain object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.certObjectName`
 
@@ -4469,6 +4649,8 @@ The Intermediate certificate object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.keyObjectName`
 
@@ -4476,6 +4658,8 @@ The Intermediate certificate private key object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.keyVaultResourceId`
 
@@ -4483,6 +4667,8 @@ The resource ID of a key vault to reference a Certificate Authority from.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.rootCertObjectName`
 
@@ -4490,6 +4676,8 @@ Root certificate object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshEnabled`
 
@@ -4497,7 +4685,9 @@ Specifies whether the Istio ServiceMesh add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshExternalIngressGatewayEnabled`
 
@@ -4505,7 +4695,9 @@ Specifies whether the External Istio Ingress Gateway is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshInternalIngressGatewayEnabled`
 
@@ -4513,7 +4705,9 @@ Specifies whether the Internal Istio Ingress Gateway is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshRevisions`
 
@@ -4521,6 +4715,8 @@ The list of revisions of the Istio control plane. When an upgrade is not in prog
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `kedaAddon`
 
@@ -4528,7 +4724,9 @@ Enables Kubernetes Event-driven Autoscaling (KEDA).
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `kubeDashboardEnabled`
 
@@ -4536,7 +4734,9 @@ Specifies whether the kubeDashboard add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `kubernetesVersion`
 
@@ -4544,6 +4744,8 @@ Version of Kubernetes specified when creating the managed cluster.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `loadBalancerSku`
 
@@ -4551,6 +4753,7 @@ Specifies the sku of the load balancer used by the virtual machine scale sets us
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'standard'`
 - Allowed:
   ```Bicep
@@ -4559,6 +4762,7 @@ Specifies the sku of the load balancer used by the virtual machine scale sets us
     'standard'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `location`
 
@@ -4566,7 +4770,9 @@ Specifies the location of AKS cluster. It picks up Resource Group's location by 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
+- MinValue: 24
 
 ### Parameter: `lock`
 
@@ -4574,6 +4780,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 24
 
 **Optional parameters**
 
@@ -4588,6 +4796,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4596,6 +4805,7 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `lock.name`
 
@@ -4603,6 +4813,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `maintenanceConfigurations`
 
@@ -4610,6 +4822,8 @@ Whether or not to use AKS Automatic mode.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 24
 
 **Required parameters**
 
@@ -4624,6 +4838,8 @@ Maintenance window for the maintenance configuration.
 
 - Required: Yes
 - Type: object
+- Nullable: No
+- MinValue: 24
 
 ### Parameter: `maintenanceConfigurations.name`
 
@@ -4631,6 +4847,7 @@ Name of maintenance window.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -4638,6 +4855,7 @@ Name of maintenance window.
     'aksManagedNodeOSUpgradeSchedule'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `managedIdentities`
 
@@ -4645,6 +4863,8 @@ The managed identity definition for this resource. Only one type of identity is 
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 24
 
 **Optional parameters**
 
@@ -4659,6 +4879,8 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `managedIdentities.userAssignedResourcesIds`
 
@@ -4666,6 +4888,8 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `managedOutboundIPCount`
 
@@ -4673,7 +4897,9 @@ Outbound IP Count for the Load balancer.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `0`
+- MinValue: 24
 
 ### Parameter: `metricAnnotationsAllowList`
 
@@ -4681,7 +4907,9 @@ A comma-separated list of Kubernetes cluster metrics annotations.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 24
 
 ### Parameter: `metricLabelsAllowlist`
 
@@ -4689,7 +4917,9 @@ A comma-separated list of kubernetes cluster metrics labels.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 24
 
 ### Parameter: `monitoringWorkspaceResourceId`
 
@@ -4697,6 +4927,8 @@ Resource ID of the monitoring log analytics workspace.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `networkDataplane`
 
@@ -4704,6 +4936,7 @@ Network dataplane used in the Kubernetes cluster. Not compatible with kubenet ne
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4711,6 +4944,7 @@ Network dataplane used in the Kubernetes cluster. Not compatible with kubenet ne
     'cilium'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPlugin`
 
@@ -4718,6 +4952,7 @@ Specifies the network plugin used for building Kubernetes network.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4725,6 +4960,7 @@ Specifies the network plugin used for building Kubernetes network.
     'kubenet'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPluginMode`
 
@@ -4732,12 +4968,14 @@ Network plugin mode used for building the Kubernetes network. Not compatible wit
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     'overlay'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPolicy`
 
@@ -4745,6 +4983,7 @@ Specifies the network policy used for building Kubernetes network. - calico or a
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4753,6 +4992,7 @@ Specifies the network policy used for building Kubernetes network. - calico or a
     'cilium'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `nodeProvisioningProfileMode`
 
@@ -4760,6 +5000,7 @@ Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAM
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4767,6 +5008,7 @@ Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAM
     'Manual'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `nodeResourceGroup`
 
@@ -4774,7 +5016,9 @@ Name of the resource group containing agent pool nodes.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]`
+- MinValue: 24
 
 ### Parameter: `nodeResourceGroupProfile`
 
@@ -4782,6 +5026,8 @@ The node resource group configuration profile.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `omsAgentEnabled`
 
@@ -4789,7 +5035,9 @@ Specifies whether the OMS agent is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 24
 
 ### Parameter: `openServiceMeshEnabled`
 
@@ -4797,7 +5045,9 @@ Specifies whether the openServiceMesh add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `outboundType`
 
@@ -4805,6 +5055,7 @@ Specifies outbound (egress) routing method.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'loadBalancer'`
 - Allowed:
   ```Bicep
@@ -4815,6 +5066,7 @@ Specifies outbound (egress) routing method.
     'userDefinedRouting'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `podCidr`
 
@@ -4822,6 +5074,8 @@ Specifies the CIDR notation IP range from which to assign pod IPs when kubenet i
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileAllowNetworkPluginKubenet`
 
@@ -4829,7 +5083,9 @@ Running in Kubenet is disabled by default due to the security related nature of 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileEnable`
 
@@ -4837,7 +5093,9 @@ Whether the pod identity addon is enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileUserAssignedIdentities`
 
@@ -4845,6 +5103,8 @@ The pod identities to use in the cluster.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileUserAssignedIdentityExceptions`
 
@@ -4852,6 +5112,8 @@ The pod identity exceptions to allow.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `privateDNSZone`
 
@@ -4859,6 +5121,8 @@ Private DNS Zone configuration. Set to 'system' and AKS will create a private DN
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `publicNetworkAccess`
 
@@ -4866,6 +5130,7 @@ Allow or deny public network access for AKS.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -4875,6 +5140,7 @@ Allow or deny public network access for AKS.
     'SecuredByPerimeter'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `roleAssignments`
 
@@ -4882,6 +5148,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 24
 - Roles configurable by name:
   - `'Azure Kubernetes Fleet Manager Contributor Role'`
   - `'Azure Kubernetes Fleet Manager RBAC Admin'`
@@ -4927,6 +5195,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 24
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -4934,6 +5204,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 24
 
 ### Parameter: `roleAssignments.condition`
 
@@ -4941,6 +5213,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -4948,12 +5222,14 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4961,6 +5237,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `roleAssignments.description`
 
@@ -4968,6 +5246,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `roleAssignments.name`
 
@@ -4975,6 +5255,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -4982,6 +5264,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4992,6 +5275,7 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `serviceCidr`
 
@@ -4999,6 +5283,8 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `skuName`
 
@@ -5006,6 +5292,7 @@ Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A P
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Base'`
 - Allowed:
   ```Bicep
@@ -5014,6 +5301,7 @@ Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A P
     'Base'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `skuTier`
 
@@ -5021,6 +5309,7 @@ Tier of a managed cluster SKU.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -5030,6 +5319,7 @@ Tier of a managed cluster SKU.
     'Standard'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `sshPublicKey`
 
@@ -5037,6 +5327,8 @@ Specifies the SSH RSA public key string for the Linux nodes.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `supportPlan`
 
@@ -5044,6 +5336,7 @@ The support plan for the Managed Cluster.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'KubernetesOfficial'`
 - Allowed:
   ```Bicep
@@ -5052,6 +5345,7 @@ The support plan for the Managed Cluster.
     'KubernetesOfficial'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `syslogPort`
 
@@ -5059,7 +5353,9 @@ The syslog host port. If not specified, the default port is 28330.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `28330`
+- MinValue: 24
 
 ### Parameter: `tags`
 
@@ -5067,6 +5363,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 24
 
 ### Parameter: `vpaAddon`
 
@@ -5074,7 +5372,9 @@ Whether to enable VPA add-on in cluster. Default value is false.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `webApplicationRoutingEnabled`
 
@@ -5082,7 +5382,9 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 24
 
 ## Outputs
 
