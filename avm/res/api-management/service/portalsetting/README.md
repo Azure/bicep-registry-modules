@@ -12,7 +12,7 @@ This module deploys an API Management Service Portal Setting.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service/portalsettings` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/service) |
+| `Microsoft.ApiManagement/service/portalsettings` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/portalsettings) |
 
 ## Parameters
 
@@ -35,6 +35,7 @@ Portal setting name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -50,6 +51,7 @@ Portal setting properties.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -57,6 +59,7 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

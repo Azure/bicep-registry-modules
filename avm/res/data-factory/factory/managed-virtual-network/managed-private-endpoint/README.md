@@ -38,6 +38,7 @@ Fully qualified domain names.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `groupId`
 
@@ -45,6 +46,7 @@ The groupId to which the managed private endpoint is created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `managedVirtualNetworkName`
 
@@ -52,6 +54,7 @@ The name of the parent managed virtual network.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -59,6 +62,7 @@ The managed private endpoint resource name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateLinkResourceId`
 
@@ -66,6 +70,7 @@ The ARM resource ID of the resource to which the managed private endpoint is cre
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `dataFactoryName`
 
@@ -73,6 +78,7 @@ The name of the parent data factory. Required if the template is used in a stand
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

@@ -45,6 +45,7 @@ The Resource ID of the VNet that is this Local VNet is being peered to. Should b
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `localVnetName`
 
@@ -52,6 +53,7 @@ The name of the parent Virtual Network to add the peering to. Required if the te
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `allowForwardedTraffic`
 
@@ -59,6 +61,7 @@ Whether the forwarded traffic from the VMs in the local virtual network will be 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `allowGatewayTransit`
@@ -67,6 +70,7 @@ If gateway links can be used in remote virtual networking to link to this virtua
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `allowVirtualNetworkAccess`
@@ -75,6 +79,7 @@ Whether the VMs in the local virtual network space would be able to access the V
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `doNotVerifyRemoteGateways`
@@ -83,6 +88,7 @@ If we need to verify the provisioning state of the remote gateway. Default is tr
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `name`
@@ -91,6 +97,7 @@ The Name of VNET Peering resource. If not provided, default value will be localV
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('peer-{0}-{1}', parameters('localVnetName'), last(split(parameters('remoteVirtualNetworkResourceId'), '/')))]`
 
 ### Parameter: `useRemoteGateways`
@@ -99,6 +106,7 @@ If remote gateways can be used on this virtual network. If the flag is set to tr
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ## Outputs

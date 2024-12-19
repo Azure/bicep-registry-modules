@@ -1851,6 +1851,7 @@ Name of the Azure Firewall.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `hubIPAddresses`
 
@@ -1858,6 +1859,7 @@ IP addresses associated with AzureFirewall. Required if `virtualHubId` is suppli
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `virtualHubId`
@@ -1866,6 +1868,7 @@ The virtualHub resource ID to which the firewall belongs. Required if `virtualNe
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `virtualNetworkResourceId`
@@ -1874,6 +1877,7 @@ Shared services Virtual Network resource ID. The virtual network ID containing A
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `additionalPublicIpConfigurations`
@@ -1882,6 +1886,7 @@ This is to add any additional Public IP configurations on top of the Public IP w
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `applicationRuleCollections`
@@ -1890,6 +1895,7 @@ Collection of application rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1904,6 +1910,7 @@ Name of the application rule collection.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `applicationRuleCollections.properties`
 
@@ -1911,6 +1918,7 @@ Properties of the azure firewall application rule collection.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1926,6 +1934,7 @@ The action type of a rule collection.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1939,6 +1948,7 @@ The type of action.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1953,6 +1963,9 @@ Priority of the application rule collection.
 
 - Required: Yes
 - Type: int
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules`
 
@@ -1960,6 +1973,9 @@ Collection of rules used by a application rule collection.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 **Required parameters**
 
@@ -1984,6 +2000,9 @@ Name of the application rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.protocols`
 
@@ -1991,6 +2010,9 @@ Array of ApplicationRuleProtocols.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 **Required parameters**
 
@@ -2010,6 +2032,7 @@ Protocol type.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2018,6 +2041,8 @@ Protocol type.
     'Mssql'
   ]
   ```
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.protocols.port`
 
@@ -2025,6 +2050,9 @@ Port number for the protocol.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 64000
 
 ### Parameter: `applicationRuleCollections.properties.rules.description`
 
@@ -2032,6 +2060,9 @@ Description of the rule.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.fqdnTags`
 
@@ -2039,6 +2070,9 @@ List of FQDN Tags for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.sourceAddresses`
 
@@ -2046,6 +2080,9 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2053,6 +2090,9 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.targetFqdns`
 
@@ -2060,6 +2100,9 @@ List of FQDNs for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `azureSkuTier`
 
@@ -2067,6 +2110,7 @@ Tier of an Azure Firewall.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -2083,6 +2127,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -2104,6 +2149,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -2111,6 +2157,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -2118,6 +2165,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2132,6 +2180,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -2147,6 +2196,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -2154,6 +2204,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -2161,6 +2212,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -2168,6 +2220,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -2175,6 +2228,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2194,6 +2248,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -2201,6 +2256,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -2208,6 +2264,7 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -2215,6 +2272,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -2222,6 +2280,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `enableForcedTunneling`
 
@@ -2229,6 +2288,7 @@ Enable/Disable forced tunneling.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -2237,6 +2297,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `firewallPolicyId`
@@ -2245,6 +2306,7 @@ Resource ID of the Firewall Policy that should be attached.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `location`
@@ -2253,6 +2315,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -2261,6 +2324,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -2275,6 +2339,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2290,6 +2355,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managementIPAddressObject`
 
@@ -2297,6 +2363,7 @@ Specifies the properties of the Management Public IP to create and be used by Az
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `managementIPResourceID`
@@ -2305,6 +2372,7 @@ The Management Public IP resource ID to associate to the AzureFirewallManagement
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `natRuleCollections`
@@ -2313,6 +2381,7 @@ Collection of NAT rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2327,6 +2396,7 @@ Name of the NAT rule collection.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `natRuleCollections.properties`
 
@@ -2334,6 +2404,7 @@ Properties of the azure firewall NAT rule collection.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -2349,6 +2420,7 @@ The action type of a NAT rule collection.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -2362,6 +2434,7 @@ The type of action.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2376,6 +2449,9 @@ Priority of the NAT rule collection.
 
 - Required: Yes
 - Type: int
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules`
 
@@ -2383,6 +2459,9 @@ Collection of rules used by a NAT rule collection.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 **Required parameters**
 
@@ -2410,6 +2489,9 @@ Name of the NAT rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.protocols`
 
@@ -2417,6 +2499,7 @@ Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2426,6 +2509,8 @@ Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.
     'UDP'
   ]
   ```
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.description`
 
@@ -2433,6 +2518,9 @@ Description of the rule.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.destinationAddresses`
 
@@ -2440,6 +2528,9 @@ List of destination IP addresses for this rule. Supports IP ranges, prefixes, an
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.destinationPorts`
 
@@ -2447,6 +2538,9 @@ List of destination ports.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.sourceAddresses`
 
@@ -2454,6 +2548,9 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2461,6 +2558,9 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedAddress`
 
@@ -2468,6 +2568,9 @@ The translated address for this NAT rule.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedFqdn`
 
@@ -2475,6 +2578,9 @@ The translated FQDN for this NAT rule.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedPort`
 
@@ -2482,6 +2588,9 @@ The translated port for this NAT rule.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections`
 
@@ -2489,6 +2598,7 @@ Collection of network rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2503,6 +2613,7 @@ Name of the network rule collection.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `networkRuleCollections.properties`
 
@@ -2510,6 +2621,7 @@ Properties of the azure firewall network rule collection.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -2525,6 +2637,7 @@ The action type of a rule collection.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -2538,6 +2651,7 @@ The type of action.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2552,6 +2666,9 @@ Priority of the network rule collection.
 
 - Required: Yes
 - Type: int
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules`
 
@@ -2559,6 +2676,9 @@ Collection of rules used by a network rule collection.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 **Required parameters**
 
@@ -2585,6 +2705,9 @@ Name of the network rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.protocols`
 
@@ -2592,6 +2715,7 @@ Array of AzureFirewallNetworkRuleProtocols.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2601,6 +2725,8 @@ Array of AzureFirewallNetworkRuleProtocols.
     'UDP'
   ]
   ```
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.description`
 
@@ -2608,6 +2734,9 @@ Description of the rule.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationAddresses`
 
@@ -2615,6 +2744,9 @@ List of destination IP addresses.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationFqdns`
 
@@ -2622,6 +2754,9 @@ List of destination FQDNs.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationIpGroups`
 
@@ -2629,6 +2764,9 @@ List of destination IP groups for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationPorts`
 
@@ -2636,6 +2774,9 @@ List of destination ports.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.sourceAddresses`
 
@@ -2643,6 +2784,9 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2650,6 +2794,9 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `publicIPAddressObject`
 
@@ -2657,6 +2804,7 @@ Specifies the properties of the Public IP to create and be used by the Firewall,
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -2670,6 +2818,7 @@ The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, the
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `roleAssignments`
@@ -2678,6 +2827,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -2709,6 +2859,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2716,6 +2867,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2723,6 +2875,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2730,6 +2883,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2743,6 +2897,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2750,6 +2905,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2757,6 +2913,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2764,6 +2921,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2781,6 +2939,7 @@ Tags of the Azure Firewall resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `threatIntelMode`
 
@@ -2788,6 +2947,7 @@ The operation mode for Threat Intel.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Deny'`
 - Allowed:
   ```Bicep
@@ -2804,6 +2964,7 @@ Zone numbers e.g. 1,2,3.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [

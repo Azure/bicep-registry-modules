@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Elastic Pool.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/elasticPools) |
+| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/elasticPools) |
 
 ## Parameters
 
@@ -52,6 +52,7 @@ The name of the Elastic Pool.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -59,6 +60,7 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `autoPauseDelay`
 
@@ -66,6 +68,7 @@ Time in minutes after which elastic pool is automatically paused. A value of -1 
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `-1`
 
 ### Parameter: `availabilityZone`
@@ -74,6 +77,7 @@ Specifies the availability zone the pool's primary replica is pinned to.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'NoPreference'`
 - Allowed:
   ```Bicep
@@ -91,6 +95,7 @@ The number of secondary replicas associated with the elastic pool that are used 
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `licenseType`
 
@@ -98,6 +103,7 @@ The license type to apply for this elastic pool.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'LicenseIncluded'`
 - Allowed:
   ```Bicep
@@ -113,6 +119,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `maintenanceConfigurationId`
@@ -121,6 +128,7 @@ Maintenance configuration resource ID assigned to the elastic pool. This configu
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `maxSizeBytes`
 
@@ -128,6 +136,7 @@ The storage limit for the database elastic pool in bytes.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `34359738368`
 
 ### Parameter: `minCapacity`
@@ -136,6 +145,7 @@ Minimal capacity that serverless pool will not shrink below, if not paused.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `perDatabaseSettings`
 
@@ -143,6 +153,7 @@ The per database settings for the elastic pool.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -171,6 +182,7 @@ The maximum capacity any one database can consume. Examples: '0.5', '2'.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `perDatabaseSettings.minCapacity`
 
@@ -178,6 +190,7 @@ The minimum capacity all databases are guaranteed. Examples: '0.5', '1'.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `perDatabaseSettings.autoPauseDelay`
 
@@ -185,6 +198,7 @@ Auto Pause Delay for per database within pool.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `preferredEnclaveType`
 
@@ -192,6 +206,7 @@ Type of enclave requested on the elastic pool.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Default'`
 - Allowed:
   ```Bicep
@@ -207,6 +222,7 @@ The elastic pool SKU.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -237,6 +253,7 @@ The name of the SKU, typically, a letter + Number code, e.g. P3.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -261,6 +278,7 @@ The capacity of the particular SKU.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `sku.family`
 
@@ -268,6 +286,7 @@ If the service has different generations of hardware, for the same SKU, then tha
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `sku.size`
 
@@ -275,6 +294,7 @@ Size of the particular SKU.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `sku.tier`
 
@@ -282,6 +302,7 @@ The tier or edition of the particular SKU, e.g. Basic, Premium.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -289,6 +310,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `zoneRedundant`
 
@@ -296,6 +318,7 @@ Whether or not this elastic pool is zone redundant, which means the replicas of 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ## Outputs

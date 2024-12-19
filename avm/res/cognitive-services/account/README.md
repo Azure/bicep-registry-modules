@@ -1734,6 +1734,7 @@ Kind of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1770,6 +1771,7 @@ The name of Cognitive Services account.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customSubDomainName`
 
@@ -1777,6 +1779,7 @@ Subdomain name used for token-based authentication. Required if 'networkAcls' or
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `allowedFqdnList`
 
@@ -1784,6 +1787,7 @@ List of allowed FQDN.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `apiProperties`
 
@@ -1791,6 +1795,7 @@ The API properties for special APIs.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `customerManagedKey`
 
@@ -1798,6 +1803,7 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1819,6 +1825,7 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -1826,6 +1833,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -1833,6 +1841,7 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1840,6 +1849,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `deployments`
 
@@ -1847,6 +1857,7 @@ Array of deployments about cognitive service accounts to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -1868,6 +1879,7 @@ Properties of Cognitive Services account deployment model.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -1883,6 +1895,7 @@ The format of Cognitive Services account deployment model.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `deployments.model.name`
 
@@ -1890,6 +1903,7 @@ The name of Cognitive Services account deployment model.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `deployments.model.version`
 
@@ -1897,6 +1911,7 @@ The version of Cognitive Services account deployment model.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `deployments.name`
 
@@ -1904,6 +1919,7 @@ Specify the name of cognitive service account deployment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `deployments.raiPolicyName`
 
@@ -1911,6 +1927,7 @@ The name of RAI policy.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `deployments.sku`
 
@@ -1918,6 +1935,7 @@ The resource model definition representing SKU.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -1937,6 +1955,7 @@ The name of the resource model definition representing SKU.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `deployments.sku.capacity`
 
@@ -1944,6 +1963,7 @@ The capacity of the resource model definition representing SKU.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings`
 
@@ -1951,6 +1971,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1972,6 +1993,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1979,6 +2001,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1986,6 +2009,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2000,6 +2024,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -2015,6 +2040,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -2022,6 +2048,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -2029,6 +2056,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -2036,6 +2064,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -2043,6 +2072,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2062,6 +2092,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -2069,6 +2100,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -2076,6 +2108,7 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -2083,6 +2116,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -2090,6 +2124,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `disableLocalAuth`
 
@@ -2097,6 +2132,7 @@ Allow only Azure AD authentication. Should be enabled for security reasons.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `dynamicThrottlingEnabled`
@@ -2105,6 +2141,7 @@ The flag to enable dynamic throttling.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -2113,6 +2150,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -2121,6 +2159,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -2129,6 +2168,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -2143,6 +2183,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2158,6 +2199,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -2165,6 +2207,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -2179,6 +2222,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -2186,6 +2230,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `migrationToken`
 
@@ -2193,6 +2238,7 @@ Resource migration token.
 
 - Required: No
 - Type: securestring
+- Nullable: Yes
 
 ### Parameter: `networkAcls`
 
@@ -2200,6 +2246,7 @@ A collection of rules governing the accessibility from specific network location
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints`
 
@@ -2207,6 +2254,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2241,6 +2289,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -2248,6 +2297,7 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -2255,6 +2305,7 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2274,6 +2325,7 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -2281,6 +2333,7 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -2288,6 +2341,7 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -2295,6 +2349,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -2302,6 +2357,7 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2316,6 +2372,7 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -2323,6 +2380,7 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -2338,6 +2396,7 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -2345,6 +2404,7 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -2352,6 +2412,7 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -2359,6 +2420,7 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.location`
 
@@ -2366,6 +2428,7 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -2373,6 +2436,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -2387,6 +2451,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2402,6 +2467,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -2409,6 +2475,7 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.name`
 
@@ -2416,6 +2483,7 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -2423,6 +2491,7 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2442,6 +2511,7 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -2461,6 +2531,7 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2468,6 +2539,7 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -2475,6 +2547,7 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2482,6 +2555,7 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -2489,6 +2563,7 @@ Specify if you want to deploy the Private Endpoint into a different Resource Gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -2496,6 +2571,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -2532,6 +2608,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -2539,6 +2616,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -2546,6 +2624,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -2553,6 +2632,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2566,6 +2646,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -2573,6 +2654,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -2580,6 +2662,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -2587,6 +2670,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2604,6 +2688,7 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -2611,6 +2696,7 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -2618,6 +2704,7 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2632,6 +2719,7 @@ Restore a soft-deleted cognitive service at deployment time. Will fail if no suc
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `restrictOutboundNetworkAccess`
@@ -2640,6 +2728,7 @@ Restrict outbound network access.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `roleAssignments`
@@ -2648,6 +2737,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Roles configurable by name:
   - `'Cognitive Services Contributor'`
   - `'Cognitive Services Custom Vision Contributor'`
@@ -2703,6 +2793,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2710,6 +2801,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2717,6 +2809,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2724,6 +2817,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2737,6 +2831,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2744,6 +2839,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2751,6 +2847,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2758,6 +2855,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2775,6 +2873,7 @@ Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2795,6 +2894,7 @@ The key vault name where to store the keys and connection strings generated by t
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `secretsExportConfiguration.accessKey1Name`
 
@@ -2802,6 +2902,7 @@ The name for the accessKey1 secret to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `secretsExportConfiguration.accessKey2Name`
 
@@ -2809,6 +2910,7 @@ The name for the accessKey2 secret to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `sku`
 
@@ -2816,6 +2918,7 @@ SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' t
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'S0'`
 - Allowed:
   ```Bicep
@@ -2846,6 +2949,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `userOwnedStorage`
 
@@ -2853,6 +2957,7 @@ The storage accounts for this resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ## Outputs
 

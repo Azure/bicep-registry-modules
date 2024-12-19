@@ -43,6 +43,7 @@ The destination for the event subscription. (See https://learn.microsoft.com/en-
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -50,6 +51,7 @@ The name of the Event Subscription.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `topicName`
 
@@ -57,6 +59,7 @@ Name of the Event Grid Topic.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `deadLetterDestination`
 
@@ -64,6 +67,7 @@ Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `deadLetterWithResourceIdentity`
@@ -72,6 +76,7 @@ Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.c
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `deliveryWithResourceIdentity`
@@ -80,6 +85,7 @@ Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `eventDeliverySchema`
@@ -88,6 +94,7 @@ The event delivery schema for the event subscription.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'EventGridSchema'`
 - Allowed:
   ```Bicep
@@ -105,6 +112,7 @@ The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTH
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `filter`
@@ -113,6 +121,7 @@ The filter for the event subscription. (See https://learn.microsoft.com/en-us/az
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `labels`
@@ -121,6 +130,7 @@ The list of user defined labels.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `retryPolicy`
@@ -129,6 +139,7 @@ The retry policy for events. This can be used to configure the TTL and maximum n
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ## Outputs

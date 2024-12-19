@@ -18,7 +18,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments) |
 | `Microsoft.Compute/disks` | [2024-03-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks) |
 | `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
@@ -4834,6 +4834,7 @@ Administrator username.
 
 - Required: Yes
 - Type: securestring
+- Nullable: No
 
 ### Parameter: `imageReference`
 
@@ -4841,6 +4842,7 @@ OS image reference. In case of marketplace images, it's the combination of the p
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -4848,6 +4850,7 @@ The name of the virtual machine to be created. You should use a unique prefix to
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `nicConfigurations`
 
@@ -4855,6 +4858,7 @@ Configures NICs and PIPs.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `osDisk`
 
@@ -4862,6 +4866,7 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -4885,6 +4890,7 @@ The managed disk parameters.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -4899,6 +4905,7 @@ Specifies the customer managed disk encryption set resource id for the managed d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `osDisk.managedDisk.storageAccountType`
 
@@ -4906,6 +4913,7 @@ Specifies the storage account type for the managed disk.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4925,6 +4933,7 @@ Specifies the caching requirements.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4940,6 +4949,7 @@ Specifies how the virtual machine should be created.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4955,6 +4965,7 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4969,6 +4980,7 @@ Specifies the size of an empty data disk in gigabytes.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `osDisk.name`
 
@@ -4976,6 +4988,7 @@ The disk name.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `osType`
 
@@ -4983,6 +4996,7 @@ The chosen OS type.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -4997,6 +5011,7 @@ Specifies the size for the VMs.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `zone`
 
@@ -5004,6 +5019,7 @@ If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that valu
 
 - Required: Yes
 - Type: int
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -5020,6 +5036,7 @@ Specifies additional XML formatted information that can be included in the Unatt
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `adminPassword`
@@ -5028,6 +5045,7 @@ When specifying a Windows Virtual Machine, this value should be passed.
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `allowExtensionOperations`
@@ -5036,6 +5054,7 @@ Specifies whether extension operations should be allowed on the virtual machine.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `autoShutdownConfig`
@@ -5044,6 +5063,7 @@ The configuration for auto-shutdown.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `availabilitySetResourceId`
@@ -5052,6 +5072,7 @@ Resource ID of an availability set. Cannot be used in combination with availabil
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `backupPolicyName`
@@ -5060,6 +5081,7 @@ Backup policy the VMs should be using for backup. If not provided, it will use t
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'DefaultPolicy'`
 
 ### Parameter: `backupVaultName`
@@ -5068,6 +5090,7 @@ Recovery service vault name to add VMs to backup.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `backupVaultResourceGroup`
@@ -5076,6 +5099,7 @@ Resource group of the backup recovery service vault. If not provided the current
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().name]`
 
 ### Parameter: `bootDiagnostics`
@@ -5084,6 +5108,7 @@ Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnost
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `bootDiagnosticStorageAccountName`
@@ -5092,6 +5117,7 @@ Custom storage account used to store boot diagnostic information. Boot diagnosti
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `bootDiagnosticStorageAccountUri`
@@ -5100,6 +5126,7 @@ Storage account boot diagnostic base URI.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('.blob.{0}/', environment().suffixes.storage)]`
 
 ### Parameter: `bypassPlatformSafetyChecksOnUserSchedule`
@@ -5108,6 +5135,7 @@ Enables customer to schedule patching without accidental upgrades.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `certificatesToBeInstalled`
@@ -5116,6 +5144,7 @@ Specifies set of certificates that should be installed onto the virtual machine.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `computerName`
@@ -5124,6 +5153,7 @@ Can be used if the computer name needs to be different from the Azure VM resourc
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[parameters('name')]`
 
 ### Parameter: `configurationProfile`
@@ -5132,6 +5162,7 @@ The configuration profile of automanage. Either '/providers/Microsoft.Automanage
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `customData`
@@ -5140,6 +5171,7 @@ Custom data associated to the VM, this value will be automatically converted int
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `dataDisks`
@@ -5148,6 +5180,7 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -5174,6 +5207,7 @@ Specifies the size of an empty data disk in gigabytes.
 
 - Required: Yes
 - Type: int
+- Nullable: No
 
 ### Parameter: `dataDisks.managedDisk`
 
@@ -5181,6 +5215,7 @@ The managed disk parameters.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Required parameters**
 
@@ -5201,6 +5236,7 @@ Specifies the storage account type for the managed disk.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -5220,6 +5256,7 @@ Specifies the customer managed disk encryption set resource id for the managed d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `dataDisks.managedDisk.id`
 
@@ -5227,6 +5264,7 @@ Specifies the customer managed disk id for the managed disk.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `dataDisks.caching`
 
@@ -5234,6 +5272,7 @@ Specifies the caching requirements.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -5249,6 +5288,7 @@ Specifies how the virtual machine should be created.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -5264,6 +5304,7 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -5278,6 +5319,7 @@ The number of IOPS allowed for this disk; only settable for UltraSSD disks. One 
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `dataDisks.diskMBpsReadWrite`
 
@@ -5285,6 +5327,7 @@ The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps mean
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `dataDisks.lun`
 
@@ -5292,6 +5335,7 @@ Specifies the logical unit number of the data disk.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ### Parameter: `dataDisks.name`
 
@@ -5299,6 +5343,7 @@ The disk name.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `dedicatedHostId`
 
@@ -5306,6 +5351,7 @@ Specifies resource ID about the dedicated host that the virtual machine resides 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `disablePasswordAuthentication`
@@ -5314,6 +5360,7 @@ Specifies whether password authentication should be disabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableAutomaticUpdates`
@@ -5322,6 +5369,7 @@ Indicates whether Automatic Updates is enabled for the Windows virtual machine. 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableEvictionPolicy`
@@ -5330,6 +5378,7 @@ Specifies the eviction policy for the low priority virtual machine. Will result 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableHotpatching`
@@ -5338,6 +5387,7 @@ Enables customers to patch their Azure VMs without requiring a reboot. For enabl
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -5346,6 +5396,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `encryptionAtHost`
@@ -5354,6 +5405,7 @@ This property can be used by user in the request to enable or disable the Host E
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `extensionAadJoinConfig`
@@ -5362,6 +5414,7 @@ The configuration for the [AAD Join] extension. Must at least contain the ["enab
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5375,6 +5428,7 @@ The configuration for the [Anti Malware] extension. Must at least contain the ["
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5388,6 +5442,7 @@ The configuration for the [Azure Disk Encryption] extension. Must at least conta
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5401,6 +5456,7 @@ The configuration for the [Custom Script] extension. Must at least contain the [
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5415,6 +5471,7 @@ An object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `extensionDependencyAgentConfig`
@@ -5423,6 +5480,7 @@ The configuration for the [Dependency Agent] extension. Must at least contain th
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5436,6 +5494,7 @@ The configuration for the [Domain Join] extension. Must at least contain the ["e
 
 - Required: No
 - Type: secureObject
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `extensionDomainJoinPassword`
@@ -5444,6 +5503,7 @@ Required if name is specified. Password of the user specified in user parameter.
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `extensionDSCConfig`
@@ -5452,6 +5512,7 @@ The configuration for the [Desired State Configuration] extension. Must at least
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5465,6 +5526,7 @@ The configuration for the [Guest Configuration] extension. Must at least contain
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5478,6 +5540,7 @@ An object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `extensionHostPoolRegistration`
@@ -5486,6 +5549,7 @@ The configuration for the [Host Pool Registration] extension. Must at least cont
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5499,6 +5563,7 @@ The configuration for the [Monitoring Agent] extension. Must at least contain th
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5513,6 +5578,7 @@ The configuration for the [Network Watcher Agent] extension. Must at least conta
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5526,6 +5592,7 @@ The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least c
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -5539,6 +5606,7 @@ Specifies the gallery applications that should be made available to the VM/VMSS.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `guestConfiguration`
@@ -5547,6 +5615,7 @@ The guest configuration for the virtual machine. Needs the Guest Configuration e
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `licenseType`
@@ -5555,6 +5624,7 @@ Specifies that the image or disk that is being used was licensed on-premises.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -5573,6 +5643,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -5581,6 +5652,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -5595,6 +5667,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -5610,6 +5683,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `maintenanceConfigurationResourceId`
 
@@ -5617,6 +5691,7 @@ The resource Id of a maintenance configuration for this VM.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `managedIdentities`
@@ -5625,6 +5700,7 @@ The managed identity definition for this resource. The system-assigned managed i
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -5639,6 +5715,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -5646,6 +5723,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `maxPriceForLowPriorityVm`
 
@@ -5653,6 +5731,7 @@ Specifies the maximum price you are willing to pay for a low priority VM/VMSS. T
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `patchAssessmentMode`
@@ -5661,6 +5740,7 @@ VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable aut
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'ImageDefault'`
 - Allowed:
   ```Bicep
@@ -5676,6 +5756,7 @@ VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -5694,6 +5775,7 @@ Specifies information about the marketplace image used to create the virtual mac
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `priority`
@@ -5702,6 +5784,7 @@ Specifies the priority for the virtual machine.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Regular'`
 - Allowed:
   ```Bicep
@@ -5718,6 +5801,7 @@ Indicates whether virtual machine agent should be provisioned on the virtual mac
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `proximityPlacementGroupResourceId`
@@ -5726,6 +5810,7 @@ Resource ID of a proximity placement group.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `publicKeys`
@@ -5734,6 +5819,7 @@ The list of SSH public keys used to authenticate with linux based VMs.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `rebootSetting`
@@ -5742,6 +5828,7 @@ Specifies the reboot setting for all AutomaticByPlatform patch installation oper
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'IfRequired'`
 - Allowed:
   ```Bicep
@@ -5759,6 +5846,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Data Operator for Managed Disks'`
@@ -5803,6 +5891,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -5810,6 +5899,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -5817,6 +5907,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -5824,6 +5915,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -5837,6 +5929,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -5844,6 +5937,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -5851,6 +5945,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -5858,6 +5953,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -5875,6 +5971,7 @@ SAS token validity length to use to download files from storage accounts. Usage:
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'PT8H'`
 
 ### Parameter: `secureBootEnabled`
@@ -5883,6 +5980,7 @@ Specifies whether secure boot should be enabled on the virtual machine. This par
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `securityType`
@@ -5891,6 +5989,7 @@ Specifies the SecurityType of the virtual machine. It has to be set to any speci
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -5907,6 +6006,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `timeZone`
 
@@ -5914,6 +6014,7 @@ Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Po
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `ultraSSDEnabled`
@@ -5922,6 +6023,7 @@ The flag that enables or disables a capability to have one or more managed data 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `userData`
@@ -5930,6 +6032,7 @@ UserData for the VM, which must be base-64 encoded. Customer should not pass any
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `virtualMachineScaleSetResourceId`
@@ -5938,6 +6041,7 @@ Resource ID of a virtual machine scale set, where the VM should be added.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `vTpmEnabled`
@@ -5946,6 +6050,7 @@ Specifies whether vTPM should be enabled on the virtual machine. This parameter 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `winRM`
@@ -5954,6 +6059,7 @@ Specifies the Windows Remote Management listeners. This enables remote Windows P
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `baseTime`
@@ -5962,6 +6068,7 @@ Do not provide a value! This date value is used to generate a registration token
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[utcNow('u')]`
 
 ## Outputs

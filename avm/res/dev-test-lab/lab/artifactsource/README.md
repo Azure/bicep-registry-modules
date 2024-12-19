@@ -50,6 +50,7 @@ The name of the artifact source.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `uri`
 
@@ -57,6 +58,7 @@ The artifact source's URI.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `armTemplateFolderPath`
 
@@ -64,6 +66,7 @@ The folder containing Azure Resource Manager templates. Required if "folderPath"
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `folderPath`
 
@@ -71,6 +74,7 @@ The folder containing artifacts. At least one folder path is required. Required 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `labName`
 
@@ -78,6 +82,7 @@ The name of the parent lab. Required if the template is used in a standalone dep
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `branchRef`
 
@@ -85,6 +90,7 @@ The artifact source's branch reference (e.g. main or master).
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `displayName`
 
@@ -92,6 +98,7 @@ The artifact source's display name. Default is the name of the artifact source.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[parameters('name')]`
 
 ### Parameter: `securityToken`
@@ -100,6 +107,7 @@ The security token to authenticate to the artifact source.
 
 - Required: No
 - Type: securestring
+- Nullable: Yes
 
 ### Parameter: `sourceType`
 
@@ -107,6 +115,7 @@ The artifact source's type.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -122,6 +131,7 @@ Indicates if the artifact source is enabled (values: Enabled, Disabled). Default
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -137,6 +147,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

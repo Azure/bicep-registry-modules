@@ -35,6 +35,7 @@ Name of the link.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -51,6 +52,7 @@ Linked storage accounts resources Ids.
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
@@ -58,6 +60,7 @@ The name of the parent Log Analytics workspace. Required if the template is used
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

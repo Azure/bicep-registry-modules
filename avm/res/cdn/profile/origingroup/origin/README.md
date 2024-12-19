@@ -44,6 +44,7 @@ The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -51,6 +52,7 @@ The name of the origion.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `originGroupName`
 
@@ -58,6 +60,7 @@ The name of the group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `profileName`
 
@@ -65,6 +68,7 @@ The name of the CDN profile.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `enabledState`
 
@@ -72,6 +76,7 @@ Whether to enable health probes to be made against backends defined under backen
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -87,6 +92,7 @@ Whether to enable certificate name check at origin level.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `httpPort`
@@ -95,6 +101,7 @@ The value of the HTTP port. Must be between 1 and 65535.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `80`
 
 ### Parameter: `httpsPort`
@@ -103,6 +110,7 @@ The value of the HTTPS port. Must be between 1 and 65535.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `443`
 
 ### Parameter: `originHostHeader`
@@ -111,6 +119,7 @@ The host header value sent to the origin with each request. If you leave this bl
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `priority`
@@ -119,6 +128,7 @@ Priority of origin in given origin group for load balancing. Higher priorities w
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1`
 
 ### Parameter: `sharedPrivateLinkResource`
@@ -127,6 +137,7 @@ The properties of the private link resource for private origin.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `weight`
 
@@ -134,6 +145,7 @@ Weight of the origin in given origin group for load balancing. Must be between 1
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1000`
 
 ## Outputs

@@ -41,6 +41,7 @@ Name of the SQL Role Assignment.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleDefinitionId`
 
@@ -48,6 +49,7 @@ Id of the SQL Role Definition.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `databaseAccountName`
 
@@ -55,6 +57,7 @@ The name of the parent Database Account. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `principalId`
 
@@ -62,6 +65,7 @@ Id needs to be granted.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ## Outputs

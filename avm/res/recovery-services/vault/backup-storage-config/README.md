@@ -36,6 +36,7 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `crossRegionRestoreFlag`
 
@@ -43,6 +44,7 @@ Opt in details of Cross Region Restore feature.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `name`
@@ -51,6 +53,7 @@ The name of the backup storage config.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'vaultstorageconfig'`
 
 ### Parameter: `storageModelType`
@@ -59,6 +62,7 @@ Change Vault Storage Type (Works if vault has not registered any backup instance
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'GeoRedundant'`
 - Allowed:
   ```Bicep

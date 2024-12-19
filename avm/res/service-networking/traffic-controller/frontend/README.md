@@ -40,6 +40,7 @@ Name of the frontend to create.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `trafficControllerName`
 
@@ -47,6 +48,7 @@ The name of the parent Application Gateway for Containers instance. Required if 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `location`
 
@@ -54,6 +56,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

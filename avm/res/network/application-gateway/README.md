@@ -3134,6 +3134,7 @@ Name of the Application Gateway.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `authenticationCertificates`
 
@@ -3141,6 +3142,7 @@ Authentication certificates of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `autoscaleMaxCapacity`
@@ -3149,6 +3151,7 @@ Upper bound on number of Application Gateway capacity.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `-1`
 
 ### Parameter: `autoscaleMinCapacity`
@@ -3157,6 +3160,7 @@ Lower bound on number of Application Gateway capacity.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `-1`
 
 ### Parameter: `backendAddressPools`
@@ -3165,6 +3169,7 @@ Backend address pool of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `backendHttpSettingsCollection`
@@ -3173,6 +3178,7 @@ Backend http settings of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `backendSettingsCollection`
@@ -3181,6 +3187,7 @@ Backend settings of the application gateway resource. For default limits, see [A
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `capacity`
@@ -3189,7 +3196,10 @@ The number of Application instances to be configured.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `2`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `customErrorConfigurations`
 
@@ -3197,7 +3207,10 @@ Custom error configurations of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings`
 
@@ -3205,6 +3218,9 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -3226,6 +3242,9 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -3233,6 +3252,9 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -3240,6 +3262,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3247,6 +3270,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -3254,6 +3279,9 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -3269,6 +3297,9 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -3276,6 +3307,9 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -3283,6 +3317,9 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -3290,6 +3327,9 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -3297,6 +3337,9 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -3316,6 +3359,9 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -3323,6 +3369,9 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -3330,6 +3379,9 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -3337,6 +3389,9 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -3344,6 +3399,9 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableFips`
 
@@ -3351,7 +3409,10 @@ Whether FIPS is enabled on the application gateway resource.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableHttp2`
 
@@ -3359,7 +3420,10 @@ Whether HTTP2 is enabled on the application gateway resource.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableRequestBuffering`
 
@@ -3367,7 +3431,10 @@ Enable request buffering.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableResponseBuffering`
 
@@ -3375,7 +3442,10 @@ Enable response buffering.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `enableTelemetry`
 
@@ -3383,7 +3453,10 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `firewallPolicyResourceId`
 
@@ -3391,7 +3464,10 @@ The resource ID of an associated firewall policy. Should be configured for secur
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `frontendIPConfigurations`
 
@@ -3399,7 +3475,10 @@ Frontend IP addresses of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `frontendPorts`
 
@@ -3407,7 +3486,10 @@ Frontend ports of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `gatewayIPConfigurations`
 
@@ -3415,7 +3497,10 @@ Subnets of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `httpListeners`
 
@@ -3423,7 +3508,10 @@ Http listeners of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `listeners`
 
@@ -3431,7 +3519,10 @@ Listeners of the application gateway resource. For default limits, see [Applicat
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `loadDistributionPolicies`
 
@@ -3439,7 +3530,10 @@ Load distribution policies of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `location`
 
@@ -3447,7 +3541,10 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `lock`
 
@@ -3455,6 +3552,9 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -3469,6 +3569,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3477,6 +3578,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `lock.name`
 
@@ -3484,6 +3587,9 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `managedIdentities`
 
@@ -3491,6 +3597,9 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -3504,6 +3613,9 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints`
 
@@ -3511,6 +3623,9 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -3545,6 +3660,9 @@ The subresource to deploy the private endpoint for. For example "blob", "table",
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -3552,6 +3670,9 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -3559,6 +3680,9 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -3566,6 +3690,9 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -3585,6 +3712,9 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -3592,6 +3722,9 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -3599,6 +3732,9 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -3606,6 +3742,9 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -3613,6 +3752,9 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -3627,6 +3769,9 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -3634,6 +3779,9 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -3649,6 +3797,9 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -3656,6 +3807,9 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -3663,6 +3817,9 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -3670,6 +3827,9 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.location`
 
@@ -3677,6 +3837,9 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -3684,6 +3847,9 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 **Optional parameters**
 
@@ -3698,6 +3864,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3706,6 +3873,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -3713,6 +3882,9 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -3720,6 +3892,9 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.name`
 
@@ -3727,6 +3902,9 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -3734,6 +3912,9 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -3753,6 +3934,9 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 **Required parameters**
 
@@ -3772,6 +3956,9 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -3779,6 +3966,9 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -3786,6 +3976,9 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -3793,6 +3986,9 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -3800,6 +3996,9 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -3807,6 +4006,9 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -3843,6 +4045,9 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -3850,6 +4055,9 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -3857,6 +4065,9 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -3864,12 +4075,15 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -3877,6 +4091,9 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -3884,6 +4101,9 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -3891,6 +4111,9 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -3898,6 +4121,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3908,6 +4132,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -3915,6 +4141,9 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `privateLinkConfigurations`
 
@@ -3922,7 +4151,10 @@ PrivateLink configurations on application gateway.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `probes`
 
@@ -3930,7 +4162,10 @@ Probes of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `redirectConfigurations`
 
@@ -3938,7 +4173,10 @@ Redirect configurations of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `requestRoutingRules`
 
@@ -3946,7 +4184,10 @@ Request routing rules of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `rewriteRuleSets`
 
@@ -3954,7 +4195,10 @@ Rewrite rules for the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments`
 
@@ -3962,6 +4206,9 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -3993,6 +4240,9 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -4000,6 +4250,9 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.condition`
 
@@ -4007,6 +4260,9 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -4014,12 +4270,15 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4027,6 +4286,9 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.description`
 
@@ -4034,6 +4296,9 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.name`
 
@@ -4041,6 +4306,9 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -4048,6 +4316,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -4058,6 +4327,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `routingRules`
 
@@ -4065,7 +4336,10 @@ Routing rules of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sku`
 
@@ -4073,6 +4347,7 @@ The name of the SKU for the Application Gateway.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard_v2'`
 - Allowed:
   ```Bicep
@@ -4086,6 +4361,8 @@ The name of the SKU for the Application Gateway.
     'WAF_v2'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslCertificates`
 
@@ -4093,7 +4370,10 @@ SSL certificates of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslPolicyCipherSuites`
 
@@ -4101,6 +4381,7 @@ Ssl cipher suites to be enabled in the specified order to application gateway.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -4141,6 +4422,8 @@ Ssl cipher suites to be enabled in the specified order to application gateway.
     'TLS_RSA_WITH_AES_256_GCM_SHA384'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslPolicyMinProtocolVersion`
 
@@ -4148,6 +4431,7 @@ Ssl protocol enums.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'TLSv1_2'`
 - Allowed:
   ```Bicep
@@ -4158,6 +4442,8 @@ Ssl protocol enums.
     'TLSv1_3'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslPolicyName`
 
@@ -4165,6 +4451,7 @@ Ssl predefined policy name enums.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -4177,6 +4464,8 @@ Ssl predefined policy name enums.
     'AppGwSslPolicy20220101S'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslPolicyType`
 
@@ -4184,6 +4473,7 @@ Type of Ssl Policy.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Custom'`
 - Allowed:
   ```Bicep
@@ -4193,6 +4483,8 @@ Type of Ssl Policy.
     'Predefined'
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `sslProfiles`
 
@@ -4200,7 +4492,10 @@ SSL profiles of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `tags`
 
@@ -4208,6 +4503,9 @@ Resource tags.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `trustedClientCertificates`
 
@@ -4215,7 +4513,10 @@ Trusted client certificates of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `trustedRootCertificates`
 
@@ -4223,7 +4524,10 @@ Trusted Root certificates of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `urlPathMaps`
 
@@ -4231,7 +4535,10 @@ URL path map of the application gateway resource.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `webApplicationFirewallConfiguration`
 
@@ -4239,7 +4546,10 @@ Application gateway web application firewall configuration. Should be configured
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `zones`
 
@@ -4247,6 +4557,7 @@ A list of availability zones denoting where the resource needs to come from.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [
@@ -4255,6 +4566,8 @@ A list of availability zones denoting where the resource needs to come from.
     3
   ]
   ```
+- MinValue: 0
+- MaxValue: 10
 
 ## Outputs
 

@@ -36,6 +36,7 @@ The end IP address of the firewall rule. Must be IPv4 format. Must be greater th
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -43,6 +44,7 @@ The name of the MySQL flexible server Firewall Rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `startIpAddress`
 
@@ -50,6 +52,7 @@ The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `flexibleServerName`
 
@@ -57,6 +60,7 @@ The name of the parent MySQL flexible server. Required if the template is used i
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

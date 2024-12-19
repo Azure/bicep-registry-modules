@@ -47,6 +47,7 @@ Query category.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `displayName`
 
@@ -54,6 +55,7 @@ Display name for the search.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -61,6 +63,7 @@ Name of the saved search.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `query`
 
@@ -68,6 +71,7 @@ Kusto Query to be stored.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
@@ -75,6 +79,7 @@ The name of the parent Log Analytics workspace. Required if the template is used
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `etag`
 
@@ -82,6 +87,7 @@ The ETag of the saved search. To override an existing saved search, use "*" or s
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'*'`
 
 ### Parameter: `functionAlias`
@@ -90,6 +96,7 @@ The function alias if query serves as a function.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `functionParameters`
@@ -98,6 +105,7 @@ The optional function parameters if query serves as a function. Value should be 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `tags`
@@ -106,6 +114,7 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `version`
 
@@ -113,6 +122,7 @@ The version number of the query language.
 
 - Required: No
 - Type: int
+- Nullable: Yes
 
 ## Outputs
 

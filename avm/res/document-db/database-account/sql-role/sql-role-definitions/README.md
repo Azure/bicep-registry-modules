@@ -36,6 +36,7 @@ The name of the parent Database Account. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `dataActions`
 
@@ -43,6 +44,7 @@ An array of data actions that are allowed.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `roleName`
@@ -51,6 +53,7 @@ A user-friendly name for the Role Definition. Must be unique for the database ac
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Reader Writer'`
 
 ### Parameter: `roleType`
@@ -59,6 +62,7 @@ Indicates whether the Role Definition was built-in or user created.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'CustomRole'`
 - Allowed:
   ```Bicep

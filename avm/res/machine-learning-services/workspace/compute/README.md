@@ -53,6 +53,7 @@ Set the object type.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -75,6 +76,7 @@ Name of the compute.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `machineLearningWorkspaceName`
 
@@ -82,6 +84,7 @@ The name of the parent Machine Learning Workspace. Required if the template is u
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `computeLocation`
 
@@ -89,6 +92,7 @@ Location for the underlying compute. Ignored when attaching a compute resource, 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `deployCompute`
@@ -97,6 +101,7 @@ Flag to specify whether to deploy the compute. Required only for attach (i.e. pr
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `description`
@@ -105,6 +110,7 @@ The description of the Machine Learning compute.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `disableLocalAuth`
 
@@ -112,6 +118,7 @@ Opt-out of local authentication and ensure customers can use only MSI and AAD ex
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `location`
@@ -120,6 +127,7 @@ Specifies the location of the resource.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `managedIdentities`
@@ -128,6 +136,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -142,6 +151,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -149,6 +159,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `properties`
 
@@ -156,6 +167,7 @@ The properties of the compute. Will be ignored in case "resourceId" is set.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `resourceId`
 
@@ -163,6 +175,7 @@ ARM resource ID of the underlying compute.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `sku`
 
@@ -170,6 +183,7 @@ Specifies the sku, also referred as "edition". Required for creating a compute r
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -186,6 +200,7 @@ Contains resource tags defined as key-value pairs. Ignored when attaching a comp
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 
