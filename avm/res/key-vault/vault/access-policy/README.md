@@ -34,6 +34,7 @@ The name of the parent key vault. Required if the template is used in a standalo
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessPolicies`
 
@@ -41,6 +42,7 @@ An array of 0 to 16 identities that have access to the key vault. All identities
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Required parameters**
 
@@ -62,6 +64,7 @@ The object ID of a user, service principal or security group in the tenant for t
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `accessPolicies.permissions`
 
@@ -69,6 +72,7 @@ Permissions the identity has for keys, secrets and certificates.
 
 - Required: Yes
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -85,6 +89,7 @@ Permissions to certificates.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -114,6 +119,7 @@ Permissions to keys.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -147,6 +153,7 @@ Permissions to secrets.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -168,6 +175,7 @@ Permissions to storage accounts.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -195,6 +203,7 @@ Application ID of the client making request on behalf of a principal.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `accessPolicies.tenantId`
 
@@ -202,6 +211,7 @@ The tenant ID that is used for authenticating requests to the key vault.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

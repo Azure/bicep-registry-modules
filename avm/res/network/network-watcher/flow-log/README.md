@@ -44,6 +44,7 @@ Resource ID of the diagnostic storage account.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `targetResourceId`
 
@@ -51,6 +52,7 @@ Resource ID of the NSG that must be enabled for Flow Logs.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `enabled`
 
@@ -58,6 +60,7 @@ If the flow log should be enabled.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `formatVersion`
@@ -66,6 +69,7 @@ The flow log format version.
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `2`
 - Allowed:
   ```Bicep
@@ -81,6 +85,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
@@ -89,6 +94,7 @@ Name of the resource.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('{0}-{1}-flowlog', last(split(parameters('targetResourceId'), '/')), split(parameters('targetResourceId'), '/')[4])]`
 
 ### Parameter: `networkWatcherName`
@@ -97,6 +103,7 @@ Name of the network watcher resource. Must be in the resource group where the Fl
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('NetworkWatcher_{0}', resourceGroup().location)]`
 
 ### Parameter: `retentionInDays`
@@ -105,7 +112,10 @@ Specifies the number of days that logs will be kept for; a value of 0 will retai
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `365`
+- MinValue: 0
+- MaxValue: 365
 
 ### Parameter: `tags`
 
@@ -113,6 +123,9 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: 0
+- MaxValue: 365
 
 ### Parameter: `trafficAnalyticsInterval`
 
@@ -120,6 +133,7 @@ The interval in minutes which would decide how frequently TA service should do f
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `60`
 - Allowed:
   ```Bicep
@@ -128,6 +142,8 @@ The interval in minutes which would decide how frequently TA service should do f
     60
   ]
   ```
+- MinValue: 0
+- MaxValue: 365
 
 ### Parameter: `workspaceResourceId`
 
@@ -135,7 +151,10 @@ Specify the Log Analytics Workspace Resource ID.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
+- MinValue: 0
+- MaxValue: 365
 
 ## Outputs
 

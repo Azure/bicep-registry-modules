@@ -12,7 +12,7 @@ This module deploys a SQL Managed Instance Key.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/managedInstances/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/keys) |
+| `Microsoft.Sql/managedInstances/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/keys) |
 
 ## Parameters
 
@@ -41,6 +41,7 @@ The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pat
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `managedInstanceName`
 
@@ -48,6 +49,7 @@ The name of the parent SQL managed instance. Required if the template is used in
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `serverKeyType`
 
@@ -55,6 +57,7 @@ The encryption protector type like "ServiceManaged", "AzureKeyVault".
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'ServiceManaged'`
 - Allowed:
   ```Bicep
@@ -70,6 +73,7 @@ The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI o
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ## Outputs

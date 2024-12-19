@@ -44,6 +44,7 @@ The name of the Integration Runtime.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `type`
 
@@ -51,6 +52,7 @@ The type of Integration Runtime.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -65,6 +67,7 @@ The name of the parent Azure Data Factory. Required if the template is used in a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `integrationRuntimeCustomDescription`
 
@@ -72,6 +75,7 @@ The description of the Integration Runtime.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Managed Integration Runtime created by avm-res-datafactory-factories'`
 
 ### Parameter: `managedVirtualNetworkName`
@@ -80,6 +84,7 @@ The name of the Managed Virtual Network if using type "Managed" .
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `typeProperties`
@@ -88,6 +93,7 @@ Integration Runtime type properties. Required if type is "Managed".
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ## Outputs

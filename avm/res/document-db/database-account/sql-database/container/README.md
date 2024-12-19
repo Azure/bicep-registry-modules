@@ -52,6 +52,7 @@ Name of the container.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `paths`
 
@@ -59,6 +60,7 @@ List of paths using which data within the container can be partitioned. For kind
 
 - Required: Yes
 - Type: array
+- Nullable: No
 
 ### Parameter: `databaseAccountName`
 
@@ -66,6 +68,7 @@ The name of the parent Database Account. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `sqlDatabaseName`
 
@@ -73,6 +76,7 @@ The name of the parent SQL Database. Required if the template is used in a stand
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `analyticalStorageTtl`
 
@@ -80,6 +84,7 @@ Default to 0. Indicates how long data should be retained in the analytical store
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `0`
 
 ### Parameter: `autoscaleSettingsMaxThroughput`
@@ -88,6 +93,8 @@ Specifies the Autoscale settings and represents maximum throughput, the resource
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MaxValue: 1000000
 
 ### Parameter: `conflictResolutionPolicy`
 
@@ -95,7 +102,9 @@ The conflict resolution policy for the container. Conflicts and conflict resolut
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
+- MaxValue: 1000000
 
 ### Parameter: `defaultTtl`
 
@@ -103,7 +112,10 @@ Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azur
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `indexingPolicy`
 
@@ -111,7 +123,10 @@ Indexing policy of the container.
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `kind`
 
@@ -119,6 +134,7 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Hash'`
 - Allowed:
   ```Bicep
@@ -127,6 +143,8 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
     'MultiHash'
   ]
   ```
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `tags`
 
@@ -134,6 +152,9 @@ Tags of the SQL Database resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `throughput`
 
@@ -141,7 +162,10 @@ Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMa
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `400`
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `uniqueKeyPolicyKeys`
 
@@ -149,7 +173,10 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `version`
 
@@ -157,6 +184,7 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `1`
 - Allowed:
   ```Bicep
@@ -165,6 +193,8 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
     2
   ]
   ```
+- MinValue: -1
+- MaxValue: 2147483647
 
 ## Outputs
 

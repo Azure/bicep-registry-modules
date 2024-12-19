@@ -48,6 +48,7 @@ The name of the table.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `workspaceName`
 
@@ -55,6 +56,7 @@ The name of the parent workspaces. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `plan`
 
@@ -62,6 +64,7 @@ Instruct the system how to handle and charge the logs ingested to this table.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Analytics'`
 - Allowed:
   ```Bicep
@@ -77,6 +80,7 @@ Restore parameters.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -92,6 +96,7 @@ The timestamp to end the restore by (UTC).
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `restoredLogs.sourceTable`
 
@@ -99,6 +104,7 @@ The table to restore data from.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `restoredLogs.startRestoreTime`
 
@@ -106,6 +112,7 @@ The timestamp to start the restore from (UTC).
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `retentionInDays`
 
@@ -113,7 +120,10 @@ The table retention in days, between 4 and 730. Setting this property to -1 will
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments`
 
@@ -121,6 +131,9 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 - Roles configurable by name:
   - `'Contributor'`
   - `'Log Analytics Contributor'`
@@ -156,6 +169,9 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -163,6 +179,9 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.condition`
 
@@ -170,6 +189,9 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -177,12 +199,15 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
     '2.0'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -190,6 +215,9 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.description`
 
@@ -197,6 +225,9 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.name`
 
@@ -204,6 +235,9 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -211,6 +245,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -221,6 +256,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema`
 
@@ -228,6 +265,9 @@ Table's schema.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 **Required parameters**
 
@@ -249,6 +289,9 @@ A list of table custom columns.
 
 - Required: Yes
 - Type: array
+- Nullable: No
+- MinValue: -1
+- MaxValue: 730
 
 **Required parameters**
 
@@ -271,6 +314,9 @@ The column name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.columns.type`
 
@@ -278,6 +324,7 @@ The column type.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -291,6 +338,8 @@ The column type.
     'string'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.columns.dataTypeHint`
 
@@ -298,6 +347,7 @@ The column data type logical hint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -307,6 +357,8 @@ The column data type logical hint.
     'uri'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.columns.description`
 
@@ -314,6 +366,9 @@ The column description.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.columns.displayName`
 
@@ -321,6 +376,9 @@ Column display name.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.name`
 
@@ -328,6 +386,9 @@ The table name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.description`
 
@@ -335,6 +396,9 @@ The table description.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.displayName`
 
@@ -342,6 +406,9 @@ The table display name.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults`
 
@@ -349,6 +416,9 @@ Parameters of the search job that initiated this table.
 
 - Required: No
 - Type: object
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 **Required parameters**
 
@@ -371,6 +441,9 @@ The search job query.
 
 - Required: Yes
 - Type: string
+- Nullable: No
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults.description`
 
@@ -378,6 +451,9 @@ The search description.
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults.endSearchTime`
 
@@ -385,6 +461,9 @@ The timestamp to end the search by (UTC).
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults.limit`
 
@@ -392,6 +471,9 @@ Limit the search job to return up to specified number of rows.
 
 - Required: No
 - Type: int
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults.startSearchTime`
 
@@ -399,6 +481,9 @@ The timestamp to start the search from (UTC).
 
 - Required: No
 - Type: string
+- Nullable: Yes
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `totalRetentionInDays`
 
@@ -406,7 +491,10 @@ The table total retention in days, between 4 and 2555. Setting this property to 
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 2555
 
 ## Outputs
 

@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Firewall Rule.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/firewallRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/firewallRules) |
+| `Microsoft.Sql/servers/firewallRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/firewallRules) |
 
 ## Parameters
 
@@ -41,6 +41,7 @@ The name of the Server Firewall Rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -48,6 +49,7 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `endIpAddress`
 
@@ -55,6 +57,7 @@ The end IP address of the firewall rule. Must be IPv4 format. Must be greater th
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'0.0.0.0'`
 
 ### Parameter: `startIpAddress`
@@ -63,6 +66,7 @@ The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'0.0.0.0'`
 
 ## Outputs

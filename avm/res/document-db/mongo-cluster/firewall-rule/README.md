@@ -36,6 +36,7 @@ The end IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. M
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -43,6 +44,7 @@ The name of the firewall rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `startIpAddress`
 
@@ -50,6 +52,7 @@ The start IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `mongoClusterName`
 
@@ -57,6 +60,7 @@ The name of the parent Azure Cosmos DB MongoDB vCore cluster. Required if the te
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

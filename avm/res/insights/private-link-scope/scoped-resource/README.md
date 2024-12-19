@@ -35,6 +35,7 @@ The resource ID of the scoped Azure monitor resource.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -42,6 +43,7 @@ Name of the private link scoped resource.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `privateLinkScopeName`
 
@@ -49,6 +51,7 @@ The name of the parent private link scope. Required if the template is used in a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

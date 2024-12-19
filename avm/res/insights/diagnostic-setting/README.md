@@ -305,6 +305,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `eventHubAuthorizationRuleResourceId`
@@ -313,6 +314,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `eventHubName`
 
@@ -320,6 +322,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -327,6 +330,7 @@ Location deployment metadata.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `logAnalyticsDestinationType`
@@ -335,6 +339,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -351,6 +356,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -366,6 +372,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `logCategoriesAndGroups.categoryGroup`
 
@@ -373,6 +380,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `logCategoriesAndGroups.enabled`
 
@@ -380,6 +388,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `marketplacePartnerResourceId`
 
@@ -387,6 +396,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `metricCategories`
 
@@ -394,6 +404,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -413,6 +424,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `metricCategories.enabled`
 
@@ -420,6 +432,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `name`
 
@@ -427,6 +440,7 @@ Name of the Diagnostic settings.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('{0}-diagnosticSettings', uniqueString(subscription().id))]`
 
 ### Parameter: `storageAccountResourceId`
@@ -435,6 +449,7 @@ Resource ID of the diagnostic storage account.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `workspaceResourceId`
 
@@ -442,6 +457,7 @@ Resource ID of the diagnostic log analytics workspace.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

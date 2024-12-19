@@ -21,12 +21,12 @@ Creates an Azure Container Registry and an Azure Container Apps environment.
 | `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -223,6 +223,7 @@ Name of the Container Apps Managed Environment.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `containerRegistryName`
 
@@ -230,6 +231,7 @@ Name of the Azure Container Registry.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
@@ -237,6 +239,7 @@ Existing Log Analytics Workspace resource ID. Note: This value is not required a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `dockerBridgeCidr`
 
@@ -244,6 +247,7 @@ CIDR notation IP range assigned to the Docker bridge, network. It must not overl
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `infrastructureSubnetResourceId`
@@ -252,6 +256,7 @@ Resource ID of a subnet for infrastructure components. This is used to deploy th
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `internal`
@@ -260,6 +265,7 @@ Boolean indicating the environment only has an internal load balancer. These env
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `platformReservedCidr`
@@ -268,6 +274,7 @@ IP range in CIDR notation that can be reserved for environment infrastructure IP
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `platformReservedDnsIP`
@@ -276,6 +283,7 @@ An IP address from the IP range defined by "platformReservedCidr" that will be r
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `workloadProfiles`
@@ -284,6 +292,7 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `acrAdminUserEnabled`
@@ -292,6 +301,7 @@ Enable admin user that have push / pull permission to the registry.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `acrSku`
@@ -300,6 +310,7 @@ SKU settings. Default is "Standard".
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -316,6 +327,7 @@ Application Insights connection string.
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `containerRegistryResourceGroupName`
@@ -324,6 +336,7 @@ Name of the Azure Container Registry Resource Group.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `daprAIInstrumentationKey`
@@ -332,6 +345,7 @@ Azure Monitor instrumentation key used by Dapr to export Service to Service comm
 
 - Required: No
 - Type: securestring
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -340,6 +354,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `infrastructureResourceGroupName`
@@ -348,6 +363,7 @@ Name of the infrastructure resource group. If not provided, it will be set with 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[take(format('ME_{0}', parameters('containerAppsEnvironmentName')), 63)]`
 
 ### Parameter: `location`
@@ -356,6 +372,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `tags`
@@ -364,6 +381,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `zoneRedundant`
 
@@ -371,6 +389,7 @@ Zone redundancy setting.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ## Outputs

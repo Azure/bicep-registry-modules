@@ -44,6 +44,7 @@ The name of the replication container.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `recoveryVaultName`
 
@@ -51,6 +52,7 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `replicationFabricName`
 
@@ -58,6 +60,7 @@ The name of the parent Replication Fabric. Required if the template is used in a
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `replicationContainerMappings`
 
@@ -65,6 +68,7 @@ Replication containers mappings to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ## Outputs

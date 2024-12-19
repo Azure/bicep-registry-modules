@@ -43,6 +43,7 @@ Runtime connection string to cache. Can be referenced by a named value like so, 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -50,6 +51,7 @@ Identifier of the Cache entity. Cache identifier (should be either 'default' or 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `useFromLocation`
 
@@ -57,6 +59,7 @@ Location identifier to use cache from (should be either 'default' or valid Azure
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -64,6 +67,7 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `description`
 
@@ -71,6 +75,7 @@ Cache description.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `resourceId`
 
@@ -78,6 +83,7 @@ Original uri of entity in external system cache points to.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 

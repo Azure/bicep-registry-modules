@@ -39,6 +39,7 @@ Name of the DNS Private Resolver.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `name`
 
@@ -46,6 +47,7 @@ The name of the inbound endpoint.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `subnetResourceId`
 
@@ -53,6 +55,7 @@ The subnet ID of the inbound endpoint.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `location`
 
@@ -60,6 +63,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `privateIpAddress`
@@ -68,6 +72,7 @@ The private IP address of the inbound endpoint.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `privateIpAllocationMethod`
 
@@ -75,6 +80,7 @@ The private IP allocation method of the inbound endpoint.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Dynamic'`
 
 ### Parameter: `tags`
@@ -83,6 +89,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ## Outputs
 

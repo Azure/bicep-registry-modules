@@ -30,7 +30,7 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
-| `Microsoft.Resources/tags` | [2019-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/tags) |
+| `Microsoft.Resources/tags` | [2019-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2019-10-01/tags) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
@@ -829,6 +829,7 @@ The location of the deployment script. Use region shortnames e.g. uksouth, eastu
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `deploymentScriptManagedIdentityName`
@@ -837,6 +838,7 @@ The name of the user managed identity for the resource providers registration de
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('id-{0}', deployment().location)]`
 
 ### Parameter: `deploymentScriptName`
@@ -845,6 +847,7 @@ The name of the deployment script to register resource providers.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('ds-{0}', deployment().location)]`
 
 ### Parameter: `deploymentScriptNetworkSecurityGroupName`
@@ -853,6 +856,7 @@ The name of the network security group for the deployment script private subnet.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('nsg-{0}', deployment().location)]`
 
 ### Parameter: `deploymentScriptResourceGroupName`
@@ -861,6 +865,7 @@ The name of the resource group to create the deployment script for resource prov
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('rsg-{0}-ds', deployment().location)]`
 
 ### Parameter: `deploymentScriptStorageAccountName`
@@ -869,6 +874,7 @@ The name of the storage account for the deployment script.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 10))]`
 
 ### Parameter: `deploymentScriptVirtualNetworkName`
@@ -877,6 +883,7 @@ The name of the private virtual network for the deployment script. The string mu
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[format('vnet-{0}', deployment().location)]`
 
 ### Parameter: `enableTelemetry`
@@ -885,6 +892,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `existingSubscriptionId`
@@ -893,6 +901,7 @@ An existing subscription ID. Use this when you do not want the module to create 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `hubNetworkResourceId`
@@ -901,6 +910,7 @@ The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which th
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `managementGroupAssociationDelayCount`
@@ -909,6 +919,7 @@ The number of blank ARM deployments to create sequentially to introduce a delay 
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `15`
 
 ### Parameter: `resourceProviders`
@@ -917,6 +928,7 @@ An object of resource providers and resource providers features to register. If 
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -993,6 +1005,7 @@ Whether to create role assignments or not. If true, supply the array of role ass
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `roleAssignments`
@@ -1001,6 +1014,7 @@ Supply an array of objects containing the details of the role assignments to cre
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 - Example:
   ```Bicep
@@ -1040,6 +1054,7 @@ The role definition ID or name.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.principalId`
 
@@ -1047,6 +1062,7 @@ The principal ID of the user, group, or service principal.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.relativeScope`
 
@@ -1054,6 +1070,7 @@ The relative scope of the role assignment.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleAssignmentCondition`
 
@@ -1061,6 +1078,7 @@ The condition for the role assignment.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1076,6 +1094,7 @@ The version of the condition template.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1089,6 +1108,7 @@ The code for a custom condition if no template is used. The user should supply t
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType`
 
@@ -1096,6 +1116,7 @@ The type of template for the role assignment condition.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `subscriptionAliasEnabled`
 
@@ -1103,6 +1124,7 @@ Whether to create a new Subscription using the Subscription Alias resource. If `
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `subscriptionAliasName`
@@ -1111,6 +1133,7 @@ The name of the Subscription Alias, that will be created by this module.<p><p>Th
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `subscriptionBillingScope`
@@ -1119,6 +1142,7 @@ The Billing Scope for the new Subscription alias, that will be created by this m
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `subscriptionDisplayName`
@@ -1127,6 +1151,7 @@ The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `subscriptionManagementGroupAssociationEnabled`
@@ -1135,6 +1160,7 @@ Whether to move the Subscription to the specified Management Group supplied in t
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `subscriptionManagementGroupId`
@@ -1143,6 +1169,7 @@ The destination Management Group ID for the new Subscription that will be create
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `subscriptionOwnerId`
@@ -1151,6 +1178,7 @@ The Azure Active Directory principals object ID (GUID) to whom should be the Sub
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `subscriptionTags`
@@ -1159,6 +1187,7 @@ An object of Tag key & value pairs to be appended to a Subscription.<p><p>> **NO
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `subscriptionTenantId`
@@ -1167,6 +1196,7 @@ The Azure Active Directory Tenant ID (GUID) to which the Subscription should be 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `subscriptionWorkload`
@@ -1175,6 +1205,7 @@ The workload type can be either `Production` or `DevTest` and is case sensitive.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Production'`
 - Allowed:
   ```Bicep
@@ -1190,6 +1221,7 @@ Indicates whether routing intent is enabled on the Virtual Hub within the Virtua
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `virtualNetworkAddressSpace`
@@ -1198,6 +1230,7 @@ The address space of the Virtual Network that will be created by this module, su
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `virtualNetworkDdosPlanResourceId`
@@ -1206,6 +1239,7 @@ The resource ID of an existing DDoS Network Protection Plan that you wish to lin
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `virtualNetworkDeploymentScriptAddressPrefix`
@@ -1214,6 +1248,7 @@ The address prefix of the private virtual network for the deployment script.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'192.168.0.0/24'`
 
 ### Parameter: `virtualNetworkDnsServers`
@@ -1222,6 +1257,7 @@ The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `virtualNetworkEnabled`
@@ -1230,6 +1266,7 @@ Whether to create a Virtual Network or not.<p><p>If set to `true` ensure you als
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `virtualNetworkLocation`
@@ -1238,6 +1275,7 @@ The location of the virtual network. Use region shortnames e.g. `uksouth`, `east
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `virtualNetworkName`
@@ -1246,6 +1284,7 @@ The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _,
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `virtualNetworkPeeringEnabled`
 
@@ -1253,6 +1292,7 @@ Whether to enable peering/connection with the supplied hub Virtual Network or Vi
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `virtualNetworkResourceGroupLockEnabled`
@@ -1261,6 +1301,7 @@ Enables the deployment of a `CanNotDelete` resource locks to the Virtual Network
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `virtualNetworkResourceGroupName`
@@ -1269,6 +1310,7 @@ The name of the Resource Group to create the Virtual Network in that is created 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `virtualNetworkResourceGroupTags`
@@ -1277,6 +1319,7 @@ An object of Tag key & value pairs to be appended to the Resource Group that the
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `virtualNetworkTags`
@@ -1285,6 +1328,7 @@ An object of tag key/value pairs to be set on the Virtual Network that is create
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `virtualNetworkUseRemoteGateways`
@@ -1293,6 +1337,7 @@ Enables the use of remote gateways in the specified hub virtual network.<p><p>> 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `virtualNetworkVwanAssociatedRouteTableResourceId`
@@ -1301,6 +1346,7 @@ The resource ID of the virtual hub route table to associate to the virtual hub c
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `''`
 
 ### Parameter: `virtualNetworkVwanEnableInternetSecurity`
@@ -1309,6 +1355,7 @@ Enables the ability for the Virtual WAN Hub Connection to learn the default rout
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `virtualNetworkVwanPropagatedLabels`
@@ -1317,6 +1364,7 @@ An array of virtual hub route table labels to propagate routes to. If left blank
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `virtualNetworkVwanPropagatedRouteTablesResourceIds`
@@ -1325,6 +1373,7 @@ An array of of objects of virtual hub route table resource IDs to propagate rout
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ## Outputs

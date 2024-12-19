@@ -15,7 +15,7 @@ This module deploys an API Management Service. The default deployment is set to 
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/service) |
+| `Microsoft.ApiManagement/service` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2023-05-01-preview/service) |
 | `Microsoft.ApiManagement/service/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis) |
 | `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/policies) |
@@ -27,7 +27,7 @@ This module deploys an API Management Service. The default deployment is set to 
 | `Microsoft.ApiManagement/service/loggers` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/loggers) |
 | `Microsoft.ApiManagement/service/namedValues` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/namedValues) |
 | `Microsoft.ApiManagement/service/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/policies) |
-| `Microsoft.ApiManagement/service/portalsettings` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/service) |
+| `Microsoft.ApiManagement/service/portalsettings` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/portalsettings) |
 | `Microsoft.ApiManagement/service/products` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/products) |
 | `Microsoft.ApiManagement/service/products/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/products/apis) |
 | `Microsoft.ApiManagement/service/products/groups` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/products/groups) |
@@ -1797,6 +1797,7 @@ The name of the API Management service.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `publisherEmail`
 
@@ -1804,6 +1805,7 @@ The email address of the owner of the service.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `publisherName`
 
@@ -1811,6 +1813,7 @@ The name of the owner of the service.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `skuCapacity`
 
@@ -1818,6 +1821,7 @@ The scale units for this API Management service. Required if using Basic, Standa
 
 - Required: No
 - Type: int
+- Nullable: No
 - Default: `2`
 
 ### Parameter: `additionalLocations`
@@ -1826,6 +1830,7 @@ Additional datacenter locations of the API Management service. Not supported wit
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `apiDiagnostics`
@@ -1834,6 +1839,7 @@ API Diagnostics.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `apis`
@@ -1842,6 +1848,7 @@ APIs.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `apiVersionSets`
@@ -1850,6 +1857,7 @@ API Version Sets.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `authorizationServers`
@@ -1858,6 +1866,7 @@ Authorization servers.
 
 - Required: No
 - Type: secureObject
+- Nullable: No
 - Default: `{}`
 
 ### Parameter: `backends`
@@ -1866,6 +1875,7 @@ Backends.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `caches`
@@ -1874,6 +1884,7 @@ Caches.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `certificates`
@@ -1882,6 +1893,7 @@ List of Certificates that need to be installed in the API Management service. Ma
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `customProperties`
@@ -1890,6 +1902,7 @@ Custom properties of the API Management service. Not supported if SKU is Consump
 
 - Required: No
 - Type: object
+- Nullable: No
 - Default:
   ```Bicep
   {
@@ -1910,6 +1923,7 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- Nullable: No
 
 **Optional parameters**
 
@@ -1931,6 +1945,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1938,6 +1953,7 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1945,6 +1961,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1959,6 +1976,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Optional parameters**
 
@@ -1974,6 +1992,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1981,6 +2000,7 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1988,6 +2008,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1995,6 +2016,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -2002,6 +2024,7 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 **Required parameters**
 
@@ -2021,6 +2044,7 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -2028,6 +2052,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -2035,6 +2060,7 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -2042,6 +2068,7 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -2049,6 +2076,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `disableGateway`
 
@@ -2056,6 +2084,7 @@ Property only valid for an API Management service deployed in multiple locations
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableClientCertificate`
@@ -2064,6 +2093,7 @@ Property only meant to be used for Consumption SKU Service. This enforces a clie
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -2072,6 +2102,7 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `hostnameConfigurations`
@@ -2080,6 +2111,7 @@ Custom hostname configuration of the API Management service.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `identityProviders`
@@ -2088,6 +2120,7 @@ Identity providers.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `location`
@@ -2096,6 +2129,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -2104,6 +2138,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -2118,6 +2153,7 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2133,6 +2169,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `loggers`
 
@@ -2140,6 +2177,7 @@ Loggers.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `managedIdentities`
@@ -2148,6 +2186,7 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Nullable: No
 
 **Optional parameters**
 
@@ -2162,6 +2201,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -2169,6 +2209,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- Nullable: Yes
 
 ### Parameter: `minApiVersion`
 
@@ -2176,6 +2217,7 @@ Limit control plane API calls to API Management service with version equal to or
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `namedValues`
 
@@ -2183,6 +2225,7 @@ Named values.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `newGuidValue`
@@ -2191,6 +2234,7 @@ Necessary to create a new GUID.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `[newGuid()]`
 
 ### Parameter: `notificationSenderEmail`
@@ -2199,6 +2243,7 @@ The notification sender email address for the service.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'apimgmt-noreply@mail.windowsazure.com'`
 
 ### Parameter: `policies`
@@ -2207,6 +2252,7 @@ Policies.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `portalsettings`
@@ -2215,6 +2261,7 @@ Portal settings.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `products`
@@ -2223,6 +2270,7 @@ Products.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `publicIpAddressResourceId`
@@ -2231,6 +2279,7 @@ Public Standard SKU IP V4 based IP address to be associated with Virtual Network
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `restore`
 
@@ -2238,6 +2287,7 @@ Undelete API Management Service if it was previously soft-deleted. If this flag 
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `False`
 
 ### Parameter: `roleAssignments`
@@ -2246,6 +2296,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Roles configurable by name:
   - `'API Management Developer Portal Content Editor'`
   - `'API Management Service Contributor'`
@@ -2281,6 +2332,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2288,6 +2340,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2295,6 +2348,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2302,6 +2356,7 @@ Version of the condition.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2315,6 +2370,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2322,6 +2378,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2329,6 +2386,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2336,6 +2394,7 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2353,6 +2412,7 @@ The pricing tier of this API Management service.
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Premium'`
 - Allowed:
   ```Bicep
@@ -2373,6 +2433,7 @@ The full resource ID of a subnet in a virtual network to deploy the API Manageme
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `subscriptions`
 
@@ -2380,6 +2441,7 @@ Subscriptions.
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default: `[]`
 
 ### Parameter: `tags`
@@ -2388,6 +2450,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Nullable: Yes
 
 ### Parameter: `virtualNetworkType`
 
@@ -2395,6 +2458,7 @@ The type of VPN in which API Management service needs to be configured in. None 
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'None'`
 - Allowed:
   ```Bicep
@@ -2411,6 +2475,7 @@ A list of availability zones denoting where the resource needs to come from. Onl
 
 - Required: No
 - Type: array
+- Nullable: No
 - Default:
   ```Bicep
   [

@@ -41,6 +41,7 @@ The name of the database.
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `flexibleServerName`
 
@@ -48,6 +49,7 @@ The name of the parent PostgreSQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ### Parameter: `charset`
 
@@ -55,6 +57,7 @@ The charset of the database.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ### Parameter: `collation`
 
@@ -62,6 +65,7 @@ The collation of the database.
 
 - Required: No
 - Type: string
+- Nullable: Yes
 
 ## Outputs
 
