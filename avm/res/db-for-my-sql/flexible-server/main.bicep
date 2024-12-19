@@ -97,6 +97,9 @@ param delegatedSubnetResourceId string = ''
 @description('Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access". Required if "delegatedSubnetResourceId" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server.')
 param privateDnsZoneResourceId string = ''
 
+@description('Optional. Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration.')
+param publicNetworkAccess string = 'Disabled'
+
 @description('Conditional. Restore point creation time (ISO8601 format), specifying the time to restore from. Required if "createMode" is set to "PointInTimeRestore".')
 param restorePointInTime string = ''
 
@@ -158,6 +161,9 @@ param databases array = []
 
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
+
+@description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defnder for ) for the server.')
+param advancedThreatProtectionEnabled bool = true
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
@@ -324,12 +330,11 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
           startMinute: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startMinute : 0
         }
       : null
-    network: !empty(delegatedSubnetResourceId) && empty(firewallRules)
-      ? {
-          delegatedSubnetResourceId: delegatedSubnetResourceId
-          privateDnsZoneResourceId: privateDnsZoneResourceId
-        }
-      : null
+    network: {
+      delegatedSubnetResourceId: !empty(delegatedSubnetResourceId) ? delegatedSubnetResourceId : null
+      privateDnsZoneResourceId: !empty(privateDnsZoneResourceId) ? privateDnsZoneResourceId : null
+      publicNetworkAccess: publicNetworkAccess
+    }
     replicationRole: replicationRole
     restorePointInTime: restorePointInTime
     sourceServerResourceId: !empty(sourceServerResourceId) ? sourceServerResourceId : null
@@ -406,6 +411,13 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
     }
   }
 ]
+
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = if (advancedThreatProtectionEnabled) {
+  name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
+  params: {
+    flexibleServerName: flexibleServer.name
+  }
+}
 
 resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
