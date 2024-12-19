@@ -1,4 +1,4 @@
-# Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings `[Microsoft.recoveryservices/vault/replicationfabric/replicationprotectioncontainer/replicationprotectioncontainermapping]`
+# Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings `[Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings]`
 
 This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.
 

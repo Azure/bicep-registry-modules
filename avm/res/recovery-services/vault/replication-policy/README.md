@@ -1,4 +1,4 @@
-# Recovery Services Vault Replication Policies `[Microsoft.recoveryservices/vault/replicationpolicy]`
+# Recovery Services Vault Replication Policies `[Microsoft.RecoveryServices/vaults/replicationPolicies]`
 
 This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.
 
