@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1664973594306210803"
+      "templateHash": "7453341249016368972"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -74,7 +74,7 @@
       "type": "string",
       "defaultValue": "Standard_LRS",
       "metadata": {
-        "description": "Optional. The storage account type to use for the jump box. Defaults to Standard_LRS."
+        "description": "Optional. The storage account type to use for the jump box. Defaults to `Standard_LRS`."
       }
     },
     "vmAdminUsername": {

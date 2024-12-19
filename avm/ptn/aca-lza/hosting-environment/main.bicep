@@ -35,7 +35,7 @@ param location string = deployment().location
 @description('Required. The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
 
-@description('Optional. The storage account type to use for the jump box. Defaults to Standard_LRS.')
+@description('Optional. The storage account type to use for the jump box. Defaults to `Standard_LRS`.')
 param storageAccountType string = 'Standard_LRS'
 
 @description('Required. The username to use for the virtual machine.')
