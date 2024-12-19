@@ -268,6 +268,7 @@ module frontDoor 'modules/front-door/deploy.front-door.bicep' = if (exposeContai
   }
 }
 
+#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.acalza-hostingenvironment.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location

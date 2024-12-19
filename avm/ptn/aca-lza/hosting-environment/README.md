@@ -19,7 +19,7 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments) |
 | `Microsoft.Cdn/profiles` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles) |
 | `Microsoft.Cdn/profiles/afdEndpoints` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/afdEndpoints) |
 | `Microsoft.Cdn/profiles/afdEndpoints/routes` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/afdEndpoints/routes) |
@@ -33,10 +33,10 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.Cdn/profiles/secrets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/secrets) |
 | `Microsoft.Compute/virtualMachines` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
@@ -48,7 +48,7 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
-| `Microsoft.Maintenance/maintenanceConfigurations` | [2023-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/maintenanceConfigurations) |
+| `Microsoft.Maintenance/maintenanceConfigurations` | [2023-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-10-01-preview/maintenanceConfigurations) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/applicationGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/applicationGateways) |
@@ -114,6 +114,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: 'appgwcert'
+    base64Certificate: '<base64Certificate>'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -154,6 +155,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Required parameters
     "applicationGatewayCertificateKeyName": {
       "value": "appgwcert"
+    },
+    "base64Certificate": {
+      "value": "<base64Certificate>"
     },
     "enableApplicationInsights": {
       "value": true
@@ -224,6 +228,7 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = 'appgwcert'
+base64Certificate: '<base64Certificate>'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -265,6 +270,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: 'appgwcert'
+    base64Certificate: '<base64Certificate>'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -312,6 +318,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Required parameters
     "applicationGatewayCertificateKeyName": {
       "value": "appgwcert"
+    },
+    "base64Certificate": {
+      "value": "<base64Certificate>"
     },
     "enableApplicationInsights": {
       "value": true
@@ -403,6 +412,7 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = 'appgwcert'
+base64Certificate: '<base64Certificate>'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -451,6 +461,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: 'appgwcert'
+    base64Certificate: '<base64Certificate>'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -496,6 +507,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Required parameters
     "applicationGatewayCertificateKeyName": {
       "value": "appgwcert"
+    },
+    "base64Certificate": {
+      "value": "<base64Certificate>"
     },
     "enableApplicationInsights": {
       "value": true
@@ -581,6 +595,7 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = 'appgwcert'
+base64Certificate: '<base64Certificate>'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -619,6 +634,7 @@ param workloadName = '<workloadName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationGatewayCertificateKeyName`](#parameter-applicationgatewaycertificatekeyname) | string | The name of the certificate key to use for Application Gateway certificate. |
+| [`base64Certificate`](#parameter-base64certificate) | string | The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
 | [`enableApplicationInsights`](#parameter-enableapplicationinsights) | bool | Enable or disable the createion of Application Insights. |
 | [`enableDaprInstrumentation`](#parameter-enabledaprinstrumentation) | bool | Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored. |
 | [`spokeApplicationGatewaySubnetAddressPrefix`](#parameter-spokeapplicationgatewaysubnetaddressprefix) | string | CIDR of the Spoke Application Gateway Subnet. |
@@ -636,7 +652,6 @@ param workloadName = '<workloadName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationGatewayFqdn`](#parameter-applicationgatewayfqdn) | string | The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty. |
-| [`base64Certificate`](#parameter-base64certificate) | string | The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty. |
 | [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
 | [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
 | [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
@@ -657,6 +672,13 @@ param workloadName = '<workloadName>'
 ### Parameter: `applicationGatewayCertificateKeyName`
 
 The name of the certificate key to use for Application Gateway certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `base64Certificate`
+
+The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.
 
 - Required: Yes
 - Type: string
@@ -741,14 +763,6 @@ The size of the virtual machine to create. See https://learn.microsoft.com/azure
 ### Parameter: `applicationGatewayFqdn`
 
 The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `base64Certificate`
-
-The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty.
 
 - Required: No
 - Type: string
@@ -945,7 +959,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/insights/component:0.3.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.2.1` | Remote reference |
-| `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.0` | Remote reference |
+| `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.1` | Remote reference |
 | `br/public:avm/res/network/application-gateway:0.1.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.2.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.3.0` | Remote reference |

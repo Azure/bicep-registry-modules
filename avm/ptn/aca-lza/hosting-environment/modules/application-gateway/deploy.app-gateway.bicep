@@ -343,7 +343,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
   }
 }
 
-module appGwWafPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.0' = {
+module appGwWafPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.1' = {
   name: take('appGwWafPolicy-Deployment-${uniqueString(resourceGroup().id)}', 64)
   params: {
     name: '${naming.outputs.resourcesNames.applicationGateway}Policy001'
