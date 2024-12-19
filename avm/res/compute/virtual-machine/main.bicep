@@ -161,7 +161,18 @@ param extensionAadJoinConfig object = {
 
 @description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionAntiMalwareConfig object = {
-  enabled: false
+  enabled: true
+  settings: {
+    AntimalwareEnabled: 'true'
+    Exclusions: {}
+    RealtimeProtectionEnabled: 'true'
+    ScheduledScanSettings: {
+      day: '7'
+      isEnabled: 'true'
+      scanType: 'Quick'
+      time: '120'
+    }
+  }
 }
 
 @description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
