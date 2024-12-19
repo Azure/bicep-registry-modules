@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "815879010072595898"
+      "version": "0.32.4.45862",
+      "templateHash": "7966743093368602805"
     },
     "name": "Log Analytics Workspace Linked Services",
     "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -62,10 +62,7 @@
       "properties": {
         "resourceId": "[parameters('resourceId')]",
         "writeAccessResourceId": "[parameters('writeAccessResourceId')]"
-      },
-      "dependsOn": [
-        "workspace"
-      ]
+      }
     }
   },
   "outputs": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "8234368842276618768"
+      "version": "0.32.4.45862",
+      "templateHash": "15700504938596502383"
     },
     "name": "Search Services Private Link Resources",
     "description": "This module deploys a Search Service Private Link Resource.",
@@ -67,10 +67,7 @@
         "groupId": "[parameters('groupId')]",
         "requestMessage": "[parameters('requestMessage')]",
         "resourceRegion": "[parameters('resourceRegion')]"
-      },
-      "dependsOn": [
-        "searchService"
-      ]
+      }
     }
   },
   "outputs": {

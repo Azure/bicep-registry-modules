@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "1157890849044188513"
+      "version": "0.32.4.45862",
+      "templateHash": "12898926018221194533"
     },
     "name": "Site Api Management Config",
     "description": "This module deploys a Site Api Management Configuration.",
@@ -39,10 +39,7 @@
       "apiVersion": "2023-12-01",
       "name": "[format('{0}/{1}', parameters('appName'), 'web')]",
       "kind": "string",
-      "properties": "[parameters('apiManagementConfiguration')]",
-      "dependsOn": [
-        "app"
-      ]
+      "properties": "[parameters('apiManagementConfiguration')]"
     }
   },
   "outputs": {

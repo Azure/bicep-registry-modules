@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "787568686333677059"
+      "version": "0.32.4.45862",
+      "templateHash": "6921717581640555251"
     },
     "name": "Operations Management Solutions",
     "description": "This module deploys an Operations Management Solution.",
@@ -116,10 +116,7 @@
         "promotionCode": "",
         "product": "[parameters('plan').product]",
         "publisher": "[coalesce(tryGet(parameters('plan'), 'publisher'), 'Microsoft')]"
-      },
-      "dependsOn": [
-        "logAnalyticsWorkspace"
-      ]
+      }
     }
   },
   "outputs": {

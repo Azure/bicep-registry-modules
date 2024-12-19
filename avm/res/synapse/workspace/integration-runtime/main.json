@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "11560320362047193657"
+      "version": "0.32.4.45862",
+      "templateHash": "15698775390725353911"
     },
     "name": "Synapse Workspace Integration Runtimes",
     "description": "This module deploys a Synapse Workspace Integration Runtime.",
