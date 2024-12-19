@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "1366013891071224264"
+      "version": "0.32.4.45862",
+      "templateHash": "8397380959530289557"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -217,10 +217,7 @@
         "qosType": "[parameters('qosType')]",
         "coolAccess": "[parameters('coolAccess')]",
         "encryptionType": "[parameters('encryptionType')]"
-      },
-      "dependsOn": [
-        "netAppAccount"
-      ]
+      }
     },
     "capacityPool_roleAssignments": {
       "copy": {
@@ -442,8 +439,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "14328317888842072540"
+              "version": "0.32.4.45862",
+              "templateHash": "1711406897762263790"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -961,10 +958,7 @@
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
               "apiVersion": "2024-03-01",
-              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
-              "dependsOn": [
-                "netAppAccount"
-              ]
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
             },
             "netAppAccount": {
               "existing": true,
@@ -982,7 +976,6 @@
               "dependsOn": [
                 "backupPolicies",
                 "backupVaults",
-                "netAppAccount::capacityPool",
                 "snapshotPolicies"
               ]
             },
@@ -992,10 +985,7 @@
               "apiVersion": "2024-03-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
               "location": "[parameters('backupVaultLocation')]",
-              "properties": {},
-              "dependsOn": [
-                "netAppAccount"
-              ]
+              "properties": {}
             },
             "backups": {
               "condition": "[parameters('backupEnabled')]",
@@ -1066,8 +1056,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15255260076655189132"
+                      "version": "0.32.4.45862",
+                      "templateHash": "8818356139475003480"
                     },
                     "name": "Azure NetApp Files Backup Policy",
                     "description": "This module deploys a Backup Policy for Azure NetApp File.",
@@ -1237,8 +1227,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "17696312984702506132"
+                      "version": "0.32.4.45862",
+                      "templateHash": "3197274813335881079"
                     },
                     "name": "Azure NetApp Files Snapshot Policy",
                     "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
@@ -1471,8 +1461,7 @@
         }
       },
       "dependsOn": [
-        "capacityPool",
-        "netAppAccount"
+        "capacityPool"
       ]
     }
   },
