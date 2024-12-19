@@ -1,0 +1,176 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "9895671062189651492"
+    },
+    "name": "Azure SQL Server failover group",
+    "description": "This module deploys Azure SQL Server failover group.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "failoverGroupReadOnlyEndpointType": {
+      "type": "object",
+      "properties": {
+        "failoverPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. Failover policy of the read-only endpoint for the failover group."
+          }
+        },
+        "targetServer": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The target partner server where the read-only endpoint points to."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "failoverGroupReadWriteEndpointType": {
+      "type": "object",
+      "properties": {
+        "failoverPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Automatic",
+            "Manual"
+          ],
+          "metadata": {
+            "description": "Required. Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required."
+          }
+        },
+        "failoverWithDataLossGracePeriodMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Grace period before failover with data loss is attempted for the read-write endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the failover group."
+      }
+    },
+    "serverName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The Name of SQL Server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "databases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "Required. List of databases in the failover group."
+      }
+    },
+    "partnerServers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "Required. List of the partner servers for the failover group."
+      }
+    },
+    "readOnlyEndpoint": {
+      "$ref": "#/definitions/failoverGroupReadOnlyEndpointType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Read-only endpoint of the failover group instance."
+      }
+    },
+    "readWriteEndpoint": {
+      "$ref": "#/definitions/failoverGroupReadWriteEndpointType",
+      "metadata": {
+        "description": "Required. Read-write endpoint of the failover group instance."
+      }
+    },
+    "secondaryType": {
+      "type": "string",
+      "allowedValues": [
+        "Geo",
+        "Standby"
+      ],
+      "metadata": {
+        "description": "Required. Databases secondary type on partner server."
+      }
+    }
+  },
+  "resources": {
+    "server": {
+      "existing": true,
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[parameters('serverName')]"
+    },
+    "failoverGroup": {
+      "type": "Microsoft.Sql/servers/failoverGroups",
+      "apiVersion": "2024-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "databases",
+            "count": "[length(parameters('databases'))]",
+            "input": "[resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databases')[copyIndex('databases')])]"
+          },
+          {
+            "name": "partnerServers",
+            "count": "[length(parameters('partnerServers'))]",
+            "input": {
+              "id": "[resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('partnerServers')[copyIndex('partnerServers')])]"
+            }
+          }
+        ],
+        "readOnlyEndpoint": "[if(not(empty(parameters('readOnlyEndpoint'))), createObject('failoverPolicy', parameters('readOnlyEndpoint').failoverPolicy, 'targetServer', resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('readOnlyEndpoint').targetServer)), null())]",
+        "readWriteEndpoint": "[parameters('readWriteEndpoint')]",
+        "secondaryType": "[parameters('secondaryType')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed failover group."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed failover group."
+      },
+      "value": "[resourceId('Microsoft.Sql/servers/failoverGroups', parameters('serverName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed failover group."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
