@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "2222650596260487600"
+      "version": "0.32.4.45862",
+      "templateHash": "2988995240332079717"
     },
     "name": "DocumentDB Database Account SQL Role Definitions.",
     "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
