@@ -3322,7 +3322,7 @@ Monitoring Settings of the vault.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureMonitorAlertSettings`](#parameter-monitoringsettingsazuremonitoralertsettings) | object | The alert settings. |
-| [`classicAlertSettings`](#parameter-monitoringsettingsclassicalertsettings) | object | The classic alert settings |
+| [`classicAlertSettings`](#parameter-monitoringsettingsclassicalertsettings) | object | The classic alert settings. |
 
 ### Parameter: `monitoringSettings.azureMonitorAlertSettings`
 
@@ -3383,7 +3383,7 @@ Enable / disable alerts for all replication issues.
 
 ### Parameter: `monitoringSettings.classicAlertSettings`
 
-The classic alert settings
+The classic alert settings.
 
 - Required: No
 - Type: object

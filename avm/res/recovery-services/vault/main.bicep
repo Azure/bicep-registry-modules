@@ -653,7 +653,7 @@ type monitoringSettingsType = {
     alertsForAllReplicationIssues: ('Enabled' | 'Disabled')?
   }?
 
-  @description('Optional. The classic alert settings')
+  @description('Optional. The classic alert settings.')
   classicAlertSettings: {
     @description('Optional. Enable / disable alerts for critical operations.')
     alertsForCriticalOperations: ('Enabled' | 'Disabled')?
