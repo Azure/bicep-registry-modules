@@ -1173,10 +1173,10 @@ Describe 'Governance tests' {
         $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-module-reviewers-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
         # Line should exist
-        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
+        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
 
         # Line should be correct
-        $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file).'
+        $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file).'
     }
 
     It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
@@ -1204,7 +1204,7 @@ Describe 'Governance tests' {
         $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
 
         # Should exist
-        $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).'
+        $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/spec/BCPNFR15)).'
 
         # Should not be commented
         $entry = $issueTemplateContent | Where-Object { $_ -match ('.*- "{0}".*' -f $relativeModulePath -replace '\\', '\/') }
@@ -1219,7 +1219,7 @@ Describe 'Governance tests' {
         }
         $incorrectLines = $incorrectLines | Sort-Object -Culture 'en-US' -Unique
 
-        $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
+        $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/spec/BCPNFR15)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
     }
 }
 
