@@ -28,6 +28,7 @@ The name of the parent DBforMySQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
+- Nullable: No
 
 ## Outputs
 

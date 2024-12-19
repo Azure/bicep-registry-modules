@@ -1090,6 +1090,7 @@ Enable/Disable Advanced Threat Protection (Microsoft Defnder for ) for the serve
 
 - Required: No
 - Type: bool
+- Nullable: No
 - Default: `True`
 
 ### Parameter: `availabilityZone`
@@ -1625,7 +1626,10 @@ Specifies whether public network access is allowed for this server. Set to "Enab
 
 - Required: No
 - Type: string
+- Nullable: No
 - Default: `'Disabled'`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `replicationRole`
 
