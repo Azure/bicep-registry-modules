@@ -4,7 +4,7 @@
 
 Changes
 
-- Updated the referenced AVM common types
+- Updated the referenced AVM common types.
 
 Bugfix
 
