@@ -338,7 +338,6 @@ function Set-DefinitionSection {
                 $rawAllowedValues = $parameter.allowedValues
             }
 
-            $isNullable = $parameter.nullable -eq $true ? 'Yes' : 'No'
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
             $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
             $example = ($parameter.ContainsKey('metadata') -and $parameter['metadata'].ContainsKey('example')) ? $parameter['metadata']['example'] : $null
