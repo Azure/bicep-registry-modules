@@ -38,12 +38,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 // Create a secondary server for the failover group
-var secondaryServerName = '${namePrefix}${serviceShort}002'
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, locationSecondary)}-nestedDependencies'
   params: {
-    serverName: secondaryServerName
+    serverName: '${namePrefix}${serviceShort}002'
     location: locationSecondary
   }
 }
