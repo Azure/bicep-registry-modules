@@ -42,7 +42,6 @@ The principal id assigned to the Kusto Cluster principal. It can be a user email
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `principalType`
 
@@ -50,7 +49,6 @@ The principal type of the principal id.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -66,7 +64,6 @@ The Kusto Cluster role to be assigned to the principal id.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -81,7 +78,6 @@ The name of the parent Kusto Cluster. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `tenantId`
 
@@ -89,7 +85,6 @@ The tenant id of the principal id.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[tenant().tenantId]`
 
 ## Outputs

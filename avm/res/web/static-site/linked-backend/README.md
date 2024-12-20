@@ -41,7 +41,6 @@ The resource ID of the backend linked to the static site.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `staticSiteName`
 
@@ -49,7 +48,6 @@ The name of the parent Static Web App. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -57,7 +55,6 @@ Name of the backend to link to the static site.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[uniqueString(parameters('backendResourceId'))]`
 
 ### Parameter: `region`
@@ -66,7 +63,6 @@ The region of the backend linked to the static site.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

@@ -42,7 +42,6 @@ The name of the Managed Virtual Network.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `dataFactoryName`
 
@@ -50,7 +49,6 @@ The name of the parent Azure Data Factory. Required if the template is used in a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `managedPrivateEndpoints`
 
@@ -58,7 +56,6 @@ An array of managed private endpoints objects created in the Data Factory manage
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ## Outputs

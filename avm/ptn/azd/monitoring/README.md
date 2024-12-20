@@ -136,7 +136,6 @@ The resource insights components name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `logAnalyticsName`
 
@@ -144,7 +143,6 @@ The resource operational insights workspaces name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applicationInsightsDashboardName`
 
@@ -152,7 +150,6 @@ The resource portal dashboards name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -161,7 +158,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -170,7 +166,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `tags`
@@ -179,7 +174,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - Example:
   ```Bicep
   {

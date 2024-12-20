@@ -45,7 +45,6 @@ The resource identifier of the FHIR Service to connect to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -53,7 +52,6 @@ The name of the FHIR destination.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `iotConnectorName`
 
@@ -61,7 +59,6 @@ The name of the MedTech service to add this destination to. Required if the temp
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `workspaceName`
 
@@ -69,7 +66,6 @@ The name of the parent health data services workspace. Required if the template 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `destinationMapping`
 
@@ -77,7 +73,6 @@ The mapping JSON that determines how normalized data is converted to FHIR Observ
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -92,7 +87,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `resourceIdentityResolutionType`
@@ -101,7 +95,6 @@ Determines how resource identity is resolved on the destination.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Lookup'`
 - Allowed:
   ```Bicep

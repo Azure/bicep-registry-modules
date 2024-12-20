@@ -41,7 +41,6 @@ The name of the Server Virtual Network Rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualNetworkSubnetId`
 
@@ -49,7 +48,6 @@ The resource ID of the virtual network subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -57,7 +55,6 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ignoreMissingVnetServiceEndpoint`
 
@@ -65,7 +62,6 @@ Allow creating a firewall rule before the virtual network has vnet service endpo
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ## Outputs

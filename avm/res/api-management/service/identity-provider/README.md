@@ -50,7 +50,6 @@ Identity provider name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -58,7 +57,6 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `clientId`
 
@@ -66,7 +64,6 @@ Client ID of the Application in the external Identity Provider. Required if iden
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `clientSecret`
@@ -75,7 +72,6 @@ Client secret of the Application in external Identity Provider, used to authenti
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `allowedTenants`
@@ -84,7 +80,6 @@ List of Allowed Tenants when configuring Azure Active Directory login. - string.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `authority`
@@ -93,7 +88,6 @@ OpenID Connect discovery endpoint hostname for AAD or AAD B2C.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `clientLibrary`
@@ -102,7 +96,6 @@ The client library to be used in the developer portal. Only applies to AAD and A
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -117,7 +110,6 @@ Password Reset Policy Name. Only applies to AAD B2C Identity Provider.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `profileEditingPolicyName`
@@ -126,7 +118,6 @@ Profile Editing Policy Name. Only applies to AAD B2C Identity Provider.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `signInPolicyName`
@@ -135,7 +126,6 @@ Signin Policy Name. Only applies to AAD B2C Identity Provider.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `signInTenant`
@@ -144,7 +134,6 @@ The TenantId to use instead of Common when logging into Active Directory.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `signUpPolicyName`
@@ -153,7 +142,6 @@ Signup Policy Name. Only applies to AAD B2C Identity Provider.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `type`
@@ -162,7 +150,6 @@ Identity Provider Type identifier.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'aad'`
 - Allowed:
   ```Bicep

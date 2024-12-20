@@ -1227,7 +1227,6 @@ Specifies the name of the policy assignment. Maximum length is 24 characters for
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `policyDefinitionId`
 
@@ -1235,7 +1234,6 @@ Specifies the ID of the policy definition or policy set definition being assigne
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `additionalManagementGroupsIDsToAssignRbacTo`
 
@@ -1243,7 +1241,6 @@ An array of additional management group IDs to assign RBAC to for the policy ass
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `additionalResourceGroupResourceIDsToAssignRbacTo`
@@ -1252,7 +1249,6 @@ An array of additional Resource Group Resource IDs to assign RBAC to for the pol
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `additionalSubscriptionIDsToAssignRbacTo`
@@ -1261,7 +1257,6 @@ An array of additional Subscription IDs to assign RBAC to for the policy assignm
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `description`
@@ -1270,7 +1265,6 @@ This message will be part of response in case of policy violation.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `displayName`
@@ -1279,7 +1273,6 @@ The display name of the policy assignment. Maximum length is 128 characters.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -1288,7 +1281,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enforcementMode`
@@ -1297,7 +1289,6 @@ The policy assignment enforcement mode. Possible values are Default and DoNotEnf
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Default'`
 - Allowed:
   ```Bicep
@@ -1313,7 +1304,6 @@ The managed identity associated with the policy assignment. Policy assignments m
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'SystemAssigned'`
 - Allowed:
   ```Bicep
@@ -1330,7 +1320,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `managementGroupId`
@@ -1339,7 +1328,6 @@ The Target Scope for the Policy. The name of the management group for the policy
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[managementGroup().name]`
 
 ### Parameter: `metadata`
@@ -1348,7 +1336,6 @@ The policy assignment metadata. Metadata is an open ended object and is typicall
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `nonComplianceMessages`
@@ -1357,7 +1344,6 @@ The messages that describe why a resource is non-compliant with the policy.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `notScopes`
@@ -1366,7 +1352,6 @@ The policy excluded scopes.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `overrides`
@@ -1375,7 +1360,6 @@ The policy property value override. Allows changing the effect of a policy defin
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `parameters`
@@ -1384,7 +1368,6 @@ Parameters for the policy assignment if needed.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `resourceGroupName`
@@ -1393,7 +1376,6 @@ The Target Scope for the Policy. The name of the resource group for the policy a
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `resourceSelectors`
@@ -1402,7 +1384,6 @@ The resource selector list to filter policies by resource properties. Facilitate
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `roleDefinitionIds`
@@ -1411,7 +1392,6 @@ The IDs Of the Azure Role Definition list that is used to assign permissions to 
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `subscriptionId`
@@ -1420,7 +1400,6 @@ The Target Scope for the Policy. The subscription ID of the subscription for the
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `userAssignedIdentityId`
@@ -1429,7 +1408,6 @@ The Resource ID for the user assigned identity to assign to the policy assignmen
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

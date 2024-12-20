@@ -609,7 +609,6 @@ The name of the Public IP Address.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ddosSettings`
 
@@ -617,7 +616,6 @@ The DDoS protection plan configuration associated with the public IP address.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -637,7 +635,6 @@ The DDoS protection policy customizations.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -651,7 +648,6 @@ The DDoS protection plan associated with the public IP address.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -665,7 +661,6 @@ The resource ID of the DDOS protection plan associated with the public IP addres
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `diagnosticSettings`
 
@@ -673,7 +668,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -695,7 +689,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -703,7 +696,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -711,7 +703,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -726,7 +717,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -742,7 +732,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -750,7 +739,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -758,7 +746,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -766,7 +753,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -774,7 +760,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -794,7 +779,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -802,7 +786,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -810,7 +793,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -818,7 +800,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -826,7 +807,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `dnsSettings`
 
@@ -834,7 +814,6 @@ The DNS settings of the public IP address.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -856,7 +835,6 @@ The domain name label. The concatenation of the domain name label and the region
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `dnsSettings.domainNameLabelScope`
 
@@ -864,7 +842,6 @@ The domain name label scope. If a domain name label and a domain name label scop
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -882,7 +859,6 @@ The Fully Qualified Domain Name of the A DNS record associated with the public I
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `dnsSettings.reverseFqdn`
 
@@ -890,7 +866,6 @@ The reverse FQDN. A user-visible, fully qualified domain name that resolves to t
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -898,7 +873,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `idleTimeoutInMinutes`
@@ -907,7 +881,6 @@ The idle timeout of the public IP address.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `4`
 
 ### Parameter: `ipTags`
@@ -916,7 +889,6 @@ The list of tags associated with the public IP address.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -931,7 +903,6 @@ The IP tag type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ipTags.tag`
 
@@ -939,7 +910,6 @@ The IP tag.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `location`
 
@@ -947,7 +917,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -956,7 +925,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -971,7 +939,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -987,7 +954,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `publicIPAddressVersion`
 
@@ -995,7 +961,6 @@ IP address version.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'IPv4'`
 - Allowed:
   ```Bicep
@@ -1011,7 +976,6 @@ The public IP address allocation method.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Static'`
 - Allowed:
   ```Bicep
@@ -1027,7 +991,6 @@ Resource ID of the Public IP Prefix object. This is only needed if you want your
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -1035,7 +998,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -1072,7 +1034,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1080,7 +1041,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1088,7 +1048,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1096,7 +1055,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1110,7 +1068,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1118,7 +1075,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1126,7 +1082,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1134,7 +1089,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1152,7 +1106,6 @@ Name of a public IP address SKU.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -1168,7 +1121,6 @@ Tier of a public IP address SKU.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Regional'`
 - Allowed:
   ```Bicep
@@ -1184,7 +1136,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `zones`
 
@@ -1192,7 +1143,6 @@ A list of availability zones denoting the IP allocated for the resource needs to
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [

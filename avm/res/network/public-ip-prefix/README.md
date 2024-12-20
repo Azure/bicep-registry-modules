@@ -484,7 +484,6 @@ The name of the Public IP Prefix.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `prefixLength`
 
@@ -492,7 +491,6 @@ Length of the Public IP Prefix.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 21
 - MaxValue: 127
 
@@ -502,7 +500,6 @@ The custom IP address prefix that this prefix is associated with. A custom IP ad
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 - MinValue: 21
 - MaxValue: 127
@@ -513,7 +510,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 21
 - MaxValue: 127
@@ -524,7 +520,6 @@ The list of tags associated with the public IP prefix.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 
@@ -541,7 +536,6 @@ The IP tag type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 21
 - MaxValue: 127
 
@@ -551,7 +545,6 @@ The IP tag.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 21
 - MaxValue: 127
 
@@ -561,7 +554,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 - MinValue: 21
 - MaxValue: 127
@@ -572,7 +564,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 
@@ -589,7 +580,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -607,7 +597,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 
@@ -617,7 +606,6 @@ The public IP address version.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'IPv4'`
 - Allowed:
   ```Bicep
@@ -635,7 +623,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 - Roles configurable by name:
@@ -670,7 +657,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 21
 - MaxValue: 127
 
@@ -680,7 +666,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 21
 - MaxValue: 127
 
@@ -690,7 +675,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 
@@ -700,7 +684,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -716,7 +699,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 
@@ -726,7 +708,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 
@@ -736,7 +717,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 
@@ -746,7 +726,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -766,7 +745,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 21
 - MaxValue: 127
 
@@ -776,7 +754,6 @@ Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Regional'`
 - Allowed:
   ```Bicep
@@ -794,7 +771,6 @@ A list of availability zones denoting the IP allocated for the resource needs to
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [

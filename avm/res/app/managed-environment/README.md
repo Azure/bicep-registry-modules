@@ -755,7 +755,6 @@ Existing Log Analytics Workspace resource ID. Note: This value is not required a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -763,7 +762,6 @@ Name of the Container Apps Managed Environment.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `dockerBridgeCidr`
 
@@ -771,7 +769,6 @@ CIDR notation IP range assigned to the Docker bridge, network. It must not overl
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `infrastructureResourceGroupName`
@@ -780,7 +777,6 @@ Name of the infrastructure resource group. If not provided, it will be set with 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[take(format('ME_{0}', parameters('name')), 63)]`
 
 ### Parameter: `infrastructureSubnetId`
@@ -789,7 +785,6 @@ Resource ID of a subnet for infrastructure components. This is used to deploy th
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `internal`
@@ -798,7 +793,6 @@ Boolean indicating the environment only has an internal load balancer. These env
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `platformReservedCidr`
@@ -807,7 +801,6 @@ IP range in CIDR notation that can be reserved for environment infrastructure IP
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `platformReservedDnsIP`
@@ -816,7 +809,6 @@ An IP address from the IP range defined by "platformReservedCidr" that will be r
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `workloadProfiles`
@@ -825,7 +817,6 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `appInsightsConnectionString`
@@ -834,7 +825,6 @@ Application Insights connection string.
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `certificateKeyVaultProperties`
@@ -843,7 +833,6 @@ A key vault reference to the certificate to use for the custom domain.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -858,7 +847,6 @@ The resource ID of the identity. This is the identity that will be used to acces
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `certificateKeyVaultProperties.keyVaultUrl`
 
@@ -866,7 +854,6 @@ A key vault URL referencing the wildcard certificate that will be used for the c
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `certificatePassword`
 
@@ -874,7 +861,6 @@ Password of the certificate used by the custom domain.
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `certificateValue`
@@ -883,7 +869,6 @@ Certificate to use for the custom domain. PFX or PEM.
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `daprAIConnectionString`
@@ -892,7 +877,6 @@ Application Insights connection string used by Dapr to export Service to Service
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `daprAIInstrumentationKey`
@@ -901,7 +885,6 @@ Azure Monitor instrumentation key used by Dapr to export Service to Service comm
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `dnsSuffix`
@@ -910,7 +893,6 @@ DNS suffix for the environment domain.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -919,7 +901,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -928,7 +909,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -937,7 +917,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -952,7 +931,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -968,7 +946,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `logsDestination`
 
@@ -976,7 +953,6 @@ Logs destination.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'log-analytics'`
 
 ### Parameter: `managedIdentities`
@@ -985,7 +961,6 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -1000,7 +975,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1008,7 +982,6 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `openTelemetryConfiguration`
 
@@ -1016,7 +989,6 @@ Open Telemetry configuration.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `peerTrafficEncryption`
@@ -1025,7 +997,6 @@ Whether or not to encrypt peer traffic.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `roleAssignments`
@@ -1034,7 +1005,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1066,7 +1036,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1074,7 +1043,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1082,7 +1050,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1090,7 +1057,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1104,7 +1070,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1112,7 +1077,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1120,7 +1084,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1128,7 +1091,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1146,7 +1108,6 @@ The list of storages to mount on the environment.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1163,7 +1124,6 @@ Access mode for storage: "ReadOnly" or "ReadWrite".
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1178,7 +1138,6 @@ Type of storage: "SMB" or "NFS".
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1193,7 +1152,6 @@ File share name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `storages.storageAccountName`
 
@@ -1201,7 +1159,6 @@ Storage account name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `tags`
 
@@ -1209,7 +1166,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `zoneRedundant`
 
@@ -1217,7 +1173,6 @@ Whether or not this Managed Environment is zone-redundant.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

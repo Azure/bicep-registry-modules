@@ -214,7 +214,6 @@ The resource ID of the loganalytics workspace.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -222,7 +221,6 @@ The resource insights components name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applicationType`
 
@@ -230,7 +228,6 @@ Application type.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'web'`
 - Allowed:
   ```Bicep
@@ -246,7 +243,6 @@ The resource portal dashboards name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -255,7 +251,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `kind`
@@ -264,7 +259,6 @@ The kind of application that this component refers to, used to customize UI. Thi
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'web'`
 
 ### Parameter: `location`
@@ -273,7 +267,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `tags`
@@ -282,7 +275,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - Example:
   ```Bicep
   {

@@ -64,7 +64,6 @@ API name. Must be 1 to 300 characters long.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -72,7 +71,6 @@ API revision identifier. Must be unique in the current API Management service in
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `path`
 
@@ -80,7 +78,6 @@ Relative URL uniquely identifying this API and all of its resource paths within 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -88,7 +85,6 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `loggerName`
 
@@ -96,7 +92,6 @@ The name of the API management service logger. Required if using api/diagnostics
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `apiDescription`
@@ -105,7 +100,6 @@ Description of the API. May include HTML formatting tags.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `apiRevision`
 
@@ -113,7 +107,6 @@ Describes the Revision of the API. If no value is provided, default revision 1 i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `apiRevisionDescription`
 
@@ -121,7 +114,6 @@ Description of the API Revision.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `apiType`
 
@@ -129,7 +121,6 @@ Type of API to create. * http creates a REST API * soap creates a SOAP pass-thro
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'http'`
 - Allowed:
   ```Bicep
@@ -147,7 +138,6 @@ Indicates the Version identifier of the API if the API is versioned.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `apiVersionDescription`
 
@@ -155,7 +145,6 @@ Description of the API Version.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `apiVersionSetId`
 
@@ -163,7 +152,6 @@ Indicates the Version identifier of the API version set.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `authenticationSettings`
 
@@ -171,7 +159,6 @@ Collection of authentication settings included into this API.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `diagnostics`
 
@@ -179,7 +166,6 @@ Array of diagnostics to apply to the Service API.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `format`
 
@@ -187,7 +173,6 @@ Format of the Content in which the API is getting imported.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'openapi'`
 - Allowed:
   ```Bicep
@@ -211,7 +196,6 @@ Indicates if API revision is current API revision.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `policies`
@@ -220,7 +204,6 @@ Array of Policies to apply to the Service API.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `protocols`
 
@@ -228,7 +211,6 @@ Describes on which protocols the operations in this API can be invoked. - HTTP o
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -242,7 +224,6 @@ Absolute URL of the backend service implementing this API. Cannot be more than 2
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `sourceApiId`
 
@@ -250,7 +231,6 @@ API identifier of the source API.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `subscriptionKeyParameterNames`
 
@@ -258,7 +238,6 @@ Protocols over which API is made available.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `subscriptionRequired`
 
@@ -266,7 +245,6 @@ Specifies whether an API or Product subscription is required for accessing the A
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `type`
@@ -275,7 +253,6 @@ Type of API.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'http'`
 - Allowed:
   ```Bicep
@@ -293,7 +270,6 @@ Content value when Importing an API.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `wsdlSelector`
 
@@ -301,7 +277,6 @@ Criteria to limit import of WSDL to a subset of the document.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

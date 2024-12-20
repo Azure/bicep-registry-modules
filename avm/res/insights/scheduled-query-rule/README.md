@@ -729,7 +729,6 @@ The rule criteria that defines the conditions of the scheduled query rule.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -737,7 +736,6 @@ The name of the Alert.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `scopes`
 
@@ -745,7 +743,6 @@ The list of resource IDs that this scheduled query rule is scoped to.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `windowSize`
 
@@ -753,7 +750,6 @@ The period of time (in ISO 8601 duration format) on which the Alert query will b
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `actions`
@@ -762,7 +758,6 @@ Actions to invoke when the alert fires.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `alertDescription`
@@ -771,7 +766,6 @@ The description of the scheduled query rule.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `alertDisplayName`
@@ -780,7 +774,6 @@ The display name of the scheduled query rule.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `autoMitigate`
 
@@ -788,7 +781,6 @@ The flag that indicates whether the alert should be automatically resolved or no
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enabled`
@@ -797,7 +789,6 @@ The flag which indicates whether this scheduled query rule is enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableTelemetry`
@@ -806,7 +797,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `evaluationFrequency`
@@ -815,7 +805,6 @@ How often the scheduled query rule is evaluated represented in ISO 8601 duration
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `kind`
@@ -824,7 +813,6 @@ Indicates the type of scheduled query rule.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'LogAlert'`
 - Allowed:
   ```Bicep
@@ -840,7 +828,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `queryTimeRange`
@@ -849,7 +836,6 @@ If specified (in ISO 8601 duration format) then overrides the query time range. 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `roleAssignments`
@@ -858,7 +844,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -890,7 +875,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -898,7 +882,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -906,7 +889,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -914,7 +896,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -928,7 +909,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -936,7 +916,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -944,7 +923,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -952,7 +930,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -970,7 +947,6 @@ Defines the configuration for resolving fired alerts. Relevant only for rules of
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `severity`
 
@@ -978,7 +954,6 @@ Severity of the alert. Should be an integer between [0-4]. Value of 0 is severes
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `3`
 - Allowed:
   ```Bicep
@@ -997,7 +972,6 @@ The flag which indicates whether the provided query should be validated or not. 
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `suppressForMinutes`
@@ -1006,7 +980,6 @@ Mute actions for the chosen period of time (in ISO 8601 duration format) after t
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `tags`
@@ -1015,7 +988,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `targetResourceTypes`
 
@@ -1023,7 +995,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ## Outputs

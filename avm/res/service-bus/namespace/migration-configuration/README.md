@@ -35,7 +35,6 @@ Name to access Standard Namespace after migration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `targetNamespaceResourceId`
 
@@ -43,7 +42,6 @@ Existing premium Namespace resource ID which has no entities, will be used for m
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -51,7 +49,6 @@ The name of the parent Service Bus Namespace for the Service Bus Queue. Required
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

@@ -1021,7 +1021,6 @@ The name of the NetApp account.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `adName`
 
@@ -1029,7 +1028,6 @@ Name of the active directory host as part of Kerberos Realm used for Kerberos au
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `aesEncryption`
@@ -1038,7 +1036,6 @@ Enable AES encryption on the SMB Server.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `capacityPools`
@@ -1047,7 +1044,6 @@ Capacity pools to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `customerManagedKey`
@@ -1056,7 +1052,6 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1078,7 +1073,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -1086,7 +1080,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -1094,7 +1087,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1102,7 +1094,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `dnsServers`
 
@@ -1110,7 +1101,6 @@ Required if domainName is specified. Comma separated list of DNS server IP addre
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `domainJoinOU`
@@ -1119,7 +1109,6 @@ Used only if domainName is specified. LDAP Path for the Organization Unit (OU) w
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `domainJoinPassword`
@@ -1128,7 +1117,6 @@ Required if domainName is specified. Password of the user specified in domainJoi
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `domainJoinUser`
@@ -1137,7 +1125,6 @@ Required if domainName is specified. Username of Active Directory domain adminis
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `domainName`
@@ -1146,7 +1133,6 @@ Fully Qualified Active Directory DNS Domain Name (e.g. 'contoso.com').
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -1155,7 +1141,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `encryptDCConnections`
@@ -1164,7 +1149,6 @@ Specifies whether encryption should be used for communication between SMB server
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `kdcIP`
@@ -1173,7 +1157,6 @@ Kerberos Key Distribution Center (KDC) as part of Kerberos Realm used for Kerber
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `ldapOverTLS`
@@ -1182,7 +1165,6 @@ Specifies whether to use TLS when NFS (with/without Kerberos) and SMB volumes co
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `ldapSigning`
@@ -1191,7 +1173,6 @@ Specifies whether or not the LDAP traffic needs to be signed.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `location`
@@ -1200,7 +1181,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1209,7 +1189,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1224,7 +1203,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1240,7 +1218,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1248,7 +1225,6 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1262,7 +1238,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -1270,7 +1245,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1302,7 +1276,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1310,7 +1283,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1318,7 +1290,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1326,7 +1297,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1340,7 +1310,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1348,7 +1317,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1356,7 +1324,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1364,7 +1331,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1382,7 +1348,6 @@ A server Root certificate is required of ldapOverTLS is enabled.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `smbServerNamePrefix`
@@ -1391,7 +1356,6 @@ Required if domainName is specified. NetBIOS name of the SMB server. A computer 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `tags`
@@ -1400,7 +1364,6 @@ Tags for all resources.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

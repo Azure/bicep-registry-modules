@@ -44,7 +44,6 @@ The name of the NAT rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `vpnGatewayName`
 
@@ -52,7 +51,6 @@ The name of the parent VPN gateway this NAT rule is associated with. Required if
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `externalMappings`
 
@@ -60,7 +58,6 @@ An address prefix range of destination IPs on the outside network that source IP
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `internalMappings`
@@ -69,7 +66,6 @@ An address prefix range of source IPs on the inside network that will be mapped 
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `ipConfigurationId`
@@ -78,7 +74,6 @@ A NAT rule must be configured to a specific VPN Gateway instance. This is applic
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `mode`
 
@@ -86,7 +81,6 @@ The type of NAT rule for VPN NAT. IngressSnat mode (also known as Ingress Source
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -101,7 +95,6 @@ The type of NAT rule for VPN NAT. Static one-to-one NAT establishes a one-to-one
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [

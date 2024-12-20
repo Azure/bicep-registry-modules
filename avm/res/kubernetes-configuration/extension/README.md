@@ -499,7 +499,6 @@ The name of the AKS cluster that should be configured.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `extensionType`
 
@@ -507,7 +506,6 @@ Type of the extension, of which this resource is an instance of. It must be one 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -515,7 +513,6 @@ The name of the Flux Configuration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `configurationProtectedSettings`
 
@@ -523,7 +520,6 @@ Configuration settings that are sensitive, as name-value pairs for configuring t
 
 - Required: No
 - Type: secureObject
-- Nullable: Yes
 
 ### Parameter: `configurationSettings`
 
@@ -531,7 +527,6 @@ Configuration settings, as name-value pairs for configuring this extension.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -539,7 +534,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `fluxConfigurations`
@@ -548,7 +542,6 @@ A list of flux configuraitons.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -556,7 +549,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `releaseNamespace`
@@ -565,7 +557,6 @@ Namespace where the extension Release must be placed, for a Cluster scoped exten
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `releaseTrain`
 
@@ -573,7 +564,6 @@ ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Previ
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `targetNamespace`
 
@@ -581,7 +571,6 @@ Namespace where the extension will be created for an Namespace scoped extension.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `version`
 
@@ -589,7 +578,6 @@ Version of the extension for this extension, if it is "pinned" to a specific ver
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

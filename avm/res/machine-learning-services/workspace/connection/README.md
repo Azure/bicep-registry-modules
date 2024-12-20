@@ -42,7 +42,6 @@ Category of the connection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -157,7 +156,6 @@ The properties of the connection, specific to the auth type.
 
 - Required: Yes
 - Type: secureObject
-- Nullable: No
 
 ### Parameter: `machineLearningWorkspaceName`
 
@@ -165,7 +163,6 @@ The name of the parent Machine Learning Workspace. Required if the template is u
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -173,7 +170,6 @@ Name of the connection to create.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `target`
 
@@ -181,7 +177,6 @@ The target of the connection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `expiryTime`
 
@@ -189,7 +184,6 @@ The expiry time of the connection.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `isSharedToAll`
 
@@ -197,7 +191,6 @@ Indicates whether the connection is shared to all users in the workspace.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `metadata`
 
@@ -205,7 +198,6 @@ User metadata for the connection.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 **Required parameters**
@@ -220,7 +212,6 @@ The metadata key-value pairs.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sharedUserList`
 
@@ -228,7 +219,6 @@ The shared user list of the connection.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `value`
 
@@ -236,7 +226,6 @@ Value details of the workspace connection.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

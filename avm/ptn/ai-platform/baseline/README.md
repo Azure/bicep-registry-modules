@@ -877,7 +877,6 @@ Alphanumberic suffix to use for resource naming.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applicationInsightsConfiguration`
 
@@ -885,7 +884,6 @@ Configuration for Application Insights.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -899,7 +897,6 @@ The name of the Application Insights resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration`
 
@@ -907,7 +904,6 @@ Configuration for the Azure Bastion host.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -931,7 +927,6 @@ Choose to disable or enable Copy Paste.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.enabled`
 
@@ -939,7 +934,6 @@ Whether to create a Bastion host in the virtual network. Defaults to 'true'.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.enableFileCopy`
 
@@ -947,7 +941,6 @@ Choose to disable or enable File Copy.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.enableIpConnect`
 
@@ -955,7 +948,6 @@ Choose to disable or enable IP Connect.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.enableKerberos`
 
@@ -963,7 +955,6 @@ Choose to disable or enable Kerberos authentication.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.enableShareableLink`
 
@@ -971,7 +962,6 @@ Choose to disable or enable Shareable Link.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.name`
 
@@ -979,7 +969,6 @@ The name of the Bastion host to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.networkSecurityGroupResourceId`
 
@@ -987,7 +976,6 @@ The resource ID of an existing network security group to associate with the Azur
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.scaleUnits`
 
@@ -995,7 +983,6 @@ The scale units for the Bastion Host resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `bastionConfiguration.sku`
 
@@ -1003,7 +990,6 @@ The SKU of the Bastion host to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1018,7 +1004,6 @@ The address prefix of the Azure Bastion subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containerRegistryConfiguration`
 
@@ -1026,7 +1011,6 @@ Configuration for the container registry.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1041,7 +1025,6 @@ The name of the container registry.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containerRegistryConfiguration.trustPolicyStatus`
 
@@ -1049,7 +1032,6 @@ Whether the trust policy is enabled for the container registry. Defaults to 'ena
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1064,7 +1046,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `keyVaultConfiguration`
@@ -1073,7 +1054,6 @@ Configuration for the key vault.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1088,7 +1068,6 @@ Provide 'true' to enable Key Vault's purge protection feature. Defaults to 'true
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `keyVaultConfiguration.name`
 
@@ -1096,7 +1075,6 @@ The name of the key vault.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -1104,7 +1082,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `logAnalyticsConfiguration`
@@ -1113,7 +1090,6 @@ Configuration for the Log Analytics workspace.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1127,7 +1103,6 @@ The name of the Log Analytics workspace.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentityName`
 
@@ -1135,7 +1110,6 @@ The name of the user-assigned identity for the AI Studio hub. If not provided, t
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `storageAccountConfiguration`
 
@@ -1143,7 +1117,6 @@ Configuration for the storage account.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1159,7 +1132,6 @@ Indicates whether the storage account permits requests to be authorized with the
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `storageAccountConfiguration.name`
 
@@ -1167,7 +1139,6 @@ The name of the storage account.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `storageAccountConfiguration.sku`
 
@@ -1175,7 +1146,6 @@ Storage account SKU. Defaults to 'Standard_RAGZRS'.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1196,7 +1166,6 @@ Resource tags.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration`
 
@@ -1204,7 +1173,6 @@ Configuration for the virtual machine.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Conditional parameters**
 
@@ -1236,7 +1204,6 @@ The password for the administrator account on the virtual machine. Required if a
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.adminUsername`
 
@@ -1244,7 +1211,6 @@ The username for the administrator account on the virtual machine. Required if a
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.enableAadLoginExtension`
 
@@ -1252,7 +1218,6 @@ Whether to enable the Microsoft.Azure.ActiveDirectory AADLoginForWindows extensi
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.enableAzureMonitorAgent`
 
@@ -1260,7 +1225,6 @@ Whether to enable the Microsoft.Azure.Monitor AzureMonitorWindowsAgent extension
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.enabled`
 
@@ -1268,7 +1232,6 @@ Whether to create a virtual machine in the associated virtual network. Defaults 
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.encryptionAtHost`
 
@@ -1276,7 +1239,6 @@ This property can be used by user in the request to enable or disable the Host E
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.imageReference`
 
@@ -1284,7 +1246,6 @@ OS image reference. In case of marketplace images, it's the combination of the p
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.maintenanceConfigurationResourceId`
 
@@ -1292,7 +1253,6 @@ The resource Id of a maintenance configuration for the virtual machine.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.name`
 
@@ -1300,7 +1260,6 @@ The name of the virtual machine.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration`
 
@@ -1308,7 +1267,6 @@ Configuration for the virtual machine network interface.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1325,7 +1283,6 @@ The name of the IP configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration.name`
 
@@ -1333,7 +1290,6 @@ The name of the network interface.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration.networkSecurityGroupResourceId`
 
@@ -1341,7 +1297,6 @@ The resource ID of an existing network security group to associate with the netw
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration.privateIPAllocationMethod`
 
@@ -1349,7 +1304,6 @@ The private IP address allocation method.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1364,7 +1318,6 @@ Specifies the OS disk.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1388,7 +1341,6 @@ The managed disk parameters.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -1403,7 +1355,6 @@ Specifies the customer managed disk encryption set resource id for the managed d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.osDisk.managedDisk.storageAccountType`
 
@@ -1411,7 +1362,6 @@ Specifies the storage account type for the managed disk.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1431,7 +1381,6 @@ Specifies the caching requirements.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1447,7 +1396,6 @@ Specifies how the virtual machine should be created.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1463,7 +1411,6 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1478,7 +1425,6 @@ Specifies the size of an empty data disk in gigabytes.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.osDisk.name`
 
@@ -1486,7 +1432,6 @@ The disk name.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.patchMode`
 
@@ -1494,7 +1439,6 @@ VM guest patching orchestration mode. Refer to 'https://learn.microsoft.com/en-u
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1510,7 +1454,6 @@ The virtual machine size. Defaults to 'Standard_D2s_v3'.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualMachineConfiguration.zone`
 
@@ -1518,7 +1461,6 @@ The availability zone of the virtual machine. If set to 0, no availability zone 
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1535,7 +1477,6 @@ Configuration for the virtual network.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1552,7 +1493,6 @@ The address prefix of the virtual network to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualNetworkConfiguration.enabled`
 
@@ -1560,7 +1500,6 @@ Whether to create an associated virtual network. Defaults to 'true'.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `virtualNetworkConfiguration.name`
 
@@ -1568,7 +1507,6 @@ The name of the virtual network to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualNetworkConfiguration.subnet`
 
@@ -1576,7 +1514,6 @@ Configuration for the virual network subnet.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1592,7 +1529,6 @@ The address prefix of the subnet to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualNetworkConfiguration.subnet.name`
 
@@ -1600,7 +1536,6 @@ The name of the subnet to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualNetworkConfiguration.subnet.networkSecurityGroupResourceId`
 
@@ -1608,7 +1543,6 @@ The resource ID of an existing network security group to associate with the subn
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `workspaceConfiguration`
 
@@ -1616,7 +1550,6 @@ Configuration for the AI Studio workspace.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1634,7 +1567,6 @@ Computes to create and attach to the workspace hub.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `workspaceConfiguration.name`
 
@@ -1642,7 +1574,6 @@ The name of the AI Studio workspace hub.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `workspaceConfiguration.networkIsolationMode`
 
@@ -1650,7 +1581,6 @@ The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbo
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1665,7 +1595,6 @@ The outbound rules for the managed network of the workspace hub.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1679,7 +1608,6 @@ The outbound rule. The name of the rule is the object key.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `workspaceConfiguration.projectName`
 
@@ -1687,7 +1615,6 @@ The name of the AI Studio workspace project.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

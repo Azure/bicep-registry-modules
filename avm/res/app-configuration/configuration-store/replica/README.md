@@ -35,7 +35,6 @@ Name of the replica.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `replicaLocation`
 
@@ -43,7 +42,6 @@ Location of the replica.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `appConfigurationName`
 
@@ -51,7 +49,6 @@ The name of the parent app configuration store. Required if the template is used
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

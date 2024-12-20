@@ -36,7 +36,6 @@ The name of the parent database.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -44,7 +43,6 @@ The name of the parent SQL Server.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `diffBackupIntervalInHours`
 
@@ -52,7 +50,6 @@ Differential backup interval in hours. For Hyperscal tiers this value will be ig
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `24`
 
 ### Parameter: `retentionDays`
@@ -61,7 +58,6 @@ Poin-in-time retention in days.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `7`
 
 ## Outputs

@@ -35,7 +35,6 @@ Name of the product group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -43,7 +42,6 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `productName`
 
@@ -51,7 +49,6 @@ The name of the parent Product. Required if the template is used in a standalone
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

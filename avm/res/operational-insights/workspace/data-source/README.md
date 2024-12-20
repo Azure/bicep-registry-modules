@@ -52,7 +52,6 @@ Name of the data source.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
@@ -60,7 +59,6 @@ The name of the parent Log Analytics workspace. Required if the template is used
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `counterName`
 
@@ -68,7 +66,6 @@ Counter name to configure when kind is WindowsPerformanceCounter.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `eventLogName`
 
@@ -76,7 +73,6 @@ Windows event log name to configure when kind is WindowsEvent.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `eventTypes`
 
@@ -84,7 +80,6 @@ Windows event types to configure when kind is WindowsEvent.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `instanceName`
@@ -93,7 +88,6 @@ Name of the instance to configure when kind is WindowsPerformanceCounter or Linu
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'*'`
 
 ### Parameter: `intervalSeconds`
@@ -102,7 +96,6 @@ Interval in seconds to configure when kind is WindowsPerformanceCounter or Linux
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `60`
 
 ### Parameter: `kind`
@@ -111,7 +104,6 @@ The kind of the data source.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'AzureActivityLog'`
 - Allowed:
   ```Bicep
@@ -133,7 +125,6 @@ Resource ID of the resource to be linked.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `objectName`
 
@@ -141,7 +132,6 @@ Name of the object to configure when kind is WindowsPerformanceCounter or LinuxP
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `performanceCounters`
 
@@ -149,7 +139,6 @@ List of counters to configure when the kind is LinuxPerformanceObject.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `state`
@@ -158,7 +147,6 @@ State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerform
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `syslogName`
 
@@ -166,7 +154,6 @@ System log to configure when kind is LinuxSyslog.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `syslogSeverities`
 
@@ -174,7 +161,6 @@ Severities to configure when kind is LinuxSyslog.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `tags`
@@ -183,7 +169,6 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

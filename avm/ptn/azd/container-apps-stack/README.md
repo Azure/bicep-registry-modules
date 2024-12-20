@@ -223,7 +223,6 @@ Name of the Container Apps Managed Environment.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containerRegistryName`
 
@@ -231,7 +230,6 @@ Name of the Azure Container Registry.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
@@ -239,7 +237,6 @@ Existing Log Analytics Workspace resource ID. Note: This value is not required a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `dockerBridgeCidr`
 
@@ -247,7 +244,6 @@ CIDR notation IP range assigned to the Docker bridge, network. It must not overl
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `infrastructureSubnetResourceId`
@@ -256,7 +252,6 @@ Resource ID of a subnet for infrastructure components. This is used to deploy th
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `internal`
@@ -265,7 +260,6 @@ Boolean indicating the environment only has an internal load balancer. These env
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `platformReservedCidr`
@@ -274,7 +268,6 @@ IP range in CIDR notation that can be reserved for environment infrastructure IP
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `platformReservedDnsIP`
@@ -283,7 +276,6 @@ An IP address from the IP range defined by "platformReservedCidr" that will be r
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `workloadProfiles`
@@ -292,7 +284,6 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `acrAdminUserEnabled`
@@ -301,7 +292,6 @@ Enable admin user that have push / pull permission to the registry.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `acrSku`
@@ -310,7 +300,6 @@ SKU settings. Default is "Standard".
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -327,7 +316,6 @@ Application Insights connection string.
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `containerRegistryResourceGroupName`
@@ -336,7 +324,6 @@ Name of the Azure Container Registry Resource Group.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `daprAIInstrumentationKey`
@@ -345,7 +332,6 @@ Azure Monitor instrumentation key used by Dapr to export Service to Service comm
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -354,7 +340,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `infrastructureResourceGroupName`
@@ -363,7 +348,6 @@ Name of the infrastructure resource group. If not provided, it will be set with 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[take(format('ME_{0}', parameters('containerAppsEnvironmentName')), 63)]`
 
 ### Parameter: `location`
@@ -372,7 +356,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `tags`
@@ -381,7 +364,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `zoneRedundant`
 
@@ -389,7 +371,6 @@ Zone redundancy setting.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

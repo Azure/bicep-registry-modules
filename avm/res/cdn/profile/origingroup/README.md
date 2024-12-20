@@ -40,7 +40,6 @@ Load balancing settings for a backend pool.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -48,7 +47,6 @@ The name of the origin group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `origins`
 
@@ -56,7 +54,6 @@ The list of origins within the origin group.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `profileName`
 
@@ -64,7 +61,6 @@ The name of the CDN profile.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `healthProbeSettings`
 
@@ -72,7 +68,6 @@ Health probe settings to the origin that is used to determine the health of the 
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `sessionAffinityState`
 
@@ -80,7 +75,6 @@ Whether to allow session affinity on this host.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -96,7 +90,6 @@ Time in minutes to shift the traffic to the endpoint gradually when an unhealthy
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `10`
 
 ## Outputs

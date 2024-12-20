@@ -41,7 +41,6 @@ The name of the configuration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `flexibleServerName`
 
@@ -49,7 +48,6 @@ The name of the parent PostgreSQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `source`
 
@@ -57,7 +55,6 @@ Source of the configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `value`
 
@@ -65,7 +62,6 @@ Value of the configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

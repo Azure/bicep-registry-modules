@@ -54,7 +54,6 @@ The name of the service bus namespace topic subscription.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -62,7 +61,6 @@ The name of the parent Service Bus Namespace. Required if the template is used i
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `topicName`
 
@@ -70,7 +68,6 @@ The name of the parent Service Bus Namespace Topic. Required if the template is 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `autoDeleteOnIdle`
 
@@ -78,7 +75,6 @@ ISO 8601 timespan idle interval after which the subscription is automatically de
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'PT1H'`
 
 ### Parameter: `clientAffineProperties`
@@ -87,7 +83,6 @@ The properties that are associated with a subscription that is client-affine.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `deadLetteringOnFilterEvaluationExceptions`
@@ -96,7 +91,6 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `deadLetteringOnMessageExpiration`
@@ -105,7 +99,6 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `defaultMessageTimeToLive`
@@ -114,7 +107,6 @@ ISO 8601 timespan idle interval after which the message expires. The minimum dur
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'P10675199DT2H48M5.4775807S'`
 
 ### Parameter: `duplicateDetectionHistoryTimeWindow`
@@ -123,7 +115,6 @@ ISO 8601 timespan that defines the duration of the duplicate detection history. 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'PT10M'`
 
 ### Parameter: `enableBatchedOperations`
@@ -132,7 +123,6 @@ A value that indicates whether server-side batched operations are enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `forwardDeadLetteredMessagesTo`
@@ -141,7 +131,6 @@ The name of the recipient entity to which all the messages sent to the subscript
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `forwardTo`
@@ -150,7 +139,6 @@ The name of the recipient entity to which all the messages sent to the subscript
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `isClientAffine`
@@ -159,7 +147,6 @@ A value that indicates whether the subscription supports the concept of session.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `lockDuration`
@@ -168,7 +155,6 @@ ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'PT1M'`
 
 ### Parameter: `maxDeliveryCount`
@@ -177,7 +163,6 @@ Number of maximum deliveries. A message is automatically deadlettered after this
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `10`
 
 ### Parameter: `requiresSession`
@@ -186,7 +171,6 @@ A value that indicates whether the subscription supports the concept of session.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `status`
@@ -195,7 +179,6 @@ Enumerates the possible values for the status of a messaging entity.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Active'`
 - Allowed:
   ```Bicep

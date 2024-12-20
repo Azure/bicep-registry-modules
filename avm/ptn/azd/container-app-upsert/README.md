@@ -337,7 +337,6 @@ Name of the environment for container apps.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -345,7 +344,6 @@ The name of the Container App.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containerCpuCoreCount`
 
@@ -353,7 +351,6 @@ The number of CPU cores allocated to a single container instance, e.g., 0.5.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'0.5'`
 
 ### Parameter: `containerMaxReplicas`
@@ -362,7 +359,6 @@ The maximum number of replicas to run. Must be at least 1.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `10`
 - MinValue: 1
 
@@ -372,7 +368,6 @@ The amount of memory allocated to a single container instance, e.g., 1Gi.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'1.0Gi'`
 - MinValue: 1
 
@@ -382,7 +377,6 @@ The minimum number of replicas to run. Must be at least 2.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `2`
 - MinValue: 1
 
@@ -392,7 +386,6 @@ The name of the container.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'main'`
 - MinValue: 1
 
@@ -402,7 +395,6 @@ Hostname suffix for container registry. Set when deploying to sovereign clouds.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'azurecr.io'`
 - MinValue: 1
 
@@ -412,7 +404,6 @@ The name of the container registry.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 
@@ -422,7 +413,6 @@ The Dapr app ID.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[parameters('containerName')]`
 - MinValue: 1
 
@@ -432,7 +422,6 @@ The protocol used by Dapr to connect to the app, e.g., HTTP or gRPC.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'http'`
 - Allowed:
   ```Bicep
@@ -449,7 +438,6 @@ Enable or disable Dapr for the container app.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 1
 
@@ -459,7 +447,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 1
 
@@ -469,7 +456,6 @@ The environment variables for the container.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 
 **Required parameters**
@@ -491,7 +477,6 @@ Environment variable name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 
 ### Parameter: `env.secretRef`
@@ -500,7 +485,6 @@ Name of the Container App secret from which to pull the environment variable val
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 
 ### Parameter: `env.value`
@@ -509,7 +493,6 @@ Non-secret environment variable value.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 
 ### Parameter: `exists`
@@ -518,7 +501,6 @@ Specifies if the resource already exists.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 1
 
@@ -528,7 +510,6 @@ Specifies if the resource ingress is exposed externally.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 1
 
@@ -538,7 +519,6 @@ The name of the user-assigned identity.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 
@@ -548,7 +528,6 @@ The principal ID of the principal to assign the role to.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 
@@ -558,7 +537,6 @@ The type of identity for the resource.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'None'`
 - Allowed:
   ```Bicep
@@ -576,7 +554,6 @@ The name of the container image.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 
@@ -586,7 +563,6 @@ Specifies if Ingress is enabled for the container app.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 1
 
@@ -596,7 +572,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 - MinValue: 1
 
@@ -606,7 +581,6 @@ The secrets required for the container.
 
 - Required: No
 - Type: secureObject
-- Nullable: No
 - Default: `{}`
 - MinValue: 1
 
@@ -616,7 +590,6 @@ The service binds associated with the container.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 1
 
@@ -626,7 +599,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 
 ### Parameter: `targetPort`
@@ -635,7 +607,6 @@ The target port for the container.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `80`
 - MinValue: 1
 
@@ -645,7 +616,6 @@ The resource id of the user-assigned identity.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 

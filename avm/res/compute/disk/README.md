@@ -666,7 +666,6 @@ If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, 
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -683,7 +682,6 @@ The name of the disk that is being created.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sku`
 
@@ -691,7 +689,6 @@ The disks sku name. Can be .
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -710,7 +707,6 @@ The size of the disk to create. Required if create option is Empty.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `storageAccountId`
@@ -719,7 +715,6 @@ The resource ID of the storage account containing the blob to import as a disk. 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `acceleratedNetwork`
@@ -728,7 +723,6 @@ True if the image from which the OS disk is created supports accelerated network
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `architecture`
@@ -737,7 +731,6 @@ CPU architecture supported by an OS disk.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -754,7 +747,6 @@ Set to true to enable bursting beyond the provisioned performance target of the 
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `completionPercent`
@@ -763,7 +755,6 @@ Percentage complete for the background copy when a resource is created via the C
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `100`
 
 ### Parameter: `createOption`
@@ -772,7 +763,6 @@ Sources of a disk creation.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Empty'`
 - Allowed:
   ```Bicep
@@ -796,7 +786,6 @@ The number of IOPS allowed for this disk; only settable for UltraSSD disks.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `diskMBpsReadWrite`
@@ -805,7 +794,6 @@ The bandwidth allowed for this disk; only settable for UltraSSD disks.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `edgeZone`
@@ -814,7 +802,6 @@ Specifies the Edge Zone within the Azure Region where this Managed Disk should e
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -830,7 +817,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `hyperVGeneration`
@@ -839,7 +825,6 @@ The hypervisor generation of the Virtual Machine. Applicable to OS disks only.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'V2'`
 - Allowed:
   ```Bicep
@@ -855,7 +840,6 @@ A relative uri containing either a Platform Image Repository or user image refer
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `location`
@@ -864,7 +848,6 @@ Resource location.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -873,7 +856,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -888,7 +870,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -904,7 +885,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `logicalSectorSize`
 
@@ -912,7 +892,6 @@ Logical sector size in bytes for Ultra disks. Supported values are 512 ad 4096.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `4096`
 
 ### Parameter: `maxShares`
@@ -921,7 +900,6 @@ The maximum number of VMs that can attach to the disk at the same time. Default 
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 
 ### Parameter: `networkAccessPolicy`
@@ -930,7 +908,6 @@ Policy for accessing the disk via network.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'DenyAll'`
 - Allowed:
   ```Bicep
@@ -947,7 +924,6 @@ Setting this property to true improves reliability and performance of data disks
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `osType`
@@ -956,7 +932,6 @@ Sources of a disk creation.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -973,7 +948,6 @@ Policy for controlling export on the disk.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -989,7 +963,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Data Operator for Managed Disks'`
@@ -1026,7 +999,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1034,7 +1006,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1042,7 +1013,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1050,7 +1020,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1064,7 +1033,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1072,7 +1040,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1080,7 +1047,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1088,7 +1054,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1106,7 +1071,6 @@ If create option is ImportSecure, this is the URI of a blob to be imported into 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `sourceResourceId`
@@ -1115,7 +1079,6 @@ If create option is Copy, this is the ARM ID of the source snapshot or disk.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `sourceUri`
@@ -1124,7 +1087,6 @@ If create option is Import, this is the URI of a blob to be imported into a mana
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `tags`
@@ -1133,7 +1095,6 @@ Tags of the availability set resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `uploadSizeBytes`
 
@@ -1141,7 +1102,6 @@ If create option is Upload, this is the size of the contents of the upload inclu
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `20972032`
 
 ## Outputs

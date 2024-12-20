@@ -361,7 +361,6 @@ The name of the Azure Container Registry.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `image`
 
@@ -369,7 +368,6 @@ A fully qualified image name to import.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example:
   ```Bicep
   mcr.microsoft.com/k8se/quickstart-jobs:latest
@@ -383,7 +381,6 @@ The name of the deployment script resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `managedIdentities`
 
@@ -391,7 +388,6 @@ The managed identity definition for this resource. Required if `assignRbacRole` 
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -405,7 +401,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `managedIdentityName`
 
@@ -413,7 +408,6 @@ Name of the Managed Identity resource to create. Required if `assignRbacRole` is
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `assignRbacRole`
 
@@ -421,7 +415,6 @@ If set, the `Contributor` role will be granted to the managed identity (passed b
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `cleanupPreference`
@@ -430,7 +423,6 @@ When the script resource is cleaned up. Default is OnExpiration and the cleanup 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'OnExpiration'`
 - Allowed:
   ```Bicep
@@ -447,7 +439,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `initialScriptDelay`
@@ -456,7 +447,6 @@ A delay in seconds before the script import operation starts. Primarily to allow
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `30`
 
 ### Parameter: `location`
@@ -465,7 +455,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `newImageName`
@@ -474,7 +463,6 @@ The new image name in the ACR. You can use this to import a publically available
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[string(skip(parameters('image'), add(indexOf(parameters('image'), '/'), 1)))]`
 - Example: `your-image-name:tag`
 
@@ -484,7 +472,6 @@ The image will be overwritten if it already exists in the ACR with the same tag.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `retryMax`
@@ -493,7 +480,6 @@ The maximum number of retries for the script import operation. Default is 3.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `3`
 
 ### Parameter: `runOnce`
@@ -502,7 +488,6 @@ How the deployment script should be forced to execute. Default is to force the s
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `sourceRegistryPassword`
@@ -511,7 +496,6 @@ The password for the source registry. Required if the source registry is private
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 - Example: `keyVault.getSecret("keyVaultSecretName")`
 
@@ -521,7 +505,6 @@ The username for the source registry. Required if the source registry is private
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `storageAccountResourceId`
@@ -530,7 +513,6 @@ The resource id of the storage account to use for the deployment script. An exis
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `subnetResourceIds`
@@ -539,7 +521,6 @@ The subnet ids to use for the deployment script. An existing subnet is needed, i
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -547,7 +528,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - Example:
   ```Bicep
   {

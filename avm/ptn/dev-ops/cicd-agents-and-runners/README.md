@@ -1189,7 +1189,6 @@ The compute target for the private runners.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1204,7 +1203,6 @@ Naming prefix to be used with naming the deployed resources.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkingConfiguration`
 
@@ -1212,7 +1210,6 @@ The networking configuration.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `selfHostedConfig`
 
@@ -1220,7 +1217,6 @@ The self-hosted runner configuration. This can be either GitHub or Azure DevOps.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `enableTelemetry`
 
@@ -1228,7 +1224,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -1237,7 +1232,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `privateNetworking`
@@ -1246,7 +1240,6 @@ Whether to use private or public networking for the Azure Container Registry.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

@@ -136,7 +136,6 @@ The name for the AKS managed cluster.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `aadProfile`
 
@@ -144,7 +143,6 @@ Settigs for the Azure Active Directory integration.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -169,7 +167,6 @@ Specifies whether to enable Azure RBAC for Kubernetes authorization.
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `aadProfile.aadProfileManaged`
 
@@ -177,7 +174,6 @@ Specifies whether to enable managed AAD integration.
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `aadProfile.aadProfileAdminGroupObjectIDs`
 
@@ -185,7 +181,6 @@ Specifies the AAD group object IDs that will have admin role of the cluster.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `aadProfile.aadProfileClientAppID`
 
@@ -193,7 +188,6 @@ The client AAD application ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `aadProfile.aadProfileServerAppID`
 
@@ -201,7 +195,6 @@ The server AAD application ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `aadProfile.aadProfileServerAppSecret`
 
@@ -209,7 +202,6 @@ The server AAD application secret.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `aadProfile.aadProfileTenantId`
 
@@ -217,7 +209,6 @@ Specifies the tenant ID of the Azure Active Directory used by the AKS cluster fo
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -225,7 +216,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -234,7 +224,6 @@ The Azure region/location for the AKS resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

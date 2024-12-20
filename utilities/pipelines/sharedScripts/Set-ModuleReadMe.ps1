@@ -488,7 +488,6 @@ function Set-DefinitionSection {
             ($parameter.ContainsKey('metadata') ? '' : $null),
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),
-            ('- Nullable: {0}' -f $isNullable),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
             ((-not [String]::IsNullOrEmpty($formattedMinValue)) ? $formattedMinValue : $null),

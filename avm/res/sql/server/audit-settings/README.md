@@ -49,7 +49,6 @@ The name of the audit settings.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -57,7 +56,6 @@ The Name of SQL Server. Required if the template is used in a standalone deploym
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `auditActionsAndGroups`
 
@@ -65,7 +63,6 @@ Specifies the Actions-Groups and Actions to audit.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -81,7 +78,6 @@ Specifies whether audit events are sent to Azure Monitor.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `isDevopsAuditEnabled`
@@ -90,7 +86,6 @@ Specifies the state of devops audit. If state is Enabled, devops logs will be se
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `isManagedIdentityInUse`
@@ -99,7 +94,6 @@ Specifies whether Managed Identity is used to access blob storage.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `isStorageSecondaryKeyInUse`
@@ -108,7 +102,6 @@ Specifies whether storageAccountAccessKey value is the storage's secondary key.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `queueDelayMs`
@@ -117,7 +110,6 @@ Specifies the amount of time in milliseconds that can elapse before audit action
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1000`
 
 ### Parameter: `retentionDays`
@@ -126,7 +118,6 @@ Specifies the number of days to keep in the audit logs in the storage account.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `90`
 
 ### Parameter: `state`
@@ -135,7 +126,6 @@ Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzur
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -151,7 +141,6 @@ A blob storage to hold the auditing storage account.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

@@ -41,7 +41,6 @@ The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pat
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `managedInstanceName`
 
@@ -49,7 +48,6 @@ The name of the parent SQL managed instance. Required if the template is used in
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serverKeyType`
 
@@ -57,7 +55,6 @@ The encryption protector type like "ServiceManaged", "AzureKeyVault".
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'ServiceManaged'`
 - Allowed:
   ```Bicep
@@ -73,7 +70,6 @@ The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI o
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

@@ -56,7 +56,6 @@ The name of the Elastic SAN Volume Group. The name can only contain lowercase le
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `elasticSanName`
 
@@ -64,7 +63,6 @@ The name of the parent Elastic SAN. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey`
 
@@ -72,7 +70,6 @@ The customer managed key definition. This parameter enables the encryption of El
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -94,7 +91,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -102,7 +98,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -110,7 +105,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -118,7 +112,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -126,7 +119,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -135,7 +127,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -144,7 +135,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -159,7 +149,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -175,7 +164,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -183,7 +171,6 @@ The managed identity definition for this resource. The Elastic SAN Volume Group 
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -198,7 +185,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -206,7 +192,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints`
 
@@ -214,7 +199,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -249,7 +233,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -257,7 +240,6 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -265,7 +247,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -285,7 +266,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -293,7 +273,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -301,7 +280,6 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -309,7 +287,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -317,7 +294,6 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -332,7 +308,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -340,7 +315,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -356,7 +330,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -364,7 +337,6 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -372,7 +344,6 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -380,7 +351,6 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.location`
 
@@ -388,7 +358,6 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -396,7 +365,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -411,7 +379,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -427,7 +394,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -435,7 +401,6 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.name`
 
@@ -443,7 +408,6 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -451,7 +415,6 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -471,7 +434,6 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -491,7 +453,6 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -499,7 +460,6 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -507,7 +467,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -515,7 +474,6 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -523,7 +481,6 @@ Specify if you want to deploy the Private Endpoint into a different Resource Gro
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -531,7 +488,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -557,7 +513,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -565,7 +520,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -573,7 +527,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -581,7 +534,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -595,7 +547,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -603,7 +554,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -611,7 +561,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -619,7 +568,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -637,7 +585,6 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -645,7 +592,6 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -653,7 +599,6 @@ Tags of the Elastic SAN Volume Group resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `virtualNetworkRules`
 
@@ -661,7 +606,6 @@ List of Virtual Network Rules, permitting virtual network subnet to connect to t
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -675,7 +619,6 @@ The resource ID of the subnet in the virtual network.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `volumes`
 
@@ -683,7 +626,6 @@ List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elast
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -704,7 +646,6 @@ The name of the Elastic SAN Volume. The name can only contain lowercase letters,
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `volumes.sizeGiB`
 
@@ -712,7 +653,6 @@ Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65536
 
@@ -722,7 +662,6 @@ List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 65536
 
@@ -738,7 +677,6 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65536
 

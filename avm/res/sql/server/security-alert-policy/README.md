@@ -46,7 +46,6 @@ The name of the Security Alert Policy.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -54,7 +53,6 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `disabledAlerts`
 
@@ -62,7 +60,6 @@ Alerts to disable.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep
@@ -82,7 +79,6 @@ Specifies that the alert is sent to the account administrators.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `emailAddresses`
@@ -91,7 +87,6 @@ Specifies an array of email addresses to which the alert is sent.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `retentionDays`
@@ -100,7 +95,6 @@ Specifies the number of days to keep in the Threat Detection audit logs.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `state`
@@ -109,7 +103,6 @@ Specifies the state of the policy, whether it is enabled or disabled or a policy
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -125,7 +118,6 @@ Specifies the identifier key of the Threat Detection audit storage account.
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `storageEndpoint`
 
@@ -133,7 +125,6 @@ Specifies the blob storage endpoint. This blob storage will hold all Threat Dete
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

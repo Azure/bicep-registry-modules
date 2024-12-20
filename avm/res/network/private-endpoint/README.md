@@ -805,7 +805,6 @@ Name of the private endpoint resource to create.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `subnetResourceId`
 
@@ -813,7 +812,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applicationSecurityGroupResourceIds`
 
@@ -821,7 +819,6 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `customDnsConfigs`
 
@@ -829,7 +826,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -849,7 +845,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `customDnsConfigs.fqdn`
 
@@ -857,7 +852,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `customNetworkInterfaceName`
 
@@ -865,7 +859,6 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -873,7 +866,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `ipConfigurations`
@@ -882,7 +874,6 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -897,7 +888,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ipConfigurations.properties`
 
@@ -905,7 +895,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -921,7 +910,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ipConfigurations.properties.memberName`
 
@@ -929,7 +917,6 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ipConfigurations.properties.privateIPAddress`
 
@@ -937,7 +924,6 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `location`
 
@@ -945,7 +931,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -954,7 +939,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -969,7 +953,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -985,7 +968,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `manualPrivateLinkServiceConnections`
 
@@ -993,7 +975,6 @@ A grouping of information about the connection to the remote resource. Used when
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1008,7 +989,6 @@ The name of the private link service connection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `manualPrivateLinkServiceConnections.properties`
 
@@ -1016,7 +996,6 @@ Properties of private link service connection.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1037,7 +1016,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
 
@@ -1045,7 +1023,6 @@ The resource id of private link service.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
 
@@ -1053,7 +1030,6 @@ A message passed to the owner of the remote resource with this connection reques
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateDnsZoneGroup`
 
@@ -1061,7 +1037,6 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1081,7 +1056,6 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1101,7 +1075,6 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -1109,7 +1082,6 @@ The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateDnsZoneGroup.name`
 
@@ -1117,7 +1089,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateLinkServiceConnections`
 
@@ -1125,7 +1096,6 @@ A grouping of information about the connection to the remote resource.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1140,7 +1110,6 @@ The name of the private link service connection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateLinkServiceConnections.properties`
 
@@ -1148,7 +1117,6 @@ Properties of private link service connection.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1169,7 +1137,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
 
@@ -1177,7 +1144,6 @@ The resource id of private link service.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateLinkServiceConnections.properties.requestMessage`
 
@@ -1185,7 +1151,6 @@ A message passed to the owner of the remote resource with this connection reques
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -1193,7 +1158,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -1230,7 +1194,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1238,7 +1201,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1246,7 +1208,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1254,7 +1215,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1268,7 +1228,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1276,7 +1235,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1284,7 +1242,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1292,7 +1249,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1310,7 +1266,6 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

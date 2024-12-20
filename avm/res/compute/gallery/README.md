@@ -959,7 +959,6 @@ Name of the Azure Compute Gallery.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applications`
 
@@ -967,7 +966,6 @@ Applications to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -995,7 +993,6 @@ Name of the application definition.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applications.supportedOSType`
 
@@ -1003,7 +1000,6 @@ The OS type of the application.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1018,7 +1014,6 @@ A list of custom actions that can be performed with all of the Gallery Applicati
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1040,7 +1035,6 @@ The name of the custom action. Must be unique within the Gallery Application Ver
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applications.customActions.script`
 
@@ -1048,7 +1042,6 @@ The script to run when executing this custom action.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applications.customActions.description`
 
@@ -1056,7 +1049,6 @@ Description to help the users understand what this custom action does.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.customActions.parameters`
 
@@ -1064,7 +1056,6 @@ The parameters that this custom action uses.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1087,7 +1078,6 @@ The name of the parameter.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applications.customActions.parameters.defaultValue`
 
@@ -1095,7 +1085,6 @@ The default value of the parameter. Only applies to string types.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.customActions.parameters.description`
 
@@ -1103,7 +1092,6 @@ A description to help users understand what this parameter means.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.customActions.parameters.required`
 
@@ -1111,7 +1099,6 @@ Indicates whether this parameter must be passed when running the custom action.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `applications.customActions.parameters.type`
 
@@ -1119,7 +1106,6 @@ Specifies the type of the custom action parameter.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1135,7 +1121,6 @@ The description of this gallery application definition resource. This property i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.endOfLifeDate`
 
@@ -1143,7 +1128,6 @@ The end of life date of the gallery application definition. This property can be
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.eula`
 
@@ -1151,7 +1135,6 @@ The Eula agreement for the gallery application definition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.privacyStatementUri`
 
@@ -1159,7 +1142,6 @@ The privacy statement uri.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.releaseNoteUri`
 
@@ -1167,7 +1149,6 @@ The release note uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.roleAssignments`
 
@@ -1175,7 +1156,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Compute Gallery Sharing Admin'`
   - `'Contributor'`
@@ -1208,7 +1188,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applications.roleAssignments.roleDefinitionIdOrName`
 
@@ -1216,7 +1195,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applications.roleAssignments.condition`
 
@@ -1224,7 +1202,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.roleAssignments.conditionVersion`
 
@@ -1232,7 +1209,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1246,7 +1222,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.roleAssignments.description`
 
@@ -1254,7 +1229,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.roleAssignments.name`
 
@@ -1262,7 +1236,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `applications.roleAssignments.principalType`
 
@@ -1270,7 +1243,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1288,7 +1260,6 @@ Tags for all resources.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `description`
 
@@ -1296,7 +1267,6 @@ Description of the Azure Shared Image Gallery.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -1304,7 +1274,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `images`
@@ -1313,7 +1282,6 @@ Images to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1349,7 +1317,6 @@ This is the gallery image definition identifier.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1365,7 +1332,6 @@ The name of the gallery image definition offer.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `images.identifier.publisher`
 
@@ -1373,7 +1339,6 @@ The name of the gallery image definition publisher.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `images.identifier.sku`
 
@@ -1381,7 +1346,6 @@ The name of the gallery image definition SKU.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `images.name`
 
@@ -1389,7 +1353,6 @@ Name of the image definition.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `images.osState`
 
@@ -1397,7 +1360,6 @@ This property allows the user to specify the state of the OS of the image.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1412,7 +1374,6 @@ This property allows you to specify the type of the OS that is included in the d
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1427,7 +1388,6 @@ The architecture of the image. Applicable to OS disks only.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1442,7 +1402,6 @@ The description of this gallery image definition resource. This property is upda
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `images.endOfLife`
 
@@ -1450,7 +1409,6 @@ The end of life date of the gallery image definition. This property can be used 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `images.eula`
 
@@ -1458,7 +1416,6 @@ The Eula agreement for the gallery image definition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `images.excludedDiskTypes`
 
@@ -1466,7 +1423,6 @@ Describes the disallowed disk types.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `images.hyperVGeneration`
 
@@ -1474,7 +1430,6 @@ The hypervisor generation of the Virtual Machine. If this value is not specified
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1489,7 +1444,6 @@ Specify if the image supports accelerated networking. Defaults to true.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `images.isHibernateSupported`
 
@@ -1497,7 +1451,6 @@ Specify if the image supports hibernation.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `images.memory`
 
@@ -1505,7 +1458,6 @@ Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1520,7 +1472,6 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `images.memory.min`
 
@@ -1528,7 +1479,6 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 
 ### Parameter: `images.privacyStatementUri`
@@ -1537,7 +1487,6 @@ The privacy statement uri.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `images.purchasePlan`
 
@@ -1545,7 +1494,6 @@ Describes the gallery image definition purchase plan. This is used by marketplac
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1561,7 +1509,6 @@ The plan ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `images.purchasePlan.product`
 
@@ -1569,7 +1516,6 @@ The product ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `images.purchasePlan.publisher`
 
@@ -1577,7 +1523,6 @@ The publisher ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `images.releaseNoteUri`
 
@@ -1585,7 +1530,6 @@ The release note uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `images.securityType`
 
@@ -1593,7 +1537,6 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1612,7 +1555,6 @@ Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1627,7 +1569,6 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `images.vCPUs.min`
 
@@ -1635,7 +1576,6 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 
 ### Parameter: `location`
@@ -1644,7 +1584,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1653,7 +1592,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1668,7 +1606,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1684,7 +1621,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -1692,7 +1628,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Compute Gallery Sharing Admin'`
   - `'Contributor'`
@@ -1725,7 +1660,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1733,7 +1667,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1741,7 +1674,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1749,7 +1681,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1763,7 +1694,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1771,7 +1701,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1779,7 +1708,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1787,7 +1715,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1805,7 +1732,6 @@ Profile for gallery sharing to subscription or tenant.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `softDeletePolicy`
 
@@ -1813,7 +1739,6 @@ Soft deletion policy of the gallery.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -1821,7 +1746,6 @@ Tags for all resources.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - Example:
   ```Bicep
   {

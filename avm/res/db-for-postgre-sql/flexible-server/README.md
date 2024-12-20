@@ -1349,7 +1349,6 @@ The name of the PostgreSQL flexible server.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `skuName`
 
@@ -1357,7 +1356,6 @@ The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `tier`
 
@@ -1365,7 +1363,6 @@ The tier of the particular SKU. Tier must align with the 'skuName' property. Exa
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1381,7 +1378,6 @@ The managed identity definition for this resource. Required if 'cMKKeyName' is n
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1395,7 +1391,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `pointInTimeUTC`
 
@@ -1403,7 +1398,6 @@ Required if 'createMode' is set to 'PointInTimeRestore'.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `sourceServerResourceId`
@@ -1412,7 +1406,6 @@ Required if 'createMode' is set to 'PointInTimeRestore'.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `administratorLogin`
@@ -1421,7 +1414,6 @@ The administrator login name for the server. Can only be specified when the Post
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `administratorLoginPassword`
 
@@ -1429,7 +1421,6 @@ The administrator login password.
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `administrators`
 
@@ -1437,7 +1428,6 @@ The Azure AD administrators when AAD authentication enabled.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `availabilityZone`
@@ -1446,7 +1436,6 @@ Availability zone information of the server. Default will have no preference set
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -1464,7 +1453,6 @@ Backup retention days for the server.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `7`
 - MinValue: 7
 - MaxValue: 35
@@ -1475,7 +1463,6 @@ The configurations to create in the server.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 7
 - MaxValue: 35
@@ -1486,7 +1473,6 @@ The mode to create a new PostgreSQL server.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Default'`
 - Allowed:
   ```Bicep
@@ -1508,7 +1494,6 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1532,7 +1517,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -1542,7 +1526,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -1552,7 +1535,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1562,7 +1544,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1572,7 +1553,6 @@ The databases to create in the server.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 7
 - MaxValue: 35
@@ -1583,7 +1563,6 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Pr
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 7
 - MaxValue: 35
@@ -1594,7 +1573,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1618,7 +1596,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1628,7 +1605,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1638,7 +1614,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1655,7 +1630,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1673,7 +1647,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1683,7 +1656,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1693,7 +1665,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1703,7 +1674,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1713,7 +1683,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1735,7 +1704,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -1745,7 +1713,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1755,7 +1722,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1765,7 +1731,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1775,7 +1740,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1785,7 +1749,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 7
 - MaxValue: 35
@@ -1796,7 +1759,6 @@ The firewall rules to create in the PostgreSQL flexible server.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 7
 - MaxValue: 35
@@ -1807,7 +1769,6 @@ A value indicating whether Geo-Redundant backup is enabled on the server. Should
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -1825,7 +1786,6 @@ The mode for high availability.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'ZoneRedundant'`
 - Allowed:
   ```Bicep
@@ -1844,7 +1804,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 - MinValue: 7
 - MaxValue: 35
@@ -1855,7 +1814,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1872,7 +1830,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1890,7 +1847,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1900,7 +1856,6 @@ Properties for the maintenence window. If provided, 'customWindow' property must
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -1919,7 +1874,6 @@ Private dns zone arm resource ID. Used when the desired connectivity mode is 'Pr
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 7
 - MaxValue: 35
@@ -1930,7 +1884,6 @@ Configuration details for private endpoints. Used when the desired connectivy mo
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1967,7 +1920,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -1977,7 +1929,6 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -1987,7 +1938,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2009,7 +1959,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2019,7 +1968,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2029,7 +1977,6 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2039,7 +1986,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2049,7 +1995,6 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2066,7 +2011,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2076,7 +2020,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2094,7 +2037,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2104,7 +2046,6 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2114,7 +2055,6 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2124,7 +2064,6 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2134,7 +2073,6 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2144,7 +2082,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2161,7 +2098,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2179,7 +2115,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2189,7 +2124,6 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2199,7 +2133,6 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2209,7 +2142,6 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2231,7 +2163,6 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2253,7 +2184,6 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2263,7 +2193,6 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2273,7 +2202,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2283,7 +2211,6 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2293,7 +2220,6 @@ Specify if you want to deploy the Private Endpoint into a different Resource Gro
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2303,7 +2229,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 - Roles configurable by name:
@@ -2342,7 +2267,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2352,7 +2276,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2362,7 +2285,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2372,7 +2294,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2388,7 +2309,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2398,7 +2318,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2408,7 +2327,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2418,7 +2336,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2438,7 +2355,6 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2448,7 +2364,6 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2458,7 +2373,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 - Roles configurable by name:
@@ -2492,7 +2406,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2502,7 +2415,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 7
 - MaxValue: 35
 
@@ -2512,7 +2424,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2522,7 +2433,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2538,7 +2448,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2548,7 +2457,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2558,7 +2466,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2568,7 +2475,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2588,7 +2494,6 @@ Max storage allowed for a server.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `32`
 - Allowed:
   ```Bicep
@@ -2614,7 +2519,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2624,7 +2528,6 @@ Tenant id of the server.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2634,7 +2537,6 @@ PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'16'`
 - Allowed:
   ```Bicep
