@@ -422,6 +422,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:0.3.2' = {
   params: {
     name: naming.outputs.resourcesNames.azureFirewall
     azureSkuTier: 'Standard'
+    zones: []
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
