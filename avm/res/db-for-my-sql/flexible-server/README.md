@@ -1030,6 +1030,8 @@ Backup retention days for the server.
 - Required: No
 - Type: int
 - Default: `7`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `createMode`
 
@@ -1047,6 +1049,8 @@ The mode to create a new MySQL server.
     'Replica'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKey`
 
@@ -1054,6 +1058,8 @@ The customer managed key definition to use for the managed service.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 35
 
 **Required parameters**
 
@@ -1075,6 +1081,8 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -1082,6 +1090,8 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -1089,6 +1099,8 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1096,6 +1108,8 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKeyGeo`
 
@@ -1103,6 +1117,8 @@ The customer managed key definition to use when geoRedundantBackup is "Enabled".
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 35
 
 **Required parameters**
 
@@ -1124,6 +1140,8 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKeyGeo.keyVaultResourceId`
 
@@ -1131,6 +1149,8 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKeyGeo.keyVersion`
 
@@ -1138,6 +1158,8 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKeyGeo.userAssignedIdentityResourceId`
 
@@ -1145,6 +1167,8 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `databases`
 
@@ -1153,6 +1177,8 @@ The databases to create in the server.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `delegatedSubnetResourceId`
 
@@ -1161,6 +1187,8 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is "Pr
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings`
 
@@ -1168,6 +1196,8 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 35
 
 **Optional parameters**
 
@@ -1189,6 +1219,8 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1196,6 +1228,8 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1210,6 +1244,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -1217,6 +1253,8 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 35
 
 **Optional parameters**
 
@@ -1232,6 +1270,8 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1239,6 +1279,8 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1246,6 +1288,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1253,6 +1297,8 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1260,6 +1306,8 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 35
 
 **Required parameters**
 
@@ -1279,6 +1327,8 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1286,6 +1336,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1293,6 +1345,8 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1300,6 +1354,8 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1307,6 +1363,8 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `enableTelemetry`
 
@@ -1315,6 +1373,8 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `firewallRules`
 
@@ -1323,6 +1383,8 @@ The firewall rules to create in the MySQL flexible server.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `geoRedundantBackup`
 
@@ -1338,6 +1400,8 @@ A value indicating whether Geo-Redundant backup is enabled on the server. If "En
     'Enabled'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `highAvailability`
 
@@ -1354,6 +1418,8 @@ The mode for High Availability (HA). It is not supported for the Burstable prici
     'ZoneRedundant'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `highAvailabilityZone`
 
@@ -1362,6 +1428,8 @@ Standby availability zone information of the server. Default will have no prefer
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `location`
 
@@ -1370,6 +1438,8 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `lock`
 
@@ -1377,6 +1447,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 35
 
 **Optional parameters**
 
@@ -1399,6 +1471,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `lock.name`
 
@@ -1406,6 +1480,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `maintenanceWindow`
 
@@ -1414,6 +1490,8 @@ Properties for the maintenence window. If provided, "customWindow" property must
 - Required: No
 - Type: object
 - Default: `{}`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `replicationRole`
 
@@ -1430,6 +1508,8 @@ The replication role.
     'Source'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments`
 
@@ -1437,6 +1517,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 35
 - Roles configurable by name:
   - `'Contributor'`
   - `'MySQL Backup And Export Operator'`
@@ -1469,6 +1551,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1476,6 +1560,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1483,6 +1569,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1496,6 +1584,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1503,6 +1593,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.description`
 
@@ -1510,6 +1602,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.name`
 
@@ -1517,6 +1611,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1534,6 +1630,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `storageAutoIoScaling`
 
@@ -1549,6 +1647,8 @@ Enable IO Auto Scaling or not. The server scales IOPs up or down automatically d
     'Enabled'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `storageIOPS`
 
@@ -1557,6 +1657,8 @@ Storage IOPS for a server. Max IOPS are determined by compute size.
 - Required: No
 - Type: int
 - Default: `1000`
+- MinValue: 360
+- MaxValue: 48000
 
 ### Parameter: `storageSizeGB`
 
@@ -1581,6 +1683,8 @@ Max storage allowed for a server. In all compute tiers, the minimum storage supp
     16384
   ]
   ```
+- MinValue: 360
+- MaxValue: 48000
 
 ### Parameter: `tags`
 
@@ -1588,6 +1692,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 360
+- MaxValue: 48000
 
 ### Parameter: `version`
 
@@ -1603,6 +1709,8 @@ MySQL Server version.
     '8.0.21'
   ]
   ```
+- MinValue: 360
+- MaxValue: 48000
 
 ## Outputs
 
