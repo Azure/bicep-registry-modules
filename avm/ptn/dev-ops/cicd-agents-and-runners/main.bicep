@@ -804,6 +804,7 @@ output location string = location
 // Definitions      //
 // ================ //
 
+@export()
 type newNetworkType = {
   @description('Required. The network type. This can be either createNew or useExisting.')
   networkType: 'createNew'
@@ -854,6 +855,7 @@ type newNetworkType = {
   deploymentScriptPrivateDnsZoneResourceId: string?
 }
 
+@export()
 type existingNetworkType = {
   @description('Required. The network type. This can be either createNew or useExisting.')
   networkType: 'useExisting'
@@ -877,6 +879,7 @@ type existingNetworkType = {
   computeNetworking: computeNetworkingType
 }
 
+@export()
 type containerAppNetworkConfigType = {
   @description('Required. The Azure Container App networking type.')
   computeNetworkType: 'azureContainerApp'
@@ -902,12 +905,15 @@ type containerInstanceNetworkConfigType = {
   containerInstanceSubnetName: string
 }
 
+@export()
 @discriminator('networkType')
 type networkType = newNetworkType | existingNetworkType
 
+@export()
 @discriminator('computeNetworkType')
 type computeNetworkingType = containerAppNetworkConfigType | containerInstanceNetworkConfigType
 
+@export()
 type azureContainerInstanceTargetType = {
   @description('Optional. The Azure Container Instance Sku name.')
   sku: 'Standard' | 'Dedicated'?
@@ -925,11 +931,13 @@ type azureContainerInstanceTargetType = {
   port: int?
 }?
 
+@export()
 type azureContainerAppTargetType = {
   @description('Optional. The Azure Container App Job CPU and memory resources.')
   resources: acaResourcesType?
 }
 
+@export()
 type gitHubRunnersType = {
   @description('Required. The self-hosted runner type.')
   selfHostedType: 'github'
@@ -969,6 +977,7 @@ type gitHubRunnersType = {
   azureContainerAppTarget: azureContainerAppTargetType?
 }
 
+@export()
 type devOpsAgentsType = {
   @description('Required. The self-hosted runner type.')
   selfHostedType: 'azuredevops'
@@ -1002,6 +1011,7 @@ type devOpsAgentsType = {
   azureContainerAppTarget: azureContainerAppTargetType?
 }
 
+@export()
 type acaResourcesType =
   | { cpu: '0.25', memory: '0.5Gi' }
   | { cpu: '0.5', memory: '1Gi' }
@@ -1020,8 +1030,10 @@ type acaResourcesType =
   | { cpu: '3.75', memory: '7.5Gi' }
   | { cpu: '4', memory: '8Gi' }
 
+@export()
 @discriminator('selfHostedType')
 type selfHostedRunnerType = gitHubRunnersType | devOpsAgentsType
 
+@export()
 @description('Required. The target compute environments for the private runners.')
 type computeTypesType = ('azure-container-app' | 'azure-container-instance')[]
