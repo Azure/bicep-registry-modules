@@ -48,7 +48,8 @@ The list of backups to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`volumeName`](#parameter-backupsvolumename) | string | The name used to identify the volume. |
+| [`capacityPoolName`](#parameter-backupscapacitypoolname) | string | The name of the capacity pool containing the volumne. |
+| [`volumeName`](#parameter-backupsvolumename) | string | The name of the volume to backup. |
 
 **Optional parameters**
 
@@ -59,9 +60,16 @@ The list of backups to create.
 | [`snapshotName`](#parameter-backupssnapshotname) | string | The name of the snapshot. |
 | [`useExistingSnapshot`](#parameter-backupsuseexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
 
+### Parameter: `backups.capacityPoolName`
+
+The name of the capacity pool containing the volumne.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `backups.volumeName`
 
-The name used to identify the volume.
+The name of the volume to backup.
 
 - Required: Yes
 - Type: string

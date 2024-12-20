@@ -47,6 +47,8 @@ The daily backups to keep.
 - Required: No
 - Type: int
 - Default: `2`
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `enabled`
 
@@ -55,6 +57,8 @@ Indicates whether the backup policy is enabled.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `location`
 
@@ -63,6 +67,8 @@ The location of the backup policy.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `monthlyBackupsToKeep`
 
@@ -71,6 +77,8 @@ The monthly backups to keep.
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `name`
 
@@ -79,6 +87,8 @@ The name of the backup policy.
 - Required: No
 - Type: string
 - Default: `'backupPolicy'`
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `weeklyBackupsToKeep`
 
@@ -87,6 +97,8 @@ The weekly backups to keep.
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 2
+- MaxValue: 1019
 
 ## Outputs
 

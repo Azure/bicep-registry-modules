@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "17019672073255266364"
+      "version": "0.32.4.45862",
+      "templateHash": "2407080182803759107"
     }
   },
   "parameters": {
@@ -38,7 +38,7 @@
     },
     "snapshotName": {
       "type": "string",
-      "defaultValue": "snapshot",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The name of the snapshot."
       }
@@ -53,31 +53,40 @@
     "volumeName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name used to identify the volume."
+        "description": "Required. The name of the volume to backup."
+      }
+    },
+    "capacityPoolName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the capacity pool containing the volumne."
       }
     }
   },
   "resources": {
+    "netAppAccount::remoteCapacityPool::volumne": {
+      "existing": true,
+      "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+      "apiVersion": "2024-07-01",
+      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
+    },
     "netAppAccount::backupVault": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
       "apiVersion": "2024-03-01",
-      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
-      "dependsOn": [
-        "netAppAccount"
-      ]
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]"
+    },
+    "netAppAccount::remoteCapacityPool": {
+      "existing": true,
+      "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
     },
     "netAppAccount": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts",
       "apiVersion": "2024-03-01",
       "name": "[parameters('netAppAccountName')]"
-    },
-    "remoteVolume": {
-      "existing": true,
-      "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-      "apiVersion": "2024-07-01",
-      "name": "[parameters('volumeName')]"
     },
     "backup": {
       "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
@@ -87,12 +96,8 @@
         "label": "[parameters('label')]",
         "snapshotName": "[parameters('snapshotName')]",
         "useExistingSnapshot": "[parameters('useExistingSnapshot')]",
-        "volumeResourceId": "[parameters('volumeName')]"
-      },
-      "dependsOn": [
-        "netAppAccount::backupVault",
-        "remoteVolume"
-      ]
+        "volumeResourceId": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
+      }
     }
   },
   "outputs": {

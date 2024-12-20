@@ -68,6 +68,8 @@ The daily snapshot hour.
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 23
 
 ### Parameter: `dailySchedule.minute`
 
@@ -75,6 +77,8 @@ The daily snapshot minute.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 59
 
 ### Parameter: `dailySchedule.snapshotsToKeep`
 
@@ -82,6 +86,8 @@ Daily snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `dailySchedule.usedBytes`
 
@@ -89,6 +95,8 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `hourlySchedule`
 
@@ -116,6 +124,8 @@ The hourly snapshot minute.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 59
 
 ### Parameter: `hourlySchedule.snapshotsToKeep`
 
@@ -123,6 +133,8 @@ Hourly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `hourlySchedule.usedBytes`
 
@@ -130,6 +142,8 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `location`
 
@@ -174,6 +188,8 @@ The monthly snapshot hour.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 23
 
 ### Parameter: `monthlySchedule.minute`
 
@@ -181,6 +197,8 @@ The monthly snapshot minute.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 59
 
 ### Parameter: `monthlySchedule.snapshotsToKeep`
 
@@ -188,6 +206,8 @@ Monthly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `monthlySchedule.usedBytes`
 
@@ -195,6 +215,8 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `name`
 
@@ -259,6 +281,8 @@ The weekly snapshot hour.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 23
 
 ### Parameter: `weeklySchedule.minute`
 
@@ -266,6 +290,8 @@ The weekly snapshot minute.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 59
 
 ### Parameter: `weeklySchedule.snapshotsToKeep`
 
@@ -273,6 +299,8 @@ Weekly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `weeklySchedule.usedBytes`
 
@@ -280,6 +308,8 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ## Outputs
 

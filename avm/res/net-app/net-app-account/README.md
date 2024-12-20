@@ -49,7 +49,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   name: 'netAppAccountDeployment'
   params: {
     // Required parameters
-    name: 'nanaamax001'
+    name: 'alsmax001'
     // Non-required parameters
     backupPolicies: [
       {
@@ -59,17 +59,17 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     backupVault: {
       backups: [
         {
+          capacityPoolName: 'cp-001'
           label: 'myLabel'
-          name: 'myBackup'
-          snapshotName: 'aSnapshot'
-          volumeName: 'nanaamax-vol-001'
+          name: 'myBackup01'
+          volumeName: 'vol-001'
         }
       ]
       name: 'myVault'
     }
     capacityPools: [
       {
-        name: 'nanaamax-cp-001'
+        name: 'cp-001'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -92,17 +92,25 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               }
             }
             encryptionKeySource: '<encryptionKeySource>'
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: false
-                nfsv41: true
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
-            name: 'nanaamax-vol-001'
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  kerberos5iReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadOnly: false
+                  kerberos5pReadWrite: false
+                  kerberos5ReadOnly: false
+                  kerberos5ReadWrite: false
+                  nfsv3: false
+                  nfsv41: true
+                  ruleIndex: 1
+                  unixReadOnly: false
+                  unixReadWrite: true
+                }
+              ]
+            }
+            name: 'vol-001'
             networkFeatures: 'Standard'
             protocolTypes: [
               'NFSv4.1'
@@ -122,17 +130,26 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           }
           {
             encryptionKeySource: '<encryptionKeySource>'
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: false
-                nfsv41: true
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
-            name: 'nanaamax-vol-002'
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  kerberos5iReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadOnly: false
+                  kerberos5pReadWrite: false
+                  kerberos5ReadOnly: false
+                  kerberos5ReadWrite: false
+                  nfsv3: false
+                  nfsv41: true
+                  ruleIndex: 1
+                  unixReadOnly: false
+                  unixReadWrite: false
+                }
+              ]
+            }
+            kerberosEnabled: false
+            name: 'vol-002'
             networkFeatures: 'Standard'
             protocolTypes: [
               'NFSv4.1'
@@ -149,7 +166,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         ]
       }
       {
-        name: 'nanaamax-cp-002'
+        name: 'cp-002'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -224,7 +241,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nanaamax001"
+      "value": "alsmax001"
     },
     // Non-required parameters
     "backupPolicies": {
@@ -238,10 +255,10 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
       "value": {
         "backups": [
           {
+            "capacityPoolName": "cp-001",
             "label": "myLabel",
-            "name": "myBackup",
-            "snapshotName": "aSnapshot",
-            "volumeName": "nanaamax-vol-001"
+            "name": "myBackup01",
+            "volumeName": "vol-001"
           }
         ],
         "name": "myVault"
@@ -250,7 +267,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     "capacityPools": {
       "value": [
         {
-          "name": "nanaamax-cp-001",
+          "name": "cp-001",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -273,17 +290,25 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               },
               "encryptionKeySource": "<encryptionKeySource>",
-              "exportPolicyRules": [
-                {
-                  "allowedClients": "0.0.0.0/0",
-                  "nfsv3": false,
-                  "nfsv41": true,
-                  "ruleIndex": 1,
-                  "unixReadOnly": false,
-                  "unixReadWrite": true
-                }
-              ],
-              "name": "nanaamax-vol-001",
+              "exportPolicy": {
+                "rules": [
+                  {
+                    "allowedClients": "0.0.0.0/0",
+                    "kerberos5iReadOnly": false,
+                    "kerberos5iReadWrite": false,
+                    "kerberos5pReadOnly": false,
+                    "kerberos5pReadWrite": false,
+                    "kerberos5ReadOnly": false,
+                    "kerberos5ReadWrite": false,
+                    "nfsv3": false,
+                    "nfsv41": true,
+                    "ruleIndex": 1,
+                    "unixReadOnly": false,
+                    "unixReadWrite": true
+                  }
+                ]
+              },
+              "name": "vol-001",
               "networkFeatures": "Standard",
               "protocolTypes": [
                 "NFSv4.1"
@@ -303,17 +328,26 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             },
             {
               "encryptionKeySource": "<encryptionKeySource>",
-              "exportPolicyRules": [
-                {
-                  "allowedClients": "0.0.0.0/0",
-                  "nfsv3": false,
-                  "nfsv41": true,
-                  "ruleIndex": 1,
-                  "unixReadOnly": false,
-                  "unixReadWrite": true
-                }
-              ],
-              "name": "nanaamax-vol-002",
+              "exportPolicy": {
+                "rules": [
+                  {
+                    "allowedClients": "0.0.0.0/0",
+                    "kerberos5iReadOnly": false,
+                    "kerberos5iReadWrite": false,
+                    "kerberos5pReadOnly": false,
+                    "kerberos5pReadWrite": false,
+                    "kerberos5ReadOnly": false,
+                    "kerberos5ReadWrite": false,
+                    "nfsv3": false,
+                    "nfsv41": true,
+                    "ruleIndex": 1,
+                    "unixReadOnly": false,
+                    "unixReadWrite": false
+                  }
+                ]
+              },
+              "kerberosEnabled": false,
+              "name": "vol-002",
               "networkFeatures": "Standard",
               "protocolTypes": [
                 "NFSv4.1"
@@ -330,7 +364,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           ]
         },
         {
-          "name": "nanaamax-cp-002",
+          "name": "cp-002",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -413,7 +447,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 using 'br/public:avm/res/net-app/net-app-account:<version>'
 
 // Required parameters
-param name = 'nanaamax001'
+param name = 'alsmax001'
 // Non-required parameters
 param backupPolicies = [
   {
@@ -423,17 +457,17 @@ param backupPolicies = [
 param backupVault = {
   backups: [
     {
+      capacityPoolName: 'cp-001'
       label: 'myLabel'
-      name: 'myBackup'
-      snapshotName: 'aSnapshot'
-      volumeName: 'nanaamax-vol-001'
+      name: 'myBackup01'
+      volumeName: 'vol-001'
     }
   ]
   name: 'myVault'
 }
 param capacityPools = [
   {
-    name: 'nanaamax-cp-001'
+    name: 'cp-001'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -456,17 +490,25 @@ param capacityPools = [
           }
         }
         encryptionKeySource: '<encryptionKeySource>'
-        exportPolicyRules: [
-          {
-            allowedClients: '0.0.0.0/0'
-            nfsv3: false
-            nfsv41: true
-            ruleIndex: 1
-            unixReadOnly: false
-            unixReadWrite: true
-          }
-        ]
-        name: 'nanaamax-vol-001'
+        exportPolicy: {
+          rules: [
+            {
+              allowedClients: '0.0.0.0/0'
+              kerberos5iReadOnly: false
+              kerberos5iReadWrite: false
+              kerberos5pReadOnly: false
+              kerberos5pReadWrite: false
+              kerberos5ReadOnly: false
+              kerberos5ReadWrite: false
+              nfsv3: false
+              nfsv41: true
+              ruleIndex: 1
+              unixReadOnly: false
+              unixReadWrite: true
+            }
+          ]
+        }
+        name: 'vol-001'
         networkFeatures: 'Standard'
         protocolTypes: [
           'NFSv4.1'
@@ -486,17 +528,26 @@ param capacityPools = [
       }
       {
         encryptionKeySource: '<encryptionKeySource>'
-        exportPolicyRules: [
-          {
-            allowedClients: '0.0.0.0/0'
-            nfsv3: false
-            nfsv41: true
-            ruleIndex: 1
-            unixReadOnly: false
-            unixReadWrite: true
-          }
-        ]
-        name: 'nanaamax-vol-002'
+        exportPolicy: {
+          rules: [
+            {
+              allowedClients: '0.0.0.0/0'
+              kerberos5iReadOnly: false
+              kerberos5iReadWrite: false
+              kerberos5pReadOnly: false
+              kerberos5pReadWrite: false
+              kerberos5ReadOnly: false
+              kerberos5ReadWrite: false
+              nfsv3: false
+              nfsv41: true
+              ruleIndex: 1
+              unixReadOnly: false
+              unixReadWrite: false
+            }
+          ]
+        }
+        kerberosEnabled: false
+        name: 'vol-002'
         networkFeatures: 'Standard'
         protocolTypes: [
           'NFSv4.1'
@@ -513,7 +564,7 @@ param capacityPools = [
     ]
   }
   {
-    name: 'nanaamax-cp-002'
+    name: 'cp-002'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -659,6 +710,8 @@ The daily backups to keep.
 
 - Required: No
 - Type: int
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `backupPolicies.enabled`
 
@@ -666,6 +719,8 @@ Indicates whether the backup policy is enabled.
 
 - Required: No
 - Type: bool
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `backupPolicies.location`
 
@@ -673,6 +728,8 @@ The location of the backup policy.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `backupPolicies.monthlyBackupsToKeep`
 
@@ -680,6 +737,8 @@ The monthly backups to keep.
 
 - Required: No
 - Type: int
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `backupPolicies.name`
 
@@ -687,6 +746,8 @@ The name of the backup policy.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `backupPolicies.weeklyBackupsToKeep`
 
@@ -694,6 +755,8 @@ The weekly backups to keep.
 
 - Required: No
 - Type: int
+- MinValue: 2
+- MaxValue: 1019
 
 ### Parameter: `backupVault`
 
@@ -721,7 +784,8 @@ The list of backups to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`volumeName`](#parameter-backupvaultbackupsvolumename) | string | The name used to identify the volume. |
+| [`capacityPoolName`](#parameter-backupvaultbackupscapacitypoolname) | string | The name of the capacity pool containing the volumne. |
+| [`volumeName`](#parameter-backupvaultbackupsvolumename) | string | The name of the volume to backup. |
 
 **Optional parameters**
 
@@ -732,9 +796,16 @@ The list of backups to create.
 | [`snapshotName`](#parameter-backupvaultbackupssnapshotname) | string | The name of the snapshot. |
 | [`useExistingSnapshot`](#parameter-backupvaultbackupsuseexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
 
+### Parameter: `backupVault.backups.capacityPoolName`
+
+The name of the capacity pool containing the volumne.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `backupVault.backups.volumeName`
 
-The name used to identify the volume.
+The name of the volume to backup.
 
 - Required: Yes
 - Type: string
@@ -1015,7 +1086,8 @@ List of volumnes to create in the capacity pool.
 | [`creationToken`](#parameter-capacitypoolsvolumescreationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
 | [`dataProtection`](#parameter-capacitypoolsvolumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication |
 | [`encryptionKeySource`](#parameter-capacitypoolsvolumesencryptionkeysource) | string | The source of the encryption key. |
-| [`exportPolicyRules`](#parameter-capacitypoolsvolumesexportpolicyrules) | array | Export policy rules. |
+| [`exportPolicy`](#parameter-capacitypoolsvolumesexportpolicy) | object | Export policy rules. |
+| [`kerberosEnabled`](#parameter-capacitypoolsvolumeskerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-capacitypoolsvolumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-capacitypoolsvolumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-capacitypoolsvolumesnetworkfeatures) | string | Network feature for the volume. |
@@ -1223,12 +1295,169 @@ The source of the encryption key.
 - Required: No
 - Type: string
 
-### Parameter: `capacityPools.volumes.exportPolicyRules`
+### Parameter: `capacityPools.volumes.exportPolicy`
 
 Export policy rules.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rules`](#parameter-capacitypoolsvolumesexportpolicyrules) | array | The Export policy rules. |
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules`
+
+The Export policy rules.
+
+- Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kerberos5iReadOnly`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5ireadonly) | bool | Kerberos5i Read only access. |
+| [`kerberos5iReadWrite`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5ireadwrite) | bool | Kerberos5i Read and write access. |
+| [`kerberos5pReadOnly`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5preadonly) | bool | Kerberos5p Read only access. |
+| [`kerberos5pReadWrite`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5preadwrite) | bool | Kerberos5p Read and write access |
+| [`kerberos5ReadOnly`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5readonly) | bool | Kerberos5 Read only access. |
+| [`kerberos5ReadWrite`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5readwrite) | bool | Kerberos5 Read and write access |
+| [`nfsv3`](#parameter-capacitypoolsvolumesexportpolicyrulesnfsv3) | bool | Allows NFSv3 protocol. Enable only for NFSv3 type volumes. |
+| [`nfsv41`](#parameter-capacitypoolsvolumesexportpolicyrulesnfsv41) | bool | Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes. |
+| [`ruleIndex`](#parameter-capacitypoolsvolumesexportpolicyrulesruleindex) | int | Order index |
+| [`unixReadOnly`](#parameter-capacitypoolsvolumesexportpolicyrulesunixreadonly) | bool | Read only access. |
+| [`unixReadWrite`](#parameter-capacitypoolsvolumesexportpolicyrulesunixreadwrite) | bool | Read and write access. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedClients`](#parameter-capacitypoolsvolumesexportpolicyrulesallowedclients) | string | Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names. |
+| [`chownMode`](#parameter-capacitypoolsvolumesexportpolicyruleschownmode) | string | This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own. |
+| [`cifs`](#parameter-capacitypoolsvolumesexportpolicyrulescifs) | bool | Allows CIFS protocol. |
+| [`hasRootAccess`](#parameter-capacitypoolsvolumesexportpolicyruleshasrootaccess) | bool | Has root access to volume. |
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5iReadOnly`
+
+Kerberos5i Read only access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5iReadWrite`
+
+Kerberos5i Read and write access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5pReadOnly`
+
+Kerberos5p Read only access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5pReadWrite`
+
+Kerberos5p Read and write access
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5ReadOnly`
+
+Kerberos5 Read only access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5ReadWrite`
+
+Kerberos5 Read and write access
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.nfsv3`
+
+Allows NFSv3 protocol. Enable only for NFSv3 type volumes.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.nfsv41`
+
+Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.ruleIndex`
+
+Order index
+
+- Required: Yes
+- Type: int
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.unixReadOnly`
+
+Read only access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.unixReadWrite`
+
+Read and write access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.allowedClients`
+
+Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.chownMode`
+
+This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Restricted'
+    'Unrestricted'
+  ]
+  ```
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.cifs`
+
+Allows CIFS protocol.
+
+- Required: No
+- Type: bool
+
+### Parameter: `capacityPools.volumes.exportPolicy.rules.hasRootAccess`
+
+Has root access to volume.
+
+- Required: No
+- Type: bool
+
+### Parameter: `capacityPools.volumes.kerberosEnabled`
+
+Define if a volume is KerberosEnabled.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `capacityPools.volumes.keyVaultPrivateEndpointResourceId`
 
@@ -1790,6 +2019,8 @@ The daily snapshot hour.
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 23
 
 ### Parameter: `snapshotPolicies.dailySchedule.minute`
 
@@ -1797,6 +2028,8 @@ The daily snapshot minute.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 59
 
 ### Parameter: `snapshotPolicies.dailySchedule.snapshotsToKeep`
 
@@ -1804,6 +2037,8 @@ Daily snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.dailySchedule.usedBytes`
 
@@ -1811,6 +2046,8 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.hourlySchedule`
 
@@ -1838,6 +2075,8 @@ The hourly snapshot minute.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 59
 
 ### Parameter: `snapshotPolicies.hourlySchedule.snapshotsToKeep`
 
@@ -1845,6 +2084,8 @@ Hourly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.hourlySchedule.usedBytes`
 
@@ -1852,6 +2093,8 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.location`
 
@@ -1895,6 +2138,8 @@ The monthly snapshot hour.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 23
 
 ### Parameter: `snapshotPolicies.monthlySchedule.minute`
 
@@ -1902,6 +2147,8 @@ The monthly snapshot minute.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 59
 
 ### Parameter: `snapshotPolicies.monthlySchedule.snapshotsToKeep`
 
@@ -1909,6 +2156,8 @@ Monthly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.monthlySchedule.usedBytes`
 
@@ -1916,6 +2165,8 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.weeklySchedule`
 
@@ -1964,6 +2215,8 @@ The weekly snapshot hour.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 23
 
 ### Parameter: `snapshotPolicies.weeklySchedule.minute`
 
@@ -1971,6 +2224,8 @@ The weekly snapshot minute.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 59
 
 ### Parameter: `snapshotPolicies.weeklySchedule.snapshotsToKeep`
 
@@ -1978,6 +2233,8 @@ Weekly snapshot count to keep.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.weeklySchedule.usedBytes`
 
@@ -1985,6 +2242,8 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 255
 
 ### Parameter: `tags`
 

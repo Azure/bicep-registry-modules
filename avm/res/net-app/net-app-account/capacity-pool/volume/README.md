@@ -43,7 +43,8 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
 | [`dataProtection`](#parameter-dataprotection) | object | DataProtection type volumes include an object containing details of the replication |
-| [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
+| [`exportPolicy`](#parameter-exportpolicy) | object | The export policy rules. |
+| [`kerberosEnabled`](#parameter-kerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-keyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
@@ -268,13 +269,170 @@ The name of the snapshot policy to link.
 - Required: Yes
 - Type: string
 
-### Parameter: `exportPolicyRules`
+### Parameter: `exportPolicy`
 
-Export policy rules.
+The export policy rules.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rules`](#parameter-exportpolicyrules) | array | The Export policy rules. |
+
+### Parameter: `exportPolicy.rules`
+
+The Export policy rules.
+
+- Required: Yes
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kerberos5iReadOnly`](#parameter-exportpolicyruleskerberos5ireadonly) | bool | Kerberos5i Read only access. |
+| [`kerberos5iReadWrite`](#parameter-exportpolicyruleskerberos5ireadwrite) | bool | Kerberos5i Read and write access. |
+| [`kerberos5pReadOnly`](#parameter-exportpolicyruleskerberos5preadonly) | bool | Kerberos5p Read only access. |
+| [`kerberos5pReadWrite`](#parameter-exportpolicyruleskerberos5preadwrite) | bool | Kerberos5p Read and write access |
+| [`kerberos5ReadOnly`](#parameter-exportpolicyruleskerberos5readonly) | bool | Kerberos5 Read only access. |
+| [`kerberos5ReadWrite`](#parameter-exportpolicyruleskerberos5readwrite) | bool | Kerberos5 Read and write access |
+| [`nfsv3`](#parameter-exportpolicyrulesnfsv3) | bool | Allows NFSv3 protocol. Enable only for NFSv3 type volumes. |
+| [`nfsv41`](#parameter-exportpolicyrulesnfsv41) | bool | Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes. |
+| [`ruleIndex`](#parameter-exportpolicyrulesruleindex) | int | Order index |
+| [`unixReadOnly`](#parameter-exportpolicyrulesunixreadonly) | bool | Read only access. |
+| [`unixReadWrite`](#parameter-exportpolicyrulesunixreadwrite) | bool | Read and write access. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedClients`](#parameter-exportpolicyrulesallowedclients) | string | Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names. |
+| [`chownMode`](#parameter-exportpolicyruleschownmode) | string | This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own. |
+| [`cifs`](#parameter-exportpolicyrulescifs) | bool | Allows CIFS protocol. |
+| [`hasRootAccess`](#parameter-exportpolicyruleshasrootaccess) | bool | Has root access to volume. |
+
+### Parameter: `exportPolicy.rules.kerberos5iReadOnly`
+
+Kerberos5i Read only access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.kerberos5iReadWrite`
+
+Kerberos5i Read and write access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.kerberos5pReadOnly`
+
+Kerberos5p Read only access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.kerberos5pReadWrite`
+
+Kerberos5p Read and write access
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.kerberos5ReadOnly`
+
+Kerberos5 Read only access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.kerberos5ReadWrite`
+
+Kerberos5 Read and write access
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.nfsv3`
+
+Allows NFSv3 protocol. Enable only for NFSv3 type volumes.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.nfsv41`
+
+Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.ruleIndex`
+
+Order index
+
+- Required: Yes
+- Type: int
+
+### Parameter: `exportPolicy.rules.unixReadOnly`
+
+Read only access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.unixReadWrite`
+
+Read and write access.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `exportPolicy.rules.allowedClients`
+
+Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names.
+
+- Required: No
+- Type: string
+
+### Parameter: `exportPolicy.rules.chownMode`
+
+This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Restricted'
+    'Unrestricted'
+  ]
+  ```
+
+### Parameter: `exportPolicy.rules.cifs`
+
+Allows CIFS protocol.
+
+- Required: No
+- Type: bool
+
+### Parameter: `exportPolicy.rules.hasRootAccess`
+
+Has root access to volume.
+
+- Required: No
+- Type: bool
+
+### Parameter: `kerberosEnabled`
+
+Define if a volume is KerberosEnabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `keyVaultPrivateEndpointResourceId`
 
@@ -504,9 +662,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-<<<<<<< HEAD
-=======
-| `avm/res/net-app/net-app-account/backup-policies` | Local reference |
-| `avm/res/net-app/net-app-account/snapshot-policies` | Local reference |
->>>>>>> main
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |

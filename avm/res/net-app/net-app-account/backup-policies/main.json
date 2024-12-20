@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "8260694130661724983"
+      "version": "0.32.4.45862",
+      "templateHash": "9819080339239432564"
     },
     "name": "Azure NetApp Files Backup Policy",
     "description": "This module deploys a Backup Policy for Azure NetApp File.",
