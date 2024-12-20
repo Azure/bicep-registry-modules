@@ -1009,6 +1009,8 @@ When auto-scale is enabled, the maximum number of instances in the Kusto Cluster
 - Required: No
 - Type: int
 - Default: `3`
+- MinValue: 3
+- MaxValue: 1000
 
 ### Parameter: `autoScaleMin`
 
@@ -1017,6 +1019,8 @@ When auto-scale is enabled, the minimum number of instances in the Kusto Cluster
 - Required: No
 - Type: int
 - Default: `2`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `capacity`
 
@@ -1025,6 +1029,8 @@ The number of instances of the Kusto Cluster.
 - Required: No
 - Type: int
 - Default: `2`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `customerManagedKey`
 
@@ -1032,6 +1038,8 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1053,6 +1061,8 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -1060,6 +1070,8 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -1067,6 +1079,8 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1074,6 +1088,8 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings`
 
@@ -1081,6 +1097,8 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Optional parameters**
 
@@ -1102,6 +1120,8 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1109,6 +1129,8 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1123,6 +1145,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -1130,6 +1154,8 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Optional parameters**
 
@@ -1145,6 +1171,8 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1152,6 +1180,8 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1159,6 +1189,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1166,6 +1198,8 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1173,6 +1207,8 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1192,6 +1228,8 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1199,6 +1237,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1206,6 +1246,8 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1213,6 +1255,8 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1220,6 +1264,8 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enableAutoScale`
 
@@ -1228,6 +1274,8 @@ Enable/disable auto-scale.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enableAutoStop`
 
@@ -1236,6 +1284,8 @@ Enable/disable auto-stop.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enableDiskEncryption`
 
@@ -1244,6 +1294,8 @@ Enable/disable disk encryption.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enableDoubleEncryption`
 
@@ -1252,6 +1304,8 @@ Enable/disable double encryption.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enablePublicNetworkAccess`
 
@@ -1260,6 +1314,8 @@ Enable/disable public network access. If disabled, only private endpoint connect
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enablePurge`
 
@@ -1268,6 +1324,8 @@ Enable/disable purge.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enableRestrictOutboundNetworkAccess`
 
@@ -1276,6 +1334,8 @@ Enable/disable restricting outbound network access.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enableStreamingIngest`
 
@@ -1284,6 +1344,8 @@ Enable/disable streaming ingest.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enableTelemetry`
 
@@ -1292,6 +1354,8 @@ Enable/disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `enableZoneRedundant`
 
@@ -1300,6 +1364,8 @@ Enable/disable zone redundancy.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `engineType`
 
@@ -1315,6 +1381,8 @@ The engine type of the Kusto Cluster.
     'V3'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `languageExtensions`
 
@@ -1323,6 +1391,8 @@ List of the language extensions of the Kusto Cluster.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1338,6 +1408,8 @@ The name of the language extension custom image.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `languageExtensions.languageExtensionImageName`
 
@@ -1355,6 +1427,8 @@ The name of the language extension image.
     'R'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `languageExtensions.languageExtensionName`
 
@@ -1369,6 +1443,8 @@ The name of the language extension.
     'R'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `location`
 
@@ -1377,6 +1453,8 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `lock`
 
@@ -1384,6 +1462,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Optional parameters**
 
@@ -1406,6 +1486,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `lock.name`
 
@@ -1413,6 +1495,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `managedIdentities`
 
@@ -1420,6 +1504,8 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Optional parameters**
 
@@ -1434,6 +1520,8 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1441,6 +1529,8 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `principalAssignments`
 
@@ -1448,6 +1538,8 @@ The Principal Assignments for the Kusto Cluster.
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1469,6 +1561,8 @@ The principal id assigned to the Kusto Cluster principal. It can be a user email
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `principalAssignments.principalType`
 
@@ -1484,6 +1578,8 @@ The principal type of the principal id.
     'User'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `principalAssignments.role`
 
@@ -1498,6 +1594,8 @@ The Kusto Cluster role to be assigned to the principal id.
     'AllDatabasesViewer'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `principalAssignments.tenantId`
 
@@ -1505,6 +1603,8 @@ The tenant id of the principal.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints`
 
@@ -1512,6 +1612,8 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1546,6 +1648,8 @@ The subresource to deploy the private endpoint for. For example "blob", "table",
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -1553,6 +1657,8 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1560,6 +1666,8 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -1567,6 +1675,8 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1586,6 +1696,8 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -1593,6 +1705,8 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1600,6 +1714,8 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -1607,6 +1723,8 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -1614,6 +1732,8 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1628,6 +1748,8 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -1635,6 +1757,8 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1650,6 +1774,8 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -1657,6 +1783,8 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -1664,6 +1792,8 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -1671,6 +1801,8 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1678,6 +1810,8 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -1685,6 +1819,8 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Optional parameters**
 
@@ -1707,6 +1843,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -1714,6 +1852,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -1721,6 +1861,8 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1728,6 +1870,8 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -1735,6 +1879,8 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1754,6 +1900,8 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1773,6 +1921,8 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -1780,6 +1930,8 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -1787,6 +1939,8 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1794,6 +1948,8 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -1801,6 +1957,8 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -1808,6 +1966,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -1844,6 +2004,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -1851,6 +2013,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -1858,6 +2022,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -1871,6 +2037,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1878,6 +2046,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -1885,6 +2055,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -1892,6 +2064,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -1909,6 +2083,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -1916,6 +2092,8 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `publicIPType`
 
@@ -1932,6 +2110,8 @@ Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv
     'IPv6'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `roleAssignments`
 
@@ -1939,6 +2119,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1968,6 +2150,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1975,6 +2159,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1982,6 +2168,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1995,6 +2183,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2002,6 +2192,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `roleAssignments.description`
 
@@ -2009,6 +2201,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `roleAssignments.name`
 
@@ -2016,6 +2210,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2033,6 +2229,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `tags`
 
@@ -2040,6 +2238,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `tier`
 
@@ -2055,6 +2255,8 @@ The tier of the Kusto Cluster.
     'Standard'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `trustedExternalTenants`
 
@@ -2063,6 +2265,8 @@ The external tenants trusted by the Kusto Cluster.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -2076,6 +2280,8 @@ GUID representing an external tenant.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `virtualClusterGraduationProperties`
 
@@ -2083,6 +2289,8 @@ The virtual cluster graduation properties of the Kusto Cluster.
 
 - Required: No
 - Type: securestring
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `virtualNetworkConfiguration`
 
@@ -2090,6 +2298,8 @@ The virtual network configuration of the Kusto Cluster.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -2105,6 +2315,8 @@ The public IP address resource id of the data management service..
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `virtualNetworkConfiguration.enginePublicIpResourceId`
 
@@ -2112,6 +2324,8 @@ The public IP address resource id of the engine service.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `virtualNetworkConfiguration.subnetResourceId`
 
@@ -2119,6 +2333,8 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ## Outputs
 

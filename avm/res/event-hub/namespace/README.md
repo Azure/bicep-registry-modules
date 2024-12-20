@@ -1726,6 +1726,8 @@ Upper limit of throughput units when AutoInflate is enabled, value should be wit
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `minimumTlsVersion`
 
@@ -1742,6 +1744,8 @@ The minimum TLS version for the cluster to support.
     '1.2'
   ]
   ```
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `networkRuleSets`
 
@@ -1750,6 +1754,8 @@ Configure networking options. This object contains IPs/Subnets to allow or restr
 - Required: No
 - Type: object
 - Default: `{}`
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints`
 
@@ -1757,6 +1763,8 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 20
 
 **Required parameters**
 
@@ -1791,6 +1799,8 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1798,6 +1808,8 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -1805,6 +1817,8 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 20
 
 **Required parameters**
 
@@ -1824,6 +1838,8 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -1831,6 +1847,8 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1838,6 +1856,8 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -1845,6 +1865,8 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -1852,6 +1874,8 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 20
 
 **Required parameters**
 
@@ -1866,6 +1890,8 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -1873,6 +1899,8 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- MinValue: 0
+- MaxValue: 20
 
 **Required parameters**
 
@@ -1888,6 +1916,8 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -1895,6 +1925,8 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -1902,6 +1934,8 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -1909,6 +1943,8 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1916,6 +1952,8 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -1923,6 +1961,8 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 20
 
 **Optional parameters**
 
@@ -1945,6 +1985,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -1952,6 +1994,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -1959,6 +2003,8 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1966,6 +2012,8 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -1973,6 +2021,8 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 20
 
 **Required parameters**
 
@@ -1992,6 +2042,8 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
+- MinValue: 0
+- MaxValue: 20
 
 **Required parameters**
 
@@ -2011,6 +2063,8 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2018,6 +2072,8 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -2025,6 +2081,8 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2032,6 +2090,8 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -2039,6 +2099,8 @@ Specify if you want to deploy the Private Endpoint into a different Resource Gro
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -2046,6 +2108,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 20
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -2082,6 +2146,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -2089,6 +2155,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -2096,6 +2164,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -2109,6 +2179,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2116,6 +2188,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -2123,6 +2197,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -2130,6 +2206,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -2147,6 +2225,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.service`
 
@@ -2154,6 +2234,8 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -2161,6 +2243,8 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `publicNetworkAccess`
 
@@ -2178,6 +2262,8 @@ Whether or not public network access is allowed for this resource. For security 
     'SecuredByPerimeter'
   ]
   ```
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `requireInfrastructureEncryption`
 
@@ -2186,6 +2272,8 @@ Enable infrastructure encryption (double encryption). Note, this setting require
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `roleAssignments`
 
@@ -2193,6 +2281,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 20
 - Roles configurable by name:
   - `'Azure Event Hubs Data Owner'`
   - `'Azure Event Hubs Data Receiver'`
@@ -2227,6 +2317,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2234,6 +2326,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2241,6 +2335,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2254,6 +2350,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2261,6 +2359,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `roleAssignments.description`
 
@@ -2268,6 +2368,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `roleAssignments.name`
 
@@ -2275,6 +2377,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2292,6 +2396,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 20
 
 ### Parameter: `skuCapacity`
 
@@ -2300,6 +2406,8 @@ The Event Hub's throughput units for Basic or Standard tiers, where value should
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 20
 
 ### Parameter: `skuName`
 
@@ -2316,6 +2424,8 @@ event hub plan SKU name.
     'Standard'
   ]
   ```
+- MinValue: 1
+- MaxValue: 20
 
 ### Parameter: `tags`
 
@@ -2323,6 +2433,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 20
 
 ### Parameter: `zoneRedundant`
 
@@ -2331,6 +2443,8 @@ Switch to make the Event Hub Namespace zone redundant.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
+- MaxValue: 20
 
 ## Outputs
 
