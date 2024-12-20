@@ -7,6 +7,7 @@ This module deploys an Event Hub Namespace Event Hub.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -152,6 +153,8 @@ The time window allows you to set the frequency with which the capture to Azure 
 - Required: No
 - Type: int
 - Default: `300`
+- MinValue: 60
+- MaxValue: 900
 
 ### Parameter: `captureDescriptionSizeLimitInBytes`
 
@@ -160,6 +163,8 @@ The size window defines the amount of data built up in your Event Hub before an 
 - Required: No
 - Type: int
 - Default: `314572800`
+- MinValue: 10485760
+- MaxValue: 524288000
 
 ### Parameter: `captureDescriptionSkipEmptyArchives`
 
@@ -168,6 +173,8 @@ A value that indicates whether to Skip Empty Archives.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 10485760
+- MaxValue: 524288000
 
 ### Parameter: `consumergroups`
 
@@ -183,6 +190,8 @@ The consumer groups to create in this event hub instance.
     }
   ]
   ```
+- MinValue: 10485760
+- MaxValue: 524288000
 
 ### Parameter: `lock`
 
@@ -190,6 +199,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 10485760
+- MaxValue: 524288000
 
 **Optional parameters**
 
@@ -212,6 +223,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 10485760
+- MaxValue: 524288000
 
 ### Parameter: `lock.name`
 
@@ -219,6 +232,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 10485760
+- MaxValue: 524288000
 
 ### Parameter: `messageRetentionInDays`
 
@@ -227,6 +242,8 @@ Number of days to retain the events for this Event Hub, value should be 1 to 7 d
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 7
 
 ### Parameter: `partitionCount`
 
@@ -235,6 +252,8 @@ Number of partitions created for the Event Hub, allowed values are from 1 to 32 
 - Required: No
 - Type: int
 - Default: `2`
+- MinValue: 1
+- MaxValue: 32
 
 ### Parameter: `retentionDescriptionCleanupPolicy`
 
@@ -250,6 +269,8 @@ Retention cleanup policy. Enumerates the possible values for cleanup policy.
     'Delete'
   ]
   ```
+- MinValue: 1
+- MaxValue: 32
 
 ### Parameter: `retentionDescriptionRetentionTimeInHours`
 
@@ -258,6 +279,8 @@ Retention time in hours. Number of hours to retain the events for this Event Hub
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `retentionDescriptionTombstoneRetentionTimeInHours`
 
@@ -266,6 +289,8 @@ Retention cleanup policy. Number of hours to retain the tombstone markers of a c
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments`
 
@@ -273,6 +298,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 168
 - Roles configurable by name:
   - `'Azure Event Hubs Data Owner'`
   - `'Azure Event Hubs Data Receiver'`
@@ -307,6 +334,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -314,6 +343,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments.condition`
 
@@ -321,6 +352,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -334,6 +367,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -341,6 +376,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments.description`
 
@@ -348,6 +385,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments.name`
 
@@ -355,6 +394,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -372,6 +413,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `status`
 
@@ -394,6 +437,8 @@ Enumerates the possible values for the status of the Event Hub.
     'Unknown'
   ]
   ```
+- MinValue: 1
+- MaxValue: 168
 
 ## Outputs
 
@@ -402,3 +447,11 @@ Enumerates the possible values for the status of the Event Hub.
 | `name` | string | The name of the event hub. |
 | `resourceGroupName` | string | The resource group the event hub was deployed into. |
 | `resourceId` | string | The resource ID of the event hub. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9391039096512506977"
+      "version": "0.32.4.45862",
+      "templateHash": "10893386311526546547"
     },
     "name": "Application Gateway Web Application Firewall (WAF) Policies",
     "description": "This module deploys an Application Gateway Web Application Firewall (WAF) Policy.",
@@ -84,7 +84,7 @@
     },
     "applicationGatewayWAFPolicy": {
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2024-03-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -122,7 +122,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('applicationGatewayWAFPolicy', '2022-11-01', 'full').location]"
+      "value": "[reference('applicationGatewayWAFPolicy', '2024-03-01', 'full').location]"
     }
   }
 }
