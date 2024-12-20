@@ -22,8 +22,8 @@ resource configuration 'Microsoft.DBforPostgreSQL/flexibleServers/configurations
   name: name
   parent: flexibleServer
   properties: {
-    source: !empty(source) ? source : null
-    value: !empty(value) ? value : null
+    source: source
+    value: value
   }
 }
 

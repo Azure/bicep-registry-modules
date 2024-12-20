@@ -56,7 +56,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsfsmin001'
+    name: 'dfpsmin001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -85,7 +85,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsfsmin001"
+      "value": "dfpsmin001"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -118,7 +118,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param name = 'dfpsfsmin001'
+param name = 'dfpsmin001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -281,7 +281,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsfspvt001'
+    name: 'dfpspvt001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -367,7 +367,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsfspvt001"
+      "value": "dfpspvt001"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -477,7 +477,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param name = 'dfpsfspvt001'
+param name = 'dfpspvt001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -564,7 +564,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsfspe001'
+    name: 'dfpspe001'
     skuName: 'Standard_D2ds_v5'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -614,7 +614,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsfspe001"
+      "value": "dfpspe001"
     },
     "skuName": {
       "value": "Standard_D2ds_v5"
@@ -680,7 +680,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param name = 'dfpsfspe001'
+param name = 'dfpspe001'
 param skuName = 'Standard_D2ds_v5'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -731,7 +731,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsfspub001'
+    name: 'dfpspub001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -837,7 +837,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsfspub001"
+      "value": "dfpspub001"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -973,7 +973,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param name = 'dfpsfspub001'
+param name = 'dfpspub001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -1080,7 +1080,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsfswaf001'
+    name: 'dfpswaf001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -1154,7 +1154,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsfswaf001"
+      "value": "dfpswaf001"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -1250,7 +1250,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param name = 'dfpsfswaf001'
+param name = 'dfpswaf001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -1542,7 +1542,7 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -1565,7 +1565,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
 
 - Required: No
 - Type: string
@@ -2704,7 +2704,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 
