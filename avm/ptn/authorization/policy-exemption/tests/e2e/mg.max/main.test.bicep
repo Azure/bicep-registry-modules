@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = {
     displayName: '[DisplayName] Policy Exemption at the management group scope'
     enableTelemetry: true
     location: resourceLocation
-    managementGroupId: 'alz-landingzones'
+    managementGroupId: managementGroup().name
     metadata: {
       category: 'Security'
       assignedBy: 'Bicep'
