@@ -163,17 +163,6 @@ param extensionAadJoinConfig object = {
 param extensionAntiMalwareConfig object = osType == 'Windows'
   ? {
       enabled: true
-      settings: {
-        AntimalwareEnabled: 'true'
-        Exclusions: {}
-        RealtimeProtectionEnabled: 'true'
-        ScheduledScanSettings: {
-          day: '7'
-          isEnabled: 'true'
-          scanType: 'Quick'
-          time: '120'
-        }
-      }
     }
   : { enabled: false }
 
@@ -755,7 +744,17 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     typeHandlerVersion: extensionAntiMalwareConfig.?typeHandlerVersion ?? '1.3'
     autoUpgradeMinorVersion: extensionAntiMalwareConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAntiMalwareConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAntiMalwareConfig.settings
+    settings: extensionAntiMalwareConfig.?settings ?? {
+      AntimalwareEnabled: 'true'
+      Exclusions: {}
+      RealtimeProtectionEnabled: 'true'
+      ScheduledScanSettings: {
+        day: '7'
+        isEnabled: 'true'
+        scanType: 'Quick'
+        time: '120'
+      }
+    }
     supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }

@@ -5375,7 +5375,7 @@ The configuration for the [Anti Malware] extension. Must at least contain the ["
 
 - Required: No
 - Type: object
-- Default: `[if(equals(parameters('osType'), 'Windows'), createObject('enabled', true(), 'settings', createObject('AntimalwareEnabled', 'true', 'Exclusions', createObject(), 'RealtimeProtectionEnabled', 'true', 'ScheduledScanSettings', createObject('day', '7', 'isEnabled', 'true', 'scanType', 'Quick', 'time', '120'))), createObject('enabled', false()))]`
+- Default: `[if(equals(parameters('osType'), 'Windows'), createObject('enabled', true()), createObject('enabled', false()))]`
 
 ### Parameter: `extensionAzureDiskEncryptionConfig`
 
