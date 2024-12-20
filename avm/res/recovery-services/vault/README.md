@@ -22,9 +22,8 @@ This module deploys a Recovery Services Vault.
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.RecoveryServices/vaults` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-04-01/vaults) |
 | `Microsoft.RecoveryServices/vaults/backupconfig` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupconfig) |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers) |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
-| `Microsoft.RecoveryServices/vaults/backupPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupPolicies) |
+| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupFabrics/protectionContainers/protectedItems) |
+| `Microsoft.RecoveryServices/vaults/backupPolicies` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupPolicies) |
 | `Microsoft.RecoveryServices/vaults/backupstorageconfig` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupstorageconfig) |
 | `Microsoft.RecoveryServices/vaults/replicationAlertSettings` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationAlertSettings) |
 | `Microsoft.RecoveryServices/vaults/replicationFabrics` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationFabrics) |
@@ -846,6 +845,15 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
+    protectedItems: [
+      {
+        name: '<name>'
+        policyName: 'VMpolicy'
+        protectedItemType: 'Microsoft.Compute/virtualMachines'
+        protectionContainerName: '<protectionContainerName>'
+        sourceResourceId: '<sourceResourceId>'
+      }
+    ]
     replicationAlertSettings: {
       customEmailAddresses: [
         'test.user@testcompany.com'
@@ -1248,6 +1256,17 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
+    "protectedItems": {
+      "value": [
+        {
+          "name": "<name>",
+          "policyName": "VMpolicy",
+          "protectedItemType": "Microsoft.Compute/virtualMachines",
+          "protectionContainerName": "<protectionContainerName>",
+          "sourceResourceId": "<sourceResourceId>"
+        }
+      ]
+    },
     "replicationAlertSettings": {
       "value": {
         "customEmailAddresses": [
@@ -1636,6 +1655,15 @@ param privateEndpoints = [
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+  }
+]
+param protectedItems = [
+  {
+    name: '<name>'
+    policyName: 'VMpolicy'
+    protectedItemType: 'Microsoft.Compute/virtualMachines'
+    protectionContainerName: '<protectionContainerName>'
+    sourceResourceId: '<sourceResourceId>'
   }
 ]
 param replicationAlertSettings = {
@@ -2821,7 +2849,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`monitoringSettings`](#parameter-monitoringsettings) | object | Monitoring Settings of the vault. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`protectionContainers`](#parameter-protectioncontainers) | array | List of all protection containers. |
+| [`protectedItems`](#parameter-protecteditems) | array | List of all protection containers. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
 | [`redundancySettings`](#parameter-redundancysettings) | object | The redundancy settings of the vault. |
 | [`replicationAlertSettings`](#parameter-replicationalertsettings) | object | Replication alert settings. |
@@ -3834,7 +3862,7 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 - Required: No
 - Type: object
 
-### Parameter: `protectionContainers`
+### Parameter: `protectedItems`
 
 List of all protection containers.
 
@@ -3845,119 +3873,33 @@ List of all protection containers.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-protectioncontainersname) | string | Name of the Azure Recovery Service Vault Protection Container. |
+| [`name`](#parameter-protecteditemsname) | string | Name of the resource. |
+| [`policyName`](#parameter-protecteditemspolicyname) | string | The backup policy with which this item is backed up. |
+| [`protectedItemType`](#parameter-protecteditemsprotecteditemtype) | string | The backup item type. |
+| [`protectionContainerName`](#parameter-protecteditemsprotectioncontainername) | string | Name of the Azure Recovery Service Vault Protection Container. |
+| [`sourceResourceId`](#parameter-protecteditemssourceresourceid) | string | Resource ID of the resource to back up. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupManagementType`](#parameter-protectioncontainersbackupmanagementtype) | string | Backup management type to execute the current Protection Container job. |
-| [`containerType`](#parameter-protectioncontainerscontainertype) | string | Type of the container. |
-| [`friendlyName`](#parameter-protectioncontainersfriendlyname) | string | Friendly name of the Protection Container. |
-| [`location`](#parameter-protectioncontainerslocation) | string | Location for all resources. |
-| [`protectedItems`](#parameter-protectioncontainersprotecteditems) | array | Protected items to register in the container. |
-| [`sourceResourceId`](#parameter-protectioncontainerssourceresourceid) | string | Resource ID of the target resource for the Protection Container. |
+| [`location`](#parameter-protecteditemslocation) | string | Location for all resources. |
 
-### Parameter: `protectionContainers.name`
-
-Name of the Azure Recovery Service Vault Protection Container.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `protectionContainers.backupManagementType`
-
-Backup management type to execute the current Protection Container job.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureBackupServer'
-    'AzureIaasVM'
-    'AzureSql'
-    'AzureStorage'
-    'AzureWorkload'
-    'DefaultBackup'
-    'DPM'
-    'Invalid'
-    'MAB'
-  ]
-  ```
-
-### Parameter: `protectionContainers.containerType`
-
-Type of the container.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureBackupServerContainer'
-    'AzureSqlContainer'
-    'GenericContainer'
-    'Microsoft.ClassicCompute/virtualMachines'
-    'Microsoft.Compute/virtualMachines'
-    'SQLAGWorkLoadContainer'
-    'StorageContainer'
-    'VMAppContainer'
-    'Windows'
-  ]
-  ```
-
-### Parameter: `protectionContainers.friendlyName`
-
-Friendly name of the Protection Container.
-
-- Required: No
-- Type: string
-
-### Parameter: `protectionContainers.location`
-
-Location for all resources.
-
-- Required: No
-- Type: string
-
-### Parameter: `protectionContainers.protectedItems`
-
-Protected items to register in the container.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-protectioncontainersprotecteditemsname) | string | Name of the resource. |
-| [`policyResourceId`](#parameter-protectioncontainersprotecteditemspolicyresourceid) | string | Resource ID of the backup policy with which this item is backed up. |
-| [`protectedItemType`](#parameter-protectioncontainersprotecteditemsprotecteditemtype) | string | The backup item type. |
-| [`sourceResourceId`](#parameter-protectioncontainersprotecteditemssourceresourceid) | string | Resource ID of the resource to back up. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`location`](#parameter-protectioncontainersprotecteditemslocation) | string | Location for all resources. |
-
-### Parameter: `protectionContainers.protectedItems.name`
+### Parameter: `protectedItems.name`
 
 Name of the resource.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `protectionContainers.protectedItems.policyResourceId`
+### Parameter: `protectedItems.policyName`
 
-Resource ID of the backup policy with which this item is backed up.
+The backup policy with which this item is backed up.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `protectionContainers.protectedItems.protectedItemType`
+### Parameter: `protectedItems.protectedItemType`
 
 The backup item type.
 
@@ -3979,23 +3921,23 @@ The backup item type.
   ]
   ```
 
-### Parameter: `protectionContainers.protectedItems.sourceResourceId`
+### Parameter: `protectedItems.protectionContainerName`
+
+Name of the Azure Recovery Service Vault Protection Container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `protectedItems.sourceResourceId`
 
 Resource ID of the resource to back up.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `protectionContainers.protectedItems.location`
+### Parameter: `protectedItems.location`
 
 Location for all resources.
-
-- Required: No
-- Type: string
-
-### Parameter: `protectionContainers.sourceResourceId`
-
-Resource ID of the target resource for the Protection Container.
 
 - Required: No
 - Type: string
