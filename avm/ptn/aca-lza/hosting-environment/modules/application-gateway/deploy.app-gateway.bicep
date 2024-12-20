@@ -268,7 +268,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
               protocol: 'Https'
               sslCertificate: {
                 #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/sslCertificates/${applicationGatewayFqdn}'
+                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/sslCertificates/${certName}'
               }
               hostnames: []
               requireServerNameIndication: false
