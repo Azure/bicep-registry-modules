@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4715501909071909359"
+      "templateHash": "212775860076150756"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -713,8 +713,7 @@
             "description": "Optional. List of public IP addresses associated with AzureFirewall."
           }
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -807,6 +806,7 @@
     },
     "hubIPAddresses": {
       "$ref": "#/definitions/hubIPAddressesType",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied."
       }

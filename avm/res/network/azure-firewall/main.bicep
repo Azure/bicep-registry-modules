@@ -46,7 +46,7 @@ param natRuleCollections natRuleCollectionType
 param firewallPolicyId string = ''
 
 @description('Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied.')
-param hubIPAddresses hubIPAddressesType
+param hubIPAddresses hubIPAddressesType?
 
 @description('Conditional. The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.')
 param virtualHubId string = ''
@@ -637,4 +637,4 @@ type hubIPAddressesType = {
     @description('Optional. Public IP address count.')
     count: int?
   }?
-}?
+}
