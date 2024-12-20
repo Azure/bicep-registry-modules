@@ -42,6 +42,13 @@ The state of the advanced threat protection.
 - Required: No
 - Type: string
 - Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ## Outputs
 

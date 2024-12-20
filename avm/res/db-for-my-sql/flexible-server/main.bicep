@@ -16,11 +16,11 @@ param location string = resourceGroup().location
 param tags object?
 
 @description('Optional. The administrator login name of a server. Can only be specified when the MySQL server is being created.')
-param administratorLogin string = ''
+param administratorLogin string?
 
 @description('Optional. The administrator login password.')
 @secure()
-param administratorLoginPassword string = ''
+param administratorLoginPassword string?
 
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
 param administrators array = []
@@ -92,12 +92,16 @@ param highAvailability string = 'ZoneRedundant'
 param maintenanceWindow object = {}
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29.')
-param delegatedSubnetResourceId string = ''
+param delegatedSubnetResourceId string?
 
 @description('Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access". Required if "delegatedSubnetResourceId" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server.')
-param privateDnsZoneResourceId string = ''
+param privateDnsZoneResourceId string?
 
 @description('Optional. Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
 param publicNetworkAccess string = 'Disabled'
 
 @description('Conditional. Restore point creation time (ISO8601 format), specifying the time to restore from. Required if "createMode" is set to "PointInTimeRestore".')
@@ -112,7 +116,7 @@ param restorePointInTime string = ''
 param replicationRole string = 'None'
 
 @description('Conditional. The source MySQL server ID. Required if "createMode" is set to "PointInTimeRestore".')
-param sourceServerResourceId string = ''
+param sourceServerResourceId string?
 
 @allowed([
   'Disabled'
@@ -163,6 +167,10 @@ param databases array = []
 param firewallRules array = []
 
 @description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
 param advancedThreatProtection string = 'Enabled'
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
@@ -295,8 +303,8 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
   }
   identity: identity
   properties: {
-    administratorLogin: !empty(administratorLogin) ? administratorLogin : null
-    administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
     availabilityZone: availabilityZone
     backup: {
       backupRetentionDays: backupRetentionDays
@@ -331,13 +339,13 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
         }
       : null
     network: {
-      delegatedSubnetResourceId: !empty(delegatedSubnetResourceId) ? delegatedSubnetResourceId : null
-      privateDnsZoneResourceId: !empty(privateDnsZoneResourceId) ? privateDnsZoneResourceId : null
+      delegatedSubnetResourceId: delegatedSubnetResourceId
+      privateDnsZoneResourceId: privateDnsZoneResourceId
       publicNetworkAccess: publicNetworkAccess
     }
     replicationRole: replicationRole
     restorePointInTime: restorePointInTime
-    sourceServerResourceId: !empty(sourceServerResourceId) ? sourceServerResourceId : null
+    sourceServerResourceId: sourceServerResourceId
     storage: {
       autoGrow: storageAutoGrow
       autoIoScaling: storageAutoIoScaling

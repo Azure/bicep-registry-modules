@@ -1015,7 +1015,6 @@ Private dns zone arm resource ID. Used when the desired connectivity mode is "Pr
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `restorePointInTime`
 
@@ -1031,7 +1030,6 @@ The source MySQL server ID. Required if "createMode" is set to "PointInTimeResto
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `storageAutoGrow`
 
@@ -1054,7 +1052,6 @@ The administrator login name of a server. Can only be specified when the MySQL s
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `administratorLoginPassword`
 
@@ -1062,7 +1059,6 @@ The administrator login password.
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `administrators`
 
@@ -1079,6 +1075,13 @@ Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.
 - Required: No
 - Type: string
 - Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `availabilityZone`
 
@@ -1260,7 +1263,6 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is "Pr
 
 - Required: No
 - Type: string
-- Default: `''`
 - MinValue: 1
 - MaxValue: 35
 
@@ -1574,6 +1576,13 @@ Specifies whether public network access is allowed for this server. Set to "Enab
 - Required: No
 - Type: string
 - Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 - MinValue: 1
 - MaxValue: 35
 

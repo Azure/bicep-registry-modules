@@ -6,6 +6,10 @@ metadata owner = 'Azure/module-maintainers'
 param flexibleServerName string
 
 @description('Optional. The state of the advanced threat protection.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
 param advancedThreatProtection string = 'Enabled'
 
 resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' existing = {

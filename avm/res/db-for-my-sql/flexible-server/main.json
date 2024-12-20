@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14010929490848836584"
+      "templateHash": "16654908193129390274"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -329,14 +329,14 @@
     },
     "administratorLogin": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The administrator login name of a server. Can only be specified when the MySQL server is being created."
       }
     },
     "administratorLoginPassword": {
       "type": "securestring",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The administrator login password."
       }
@@ -460,14 +460,14 @@
     },
     "delegatedSubnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \"Private Access\" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29."
       }
     },
     "privateDnsZoneResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is \"Private Access\". Required if \"delegatedSubnetResourceId\" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server."
       }
@@ -475,6 +475,10 @@
     "publicNetworkAccess": {
       "type": "string",
       "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
       "metadata": {
         "description": "Optional. Specifies whether public network access is allowed for this server. Set to \"Enabled\" to allow public access, or \"Disabled\" (default) when the server has VNet integration."
       }
@@ -500,7 +504,7 @@
     },
     "sourceServerResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The source MySQL server ID. Required if \"createMode\" is set to \"PointInTimeRestore\"."
       }
@@ -584,6 +588,10 @@
     "advancedThreatProtection": {
       "type": "string",
       "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
       "metadata": {
         "description": "Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server."
       }
@@ -728,8 +736,8 @@
       },
       "identity": "[variables('identity')]",
       "properties": {
-        "administratorLogin": "[if(not(empty(parameters('administratorLogin'))), parameters('administratorLogin'), null())]",
-        "administratorLoginPassword": "[if(not(empty(parameters('administratorLoginPassword'))), parameters('administratorLoginPassword'), null())]",
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
         "availabilityZone": "[parameters('availabilityZone')]",
         "backup": {
           "backupRetentionDays": "[parameters('backupRetentionDays')]",
@@ -743,13 +751,13 @@
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
         "network": {
-          "delegatedSubnetResourceId": "[if(not(empty(parameters('delegatedSubnetResourceId'))), parameters('delegatedSubnetResourceId'), null())]",
-          "privateDnsZoneResourceId": "[if(not(empty(parameters('privateDnsZoneResourceId'))), parameters('privateDnsZoneResourceId'), null())]",
+          "delegatedSubnetResourceId": "[parameters('delegatedSubnetResourceId')]",
+          "privateDnsZoneResourceId": "[parameters('privateDnsZoneResourceId')]",
           "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
         },
         "replicationRole": "[parameters('replicationRole')]",
         "restorePointInTime": "[parameters('restorePointInTime')]",
-        "sourceServerResourceId": "[if(not(empty(parameters('sourceServerResourceId'))), parameters('sourceServerResourceId'), null())]",
+        "sourceServerResourceId": "[parameters('sourceServerResourceId')]",
         "storage": {
           "autoGrow": "[parameters('storageAutoGrow')]",
           "autoIoScaling": "[parameters('storageAutoIoScaling')]",
@@ -759,8 +767,8 @@
         "version": "[parameters('version')]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKGeoKeyVault::cMKKey"
+        "cMKGeoKeyVault::cMKKey",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "flexibleServer_lock": {
@@ -1197,7 +1205,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8702168883921324305"
+              "templateHash": "1116000770546444664"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server.",
@@ -1213,6 +1221,10 @@
             "advancedThreatProtection": {
               "type": "string",
               "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
               "metadata": {
                 "description": "Optional. The state of the advanced threat protection."
               }
