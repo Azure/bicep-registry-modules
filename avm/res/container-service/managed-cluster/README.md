@@ -32,17 +32,24 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-service/managed-cluster:<version>`.
 
-- [Using only defaults and use AKS Automatic mode](#example-1-using-only-defaults-and-use-aks-automatic-mode)
+- [Using only defaults and use AKS Automatic mode (PREVIEW)](#example-1-using-only-defaults-and-use-aks-automatic-mode-preview)
 - [Using Azure CNI Network Plugin.](#example-2-using-azure-cni-network-plugin)
 - [Using only defaults](#example-3-using-only-defaults)
 - [Using Istio Service Mesh add-on](#example-4-using-istio-service-mesh-add-on)
 - [Using Kubenet Network Plugin.](#example-5-using-kubenet-network-plugin)
-- [Using Private Cluster.](#example-6-using-private-cluster)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Deploying Non-AAD Cluster](#example-6-deploying-non-aad-cluster)
+- [Using Private Cluster.](#example-7-using-private-cluster)
+- [WAF-aligned](#example-8-waf-aligned)
 
-### Example 1: _Using only defaults and use AKS Automatic mode_
+### Example 1: _Using only defaults and use AKS Automatic mode (PREVIEW)_
 
-This instance deploys the module with the set of automatic parameters.
+This instance deploys the module with the set of automatic parameters.'
+
+Node autoprovisioning (NAP) for AKS is currently in PREVIEW.
+Register the NodeAutoProvisioningPreview feature flag using the az feature register command.
+
+MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION.
+
 
 
 <details>
@@ -57,13 +64,17 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csauto001'
     primaryAgentPoolProfiles: [
       {
-        count: 3
+        count: 1
         mode: 'System'
         name: 'systempool'
         vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
     disableLocalAccounts: true
     enableKeyvaultSecretsProvider: true
@@ -94,9 +105,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
-    nodeProvisioningProfile: {
-      mode: 'Auto'
-    }
+    nodeProvisioningProfileMode: 'Auto'
     nodeResourceGroupProfile: {
       restrictionLevel: 'ReadOnly'
     }
@@ -128,7 +137,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
-          "count": 3,
+          "count": 1,
           "mode": "System",
           "name": "systempool",
           "vmSize": "Standard_DS4_v2"
@@ -136,6 +145,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "autoNodeOsUpgradeProfileUpgradeChannel": {
       "value": "NodeImage"
     },
@@ -184,10 +199,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "systemAssigned": true
       }
     },
-    "nodeProvisioningProfile": {
-      "value": {
-        "mode": "Auto"
-      }
+    "nodeProvisioningProfileMode": {
+      "value": "Auto"
     },
     "nodeResourceGroupProfile": {
       "value": {
@@ -227,13 +240,17 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csauto001'
 param primaryAgentPoolProfiles = [
   {
-    count: 3
+    count: 1
     mode: 'System'
     name: 'systempool'
     vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param autoNodeOsUpgradeProfileUpgradeChannel = 'NodeImage'
 param disableLocalAccounts = true
 param enableKeyvaultSecretsProvider = true
@@ -264,9 +281,7 @@ param maintenanceConfigurations = [
 param managedIdentities = {
   systemAssigned: true
 }
-param nodeProvisioningProfile = {
-  mode: 'Auto'
-}
+param nodeProvisioningProfileMode = 'Auto'
 param nodeResourceGroupProfile = {
   restrictionLevel: 'ReadOnly'
 }
@@ -313,11 +328,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     agentPools: [
       {
         availabilityZones: [
@@ -338,7 +357,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
@@ -359,7 +378,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -569,12 +588,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "agentPools": {
       "value": [
         {
@@ -596,7 +621,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
@@ -617,7 +642,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -881,11 +906,15 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param agentPools = [
   {
     availabilityZones: [
@@ -906,7 +935,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
@@ -927,7 +956,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -1123,10 +1152,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -1157,11 +1190,17 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "location": {
       "value": "<location>"
     },
@@ -1191,10 +1230,14 @@ param primaryAgentPoolProfiles = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
@@ -1221,13 +1264,17 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csist001'
     primaryAgentPoolProfiles: [
       {
-        count: 3
+        count: 2
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
     istioServiceMeshCertificateAuthority: {
@@ -1269,14 +1316,20 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
-          "count": 3,
+          "count": 2,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "enableKeyvaultSecretsProvider": {
       "value": true
     },
@@ -1329,13 +1382,17 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csist001'
 param primaryAgentPoolProfiles = [
   {
-    count: 3
+    count: 2
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
 param istioServiceMeshCertificateAuthority = {
@@ -1392,10 +1449,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     agentPools: [
       {
         availabilityZones: [
@@ -1415,27 +1476,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-      }
-      {
-        availabilityZones: [
-          3
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     diagnosticSettings: [
@@ -1522,11 +1563,17 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "agentPools": {
       "value": [
         {
@@ -1547,27 +1594,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
-        },
-        {
-          "availabilityZones": [
-            3
-          ],
-          "count": 2,
-          "enableAutoScaling": true,
-          "maxCount": 3,
-          "maxPods": 30,
-          "minCount": 1,
-          "minPods": 2,
-          "mode": "User",
-          "name": "userpool2",
-          "nodeLabels": {},
-          "osDiskSizeGB": 128,
-          "osType": "Linux",
-          "scaleSetEvictionPolicy": "Delete",
-          "scaleSetPriority": "Regular",
-          "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
@@ -1662,10 +1689,14 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param agentPools = [
   {
     availabilityZones: [
@@ -1685,27 +1716,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
-  }
-  {
-    availabilityZones: [
-      3
-    ]
-    count: 2
-    enableAutoScaling: true
-    maxCount: 3
-    maxPods: 30
-    minCount: 1
-    minPods: 2
-    mode: 'User'
-    name: 'userpool2'
-    nodeLabels: {}
-    osDiskSizeGB: 128
-    osType: 'Linux'
-    scaleSetEvictionPolicy: 'Delete'
-    scaleSetPriority: 'Regular'
-    type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 param diagnosticSettings = [
@@ -1758,7 +1769,118 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Using Private Cluster._
+### Example 6: _Deploying Non-AAD Cluster_
+
+This instance deploys the module with a non-AAD integrated cluster.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
+  name: 'managedClusterDeployment'
+  params: {
+    // Required parameters
+    name: 'csnonaad001'
+    primaryAgentPoolProfiles: [
+      {
+        count: 1
+        mode: 'System'
+        name: 'systempool'
+        vmSize: 'Standard_DS2_v2'
+      }
+    ]
+    // Non-required parameters
+    aadProfile: '<aadProfile>'
+    disableLocalAccounts: false
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csnonaad001"
+    },
+    "primaryAgentPoolProfiles": {
+      "value": [
+        {
+          "count": 1,
+          "mode": "System",
+          "name": "systempool",
+          "vmSize": "Standard_DS2_v2"
+        }
+      ]
+    },
+    // Non-required parameters
+    "aadProfile": {
+      "value": "<aadProfile>"
+    },
+    "disableLocalAccounts": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csnonaad001'
+param primaryAgentPoolProfiles = [
+  {
+    count: 1
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param aadProfile = '<aadProfile>'
+param disableLocalAccounts = false
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
 
@@ -1791,11 +1913,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     agentPools: [
       {
         availabilityZones: [
@@ -1815,28 +1941,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
-      }
-      {
-        availabilityZones: [
-          3
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
       }
     ]
     dnsServiceIP: '10.10.200.10'
@@ -1890,12 +1996,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "agentPools": {
       "value": [
         {
@@ -1916,28 +2028,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
-        },
-        {
-          "availabilityZones": [
-            3
-          ],
-          "count": 2,
-          "enableAutoScaling": true,
-          "maxCount": 3,
-          "maxPods": 30,
-          "minCount": 1,
-          "minPods": 2,
-          "mode": "User",
-          "name": "userpool2",
-          "nodeLabels": {},
-          "osDiskSizeGB": 128,
-          "osType": "Linux",
-          "scaleSetEvictionPolicy": "Delete",
-          "scaleSetPriority": "Regular",
-          "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
         }
       ]
     },
@@ -2003,11 +2095,15 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param agentPools = [
   {
     availabilityZones: [
@@ -2027,28 +2123,8 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
-  }
-  {
-    availabilityZones: [
-      3
-    ]
-    count: 2
-    enableAutoScaling: true
-    maxCount: 3
-    maxPods: 30
-    minCount: 1
-    minPods: 2
-    mode: 'User'
-    name: 'userpool2'
-    nodeLabels: {}
-    osDiskSizeGB: 128
-    osType: 'Linux'
-    scaleSetEvictionPolicy: 'Delete'
-    scaleSetPriority: 'Regular'
-    type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
   }
 ]
 param dnsServiceIP = '10.10.200.10'
@@ -2068,7 +2144,7 @@ param skuTier = 'Standard'
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -2088,7 +2164,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 1
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2101,17 +2177,21 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
     // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     agentPools: [
       {
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 2
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2126,14 +2206,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
         availabilityZones: [
           3
         ]
-        count: 3
+        count: 2
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
@@ -2148,7 +2228,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
@@ -2261,7 +2341,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 1,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2274,19 +2354,25 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
     },
     // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
     "agentPools": {
       "value": [
         {
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 2,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2301,14 +2387,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_DS4_v2",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
           "availabilityZones": [
             3
           ],
-          "count": 3,
+          "count": 2,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
@@ -2323,7 +2409,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS2_v2"
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
@@ -2468,7 +2554,7 @@ param primaryAgentPoolProfiles = [
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 1
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
@@ -2481,17 +2567,21 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
 // Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
 param agentPools = [
   {
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 2
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
@@ -2506,14 +2596,14 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
     availabilityZones: [
       3
     ]
-    count: 3
+    count: 2
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
@@ -2528,7 +2618,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
@@ -2640,13 +2730,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadProfileAdminGroupObjectIDs`](#parameter-aadprofileadmingroupobjectids) | array | Specifies the AAD group object IDs that will have admin role of the cluster. |
-| [`aadProfileClientAppID`](#parameter-aadprofileclientappid) | string | The client AAD application ID. |
-| [`aadProfileEnableAzureRBAC`](#parameter-aadprofileenableazurerbac) | bool | Specifies whether to enable Azure RBAC for Kubernetes authorization. |
-| [`aadProfileManaged`](#parameter-aadprofilemanaged) | bool | Specifies whether to enable managed AAD integration. |
-| [`aadProfileServerAppID`](#parameter-aadprofileserverappid) | string | The server AAD application ID. |
-| [`aadProfileServerAppSecret`](#parameter-aadprofileserverappsecret) | string | The server AAD application secret. |
-| [`aadProfileTenantId`](#parameter-aadprofiletenantid) | string | Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication. |
+| [`aadProfile`](#parameter-aadprofile) | object | Enable Azure Active Directory integration. |
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
@@ -2729,7 +2813,7 @@ param tags = {
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
 | [`networkPolicy`](#parameter-networkpolicy) | string | Specifies the network policy used for building Kubernetes network. - calico or azure. |
-| [`nodeProvisioningProfile`](#parameter-nodeprovisioningprofile) | object | Node provisioning settings that apply to the whole cluster. |
+| [`nodeProvisioningProfileMode`](#parameter-nodeprovisioningprofilemode) | string | Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. |
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
@@ -2744,7 +2828,7 @@ param tags = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or deny public network access for AKS. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
-| [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. |
+| [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
 | [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
@@ -3140,57 +3224,78 @@ Specifies the resource ID of connected application gateway. Required if `ingress
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileAdminGroupObjectIDs`
+### Parameter: `aadProfile`
+
+Enable Azure Active Directory integration.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadProfileEnableAzureRBAC`](#parameter-aadprofileaadprofileenableazurerbac) | bool | Specifies whether to enable Azure RBAC for Kubernetes authorization. |
+| [`aadProfileManaged`](#parameter-aadprofileaadprofilemanaged) | bool | Specifies whether to enable managed AAD integration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadProfileAdminGroupObjectIDs`](#parameter-aadprofileaadprofileadmingroupobjectids) | array | Specifies the AAD group object IDs that will have admin role of the cluster. |
+| [`aadProfileClientAppID`](#parameter-aadprofileaadprofileclientappid) | string | The client AAD application ID. |
+| [`aadProfileServerAppID`](#parameter-aadprofileaadprofileserverappid) | string | The server AAD application ID. |
+| [`aadProfileServerAppSecret`](#parameter-aadprofileaadprofileserverappsecret) | string | The server AAD application secret. |
+| [`aadProfileTenantId`](#parameter-aadprofileaadprofiletenantid) | string | Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication. |
+
+### Parameter: `aadProfile.aadProfileEnableAzureRBAC`
+
+Specifies whether to enable Azure RBAC for Kubernetes authorization.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `aadProfile.aadProfileManaged`
+
+Specifies whether to enable managed AAD integration.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `aadProfile.aadProfileAdminGroupObjectIDs`
 
 Specifies the AAD group object IDs that will have admin role of the cluster.
 
 - Required: No
 - Type: array
 
-### Parameter: `aadProfileClientAppID`
+### Parameter: `aadProfile.aadProfileClientAppID`
 
 The client AAD application ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileEnableAzureRBAC`
-
-Specifies whether to enable Azure RBAC for Kubernetes authorization.
-
-- Required: No
-- Type: bool
-- Default: `[parameters('enableRBAC')]`
-
-### Parameter: `aadProfileManaged`
-
-Specifies whether to enable managed AAD integration.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `aadProfileServerAppID`
+### Parameter: `aadProfile.aadProfileServerAppID`
 
 The server AAD application ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileServerAppSecret`
+### Parameter: `aadProfile.aadProfileServerAppSecret`
 
 The server AAD application secret.
 
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileTenantId`
+### Parameter: `aadProfile.aadProfileTenantId`
 
 Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.
 
 - Required: No
 - Type: string
-- Default: `[subscription().tenantId]`
 
 ### Parameter: `aciConnectorLinuxEnabled`
 
@@ -4325,6 +4430,7 @@ The interval in hours Image Cleaner will run. The maximum value is three months.
 - Required: No
 - Type: int
 - Default: `24`
+- MinValue: 24
 
 ### Parameter: `ingressApplicationGatewayEnabled`
 
@@ -4333,6 +4439,7 @@ Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority`
 
@@ -4340,6 +4447,7 @@ The Istio Certificate Authority definition.
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 **Required parameters**
 
@@ -4357,6 +4465,7 @@ The Certificate chain object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.certObjectName`
 
@@ -4364,6 +4473,7 @@ The Intermediate certificate object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.keyObjectName`
 
@@ -4371,6 +4481,7 @@ The Intermediate certificate private key object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.keyVaultResourceId`
 
@@ -4378,6 +4489,7 @@ The resource ID of a key vault to reference a Certificate Authority from.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.rootCertObjectName`
 
@@ -4385,6 +4497,7 @@ Root certificate object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshEnabled`
 
@@ -4393,6 +4506,7 @@ Specifies whether the Istio ServiceMesh add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshExternalIngressGatewayEnabled`
 
@@ -4401,6 +4515,7 @@ Specifies whether the External Istio Ingress Gateway is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshInternalIngressGatewayEnabled`
 
@@ -4409,6 +4524,7 @@ Specifies whether the Internal Istio Ingress Gateway is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshRevisions`
 
@@ -4416,6 +4532,7 @@ The list of revisions of the Istio control plane. When an upgrade is not in prog
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 ### Parameter: `kedaAddon`
 
@@ -4424,6 +4541,7 @@ Enables Kubernetes Event-driven Autoscaling (KEDA).
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `kubeDashboardEnabled`
 
@@ -4432,6 +4550,7 @@ Specifies whether the kubeDashboard add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `kubernetesVersion`
 
@@ -4439,6 +4558,7 @@ Version of Kubernetes specified when creating the managed cluster.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `loadBalancerSku`
 
@@ -4454,6 +4574,7 @@ Specifies the sku of the load balancer used by the virtual machine scale sets us
     'standard'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `location`
 
@@ -4462,6 +4583,7 @@ Specifies the location of AKS cluster. It picks up Resource Group's location by 
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 24
 
 ### Parameter: `lock`
 
@@ -4469,6 +4591,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 **Optional parameters**
 
@@ -4491,6 +4614,7 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `lock.name`
 
@@ -4498,6 +4622,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `maintenanceConfigurations`
 
@@ -4505,6 +4630,7 @@ Whether or not to use AKS Automatic mode.
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 **Required parameters**
 
@@ -4519,6 +4645,7 @@ Maintenance window for the maintenance configuration.
 
 - Required: Yes
 - Type: object
+- MinValue: 24
 
 ### Parameter: `maintenanceConfigurations.name`
 
@@ -4533,6 +4660,7 @@ Name of maintenance window.
     'aksManagedNodeOSUpgradeSchedule'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `managedIdentities`
 
@@ -4540,6 +4668,7 @@ The managed identity definition for this resource. Only one type of identity is 
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 **Optional parameters**
 
@@ -4554,6 +4683,7 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- MinValue: 24
 
 ### Parameter: `managedIdentities.userAssignedResourcesIds`
 
@@ -4561,6 +4691,7 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 ### Parameter: `managedOutboundIPCount`
 
@@ -4569,6 +4700,7 @@ Outbound IP Count for the Load balancer.
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 24
 
 ### Parameter: `metricAnnotationsAllowList`
 
@@ -4577,6 +4709,7 @@ A comma-separated list of Kubernetes cluster metrics annotations.
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 24
 
 ### Parameter: `metricLabelsAllowlist`
 
@@ -4585,6 +4718,7 @@ A comma-separated list of kubernetes cluster metrics labels.
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 24
 
 ### Parameter: `monitoringWorkspaceResourceId`
 
@@ -4592,6 +4726,7 @@ Resource ID of the monitoring log analytics workspace.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `networkDataplane`
 
@@ -4606,6 +4741,7 @@ Network dataplane used in the Kubernetes cluster. Not compatible with kubenet ne
     'cilium'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPlugin`
 
@@ -4620,6 +4756,7 @@ Specifies the network plugin used for building Kubernetes network.
     'kubenet'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPluginMode`
 
@@ -4633,6 +4770,7 @@ Network plugin mode used for building the Kubernetes network. Not compatible wit
     'overlay'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPolicy`
 
@@ -4648,13 +4786,22 @@ Specifies the network policy used for building Kubernetes network. - calico or a
     'cilium'
   ]
   ```
+- MinValue: 24
 
-### Parameter: `nodeProvisioningProfile`
+### Parameter: `nodeProvisioningProfileMode`
 
-Node provisioning settings that apply to the whole cluster.
+Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.
 
 - Required: No
-- Type: object
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Auto'
+    'Manual'
+  ]
+  ```
+- MinValue: 24
 
 ### Parameter: `nodeResourceGroup`
 
@@ -4663,6 +4810,7 @@ Name of the resource group containing agent pool nodes.
 - Required: No
 - Type: string
 - Default: `[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]`
+- MinValue: 24
 
 ### Parameter: `nodeResourceGroupProfile`
 
@@ -4670,6 +4818,7 @@ The node resource group configuration profile.
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 ### Parameter: `omsAgentEnabled`
 
@@ -4678,6 +4827,7 @@ Specifies whether the OMS agent is enabled.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 24
 
 ### Parameter: `openServiceMeshEnabled`
 
@@ -4686,6 +4836,7 @@ Specifies whether the openServiceMesh add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `outboundType`
 
@@ -4703,6 +4854,7 @@ Specifies outbound (egress) routing method.
     'userDefinedRouting'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `podCidr`
 
@@ -4710,6 +4862,7 @@ Specifies the CIDR notation IP range from which to assign pod IPs when kubenet i
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileAllowNetworkPluginKubenet`
 
@@ -4718,6 +4871,7 @@ Running in Kubenet is disabled by default due to the security related nature of 
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileEnable`
 
@@ -4726,6 +4880,7 @@ Whether the pod identity addon is enabled.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileUserAssignedIdentities`
 
@@ -4733,6 +4888,7 @@ The pod identities to use in the cluster.
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileUserAssignedIdentityExceptions`
 
@@ -4740,6 +4896,7 @@ The pod identity exceptions to allow.
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 ### Parameter: `privateDNSZone`
 
@@ -4747,6 +4904,7 @@ Private DNS Zone configuration. Set to 'system' and AKS will create a private DN
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `publicNetworkAccess`
 
@@ -4763,6 +4921,7 @@ Allow or deny public network access for AKS.
     'SecuredByPerimeter'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `roleAssignments`
 
@@ -4770,6 +4929,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 24
 - Roles configurable by name:
   - `'Azure Kubernetes Fleet Manager Contributor Role'`
   - `'Azure Kubernetes Fleet Manager RBAC Admin'`
@@ -4815,6 +4975,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -4822,6 +4983,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.condition`
 
@@ -4829,6 +4991,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -4842,6 +5005,7 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4849,6 +5013,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.description`
 
@@ -4856,6 +5021,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.name`
 
@@ -4863,6 +5029,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -4880,6 +5047,7 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `serviceCidr`
 
@@ -4887,10 +5055,11 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `skuName`
 
-Name of a managed cluster SKU.
+Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.
 
 - Required: No
 - Type: string
@@ -4902,6 +5071,7 @@ Name of a managed cluster SKU.
     'Base'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `skuTier`
 
@@ -4918,6 +5088,7 @@ Tier of a managed cluster SKU.
     'Standard'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `sshPublicKey`
 
@@ -4925,6 +5096,7 @@ Specifies the SSH RSA public key string for the Linux nodes.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `supportPlan`
 
@@ -4940,6 +5112,7 @@ The support plan for the Managed Cluster.
     'KubernetesOfficial'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `syslogPort`
 
@@ -4948,6 +5121,7 @@ The syslog host port. If not specified, the default port is 28330.
 - Required: No
 - Type: int
 - Default: `28330`
+- MinValue: 24
 
 ### Parameter: `tags`
 
@@ -4955,6 +5129,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 ### Parameter: `vpaAddon`
 
@@ -4963,6 +5138,7 @@ Whether to enable VPA add-on in cluster. Default value is false.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `webApplicationRoutingEnabled`
 
@@ -4971,6 +5147,7 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ## Outputs
 

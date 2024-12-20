@@ -223,6 +223,7 @@ module privateDnsZone_virtualNetworkLinks 'virtual-network-link/main.bicep' = [
       location: virtualNetworkLink.?location ?? 'global'
       registrationEnabled: virtualNetworkLink.?registrationEnabled ?? false
       tags: virtualNetworkLink.?tags ?? tags
+      resolutionPolicy: virtualNetworkLink.?resolutionPolicy
     }
   }
 ]
@@ -511,4 +512,7 @@ type virtualNetworkLinkType = {
 
   @description('Optional. Resource tags.')
   tags: object?
+
+  @description('Optional. The resolution type of the private-dns-zone fallback machanism.')
+  resolutionPolicy: ('Default' | 'NxDomainRedirect')?
 }[]?

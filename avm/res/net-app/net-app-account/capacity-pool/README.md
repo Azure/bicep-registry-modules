@@ -686,4 +686,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+<<<<<<< HEAD
+=======
+| `avm/res/net-app/net-app-account/backup-policies` | Local reference |
+| `avm/res/net-app/net-app-account/snapshot-policies` | Local reference |
+>>>>>>> main
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
