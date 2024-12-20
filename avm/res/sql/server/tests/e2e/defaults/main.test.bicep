@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
+      enableAuditSettings: false
     }
   }
 ]

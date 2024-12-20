@@ -259,6 +259,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    enableAuditSettings: false
     location: '<location>'
   }
 }
@@ -287,6 +288,9 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
+    "enableAuditSettings": {
+      "value": false
+    },
     "location": {
       "value": "<location>"
     }
@@ -309,6 +313,7 @@ param name = 'ssmin001'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param enableAuditSettings = false
 param location = '<location>'
 ```
 
@@ -2174,6 +2179,7 @@ param vulnerabilityAssessmentsObj = {
 | [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
+| [`enableAuditSettings`](#parameter-enableauditsettings) | bool | Set to false to disable audit settings completely. Default is true to enable audit settings. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
 | [`failoverGroups`](#parameter-failovergroups) | array | The failover groups configuration. |
@@ -3320,6 +3326,14 @@ Whether or not this elastic pool is zone redundant, which means the replicas of 
 
 - Required: No
 - Type: bool
+
+### Parameter: `enableAuditSettings`
+
+Set to false to disable audit settings completely. Default is true to enable audit settings.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 
