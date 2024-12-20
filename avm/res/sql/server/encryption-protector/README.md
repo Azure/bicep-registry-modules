@@ -41,7 +41,6 @@ The name of the server key.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sqlServerName`
 
@@ -49,7 +48,6 @@ The name of the sql server. Required if the template is used in a standalone dep
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `autoRotationEnabled`
 
@@ -57,7 +55,6 @@ Key auto rotation opt-in flag.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `serverKeyType`
@@ -66,7 +63,6 @@ The encryption protector type.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'ServiceManaged'`
 - Allowed:
   ```Bicep

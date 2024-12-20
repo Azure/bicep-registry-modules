@@ -957,7 +957,6 @@ The name of the Kusto cluster which must be unique within Azure.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sku`
 
@@ -965,7 +964,6 @@ The SKU of the Kusto Cluster.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `acceptedAudiences`
 
@@ -973,7 +971,6 @@ The Kusto Cluster's accepted audiences.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 **Required parameters**
@@ -988,7 +985,6 @@ GUID or valid URL representing an accepted audience.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `allowedFqdnList`
 
@@ -996,7 +992,6 @@ List of allowed fully-qulified domain names (FQDNs) for egress from the Kusto Cl
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `allowedIpRangeList`
@@ -1005,7 +1000,6 @@ List of IP addresses in CIDR format allowed to connect to the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `autoScaleMax`
@@ -1014,7 +1008,6 @@ When auto-scale is enabled, the maximum number of instances in the Kusto Cluster
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `3`
 - MinValue: 3
 - MaxValue: 1000
@@ -1025,7 +1018,6 @@ When auto-scale is enabled, the minimum number of instances in the Kusto Cluster
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `2`
 - MinValue: 2
 - MaxValue: 999
@@ -1036,7 +1028,6 @@ The number of instances of the Kusto Cluster.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `2`
 - MinValue: 2
 - MaxValue: 999
@@ -1047,7 +1038,6 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1071,7 +1061,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1081,7 +1070,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1091,7 +1079,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1101,7 +1088,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1111,7 +1097,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1135,7 +1120,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1145,7 +1129,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1155,7 +1138,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1172,7 +1154,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1190,7 +1171,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1200,7 +1180,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1210,7 +1189,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1220,7 +1198,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1230,7 +1207,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1252,7 +1228,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1262,7 +1237,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1272,7 +1246,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1282,7 +1255,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1292,7 +1264,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1302,7 +1273,6 @@ Enable/disable auto-scale.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 2
 - MaxValue: 999
@@ -1313,7 +1283,6 @@ Enable/disable auto-stop.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 2
 - MaxValue: 999
@@ -1324,7 +1293,6 @@ Enable/disable disk encryption.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 2
 - MaxValue: 999
@@ -1335,7 +1303,6 @@ Enable/disable double encryption.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 2
 - MaxValue: 999
@@ -1346,7 +1313,6 @@ Enable/disable public network access. If disabled, only private endpoint connect
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 2
 - MaxValue: 999
@@ -1357,7 +1323,6 @@ Enable/disable purge.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 2
 - MaxValue: 999
@@ -1368,7 +1333,6 @@ Enable/disable restricting outbound network access.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 2
 - MaxValue: 999
@@ -1379,7 +1343,6 @@ Enable/disable streaming ingest.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 2
 - MaxValue: 999
@@ -1390,7 +1353,6 @@ Enable/disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 2
 - MaxValue: 999
@@ -1401,7 +1363,6 @@ Enable/disable zone redundancy.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 2
 - MaxValue: 999
@@ -1412,7 +1373,6 @@ The engine type of the Kusto Cluster.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'V3'`
 - Allowed:
   ```Bicep
@@ -1430,7 +1390,6 @@ List of the language extensions of the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 2
 - MaxValue: 999
@@ -1449,7 +1408,6 @@ The name of the language extension custom image.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1459,7 +1417,6 @@ The name of the language extension image.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1479,7 +1436,6 @@ The name of the language extension.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1496,7 +1452,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 - MinValue: 2
 - MaxValue: 999
@@ -1507,7 +1462,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1524,7 +1478,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1542,7 +1495,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1552,7 +1504,6 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1569,7 +1520,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1579,7 +1529,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1589,7 +1538,6 @@ The Principal Assignments for the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1613,7 +1561,6 @@ The principal id assigned to the Kusto Cluster principal. It can be a user email
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1623,7 +1570,6 @@ The principal type of the principal id.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1641,7 +1587,6 @@ The Kusto Cluster role to be assigned to the principal id.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1658,7 +1603,6 @@ The tenant id of the principal.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1668,7 +1612,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1705,7 +1648,6 @@ The subresource to deploy the private endpoint for. For example "blob", "table",
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1715,7 +1657,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1725,7 +1666,6 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1735,7 +1675,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1757,7 +1696,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1767,7 +1705,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1777,7 +1714,6 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1787,7 +1723,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1797,7 +1732,6 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1814,7 +1748,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1824,7 +1757,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1842,7 +1774,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1852,7 +1783,6 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1862,7 +1792,6 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -1872,7 +1801,6 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1882,7 +1810,6 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1892,7 +1819,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1909,7 +1835,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1927,7 +1852,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1937,7 +1861,6 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1947,7 +1870,6 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1957,7 +1879,6 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -1979,7 +1900,6 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2001,7 +1921,6 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2011,7 +1930,6 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2021,7 +1939,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2031,7 +1948,6 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2041,7 +1957,6 @@ Specify if you want to deploy the Private Endpoint into a different resource gro
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2051,7 +1966,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 - Roles configurable by name:
@@ -2090,7 +2004,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2100,7 +2013,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2110,7 +2022,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2120,7 +2031,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2136,7 +2046,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2146,7 +2055,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2156,7 +2064,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2166,7 +2073,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2186,7 +2092,6 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2196,7 +2101,6 @@ Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'DualStack'`
 - Allowed:
   ```Bicep
@@ -2215,7 +2119,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 - Roles configurable by name:
@@ -2247,7 +2150,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2257,7 +2159,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2267,7 +2168,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2277,7 +2177,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2293,7 +2192,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2303,7 +2201,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2313,7 +2210,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2323,7 +2219,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2343,7 +2238,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2353,7 +2247,6 @@ The tier of the Kusto Cluster.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -2371,7 +2264,6 @@ The external tenants trusted by the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 2
 - MaxValue: 999
@@ -2388,7 +2280,6 @@ GUID representing an external tenant.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2398,7 +2289,6 @@ The virtual cluster graduation properties of the Kusto Cluster.
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2408,7 +2298,6 @@ The virtual network configuration of the Kusto Cluster.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 2
 - MaxValue: 999
 
@@ -2426,7 +2315,6 @@ The public IP address resource id of the data management service..
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2436,7 +2324,6 @@ The public IP address resource id of the engine service.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 
@@ -2446,7 +2333,6 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 2
 - MaxValue: 999
 

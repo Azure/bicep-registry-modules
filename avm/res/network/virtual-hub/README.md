@@ -678,7 +678,6 @@ Address-prefix for this VirtualHub.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -686,7 +685,6 @@ The virtual hub name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualWanId`
 
@@ -694,7 +692,6 @@ Resource ID of the virtual WAN to link to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `allowBranchToBranchTraffic`
 
@@ -702,7 +699,6 @@ Flag to control transit for VirtualRouter hub.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `azureFirewallResourceId`
@@ -711,7 +707,6 @@ Resource ID of the Azure Firewall to link to.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -720,7 +715,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `expressRouteGatewayId`
@@ -729,7 +723,6 @@ Resource ID of the Express Route Gateway to link to.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `hubRouteTables`
@@ -738,7 +731,6 @@ Route tables to create for the virtual hub.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `hubRoutingPreference`
@@ -747,7 +739,6 @@ The preferred routing preference for this virtual hub.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -765,7 +756,6 @@ Virtual network connections to create for the virtual hub.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `internetToFirewall`
@@ -774,7 +764,6 @@ Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firew
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -783,7 +772,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -792,7 +780,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -807,7 +794,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -823,7 +809,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `p2SVpnGatewayId`
 
@@ -831,7 +816,6 @@ Resource ID of the Point-to-Site VPN Gateway to link to.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `preferredRoutingGateway`
@@ -840,7 +824,6 @@ The preferred routing gateway types.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -858,7 +841,6 @@ Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewal
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `routeTableRoutes`
@@ -867,7 +849,6 @@ VirtualHub route tables.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `securityPartnerProviderId`
@@ -876,7 +857,6 @@ ID of the Security Partner Provider to link to.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `securityProviderName`
@@ -885,7 +865,6 @@ The Security Provider name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `sku`
@@ -894,7 +873,6 @@ The sku of this VirtualHub.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -910,7 +888,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `virtualHubRouteTableV2s`
 
@@ -918,7 +895,6 @@ List of all virtual hub route table v2s associated with this VirtualHub.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `virtualRouterAsn`
@@ -927,7 +903,6 @@ VirtualRouter ASN.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `virtualRouterIps`
 
@@ -935,7 +910,6 @@ VirtualRouter IPs.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `vpnGatewayId`
@@ -944,7 +918,6 @@ Resource ID of the VPN Gateway to link to.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

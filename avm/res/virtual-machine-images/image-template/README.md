@@ -758,7 +758,6 @@ The distribution targets where the image output needs to go to.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `imageSource`
 
@@ -766,7 +765,6 @@ Image source definition in object format.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `managedIdentities`
 
@@ -774,7 +772,6 @@ The managed identity definition for this resource.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -788,7 +785,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `name`
 
@@ -796,7 +792,6 @@ The name prefix of the Image Template to be built by the Azure Image Builder ser
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `buildTimeoutInMinutes`
 
@@ -804,7 +799,6 @@ The image build timeout in minutes. 0 means the default 240 minutes.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 - MinValue: 0
 - MaxValue: 960
@@ -815,7 +809,6 @@ Customization steps to be run when building the VM image.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -825,7 +818,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 0
 - MaxValue: 960
@@ -836,7 +828,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 - MinValue: 0
 - MaxValue: 960
@@ -847,7 +838,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -864,7 +854,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -882,7 +871,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -892,7 +880,6 @@ The optimize property can be enabled while creating a VM image and allows VM opt
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -909,7 +896,6 @@ Specifies the size of OS disk.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `128`
 - MinValue: 0
 - MaxValue: 960
@@ -920,7 +906,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 - Roles configurable by name:
@@ -954,7 +939,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 0
 - MaxValue: 960
 
@@ -964,7 +948,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 0
 - MaxValue: 960
 
@@ -974,7 +957,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -984,7 +966,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1000,7 +981,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1010,7 +990,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1020,7 +999,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1030,7 +1008,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1050,7 +1027,6 @@ Resource ID of the staging resource group in the same subscription and location 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1060,7 +1036,6 @@ Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1070,7 +1045,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1080,7 +1054,6 @@ Configuration options and list of validations to be performed on the resulting i
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1098,7 +1071,6 @@ If validation fails and this field is set to false, output image(s) will not be 
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1108,7 +1080,6 @@ A list of validators that will be performed on the image. Azure Image Builder su
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1138,7 +1109,6 @@ The type of validation.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1156,7 +1126,6 @@ Destination of the file.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1166,7 +1135,6 @@ Array of commands to be run, separated by commas.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1176,7 +1144,6 @@ Friendly Name to provide context on what this validation step does.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1186,7 +1153,6 @@ If specified, the PowerShell script will be run with elevated privileges using t
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1196,7 +1162,6 @@ If specified, the PowerShell script will be run with elevated privileges.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1206,7 +1171,6 @@ URI of the PowerShell script to be run for validation. It can be a github link, 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1216,7 +1180,6 @@ Value of sha256 checksum of the file, you generate this locally, and then Image 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1226,7 +1189,6 @@ The source URI of the file.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1236,7 +1198,6 @@ Valid codes that can be returned from the script/inline command, this avoids rep
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1246,7 +1207,6 @@ If this field is set to true, the image specified in the 'source' section will d
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 960
 
@@ -1256,7 +1216,6 @@ Specifies the size for the VM.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard_D2s_v3'`
 - MinValue: 0
 - MaxValue: 960
@@ -1267,7 +1226,6 @@ List of User-Assigned Identities associated to the Build VM for accessing Azure 
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 0
 - MaxValue: 960
@@ -1278,7 +1236,6 @@ Do not provide a value! This date is used to generate a unique image template na
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
 - MinValue: 0
 - MaxValue: 960

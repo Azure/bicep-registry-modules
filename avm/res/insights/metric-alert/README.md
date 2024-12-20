@@ -533,7 +533,6 @@ Maps to the 'odata.type' field. Specifies the type of the alert criteria.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -541,7 +540,6 @@ The name of the alert.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `targetResourceRegion`
 
@@ -549,7 +547,6 @@ The region of the target resource(s) on which the alert is created/updated. Requ
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `targetResourceType`
 
@@ -557,7 +554,6 @@ The resource type of the target resource(s) on which the alert is created/update
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `actions`
 
@@ -565,7 +561,6 @@ The list of actions to take when alert triggers.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `alertDescription`
@@ -574,7 +569,6 @@ Description of the alert.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `autoMitigate`
@@ -583,7 +577,6 @@ The flag that indicates whether the alert should be auto resolved or not.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enabled`
@@ -592,7 +585,6 @@ Indicates whether this alert is enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableTelemetry`
@@ -601,7 +593,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `evaluationFrequency`
@@ -610,7 +601,6 @@ how often the metric alert is evaluated represented in ISO 8601 duration format.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'PT5M'`
 - Allowed:
   ```Bicep
@@ -629,7 +619,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'global'`
 
 ### Parameter: `roleAssignments`
@@ -638,7 +627,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -670,7 +658,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -678,7 +665,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -686,7 +672,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -694,7 +679,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -708,7 +692,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -716,7 +699,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -724,7 +706,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -732,7 +713,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -750,7 +730,6 @@ the list of resource IDs that this metric alert is scoped to.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -764,7 +743,6 @@ The severity of the alert.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `3`
 - Allowed:
   ```Bicep
@@ -783,7 +761,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `windowSize`
 
@@ -791,7 +768,6 @@ the period of time (in ISO 8601 duration format) that is used to monitor alert a
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'PT15M'`
 - Allowed:
   ```Bicep

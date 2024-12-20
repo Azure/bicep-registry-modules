@@ -47,7 +47,6 @@ Specifies a path for the executable file for the Application.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `friendlyName`
 
@@ -55,7 +54,6 @@ Friendly name of the Application.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -63,7 +61,6 @@ Name of the Application to be created in the Application Group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applicationGroupName`
 
@@ -71,7 +68,6 @@ The name of the parent Application Group to create the application(s) in. Requir
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `commandLineArguments`
 
@@ -79,7 +75,6 @@ Command-Line Arguments for the Application.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `commandLineSetting`
@@ -88,7 +83,6 @@ Specifies whether this published Application can be launched with command-line a
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'DoNotAllow'`
 - Allowed:
   ```Bicep
@@ -105,7 +99,6 @@ Description of the Application.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `iconIndex`
@@ -114,7 +107,6 @@ Index of the icon.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `iconPath`
@@ -123,7 +115,6 @@ Path to icon.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `showInPortal`
@@ -132,7 +123,6 @@ Specifies whether to show the RemoteApp program in the RD Web Access server.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ## Outputs

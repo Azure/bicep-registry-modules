@@ -44,7 +44,6 @@ Name of the resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `policyId`
 
@@ -52,7 +51,6 @@ ID of the backup policy with which this item is backed up.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `protectedItemType`
 
@@ -60,7 +58,6 @@ The backup item type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -83,7 +80,6 @@ Resource ID of the resource to back up.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `protectionContainerName`
 
@@ -91,7 +87,6 @@ Name of the Azure Recovery Service Vault Protection Container. Required if the t
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `recoveryVaultName`
 
@@ -99,7 +94,6 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `location`
 
@@ -107,7 +101,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

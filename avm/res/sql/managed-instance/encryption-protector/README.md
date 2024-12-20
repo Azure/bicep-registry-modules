@@ -41,7 +41,6 @@ The name of the SQL managed instance key.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `managedInstanceName`
 
@@ -49,7 +48,6 @@ The name of the parent SQL managed instance. Required if the template is used in
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `autoRotationEnabled`
 
@@ -57,7 +55,6 @@ Key auto rotation opt-in flag.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `serverKeyType`
@@ -66,7 +63,6 @@ The encryption protector type like "ServiceManaged", "AzureKeyVault".
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'ServiceManaged'`
 - Allowed:
   ```Bicep

@@ -34,7 +34,6 @@ Linked storage account resource ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `appInsightsName`
 
@@ -42,7 +41,6 @@ The name of the parent Application Insights instance. Required if the template i
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

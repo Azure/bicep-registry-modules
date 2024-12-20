@@ -975,7 +975,6 @@ List of container definitions for the Container App.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1001,7 +1000,6 @@ Container image tag.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.resources`
 
@@ -1009,7 +1007,6 @@ Container resource requirements.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `containers.args`
 
@@ -1017,7 +1014,6 @@ Container start command arguments.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `containers.command`
 
@@ -1025,7 +1021,6 @@ Container start command.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `containers.env`
 
@@ -1033,7 +1028,6 @@ Container environment variables.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1054,7 +1048,6 @@ Environment variable name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.env.secretRef`
 
@@ -1062,7 +1055,6 @@ Name of the Container App secret from which to pull the environment variable val
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.env.value`
 
@@ -1070,7 +1062,6 @@ Non-secret environment variable value.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.name`
 
@@ -1078,7 +1069,6 @@ Custom container name.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.probes`
 
@@ -1086,7 +1076,6 @@ List of probes for the container.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1108,7 +1097,6 @@ Minimum consecutive failures for the probe to be considered failed after having 
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1118,7 +1106,6 @@ HTTPGet specifies the http request to perform.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1143,7 +1130,6 @@ Path to access on the HTTP server.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 10
 
@@ -1153,7 +1139,6 @@ Name or number of the port to access on the container.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 1
 - MaxValue: 10
 
@@ -1163,7 +1148,6 @@ Host name to connect to. Defaults to the pod IP.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1173,7 +1157,6 @@ HTTP headers to set in the request.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1190,7 +1173,6 @@ Name of the header.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 10
 
@@ -1200,7 +1182,6 @@ Value of the header.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 10
 
@@ -1210,7 +1191,6 @@ Scheme to use for connecting to the host. Defaults to HTTP.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1227,7 +1207,6 @@ Number of seconds after the container has started before liveness probes are ini
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 60
 
@@ -1237,7 +1216,6 @@ How often (in seconds) to perform the probe. Default to 10 seconds.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 240
 
@@ -1247,7 +1225,6 @@ Minimum consecutive successes for the probe to be considered successful after ha
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1257,7 +1234,6 @@ TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1279,7 +1255,6 @@ Number of the port to access on the container. Name must be an IANA_SVC_NAME.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65535
 
@@ -1289,7 +1264,6 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 65535
 
@@ -1299,7 +1273,6 @@ Optional duration in seconds the pod needs to terminate gracefully upon probe fa
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1309,7 +1282,6 @@ Number of seconds after which the probe times out. Defaults to 1 second.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 240
 
@@ -1319,7 +1291,6 @@ The type of probe.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1337,7 +1308,6 @@ Container volume mounts.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1358,7 +1328,6 @@ Path within the container at which the volume should be mounted.Must not contain
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.volumeMounts.volumeName`
 
@@ -1366,7 +1335,6 @@ This must match the Name of a Volume.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.volumeMounts.subPath`
 
@@ -1374,7 +1342,6 @@ Path within the volume from which the container's volume should be mounted. Defa
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `environmentResourceId`
 
@@ -1382,7 +1349,6 @@ Resource ID of environment.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -1390,7 +1356,6 @@ Name of the Container App.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `activeRevisionsMode`
 
@@ -1398,7 +1363,6 @@ Controls how active revisions are handled for the Container app.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Single'`
 - Allowed:
   ```Bicep
@@ -1414,7 +1378,6 @@ Settings to expose additional ports on container app.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1435,7 +1398,6 @@ Specifies whether the app port is accessible outside of the environment.
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `additionalPortMappings.targetPort`
 
@@ -1443,7 +1405,6 @@ Specifies the port the container listens on.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `additionalPortMappings.exposedPort`
 
@@ -1451,7 +1412,6 @@ Specifies the exposed port for the target port. If not specified, it defaults to
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `clientCertificateMode`
 
@@ -1459,7 +1419,6 @@ Client certificate mode for mTLS.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'ignore'`
 - Allowed:
   ```Bicep
@@ -1476,7 +1435,6 @@ Object userd to configure CORS policy.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -1495,7 +1453,6 @@ Switch to determine whether the resource allows credentials.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `corsPolicy.allowedHeaders`
 
@@ -1503,7 +1460,6 @@ Specifies the content for the access-control-allow-headers header.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `corsPolicy.allowedMethods`
 
@@ -1511,7 +1467,6 @@ Specifies the content for the access-control-allow-methods header.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `corsPolicy.allowedOrigins`
 
@@ -1519,7 +1474,6 @@ Specifies the content for the access-control-allow-origins header.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `corsPolicy.exposeHeaders`
 
@@ -1527,7 +1481,6 @@ Specifies the content for the access-control-expose-headers header.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `corsPolicy.maxAge`
 
@@ -1535,7 +1488,6 @@ Specifies the content for the access-control-max-age header.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `customDomains`
 
@@ -1543,7 +1495,6 @@ Custom domain bindings for Container App hostnames.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `dapr`
@@ -1552,7 +1503,6 @@ Dapr configuration for the Container App.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `disableIngress`
@@ -1561,7 +1511,6 @@ Bool to disable all ingress traffic for the container app.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -1570,7 +1519,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `exposedPort`
@@ -1579,7 +1527,6 @@ Exposed Port in containers for TCP traffic from ingress.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `includeAddOns`
@@ -1588,7 +1535,6 @@ Toggle to include the service configuration.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `ingressAllowInsecure`
@@ -1597,7 +1543,6 @@ Bool indicating if HTTP connections to is allowed. If set to false HTTP connecti
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `ingressExternal`
@@ -1606,7 +1551,6 @@ Bool indicating if the App exposes an external HTTP endpoint.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `ingressTargetPort`
@@ -1615,7 +1559,6 @@ Target Port in containers for traffic from ingress.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `80`
 
 ### Parameter: `ingressTransport`
@@ -1624,7 +1567,6 @@ Ingress transport protocol.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'auto'`
 - Allowed:
   ```Bicep
@@ -1642,7 +1584,6 @@ List of specialized containers that run before app containers.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `ipSecurityRestrictions`
@@ -1651,7 +1592,6 @@ Rules to restrict incoming IP address.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `location`
@@ -1660,7 +1600,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1669,7 +1608,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -1684,7 +1622,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1700,7 +1637,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1708,7 +1644,6 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -1723,7 +1658,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1731,7 +1665,6 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `maxInactiveRevisions`
 
@@ -1739,7 +1672,6 @@ Max inactive revisions a Container App can have.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `registries`
@@ -1748,7 +1680,6 @@ Collection of private container registry credentials for containers used by the 
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `revisionSuffix`
@@ -1757,7 +1688,6 @@ User friendly suffix that is appended to the revision name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `roleAssignments`
@@ -1766,7 +1696,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'ContainerApp Reader'`
   - `'Contributor'`
@@ -1799,7 +1728,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1807,7 +1735,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1815,7 +1742,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1823,7 +1749,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1837,7 +1762,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1845,7 +1769,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1853,7 +1776,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1861,7 +1783,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1879,7 +1800,6 @@ Maximum number of container replicas. Defaults to 10 if not set.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `10`
 
 ### Parameter: `scaleMinReplicas`
@@ -1888,7 +1808,6 @@ Minimum number of container replicas. Defaults to 3 if not set.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `3`
 
 ### Parameter: `scaleRules`
@@ -1897,7 +1816,6 @@ Scaling rules.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `secrets`
@@ -1906,7 +1824,6 @@ The secrets of the Container App.
 
 - Required: No
 - Type: secureObject
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `service`
@@ -1915,7 +1832,6 @@ Dev ContainerApp service type.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `serviceBinds`
@@ -1924,7 +1840,6 @@ List of container app services bound to the app.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1939,7 +1854,6 @@ The name of the service.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serviceBinds.serviceId`
 
@@ -1947,7 +1861,6 @@ The service ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `stickySessionsAffinity`
 
@@ -1955,7 +1868,6 @@ Bool indicating if the Container App should enable session affinity.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'none'`
 - Allowed:
   ```Bicep
@@ -1971,7 +1883,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `trafficLabel`
 
@@ -1979,7 +1890,6 @@ Associates a traffic label with a revision. Label name should be consist of lowe
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'label-1'`
 
 ### Parameter: `trafficLatestRevision`
@@ -1988,7 +1898,6 @@ Indicates that the traffic weight belongs to a latest stable revision.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `trafficRevisionName`
@@ -1997,7 +1906,6 @@ Name of a revision.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `trafficWeight`
@@ -2006,7 +1914,6 @@ Traffic weight assigned to a revision.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `100`
 
 ### Parameter: `volumes`
@@ -2015,7 +1922,6 @@ List of volume definitions for the Container App.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `workloadProfileName`
@@ -2024,7 +1930,6 @@ Workload profile name to pin for container app execution.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

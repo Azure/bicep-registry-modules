@@ -12,7 +12,7 @@ This module deploys a DBforPostgreSQL Flexible Server Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2022-12-01/flexibleServers/configurations) |
+| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/configurations) |
 
 ## Parameters
 
@@ -41,7 +41,6 @@ The name of the configuration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `flexibleServerName`
 
@@ -49,7 +48,6 @@ The name of the parent PostgreSQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `source`
 
@@ -57,7 +55,6 @@ Source of the configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `value`
 
@@ -65,12 +62,11 @@ Value of the configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the deployed configuration. |
-| `resourceGroupName` | string | The resource group of the deployed configuration. |
+| `resourceGroupName` | string | The resource group name of the deployed configuration. |
 | `resourceId` | string | The resource ID of the deployed configuration. |

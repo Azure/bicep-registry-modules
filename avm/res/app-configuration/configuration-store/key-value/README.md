@@ -42,7 +42,6 @@ Name of the key.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `value`
 
@@ -50,7 +49,6 @@ The value of the key-value.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `appConfigurationName`
 
@@ -58,7 +56,6 @@ The name of the parent app configuration store. Required if the template is used
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `contentType`
 
@@ -66,7 +63,6 @@ The content type of the key-values value. Providing a proper content-type can en
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -74,7 +70,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

@@ -48,7 +48,6 @@ Name of the topic.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -56,7 +55,6 @@ The name of the parent EventGrid namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `eventRetentionInDays`
 
@@ -64,7 +62,6 @@ Event retention for the namespace topic expressed in days.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 - MinValue: 1
 - MaxValue: 7
@@ -75,7 +72,6 @@ All event subscriptions to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 7
 
@@ -85,7 +81,6 @@ This determines the format that is expected for incoming events published to the
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'CloudEventSchemaV1_0'`
 - MinValue: 1
 - MaxValue: 7
@@ -96,7 +91,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 - MinValue: 1
 - MaxValue: 7
 
@@ -113,7 +107,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -131,7 +124,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 7
 
@@ -141,7 +133,6 @@ Publisher type of the namespace topic.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Custom'`
 - MinValue: 1
 - MaxValue: 7
@@ -152,7 +143,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - MinValue: 1
 - MaxValue: 7
 - Roles configurable by name:
@@ -194,7 +184,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 7
 
@@ -204,7 +193,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 7
 
@@ -214,7 +202,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 7
 
@@ -224,7 +211,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -240,7 +226,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 7
 
@@ -250,7 +235,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 7
 
@@ -260,7 +244,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 7
 
@@ -270,7 +253,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [

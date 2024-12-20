@@ -57,7 +57,6 @@ Reporting cycle type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -72,7 +71,6 @@ Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z)
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `cycleStartDateTime`
 
@@ -80,7 +78,6 @@ Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `labName`
 
@@ -88,7 +85,6 @@ The name of the parent lab. Required if the template is used in a standalone dep
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `currencyCode`
 
@@ -96,7 +92,6 @@ The currency code of the cost.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'USD'`
 
 ### Parameter: `status`
@@ -105,7 +100,6 @@ Target cost status.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -121,7 +115,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `target`
 
@@ -129,7 +122,6 @@ Lab target cost (e.g. 100). The target cost will appear in the "Cost trend" char
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `thresholdValue100DisplayOnChart`
@@ -138,7 +130,6 @@ Target Cost threshold at 100% display on chart. Indicates whether this threshold
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -154,7 +145,6 @@ Target cost threshold at 100% send notification when exceeded. Indicates whether
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -170,7 +160,6 @@ Target Cost threshold at 125% display on chart. Indicates whether this threshold
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -186,7 +175,6 @@ Target cost threshold at 125% send notification when exceeded. Indicates whether
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -202,7 +190,6 @@ Target Cost threshold at 25% display on chart. Indicates whether this threshold 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -218,7 +205,6 @@ Target cost threshold at 25% send notification when exceeded. Indicates whether 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -234,7 +220,6 @@ Target Cost threshold at 50% display on chart. Indicates whether this threshold 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -250,7 +235,6 @@ Target cost threshold at 50% send notification when exceeded. Indicates whether 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -266,7 +250,6 @@ Target Cost threshold at 75% display on chart. Indicates whether this threshold 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -282,7 +265,6 @@ Target cost threshold at 75% send notification when exceeded. Indicates whether 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep

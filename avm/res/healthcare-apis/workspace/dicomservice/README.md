@@ -52,7 +52,6 @@ Specify HTTP headers which can be used during the request. Use "*" for any heade
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -60,7 +59,6 @@ The name of the DICOM service.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `workspaceName`
 
@@ -68,7 +66,6 @@ The name of the parent health data services workspace. Required if the template 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `corsAllowCredentials`
 
@@ -76,7 +73,6 @@ Use this setting to indicate that cookies should be included in CORS requests.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `corsMaxAge`
@@ -85,7 +81,6 @@ Specify how long a result from a request can be cached in seconds. Example: 600 
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `corsMethods`
 
@@ -93,7 +88,6 @@ Specify the allowed HTTP methods.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -112,7 +106,6 @@ Specify URLs of origin sites that can access this API, or use "*" to allow acces
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings`
 
@@ -120,7 +113,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Optional parameters**
 
@@ -142,7 +134,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -150,7 +141,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -158,7 +148,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -173,7 +162,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -189,7 +177,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -197,7 +184,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -205,7 +191,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -213,7 +198,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -221,7 +205,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -241,7 +224,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -249,7 +231,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -257,7 +238,6 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -265,7 +245,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -273,7 +252,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -281,7 +259,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -290,7 +267,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -305,7 +281,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -321,7 +296,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -329,7 +303,6 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -344,7 +317,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -352,7 +324,6 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -360,7 +331,6 @@ Control permission for data plane traffic coming from public networks while priv
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -376,7 +346,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

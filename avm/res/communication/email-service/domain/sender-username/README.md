@@ -42,7 +42,6 @@ Name of the sender username resource to create.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `username`
 
@@ -50,7 +49,6 @@ A sender username to be used when sending emails.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `domainName`
 
@@ -58,7 +56,6 @@ The name of the parent domain. Required if the template is used in a standalone 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `emailServiceName`
 
@@ -66,7 +63,6 @@ The name of the parent email service. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `displayName`
 
@@ -74,7 +70,6 @@ The display name for the senderUsername.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[parameters('username')]`
 
 ## Outputs

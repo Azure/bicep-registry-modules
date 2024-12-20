@@ -41,7 +41,6 @@ The name of the authorization rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `eventHubName`
 
@@ -49,7 +48,6 @@ The name of the parent event hub namespace event hub. Required if the template i
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -57,7 +55,6 @@ The name of the parent event hub namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `rights`
 
@@ -65,7 +62,6 @@ The rights associated with the rule.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep

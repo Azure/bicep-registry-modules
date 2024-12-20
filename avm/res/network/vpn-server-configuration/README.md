@@ -758,7 +758,6 @@ The name of the user VPN configuration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `aadAudience`
 
@@ -766,7 +765,6 @@ The audience for the AAD/Entra authentication. Required if configuring Entra ID 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `aadIssuer`
 
@@ -774,7 +772,6 @@ The issuer for the AAD/Entra authentication. Required if configuring Entra ID au
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `aadTenant`
 
@@ -782,7 +779,6 @@ The audience for the AAD/Entra authentication. Required if configuring Entra ID 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `radiusServerAddress`
 
@@ -790,7 +786,6 @@ The address of the RADIUS server. Required if configuring a single RADIUS.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `radiusServerSecret`
 
@@ -798,7 +793,6 @@ The RADIUS server secret. Required if configuring a single RADIUS server.
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `vpnClientRootCertificates`
 
@@ -806,7 +800,6 @@ The VPN Client root certificate public keys for the configuration. Required if u
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `enableTelemetry`
@@ -815,7 +808,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -824,7 +816,6 @@ Location where all resources will be created.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -833,7 +824,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -848,7 +838,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -864,7 +853,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `p2sConfigurationPolicyGroups`
 
@@ -872,7 +860,6 @@ The P2S configuration policy groups for the configuration.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `radiusClientRootCertificates`
@@ -881,7 +868,6 @@ The revoked RADIUS client certificates for the configuration.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `radiusServerRootCertificates`
@@ -890,7 +876,6 @@ The root certificates of the RADIUS server.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `radiusServers`
@@ -899,7 +884,6 @@ The list of RADIUS servers. Required if configuring multiple RADIUS servers.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `tags`
@@ -908,7 +892,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `vpnAuthenticationTypes`
 
@@ -916,7 +899,6 @@ The authentication types for the VPN configuration.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep
@@ -933,7 +915,6 @@ The IPsec policies for the configuration.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -954,7 +935,6 @@ The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vpnClientIpsecPolicies.ikeEncryption`
 
@@ -962,7 +942,6 @@ The encryption algorithm used in IKE phase 1. Required if using IKEv2.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vpnClientIpsecPolicies.ikeIntegrity`
 
@@ -970,7 +949,6 @@ The integrity algorithm used in IKE phase 1. Required if using IKEv2.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vpnClientIpsecPolicies.ipsecEncryption`
 
@@ -978,7 +956,6 @@ The encryption algorithm used in IKE phase 2. Required if using IKEv2.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vpnClientIpsecPolicies.ipsecIntegrity`
 
@@ -986,7 +963,6 @@ The integrity algorithm used in IKE phase 2. Required if using IKEv2.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vpnClientIpsecPolicies.pfsGroup`
 
@@ -994,7 +970,6 @@ The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using I
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vpnClientIpsecPolicies.saDataSizeKilobytes`
 
@@ -1002,7 +977,6 @@ The size of the SA data in kilobytes. Required if using IKEv2.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `vpnClientIpsecPolicies.salfetimeSeconds`
 
@@ -1010,7 +984,6 @@ The lifetime of the SA in seconds. Required if using IKEv2.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `vpnClientRevokedCertificates`
 
@@ -1018,7 +991,6 @@ The revoked VPN Client certificate thumbprints for the configuration.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `vpnProtocols`
@@ -1027,7 +999,6 @@ The allowed VPN protocols for the configuration.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep

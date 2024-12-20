@@ -42,7 +42,6 @@ The name of the variable.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `value`
 
@@ -50,7 +49,6 @@ The value of the variable. For security best practices, this value is always pas
 
 - Required: Yes
 - Type: securestring
-- Nullable: No
 
 ### Parameter: `automationAccountName`
 
@@ -58,7 +56,6 @@ The name of the parent Automation Account. Required if the template is used in a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `description`
 
@@ -66,7 +63,6 @@ The description of the variable.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `isEncrypted`
@@ -75,7 +71,6 @@ If the variable should be encrypted. For security reasons encryption of variable
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

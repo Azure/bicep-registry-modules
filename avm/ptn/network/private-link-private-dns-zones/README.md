@@ -276,7 +276,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -285,7 +284,6 @@ Azure region where the each of the Private Link Private DNS Zones created will b
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -294,7 +292,6 @@ The lock settings for the Private Link Private DNS Zones created.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -309,7 +306,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -325,7 +321,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateLinkPrivateDnsZones`
 
@@ -333,7 +328,6 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -421,7 +415,6 @@ Tags of the Private Link Private DNS Zones created.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `virtualNetworkResourceIdsToLinkTo`
 
@@ -429,7 +422,6 @@ An array of Virtual Network Resource IDs to link to the Private Link Private DNS
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ## Outputs

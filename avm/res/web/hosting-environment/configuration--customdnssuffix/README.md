@@ -36,7 +36,6 @@ The URL referencing the Azure Key Vault certificate secret that should be used a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `dnsSuffix`
 
@@ -44,7 +43,6 @@ Enable the default custom domain suffix to use for all sites deployed on the ASE
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `keyVaultReferenceIdentity`
 
@@ -52,7 +50,6 @@ The user-assigned identity to use for resolving the key vault certificate refere
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hostingEnvironmentName`
 
@@ -60,7 +57,6 @@ The name of the parent Hosting Environment. Required if the template is used in 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

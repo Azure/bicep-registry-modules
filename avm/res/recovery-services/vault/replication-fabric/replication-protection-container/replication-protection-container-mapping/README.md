@@ -43,7 +43,6 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `replicationFabricName`
 
@@ -51,7 +50,6 @@ The name of the parent Replication Fabric. Required if the template is used in a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sourceProtectionContainerName`
 
@@ -59,7 +57,6 @@ The name of the parent source Replication container. Required if the template is
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -67,7 +64,6 @@ The name of the replication container mapping. If not provided, it will be autom
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `policyId`
@@ -76,7 +72,6 @@ Resource ID of the replication policy. If defined, policyName will be ignored.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `policyName`
@@ -85,7 +80,6 @@ Name of the replication policy. Will be ignored if policyId is also specified.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `targetContainerFabricName`
@@ -94,7 +88,6 @@ Name of the fabric containing the target container. If targetProtectionContainer
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[parameters('replicationFabricName')]`
 
 ### Parameter: `targetContainerName`
@@ -103,7 +96,6 @@ Name of the target container. Must be specified if targetProtectionContainerId i
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `targetProtectionContainerId`
@@ -112,7 +104,6 @@ Resource ID of the target Replication container. Must be specified if targetCont
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

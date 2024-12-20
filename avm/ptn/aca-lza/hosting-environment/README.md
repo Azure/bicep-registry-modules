@@ -660,7 +660,6 @@ The name of the certificate key to use for Application Gateway certificate.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `enableApplicationInsights`
 
@@ -668,7 +667,6 @@ Enable or disable the createion of Application Insights.
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `enableDaprInstrumentation`
 
@@ -676,7 +674,6 @@ Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. 
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `spokeApplicationGatewaySubnetAddressPrefix`
 
@@ -684,7 +681,6 @@ CIDR of the Spoke Application Gateway Subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `spokeInfraSubnetAddressPrefix`
 
@@ -692,7 +688,6 @@ CIDR of the Spoke Infrastructure Subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `spokePrivateEndpointsSubnetAddressPrefix`
 
@@ -700,7 +695,6 @@ CIDR of the Spoke Private Endpoints Subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `spokeVNetAddressPrefixes`
 
@@ -708,7 +702,6 @@ CIDR of the Spoke Virtual Network.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `vmAdminPassword`
 
@@ -716,7 +709,6 @@ The password to use for the virtual machine.
 
 - Required: Yes
 - Type: securestring
-- Nullable: No
 
 ### Parameter: `vmAdminUsername`
 
@@ -724,7 +716,6 @@ The username to use for the virtual machine.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `vmJumpBoxSubnetAddressPrefix`
 
@@ -732,7 +723,6 @@ CIDR to use for the virtual machine subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `vmLinuxSshAuthorizedKey`
 
@@ -740,7 +730,6 @@ The SSH public key to use for the virtual machine.
 
 - Required: Yes
 - Type: securestring
-- Nullable: No
 
 ### Parameter: `vmSize`
 
@@ -748,7 +737,6 @@ The size of the virtual machine to create. See https://learn.microsoft.com/azure
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applicationGatewayFqdn`
 
@@ -756,7 +744,6 @@ The FQDN of the Application Gateway. Required and must match if the TLS Certific
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `base64Certificate`
@@ -765,7 +752,6 @@ The base64 encoded certificate to use for Application Gateway certificate. If th
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `bastionResourceId`
@@ -774,7 +760,6 @@ The resource ID of the bastion host. If set, the spoke virtual network will be p
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `deploySampleApplication`
@@ -783,7 +768,6 @@ Deploy sample application to the container apps environment. Default is false.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `deployZoneRedundantResources`
@@ -792,7 +776,6 @@ Default value is true. If true, any resources that support AZ will be deployed i
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableDdosProtection`
@@ -801,7 +784,6 @@ DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -810,7 +792,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `environment`
@@ -819,7 +800,6 @@ The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'test'`
 
 ### Parameter: `exposeContainerAppsWith`
@@ -828,7 +808,6 @@ Specify the way container apps is going to be exposed. Options are applicationGa
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'applicationGateway'`
 - Allowed:
   ```Bicep
@@ -844,7 +823,6 @@ The resource ID of the hub virtual network. If set, the spoke virtual network wi
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `location`
@@ -853,7 +831,6 @@ The location of the Azure Container Apps deployment. Default is the location of 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `networkApplianceIpAddress`
@@ -862,7 +839,6 @@ If set, the spoke virtual network will be peered with the hub virtual network an
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `spokeResourceGroupName`
@@ -871,7 +847,6 @@ The name of the resource group to create the resources in. If set, it overrides 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `storageAccountType`
@@ -880,7 +855,6 @@ The storage account type to use for the jump box. Defaults to Standard_LRS.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard_LRS'`
 
 ### Parameter: `tags`
@@ -889,7 +863,6 @@ Tags related to the Azure Container Apps deployment. Default is empty.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `vmAuthenticationType`
@@ -898,7 +871,6 @@ Type of authentication to use on the Virtual Machine. SSH key is recommended. De
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'password'`
 - Allowed:
   ```Bicep
@@ -914,7 +886,6 @@ The operating system type of the virtual machine. Default is "none" which result
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'none'`
 - Allowed:
   ```Bicep
@@ -931,7 +902,6 @@ The name of the workload that is being deployed. Up to 10 characters long.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'aca-lza'`
 
 ## Outputs

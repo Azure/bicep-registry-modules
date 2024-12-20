@@ -153,7 +153,6 @@ Absolute URL of the backend service implementing this API.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiDescription`
 
@@ -161,7 +160,6 @@ Description of the API. May include HTML formatting tags.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiDisplayName`
 
@@ -169,7 +167,6 @@ The Display Name of the API.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiName`
 
@@ -177,7 +174,6 @@ Resource name to uniquely identify this API within the API Management service in
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiPath`
 
@@ -185,7 +181,6 @@ Relative URL uniquely identifying this API and all of its resource paths within 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -193,7 +188,6 @@ Name of the API Management service instance.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `webFrontendUrl`
 
@@ -201,7 +195,6 @@ Absolute URL of web frontend.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiAppName`
 
@@ -209,7 +202,6 @@ Resource name for backend Web App or Function App.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -218,7 +210,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -227,7 +218,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

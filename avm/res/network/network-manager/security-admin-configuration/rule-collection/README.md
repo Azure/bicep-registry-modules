@@ -45,7 +45,6 @@ List of network groups for configuration. An admin rule collection must be assoc
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -59,7 +58,6 @@ The resource ID of the network group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -67,7 +65,6 @@ The name of the admin rule collection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkManagerName`
 
@@ -75,7 +72,6 @@ The name of the parent network manager. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `securityAdminConfigurationName`
 
@@ -83,7 +79,6 @@ The name of the parent security admin configuration. Required if the template is
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `description`
 
@@ -91,7 +86,6 @@ A description of the admin rule collection.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `rules`
 
@@ -99,7 +93,6 @@ List of rules for the admin rules collection. Security admin rules allows enforc
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -127,7 +120,6 @@ Indicates the access allowed for this particular rule. "Allow" means traffic mat
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -143,7 +135,6 @@ Indicates if the traffic matched against the rule in inbound or outbound.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -158,7 +149,6 @@ The name of the rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `rules.priority`
 
@@ -166,7 +156,6 @@ The priority of the rule. The value can be between 1 and 4096. The priority numb
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 1
 - MaxValue: 4096
 
@@ -176,7 +165,6 @@ Network protocol this rule applies to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -197,7 +185,6 @@ A description of the rule.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -207,7 +194,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -217,7 +203,6 @@ The destnations filter can be an IP Address or a service tag. Each filter contai
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -234,7 +219,6 @@ Address prefix.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 4096
 
@@ -244,7 +228,6 @@ Address prefix type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -261,7 +244,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -271,7 +253,6 @@ The source filter can be an IP Address or a service tag. Each filter contains th
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -288,7 +269,6 @@ Address prefix.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 4096
 
@@ -298,7 +278,6 @@ Address prefix type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [

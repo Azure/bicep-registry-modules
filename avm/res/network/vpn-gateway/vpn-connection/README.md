@@ -54,7 +54,6 @@ The name of the VPN connection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `vpnGatewayName`
 
@@ -62,7 +61,6 @@ The name of the parent VPN gateway this VPN connection is associated with. Requi
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `connectionBandwidth`
 
@@ -70,7 +68,6 @@ Expected bandwidth in MBPS.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `10`
 
 ### Parameter: `enableBgp`
@@ -79,7 +76,6 @@ Enable BGP flag.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableInternetSecurity`
@@ -88,7 +84,6 @@ Enable internet security.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableRateLimiting`
@@ -97,7 +92,6 @@ Enable rate limiting.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `ipsecPolicies`
@@ -106,7 +100,6 @@ The IPSec policies to be considered by this connection.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `remoteVpnSiteResourceId`
@@ -115,7 +108,6 @@ Reference to a VPN site to link to.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `routingConfiguration`
@@ -124,7 +116,6 @@ Routing configuration indicating the associated and propagated route tables for 
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `routingWeight`
@@ -133,7 +124,6 @@ Routing weight for VPN connection.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `sharedKey`
@@ -142,7 +132,6 @@ SharedKey for the VPN connection.
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `trafficSelectorPolicies`
@@ -151,7 +140,6 @@ The traffic selector policies to be considered by this connection.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `useLocalAzureIpAddress`
@@ -160,7 +148,6 @@ Use local Azure IP to initiate connection.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `usePolicyBasedTrafficSelectors`
@@ -169,7 +156,6 @@ Enable policy-based traffic selectors.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `vpnConnectionProtocolType`
@@ -178,7 +164,6 @@ Gateway connection protocol.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'IKEv2'`
 - Allowed:
   ```Bicep
@@ -194,7 +179,6 @@ List of all VPN site link connections to the gateway.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ## Outputs

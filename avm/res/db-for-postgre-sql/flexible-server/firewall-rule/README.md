@@ -12,7 +12,7 @@ This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2022-12-01/flexibleServers/firewallRules) |
+| `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/firewallRules) |
 
 ## Parameters
 
@@ -36,7 +36,6 @@ The end IP address of the firewall rule. Must be IPv4 format. Must be greater th
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -44,7 +43,6 @@ The name of the PostgreSQL flexible server Firewall Rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `startIpAddress`
 
@@ -52,7 +50,6 @@ The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `flexibleServerName`
 
@@ -60,7 +57,6 @@ The name of the parent PostgreSQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

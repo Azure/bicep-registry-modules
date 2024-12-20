@@ -41,7 +41,6 @@ The list of scoped permissions for registry artifacts.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `registryName`
 
@@ -49,7 +48,6 @@ The name of the parent registry. Required if the template is used in a standalon
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `description`
 
@@ -57,7 +55,6 @@ The user friendly description of the scope map.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `name`
 
@@ -65,7 +62,6 @@ The name of the scope map.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[format('{0}-scopemaps', parameters('registryName'))]`
 
 ## Outputs

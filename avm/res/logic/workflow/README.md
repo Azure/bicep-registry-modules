@@ -702,7 +702,6 @@ The logic app workflow name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `actionsAccessControlConfiguration`
 
@@ -710,7 +709,6 @@ The access control configuration for workflow actions.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `connectorEndpointsConfiguration`
 
@@ -718,7 +716,6 @@ The endpoints configuration:  Access endpoint and outgoing IP addresses for the 
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `contentsAccessControlConfiguration`
 
@@ -726,7 +723,6 @@ The access control configuration for accessing workflow run contents.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `definitionParameters`
 
@@ -734,7 +730,6 @@ Parameters for the definition template.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings`
 
@@ -742,7 +737,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Optional parameters**
 
@@ -764,7 +758,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -772,7 +765,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -780,7 +772,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -795,7 +786,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -811,7 +801,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -819,7 +808,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -827,7 +815,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -835,7 +822,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -843,7 +829,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -863,7 +848,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -871,7 +855,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -879,7 +862,6 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -887,7 +869,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -895,7 +876,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -903,7 +883,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `integrationAccount`
@@ -912,7 +891,6 @@ The integration account.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `integrationServiceEnvironment`
 
@@ -920,7 +898,6 @@ The integration service environment settings.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -934,7 +911,6 @@ The integration service environment Id.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -942,7 +918,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -951,7 +926,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -966,7 +940,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -982,7 +955,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -990,7 +962,6 @@ The managed identity definition for this resource. Only one type of identity is 
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -1005,7 +976,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1013,7 +983,6 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -1021,7 +990,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Logic App Contributor'`
@@ -1055,7 +1023,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1063,7 +1030,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1071,7 +1037,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1079,7 +1044,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1093,7 +1057,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1101,7 +1064,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1109,7 +1071,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1117,7 +1078,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1135,7 +1095,6 @@ The state. - NotSpecified, Completed, Enabled, Disabled, Deleted, Suspended.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -1155,7 +1114,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `triggersAccessControlConfiguration`
 
@@ -1163,7 +1121,6 @@ The access control configuration for invoking workflow triggers.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `workflowActions`
 
@@ -1171,7 +1128,6 @@ The definitions for one or more actions to execute at workflow runtime.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `workflowEndpointsConfiguration`
 
@@ -1179,7 +1135,6 @@ The endpoints configuration:  Access endpoint and outgoing IP addresses for the 
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `workflowManagementAccessControlConfiguration`
 
@@ -1187,7 +1142,6 @@ The access control configuration for workflow management.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `workflowOutputs`
 
@@ -1195,7 +1149,6 @@ The definitions for the outputs to return from a workflow run.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `workflowParameters`
 
@@ -1203,7 +1156,6 @@ The definitions for one or more parameters that pass the values to use at your l
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `workflowStaticResults`
 
@@ -1211,7 +1163,6 @@ The definitions for one or more static results returned by actions as mock outpu
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `workflowTriggers`
 
@@ -1219,7 +1170,6 @@ The definitions for one or more triggers that instantiate your workflow. You can
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

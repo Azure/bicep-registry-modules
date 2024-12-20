@@ -42,7 +42,6 @@ The connection name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `remoteVirtualNetworkId`
 
@@ -50,7 +49,6 @@ Resource ID of the virtual network to link to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualHubName`
 
@@ -58,7 +56,6 @@ The name of the parent virtual hub. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `enableInternetSecurity`
 
@@ -66,7 +63,6 @@ Enable internet security.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `routingConfiguration`
@@ -75,7 +71,6 @@ Routing Configuration indicating the associated and propagated route tables for 
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ## Outputs

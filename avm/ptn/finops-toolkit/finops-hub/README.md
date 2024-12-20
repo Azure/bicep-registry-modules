@@ -142,7 +142,6 @@ The name of the container used for configuration settings.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'config'`
 
 ### Parameter: `convertToParquet`
@@ -151,7 +150,6 @@ Indicates whether ingested data should be converted to Parquet. Default: true.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableTelemetry`
@@ -160,7 +158,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `exportContainer`
@@ -169,7 +166,6 @@ The name of the container used for Cost Management exports.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'exports'`
 
 ### Parameter: `exportScopes`
@@ -178,7 +174,6 @@ List of scope IDs to create exports for.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `hubName`
@@ -187,7 +182,6 @@ Name of the hub. Used to ensure unique resource names. Default: "finops-hub".
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ingestionContainer`
 
@@ -195,7 +189,6 @@ The name of the container used for normalized data ingestion.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'ingestion'`
 
 ### Parameter: `location`
@@ -204,7 +197,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `storageSku`
@@ -213,7 +205,6 @@ Storage SKU to use. LRS = Lowest cost, ZRS = High availability. Note Standard SK
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Premium_LRS'`
 - Allowed:
   ```Bicep
@@ -229,7 +220,6 @@ Tags to apply to all resources. We will also add the cm-resource-parent tag for 
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `tagsByResource`
 
@@ -237,7 +227,6 @@ Tags to apply to resources based on their resource type. Resource type specific 
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ## Outputs

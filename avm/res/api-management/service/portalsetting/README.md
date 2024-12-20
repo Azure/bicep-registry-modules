@@ -35,7 +35,6 @@ Portal setting name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -51,7 +50,6 @@ Portal setting properties.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -59,7 +57,6 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

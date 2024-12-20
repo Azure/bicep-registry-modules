@@ -39,7 +39,6 @@ The name of the rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `order`
 
@@ -47,7 +46,6 @@ The order in which this rule will be applied. Rules with a lower order are appli
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `profileName`
 
@@ -55,7 +53,6 @@ The name of the profile.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ruleSetName`
 
@@ -63,7 +60,6 @@ The name of the rule set.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `actions`
 
@@ -71,7 +67,6 @@ A list of actions that are executed when all the conditions of a rule are satisf
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `conditions`
 
@@ -79,7 +74,6 @@ A list of conditions that must be matched for the actions to be executed.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `matchProcessingBehavior`
 
@@ -87,7 +81,6 @@ If this rule is a match should the rules engine continue running the remaining r
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Continue'`
 - Allowed:
   ```Bicep

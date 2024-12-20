@@ -41,7 +41,6 @@ Name of the association to create.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `subnetResourceId`
 
@@ -49,7 +48,6 @@ The resource ID of the subnet to associate with the traffic controller.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `trafficControllerName`
 
@@ -57,7 +55,6 @@ The name of the parent Application Gateway for Containers instance. Required if 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `location`
 
@@ -65,7 +62,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

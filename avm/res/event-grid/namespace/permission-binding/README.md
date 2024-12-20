@@ -43,7 +43,6 @@ The name of the client group resource that the permission is bound to. The clien
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -51,7 +50,6 @@ Name of the Permission Binding.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `permission`
 
@@ -59,7 +57,6 @@ The allowed permission.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -74,7 +71,6 @@ The name of the Topic Space resource that the permission is bound to. The Topic 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -82,7 +78,6 @@ The name of the parent EventGrid namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `description`
 
@@ -90,7 +85,6 @@ Description of the Permission Binding.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

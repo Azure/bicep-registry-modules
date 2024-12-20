@@ -43,7 +43,6 @@ The Azure Resource Manager ID of the storage account resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
@@ -51,7 +50,6 @@ The name of the parent Log Analytics workspace. Required if the template is used
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers`
 
@@ -59,7 +57,6 @@ The names of the blob containers that the workspace should read.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `name`
 
@@ -67,7 +64,6 @@ The name of the storage insights config.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[format('{0}-stinsconfig', last(split(parameters('storageAccountResourceId'), '/')))]`
 
 ### Parameter: `tables`
@@ -76,7 +72,6 @@ The names of the Azure tables that the workspace should read.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -84,7 +79,6 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

@@ -1507,7 +1507,6 @@ The containers and their respective config within the container group.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1522,7 +1521,6 @@ The name of the container instance.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.properties`
 
@@ -1530,7 +1528,6 @@ The properties of the container instance.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1555,7 +1552,6 @@ The name of the container source image.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.properties.resources`
 
@@ -1563,7 +1559,6 @@ The resource requirements of the container instance.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1584,7 +1579,6 @@ The resource requests of this container instance.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1605,7 +1599,6 @@ The CPU request of this container instance.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `containers.properties.resources.requests.gpu`
 
@@ -1613,7 +1606,6 @@ The GPU request of this container instance.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1628,7 +1620,6 @@ The count of the GPU resource.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `containers.properties.resources.requests.gpu.sku`
 
@@ -1636,7 +1627,6 @@ The SKU of the GPU resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1652,7 +1642,6 @@ The memory request in GB of this container instance.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.properties.resources.limits`
 
@@ -1660,7 +1649,6 @@ The resource limits of this container instance.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1681,7 +1669,6 @@ The CPU limit of this container instance.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `containers.properties.resources.limits.gpu`
 
@@ -1689,7 +1676,6 @@ The GPU limit of this container instance.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1704,7 +1690,6 @@ The count of the GPU resource.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `containers.properties.resources.limits.gpu.sku`
 
@@ -1712,7 +1697,6 @@ The SKU of the GPU resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1728,7 +1712,6 @@ The memory limit in GB of this container instance.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.properties.resources.securityContext`
 
@@ -1736,7 +1719,6 @@ The security context of the container instance.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1755,7 +1737,6 @@ Whether privilege escalation is allowed for the container.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `containers.properties.resources.securityContext.capabilities`
 
@@ -1763,7 +1744,6 @@ The capabilities to add or drop for the container.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1778,7 +1758,6 @@ The list of capabilities to add.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `containers.properties.resources.securityContext.capabilities.drop`
 
@@ -1786,7 +1765,6 @@ The list of capabilities to drop.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `containers.properties.resources.securityContext.privileged`
 
@@ -1794,7 +1772,6 @@ Whether the container is run in privileged mode.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `containers.properties.resources.securityContext.runAsGroup`
 
@@ -1802,7 +1779,6 @@ The GID to run the container as.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `containers.properties.resources.securityContext.runAsUser`
 
@@ -1810,7 +1786,6 @@ The UID to run the container as.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `containers.properties.resources.securityContext.seccompProfile`
 
@@ -1818,7 +1793,6 @@ The seccomp profile to use for the container.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.properties.command`
 
@@ -1826,7 +1800,6 @@ The command to execute within the container instance.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `containers.properties.environmentVariables`
 
@@ -1834,7 +1807,6 @@ The environment variables to set in the container instance.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1855,7 +1827,6 @@ The name of the environment variable.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.properties.environmentVariables.secureValue`
 
@@ -1863,7 +1834,6 @@ The value of the secure environment variable.
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `containers.properties.environmentVariables.value`
 
@@ -1871,7 +1841,6 @@ The value of the environment variable.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.properties.livenessProbe`
 
@@ -1879,7 +1848,6 @@ The liveness probe.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `containers.properties.ports`
 
@@ -1887,7 +1855,6 @@ The exposed ports on the container instance.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1902,7 +1869,6 @@ The port number exposed on the container instance.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `containers.properties.ports.protocol`
 
@@ -1910,7 +1876,6 @@ The protocol associated with the port number.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.properties.volumeMounts`
 
@@ -1918,7 +1883,6 @@ The volume mounts within the container instance.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1939,7 +1903,6 @@ The path within the container where the volume should be mounted. Must not conta
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.properties.volumeMounts.name`
 
@@ -1947,7 +1910,6 @@ The name of the volume mount.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.properties.volumeMounts.readOnly`
 
@@ -1955,7 +1917,6 @@ The flag indicating whether the volume mount is read-only.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `name`
 
@@ -1963,7 +1924,6 @@ Name for the container group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `ipAddressPorts`
 
@@ -1971,7 +1931,6 @@ Ports to open on the public IP address. Must include all ports assigned on conta
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1986,7 +1945,6 @@ The port number exposed on the container instance.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `ipAddressPorts.protocol`
 
@@ -1994,7 +1952,6 @@ The protocol associated with the port number.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `autoGeneratedDomainNameLabelScope`
 
@@ -2002,7 +1959,6 @@ Specify level of protection of the domain name label.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'TenantReuse'`
 - Allowed:
   ```Bicep
@@ -2021,7 +1977,6 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2044,7 +1999,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -2052,7 +2006,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey.autoRotationEnabled`
 
@@ -2060,7 +2013,6 @@ Enable or disable auto-rotating to the latest key version. Default is `true`. If
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -2068,7 +2020,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -2076,7 +2027,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `dnsNameLabel`
 
@@ -2084,7 +2034,6 @@ The Dns name label for the resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `dnsNameServers`
 
@@ -2092,7 +2041,6 @@ List of dns servers used by the containers for lookups.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `dnsSearchDomains`
 
@@ -2100,7 +2048,6 @@ DNS search domain which will be appended to each DNS lookup.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -2108,7 +2055,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `imageRegistryCredentials`
@@ -2117,7 +2063,6 @@ The image registry credentials by which the container group is created from.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2140,7 +2085,6 @@ The Docker image registry server without a protocol such as "http" and "https".
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `imageRegistryCredentials.identity`
 
@@ -2148,7 +2092,6 @@ The identity for the private registry.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `imageRegistryCredentials.identityUrl`
 
@@ -2156,7 +2099,6 @@ The identity URL for the private registry.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `imageRegistryCredentials.password`
 
@@ -2164,7 +2106,6 @@ The password for the private registry.
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `imageRegistryCredentials.username`
 
@@ -2172,7 +2113,6 @@ The username for the private registry.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `initContainers`
 
@@ -2180,7 +2120,6 @@ A list of container definitions which will be executed before the application co
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `ipAddressType`
 
@@ -2188,7 +2127,6 @@ Specifies if the IP is exposed to the public internet or private VNET. - Public 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Public'`
 - Allowed:
   ```Bicep
@@ -2204,7 +2142,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -2213,7 +2150,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -2228,7 +2164,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2244,7 +2179,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -2252,7 +2186,6 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -2267,7 +2200,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -2275,7 +2207,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `osType`
 
@@ -2283,7 +2214,6 @@ The operating system type required by the containers in the container group. - W
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Linux'`
 
 ### Parameter: `restartPolicy`
@@ -2292,7 +2222,6 @@ Restart policy for all containers within the container group. - Always: Always r
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Always'`
 - Allowed:
   ```Bicep
@@ -2309,7 +2238,6 @@ The container group SKU.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -2325,7 +2253,6 @@ Resource ID of the subnet. Only specify when ipAddressType is Private.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -2333,7 +2260,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `volumes`
 
@@ -2341,7 +2267,6 @@ Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to yo
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ## Outputs
 
