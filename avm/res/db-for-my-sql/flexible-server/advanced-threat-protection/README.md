@@ -22,13 +22,26 @@ This module enables Advanced Threat Protection for DBforMySQL Flexible Server.
 | :-- | :-- | :-- |
 | [`flexibleServerName`](#parameter-flexibleservername) | string | The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`advancedThreatProtection`](#parameter-advancedthreatprotection) | string | The state of the advanced threat protection. |
+
 ### Parameter: `flexibleServerName`
 
 The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
-- Nullable: No
+
+### Parameter: `advancedThreatProtection`
+
+The state of the advanced threat protection.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
 
 ## Outputs
 

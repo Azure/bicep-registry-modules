@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2853200309432890008"
+      "templateHash": "14010929490848836584"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -581,11 +581,11 @@
         "description": "Optional. The firewall rules to create in the MySQL flexible server."
       }
     },
-    "advancedThreatProtectionEnabled": {
-      "type": "bool",
-      "defaultValue": true,
+    "advancedThreatProtection": {
+      "type": "string",
+      "defaultValue": "Enabled",
       "metadata": {
-        "description": "Optional. Enable/Disable Advanced Threat Protection (Microsoft Defnder for ) for the server."
+        "description": "Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server."
       }
     },
     "roleAssignments": {
@@ -1174,7 +1174,6 @@
       ]
     },
     "flexibleServer_advancedThreatProtection": {
-      "condition": "[parameters('advancedThreatProtectionEnabled')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-MySQL-AdvancedThreatProtection', uniqueString(deployment().name, parameters('location')))]",
@@ -1186,6 +1185,9 @@
         "parameters": {
           "flexibleServerName": {
             "value": "[parameters('name')]"
+          },
+          "advancedThreatProtection": {
+            "value": "[parameters('advancedThreatProtection')]"
           }
         },
         "template": {
@@ -1195,7 +1197,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15590569630188816024"
+              "templateHash": "8702168883921324305"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server.",
@@ -1207,6 +1209,13 @@
               "metadata": {
                 "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
               }
+            },
+            "advancedThreatProtection": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "metadata": {
+                "description": "Optional. The state of the advanced threat protection."
+              }
             }
           },
           "resources": [
@@ -1215,7 +1224,7 @@
               "apiVersion": "2023-12-30",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
               "properties": {
-                "state": "Enabled"
+                "state": "[parameters('advancedThreatProtection')]"
               }
             }
           ],

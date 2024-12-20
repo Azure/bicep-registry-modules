@@ -146,7 +146,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    advancedThreatProtectionEnabled: true
+    advancedThreatProtection: 'Enabled'
     availabilityZone: '1'
     backupRetentionDays: 20
     customerManagedKey: {
@@ -276,8 +276,8 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
-    "advancedThreatProtectionEnabled": {
-      "value": true
+    "advancedThreatProtection": {
+      "value": "Enabled"
     },
     "availabilityZone": {
       "value": "1"
@@ -436,7 +436,7 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param advancedThreatProtectionEnabled = true
+param advancedThreatProtection = 'Enabled'
 param availabilityZone = '1'
 param backupRetentionDays = 20
 param customerManagedKey = {
@@ -934,7 +934,7 @@ param tags = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of a server. Can only be specified when the MySQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
-| [`advancedThreatProtectionEnabled`](#parameter-advancedthreatprotectionenabled) | bool | Enable/Disable Advanced Threat Protection (Microsoft Defnder for ) for the server. |
+| [`advancedThreatProtection`](#parameter-advancedthreatprotection) | string | Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server. |
 | [`availabilityZone`](#parameter-availabilityzone) | string | Availability zone information of the server. Default will have no preference set. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
 | [`createMode`](#parameter-createmode) | string | The mode to create a new MySQL server. |
@@ -1072,14 +1072,13 @@ The Azure AD administrators when AAD authentication enabled.
 - Type: array
 - Default: `[]`
 
-### Parameter: `advancedThreatProtectionEnabled`
+### Parameter: `advancedThreatProtection`
 
-Enable/Disable Advanced Threat Protection (Microsoft Defnder for ) for the server.
+Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.
 
 - Required: No
-- Type: bool
-- Nullable: No
-- Default: `True`
+- Type: string
+- Default: `'Enabled'`
 
 ### Parameter: `availabilityZone`
 
@@ -1574,7 +1573,6 @@ Specifies whether public network access is allowed for this server. Set to "Enab
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - MinValue: 1
 - MaxValue: 35

@@ -123,7 +123,7 @@ module testDeployment '../../../main.bicep' = [
       }
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
-      advancedThreatProtectionEnabled: true
+      advancedThreatProtection: 'Enabled'
       skuName: 'Standard_D2ads_v5'
       tier: 'GeneralPurpose'
       storageAutoIoScaling: 'Enabled'

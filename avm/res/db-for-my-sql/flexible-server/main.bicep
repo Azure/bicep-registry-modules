@@ -162,8 +162,8 @@ param databases array = []
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
 
-@description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defnder for ) for the server.')
-param advancedThreatProtectionEnabled bool = true
+@description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
+param advancedThreatProtection string = 'Enabled'
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
@@ -412,10 +412,11 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
   }
 ]
 
-module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = if (advancedThreatProtectionEnabled) {
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
   params: {
     flexibleServerName: flexibleServer.name
+    advancedThreatProtection: advancedThreatProtection
   }
 }
 

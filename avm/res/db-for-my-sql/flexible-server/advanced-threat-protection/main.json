@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15590569630188816024"
+      "templateHash": "8702168883921324305"
     },
     "name": "DBforMySQL Flexible Server Advanced Threat Protection",
     "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server.",
@@ -17,6 +17,13 @@
       "metadata": {
         "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
       }
+    },
+    "advancedThreatProtection": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "metadata": {
+        "description": "Optional. The state of the advanced threat protection."
+      }
     }
   },
   "resources": [
@@ -25,7 +32,7 @@
       "apiVersion": "2023-12-30",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
       "properties": {
-        "state": "Enabled"
+        "state": "[parameters('advancedThreatProtection')]"
       }
     }
   ],
