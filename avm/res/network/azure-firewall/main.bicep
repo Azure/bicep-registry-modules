@@ -623,14 +623,14 @@ type networkRuleCollectionType = {
 }[]?
 
 type hubIPAddressesType = {
-  @description('Optional. List of private IP addresses associated with AzureFirewall.')
+  @description('Optional. Private IP Address associated with AzureFirewall.')
   privateIPAddress: string?
   @description('Optional. List of public IP addresses associated with AzureFirewall.')
   publicIPs: {
-    @description('Optional. The list of Public IP addresses associated with azure firewall or IP addresses to be retained.')
+    @description('Optional. The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained.')
     addresses: [
       {
-        @description('Optional. Public IP')
+        @description('Optional. Public IP.')
         address: string?
       }
     ]?

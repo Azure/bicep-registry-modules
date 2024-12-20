@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "10933158166695618711"
+      "version": "0.32.4.45862",
+      "templateHash": "4715501909071909359"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -672,7 +672,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. List of private IP addresses associated with AzureFirewall."
+            "description": "Optional. Private IP Address associated with AzureFirewall."
           }
         },
         "publicIPs": {
@@ -688,7 +688,7 @@
                       "type": "string",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. Public IP"
+                        "description": "Optional. Public IP."
                       }
                     }
                   }
@@ -697,7 +697,7 @@
               "items": false,
               "nullable": true,
               "metadata": {
-                "description": "Optional. The list of Public IP addresses associated with azure firewall or IP addresses to be retained."
+                "description": "Optional. The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained."
               }
             },
             "count": {

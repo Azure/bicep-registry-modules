@@ -1863,12 +1863,12 @@ IP addresses associated with AzureFirewall. Required if `virtualHubId` is suppli
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateIPAddress`](#parameter-hubipaddressesprivateipaddress) | string | List of private IP addresses associated with AzureFirewall. |
+| [`privateIPAddress`](#parameter-hubipaddressesprivateipaddress) | string | Private IP Address associated with AzureFirewall. |
 | [`publicIPs`](#parameter-hubipaddressespublicips) | object | List of public IP addresses associated with AzureFirewall. |
 
 ### Parameter: `hubIPAddresses.privateIPAddress`
 
-List of private IP addresses associated with AzureFirewall.
+Private IP Address associated with AzureFirewall.
 
 - Required: No
 - Type: string
@@ -1884,12 +1884,12 @@ List of public IP addresses associated with AzureFirewall.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addresses`](#parameter-hubipaddressespublicipsaddresses) | array | The list of Public IP addresses associated with azure firewall or IP addresses to be retained. |
+| [`addresses`](#parameter-hubipaddressespublicipsaddresses) | array | The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained. |
 | [`count`](#parameter-hubipaddressespublicipscount) | int | Public IP address count. |
 
 ### Parameter: `hubIPAddresses.publicIPs.addresses`
 
-The list of Public IP addresses associated with azure firewall or IP addresses to be retained.
+The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained.
 
 - Required: No
 - Type: array
