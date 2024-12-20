@@ -100,6 +100,20 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $file.Name | Should -BeExactly 'README.md'
         }
 
+        It '[<moduleFolderName>] Module should contain a [` CHANGELOG.md `] file.' -TestCases $moduleFolderTestCases {
+
+            param(
+                [string] $moduleFolderPath
+            )
+
+            $changelogFilePath = Join-Path -Path $moduleFolderPath 'CHANGELOG.md'
+            $pathExisting = Test-Path $changelogFilePath
+            $pathExisting | Should -Be $true
+
+            $file = Get-Item -Path $changelogFilePath
+            $file.Name | Should -BeExactly 'CHANGELOG.md'
+        }
+
         # only avm/res/network/virtual-network/subnet is allowed to have a version.json file (PoC for child module publishing)
         It '[<moduleFolderName>] Child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) -And ($_.moduleFolderName -ne 'network/virtual-network/subnet') }) {
 
@@ -1134,6 +1148,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
         }
     }
+
 }
 
 Describe 'Governance tests' {
