@@ -34,7 +34,6 @@ Specifies the state of the Threat Protection, whether it is enabled or disabled 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -49,7 +48,6 @@ The name of the parent PostgreSQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

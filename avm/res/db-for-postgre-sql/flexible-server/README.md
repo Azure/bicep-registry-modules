@@ -1456,7 +1456,6 @@ Flag to enable / disable Storage Auto grow for flexible server.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2408,7 +2407,6 @@ Determines whether or not public network access is enabled or not.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -2426,7 +2424,6 @@ The replication settings for the server. Can only be set on existing flexible se
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 7
 - MaxValue: 35
 
@@ -2444,7 +2441,6 @@ Sets the promote mode for a replica server. This is a write only property. 'stan
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2461,7 +2457,6 @@ Sets the promote options for a replica server. This is a write only property.	'f
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2478,7 +2473,6 @@ Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyn
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2618,7 +2612,6 @@ Specifies the state of the Threat Protection, whether it is enabled or disabled 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
