@@ -367,9 +367,6 @@ param kedaAddon bool = false
 @description('Optional. Whether to enable VPA add-on in cluster. Default value is false.')
 param vpaAddon bool = false
 
-@description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
-
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
 
@@ -526,18 +523,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
         }
       }
     }
-  }
-}
-
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-  )
-
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
 }
 
@@ -1305,21 +1290,6 @@ type extensionType = {
 
   @description('Optional. The flux configurations of the extension.')
   configurations: array?
-}
-
-@export()
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
-  keyVaultNetworkAccess: ('Private' | 'Public')
 }
 
 @export()

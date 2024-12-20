@@ -384,11 +384,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultNetworkAccess: 'Public'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -652,13 +647,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultNetworkAccess": "Public",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
     },
     "diagnosticSettings": {
       "value": [
@@ -962,11 +950,6 @@ param agentPools = [
 ]
 param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
 param autoUpgradeProfileUpgradeChannel = 'stable'
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultNetworkAccess: 'Public'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2758,7 +2741,6 @@ param tags = {
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
 | [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableCustomMetrics`](#parameter-disablecustommetrics) | bool | Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
@@ -3904,62 +3886,6 @@ Specifies whether the cost analysis add-on is enabled or not. If Enabled `enable
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `customerManagedKey`
-
-The customer managed key definition.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultNetworkAccess`](#parameter-customermanagedkeykeyvaultnetworkaccess) | string | Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-
-### Parameter: `customerManagedKey.keyName`
-
-The name of the customer managed key to use for encryption.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVaultNetworkAccess`
-
-Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Private'
-    'Public'
-  ]
-  ```
-
-### Parameter: `customerManagedKey.keyVaultResourceId`
-
-The resource ID of a key vault to reference a customer managed key for encryption from.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVersion`
-
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
-
-- Required: No
-- Type: string
 
 ### Parameter: `diagnosticSettings`
 
