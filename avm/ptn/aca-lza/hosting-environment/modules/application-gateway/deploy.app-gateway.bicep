@@ -151,7 +151,7 @@ module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0
 }
 
 @description('The Application Gateway.')
-module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' = {
+module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' = {
   name: take('applicationGateway-Deployment-${uniqueString(resourceGroup().id)}', 64)
   params: {
     // Required parameters
@@ -339,7 +339,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
       }
     ]
     tags: tags
-    firewallPolicyId: appGwWafPolicy.outputs.resourceId
+    firewallPolicyResourceId: appGwWafPolicy.outputs.resourceId
     sslPolicyType: 'Predefined'
     sslPolicyName: 'AppGwSslPolicy20220101'
     zones: [
