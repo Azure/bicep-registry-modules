@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15234959045281729347"
+      "templateHash": "2262054677651831225"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -641,43 +641,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The flux configurations of the extension."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "customerManagedKeyType": {
-      "type": "object",
-      "properties": {
-        "keyVaultResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
-          }
-        },
-        "keyName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the customer managed key to use for encryption."
-          }
-        },
-        "keyVersion": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
-          }
-        },
-        "keyVaultNetworkAccess": {
-          "type": "string",
-          "allowedValues": [
-            "Private",
-            "Public"
-          ],
-          "metadata": {
-            "description": "Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public."
           }
         }
       },
@@ -1565,13 +1528,6 @@
         "description": "Optional. Whether to enable VPA add-on in cluster. Default value is false."
       }
     },
-    "customerManagedKey": {
-      "$ref": "#/definitions/customerManagedKeyType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The customer managed key definition."
-      }
-    },
     "enableAzureMonitorProfileMetrics": {
       "type": "bool",
       "defaultValue": false,
@@ -1689,15 +1645,6 @@
     }
   },
   "resources": {
-    "cMKKeyVault::cMKKey": {
-      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
-    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -1717,15 +1664,6 @@
           }
         }
       }
-    },
-    "cMKKeyVault": {
-      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
     },
     "managedCluster": {
       "type": "Microsoft.ContainerService/managedClusters",
