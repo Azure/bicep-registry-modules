@@ -1208,7 +1208,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `hubVirtualNetworks`
@@ -1217,7 +1216,6 @@ A map of the hub virtual networks to create.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1231,7 +1229,6 @@ The hub virtual networks to create.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1269,7 +1266,6 @@ The address prefixes for the virtual network.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings`
 
@@ -1277,7 +1273,6 @@ The Azure Firewall config.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1310,7 +1305,6 @@ Additional public IP configurations.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.applicationRuleCollections`
 
@@ -1318,7 +1312,6 @@ Application rule collections.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.azureSkuTier`
 
@@ -1326,7 +1319,6 @@ Azure Firewall SKU.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings`
 
@@ -1334,7 +1326,6 @@ Diagnostic settings.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1356,7 +1347,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.eventHubName`
 
@@ -1364,7 +1354,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1372,7 +1361,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1387,7 +1375,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1403,7 +1390,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1411,7 +1397,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1419,7 +1404,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1427,7 +1411,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.metricCategories`
 
@@ -1435,7 +1418,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1455,7 +1437,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.metricCategories.enabled`
 
@@ -1463,7 +1444,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.name`
 
@@ -1471,7 +1451,6 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.storageAccountResourceId`
 
@@ -1479,7 +1458,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.workspaceResourceId`
 
@@ -1487,7 +1465,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.enableTelemetry`
 
@@ -1495,7 +1472,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.firewallPolicyId`
 
@@ -1503,7 +1479,6 @@ Firewall policy ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.hubIpAddresses`
 
@@ -1511,7 +1486,6 @@ Hub IP addresses.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.location`
 
@@ -1519,7 +1493,6 @@ The location of the virtual network. Defaults to the location of the resource gr
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock`
 
@@ -1527,7 +1500,6 @@ Lock settings.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1542,7 +1514,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1558,7 +1529,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.managementIPAddressObject`
 
@@ -1566,7 +1536,6 @@ Management IP address configuration.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.managementIPResourceID`
 
@@ -1574,7 +1543,6 @@ Management IP resource ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.natRuleCollections`
 
@@ -1582,7 +1550,6 @@ NAT rule collections.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.networkRuleCollections`
 
@@ -1590,7 +1557,6 @@ Network rule collections.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.publicIPAddressObject`
 
@@ -1598,7 +1564,6 @@ Public IP address object.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.publicIPResourceID`
 
@@ -1606,7 +1571,6 @@ Public IP resource ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments`
 
@@ -1614,7 +1578,6 @@ Role assignments.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1640,7 +1603,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.roleDefinitionIdOrName`
 
@@ -1648,7 +1610,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.condition`
 
@@ -1656,7 +1617,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.conditionVersion`
 
@@ -1664,7 +1624,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1678,7 +1637,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.description`
 
@@ -1686,7 +1644,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.name`
 
@@ -1694,7 +1651,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.principalType`
 
@@ -1702,7 +1658,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1720,7 +1675,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.threatIntelMode`
 
@@ -1728,7 +1682,6 @@ Threat Intel mode.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.virtualHub`
 
@@ -1736,7 +1689,6 @@ Virtual Hub ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.zones`
 
@@ -1744,7 +1696,6 @@ Zones.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost`
 
@@ -1752,7 +1703,6 @@ The Azure Bastion config.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1771,7 +1721,6 @@ Enable/Disable copy/paste functionality.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableFileCopy`
 
@@ -1779,7 +1728,6 @@ Enable/Disable file copy functionality.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableIpConnect`
 
@@ -1787,7 +1735,6 @@ Enable/Disable IP connect functionality.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableShareableLink`
 
@@ -1795,7 +1742,6 @@ Enable/Disable shareable link functionality.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.scaleUnits`
 
@@ -1803,7 +1749,6 @@ The number of scale units for the Bastion host. Defaults to 4.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.skuName`
 
@@ -1811,7 +1756,6 @@ The SKU name of the Bastion host. Defaults to Standard.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.ddosProtectionPlanResourceId`
 
@@ -1819,7 +1763,6 @@ The DDoS protection plan resource ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings`
 
@@ -1827,7 +1770,6 @@ The diagnostic settings of the virtual network.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1849,7 +1791,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.eventHubName`
 
@@ -1857,7 +1798,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1865,7 +1805,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1880,7 +1819,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1896,7 +1834,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1904,7 +1841,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1912,7 +1848,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1920,7 +1855,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.metricCategories`
 
@@ -1928,7 +1862,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1948,7 +1881,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.metricCategories.enabled`
 
@@ -1956,7 +1888,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.name`
 
@@ -1964,7 +1895,6 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.storageAccountResourceId`
 
@@ -1972,7 +1902,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.workspaceResourceId`
 
@@ -1980,7 +1909,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.dnsServers`
 
@@ -1988,7 +1916,6 @@ The DNS servers of the virtual network.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.enableAzureFirewall`
 
@@ -1996,7 +1923,6 @@ Enable/Disable Azure Firewall for the virtual network.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.enableBastion`
 
@@ -2004,7 +1930,6 @@ Enable/Disable Azure Bastion for the virtual network.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.enablePeering`
 
@@ -2012,7 +1937,6 @@ Enable/Disable peering for the virtual network.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.enableTelemetry`
 
@@ -2020,7 +1944,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.flowTimeoutInMinutes`
 
@@ -2028,7 +1951,6 @@ The flow timeout in minutes.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.location`
 
@@ -2036,7 +1958,6 @@ The location of the virtual network. Defaults to the location of the resource gr
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.lock`
 
@@ -2044,7 +1965,6 @@ The lock settings of the virtual network.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -2059,7 +1979,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2075,7 +1994,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings`
 
@@ -2083,7 +2001,6 @@ The peerings of the virtual network.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -2101,7 +2018,6 @@ Allow forwarded traffic.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.allowGatewayTransit`
 
@@ -2109,7 +2025,6 @@ Allow gateway transit.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.allowVirtualNetworkAccess`
 
@@ -2117,7 +2032,6 @@ Allow virtual network access.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.remoteVirtualNetworkName`
 
@@ -2125,7 +2039,6 @@ Remote virtual network name.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.useRemoteGateways`
 
@@ -2133,7 +2046,6 @@ Use remote gateways.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments`
 
@@ -2141,7 +2053,6 @@ The role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2167,7 +2078,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.roleDefinitionIdOrName`
 
@@ -2175,7 +2085,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.condition`
 
@@ -2183,7 +2092,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.conditionVersion`
 
@@ -2191,7 +2099,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2205,7 +2112,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.description`
 
@@ -2213,7 +2119,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.name`
 
@@ -2221,7 +2126,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.principalType`
 
@@ -2229,7 +2133,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2247,7 +2150,6 @@ Routes to add to the virtual network route table.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.subnets`
 
@@ -2255,7 +2157,6 @@ The subnets of the virtual network.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.tags`
 
@@ -2263,7 +2164,6 @@ The tags of the virtual network.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.vnetEncryption`
 
@@ -2271,7 +2171,6 @@ Enable/Disable VNet encryption.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.vnetEncryptionEnforcement`
 
@@ -2279,7 +2178,6 @@ The VNet encryption enforcement settings of the virtual network.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -2287,7 +2185,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ## Outputs

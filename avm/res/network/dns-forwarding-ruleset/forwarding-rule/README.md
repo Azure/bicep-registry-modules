@@ -43,7 +43,6 @@ The domain name for the forwarding rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -51,7 +50,6 @@ Name of the Forwarding Rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `targetDnsServers`
 
@@ -59,7 +57,6 @@ DNS servers to forward the DNS query to.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `dnsForwardingRulesetName`
 
@@ -67,7 +64,6 @@ Name of the parent DNS Forwarding Ruleset. Required if the template is used in a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `forwardingRuleState`
 
@@ -75,7 +71,6 @@ The state of forwarding rule.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `metadata`
 
@@ -83,7 +78,6 @@ Metadata attached to the forwarding rule.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

@@ -1494,7 +1494,6 @@ Name of the Service Bus Namespace.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `alternateName`
 
@@ -1502,7 +1501,6 @@ Alternate name for namespace.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `authorizationRules`
 
@@ -1510,7 +1508,6 @@ Authorization Rules for the Service Bus namespace.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -1543,7 +1540,6 @@ The name of the authorization rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `authorizationRules.rights`
 
@@ -1551,7 +1547,6 @@ The rights associated with the rule.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1567,7 +1562,6 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1589,7 +1583,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -1597,7 +1590,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -1605,7 +1597,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1613,7 +1604,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings`
 
@@ -1621,7 +1611,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1643,7 +1632,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1651,7 +1639,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1659,7 +1646,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1674,7 +1660,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1690,7 +1675,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1698,7 +1682,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1706,7 +1689,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1714,7 +1696,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1722,7 +1703,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1742,7 +1722,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1750,7 +1729,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1758,7 +1736,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1766,7 +1743,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1774,7 +1750,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `disableLocalAuth`
 
@@ -1782,7 +1757,6 @@ This property disables SAS authentication for the Service Bus namespace.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `disasterRecoveryConfig`
@@ -1791,7 +1765,6 @@ The disaster recovery configuration.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1807,7 +1780,6 @@ Primary/Secondary eventhub namespace name, which is part of GEO DR pairing.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `disasterRecoveryConfig.name`
 
@@ -1815,7 +1787,6 @@ The name of the disaster recovery config.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `disasterRecoveryConfig.partnerNamespace`
 
@@ -1823,7 +1794,6 @@ Resource ID of the Primary/Secondary event hub namespace name, which is part of 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -1831,7 +1801,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -1840,7 +1809,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1849,7 +1817,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1864,7 +1831,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1880,7 +1846,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1888,7 +1853,6 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1903,7 +1867,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1911,7 +1874,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `migrationConfiguration`
 
@@ -1919,7 +1881,6 @@ The migration configuration.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1934,7 +1895,6 @@ Name to access Standard Namespace after migration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `migrationConfiguration.targetNamespace`
 
@@ -1942,7 +1902,6 @@ Existing premium Namespace resource ID which has no entities, will be used for m
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `minimumTlsVersion`
 
@@ -1950,7 +1909,6 @@ The minimum TLS version for the cluster to support.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'1.2'`
 - Allowed:
   ```Bicep
@@ -1967,7 +1925,6 @@ Configure networking options for Premium SKU Service Bus. This object contains I
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1985,7 +1942,6 @@ Default Action for Network Rule Set. Default is "Allow". It will not be set if p
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2000,7 +1956,6 @@ List of IpRules. It will not be set if publicNetworkAccess is "Disabled". Otherw
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2015,7 +1970,6 @@ The IP filter action.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2030,7 +1984,6 @@ The IP mask.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkRuleSets.publicNetworkAccess`
 
@@ -2038,7 +1991,6 @@ This determines if traffic is allowed over public network. Default is "Enabled".
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2053,7 +2005,6 @@ Value that indicates whether Trusted Service Access is enabled or not. Default i
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `networkRuleSets.virtualNetworkRules`
 
@@ -2061,7 +2012,6 @@ List virtual network rules. It will not be set if publicNetworkAccess is "Disabl
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2076,7 +2026,6 @@ The virtual network rule name.
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `networkRuleSets.virtualNetworkRules.subnetResourceId`
 
@@ -2084,7 +2033,6 @@ The ID of the subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `premiumMessagingPartitions`
 
@@ -2092,7 +2040,6 @@ The number of partitions of a Service Bus namespace. This property is only appli
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 
 ### Parameter: `privateEndpoints`
@@ -2101,7 +2048,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2136,7 +2082,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -2144,7 +2089,6 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -2152,7 +2096,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2172,7 +2115,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -2180,7 +2122,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -2188,7 +2129,6 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -2196,7 +2136,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -2204,7 +2143,6 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2219,7 +2157,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -2227,7 +2164,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -2243,7 +2179,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -2251,7 +2186,6 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -2259,7 +2193,6 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -2267,7 +2200,6 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.location`
 
@@ -2275,7 +2207,6 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -2283,7 +2214,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -2298,7 +2228,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2314,7 +2243,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -2322,7 +2250,6 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.name`
 
@@ -2330,7 +2257,6 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -2338,7 +2264,6 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2358,7 +2283,6 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -2378,7 +2302,6 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2386,7 +2309,6 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -2394,7 +2316,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2402,7 +2323,6 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
@@ -2410,7 +2330,6 @@ Specify if you want to deploy the Private Endpoint into a different Resource Gro
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -2418,7 +2337,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -2455,7 +2373,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -2463,7 +2380,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -2471,7 +2387,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -2479,7 +2394,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2493,7 +2407,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -2501,7 +2414,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -2509,7 +2421,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -2517,7 +2428,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2535,7 +2445,6 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -2543,7 +2452,6 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -2551,7 +2459,6 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -2569,7 +2476,6 @@ The queues to create in the service bus namespace.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2607,7 +2513,6 @@ The name of the queue.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `queues.authorizationRules`
 
@@ -2615,7 +2520,6 @@ Authorization Rules for the Service Bus Queue.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2635,7 +2539,6 @@ The name of the authorization rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `queues.authorizationRules.rights`
 
@@ -2643,7 +2546,6 @@ The rights associated with the rule.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2659,7 +2561,6 @@ ISO 8061 timeSpan idle interval after which the queue is automatically deleted. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.deadLetteringOnMessageExpiration`
 
@@ -2667,7 +2568,6 @@ A value that indicates whether this queue has dead letter support when a message
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `queues.defaultMessageTimeToLive`
 
@@ -2675,7 +2575,6 @@ ISO 8601 default message timespan to live value. This is the duration after whic
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.duplicateDetectionHistoryTimeWindow`
 
@@ -2683,7 +2582,6 @@ ISO 8601 timeSpan structure that defines the duration of the duplicate detection
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.enableBatchedOperations`
 
@@ -2691,7 +2589,6 @@ Value that indicates whether server-side batched operations are enabled.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `queues.enableExpress`
 
@@ -2699,7 +2596,6 @@ A value that indicates whether Express Entities are enabled. An express queue ho
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `queues.enablePartitioning`
 
@@ -2707,7 +2603,6 @@ A value that indicates whether the queue is to be partitioned across multiple me
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `queues.forwardDeadLetteredMessagesTo`
 
@@ -2715,7 +2610,6 @@ Queue/Topic name to forward the Dead Letter message.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.forwardTo`
 
@@ -2723,7 +2617,6 @@ Queue/Topic name to forward the messages.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.lock`
 
@@ -2731,7 +2624,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -2746,7 +2638,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2762,7 +2653,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.lockDuration`
 
@@ -2770,7 +2660,6 @@ ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.maxDeliveryCount`
 
@@ -2778,7 +2667,6 @@ The maximum delivery count. A message is automatically deadlettered after this n
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `queues.maxMessageSizeInKilobytes`
 
@@ -2786,7 +2674,6 @@ Maximum size (in KB) of the message payload that can be accepted by the queue. T
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `queues.maxSizeInMegabytes`
 
@@ -2794,7 +2681,6 @@ The maximum size of the queue in megabytes, which is the size of memory allocate
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `queues.requiresDuplicateDetection`
 
@@ -2802,7 +2688,6 @@ A value indicating if this queue requires duplicate detection.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `queues.requiresSession`
 
@@ -2810,7 +2695,6 @@ A value that indicates whether the queue supports the concept of sessions.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `queues.roleAssignments`
 
@@ -2818,7 +2702,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Azure Service Bus Data Owner'`
   - `'Azure Service Bus Data Receiver'`
@@ -2853,7 +2736,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `queues.roleAssignments.roleDefinitionIdOrName`
 
@@ -2861,7 +2743,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `queues.roleAssignments.condition`
 
@@ -2869,7 +2750,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.roleAssignments.conditionVersion`
 
@@ -2877,7 +2757,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2891,7 +2770,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.roleAssignments.description`
 
@@ -2899,7 +2777,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.roleAssignments.name`
 
@@ -2907,7 +2784,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `queues.roleAssignments.principalType`
 
@@ -2915,7 +2791,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2933,7 +2808,6 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2955,7 +2829,6 @@ Enable infrastructure encryption (double encryption). Note, this setting require
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `roleAssignments`
@@ -2964,7 +2837,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Azure Service Bus Data Owner'`
   - `'Azure Service Bus Data Receiver'`
@@ -2999,7 +2871,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -3007,7 +2878,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -3015,7 +2885,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -3023,7 +2892,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3037,7 +2905,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -3045,7 +2912,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -3053,7 +2919,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -3061,7 +2926,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3079,7 +2943,6 @@ The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant con
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -3106,7 +2969,6 @@ Name of this SKU. - Basic, Standard, Premium.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -3122,7 +2984,6 @@ The specified messaging units for the tier. Only used for Premium Sku tier.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -3130,7 +2991,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `topics`
 
@@ -3138,7 +2998,6 @@ The topics to create in the service bus namespace.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -3172,7 +3031,6 @@ The name of the topic.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `topics.authorizationRules`
 
@@ -3180,7 +3038,6 @@ Authorization Rules for the Service Bus Topic.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -3200,7 +3057,6 @@ The name of the authorization rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `topics.authorizationRules.rights`
 
@@ -3208,7 +3064,6 @@ The rights associated with the rule.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3224,7 +3079,6 @@ ISO 8601 timespan idle interval after which the topic is automatically deleted. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.defaultMessageTimeToLive`
 
@@ -3232,7 +3086,6 @@ ISO 8601 default message timespan to live value. This is the duration after whic
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.duplicateDetectionHistoryTimeWindow`
 
@@ -3240,7 +3093,6 @@ ISO 8601 timeSpan structure that defines the duration of the duplicate detection
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.enableBatchedOperations`
 
@@ -3248,7 +3100,6 @@ Value that indicates whether server-side batched operations are enabled.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.enableExpress`
 
@@ -3256,7 +3107,6 @@ A value that indicates whether Express Entities are enabled. An express topic ho
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.enablePartitioning`
 
@@ -3264,7 +3114,6 @@ A value that indicates whether the topic is to be partitioned across multiple me
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.lock`
 
@@ -3272,7 +3121,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -3287,7 +3135,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3303,7 +3150,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.maxMessageSizeInKilobytes`
 
@@ -3311,7 +3157,6 @@ Maximum size (in KB) of the message payload that can be accepted by the topic. T
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `topics.maxSizeInMegabytes`
 
@@ -3319,7 +3164,6 @@ The maximum size of the topic in megabytes, which is the size of memory allocate
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `topics.requiresDuplicateDetection`
 
@@ -3327,7 +3171,6 @@ A value indicating if this topic requires duplicate detection.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.roleAssignments`
 
@@ -3335,7 +3178,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Azure Service Bus Data Owner'`
   - `'Azure Service Bus Data Receiver'`
@@ -3370,7 +3212,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `topics.roleAssignments.roleDefinitionIdOrName`
 
@@ -3378,7 +3219,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `topics.roleAssignments.condition`
 
@@ -3386,7 +3226,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.roleAssignments.conditionVersion`
 
@@ -3394,7 +3233,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3408,7 +3246,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.roleAssignments.description`
 
@@ -3416,7 +3253,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.roleAssignments.name`
 
@@ -3424,7 +3260,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.roleAssignments.principalType`
 
@@ -3432,7 +3267,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3450,7 +3284,6 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3472,7 +3305,6 @@ The subscriptions of the topic.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -3505,7 +3337,6 @@ The name of the service bus namespace topic subscription.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `topics.subscriptions.autoDeleteOnIdle`
 
@@ -3513,7 +3344,6 @@ ISO 8601 timespan idle interval after which the syubscription is automatically d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.clientAffineProperties`
 
@@ -3521,7 +3351,6 @@ The properties that are associated with a subscription that is client-affine.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -3542,7 +3371,6 @@ Indicates the Client ID of the application that created the client-affine subscr
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `topics.subscriptions.clientAffineProperties.isDurable`
 
@@ -3550,7 +3378,6 @@ For client-affine subscriptions, this value indicates whether the subscription i
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.clientAffineProperties.isShared`
 
@@ -3558,7 +3385,6 @@ For client-affine subscriptions, this value indicates whether the subscription i
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.deadLetteringOnFilterEvaluationExceptions`
 
@@ -3566,7 +3392,6 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.deadLetteringOnMessageExpiration`
 
@@ -3574,7 +3399,6 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.defaultMessageTimeToLive`
 
@@ -3582,7 +3406,6 @@ ISO 8601 timespan idle interval after which the message expires. The minimum dur
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.duplicateDetectionHistoryTimeWindow`
 
@@ -3590,7 +3413,6 @@ ISO 8601 timespan that defines the duration of the duplicate detection history. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.enableBatchedOperations`
 
@@ -3598,7 +3420,6 @@ A value that indicates whether server-side batched operations are enabled.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.forwardDeadLetteredMessagesTo`
 
@@ -3606,7 +3427,6 @@ The name of the recipient entity to which all the messages sent to the subscript
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.forwardTo`
 
@@ -3614,7 +3434,6 @@ The name of the recipient entity to which all the messages sent to the subscript
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.isClientAffine`
 
@@ -3622,7 +3441,6 @@ A value that indicates whether the subscription supports the concept of session.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.lockDuration`
 
@@ -3630,7 +3448,6 @@ ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.maxDeliveryCount`
 
@@ -3638,7 +3455,6 @@ Number of maximum deliveries. A message is automatically deadlettered after this
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.requiresSession`
 
@@ -3646,7 +3462,6 @@ A value that indicates whether the subscription supports the concept of session.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `topics.subscriptions.status`
 
@@ -3654,7 +3469,6 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -3676,7 +3490,6 @@ Value that indicates whether the topic supports ordering.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `zoneRedundant`
 
@@ -3684,7 +3497,6 @@ Enabled by default in order to align with resiliency best practices, thus requir
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

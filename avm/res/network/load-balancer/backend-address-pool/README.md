@@ -43,7 +43,6 @@ The name of the backend address pool.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `loadBalancerName`
 
@@ -51,7 +50,6 @@ The name of the parent load balancer. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `drainPeriodInSeconds`
 
@@ -59,7 +57,6 @@ Amount of seconds Load Balancer waits for before sending RESET to client and bac
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `loadBalancerBackendAddresses`
@@ -68,7 +65,6 @@ An array of backend addresses.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `syncMode`
@@ -77,7 +73,6 @@ Backend address synchronous mode for the backend pool.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -94,7 +89,6 @@ An array of gateway load balancer tunnel interfaces.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ## Outputs

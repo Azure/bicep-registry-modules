@@ -41,7 +41,6 @@ The name of the Server Firewall Rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -49,7 +48,6 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `endIpAddress`
 
@@ -57,7 +55,6 @@ The end IP address of the firewall rule. Must be IPv4 format. Must be greater th
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'0.0.0.0'`
 
 ### Parameter: `startIpAddress`
@@ -66,7 +63,6 @@ The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'0.0.0.0'`
 
 ## Outputs

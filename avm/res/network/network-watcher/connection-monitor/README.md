@@ -40,7 +40,6 @@ Name of the resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `endpoints`
 
@@ -48,7 +47,6 @@ List of connection monitor endpoints.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `location`
@@ -57,7 +55,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `networkWatcherName`
@@ -66,7 +63,6 @@ Name of the network watcher resource. Must be in the resource group where the Fl
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[format('NetworkWatcher_{0}', resourceGroup().location)]`
 
 ### Parameter: `tags`
@@ -75,7 +71,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `testConfigurations`
 
@@ -83,7 +78,6 @@ List of connection monitor test configurations.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `testGroups`
@@ -92,7 +86,6 @@ List of connection monitor test groups.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `workspaceResourceId`
@@ -101,7 +94,6 @@ Specify the Log Analytics Workspace Resource ID.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

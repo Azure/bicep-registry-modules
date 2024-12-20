@@ -52,7 +52,6 @@ The name of the key.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `keyVaultName`
 
@@ -60,7 +59,6 @@ The name of the parent key vault. Required if the template is used in a standalo
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `attributesEnabled`
 
@@ -68,7 +66,6 @@ Determines whether the object is enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `attributesExp`
@@ -77,7 +74,6 @@ Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is r
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `attributesNbf`
 
@@ -85,7 +81,6 @@ Not before date in seconds since 1970-01-01T00:00:00Z.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `curveName`
 
@@ -93,7 +88,6 @@ The elliptic curve name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'P-256'`
 - Allowed:
   ```Bicep
@@ -111,7 +105,6 @@ Array of JsonWebKeyOperation.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -131,7 +124,6 @@ The key size in bits. For example: 2048, 3072, or 4096 for RSA.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `kty`
 
@@ -139,7 +131,6 @@ The type of the key.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'EC'`
 - Allowed:
   ```Bicep
@@ -157,7 +148,6 @@ Key release policy.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -165,7 +155,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'Key Vault Administrator'`
@@ -203,7 +192,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -211,7 +199,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -219,7 +206,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -227,7 +213,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -241,7 +226,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -249,7 +233,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -257,7 +240,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -265,7 +247,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -283,7 +264,6 @@ Key rotation policy properties object.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -291,7 +271,6 @@ Resource tags.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

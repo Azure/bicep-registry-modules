@@ -82,7 +82,6 @@ The name of the database.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serverName`
 
@@ -90,7 +89,6 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `autoPauseDelay`
 
@@ -98,7 +96,6 @@ Time in minutes after which database is automatically paused. A value of -1 mean
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `-1`
 
 ### Parameter: `availabilityZone`
@@ -107,7 +104,6 @@ Specifies the availability zone the database is pinned to.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'NoPreference'`
 - Allowed:
   ```Bicep
@@ -125,7 +121,6 @@ The long term backup retention policy to create for the database.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -144,7 +139,6 @@ The BackupStorageAccessTier for the LTR backups.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -159,7 +153,6 @@ The setting whether to make LTR backups immutable.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -167,7 +160,6 @@ Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `backupLongTermRetentionPolicy.weeklyRetention`
 
@@ -175,7 +167,6 @@ Weekly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `backupLongTermRetentionPolicy.weekOfYear`
 
@@ -183,7 +174,6 @@ Week of year backup to keep for yearly retention.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `backupLongTermRetentionPolicy.yearlyRetention`
 
@@ -191,7 +181,6 @@ Yearly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `backupShortTermRetentionPolicy`
 
@@ -199,7 +188,6 @@ The short term backup retention policy to create for the database.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -214,7 +202,6 @@ Differential backup interval in hours. For Hyperscale tiers this value will be i
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `backupShortTermRetentionPolicy.retentionDays`
 
@@ -222,7 +209,6 @@ Point-in-time retention in days.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `catalogCollation`
 
@@ -230,7 +216,6 @@ Collation of the metadata catalog.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'DATABASE_DEFAULT'`
 
 ### Parameter: `collation`
@@ -239,7 +224,6 @@ The collation of the database.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'SQL_Latin1_General_CP1_CI_AS'`
 
 ### Parameter: `createMode`
@@ -248,7 +232,6 @@ Specifies the mode of database creation.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Default'`
 - Allowed:
   ```Bicep
@@ -272,7 +255,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -294,7 +276,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -302,7 +283,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -310,7 +290,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -325,7 +304,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -341,7 +319,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -349,7 +326,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -357,7 +333,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -365,7 +340,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -373,7 +347,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -393,7 +366,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -401,7 +373,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -409,7 +380,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -417,7 +387,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -425,7 +394,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `elasticPoolResourceId`
 
@@ -433,7 +401,6 @@ The resource ID of the elastic pool containing this database.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `encryptionProtector`
 
@@ -441,7 +408,6 @@ The azure key vault URI of the database if it's configured with per Database Cus
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `encryptionProtectorAutoRotation`
 
@@ -449,7 +415,6 @@ The flag to enable or disable auto rotation of database encryption protector AKV
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `federatedClientId`
 
@@ -457,7 +422,6 @@ The Client id used for cross tenant per database CMK scenario.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `freeLimitExhaustionBehavior`
 
@@ -465,7 +429,6 @@ Specifies the behavior when monthly free limits are exhausted for the free datab
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -480,7 +443,6 @@ The number of readonly secondary replicas associated with the database.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `isLedgerOn`
@@ -489,7 +451,6 @@ Whether or not this database is a ledger database, which means all tables in the
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `licenseType`
@@ -498,7 +459,6 @@ The license type to apply for this database.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -513,7 +473,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `longTermRetentionBackupResourceId`
@@ -522,7 +481,6 @@ The resource identifier of the long term retention backup associated with create
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `maintenanceConfigurationId`
 
@@ -530,7 +488,6 @@ Maintenance configuration ID assigned to the database. This configuration define
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `manualCutover`
 
@@ -538,7 +495,6 @@ Whether or not customer controlled manual cutover needs to be done during Update
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `maxSizeBytes`
 
@@ -546,7 +502,6 @@ The max size of the database expressed in bytes.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `34359738368`
 
 ### Parameter: `minCapacity`
@@ -555,7 +510,6 @@ Minimal capacity that database will always have allocated.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'0'`
 
 ### Parameter: `performCutover`
@@ -564,7 +518,6 @@ To trigger customer controlled manual cutover during the wait state while Scalin
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `preferredEnclaveType`
 
@@ -572,7 +525,6 @@ Type of enclave requested on the database i.e. Default or VBS enclaves.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -587,7 +539,6 @@ The state of read-only routing.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -603,7 +554,6 @@ The resource identifier of the recoverable database associated with create opera
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `recoveryServicesRecoveryPointResourceId`
 
@@ -611,7 +561,6 @@ The resource identifier of the recovery point associated with create operation o
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `requestedBackupStorageRedundancy`
 
@@ -619,7 +568,6 @@ The storage account type to be used to store backups for this database.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Local'`
 - Allowed:
   ```Bicep
@@ -637,7 +585,6 @@ The resource identifier of the restorable dropped database associated with creat
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `restorePointInTime`
 
@@ -645,7 +592,6 @@ Point in time (ISO8601 format) of the source database to restore when createMode
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `sampleName`
 
@@ -653,7 +599,6 @@ The name of the sample schema to apply when creating this database.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `secondaryType`
@@ -662,7 +607,6 @@ The secondary type of the database if it is a secondary.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -678,7 +622,6 @@ The database SKU.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -708,7 +651,6 @@ The name of the SKU, typically, a letter + Number code, e.g. P3.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sku.capacity`
 
@@ -716,7 +658,6 @@ The capacity of the particular SKU.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `sku.family`
 
@@ -724,7 +665,6 @@ If the service has different generations of hardware, for the same SKU, then tha
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `sku.size`
 
@@ -732,7 +672,6 @@ Size of the particular SKU.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `sku.tier`
 
@@ -740,7 +679,6 @@ The tier or edition of the particular SKU, e.g. Basic, Premium.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `sourceDatabaseDeletionDate`
 
@@ -748,7 +686,6 @@ The time that the database was deleted when restoring a deleted database.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `sourceDatabaseResourceId`
 
@@ -756,7 +693,6 @@ The resource identifier of the source database associated with create operation 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `sourceResourceId`
 
@@ -764,7 +700,6 @@ The resource identifier of the source associated with the create operation of th
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -772,7 +707,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `useFreeLimit`
 
@@ -780,7 +714,6 @@ Whether or not the database uses free monthly limits. Allowed on one database in
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `zoneRedundant`
 
@@ -788,7 +721,6 @@ Whether or not this database is zone redundant.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

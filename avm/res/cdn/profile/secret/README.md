@@ -44,7 +44,6 @@ The name of the secrect.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `profileName`
 
@@ -52,7 +51,6 @@ The name of the parent CDN profile. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `secretSourceResourceId`
 
@@ -60,7 +58,6 @@ The resource ID of the secret source. Required if the `type` is "CustomerCertifi
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `secretVersion`
@@ -69,7 +66,6 @@ The version of the secret.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `subjectAlternativeNames`
@@ -78,7 +74,6 @@ The subject alternative names of the secrect.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `type`
@@ -87,7 +82,6 @@ The type of the secrect.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'AzureFirstPartyManagedCertificate'`
 - Allowed:
   ```Bicep
@@ -105,7 +99,6 @@ Indicates whether to use the latest version of the secrect.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ## Outputs

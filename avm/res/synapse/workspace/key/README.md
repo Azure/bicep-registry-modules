@@ -36,7 +36,6 @@ Used to activate the workspace after a customer managed key is provided.
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `keyVaultResourceId`
 
@@ -44,7 +43,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -52,7 +50,6 @@ The name of the Synapse Workspaces Key.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `workspaceName`
 
@@ -60,7 +57,6 @@ The name of the parent Synapse Workspace. Required if the template is used in a 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

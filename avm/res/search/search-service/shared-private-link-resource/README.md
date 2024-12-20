@@ -43,7 +43,6 @@ The group ID from the provider of resource the shared private link resource is f
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -51,7 +50,6 @@ The name of the shared private link resource managed by the Azure Cognitive Sear
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `privateLinkResourceId`
 
@@ -59,7 +57,6 @@ The resource ID of the resource the shared private link resource is for.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `requestMessage`
 
@@ -67,7 +64,6 @@ The request message for requesting approval of the shared private link resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `searchServiceName`
 
@@ -75,7 +71,6 @@ The name of the parent searchServices. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `resourceRegion`
 
@@ -83,7 +78,6 @@ Can be used to specify the Azure Resource Manager location of the resource to wh
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

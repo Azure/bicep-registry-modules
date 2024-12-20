@@ -34,7 +34,6 @@ The name of the parent site resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `msDeployConfiguration`
 
@@ -42,7 +41,6 @@ Sets the MSDeployment Properties.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

@@ -37,7 +37,6 @@ The name of the static member.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `resourceId`
 
@@ -45,7 +44,6 @@ Resource ID of the virtual network.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkGroupName`
 
@@ -53,7 +51,6 @@ The name of the parent network group. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkManagerName`
 
@@ -61,7 +58,6 @@ The name of the parent network manager. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

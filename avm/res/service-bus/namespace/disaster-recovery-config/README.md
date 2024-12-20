@@ -36,7 +36,6 @@ The name of the parent Service Bus Namespace for the Service Bus Queue. Required
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `alternateName`
 
@@ -44,7 +43,6 @@ Primary/Secondary eventhub namespace name, which is part of GEO DR pairing.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `name`
@@ -53,7 +51,6 @@ The name of the disaster recovery config.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'default'`
 
 ### Parameter: `partnerNamespaceResourceID`
@@ -62,7 +59,6 @@ Resource ID of the Primary/Secondary event hub namespace name, which is part of 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

@@ -965,7 +965,6 @@ List of container definitions for the Container App.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -991,7 +990,6 @@ The image of the container.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.name`
 
@@ -999,7 +997,6 @@ The name of the container.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.args`
 
@@ -1007,7 +1004,6 @@ Container start command arguments.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `containers.command`
 
@@ -1015,7 +1011,6 @@ The command to run in the container.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `containers.env`
 
@@ -1023,7 +1018,6 @@ The environment variables to set in the container.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1044,7 +1038,6 @@ The environment variable name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.env.secretRef`
 
@@ -1052,7 +1045,6 @@ The name of the Container App secret from which to pull the envrionment variable
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.env.value`
 
@@ -1060,7 +1052,6 @@ The environment variable value. Required if `secretRef` is null.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `containers.probes`
 
@@ -1068,7 +1059,6 @@ The probes of the container.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1095,7 +1085,6 @@ The type of probe.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1111,7 +1100,6 @@ Minimum consecutive failures for the probe to be considered failed after having 
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1121,7 +1109,6 @@ HTTPGet specifies the http request to perform.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1146,7 +1133,6 @@ Path to access on the HTTP server.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 10
 
@@ -1156,7 +1142,6 @@ Name of the port to access on the container. If not specified, the containerPort
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65535
 
@@ -1166,7 +1151,6 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 65535
 
@@ -1176,7 +1160,6 @@ Custom headers to set in the request.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 65535
 
@@ -1193,7 +1176,6 @@ The header field name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65535
 
@@ -1203,7 +1185,6 @@ The header field value.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65535
 
@@ -1213,7 +1194,6 @@ Scheme to use for connecting to the host. Defaults to HTTP.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1230,7 +1210,6 @@ Number of seconds after the container has started before liveness probes are ini
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 60
 
@@ -1240,7 +1219,6 @@ How often (in seconds) to perform the probe. Defaults to 10 seconds.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 60
 
@@ -1250,7 +1228,6 @@ Minimum consecutive successes for the probe to be considered successful after ha
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1260,7 +1237,6 @@ TCPSocket specifies an action involving a TCP port.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 10
 
@@ -1277,7 +1253,6 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 10
 
@@ -1287,7 +1262,6 @@ Name of the port to access on the container. If not specified, the containerPort
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65535
 
@@ -1297,7 +1271,6 @@ Duration in seconds the pod needs to terminate gracefully upon probe failure. Th
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 3600
 
@@ -1307,7 +1280,6 @@ Number of seconds after which the probe times out. Defaults to 1 second.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 240
 
@@ -1317,7 +1289,6 @@ The resources to allocate to the container.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1332,7 +1303,6 @@ The CPU limit of the container in cores.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example:
   ```Bicep
   '0.25'
@@ -1345,7 +1315,6 @@ The required memory.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example:
   ```Bicep
   '250Mb'
@@ -1359,7 +1328,6 @@ The volume mounts to attach to the container.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1380,7 +1348,6 @@ The path within the container at which the volume should be mounted. Must not co
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.volumeMounts.volumeName`
 
@@ -1388,7 +1355,6 @@ This must match the Name of a Volume.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `containers.volumeMounts.subPath`
 
@@ -1396,7 +1362,6 @@ Path within the volume from which the container's volume should be mounted.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `environmentResourceId`
 
@@ -1404,7 +1369,6 @@ Resource ID of Container Apps Environment.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -1412,7 +1376,6 @@ Name of the Container App.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `triggerType`
 
@@ -1420,7 +1383,6 @@ Trigger type of the job.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1436,7 +1398,6 @@ Configuration of an event driven job. Required if `TriggerType` is `Event`.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1457,7 +1418,6 @@ Scaling configurations for event driven jobs.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1479,7 +1439,6 @@ Scaling rules for the job.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - Example:
   ```Bicep
   [
@@ -1519,7 +1478,6 @@ Metadata properties to describe the scale rule.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 - Example:
   ```Bicep
   {
@@ -1537,7 +1495,6 @@ The name of the scale rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `eventTriggerConfig.scale.rules.type`
 
@@ -1545,7 +1502,6 @@ The type of the rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example:
   ```Bicep
   "azure-servicebus"
@@ -1559,7 +1515,6 @@ Authentication secrets for the scale rule.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1574,7 +1529,6 @@ Name of the secret from which to pull the auth params.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `eventTriggerConfig.scale.rules.auth.triggerParameter`
 
@@ -1582,7 +1536,6 @@ Trigger Parameter that uses the secret.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `eventTriggerConfig.scale.maxExecutions`
 
@@ -1590,7 +1543,6 @@ Maximum number of job executions that are created for a trigger, default 100.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `eventTriggerConfig.scale.minExecutions`
 
@@ -1598,7 +1550,6 @@ Minimum number of job executions that are created for a trigger, default 0.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `eventTriggerConfig.scale.pollingInterval`
 
@@ -1606,7 +1557,6 @@ Interval to check each event source in seconds. Defaults to 30s.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `eventTriggerConfig.parallelism`
 
@@ -1614,7 +1564,6 @@ Number of parallel replicas of a job that can run at a given time. Defaults to 1
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `eventTriggerConfig.replicaCompletionCount`
 
@@ -1622,7 +1571,6 @@ Minimum number of successful replica completions before overall job completion. 
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `manualTriggerConfig`
 
@@ -1630,7 +1578,6 @@ Configuration of a manually triggered job. Required if `TriggerType` is `Manual`
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1645,7 +1592,6 @@ Number of parallel replicas of a job that can run at a given time. Defaults to 1
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `manualTriggerConfig.replicaCompletionCount`
 
@@ -1653,7 +1599,6 @@ Minimum number of successful replica completions before overall job completion. 
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `scheduleTriggerConfig`
 
@@ -1661,7 +1606,6 @@ Configuration of a schedule based job. Required if `TriggerType` is `Schedule`.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1682,7 +1626,6 @@ Cron formatted repeating schedule ("* * * * *") of a Cron Job. It supports the s
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example:
   ```Bicep
   '* * * * *' // Every minute, every hour, every day
@@ -1695,7 +1638,6 @@ Number of parallel replicas of a job that can run at a given time. Defaults to 1
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `scheduleTriggerConfig.replicaCompletionCount`
 
@@ -1703,7 +1645,6 @@ Number of successful completions of a job that are necessary to consider the job
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -1711,7 +1652,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `initContainers`
@@ -1720,7 +1660,6 @@ List of specialized containers that run before app containers.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1745,7 +1684,6 @@ Container start command arguments.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `initContainers.command`
 
@@ -1753,7 +1691,6 @@ Container start command.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `initContainers.image`
 
@@ -1761,7 +1698,6 @@ The image of the container.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `initContainers.name`
 
@@ -1769,7 +1705,6 @@ The name of the container.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `initContainers.env`
 
@@ -1777,7 +1712,6 @@ The environment variables to set in the container.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Example:
   ```Bicep
   [
@@ -1811,7 +1745,6 @@ The environment variable name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `initContainers.env.secretRef`
 
@@ -1819,7 +1752,6 @@ The name of the Container App secret from which to pull the envrionment variable
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `initContainers.env.value`
 
@@ -1827,7 +1759,6 @@ The environment variable value. Required if `secretRef` is null.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `initContainers.resources`
 
@@ -1835,7 +1766,6 @@ Container resource requirements.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1850,7 +1780,6 @@ The CPU limit of the container in cores.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example:
   ```Bicep
   '0.25'
@@ -1863,7 +1792,6 @@ The required memory.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example:
   ```Bicep
   '250Mb'
@@ -1877,7 +1805,6 @@ The volume mounts to attach to the container.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1898,7 +1825,6 @@ The path within the container at which the volume should be mounted. Must not co
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `initContainers.volumeMounts.volumeName`
 
@@ -1906,7 +1832,6 @@ This must match the Name of a Volume.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `initContainers.volumeMounts.subPath`
 
@@ -1914,7 +1839,6 @@ Path within the volume from which the container's volume should be mounted.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -1922,7 +1846,6 @@ Location for all Resources. Defaults to the location of the Resource Group.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1931,7 +1854,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1946,7 +1868,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1962,7 +1883,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1970,7 +1890,6 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - Example:
   ```Bicep
   {
@@ -1997,7 +1916,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -2005,7 +1923,6 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `registries`
 
@@ -2013,7 +1930,6 @@ Collection of private container registry credentials for containers used by the 
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Example:
   ```Bicep
   [
@@ -2058,7 +1974,6 @@ The FQDN name of the container registry.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example: `myregistry.azurecr.io`
 
 ### Parameter: `registries.passwordSecretRef`
@@ -2067,7 +1982,6 @@ The name of the secret contains the login password. Required if `username` is no
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `registries.identity`
 
@@ -2075,7 +1989,6 @@ The resource ID of the (user) managed identity, which is used to access the Azur
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Example:
   ```Bicep
   user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity
@@ -2088,7 +2001,6 @@ The username for the container registry.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `replicaRetryLimit`
 
@@ -2096,7 +2008,6 @@ The maximum number of times a replica can be retried.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `replicaTimeout`
@@ -2105,7 +2016,6 @@ Maximum number of seconds a replica is allowed to run.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1800`
 
 ### Parameter: `roleAssignments`
@@ -2114,7 +2024,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'ContainerApp Reader'`
   - `'Contributor'`
@@ -2147,7 +2056,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2155,7 +2063,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2163,7 +2070,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2171,7 +2077,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2185,7 +2090,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2193,7 +2097,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2201,7 +2104,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2209,7 +2111,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2227,7 +2128,6 @@ The secrets of the Container App.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Example:
   ```Bicep
   [
@@ -2273,7 +2173,6 @@ Azure Key Vault URL pointing to the secret referenced by the Container App Job. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Example: `https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret`
 
 ### Parameter: `secrets.value`
@@ -2282,7 +2181,6 @@ The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is no
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `secrets.identity`
 
@@ -2290,7 +2188,6 @@ Resource ID of a managed identity to authenticate with Azure Key Vault, or Syste
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `secrets.name`
 
@@ -2298,7 +2195,6 @@ The name of the secret.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -2306,7 +2202,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - Example:
   ```Bicep
   {
@@ -2321,7 +2216,6 @@ List of volume definitions for the Container App.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2349,7 +2243,6 @@ The name of the volume.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `volumes.storageType`
 
@@ -2357,7 +2250,6 @@ The container name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2374,7 +2266,6 @@ Mount options used while mounting the Azure file share or NFS Azure file share. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `volumes.storageName`
 
@@ -2382,7 +2273,6 @@ The storage account name. Not needed for EmptyDir and Secret. Required if `stora
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `volumes.secrets`
 
@@ -2390,7 +2280,6 @@ List of secrets to be added in volume. If no secrets are provided, all secrets i
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2405,7 +2294,6 @@ Path to project secret to. If no path is provided, path defaults to name of secr
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `volumes.secrets.secretRef`
 
@@ -2413,7 +2301,6 @@ Name of the Container App secret from which to pull the secret value.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `workloadProfileName`
 
@@ -2421,7 +2308,6 @@ The name of the workload profile to use. Leave empty to use a consumption based 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

@@ -52,7 +52,6 @@ Name of the application definition.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `supportedOSType`
 
@@ -60,7 +59,6 @@ This property allows you to specify the supported type of the OS that applicatio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -75,7 +73,6 @@ The name of the parent Azure Compute Gallery. Required if the template is used i
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customActions`
 
@@ -83,7 +80,6 @@ A list of custom actions that can be performed with all of the Gallery Applicati
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -105,7 +101,6 @@ The name of the custom action. Must be unique within the Gallery Application Ver
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customActions.script`
 
@@ -113,7 +108,6 @@ The script to run when executing this custom action.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customActions.description`
 
@@ -121,7 +115,6 @@ Description to help the users understand what this custom action does.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `customActions.parameters`
 
@@ -129,7 +122,6 @@ The parameters that this custom action uses.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -152,7 +144,6 @@ The name of the parameter.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customActions.parameters.defaultValue`
 
@@ -160,7 +151,6 @@ The default value of the parameter. Only applies to string types.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `customActions.parameters.description`
 
@@ -168,7 +158,6 @@ A description to help users understand what this parameter means.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `customActions.parameters.required`
 
@@ -176,7 +165,6 @@ Indicates whether this parameter must be passed when running the custom action.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `customActions.parameters.type`
 
@@ -184,7 +172,6 @@ Specifies the type of the custom action parameter.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -200,7 +187,6 @@ The description of this gallery Application Definition resource. This property i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `endOfLifeDate`
 
@@ -208,7 +194,6 @@ The end of life date of the gallery Image Definition. This property can be used 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `eula`
 
@@ -216,7 +201,6 @@ The Eula agreement for the gallery Application Definition. Has to be a valid URL
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -224,7 +208,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `privacyStatementUri`
@@ -233,7 +216,6 @@ The privacy statement uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `releaseNoteUri`
 
@@ -241,7 +223,6 @@ The release note uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -249,7 +230,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Compute Gallery Sharing Admin'`
   - `'Contributor'`
@@ -282,7 +262,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -290,7 +269,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -298,7 +276,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -306,7 +283,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -320,7 +296,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -328,7 +303,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -336,7 +310,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -344,7 +317,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -362,7 +334,6 @@ Tags for all resources.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

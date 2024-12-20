@@ -44,7 +44,6 @@ The name of the Long Term Retention backup policy. For example "default".
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `databaseName`
 
@@ -52,7 +51,6 @@ The name of the parent managed instance database. Required if the template is us
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `managedInstanceName`
 
@@ -60,7 +58,6 @@ The name of the parent managed instance. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `monthlyRetention`
 
@@ -68,7 +65,6 @@ The monthly retention policy for an LTR backup in an ISO 8601 format.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'P1Y'`
 
 ### Parameter: `weeklyRetention`
@@ -77,7 +73,6 @@ The weekly retention policy for an LTR backup in an ISO 8601 format.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'P1M'`
 
 ### Parameter: `weekOfYear`
@@ -86,7 +81,6 @@ The week of year to take the yearly backup in an ISO 8601 format.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `5`
 
 ### Parameter: `yearlyRetention`
@@ -95,7 +89,6 @@ The yearly retention policy for an LTR backup in an ISO 8601 format.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'P5Y'`
 
 ## Outputs

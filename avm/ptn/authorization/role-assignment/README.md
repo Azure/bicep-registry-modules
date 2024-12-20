@@ -555,7 +555,6 @@ The Principal or Object ID of the Security Principal (User, Group, Service Princ
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleDefinitionIdOrName`
 
@@ -563,7 +562,6 @@ You can provide either the display name of the role definition (must be configur
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `condition`
 
@@ -571,7 +569,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `conditionVersion`
@@ -580,7 +577,6 @@ Version of the condition. Currently accepted value is "2.0".
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'2.0'`
 - Allowed:
   ```Bicep
@@ -595,7 +591,6 @@ ID of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `description`
@@ -604,7 +599,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -613,7 +607,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -622,7 +615,6 @@ Location deployment metadata.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `managementGroupId`
@@ -631,7 +623,6 @@ Group ID of the Management Group to assign the RBAC role to. If not provided, wi
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[managementGroup().name]`
 
 ### Parameter: `principalType`
@@ -640,7 +631,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -660,7 +650,6 @@ Name of the Resource Group to assign the RBAC role to. If Resource Group name is
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `subscriptionId`
@@ -669,7 +658,6 @@ Subscription ID of the subscription to assign the RBAC role to. If no Resource G
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

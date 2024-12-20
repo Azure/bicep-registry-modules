@@ -56,7 +56,6 @@ The Name of the subnet resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `addressPrefix`
 
@@ -64,7 +63,6 @@ The address prefix for the subnet. Required if `addressPrefixes` is empty.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `addressPrefixes`
 
@@ -72,7 +70,6 @@ List of address prefixes for the subnet. Required if `addressPrefix` is empty.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `virtualNetworkName`
 
@@ -80,7 +77,6 @@ The name of the parent virtual network. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applicationGatewayIPConfigurations`
 
@@ -88,7 +84,6 @@ Application gateway IP configurations of virtual network resource.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `defaultOutboundAccess`
@@ -97,7 +92,6 @@ Set this property to false to disable default outbound connectivity for all VMs 
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `delegation`
 
@@ -105,7 +99,6 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `natGatewayResourceId`
 
@@ -113,7 +106,6 @@ The resource ID of the NAT Gateway to use for the subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `networkSecurityGroupResourceId`
 
@@ -121,7 +113,6 @@ The resource ID of the network security group to assign to the subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateEndpointNetworkPolicies`
 
@@ -129,7 +120,6 @@ Enable or disable apply network policies on private endpoint in the subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -146,7 +136,6 @@ Enable or disable apply network policies on private link service in the subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -161,7 +150,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'Network Contributor'`
@@ -194,7 +182,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -202,7 +189,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -210,7 +196,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -218,7 +203,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -232,7 +216,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -240,7 +223,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -248,7 +230,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -256,7 +237,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -274,7 +254,6 @@ The resource ID of the route table to assign to the subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `serviceEndpointPolicies`
 
@@ -282,7 +261,6 @@ An array of service endpoint policies.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `serviceEndpoints`
@@ -291,7 +269,6 @@ The service endpoints to enable on the subnet.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `sharingScope`
@@ -300,7 +277,6 @@ Set this property to Tenant to allow sharing subnet with other subscriptions in 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [

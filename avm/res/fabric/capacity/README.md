@@ -300,7 +300,6 @@ List of admin members. Format: ["something@domain.com"].
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -308,7 +307,6 @@ Name of the resource to create.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `enableTelemetry`
 
@@ -316,7 +314,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -325,7 +322,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -334,7 +330,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -349,7 +344,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -365,7 +359,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `skuName`
 
@@ -373,7 +366,6 @@ SKU tier of the Fabric resource.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'F2'`
 - Allowed:
   ```Bicep
@@ -398,7 +390,6 @@ SKU name of the Fabric resource.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Fabric'`
 - Allowed:
   ```Bicep
@@ -413,7 +404,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

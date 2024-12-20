@@ -45,7 +45,6 @@ Name of the Client.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `clientCertificateAuthenticationAllowedThumbprints`
 
@@ -53,7 +52,6 @@ The list of thumbprints that are allowed during client authentication. Required 
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `namespaceName`
 
@@ -61,7 +59,6 @@ The name of the parent EventGrid namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `attributes`
 
@@ -69,7 +66,6 @@ Attributes for the client. Supported values are int, bool, string, string[].
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `authenticationName`
 
@@ -77,7 +73,6 @@ The name presented by the client for authentication. The default value is the na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `clientCertificateAuthenticationValidationSchema`
 
@@ -85,7 +80,6 @@ The validation scheme used to authenticate the client.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'SubjectMatchesAuthenticationName'`
 - Allowed:
   ```Bicep
@@ -105,7 +99,6 @@ Description of the Client resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `state`
 
@@ -113,7 +106,6 @@ Indicates if the client is enabled or not.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 
 ## Outputs

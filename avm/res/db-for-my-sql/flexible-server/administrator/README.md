@@ -42,7 +42,6 @@ The resource ID of the identity used for AAD Authentication.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `login`
 
@@ -50,7 +49,6 @@ Login name of the server administrator.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sid`
 
@@ -58,7 +56,6 @@ SID (object ID) of the server administrator.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `flexibleServerName`
 
@@ -66,7 +63,6 @@ The name of the parent DBforMySQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `tenantId`
 
@@ -74,7 +70,6 @@ The tenantId of the Active Directory administrator.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[tenant().tenantId]`
 
 ## Outputs

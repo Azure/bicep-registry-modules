@@ -45,7 +45,6 @@ Type of site to deploy.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -70,7 +69,6 @@ The name of the parent site resource. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `appInsightResourceId`
 
@@ -78,7 +76,6 @@ Resource ID of the app insight to leverage for this resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `appSettingsKeyValuePairs`
 
@@ -86,7 +83,6 @@ The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDas
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `currentAppSettings`
 
@@ -94,7 +90,6 @@ The current app settings.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `storageAccountResourceId`
@@ -103,7 +98,6 @@ Required if app of kind functionapp. Resource ID of the storage account to manag
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `storageAccountUseIdentityAuthentication`
 
@@ -111,7 +105,6 @@ If the provided storage account requires Identity based authentication ('allowSh
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ## Outputs

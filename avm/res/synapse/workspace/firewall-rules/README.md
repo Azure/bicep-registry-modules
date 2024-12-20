@@ -36,7 +36,6 @@ The end IP address of the firewall rule. Must be IPv4 format. Must be greater th
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -44,7 +43,6 @@ The name of the firewall rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `startIpAddress`
 
@@ -52,7 +50,6 @@ The start IP address of the firewall rule. Must be IPv4 format.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `workspaceName`
 
@@ -60,7 +57,6 @@ The name of the parent Synapse Workspace. Required if the template is used in a 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

@@ -303,7 +303,6 @@ Name of the OpenAI cognitive services.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `keyVaultName`
 
@@ -311,7 +310,6 @@ Name of the key vault.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `storageAccountName`
 
@@ -319,7 +317,6 @@ Name of the storage account.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `managedIdentities`
 
@@ -327,7 +324,6 @@ The managed identity definition for this resource. Required if `assignRbacRole` 
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -342,7 +338,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -350,7 +345,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `allowBlobPublicAccess`
 
@@ -358,7 +352,6 @@ Indicates whether public access is enabled for all blobs or containers in the st
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `applicationInsightsDashboardName`
@@ -367,7 +360,6 @@ The resource portal dashboards name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `applicationInsightsName`
@@ -376,7 +368,6 @@ The resource insights components name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `authOptions`
@@ -385,7 +376,6 @@ Defines the options for how the data plane API of a Search service authenticates
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `blobServices`
@@ -394,7 +384,6 @@ Blob service and containers to deploy.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -445,7 +434,6 @@ Describes a policy that determines how resources within the search service are t
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Unspecified'`
 - Allowed:
   ```Bicep
@@ -462,7 +450,6 @@ The custom subdomain name used to access the API. Defaults to the value of the n
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[parameters('cognitiveServicesName')]`
 
 ### Parameter: `cognitiveServicesDeployments`
@@ -471,7 +458,6 @@ Array of deployments about cognitive service accounts to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `cognitiveServicesDisableLocalAuth`
@@ -480,7 +466,6 @@ Allow only Azure AD authentication. Should be enabled for security reasons.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `cognitiveServicesKind`
@@ -489,7 +474,6 @@ Kind of the Cognitive Services.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'AIServices'`
 
 ### Parameter: `cognitiveServicesNetworkAcls`
@@ -498,7 +482,6 @@ A collection of rules governing the accessibility from specific network location
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -512,7 +495,6 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -528,7 +510,6 @@ SKU of the Cognitive Services resource.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'S0'`
 
 ### Parameter: `containerRegistryName`
@@ -537,7 +518,6 @@ Name of the container registry.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `dataRetention`
@@ -546,7 +526,6 @@ Number of days data will be retained for.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `30`
 - MinValue: 0
 - MaxValue: 730
@@ -557,7 +536,6 @@ When set to true, calls to the search service will not be permitted to utilize A
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 0
 - MaxValue: 730
@@ -568,7 +546,6 @@ Allows you to specify the type of endpoint in the storage account. Set this to A
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -587,7 +564,6 @@ Provide 'true' to enable Key Vault's purge protection feature.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 0
 - MaxValue: 730
@@ -598,7 +574,6 @@ Property that controls how data actions are authorized. When true, the key vault
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 0
 - MaxValue: 730
@@ -609,7 +584,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 0
 - MaxValue: 730
@@ -620,7 +594,6 @@ Specifies if the vault is enabled for deployment by script or compute.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 0
 - MaxValue: 730
@@ -631,7 +604,6 @@ Specifies if the vault is enabled for a template deployment.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 0
 - MaxValue: 730
@@ -642,7 +614,6 @@ File service and shares to deploy.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -658,7 +629,6 @@ Applicable only for the standard3 SKU. You can set this property to enable up to
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'default'`
 - Allowed:
   ```Bicep
@@ -676,7 +646,6 @@ Specifies the SKU for the vault.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'standard'`
 - Allowed:
   ```Bicep
@@ -694,7 +663,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 - MinValue: 0
 - MaxValue: 730
@@ -705,7 +673,6 @@ The resource operational insights workspaces name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 0
 - MaxValue: 730
@@ -716,7 +683,6 @@ The name of the SKU.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'PerGB2018'`
 - Allowed:
   ```Bicep
@@ -740,7 +706,6 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -757,7 +722,6 @@ Network specific rules that determine how the Azure Cognitive Search service may
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -774,7 +738,6 @@ The number of partitions in the search service; if specified, it can be 1, 2, 3,
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 - MinValue: 1
 - MaxValue: 12
@@ -785,7 +748,6 @@ Whether or not public network access is allowed for the storage account. For sec
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -804,7 +766,6 @@ Queue service and queues to create.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -820,7 +781,6 @@ Tier of your Azure container registry.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Basic'`
 - Allowed:
   ```Bicep
@@ -839,7 +799,6 @@ Public network access setting.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - MinValue: 1
 - MaxValue: 12
@@ -850,7 +809,6 @@ The number of replicas in the search service. If specified, it must be a value b
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 - MinValue: 1
 - MaxValue: 12
@@ -861,7 +819,6 @@ Name of the Azure Cognitive Search service.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 - MaxValue: 12
@@ -872,7 +829,6 @@ This value can be set to 'Enabled' to avoid breaking changes on existing custome
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -890,7 +846,6 @@ Defines the SKU of an Azure Cognitive Search Service, which determines price tie
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'standard'`
 - Allowed:
   ```Bicep
@@ -913,7 +868,6 @@ Sets options that control the availability of semantic search. This configuratio
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'disabled'`
 - Allowed:
   ```Bicep
@@ -932,7 +886,6 @@ Table service and tables to create.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -948,7 +901,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 12
 - Example:

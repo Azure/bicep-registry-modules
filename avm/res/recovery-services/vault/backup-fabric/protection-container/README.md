@@ -46,7 +46,6 @@ Name of the Azure Recovery Service Vault Protection Container.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `recoveryVaultName`
 
@@ -54,7 +53,6 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `backupManagementType`
 
@@ -62,7 +60,6 @@ Backup management type to execute the current Protection Container job.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -84,7 +81,6 @@ Type of the container.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -106,7 +102,6 @@ Friendly name of the Protection Container.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -114,7 +109,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `protectedItems`
@@ -123,7 +117,6 @@ Protected items to register in the container.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `sourceResourceId`
@@ -132,7 +125,6 @@ Resource ID of the target resource for the Protection Container.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

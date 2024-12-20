@@ -40,7 +40,6 @@ The custom domain name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `staticSiteName`
 
@@ -48,7 +47,6 @@ The name of the parent Static Web App. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `validationMethod`
 
@@ -56,7 +54,6 @@ Validation method for adding a custom domain.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'cname-delegation'`
 
 ## Outputs

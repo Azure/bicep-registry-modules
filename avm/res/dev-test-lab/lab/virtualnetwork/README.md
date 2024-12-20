@@ -46,7 +46,6 @@ The resource ID of the virtual network.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -54,7 +53,6 @@ The name of the virtual network.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `labName`
 
@@ -62,7 +60,6 @@ The name of the parent lab. Required if the template is used in a standalone dep
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `allowedSubnets`
 
@@ -70,7 +67,6 @@ The allowed subnets of the virtual network.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -91,7 +87,6 @@ The name of the subnet as seen in the lab.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `allowedSubnets.resourceId`
 
@@ -99,7 +94,6 @@ The resource ID of the allowed subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `allowedSubnets.allowPublicIp`
 
@@ -107,7 +101,6 @@ The permission policy of the subnet for allowing public IP addresses (i.e. Allow
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -123,7 +116,6 @@ The description of the virtual network.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `subnetOverrides`
 
@@ -131,7 +123,6 @@ The subnet overrides of the virtual network.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -155,7 +146,6 @@ The name given to the subnet within the lab.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `subnetOverrides.resourceId`
 
@@ -163,7 +153,6 @@ The resource ID of the subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `subnetOverrides.sharedPublicIpAddressConfiguration`
 
@@ -171,7 +160,6 @@ The permission policy of the subnet for allowing public IP addresses (i.e. Allow
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -185,7 +173,6 @@ Backend ports that virtual machines on this subnet are allowed to expose.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -200,7 +187,6 @@ Backend port of the target virtual machine.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `subnetOverrides.sharedPublicIpAddressConfiguration.allowedPorts.transportProtocol`
 
@@ -208,7 +194,6 @@ Protocol type of the port.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -223,7 +208,6 @@ Indicates whether this subnet can be used during virtual machine creation (i.e. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -239,7 +223,6 @@ Indicates whether public IP addresses can be assigned to virtual machines on thi
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -255,7 +238,6 @@ The virtual network pool associated with this subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -263,7 +245,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

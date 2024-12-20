@@ -461,7 +461,6 @@ The name of the image.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `osDiskBlobUri`
 
@@ -469,7 +468,6 @@ The Virtual Hard Disk.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `osType`
 
@@ -477,7 +475,6 @@ This property allows you to specify the type of the OS that is included in the d
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `dataDisks`
 
@@ -485,7 +482,6 @@ Specifies the parameters that are used to add a data disk to a virtual machine.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `diskEncryptionSetResourceId`
@@ -494,7 +490,6 @@ Specifies the customer managed disk encryption set resource ID for the managed i
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `diskSizeGB`
@@ -503,7 +498,6 @@ Specifies the size of empty data disks in gigabytes. This element can be used to
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `128`
 
 ### Parameter: `enableTelemetry`
@@ -512,7 +506,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `extendedLocation`
@@ -521,7 +514,6 @@ The extended location of the Image.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `hyperVGeneration`
@@ -530,7 +522,6 @@ Gets the HyperVGenerationType of the VirtualMachine created from the image. - V1
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'V1'`
 
 ### Parameter: `location`
@@ -539,7 +530,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `managedDiskResourceId`
@@ -548,7 +538,6 @@ The managedDisk.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `osAccountType`
@@ -557,7 +546,6 @@ Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `osDiskCaching`
 
@@ -565,7 +553,6 @@ Specifies the caching requirements. Default: None for Standard storage. ReadOnly
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `osState`
 
@@ -573,7 +560,6 @@ The OS State. For managed images, use Generalized.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Generalized'`
 - Allowed:
   ```Bicep
@@ -589,7 +575,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -621,7 +606,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -629,7 +613,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -637,7 +620,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -645,7 +627,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -659,7 +640,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -667,7 +647,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -675,7 +654,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -683,7 +661,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -701,7 +678,6 @@ The snapshot resource ID.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `sourceVirtualMachineResourceId`
@@ -710,7 +686,6 @@ The source virtual machine from which Image is created.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `tags`
@@ -719,7 +694,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `zoneResilient`
 
@@ -727,7 +701,6 @@ Default is false. Specifies whether an image is zone resilient or not. Zone resi
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ## Outputs

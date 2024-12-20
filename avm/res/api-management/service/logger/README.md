@@ -44,7 +44,6 @@ Resource Name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `type`
 
@@ -52,7 +51,6 @@ Logger type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -68,7 +66,6 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `credentials`
 
@@ -76,7 +73,6 @@ Required if loggerType = applicationInsights or azureEventHub. The name and Send
 
 - Required: Yes
 - Type: secureObject
-- Nullable: No
 
 ### Parameter: `targetResourceId`
 
@@ -84,7 +80,6 @@ Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `description`
 
@@ -92,7 +87,6 @@ Logger description.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `isBuffered`
@@ -101,7 +95,6 @@ Whether records are buffered in the logger before publishing.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

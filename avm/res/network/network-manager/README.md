@@ -1047,7 +1047,6 @@ Name of the Network Manager.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkManagerScopeAccesses`
 
@@ -1055,7 +1054,6 @@ Scope Access. String array containing any of "Connectivity", "SecurityAdmin". Th
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1070,7 +1068,6 @@ Scope of Network Manager. Contains a list of management groups or a list of subs
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Conditional parameters**
 
@@ -1085,7 +1082,6 @@ Scope of Network Manager. Contains a list of management groups or a list of subs
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `networkManagerScopes.subscriptions`
 
@@ -1093,7 +1089,6 @@ List of fully qualified IDs of Subscriptions to assign to the network manager to
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `networkGroups`
 
@@ -1101,7 +1096,6 @@ Network Groups and static members to create for the network manager. Required if
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1122,7 +1116,6 @@ The name of the network group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkGroups.description`
 
@@ -1130,7 +1123,6 @@ A description of the network group.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `networkGroups.staticMembers`
 
@@ -1138,7 +1130,6 @@ Static Members to create for the network group. Contains virtual networks to add
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1153,7 +1144,6 @@ The name of the static member.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkGroups.staticMembers.resourceId`
 
@@ -1161,7 +1151,6 @@ Resource ID of the virtual network.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `connectivityConfigurations`
 
@@ -1169,7 +1158,6 @@ Connectivity Configurations to create for the network manager. Network manager m
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1194,7 +1182,6 @@ Network Groups for the configuration. A connectivity configuration must be assoc
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1216,7 +1203,6 @@ Group connectivity type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1231,7 +1217,6 @@ Resource Id of the network group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `connectivityConfigurations.appliesToGroups.isGlobal`
 
@@ -1239,7 +1224,6 @@ Flag if global is supported.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `connectivityConfigurations.appliesToGroups.useHubGateway`
 
@@ -1247,7 +1231,6 @@ Flag if use hub gateway.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `connectivityConfigurations.connectivityTopology`
 
@@ -1255,7 +1238,6 @@ The connectivity topology to apply the configuration to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1270,7 +1252,6 @@ The name of the connectivity configuration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `connectivityConfigurations.deleteExistingPeering`
 
@@ -1278,7 +1259,6 @@ Delete existing peering connections.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `connectivityConfigurations.description`
 
@@ -1286,7 +1266,6 @@ A description of the connectivity configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `connectivityConfigurations.hubs`
 
@@ -1294,7 +1273,6 @@ The hubs to apply the configuration to.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1309,7 +1287,6 @@ Resource Id of the hub.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `connectivityConfigurations.hubs.resourceType`
 
@@ -1317,7 +1294,6 @@ Resource type of the hub.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1331,7 +1307,6 @@ Is global configuration.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `description`
 
@@ -1339,7 +1314,6 @@ A description of the Network Manager.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -1348,7 +1322,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -1357,7 +1330,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1366,7 +1338,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -1381,7 +1352,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1397,7 +1367,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -1405,7 +1374,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'IPAM Pool Contributor'`
@@ -1441,7 +1409,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1449,7 +1416,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1457,7 +1423,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1465,7 +1430,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1479,7 +1443,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1487,7 +1450,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1495,7 +1457,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1503,7 +1464,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1521,7 +1481,6 @@ Scope Connections to create for the network manager. Allows network manager to m
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1543,7 +1502,6 @@ The name of the scope connection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `scopeConnections.resourceId`
 
@@ -1551,7 +1509,6 @@ Enter the subscription or management group resource ID that you want to add to t
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `scopeConnections.tenantId`
 
@@ -1559,7 +1516,6 @@ Tenant ID of the subscription or management group that you want to manage.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `scopeConnections.description`
 
@@ -1567,7 +1523,6 @@ A description of the scope connection.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `securityAdminConfigurations`
 
@@ -1575,7 +1530,6 @@ Security Admin Configurations, Rule Collections and Rules to create for the netw
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1597,7 +1551,6 @@ Apply on network intent policy based services.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1613,7 +1566,6 @@ The name of the security admin configuration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `securityAdminConfigurations.description`
 
@@ -1621,7 +1573,6 @@ A description of the security admin configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `securityAdminConfigurations.ruleCollections`
 
@@ -1629,7 +1580,6 @@ Rule collections to create for the security admin configuration.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1651,7 +1601,6 @@ List of network groups for configuration. An admin rule collection must be assoc
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1665,7 +1614,6 @@ The resource ID of the network group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.name`
 
@@ -1673,7 +1621,6 @@ The name of the admin rule collection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.description`
 
@@ -1681,7 +1628,6 @@ A description of the admin rule collection.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules`
 
@@ -1689,7 +1635,6 @@ List of rules for the admin rules collection. Security admin rules allows enforc
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1717,7 +1662,6 @@ Indicates the access allowed for this particular rule. "Allow" means traffic mat
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1733,7 +1677,6 @@ Indicates if the traffic matched against the rule in inbound or outbound.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1748,7 +1691,6 @@ The name of the rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.priority`
 
@@ -1756,7 +1698,6 @@ The priority of the rule. The value can be between 1 and 4096. The priority numb
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 1
 - MaxValue: 4096
 
@@ -1766,7 +1707,6 @@ Network protocol this rule applies to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1787,7 +1727,6 @@ A description of the rule.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -1797,7 +1736,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -1807,7 +1745,6 @@ The destnations filter can be an IP Address or a service tag. Each filter contai
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -1824,7 +1761,6 @@ Address prefix.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 4096
 
@@ -1834,7 +1770,6 @@ Address prefix type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1851,7 +1786,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -1861,7 +1795,6 @@ The source filter can be an IP Address or a service tag. Each filter contains th
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 4096
 
@@ -1878,7 +1811,6 @@ Address prefix.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 4096
 
@@ -1888,7 +1820,6 @@ Address prefix type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1905,7 +1836,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

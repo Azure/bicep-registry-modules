@@ -41,7 +41,6 @@ The resource ID of the relay namespace hybrid connection.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `appName`
 
@@ -49,7 +48,6 @@ The name of the parent web site. Required if the template is used in a standalon
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `slotName`
 
@@ -57,7 +55,6 @@ The name of the site slot. Required if the template is used in a standalone depl
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sendKeyName`
 
@@ -65,7 +62,6 @@ Name of the authorization rule send key to use.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'defaultSender'`
 
 ## Outputs

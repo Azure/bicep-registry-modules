@@ -41,7 +41,6 @@ The name of the database.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `flexibleServerName`
 
@@ -49,7 +48,6 @@ The name of the parent MySQL flexible server. Required if the template is used i
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `charset`
 
@@ -57,7 +55,6 @@ The charset of the database.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'utf8_general_ci'`
 
 ### Parameter: `collation`
@@ -66,7 +63,6 @@ The collation of the database.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'utf8'`
 
 ## Outputs

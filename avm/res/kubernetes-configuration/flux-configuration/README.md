@@ -502,7 +502,6 @@ The name of the AKS cluster that should be configured.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `kustomizations`
 
@@ -510,7 +509,6 @@ Array of kustomizations used to reconcile the artifact pulled by the source type
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -518,7 +516,6 @@ The name of the Flux Configuration.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespace`
 
@@ -526,7 +523,6 @@ The namespace to which this configuration is installed to. Maximum of 253 lower 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `scope`
 
@@ -534,7 +530,6 @@ Scope at which the configuration will be installed.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -549,7 +544,6 @@ Source Kind to pull the configuration data from.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -564,7 +558,6 @@ Parameters to reconcile to the GitRepository source kind type. Required if `sour
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `gitRepository`
 
@@ -572,7 +565,6 @@ Parameters to reconcile to the GitRepository source kind type. Required if `sour
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `configurationProtectedSettings`
 
@@ -580,7 +572,6 @@ Key-value pairs of protected configuration settings for the configuration.
 
 - Required: No
 - Type: secureObject
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -588,7 +579,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -597,7 +587,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `suspend`
@@ -606,7 +595,6 @@ Whether this configuration should suspend its reconciliation of its kustomizatio
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ## Outputs

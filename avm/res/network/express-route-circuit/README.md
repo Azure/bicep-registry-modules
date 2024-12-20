@@ -548,7 +548,6 @@ This is the bandwidth in Mbps of the circuit being created. It must exactly matc
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -556,7 +555,6 @@ This is the name of the ExpressRoute circuit.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `peeringLocation`
 
@@ -564,7 +562,6 @@ This is the name of the peering location and not the ARM resource location. It m
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `serviceProviderName`
 
@@ -572,7 +569,6 @@ This is the name of the ExpressRoute Service Provider. It must exactly match one
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `allowClassicOperations`
 
@@ -580,7 +576,6 @@ Allow classic operations. You can connect to virtual networks in the classic dep
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `bandwidthInGbps`
@@ -589,7 +584,6 @@ The bandwidth of the circuit when the circuit is provisioned on an ExpressRouteP
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `diagnosticSettings`
@@ -598,7 +592,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Optional parameters**
 
@@ -620,7 +613,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -628,7 +620,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -636,7 +627,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -651,7 +641,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -667,7 +656,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -675,7 +663,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -683,7 +670,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -691,7 +677,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -699,7 +684,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -719,7 +703,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -727,7 +710,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -735,7 +717,6 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -743,7 +724,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -751,7 +731,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -759,7 +738,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `expressRoutePortResourceId`
@@ -768,7 +746,6 @@ The reference to the ExpressRoutePort resource when the circuit is provisioned o
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `globalReachEnabled`
@@ -777,7 +754,6 @@ Flag denoting global reach status. To enable ExpressRoute Global Reach between d
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `location`
@@ -786,7 +762,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -795,7 +770,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -810,7 +784,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -826,7 +799,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `peerASN`
 
@@ -834,7 +806,6 @@ The autonomous system number of the customer/connectivity provider.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `peering`
@@ -843,7 +814,6 @@ Enabled BGP peering type for the Circuit.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `peeringType`
@@ -852,7 +822,6 @@ BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPe
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'AzurePrivatePeering'`
 - Allowed:
   ```Bicep
@@ -868,7 +837,6 @@ A /30 subnet used to configure IP addresses for interfaces on Link1.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `roleAssignments`
@@ -877,7 +845,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Network Contributor'`
@@ -910,7 +877,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -918,7 +884,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -926,7 +891,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -934,7 +898,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -948,7 +911,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -956,7 +918,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -964,7 +925,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -972,7 +932,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -990,7 +949,6 @@ A /30 subnet used to configure IP addresses for interfaces on Link2.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `sharedKey`
@@ -999,7 +957,6 @@ The shared key for peering configuration. Router does MD5 hash comparison to val
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `skuFamily`
@@ -1008,7 +965,6 @@ Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedD
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'MeteredData'`
 - Allowed:
   ```Bicep
@@ -1024,7 +980,6 @@ Chosen SKU Tier of ExpressRoute circuit. Choose from Local, Premium or Standard 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -1041,7 +996,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `vlanId`
 
@@ -1049,7 +1003,6 @@ Specifies the identifier that is used to identify the customer.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ## Outputs

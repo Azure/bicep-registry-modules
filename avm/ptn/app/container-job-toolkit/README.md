@@ -704,7 +704,6 @@ The container image source that will be copied to the Container Registry and use
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Example: `mcr.microsoft.com/k8se/quickstart-jobs:latest`
 
 ### Parameter: `name`
@@ -713,7 +712,6 @@ Name of the resource to create. Will be used for naming the job and other resour
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `addressPrefix`
 
@@ -721,7 +719,6 @@ The address prefix for the virtual network needs to be at least a /16. Three sub
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'10.50.0.0/16'`
 
 ### Parameter: `deployDnsZoneContainerRegistry`
@@ -730,7 +727,6 @@ A new private DNS Zone will be created. Setting to `false` requires an existing 
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `deployDnsZoneKeyVault`
@@ -739,7 +735,6 @@ A new private DNS Zone will be created. Setting to `false` requires an existing 
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `appInsightsConnectionString`
@@ -748,7 +743,6 @@ The connection string for the Application Insights instance that will be added t
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Example: `InstrumentationKey=<00000000-0000-0000-0000-000000000000>;IngestionEndpoint=https://germanywestcentral-1.in.applicationinsights.azure.com/;LiveEndpoint=https://germanywestcentral.livediagnostics.monitor.azure.com/;ApplicationId=<00000000-0000-0000-0000-000000000000>`
 
 ### Parameter: `cpu`
@@ -757,7 +751,6 @@ The CPU resources that will be allocated to the Container Apps Job.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'1'`
 
 ### Parameter: `cronExpression`
@@ -766,7 +759,6 @@ The cron expression that will be used to schedule the job.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'0 0 * * *'`
 
 ### Parameter: `customNetworkSecurityGroups`
@@ -775,7 +767,6 @@ Network security group, that will be added to the workload subnet.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -790,7 +781,6 @@ The name of the security rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customNetworkSecurityGroups.properties`
 
@@ -798,7 +788,6 @@ The properties of the security rule.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -831,7 +820,6 @@ Whether network traffic is allowed or denied.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -846,7 +834,6 @@ The direction of the rule. The direction specifies if rule will be evaluated on 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -861,7 +848,6 @@ The priority of the rule. The value can be between 100 and 4096. The priority nu
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 100
 - MaxValue: 4096
 
@@ -871,7 +857,6 @@ Network protocol this rule applies to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -892,7 +877,6 @@ The description of the security rule.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -902,7 +886,6 @@ The destination address prefix. CIDR or destination IP range. Asterisk "*" can a
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -912,7 +895,6 @@ The destination address prefixes. CIDR or destination IP ranges.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -922,7 +904,6 @@ The resource IDs of the application security groups specified as destination.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -932,7 +913,6 @@ The destination port or range. Integer or range between 0 and 65535. Asterisk "*
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -942,7 +922,6 @@ The destination port ranges.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -952,7 +931,6 @@ The CIDR or source IP range. Asterisk "*" can also be used to match all source I
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -962,7 +940,6 @@ The CIDR or source IP ranges.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -972,7 +949,6 @@ The resource IDs of the application security groups specified as source.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -982,7 +958,6 @@ The source port or range. Integer or range between 0 and 65535. Asterisk "*" can
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -992,7 +967,6 @@ The source port ranges.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 100
 - MaxValue: 4096
 
@@ -1002,7 +976,6 @@ Deploy resources in a virtual network and use it for private endpoints.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -1011,7 +984,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `environmentVariables`
@@ -1020,7 +992,6 @@ The environment variables that will be added to the Container Apps Job.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1041,7 +1012,6 @@ The environment variable name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `environmentVariables.secretRef`
 
@@ -1049,7 +1019,6 @@ The name of the Container App secret from which to pull the environment variable
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `environmentVariables.value`
 
@@ -1057,7 +1026,6 @@ The environment variable value. Required if `secretRef` is null.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `keyVaultName`
 
@@ -1065,7 +1033,6 @@ The name of the Key Vault that will be created to store the Application Insights
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[format('kv{0}', uniqueString(parameters('name'), parameters('location'), resourceGroup().name))]`
 - Example: `kv${uniqueString(name, location, resourceGroup().name)})`
 
@@ -1075,7 +1042,6 @@ The permissions that will be assigned to the Key Vault. The managed Identity wil
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1101,7 +1067,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `keyVaultRoleAssignments.roleDefinitionIdOrName`
 
@@ -1109,7 +1074,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `keyVaultRoleAssignments.condition`
 
@@ -1117,7 +1081,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `keyVaultRoleAssignments.conditionVersion`
 
@@ -1125,7 +1088,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1139,7 +1101,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `keyVaultRoleAssignments.description`
 
@@ -1147,7 +1108,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `keyVaultRoleAssignments.name`
 
@@ -1155,7 +1115,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `keyVaultRoleAssignments.principalType`
 
@@ -1163,7 +1122,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1181,7 +1139,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1190,7 +1147,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1205,7 +1161,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1221,7 +1176,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
@@ -1229,7 +1183,6 @@ The Log Analytics Resource ID for the Container Apps Environment to use for the 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Example: `/subscriptions/<00000000-0000-0000-0000-000000000000>/resourceGroups/<rg-name>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>`
 
 ### Parameter: `managedIdentityName`
@@ -1238,7 +1191,6 @@ The name of the managed identity to create. If not provided, a name will be gene
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentityResourceId`
 
@@ -1246,7 +1198,6 @@ Use an existing managed identity to import the container image and run the job. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Example: `/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity`
 
 ### Parameter: `memory`
@@ -1255,7 +1206,6 @@ The memory resources that will be allocated to the Container Apps Job.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'2Gi'`
 
 ### Parameter: `newContainerImageName`
@@ -1264,7 +1214,6 @@ The new image name in the ACR. You can use this to import a publically available
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Example: `application/frontend:latest`
 
 ### Parameter: `overwriteExistingImage`
@@ -1273,7 +1222,6 @@ The flag that indicates whether the existing image in the Container Registry sho
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `registryRoleAssignments`
@@ -1282,7 +1230,6 @@ The permissions that will be assigned to the Container Registry. The managed Ide
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1308,7 +1255,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `registryRoleAssignments.roleDefinitionIdOrName`
 
@@ -1316,7 +1262,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `registryRoleAssignments.condition`
 
@@ -1324,7 +1269,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `registryRoleAssignments.conditionVersion`
 
@@ -1332,7 +1276,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1346,7 +1289,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `registryRoleAssignments.description`
 
@@ -1354,7 +1296,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `registryRoleAssignments.name`
 
@@ -1362,7 +1303,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `registryRoleAssignments.principalType`
 
@@ -1370,7 +1310,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1388,7 +1327,6 @@ The secrets of the Container App. They will be added to Key Vault and configured
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Example:
   ```Bicep
   [
@@ -1434,7 +1372,6 @@ Azure Key Vault URL pointing to the secret referenced by the Container App Job. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Example: `https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret`
 
 ### Parameter: `secrets.value`
@@ -1443,7 +1380,6 @@ The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is nu
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `secrets.identity`
 
@@ -1451,7 +1387,6 @@ Resource ID of a managed identity to authenticate with Azure Key Vault, or Syste
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `secrets.name`
 
@@ -1459,7 +1394,6 @@ The name of the secret.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `tags`
 
@@ -1467,7 +1401,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - Example:
   ```Bicep
   {
@@ -1482,7 +1415,6 @@ The name of the workload profile to use. Leave empty to use a consumption based 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Example: `CAW01`
 
 ### Parameter: `workloadProfiles`
@@ -1491,7 +1423,6 @@ Workload profiles for the managed environment. Leave empty to use a consumption 
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1508,7 +1439,6 @@ The maximum number of instances for the workload profile.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `workloadProfiles.minimumCount`
 
@@ -1516,7 +1446,6 @@ The minimum number of instances for the workload profile.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `workloadProfiles.name`
 
@@ -1524,7 +1453,6 @@ The name of the workload profile.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `workloadProfiles.workloadProfileType`
 
@@ -1532,7 +1460,6 @@ The type of the workload profile.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

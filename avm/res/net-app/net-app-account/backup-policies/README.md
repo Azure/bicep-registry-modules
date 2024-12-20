@@ -44,7 +44,6 @@ The location of the backup policy. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `dailyBackupsToKeep`
 
@@ -52,7 +51,6 @@ The daily backups to keep.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `monthlyBackupsToKeep`
 
@@ -60,7 +58,6 @@ The monthly backups to keep.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `weeklyBackupsToKeep`
 
@@ -68,7 +65,6 @@ The weekly backups to keep.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `netAppAccountName`
 
@@ -76,7 +72,6 @@ The name of the parent NetApp account. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `backupEnabled`
 
@@ -84,7 +79,6 @@ Indicates whether the backup policy is enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `backupPolicyName`
@@ -93,7 +87,6 @@ The name of the backup policy.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'backupPolicy'`
 
 ## Outputs

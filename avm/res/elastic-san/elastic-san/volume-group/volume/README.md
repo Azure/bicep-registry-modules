@@ -45,7 +45,6 @@ The name of the Elastic SAN Volume. The name can only contain lowercase letters,
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sizeGiB`
 
@@ -53,7 +52,6 @@ Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65536
 
@@ -63,7 +61,6 @@ The name of the parent Elastic SAN. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65536
 
@@ -73,7 +70,6 @@ The name of the parent Elastic SAN Volume Group. Required if the template is use
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65536
 
@@ -83,7 +79,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 - MinValue: 1
 - MaxValue: 65536
@@ -94,7 +89,6 @@ List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 65536
 
@@ -110,7 +104,6 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 65536
 

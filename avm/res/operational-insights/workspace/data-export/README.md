@@ -42,7 +42,6 @@ The data export rule name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `tableNames`
 
@@ -50,7 +49,6 @@ An array of tables to export, for example: ['Heartbeat', 'SecurityEvent'].
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `workspaceName`
 
@@ -58,7 +56,6 @@ The name of the parent workspaces. Required if the template is used in a standal
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `destination`
 
@@ -66,7 +63,6 @@ Destination properties.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -86,7 +82,6 @@ The destination resource ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `destination.metaData`
 
@@ -94,7 +89,6 @@ The destination metadata.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -108,7 +102,6 @@ Allows to define an Event Hub name. Not applicable when destination is Storage A
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enable`
 
@@ -116,7 +109,6 @@ Active when enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ## Outputs

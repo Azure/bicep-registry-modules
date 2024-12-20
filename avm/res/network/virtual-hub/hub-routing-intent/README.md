@@ -32,7 +32,6 @@ Hub firewall Resource ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `internetToFirewall`
 
@@ -40,7 +39,6 @@ Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `privateToFirewall`
 
@@ -48,7 +46,6 @@ Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `virtualHubName`
 
@@ -56,7 +53,6 @@ Name of the Virtual Hub.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

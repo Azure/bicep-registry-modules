@@ -50,7 +50,6 @@ The name of the CDN Endpoint.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hostName`
 
@@ -58,7 +57,6 @@ The hostname of the origin.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -66,7 +64,6 @@ The name of the origin.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `priority`
 
@@ -74,7 +71,6 @@ The priority of origin in given origin group for load balancing. Required if `we
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `-1`
 
 ### Parameter: `privateLinkAlias`
@@ -83,7 +79,6 @@ The private link alias of the origin. Required if privateLinkLocation is provide
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateLinkLocation`
 
@@ -91,7 +86,6 @@ The private link location of the origin. Required if privateLinkAlias is provide
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `weight`
 
@@ -99,7 +93,6 @@ The weight of the origin used for load balancing. Required if `priority` is prov
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `-1`
 
 ### Parameter: `enabled`
@@ -108,7 +101,6 @@ Whether the origin is enabled for load balancing.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `httpPort`
@@ -117,7 +109,6 @@ The HTTP port of the origin.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `80`
 
 ### Parameter: `httpsPort`
@@ -126,7 +117,6 @@ The HTTPS port of the origin.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `443`
 
 ### Parameter: `originHostHeader`
@@ -135,7 +125,6 @@ The host header value sent to the origin.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `privateLinkResourceId`
 
@@ -143,7 +132,6 @@ The private link resource ID of the origin.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `profileName`
 
@@ -151,7 +139,6 @@ The name of the CDN profile. Default to "default".
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'default'`
 
 ## Outputs

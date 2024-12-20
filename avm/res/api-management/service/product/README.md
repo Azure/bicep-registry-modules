@@ -50,7 +50,6 @@ API Management Service Products name. Must be 1 to 300 characters long.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -58,7 +57,6 @@ Product Name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -66,7 +64,6 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apis`
 
@@ -74,7 +71,6 @@ Array of Product APIs.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `approvalRequired`
@@ -83,7 +79,6 @@ Whether subscription approval is required. If false, new subscriptions will be a
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `description`
@@ -92,7 +87,6 @@ Product description. May include HTML formatting tags.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `groups`
@@ -101,7 +95,6 @@ Array of Product Groups.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `state`
@@ -110,7 +103,6 @@ whether product is published or not. Published products are discoverable by user
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'published'`
 
 ### Parameter: `subscriptionRequired`
@@ -119,7 +111,6 @@ Whether a product subscription is required for accessing APIs included in this p
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `subscriptionsLimit`
@@ -128,7 +119,6 @@ Whether the number of subscriptions a user can have to this product at the same 
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 
 ### Parameter: `terms`
@@ -137,7 +127,6 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

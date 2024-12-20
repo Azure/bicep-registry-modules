@@ -34,7 +34,6 @@ The name of the Event Grid Domain Topic.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `domainName`
 
@@ -42,7 +41,6 @@ The name of the parent Event Grid Domain. Required if the template is used in a 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 
