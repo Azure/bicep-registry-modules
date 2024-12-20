@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12899540037821894224"
+      "templateHash": "5719472801495750466"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -73,7 +73,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -115,7 +115,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -156,7 +156,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -179,7 +179,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time."
           }
         },
         "userAssignedIdentityResourceId": {
@@ -191,9 +191,9 @@
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a customer-managed key.",
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -315,7 +315,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -345,7 +345,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -366,7 +366,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -508,7 +508,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -583,7 +583,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     }
@@ -752,6 +752,13 @@
         "description": "Optional. The mode to create a new PostgreSQL server."
       }
     },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The managed identity definition for this resource. Required if 'cMKKeyName' is not empty."
+      }
+    },
     "serverThreatProtection": {
       "type": "string",
       "defaultValue": "Enabled",
@@ -761,13 +768,6 @@
       ],
       "metadata": {
         "description": "Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server."
-      }
-    },
-    "managedIdentities": {
-      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
-      "nullable": true,
-      "metadata": {
-        "description": "Conditional. The managed identity definition for this resource. Required if 'cMKKeyName' is not empty."
       }
     },
     "customerManagedKey": {
@@ -849,18 +849,18 @@
         "description": "Optional. The configurations to create in the server."
       }
     },
-    "replica": {
-      "$ref": "#/definitions/replicaType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The replication settings for the server. Can only be set on existing flexible servers."
-      }
-    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
+      }
+    },
+    "replica": {
+      "$ref": "#/definitions/replicaType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The replication settings for the server. Can only be set on existing flexible servers."
       }
     },
     "roleAssignments": {
@@ -1131,7 +1131,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12665965031871834086"
+              "templateHash": "6268235914904773219"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -1177,8 +1177,8 @@
               "apiVersion": "2024-08-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
-                "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
-                "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
+                "collation": "[parameters('collation')]",
+                "charset": "[parameters('charset')]"
               }
             }
           },
@@ -1355,7 +1355,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8692991969370260536"
+              "templateHash": "4946690157452229101"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -1401,8 +1401,8 @@
               "apiVersion": "2024-08-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
-                "source": "[if(not(empty(parameters('source'))), parameters('source'), null())]",
-                "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
+                "source": "[parameters('source')]",
+                "value": "[parameters('value')]"
               }
             }
           },
