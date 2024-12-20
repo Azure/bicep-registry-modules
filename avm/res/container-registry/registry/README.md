@@ -56,16 +56,21 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   name: 'registryDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'crrcach001'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Standard'
     cacheRules: [
       {
         credentialSetResourceId: '<credentialSetResourceId>'
-        name: 'customRule'
+        name: 'docker-rule-with-credentials'
         sourceRepository: 'docker.io/library/hello-world'
         targetRepository: 'cached-docker-hub/hello-world'
+      }
+      {
+        name: 'mcr-rule-anonymous'
+        sourceRepository: 'mcr.microsoft.com/*'
+        targetRepository: 'cached-mcr/*'
       }
     ]
     credentialSets: [
@@ -81,10 +86,22 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         managedIdentities: {
           systemAssigned: true
         }
-        name: 'default'
+        name: 'docker-credential-set'
       }
     ]
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6'
+      }
+    ]
   }
 }
 ```
@@ -103,7 +120,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "crrcach001"
     },
     // Non-required parameters
     "acrAdminUserEnabled": {
@@ -116,9 +133,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "credentialSetResourceId": "<credentialSetResourceId>",
-          "name": "customRule",
+          "name": "docker-rule-with-credentials",
           "sourceRepository": "docker.io/library/hello-world",
           "targetRepository": "cached-docker-hub/hello-world"
+        },
+        {
+          "name": "mcr-rule-anonymous",
+          "sourceRepository": "mcr.microsoft.com/*",
+          "targetRepository": "cached-mcr/*"
         }
       ]
     },
@@ -136,12 +158,28 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           "managedIdentities": {
             "systemAssigned": true
           },
-          "name": "default"
+          "name": "docker-credential-set"
         }
       ]
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "4633458b-17de-408a-b874-0445c86b69e6"
+        }
+      ]
     }
   }
 }
@@ -158,16 +196,21 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = '<name>'
+param name = 'crrcach001'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Standard'
 param cacheRules = [
   {
     credentialSetResourceId: '<credentialSetResourceId>'
-    name: 'customRule'
+    name: 'docker-rule-with-credentials'
     sourceRepository: 'docker.io/library/hello-world'
     targetRepository: 'cached-docker-hub/hello-world'
+  }
+  {
+    name: 'mcr-rule-anonymous'
+    sourceRepository: 'mcr.microsoft.com/*'
+    targetRepository: 'cached-mcr/*'
   }
 ]
 param credentialSets = [
@@ -183,10 +226,22 @@ param credentialSets = [
     managedIdentities: {
       systemAssigned: true
     }
-    name: 'default'
+    name: 'docker-credential-set'
   }
 ]
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6'
+  }
+]
 ```
 
 </details>
