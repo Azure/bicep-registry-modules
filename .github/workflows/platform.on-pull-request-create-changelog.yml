@@ -8,7 +8,8 @@ on:
       - synchronize
     paths:
       - "*/**/README.md"
-  pull_request: {}
+  push:
+      paths: "*/**/README.md"
 
 jobs:
   changelog:
@@ -21,29 +22,34 @@ jobs:
     steps:
       - name: Checkout PR
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
+        # with:
+        #   ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Check for README.md
-        id: check_readme
+      - name: Check for README.md and CHANGELOG.md
+        id: check_files
         run: |
-          readme_path=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -i 'README.md' || true)
-          echo "::set-output name=readme_path::$readme_path"
+          file_paths=$(git diff --name-only --merge-base ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -i 'README.md\|CHANGELOG.md')
+          echo $file_paths
+          if [ -z "$file_paths" ]; then
+            echo "No README.md or CHANGELOG.md files found in the PR"
+            exit 1
+          fi
+          file_paths_array=($file_paths)
+          echo "file_array='${file_paths_array[@]}'" >> $GITHUB_ENV
 
-      - uses: dangoslen/changelog-enforcer@v3
+      - name: Update Changelog
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleChangelog.ps1')
 
+          $functionInput = @{
+            Files = $env:file_array
+          }
 
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-    # - name: Modify file
-    #   run: |
-    #     echo "New content" >> file.txt
-
-    # - name: Commit changes
-    #   run: |
-    #     git config --global user.name 'github-actions[bot]'
-    #     git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-    #     git add file.txt
-    #     git commit -m "Update file.txt"
-    #     git push
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          Set-ModuleChangelog @functionInput -Verbose
