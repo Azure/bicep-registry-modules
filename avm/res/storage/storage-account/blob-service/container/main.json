@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "2340678191837281561"
+      "version": "0.32.4.45862",
+      "templateHash": "8294501714202659478"
     },
     "name": "Storage Account Blob Containers",
     "description": "This module deploys a Storage Account Blob Container.",
@@ -84,7 +84,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     }
@@ -218,10 +218,7 @@
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/blobServices",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]",
-      "dependsOn": [
-        "storageAccount"
-      ]
+      "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]"
     },
     "storageAccount": {
       "existing": true,
@@ -241,10 +238,7 @@
         "immutableStorageWithVersioning": "[if(equals(parameters('immutableStorageWithVersioningEnabled'), true()), createObject('enabled', parameters('immutableStorageWithVersioningEnabled')), null())]",
         "metadata": "[parameters('metadata')]",
         "publicAccess": "[parameters('publicAccess')]"
-      },
-      "dependsOn": [
-        "storageAccount::blobServices"
-      ]
+      }
     },
     "container_roleAssignments": {
       "copy": {
@@ -301,8 +295,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "17642721918788484059"
+              "version": "0.32.4.45862",
+              "templateHash": "13544771409253577128"
             },
             "name": "Storage Account Blob Container Immutability Policies",
             "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
@@ -382,8 +376,7 @@
         }
       },
       "dependsOn": [
-        "container",
-        "storageAccount"
+        "container"
       ]
     }
   },

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "178765084464759811"
+      "version": "0.32.4.45862",
+      "templateHash": "15234959045281729347"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -745,6 +745,65 @@
         }
       },
       "nullable": true
+    },
+    "aadProfileType": {
+      "type": "object",
+      "properties": {
+        "aadProfileClientAppID": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The client AAD application ID."
+          }
+        },
+        "aadProfileServerAppID": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The server AAD application ID."
+          }
+        },
+        "aadProfileServerAppSecret": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The server AAD application secret."
+          }
+        },
+        "aadProfileManaged": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specifies whether to enable managed AAD integration."
+          }
+        },
+        "aadProfileEnableAzureRBAC": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specifies whether to enable Azure RBAC for Kubernetes authorization."
+          }
+        },
+        "aadProfileAdminGroupObjectIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the AAD group object IDs that will have admin role of the cluster."
+          }
+        },
+        "aadProfileTenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
@@ -890,7 +949,7 @@
         "Automatic"
       ],
       "metadata": {
-        "description": "Optional. Name of a managed cluster SKU."
+        "description": "Optional. Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION."
       }
     },
     "skuTier": {
@@ -926,56 +985,18 @@
         "description": "Optional. Specifies the SSH RSA public key string for the Linux nodes."
       }
     },
+    "aadProfile": {
+      "$ref": "#/definitions/aadProfileType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Enable Azure Active Directory integration."
+      }
+    },
     "aksServicePrincipalProfile": {
       "type": "object",
       "nullable": true,
       "metadata": {
         "description": "Conditional. Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster."
-      }
-    },
-    "aadProfileClientAppID": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The client AAD application ID."
-      }
-    },
-    "aadProfileServerAppID": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The server AAD application ID."
-      }
-    },
-    "aadProfileServerAppSecret": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The server AAD application secret."
-      }
-    },
-    "aadProfileTenantId": {
-      "type": "string",
-      "defaultValue": "[subscription().tenantId]",
-      "metadata": {
-        "description": "Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication."
-      }
-    },
-    "aadProfileAdminGroupObjectIDs": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Specifies the AAD group object IDs that will have admin role of the cluster."
-      }
-    },
-    "aadProfileManaged": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Specifies whether to enable managed AAD integration."
       }
     },
     "enableRBAC": {
@@ -985,13 +1006,6 @@
         "description": "Optional. Whether to enable Kubernetes Role-Based Access Control."
       }
     },
-    "aadProfileEnableAzureRBAC": {
-      "type": "bool",
-      "defaultValue": "[parameters('enableRBAC')]",
-      "metadata": {
-        "description": "Optional. Specifies whether to enable Azure RBAC for Kubernetes authorization."
-      }
-    },
     "disableLocalAccounts": {
       "type": "bool",
       "defaultValue": true,
@@ -999,11 +1013,15 @@
         "description": "Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled."
       }
     },
-    "nodeProvisioningProfile": {
-      "type": "object",
+    "nodeProvisioningProfileMode": {
+      "type": "string",
       "nullable": true,
+      "allowedValues": [
+        "Auto",
+        "Manual"
+      ],
       "metadata": {
-        "description": "Optional. Node provisioning settings that apply to the whole cluster."
+        "description": "Optional. Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION."
       }
     },
     "nodeResourceGroup": {
@@ -1776,7 +1794,7 @@
         "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "nodeResourceGroupProfile": "[parameters('nodeResourceGroupProfile')]",
-        "nodeProvisioningProfile": "[parameters('nodeProvisioningProfile')]",
+        "nodeProvisioningProfile": "[if(not(empty(parameters('nodeProvisioningProfileMode'))), createObject('mode', parameters('nodeProvisioningProfileMode')), null())]",
         "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
         "workloadAutoScalerProfile": {
           "keda": {
@@ -1803,15 +1821,7 @@
           }
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "aadProfile": {
-          "clientAppID": "[parameters('aadProfileClientAppID')]",
-          "serverAppID": "[parameters('aadProfileServerAppID')]",
-          "serverAppSecret": "[parameters('aadProfileServerAppSecret')]",
-          "managed": "[parameters('aadProfileManaged')]",
-          "enableAzureRBAC": "[parameters('aadProfileEnableAzureRBAC')]",
-          "adminGroupObjectIDs": "[parameters('aadProfileAdminGroupObjectIDs')]",
-          "tenantID": "[parameters('aadProfileTenantId')]"
-        },
+        "aadProfile": "[if(not(empty(parameters('aadProfile'))), createObject('clientAppID', tryGet(parameters('aadProfile'), 'aadProfileClientAppID'), 'serverAppID', tryGet(parameters('aadProfile'), 'aadProfileServerAppID'), 'serverAppSecret', tryGet(parameters('aadProfile'), 'aadProfileServerAppSecret'), 'managed', tryGet(parameters('aadProfile'), 'aadProfileManaged'), 'enableAzureRBAC', tryGet(parameters('aadProfile'), 'aadProfileEnableAzureRBAC'), 'adminGroupObjectIDs', tryGet(parameters('aadProfile'), 'aadProfileAdminGroupObjectIDs'), 'tenantID', tryGet(parameters('aadProfile'), 'aadProfileTenantId')), null())]",
         "autoScalerProfile": {
           "balance-similar-node-groups": "[toLower(string(parameters('autoScalerProfileBalanceSimilarNodeGroups')))]",
           "expander": "[parameters('autoScalerProfileExpander')]",
@@ -1971,7 +1981,6 @@
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "dnsZone",
         "managedCluster"
       ]
     },
@@ -2005,8 +2014,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "3191846535289543816"
+              "version": "0.32.4.45862",
+              "templateHash": "14523573481456452623"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -2202,8 +2211,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "13504241837980660061"
+              "version": "0.32.4.45862",
+              "templateHash": "8195372149835761348"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",

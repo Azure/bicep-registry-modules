@@ -78,6 +78,8 @@ Indicates whether change feed event logging is enabled for the Blob service. Ind
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 146000
 
 ### Parameter: `containerDeleteRetentionPolicyAllowPermanentDelete`
 
@@ -86,6 +88,8 @@ This property when set to true allows deletion of the soft deleted blob versions
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 1
+- MaxValue: 146000
 
 ### Parameter: `containerDeleteRetentionPolicyDays`
 
@@ -93,6 +97,8 @@ Indicates the number of days that the deleted item should be retained.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `containerDeleteRetentionPolicyEnabled`
 
@@ -101,6 +107,8 @@ The blob service properties for container soft delete. Indicates whether DeleteR
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `containers`
 
@@ -108,6 +116,8 @@ Blob containers to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `corsRules`
 
@@ -116,6 +126,8 @@ Specifies CORS rules for the Blob service. You can include up to five CorsRule e
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `defaultServiceVersion`
 
@@ -124,6 +136,8 @@ Indicates the default version to use for requests to the Blob service if an inco
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `deleteRetentionPolicyAllowPermanentDelete`
 
@@ -132,6 +146,8 @@ This property when set to true allows deletion of the soft deleted blob versions
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `deleteRetentionPolicyDays`
 
@@ -140,6 +156,8 @@ Indicates the number of days that the deleted blob should be retained.
 - Required: No
 - Type: int
 - Default: `7`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `deleteRetentionPolicyEnabled`
 
@@ -148,6 +166,8 @@ The blob service properties for blob soft delete.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings`
 
@@ -155,6 +175,8 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 365
 
 **Optional parameters**
 
@@ -176,6 +198,8 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -183,6 +207,8 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -197,6 +223,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -204,6 +232,8 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 365
 
 **Optional parameters**
 
@@ -219,6 +249,8 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -226,6 +258,8 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -233,6 +267,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -240,6 +276,8 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -247,6 +285,8 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 365
 
 **Required parameters**
 
@@ -266,6 +306,8 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -273,6 +315,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -280,6 +324,8 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -287,6 +333,8 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -294,6 +342,8 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `isVersioningEnabled`
 
@@ -302,6 +352,8 @@ Use versioning to automatically maintain previous versions of your blobs.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `lastAccessTimeTrackingPolicyEnabled`
 
@@ -310,6 +362,8 @@ The blob service property to configure last access time based tracking policy. W
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `restorePolicyDays`
 
@@ -318,6 +372,8 @@ How long this blob can be restored. It should be less than DeleteRetentionPolicy
 - Required: No
 - Type: int
 - Default: `6`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `restorePolicyEnabled`
 
@@ -326,6 +382,8 @@ The blob service properties for blob restore policy. If point-in-time restore is
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 1
+- MaxValue: 365
 
 ## Outputs
 
@@ -341,4 +399,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
