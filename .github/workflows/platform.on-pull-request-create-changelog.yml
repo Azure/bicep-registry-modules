@@ -8,14 +8,19 @@ on:
       - synchronize
     paths:
       - "*/**/README.md"
+  pull_request: {}
 
 jobs:
-  create-changelog:
+  changelog:
     runs-on: ubuntu-latest
+
+    # TODO
+    # - if the PR contains a README.md file, it will run the job and require the CHANGELOG.md change in the same dir
+    # - if there is a breaking change (and the version is > 1.0.0), it requires the major version to be bumped
 
     steps:
       - name: Checkout PR
-        uses: actions/checkout@v5
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
@@ -24,6 +29,10 @@ jobs:
         run: |
           readme_path=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -i 'README.md' || true)
           echo "::set-output name=readme_path::$readme_path"
+
+      - uses: dangoslen/changelog-enforcer@v3
+
+
 
     # - name: Modify file
     #   run: |

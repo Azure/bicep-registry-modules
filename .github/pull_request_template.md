@@ -21,6 +21,7 @@ Example:
 - Modified: the name is now auto-generated, if not passed
 - Modified: by default, the resource deploys an xyz
 - Breaking: the minCPU parameter is of type int and not string
+- Bugfix: the minCPU parameter was not applied
 -->
 
 ## Pipeline Reference
