@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "1499507825797406827"
+      "version": "0.32.4.45862",
+      "templateHash": "5585799910936088906"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -470,7 +470,7 @@
         "ErGw3AZ"
       ],
       "metadata": {
-        "description": "Required. The SKU of the Gateway."
+        "description": "Optional. The SKU of the Gateway."
       }
     },
     "vpnType": {
@@ -1482,8 +1482,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "15500017864202979057"
+              "version": "0.32.4.45862",
+              "templateHash": "2235037112727909278"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule.",
@@ -1627,6 +1627,69 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('virtualNetworkGateway', '2023-04-01', 'full').location]"
+    },
+    "asn": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "The ASN (Autonomous System Number) of the virtual network gateway."
+      },
+      "value": "[if(variables('isBgp'), reference('virtualNetworkGateway').bgpSettings.asn, null())]"
+    },
+    "ipConfigurations": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "The IPconfigurations object of the Virtual Network Gateway."
+      },
+      "value": "[reference('virtualNetworkGateway').ipConfigurations]"
+    },
+    "publicIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The public IP address of the virtual network gateway."
+      },
+      "value": "[if(not(empty(parameters('existingFirstPipResourceId'))), reference(parameters('existingFirstPipResourceId'), '2023-04-01').ipAddress, reference(format('publicIPAddress[{0}]', 0)).outputs.ipAddress.value)]"
+    },
+    "defaultBgpIpAddresses": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The default Azure BGP peer IP address."
+      },
+      "value": "[if(variables('isBgp'), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[0].defaultBgpIpAddresses, ','), null())]"
+    },
+    "customBgpIpAddresses": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The custom Azure APIPA BGP IP address."
+      },
+      "value": "[if(variables('isBgp'), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[0].customBgpIpAddresses, ','), null())]"
+    },
+    "secondPublicIpAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The second public IP address of the virtual network gateway (Active-Active mode)."
+      },
+      "value": "[if(variables('isActiveActive'), if(not(empty(variables('existingSecondPipResourceIdVar'))), reference(variables('existingSecondPipResourceIdVar'), '2023-04-01').ipAddress, reference(format('publicIPAddress[{0}]', 1)).outputs.ipAddress.value), null())]"
+    },
+    "secondBgpIpAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The second default Azure BGP peer IP address (Active-Active mode)."
+      },
+      "value": "[if(and(variables('isActiveActive'), variables('isBgp')), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[1].defaultBgpIpAddresses, ','), null())]"
+    },
+    "secondCustomBgpIpAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The second custom Azure APIPA BGP IP address (Active-Active mode)."
+      },
+      "value": "[if(and(variables('isActiveActive'), variables('isBgp')), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[1].customBgpIpAddresses, ','), null())]"
     }
   }
 }
