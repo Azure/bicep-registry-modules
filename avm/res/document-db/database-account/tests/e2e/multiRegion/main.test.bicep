@@ -39,14 +39,17 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    automaticFailover: false
     location: enforcedLocation
+    name: '${namePrefix}-multi-region'
+
+    automaticFailover: true
+    enableMultipleWriteLocations: true
+
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
     backupStorageRedundancy: 'Zone'
     backupRetentionIntervalInHours: 16
-    enableMultipleWriteLocations: true
-    name: '${namePrefix}-multi-region'
+
     locations: [
       {
         failoverPriority: 0

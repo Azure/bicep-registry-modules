@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "16899001110062450573"
+      "version": "0.32.4.45862",
+      "templateHash": "5418845183779263042"
     },
     "name": "CDN Profiles AFD Endpoints",
     "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -380,8 +380,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "15873678240851060540"
+              "version": "0.32.4.45862",
+              "templateHash": "11233659924871585320"
             },
             "name": "CDN Profiles AFD Endpoint Route",
             "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -808,6 +808,13 @@
         "description": "The list of routes assigned to the AFD endpoint."
       },
       "value": "[coalesce(parameters('routes'), createArray())]"
+    },
+    "frontDoorEndpointHostName": {
+      "type": "string",
+      "metadata": {
+        "description": "The host name of the AFD endpoint."
+      },
+      "value": "[reference('afdEndpoint').hostName]"
     }
   }
 }

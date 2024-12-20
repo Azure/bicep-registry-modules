@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "9111396630441610187"
+      "version": "0.32.4.45862",
+      "templateHash": "12707832074056505327"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
@@ -319,7 +319,6 @@
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "contributorRole",
         "imageMSI"
       ]
     },
@@ -13688,7 +13687,6 @@
       "dependsOn": [
         "dsMsi",
         "rg",
-        "storageFileDataPrivilegedContributorRole",
         "vnet"
       ]
     },

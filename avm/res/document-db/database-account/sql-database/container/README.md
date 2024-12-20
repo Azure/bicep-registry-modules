@@ -88,6 +88,7 @@ Specifies the Autoscale settings and represents maximum throughput, the resource
 
 - Required: No
 - Type: int
+- MaxValue: 1000000
 
 ### Parameter: `conflictResolutionPolicy`
 
@@ -96,6 +97,7 @@ The conflict resolution policy for the container. Conflicts and conflict resolut
 - Required: No
 - Type: object
 - Default: `{}`
+- MaxValue: 1000000
 
 ### Parameter: `defaultTtl`
 
@@ -104,6 +106,8 @@ Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azur
 - Required: No
 - Type: int
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `indexingPolicy`
 
@@ -112,6 +116,8 @@ Indexing policy of the container.
 - Required: No
 - Type: object
 - Default: `{}`
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `kind`
 
@@ -127,6 +133,8 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
     'MultiHash'
   ]
   ```
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `tags`
 
@@ -134,6 +142,8 @@ Tags of the SQL Database resource.
 
 - Required: No
 - Type: object
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `throughput`
 
@@ -142,6 +152,8 @@ Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMa
 - Required: No
 - Type: int
 - Default: `400`
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `uniqueKeyPolicyKeys`
 
@@ -150,6 +162,8 @@ The unique key policy configuration containing a list of unique keys that enforc
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: -1
+- MaxValue: 2147483647
 
 ### Parameter: `version`
 
@@ -165,6 +179,8 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
     2
   ]
   ```
+- MinValue: -1
+- MaxValue: 2147483647
 
 ## Outputs
 

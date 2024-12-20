@@ -125,7 +125,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    kind: 'App'
+    kind: 'app'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -197,7 +197,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       ]
     },
     "kind": {
-      "value": "App"
+      "value": "app"
     },
     "location": {
       "value": "<location>"
@@ -279,7 +279,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param kind = 'App'
+param kind = 'app'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -348,7 +348,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    kind: 'App'
+    kind: 'app'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -400,7 +400,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       ]
     },
     "kind": {
-      "value": "App"
+      "value": "app"
     },
     "location": {
       "value": "<location>"
@@ -458,7 +458,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param kind = 'App'
+param kind = 'app'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -526,7 +526,7 @@ Defaults to false when creating Windows/app App Service Plan. Required if creati
 
 - Required: No
 - Type: bool
-- Default: `[equals(parameters('kind'), 'Linux')]`
+- Default: `[equals(parameters('kind'), 'linux')]`
 
 ### Parameter: `appServiceEnvironmentId`
 
@@ -667,15 +667,15 @@ Kind of server OS.
 
 - Required: No
 - Type: string
-- Default: `'App'`
+- Default: `'app'`
 - Allowed:
   ```Bicep
   [
-    'App'
-    'Elastic'
-    'FunctionApp'
-    'Linux'
-    'Windows'
+    'app'
+    'elastic'
+    'functionApp'
+    'linux'
+    'windows'
   ]
   ```
 

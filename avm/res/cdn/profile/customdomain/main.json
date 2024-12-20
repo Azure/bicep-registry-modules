@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "10387694873442665915"
+      "version": "0.32.4.45862",
+      "templateHash": "12647886167890211057"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains.",
@@ -76,6 +76,32 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Extended properties."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "dnsValidationType": {
+      "type": "object",
+      "properties": {
+        "dnsTxtRecordName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The DNS record name."
+          }
+        },
+        "dnsTxtRecordValue": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The DNS record value."
+          }
+        },
+        "dnsTxtRecordExpiry": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The expiry date of the DNS record."
           }
         }
       },
@@ -206,6 +232,17 @@
         "description": "The name of the resource group the custom domain was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "dnsValidation": {
+      "$ref": "#/definitions/dnsValidationType",
+      "metadata": {
+        "description": "The DNS validation records."
+      },
+      "value": {
+        "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
+        "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
+        "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+      }
     }
   }
 }

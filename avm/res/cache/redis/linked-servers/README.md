@@ -12,7 +12,7 @@ This module connects a primary and secondary Redis Cache together for geo-replic
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Cache/redis/linkedServers` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/linkedServers) |
+| `Microsoft.Cache/redis/linkedServers` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-03-01/redis/linkedServers) |
 
 ## Parameters
 

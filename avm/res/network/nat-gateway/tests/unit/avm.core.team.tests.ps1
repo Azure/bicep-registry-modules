@@ -14,7 +14,7 @@ param (
 )
 
 BeforeAll {
-    . (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
 
     if ($moduleFolderPaths.Count -gt 1) {
         $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object -Culture 'en-US' | Select-Object -First 1

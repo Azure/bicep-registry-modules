@@ -38,6 +38,12 @@ param roleDefinitionIds array = []
 @sys.description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
 param additionalManagementGroupsIDsToAssignRbacTo array = []
 
+@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+param additionalSubscriptionIDsToAssignRbacTo array = []
+
+@sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+param additionalResourceGroupResourceIDsToAssignRbacTo array = []
+
 @sys.description('Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs.')
 param metadata object = {}
 
@@ -109,6 +115,31 @@ module managementGroupRoleAssignments 'management-group-additional-rbac-asi-def-
     }
   }
 ]
+
+module additionalSubscriptionRoleAssignments 'subscription-additional-rbac-asi-def-loop.bicep' = [
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: roleDefinitionId
+      subscriptionIDsToAssignRbacTo: additionalSubscriptionIDsToAssignRbacTo
+    }
+  }
+]
+
+module additionalResourceGroupRoleAssignments 'resource-group-additional-rbac-asi-def-loop.bicep' = [
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-RGs'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: roleDefinitionId
+      resourceGroupResourceIDsToAssignRbacTo: additionalResourceGroupResourceIDsToAssignRbacTo
+    }
+  }
+]
+
 @sys.description('Policy Assignment Name.')
 output name string = policyAssignment.name
 

@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Elastic Pool.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/elasticPools) |
+| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/elasticPools) |
 
 ## Parameters
 

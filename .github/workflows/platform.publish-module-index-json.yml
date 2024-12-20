@@ -50,7 +50,7 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Invoke-AvmJsonModuleIndexGeneration.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Invoke-AvmJsonModuleIndexGeneration.ps1')
 
           $functionInput = @{
             storageAccountName                           = 'biceplivedatasaprod'

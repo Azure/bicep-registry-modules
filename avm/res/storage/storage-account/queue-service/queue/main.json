@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "17434851913053254324"
+      "version": "0.32.4.45862",
+      "templateHash": "11255566639202978270"
     },
     "name": "Storage Account Queues",
     "description": "This module deploys a Storage Account Queue.",
@@ -150,10 +150,7 @@
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/queueServices",
       "apiVersion": "2023-04-01",
-      "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
-      "dependsOn": [
-        "storageAccount"
-      ]
+      "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
     },
     "storageAccount": {
       "existing": true,
@@ -167,10 +164,7 @@
       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
       "properties": {
         "metadata": "[parameters('metadata')]"
-      },
-      "dependsOn": [
-        "storageAccount::queueServices"
-      ]
+      }
     },
     "queue_roleAssignments": {
       "copy": {

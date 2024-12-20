@@ -603,7 +603,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             service: 'blob'
           }
         ]
-        storageAccountName: 'ssamax001'
       }
     ]
     location: '<location>'
@@ -1059,8 +1058,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "resourceName": "avdscripts",
               "service": "blob"
             }
-          ],
-          "storageAccountName": "ssamax001"
+          ]
         }
       ]
     },
@@ -1523,7 +1521,6 @@ param localUsers = [
         service: 'blob'
       }
     ]
-    storageAccountName: 'ssamax001'
   }
 ]
 param location = '<location>'
@@ -2431,7 +2428,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             service: 'blob'
           }
         ]
-        storageAccountName: 'ssawaf001'
       }
     ]
     location: '<location>'
@@ -2705,8 +2701,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "resourceName": "avdscripts",
               "service": "blob"
             }
-          ],
-          "storageAccountName": "ssawaf001"
+          ]
         }
       ]
     },
@@ -2983,7 +2978,6 @@ param localUsers = [
         service: 'blob'
       }
     ]
-    storageAccountName: 'ssawaf001'
   }
 ]
 param location = '<location>'
@@ -3202,6 +3196,7 @@ Required if the Storage Account kind is set to BlobStorage. The access tier is u
 - Allowed:
   ```Bicep
   [
+    'Cold'
     'Cool'
     'Hot'
     'Premium'
@@ -3306,7 +3301,8 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -3323,9 +3319,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string
@@ -3600,7 +3603,127 @@ Local users to deploy for SFTP authentication.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hasSshKey`](#parameter-localusershassshkey) | bool | Indicates whether SSH key exists. Set it to false to remove existing SSH key. |
+| [`hasSshPassword`](#parameter-localusershassshpassword) | bool | Indicates whether SSH password exists. Set it to false to remove existing SSH password. |
+| [`name`](#parameter-localusersname) | string | The name of the local user used for SFTP Authentication. |
+| [`permissionScopes`](#parameter-localuserspermissionscopes) | array | The permission scopes of the local user. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hasSharedKey`](#parameter-localusershassharedkey) | bool | Indicates whether shared key exists. Set it to false to remove existing shared key. |
+| [`homeDirectory`](#parameter-localusershomedirectory) | string | The local user home directory. |
+| [`sshAuthorizedKeys`](#parameter-localuserssshauthorizedkeys) | array | The local user SSH authorized keys for SFTP. |
+
+### Parameter: `localUsers.hasSshKey`
+
+Indicates whether SSH key exists. Set it to false to remove existing SSH key.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `localUsers.hasSshPassword`
+
+Indicates whether SSH password exists. Set it to false to remove existing SSH password.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `localUsers.name`
+
+The name of the local user used for SFTP Authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes`
+
+The permission scopes of the local user.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`permissions`](#parameter-localuserspermissionscopespermissions) | string | The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c). |
+| [`resourceName`](#parameter-localuserspermissionscopesresourcename) | string | The name of resource, normally the container name or the file share name, used by the local user. |
+| [`service`](#parameter-localuserspermissionscopesservice) | string | The service used by the local user, e.g. blob, file. |
+
+### Parameter: `localUsers.permissionScopes.permissions`
+
+The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes.resourceName`
+
+The name of resource, normally the container name or the file share name, used by the local user.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes.service`
+
+The service used by the local user, e.g. blob, file.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.hasSharedKey`
+
+Indicates whether shared key exists. Set it to false to remove existing shared key.
+
+- Required: No
+- Type: bool
+
+### Parameter: `localUsers.homeDirectory`
+
+The local user home directory.
+
+- Required: No
+- Type: string
+
+### Parameter: `localUsers.sshAuthorizedKeys`
+
+The local user SSH authorized keys for SFTP.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-localuserssshauthorizedkeyskey) | securestring | SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-localuserssshauthorizedkeysdescription) | string | Description used to store the function/usage of the key. |
+
+### Parameter: `localUsers.sshAuthorizedKeys.key`
+
+SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `localUsers.sshAuthorizedKeys.description`
+
+Description used to store the function/usage of the key.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -4101,7 +4224,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -4483,8 +4606,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Notes
 

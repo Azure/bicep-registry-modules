@@ -183,6 +183,11 @@ var azureRegionGeoCodeShortNameAsKey = {
   chilecentral: 'clc'
   westus: 'wus'
   swedensouth: 'sds'
+  usgovvirginia: 'ugv'
+  usgovtexas: 'ugt'
+  usgovarizona: 'uga'
+  usdodeast: 'ude'
+  usdodcentral: 'udc'
 }
 
 var azureRegionShortNameDisplayNameAsKey = {
@@ -243,6 +248,11 @@ var azureRegionShortNameDisplayNameAsKey = {
   'west us 3': 'westus3'
   'taiwan north': 'taiwannorth'
   'sweden central': 'swedencentral'
+  'usgov virginia': 'usgovvirginia'
+  'usgov texas': 'usgovtexas'
+  'usgov arizona': 'usgovarizona'
+  'usdod east': 'usdodeast'
+  'usdod central': 'usdodcentral'
 }
 
 var locationLowered = toLower(location)

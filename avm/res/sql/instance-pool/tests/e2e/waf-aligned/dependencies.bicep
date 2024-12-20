@@ -56,7 +56,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
     arguments: '-Location \\"${location}\\"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
   }
   dependsOn: [
     roleAssignment

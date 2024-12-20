@@ -264,6 +264,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ### Parameter: `privacyStatementUri`
 
@@ -485,6 +486,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ## Outputs
 

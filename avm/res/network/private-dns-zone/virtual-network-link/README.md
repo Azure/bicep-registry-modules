@@ -12,7 +12,7 @@ This module deploys a Private DNS Zone Virtual Network Link.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
 
 ## Parameters
 
@@ -35,6 +35,7 @@ This module deploys a Private DNS Zone Virtual Network Link.
 | [`location`](#parameter-location) | string | The location of the PrivateDNSZone. Should be global. |
 | [`name`](#parameter-name) | string | The name of the virtual network link. |
 | [`registrationEnabled`](#parameter-registrationenabled) | bool | Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?. |
+| [`resolutionPolicy`](#parameter-resolutionpolicy) | string | The resolution policy on the virtual network link. Only applicable for virtual network links to privatelink zones, and for A,AAAA,CNAME queries. When set to `NxDomainRedirect`, Azure DNS resolver falls back to public resolution if private dns query resolution results in non-existent domain response. `Default` is configured as the default option. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `virtualNetworkResourceId`
@@ -74,6 +75,13 @@ Is auto-registration of virtual machine records in the virtual network in the Pr
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `resolutionPolicy`
+
+The resolution policy on the virtual network link. Only applicable for virtual network links to privatelink zones, and for A,AAAA,CNAME queries. When set to `NxDomainRedirect`, Azure DNS resolver falls back to public resolution if private dns query resolution results in non-existent domain response. `Default` is configured as the default option.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 

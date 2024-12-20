@@ -33,22 +33,22 @@ param locations failoverLocationsType[] = []
 @description('Optional. Default to Session. The default consistency level of the Cosmos DB account.')
 param defaultConsistencyLevel string = 'Session'
 
-@description('Optional. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
+@description('Optional. Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
 param disableLocalAuth bool = true
 
-@description('Optional. Flag to indicate whether to enable storage analytics.')
+@description('Optional. Default to false. Flag to indicate whether to enable storage analytics.')
 param enableAnalyticalStorage bool = false
 
-@description('Optional. Enable automatic failover for regions.')
+@description('Optional. Default to true. Enable automatic failover for regions.')
 param automaticFailover bool = true
 
-@description('Optional. Flag to indicate whether Free Tier is enabled.')
+@description('Optional. Default to false. Flag to indicate whether Free Tier is enabled.')
 param enableFreeTier bool = false
 
-@description('Optional. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
+@description('Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
 param enableMultipleWriteLocations bool = false
 
-@description('Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
+@description('Optional. Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
 param disableKeyBasedMetadataWriteAccess bool = true
 
 @minValue(1)
@@ -67,6 +67,9 @@ param maxIntervalInSeconds int = 300
   '3.6'
   '4.0'
   '4.2'
+  '5.0'
+  '6.0'
+  '7.0'
 ])
 param serverVersion string = '4.2'
 
@@ -91,6 +94,9 @@ param tables array = []
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s).')
+param totalThroughputLimit int = -1
+
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
@@ -107,6 +113,9 @@ param diagnosticSettings diagnosticSettingType
   'EnableMongo'
   'DisableRateLimitingResponses'
   'EnableServerless'
+  'EnableNoSQLVectorSearch'
+  'EnableNoSQLFullTextSearch'
+  'EnableMaterializedViews'
 ])
 @description('Optional. List of Cosmos DB capabilities for the account.')
 param capabilitiesToAdd string[] = []
@@ -157,8 +166,6 @@ param networkRestrictions networkRestrictionsType = {
 }
 
 @allowed([
-  'Tls'
-  'Tls11'
   'Tls12'
 ])
 @description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
@@ -258,7 +265,11 @@ var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
+    capabilities: capabilities
     minimalTlsVersion: minimumTlsVersion
+    capacity: {
+      totalThroughputLimit: totalThroughputLimit
+    }
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
     ? {
@@ -269,11 +280,10 @@ var databaseAccountProperties = union(
 
         ipRules: ipRules
         virtualNetworkRules: virtualNetworkRules
-        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
-        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
+        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
+        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
         isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
 
-        capabilities: capabilities
         enableFreeTier: enableFreeTier
         enableAutomaticFailover: automaticFailover
         enableAnalyticalStorage: enableAnalyticalStorage
@@ -958,18 +968,18 @@ type secretsOutputType = {
 }
 
 type networkRestrictionsType = {
-  @description('Required. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
-  ipRules: string[]
+  @description('Optional. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
+  ipRules: string[]?
 
-  @description('Optional. Default to AzureServices. Specifies the network ACL bypass for Azure services.')
+  @description('Optional. Default to None. Specifies the network ACL bypass for Azure services.')
   networkAclBypass: ('AzureServices' | 'None')?
 
-  @description('Optional. Default to Enabled. Whether requests from Public Network are allowed.')
+  @description('Optional. Default to Disabled. Whether requests from Public Network are allowed.')
   publicNetworkAccess: ('Enabled' | 'Disabled')?
 
-  @description('Required. List of Virtual Network ACL rules configured for the Cosmos DB account..')
+  @description('Optional. List of Virtual Network ACL rules configured for the Cosmos DB account..')
   virtualNetworkRules: {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string
-  }[]
+  }[]?
 }

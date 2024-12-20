@@ -865,6 +865,8 @@ Percentage of the data produced by the application being monitored that is being
 - Required: No
 - Type: int
 - Default: `100`
+- MinValue: 0
+- MaxValue: 100
 
 ### Parameter: `tags`
 
@@ -872,6 +874,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 100
 
 ## Outputs
 
