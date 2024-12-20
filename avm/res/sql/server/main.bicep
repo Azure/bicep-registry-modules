@@ -129,6 +129,9 @@ param auditSettings auditSettingsType = {} //Use the defaults from the child mod
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
+@description('Optional. The failover groups configuration.')
+param failoverGroups failoverGroupType[] = []
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -516,6 +519,24 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
   }
 }
 
+module failover_groups 'failover-group/main.bicep' = [
+  for (failoverGroup, index) in failoverGroups: {
+    name: '${uniqueString(deployment().name, location)}-Sql-FailoverGroup-${index}'
+    params: {
+      name: failoverGroup.name
+      serverName: server.name
+      databases: failoverGroup.databases
+      partnerServers: failoverGroup.partnerServers
+      readOnlyEndpoint: failoverGroup.?readOnlyEndpoint
+      readWriteEndpoint: failoverGroup.readWriteEndpoint
+      secondaryType: failoverGroup.secondaryType
+    }
+    dependsOn: [
+      server_databases
+    ]
+  }
+]
+
 @description('The name of the deployed SQL server.')
 output name string = server.name
 
@@ -559,6 +580,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 import { recurringScansType } from 'vulnerability-assessment/main.bicep'
+import { failoverGroupReadOnlyEndpointType, failoverGroupReadWriteEndpointType } from 'failover-group/main.bicep'
 
 @export()
 type auditSettingsType = {
@@ -899,4 +921,25 @@ type securityAlerPolicyType = {
 
   @description('Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.')
   storageEndpoint: string?
+}
+
+@export()
+type failoverGroupType = {
+  @description('Required. The name of the failover group.')
+  name: string
+
+  @description('Required. List of databases in the failover group.')
+  databases: string[]
+
+  @description('Required. List of the partner servers for the failover group.')
+  partnerServers: string[]
+
+  @description('Optional. Read-only endpoint of the failover group instance.')
+  readOnlyEndpoint: failoverGroupReadOnlyEndpointType?
+
+  @description('Required. Read-write endpoint of the failover group instance.')
+  readWriteEndpoint: failoverGroupReadWriteEndpointType
+
+  @description('Required. Databases secondary type on partner server.')
+  secondaryType: 'Geo' | 'Standby'
 }

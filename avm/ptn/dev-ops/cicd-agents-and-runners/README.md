@@ -89,9 +89,10 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-3-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
 - [Using large parameter set for Azure DevOps self-hosted agents using Azure Container Apps.](#example-4-using-large-parameter-set-for-azure-devops-self-hosted-agents-using-azure-container-apps)
 - [Using large parameter set for GitHub self-hosted runners using Azure Container Instances.](#example-5-using-large-parameter-set-for-github-self-hosted-runners-using-azure-container-instances)
-- [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-6-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
-- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-7-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
-- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
+- [Deploys GitHub self-hosted runners using Azure Container Apps for a GitHub organization scope.](#example-6-deploys-github-self-hosted-runners-using-azure-container-apps-for-a-github-organization-scope)
+- [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-7-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-9-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
 
 ### Example 1: _Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps._
 
@@ -750,7 +751,124 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 6: _Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet._
+### Example 6: _Deploys GitHub self-hosted runners using Azure Container Apps for a GitHub organization scope._
+
+This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps for a GitHub organization scope.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  name: 'cicdAgentsAndRunnersDeployment'
+  params: {
+    // Required parameters
+    computeTypes: [
+      'azure-container-app'
+    ]
+    namingPrefix: '<namingPrefix>'
+    networkingConfiguration: {
+      addressSpace: '10.0.0.0/16'
+      networkType: 'createNew'
+      virtualNetworkName: 'vnet-aca'
+    }
+    selfHostedConfig: {
+      githubOrganization: 'githHubOrganization'
+      personalAccessToken: '<personalAccessToken>'
+      runnerScope: 'org'
+      selfHostedType: 'github'
+    }
+    // Non-required parameters
+    location: '<location>'
+    privateNetworking: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-app"
+      ]
+    },
+    "namingPrefix": {
+      "value": "<namingPrefix>"
+    },
+    "networkingConfiguration": {
+      "value": {
+        "addressSpace": "10.0.0.0/16",
+        "networkType": "createNew",
+        "virtualNetworkName": "vnet-aca"
+      }
+    },
+    "selfHostedConfig": {
+      "value": {
+        "githubOrganization": "githHubOrganization",
+        "personalAccessToken": "<personalAccessToken>",
+        "runnerScope": "org",
+        "selfHostedType": "github"
+      }
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "privateNetworking": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-app'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  addressSpace: '10.0.0.0/16'
+  networkType: 'createNew'
+  virtualNetworkName: 'vnet-aca'
+}
+param selfHostedConfig = {
+  githubOrganization: 'githHubOrganization'
+  personalAccessToken: '<personalAccessToken>'
+  runnerScope: 'org'
+  selfHostedType: 'github'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = false
+```
+
+</details>
+<p>
+
+### Example 7: _Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet._
 
 This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.
 
@@ -900,7 +1018,7 @@ param privateNetworking = true
 </details>
 <p>
 
-### Example 7: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
+### Example 8: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.
 
@@ -1047,7 +1165,7 @@ param privateNetworking = true
 </details>
 <p>
 
-### Example 8: _Using only defaults for GitHub self-hosted runners using Private networking._
+### Example 9: _Using only defaults for GitHub self-hosted runners using Private networking._
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
 
@@ -1189,7 +1307,6 @@ The compute target for the private runners.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1204,7 +1321,6 @@ Naming prefix to be used with naming the deployed resources.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `networkingConfiguration`
 
@@ -1212,7 +1328,6 @@ The networking configuration.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `selfHostedConfig`
 
@@ -1220,7 +1335,6 @@ The self-hosted runner configuration. This can be either GitHub or Azure DevOps.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `enableTelemetry`
 
@@ -1228,7 +1342,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -1237,7 +1350,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `privateNetworking`
@@ -1246,7 +1358,6 @@ Whether to use private or public networking for the Azure Container Registry.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

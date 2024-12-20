@@ -41,7 +41,6 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `enhancedSecurityState`
 
@@ -49,7 +48,6 @@ Enable this setting to protect hybrid backups against accidental deletes and add
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -65,7 +63,6 @@ Is soft delete feature state editable.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `name`
@@ -74,7 +71,6 @@ Name of the Azure Recovery Service Vault Backup Policy.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'vaultconfig'`
 
 ### Parameter: `resourceGuardOperationRequests`
@@ -83,7 +79,6 @@ ResourceGuard Operation Requests.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `softDeleteFeatureState`
@@ -92,7 +87,6 @@ Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -108,7 +102,6 @@ Storage type.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'GeoRedundant'`
 - Allowed:
   ```Bicep
@@ -126,7 +119,6 @@ Storage type.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'GeoRedundant'`
 - Allowed:
   ```Bicep
@@ -144,7 +136,6 @@ Once a machine is registered against a resource, the storageTypeState is always 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Locked'`
 - Allowed:
   ```Bicep

@@ -382,7 +382,6 @@ The Cognitive Services name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `hubName`
 
@@ -390,7 +389,6 @@ The AI Studio Hub Resource name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `keyVaultName`
 
@@ -398,7 +396,6 @@ The Key Vault resource name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `projectName`
 
@@ -406,7 +403,6 @@ The AI Project resource name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `storageAccountName`
 
@@ -414,7 +410,6 @@ The Storage Account resource name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `applicationInsightsName`
 
@@ -422,7 +417,6 @@ The Application Insights resource name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `cognitiveServicesDeployments`
@@ -431,7 +425,6 @@ Array of deployments about cognitive service accounts to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `containerRegistryName`
@@ -440,7 +433,6 @@ The Container Registry resource name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -449,7 +441,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `location`
@@ -458,7 +449,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `logAnalyticsName`
@@ -467,7 +457,6 @@ The Log Analytics resource name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `openAiConnectionName`
@@ -476,7 +465,6 @@ The Open AI connection name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `replicaCount`
 
@@ -484,7 +472,6 @@ The number of replicas in the search service. If specified, it must be a value b
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 - MinValue: 1
 - MaxValue: 12
@@ -495,7 +482,6 @@ The Azure Search connection name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 12
 
@@ -505,7 +491,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 12
 - Example:
@@ -522,7 +507,6 @@ The User Assigned Identity resource name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 12
 
@@ -532,7 +516,6 @@ The Azure Search resource name. Required if the parameter searchServiceName is n
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 - MaxValue: 12

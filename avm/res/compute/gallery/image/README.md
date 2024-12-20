@@ -60,7 +60,6 @@ This is the gallery image definition identifier.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -76,7 +75,6 @@ The name of the gallery image definition offer.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `identifier.publisher`
 
@@ -84,7 +82,6 @@ The name of the gallery image definition publisher.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `identifier.sku`
 
@@ -92,7 +89,6 @@ The name of the gallery image definition SKU.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -100,7 +96,6 @@ Name of the image definition.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `osState`
 
@@ -108,7 +103,6 @@ This property allows the user to specify the state of the OS of the image.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -123,7 +117,6 @@ This property allows you to specify the type of the OS that is included in the d
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -138,7 +131,6 @@ The name of the parent Azure Shared Image Gallery. Required if the template is u
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `architecture`
 
@@ -146,7 +138,6 @@ The architecture of the image. Applicable to OS disks only.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -161,7 +152,6 @@ The description of this gallery image definition resource. This property is upda
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `disallowed`
 
@@ -169,7 +159,6 @@ Describes the disallowed disk types.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -183,7 +172,6 @@ A list of disk types.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 - Example:
   ```Bicep
   [
@@ -197,7 +185,6 @@ The end of life date of the gallery image definition. This property can be used 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `eula`
 
@@ -205,7 +192,6 @@ The Eula agreement for the gallery image definition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `hyperVGeneration`
 
@@ -213,7 +199,6 @@ The hypervisor generation of the Virtual Machine. If this value is not specified
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -228,7 +213,6 @@ Specify if the image supports accelerated networking.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `isHibernateSupported`
@@ -237,7 +221,6 @@ Specifiy if the image supports hibernation.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -245,7 +228,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `memory`
@@ -254,7 +236,6 @@ Describes the resource range (1-4000 GB RAM).
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -276,7 +257,6 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `memory.min`
 
@@ -284,7 +264,6 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 
 ### Parameter: `privacyStatementUri`
@@ -293,7 +272,6 @@ The privacy statement uri.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `purchasePlan`
 
@@ -301,7 +279,6 @@ Describes the gallery image definition purchase plan. This is used by marketplac
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -317,7 +294,6 @@ The plan ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `purchasePlan.product`
 
@@ -325,7 +301,6 @@ The product ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `purchasePlan.publisher`
 
@@ -333,7 +308,6 @@ The publisher ID.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `releaseNoteUri`
 
@@ -341,7 +315,6 @@ The release note uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments`
 
@@ -349,7 +322,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Compute Gallery Sharing Admin'`
   - `'Contributor'`
@@ -382,7 +354,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -390,7 +361,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -398,7 +368,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -406,7 +375,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -420,7 +388,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -428,7 +395,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -436,7 +402,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -444,7 +409,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -462,7 +426,6 @@ The security type of the image. Requires a hyperVGeneration V2.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -481,7 +444,6 @@ Tags for all the image.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - Example:
   ```Bicep
   {
@@ -496,7 +458,6 @@ Describes the resource range (1-128 CPU cores).
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default:
   ```Bicep
   {
@@ -518,7 +479,6 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `vCPUs.min`
 
@@ -526,7 +486,6 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 1
 
 ## Outputs

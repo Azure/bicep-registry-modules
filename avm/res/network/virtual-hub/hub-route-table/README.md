@@ -41,7 +41,6 @@ The route table name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualHubName`
 
@@ -49,7 +48,6 @@ The name of the parent virtual hub. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `labels`
 
@@ -57,7 +55,6 @@ List of labels associated with this route table.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `routes`
@@ -66,7 +63,6 @@ List of all routes.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ## Outputs

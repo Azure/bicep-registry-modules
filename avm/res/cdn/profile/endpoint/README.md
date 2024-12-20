@@ -43,7 +43,6 @@ Name of the endpoint under the profile which is unique globally.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `properties`
 
@@ -51,7 +50,6 @@ Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/micro
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `profileName`
 
@@ -59,7 +57,6 @@ The name of the parent CDN profile. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `location`
 
@@ -67,7 +64,6 @@ Resource location.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `tags`
@@ -76,7 +72,6 @@ Endpoint tags.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

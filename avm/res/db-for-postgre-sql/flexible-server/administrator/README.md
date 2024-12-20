@@ -42,7 +42,6 @@ The objectId of the Active Directory administrator.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `principalName`
 
@@ -50,7 +49,6 @@ Active Directory administrator principal name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `principalType`
 
@@ -58,7 +56,6 @@ The principal type used to represent the type of Active Directory Administrator.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -75,7 +72,6 @@ The name of the parent PostgreSQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `tenantId`
 
@@ -83,7 +79,6 @@ The tenantId of the Active Directory administrator.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[tenant().tenantId]`
 
 ## Outputs

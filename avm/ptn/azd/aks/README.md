@@ -410,7 +410,6 @@ Name of your Azure Container Registry.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `keyVaultName`
 
@@ -418,7 +417,6 @@ Name of the Key Vault. Must be globally unique.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `monitoringWorkspaceResourceId`
 
@@ -426,7 +424,6 @@ Resource ID of the monitoring log analytics workspace.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -434,7 +431,6 @@ The name of the parent managed cluster. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `principalId`
 
@@ -442,7 +438,6 @@ Id of the user or app to assign application roles.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `appGatewayResourceId`
 
@@ -450,7 +445,6 @@ Specifies the resource ID of connected application gateway. Required if `ingress
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `acrSku`
 
@@ -458,7 +452,6 @@ Tier of your Azure container registry.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -475,7 +468,6 @@ Custom configuration of user node pool.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -530,7 +522,6 @@ The name of the agent pool.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `agentPoolConfig.availabilityZones`
 
@@ -538,7 +529,6 @@ The availability zones of the agent pool.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.count`
 
@@ -546,7 +536,6 @@ The number of agents (VMs) to host docker containers. Allowed values must be in 
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.enableAutoScaling`
 
@@ -554,7 +543,6 @@ Whether to enable auto-scaling for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.enableDefaultTelemetry`
 
@@ -562,7 +550,6 @@ The enable default telemetry of the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.enableEncryptionAtHost`
 
@@ -570,7 +557,6 @@ Whether to enable encryption at host for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.enableFIPS`
 
@@ -578,7 +564,6 @@ Whether to enable FIPS for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.enableNodePublicIP`
 
@@ -586,7 +571,6 @@ Whether to enable node public IP for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.enableUltraSSD`
 
@@ -594,7 +578,6 @@ Whether to enable Ultra SSD for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.gpuInstanceProfile`
 
@@ -602,7 +585,6 @@ The GPU instance profile of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -620,7 +602,6 @@ The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.maxCount`
 
@@ -628,7 +609,6 @@ The maximum number of agents (VMs) to host docker containers. Allowed values mus
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.maxPods`
 
@@ -636,7 +616,6 @@ The maximum number of pods that can run on a node.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.maxSurge`
 
@@ -644,7 +623,6 @@ The maximum number of nodes that can be created during an upgrade.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.minCount`
 
@@ -652,7 +630,6 @@ The minimum number of agents (VMs) to host docker containers. Allowed values mus
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.minPods`
 
@@ -660,7 +637,6 @@ The minimum number of pods that can run on a node.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.mode`
 
@@ -668,7 +644,6 @@ The mode of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -683,7 +658,6 @@ The node labels of the agent pool.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.nodePublicIpPrefixResourceId`
 
@@ -691,7 +665,6 @@ The node public IP prefix ID of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.nodeTaints`
 
@@ -699,7 +672,6 @@ The node taints of the agent pool.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.orchestratorVersion`
 
@@ -707,7 +679,6 @@ The Kubernetes version of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.osDiskSizeGB`
 
@@ -715,7 +686,6 @@ The OS disk size in GB of the agent pool.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.osDiskType`
 
@@ -723,7 +693,6 @@ The OS disk type of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.osSku`
 
@@ -731,7 +700,6 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.osType`
 
@@ -739,7 +707,6 @@ The OS type of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -754,7 +721,6 @@ The pod subnet ID of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.proximityPlacementGroupResourceId`
 
@@ -762,7 +728,6 @@ The proximity placement group resource ID of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.scaleDownMode`
 
@@ -770,7 +735,6 @@ The scale down mode of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -785,7 +749,6 @@ The scale set eviction policy of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -800,7 +763,6 @@ The scale set priority of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -816,7 +778,6 @@ The source resource ID to create the agent pool from.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.spotMaxPrice`
 
@@ -824,7 +785,6 @@ The spot max price of the agent pool.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.tags`
 
@@ -832,7 +792,6 @@ The tags of the agent pool.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.type`
 
@@ -840,7 +799,6 @@ The type of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -855,7 +813,6 @@ The VM size of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.vnetSubnetResourceId`
 
@@ -863,7 +820,6 @@ The VNet subnet ID of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolConfig.workloadRuntime`
 
@@ -871,7 +827,6 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `agentPoolSize`
 
@@ -879,7 +834,6 @@ The User Pool Preset sizing.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -898,7 +852,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `autoNodeOsUpgradeProfileUpgradeChannel`
 
@@ -906,7 +859,6 @@ Auto-upgrade channel on the Node Os.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'NodeImage'`
 - Allowed:
   ```Bicep
@@ -924,7 +876,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `disableLocalAccounts`
 
@@ -932,7 +883,6 @@ If set to true, getting static credentials will be disabled for this cluster. Th
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `dnsPrefix`
@@ -941,7 +891,6 @@ Specifies the DNS prefix specified when creating the managed cluster.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[parameters('name')]`
 
 ### Parameter: `dnsServiceIP`
@@ -950,7 +899,6 @@ Specifies the IP address assigned to the Kubernetes DNS service. It must be with
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `enableKeyvaultSecretsProvider`
 
@@ -958,7 +906,6 @@ Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enablePurgeProtection`
@@ -967,7 +914,6 @@ Provide 'true' to enable Key Vault's purge protection feature.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableRbacAuthorization`
@@ -976,7 +922,6 @@ Property that controls how data actions are authorized. When true, the key vault
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -985,7 +930,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `enableVaultForDeployment`
@@ -994,7 +938,6 @@ Specifies if the vault is enabled for deployment by script or compute.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableVaultForTemplateDeployment`
@@ -1003,7 +946,6 @@ Specifies if the vault is enabled for a template deployment.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `kubernetesVersion`
@@ -1012,7 +954,6 @@ Kubernetes Version.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'1.29'`
 
 ### Parameter: `loadBalancerSku`
@@ -1021,7 +962,6 @@ Specifies the sku of the load balancer used by the virtual machine scale sets us
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'standard'`
 - Allowed:
   ```Bicep
@@ -1037,7 +977,6 @@ Specifies the location of AKS cluster. It picks up Resource Group's location by 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `networkDataplane`
@@ -1046,7 +985,6 @@ Network dataplane used in the Kubernetes cluster. Not compatible with kubenet ne
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1061,7 +999,6 @@ Network plugin used for building the Kubernetes network.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'azure'`
 - Allowed:
   ```Bicep
@@ -1077,7 +1014,6 @@ Network plugin mode used for building the Kubernetes network. Not compatible wit
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1091,7 +1027,6 @@ Specifies the network policy used for building Kubernetes network. - calico or a
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'azure'`
 - Allowed:
   ```Bicep
@@ -1107,7 +1042,6 @@ The name of the resource group for the managed resources of the AKS cluster.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `podCidr`
@@ -1116,7 +1050,6 @@ Specifies the CIDR notation IP range from which to assign pod IPs when kubenet i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `principalType`
 
@@ -1124,7 +1057,6 @@ The type of principal to assign application roles.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'User'`
 - Allowed:
   ```Bicep
@@ -1143,7 +1075,6 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -1159,7 +1090,6 @@ Scope maps setting.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1180,7 +1110,6 @@ The list of scoped permissions for registry artifacts.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `scopeMaps.description`
 
@@ -1188,7 +1117,6 @@ The user friendly description of the scope map.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `scopeMaps.name`
 
@@ -1196,7 +1124,6 @@ The name of the scope map.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `serviceCidr`
 
@@ -1204,7 +1131,6 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `skuTier`
 
@@ -1212,7 +1138,6 @@ Tier of a managed cluster SKU.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -1229,7 +1154,6 @@ Specifies the SSH RSA public key string for the Linux nodes.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig`
 
@@ -1237,7 +1161,6 @@ Custom configuration of system node pool.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -1292,7 +1215,6 @@ The name of the agent pool.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `systemPoolConfig.availabilityZones`
 
@@ -1300,7 +1222,6 @@ The availability zones of the agent pool.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.count`
 
@@ -1308,7 +1229,6 @@ The number of agents (VMs) to host docker containers. Allowed values must be in 
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.enableAutoScaling`
 
@@ -1316,7 +1236,6 @@ Whether to enable auto-scaling for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.enableDefaultTelemetry`
 
@@ -1324,7 +1243,6 @@ The enable default telemetry of the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.enableEncryptionAtHost`
 
@@ -1332,7 +1250,6 @@ Whether to enable encryption at host for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.enableFIPS`
 
@@ -1340,7 +1257,6 @@ Whether to enable FIPS for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.enableNodePublicIP`
 
@@ -1348,7 +1264,6 @@ Whether to enable node public IP for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.enableUltraSSD`
 
@@ -1356,7 +1271,6 @@ Whether to enable Ultra SSD for the agent pool.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.gpuInstanceProfile`
 
@@ -1364,7 +1278,6 @@ The GPU instance profile of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1382,7 +1295,6 @@ The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.maxCount`
 
@@ -1390,7 +1302,6 @@ The maximum number of agents (VMs) to host docker containers. Allowed values mus
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.maxPods`
 
@@ -1398,7 +1309,6 @@ The maximum number of pods that can run on a node.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.maxSurge`
 
@@ -1406,7 +1316,6 @@ The maximum number of nodes that can be created during an upgrade.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.minCount`
 
@@ -1414,7 +1323,6 @@ The minimum number of agents (VMs) to host docker containers. Allowed values mus
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.minPods`
 
@@ -1422,7 +1330,6 @@ The minimum number of pods that can run on a node.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.mode`
 
@@ -1430,7 +1337,6 @@ The mode of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1445,7 +1351,6 @@ The node labels of the agent pool.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.nodePublicIpPrefixResourceId`
 
@@ -1453,7 +1358,6 @@ The node public IP prefix ID of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.nodeTaints`
 
@@ -1461,7 +1365,6 @@ The node taints of the agent pool.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.orchestratorVersion`
 
@@ -1469,7 +1372,6 @@ The Kubernetes version of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.osDiskSizeGB`
 
@@ -1477,7 +1379,6 @@ The OS disk size in GB of the agent pool.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.osDiskType`
 
@@ -1485,7 +1386,6 @@ The OS disk type of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.osSku`
 
@@ -1493,7 +1393,6 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.osType`
 
@@ -1501,7 +1400,6 @@ The OS type of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1516,7 +1414,6 @@ The pod subnet ID of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.proximityPlacementGroupResourceId`
 
@@ -1524,7 +1421,6 @@ The proximity placement group resource ID of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.scaleDownMode`
 
@@ -1532,7 +1428,6 @@ The scale down mode of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1547,7 +1442,6 @@ The scale set eviction policy of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1562,7 +1456,6 @@ The scale set priority of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1578,7 +1471,6 @@ The source resource ID to create the agent pool from.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.spotMaxPrice`
 
@@ -1586,7 +1478,6 @@ The spot max price of the agent pool.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.tags`
 
@@ -1594,7 +1485,6 @@ The tags of the agent pool.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.type`
 
@@ -1602,7 +1492,6 @@ The type of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1617,7 +1506,6 @@ The VM size of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.vnetSubnetResourceId`
 
@@ -1625,7 +1513,6 @@ The VNet subnet ID of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolConfig.workloadRuntime`
 
@@ -1633,7 +1520,6 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `systemPoolSize`
 
@@ -1641,7 +1527,6 @@ The System Pool Preset sizing.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Standard'`
 - Allowed:
   ```Bicep
@@ -1659,7 +1544,6 @@ Custom tags to apply to the AKS resources.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `webApplicationRoutingEnabled`
@@ -1668,7 +1552,6 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ## Outputs

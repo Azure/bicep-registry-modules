@@ -900,7 +900,6 @@ The name of the MySQL flexible server.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `skuName`
 
@@ -908,7 +907,6 @@ The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `tier`
 
@@ -916,7 +914,6 @@ The tier of the particular SKU. Tier must align with the "skuName" property. Exa
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -932,7 +929,6 @@ The managed identity definition for this resource. Required if 'customerManagedK
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -946,7 +942,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `privateDnsZoneResourceId`
 
@@ -954,7 +949,6 @@ Private dns zone arm resource ID. Used when the desired connectivity mode is "Pr
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `restorePointInTime`
@@ -963,7 +957,6 @@ Restore point creation time (ISO8601 format), specifying the time to restore fro
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `sourceServerResourceId`
@@ -972,7 +965,6 @@ The source MySQL server ID. Required if "createMode" is set to "PointInTimeResto
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `storageAutoGrow`
@@ -981,7 +973,6 @@ Enable Storage Auto Grow or not. Storage auto-growth prevents a server from runn
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -997,7 +988,6 @@ The administrator login name of a server. Can only be specified when the MySQL s
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `administratorLoginPassword`
@@ -1006,7 +996,6 @@ The administrator login password.
 
 - Required: No
 - Type: securestring
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `administrators`
@@ -1015,7 +1004,6 @@ The Azure AD administrators when AAD authentication enabled.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `availabilityZone`
@@ -1024,7 +1012,6 @@ Availability zone information of the server. Default will have no preference set
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - Allowed:
   ```Bicep
@@ -1042,7 +1029,6 @@ Backup retention days for the server.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `7`
 - MinValue: 1
 - MaxValue: 35
@@ -1053,7 +1039,6 @@ The mode to create a new MySQL server.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Default'`
 - Allowed:
   ```Bicep
@@ -1073,7 +1058,6 @@ The customer managed key definition to use for the managed service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1097,7 +1081,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 35
 
@@ -1107,7 +1090,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 35
 
@@ -1117,7 +1099,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1127,7 +1108,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1137,7 +1117,6 @@ The customer managed key definition to use when geoRedundantBackup is "Enabled".
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1161,7 +1140,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 35
 
@@ -1171,7 +1149,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 35
 
@@ -1181,7 +1158,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1191,7 +1167,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1201,7 +1176,6 @@ The databases to create in the server.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 1
 - MaxValue: 35
@@ -1212,7 +1186,6 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is "Pr
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 - MaxValue: 35
@@ -1223,7 +1196,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1247,7 +1219,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1257,7 +1228,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1267,7 +1237,6 @@ A string indicating whether the export to Log Analytics should use the default d
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1284,7 +1253,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1302,7 +1270,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1312,7 +1279,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1322,7 +1288,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1332,7 +1297,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1342,7 +1306,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1364,7 +1327,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 35
 
@@ -1374,7 +1336,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1384,7 +1345,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1394,7 +1354,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1404,7 +1363,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1414,7 +1372,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MinValue: 1
 - MaxValue: 35
@@ -1425,7 +1382,6 @@ The firewall rules to create in the MySQL flexible server.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MinValue: 1
 - MaxValue: 35
@@ -1436,7 +1392,6 @@ A value indicating whether Geo-Redundant backup is enabled on the server. If "En
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -1454,7 +1409,6 @@ The mode for High Availability (HA). It is not supported for the Burstable prici
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'ZoneRedundant'`
 - Allowed:
   ```Bicep
@@ -1473,7 +1427,6 @@ Standby availability zone information of the server. Default will have no prefer
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 1
 - MaxValue: 35
@@ -1484,7 +1437,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 - MinValue: 1
 - MaxValue: 35
@@ -1495,7 +1447,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1512,7 +1463,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1530,7 +1480,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1540,7 +1489,6 @@ Properties for the maintenence window. If provided, "customWindow" property must
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 - MinValue: 1
 - MaxValue: 35
@@ -1551,7 +1499,6 @@ The replication role.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'None'`
 - Allowed:
   ```Bicep
@@ -1570,7 +1517,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 - Roles configurable by name:
@@ -1605,7 +1551,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 35
 
@@ -1615,7 +1560,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 35
 
@@ -1625,7 +1569,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1635,7 +1578,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1651,7 +1593,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1661,7 +1602,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1671,7 +1611,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 35
 
@@ -1681,7 +1620,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1701,7 +1639,6 @@ Enable IO Auto Scaling or not. The server scales IOPs up or down automatically d
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -1719,7 +1656,6 @@ Storage IOPS for a server. Max IOPS are determined by compute size.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1000`
 - MinValue: 360
 - MaxValue: 48000
@@ -1730,7 +1666,6 @@ Max storage allowed for a server. In all compute tiers, the minimum storage supp
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `64`
 - Allowed:
   ```Bicep
@@ -1757,7 +1692,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 360
 - MaxValue: 48000
 
@@ -1767,7 +1701,6 @@ MySQL Server version.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'8.0.21'`
 - Allowed:
   ```Bicep

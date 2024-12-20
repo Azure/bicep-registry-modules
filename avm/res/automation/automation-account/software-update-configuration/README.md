@@ -75,7 +75,6 @@ The frequency of the deployment schedule. When using 'Hour', 'Day', 'Week' or 'M
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -93,7 +92,6 @@ The name of the Deployment schedule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `operatingSystem`
 
@@ -101,7 +99,6 @@ The operating system to be configured by the deployment schedule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -116,7 +113,6 @@ Reboot setting for the deployment schedule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -133,7 +129,6 @@ The name of the parent Automation Account. Required if the template is used in a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `azureVirtualMachines`
 
@@ -141,7 +136,6 @@ List of azure resource IDs for azure virtual machines in scope for the deploymen
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `excludeUpdates`
@@ -150,7 +144,6 @@ KB numbers or Linux packages excluded in the deployment schedule.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `expiryTime`
@@ -159,7 +152,6 @@ The end time of the deployment schedule in ISO 8601 format. YYYY-MM-DDTHH:MM:SS,
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `expiryTimeOffsetMinutes`
@@ -168,7 +160,6 @@ The expiry time's offset in minutes.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 
 ### Parameter: `includeUpdates`
@@ -177,7 +168,6 @@ KB numbers or Linux packages included in the deployment schedule.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `interval`
@@ -186,7 +176,6 @@ The interval of the frequency for the deployment schedule. 1 Hour is every hour,
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 - MaxValue: 100
 
@@ -196,7 +185,6 @@ Enables the deployment schedule.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 - MaxValue: 100
 
@@ -206,7 +194,6 @@ Maximum time allowed for the deployment schedule to run. Duration needs to be sp
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'PT2H'`
 - MaxValue: 100
 
@@ -216,7 +203,6 @@ Can be used with frequency 'Month'. Provides the specific days of the month to r
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -261,7 +247,6 @@ Can be used with frequency 'Month'. Provides the pattern/cadence for running the
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MaxValue: 100
 
 ### Parameter: `nextRun`
@@ -270,7 +255,6 @@ The next time the deployment schedule runs in ISO 8601 format. YYYY-MM-DDTHH:MM:
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MaxValue: 100
 
@@ -280,7 +264,6 @@ The next run's offset in minutes.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `0`
 - MaxValue: 100
 
@@ -290,7 +273,6 @@ List of names of non-azure machines in scope for the deployment schedule.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MaxValue: 100
 
@@ -300,7 +282,6 @@ Array of functions from a Log Analytics workspace, used to scope the deployment 
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MaxValue: 100
 
@@ -310,7 +291,6 @@ Parameters provided to the task running after the deployment schedule.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MaxValue: 100
 
 ### Parameter: `postTaskSource`
@@ -319,7 +299,6 @@ The source of the task running after the deployment schedule.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MaxValue: 100
 
 ### Parameter: `preTaskParameters`
@@ -328,7 +307,6 @@ Parameters provided to the task running before the deployment schedule.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MaxValue: 100
 
 ### Parameter: `preTaskSource`
@@ -337,7 +315,6 @@ The source of the task running before the deployment schedule.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MaxValue: 100
 
 ### Parameter: `scheduleDescription`
@@ -346,7 +323,6 @@ The schedules description.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MaxValue: 100
 
@@ -356,7 +332,6 @@ Specify locations to which to scope the deployment schedule to.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - MaxValue: 100
 
@@ -366,7 +341,6 @@ Specify the resources to scope the deployment schedule to.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -381,7 +355,6 @@ Specify tags to which to scope the deployment schedule to.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 - MaxValue: 100
 
@@ -391,7 +364,6 @@ Enables the scopeByTags to require All (Tag A and Tag B) or Any (Tag A or Tag B)
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'All'`
 - Allowed:
   ```Bicep
@@ -408,7 +380,6 @@ The start time of the deployment schedule in ISO 8601 format. To specify a speci
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MaxValue: 100
 
@@ -418,7 +389,6 @@ Time zone for the deployment schedule. IANA ID or a Windows Time Zone ID.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'UTC'`
 - MaxValue: 100
 
@@ -428,7 +398,6 @@ Update classification included in the deployment schedule.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -458,7 +427,6 @@ Required when used with frequency 'Week'. Specified the day of the week to run t
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -479,7 +447,6 @@ Do not touch. Is used to provide the base time for time comparison for startTime
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[utcNow('u')]`
 - MaxValue: 100
 

@@ -40,7 +40,6 @@ The name of the disaster recovery config.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -48,7 +47,6 @@ The name of the parent event hub namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `partnerNamespaceResourceId`
 
@@ -56,7 +54,6 @@ Resource ID of the Primary/Secondary event hub namespace name, which is part of 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

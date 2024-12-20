@@ -42,7 +42,6 @@ Contents of the Policy as defined by the format.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiManagementServiceName`
 
@@ -50,7 +49,6 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiName`
 
@@ -58,7 +56,6 @@ The name of the parent API. Required if the template is used in a standalone dep
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `format`
 
@@ -66,7 +63,6 @@ Format of the policyContent.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'xml'`
 - Allowed:
   ```Bicep
@@ -84,7 +80,6 @@ The name of the policy.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'policy'`
 
 ## Outputs

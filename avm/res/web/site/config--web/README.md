@@ -34,7 +34,6 @@ The name of the parent site resource.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `apiManagementConfiguration`
 
@@ -42,7 +41,6 @@ The web settings api management configuration.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

@@ -41,7 +41,6 @@ Name of the Client Group.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `query`
 
@@ -49,7 +48,6 @@ The grouping query for the clients.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -57,7 +55,6 @@ The name of the parent EventGrid namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `description`
 
@@ -65,7 +62,6 @@ Description of the Client Group.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

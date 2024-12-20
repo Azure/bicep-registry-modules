@@ -1123,7 +1123,6 @@ The name of the lab.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `encryptionDiskEncryptionSetId`
 
@@ -1131,7 +1130,6 @@ The Disk Encryption Set Resource ID used to encrypt OS and data disks created as
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `notificationchannels`
@@ -1140,7 +1138,6 @@ Notification Channels to create for the lab. Required if the schedules property 
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1170,7 +1167,6 @@ The list of event for which this notification is enabled. Can be "AutoShutdown" 
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `notificationchannels.name`
 
@@ -1178,7 +1174,6 @@ The name of the notification channel.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1193,7 +1188,6 @@ The email recipient to send notifications to (can be a list of semi-colon separa
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `notificationchannels.webHookUrl`
 
@@ -1201,7 +1195,6 @@ The webhook URL to which the notification will be sent. Required if "emailRecipi
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `notificationchannels.description`
 
@@ -1209,7 +1202,6 @@ The description of the notification.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `notificationchannels.notificationLocale`
 
@@ -1217,7 +1209,6 @@ The locale to use when sending a notification (fallback for unsupported language
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `notificationchannels.tags`
 
@@ -1225,7 +1216,6 @@ The tags of the notification channel.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `announcement`
 
@@ -1233,7 +1223,6 @@ The properties of any lab announcement associated with this lab.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `artifactsources`
@@ -1242,7 +1231,6 @@ Artifact sources to create for the lab.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1275,7 +1263,6 @@ The name of the artifact source.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `artifactsources.uri`
 
@@ -1283,7 +1270,6 @@ The artifact source's URI.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `artifactsources.armTemplateFolderPath`
 
@@ -1291,7 +1277,6 @@ The folder containing Azure Resource Manager templates. Required if "folderPath"
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `artifactsources.folderPath`
 
@@ -1299,7 +1284,6 @@ The folder containing artifacts. At least one folder path is required. Required 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `artifactsources.branchRef`
 
@@ -1307,7 +1291,6 @@ The artifact source's branch reference (e.g. main or master).
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `artifactsources.displayName`
 
@@ -1315,7 +1298,6 @@ The display name of the artifact source. Default is the name of the artifact sou
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `artifactsources.securityToken`
 
@@ -1323,7 +1305,6 @@ The security token to authenticate to the artifact source. Private artifacts use
 
 - Required: No
 - Type: securestring
-- Nullable: Yes
 
 ### Parameter: `artifactsources.sourceType`
 
@@ -1331,7 +1312,6 @@ The artifact source's type.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1347,7 +1327,6 @@ Indicates if the artifact source is enabled (values: Enabled, Disabled). Default
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1362,7 +1341,6 @@ The tags of the artifact source.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `artifactsStorageAccount`
 
@@ -1370,7 +1348,6 @@ The resource ID of the storage account used to store artifacts and images by the
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `browserConnect`
@@ -1379,7 +1356,6 @@ Enable browser connect on virtual machines if the lab's VNETs have configured Az
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -1395,7 +1371,6 @@ Costs to create for the lab.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1435,7 +1410,6 @@ Reporting cycle type.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1450,7 +1424,6 @@ Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z)
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `costs.cycleStartDateTime`
 
@@ -1458,7 +1431,6 @@ Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `costs.currencyCode`
 
@@ -1466,7 +1438,6 @@ The currency code of the cost. Default is "USD".
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `costs.status`
 
@@ -1474,7 +1445,6 @@ Target cost status.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1489,7 +1459,6 @@ The tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `costs.target`
 
@@ -1497,7 +1466,6 @@ Lab target cost (e.g. 100). The target cost will appear in the "Cost trend" char
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `costs.thresholdValue100DisplayOnChart`
 
@@ -1505,7 +1473,6 @@ Target Cost threshold at 100% display on chart. Indicates whether this threshold
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1520,7 +1487,6 @@ Target cost threshold at 100% send notification when exceeded. Indicates whether
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1535,7 +1501,6 @@ Target Cost threshold at 125% display on chart. Indicates whether this threshold
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1550,7 +1515,6 @@ Target cost threshold at 125% send notification when exceeded. Indicates whether
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1565,7 +1529,6 @@ Target Cost threshold at 25% display on chart. Indicates whether this threshold 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1580,7 +1543,6 @@ Target cost threshold at 25% send notification when exceeded. Indicates whether 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1595,7 +1557,6 @@ Target Cost threshold at 50% display on chart. Indicates whether this threshold 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1610,7 +1571,6 @@ Target cost threshold at 50% send notification when exceeded. Indicates whether 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1625,7 +1585,6 @@ Target Cost threshold at 75% display on chart. Indicates whether this threshold 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1640,7 +1599,6 @@ Target cost threshold at 75% send notification when exceeded. Indicates whether 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1655,7 +1613,6 @@ Disable auto upgrade custom script extension minor version.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `enableTelemetry`
@@ -1664,7 +1621,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `encryptionType`
@@ -1673,7 +1629,6 @@ Specify how OS and data disks created as part of the lab are encrypted.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'EncryptionAtRestWithPlatformKey'`
 - Allowed:
   ```Bicep
@@ -1689,7 +1644,6 @@ The access rights to be granted to the user when provisioning an environment.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Reader'`
 - Allowed:
   ```Bicep
@@ -1705,7 +1659,6 @@ Extended properties of the lab used for experimental features.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `isolateLabResources`
@@ -1714,7 +1667,6 @@ Enable lab resources isolation from the public internet.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -1730,7 +1682,6 @@ Type of storage used by the lab. It can be either Premium or Standard.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Premium'`
 - Allowed:
   ```Bicep
@@ -1747,7 +1698,6 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1756,7 +1706,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1771,7 +1720,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1787,7 +1735,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedIdentities`
 
@@ -1795,7 +1742,6 @@ The managed identity definition for this resource. For new labs created after 8/
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -1809,7 +1755,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `managementIdentitiesResourceIds`
 
@@ -1817,7 +1762,6 @@ The resource ID(s) to assign to the virtual machines associated with this lab.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `mandatoryArtifactsResourceIdsLinux`
@@ -1826,7 +1770,6 @@ The ordered list of artifact resource IDs that should be applied on all Linux VM
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `mandatoryArtifactsResourceIdsWindows`
@@ -1835,7 +1778,6 @@ The ordered list of artifact resource IDs that should be applied on all Windows 
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `policies`
@@ -1844,7 +1786,6 @@ Policies to create for the lab.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1869,7 +1810,6 @@ The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy).
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1884,7 +1824,6 @@ The fact name of the policy.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1907,7 +1846,6 @@ The name of the policy.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `policies.threshold`
 
@@ -1915,7 +1853,6 @@ The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `policies.description`
 
@@ -1923,7 +1860,6 @@ The description of the policy.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `policies.factData`
 
@@ -1931,7 +1867,6 @@ The fact data of the policy.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `policies.status`
 
@@ -1939,7 +1874,6 @@ The status of the policy. Default is "Enabled".
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1954,7 +1888,6 @@ The setting to enable usage of premium data disks. When its value is "Enabled", 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Disabled'`
 - Allowed:
   ```Bicep
@@ -1970,7 +1903,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - Roles configurable by name:
   - `'Contributor'`
   - `'DevTest Labs User'`
@@ -2005,7 +1937,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2013,7 +1944,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2021,7 +1951,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2029,7 +1958,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2043,7 +1971,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -2051,7 +1978,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -2059,7 +1985,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2067,7 +1992,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2085,7 +2009,6 @@ Schedules to create for the lab.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -2113,7 +2036,6 @@ The name of the schedule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2128,7 +2050,6 @@ The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask).
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2143,7 +2064,6 @@ The daily recurrence of the schedule.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2157,7 +2077,6 @@ The time of day the schedule will occur.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `schedules.hourlyRecurrence`
 
@@ -2165,7 +2084,6 @@ If the schedule will occur multiple times a day, specify the hourly recurrence.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2179,7 +2097,6 @@ Minutes of the hour the schedule will run.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `schedules.notificationSettings`
 
@@ -2187,7 +2104,6 @@ The notification settings for the schedule.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Conditional parameters**
 
@@ -2210,7 +2126,6 @@ The email recipient to send notifications to (can be a list of semi-colon separa
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `schedules.notificationSettings.webHookUrl`
 
@@ -2218,7 +2133,6 @@ The webhook URL to which the notification will be sent. Required if "emailRecipi
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `schedules.notificationSettings.notificationLocale`
 
@@ -2226,7 +2140,6 @@ The locale to use when sending a notification (fallback for unsupported language
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `schedules.notificationSettings.status`
 
@@ -2234,7 +2147,6 @@ If notifications are enabled for this schedule (i.e. Enabled, Disabled). Default
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2249,7 +2161,6 @@ Time in minutes before event at which notification will be sent. Default is 30 m
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `schedules.status`
 
@@ -2257,7 +2168,6 @@ The status of the schedule (i.e. Enabled, Disabled). Default is "Enabled".
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2272,7 +2182,6 @@ The tags of the schedule.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `schedules.targetResourceId`
 
@@ -2280,7 +2189,6 @@ The resource ID to which the schedule belongs.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `schedules.timeZoneId`
 
@@ -2288,7 +2196,6 @@ The time zone ID of the schedule. Defaults to "Pacific Standard time".
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `schedules.weeklyRecurrence`
 
@@ -2296,7 +2203,6 @@ If the schedule will occur only some days of the week, specify the weekly recurr
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2311,7 +2217,6 @@ The time of day the schedule will occur.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `schedules.weeklyRecurrence.weekdays`
 
@@ -2319,7 +2224,6 @@ The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `support`
 
@@ -2327,7 +2231,6 @@ The properties of any lab support message associated with this lab.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `tags`
@@ -2336,7 +2239,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `virtualnetworks`
 
@@ -2344,7 +2246,6 @@ Virtual networks to create for the lab.
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -2368,7 +2269,6 @@ The external provider resource ID of the virtual network.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualnetworks.name`
 
@@ -2376,7 +2276,6 @@ The name of the virtual network.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualnetworks.allowedSubnets`
 
@@ -2384,7 +2283,6 @@ The allowed subnets of the virtual network.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2405,7 +2303,6 @@ The name of the subnet as seen in the lab.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualnetworks.allowedSubnets.resourceId`
 
@@ -2413,7 +2310,6 @@ The resource ID of the allowed subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualnetworks.allowedSubnets.allowPublicIp`
 
@@ -2421,7 +2317,6 @@ The permission policy of the subnet for allowing public IP addresses (i.e. Allow
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2437,7 +2332,6 @@ The description of the virtual network.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualnetworks.subnetOverrides`
 
@@ -2445,7 +2339,6 @@ The subnet overrides of the virtual network.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2469,7 +2362,6 @@ The name given to the subnet within the lab.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualnetworks.subnetOverrides.resourceId`
 
@@ -2477,7 +2369,6 @@ The resource ID of the subnet.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualnetworks.subnetOverrides.sharedPublicIpAddressConfiguration`
 
@@ -2485,7 +2376,6 @@ The permission policy of the subnet for allowing public IP addresses (i.e. Allow
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Required parameters**
 
@@ -2499,7 +2389,6 @@ Backend ports that virtual machines on this subnet are allowed to expose.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -2514,7 +2403,6 @@ Backend port of the target virtual machine.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `virtualnetworks.subnetOverrides.sharedPublicIpAddressConfiguration.allowedPorts.transportProtocol`
 
@@ -2522,7 +2410,6 @@ Protocol type of the port.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -2537,7 +2424,6 @@ Indicates whether this subnet can be used during virtual machine creation (i.e. 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2553,7 +2439,6 @@ Indicates whether public IP addresses can be assigned to virtual machines on thi
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -2569,7 +2454,6 @@ The virtual network pool associated with this subnet.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `virtualnetworks.tags`
 
@@ -2577,7 +2461,6 @@ The tags of the virtual network.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `vmCreationResourceGroupId`
 
@@ -2585,7 +2468,6 @@ Resource Group allocation for virtual machines. If left empty, virtual machines 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().id]`
 
 ## Outputs

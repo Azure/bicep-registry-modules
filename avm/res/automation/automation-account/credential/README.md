@@ -42,7 +42,6 @@ Name of the Automation Account credential.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `password`
 
@@ -50,7 +49,6 @@ Password of the credential.
 
 - Required: Yes
 - Type: securestring
-- Nullable: No
 
 ### Parameter: `userName`
 
@@ -58,7 +56,6 @@ The user name associated to the credential.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `automationAccountName`
 
@@ -66,7 +63,6 @@ The name of the parent Automation Account. Required if the template is used in a
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `description`
 
@@ -74,7 +70,6 @@ Description of the credential.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

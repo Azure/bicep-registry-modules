@@ -126,7 +126,7 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadProfile`](#parameter-aadprofile) | object | Enable Azure Active Directory integration. |
+| [`aadProfile`](#parameter-aadprofile) | object | Settigs for the Azure Active Directory integration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The Azure region/location for the AKS resources. |
 
@@ -139,7 +139,7 @@ The name for the AKS managed cluster.
 
 ### Parameter: `aadProfile`
 
-Enable Azure Active Directory integration.
+Settigs for the Azure Active Directory integration.
 
 - Required: No
 - Type: object

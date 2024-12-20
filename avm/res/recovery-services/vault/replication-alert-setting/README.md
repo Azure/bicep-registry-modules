@@ -37,7 +37,6 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `customEmailAddresses`
 
@@ -45,7 +44,6 @@ Comma separated list of custom email address for sending alert emails.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `locale`
@@ -54,7 +52,6 @@ The locale for the email notification.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `name`
@@ -63,7 +60,6 @@ The name of the replication Alert Setting.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'defaultAlertSetting'`
 
 ### Parameter: `sendToOwners`
@@ -72,7 +68,6 @@ The value indicating whether to send email to subscription administrator.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Send'`
 - Allowed:
   ```Bicep

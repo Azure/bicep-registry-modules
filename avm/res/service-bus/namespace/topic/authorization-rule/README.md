@@ -41,7 +41,6 @@ The name of the service bus namespace topic.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -49,7 +48,6 @@ The name of the parent Service Bus Namespace. Required if the template is used i
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `topicName`
 
@@ -57,7 +55,6 @@ The name of the parent Service Bus Namespace Topic. Required if the template is 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `rights`
 
@@ -65,7 +62,6 @@ The rights associated with the rule.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep

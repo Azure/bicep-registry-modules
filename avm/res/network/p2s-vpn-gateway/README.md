@@ -433,7 +433,6 @@ The name of the P2S VPN Gateway.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `virtualHubResourceId`
 
@@ -441,7 +440,6 @@ The resource ID of the gateways virtual hub.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `associatedRouteTableName`
 
@@ -449,7 +447,6 @@ The name of the associated route table. Required if deploying in a Secure Virtua
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -464,7 +461,6 @@ The custom DNS servers for the P2S VPN Gateway.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `enableInternetSecurity`
@@ -473,7 +469,6 @@ Enable/Disable Internet Security; "Propagate Default Route".
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `enableTelemetry`
 
@@ -481,7 +476,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `inboundRouteMapResourceId`
@@ -490,7 +484,6 @@ The Resource ID of the inbound route map.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `isRoutingPreferenceInternet`
 
@@ -498,7 +491,6 @@ The routing preference for the P2S VPN Gateway, Internet or Microsoft network.
 
 - Required: No
 - Type: bool
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -506,7 +498,6 @@ Location where all resources will be created.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -515,7 +506,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -530,7 +520,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -546,7 +535,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `outboundRouteMapResourceId`
 
@@ -554,7 +542,6 @@ The Resource ID of the outbound route map.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `p2SConnectionConfigurationsName`
 
@@ -562,7 +549,6 @@ The name of the P2S Connection Configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `propagatedLabelNames`
 
@@ -570,7 +556,6 @@ The Labels to propagate routes to.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `propagatedRouteTableNames`
@@ -579,7 +564,6 @@ The names of the route tables to propagate to the P2S VPN Gateway.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `tags`
@@ -588,7 +572,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `vnetRoutesStaticRoutes`
 
@@ -596,7 +579,6 @@ The routes from the virtual hub to virtual network connections.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -611,7 +593,6 @@ The static route configuration for the P2S VPN Gateway.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -627,7 +608,6 @@ The address prefixes of the static route.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `vnetRoutesStaticRoutes.staticRoutes.name`
 
@@ -635,7 +615,6 @@ The name of the static route.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vnetRoutesStaticRoutes.staticRoutes.nextHopIpAddress`
 
@@ -643,7 +622,6 @@ The next hop IP of the static route.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vnetRoutesStaticRoutes.staticRoutesConfig`
 
@@ -651,7 +629,6 @@ The static route configuration for the P2S VPN Gateway.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 **Optional parameters**
 
@@ -665,7 +642,6 @@ Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destinat
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vpnClientAddressPoolAddressPrefixes`
 
@@ -673,7 +649,6 @@ The address prefixes for the VPN Client Address Pool.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `vpnGatewayScaleUnit`
@@ -682,7 +657,6 @@ The scale unit of the VPN Gateway.
 
 - Required: No
 - Type: int
-- Nullable: Yes
 
 ### Parameter: `vpnServerConfigurationResourceId`
 
@@ -690,7 +664,6 @@ The resource ID of the VPN Server Configuration.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ## Outputs
 

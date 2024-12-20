@@ -534,7 +534,6 @@ Specify an array of objects, containing object of Azure Active Directory princip
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -561,7 +560,6 @@ The identifier of the Azure Active Directory principal.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `authorizations.roleDefinitionId`
 
@@ -569,7 +567,6 @@ The identifier of the Azure built-in role that defines the permissions that the 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `authorizations.delegatedRoleDefinitionIds`
 
@@ -577,7 +574,6 @@ The list of role definition ids which define all the permissions that the user i
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `authorizations.principalIdDisplayName`
 
@@ -585,7 +581,6 @@ The display name of the Azure Active Directory principal.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `managedByTenantId`
 
@@ -593,7 +588,6 @@ Specify the tenant ID of the tenant which homes the principals you are delegatin
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -601,7 +595,6 @@ Specify a unique name for your offer/registration. i.e '<Managing Tenant> - <Rem
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `registrationDescription`
 
@@ -609,7 +602,6 @@ Description of the offer/registration. i.e. 'Managed by <Managing Org Name>'.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `enableTelemetry`
 
@@ -617,7 +609,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `metadataLocation`
@@ -626,7 +617,6 @@ Location of the deployment metadata.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `registrationId`
@@ -635,7 +625,6 @@ The Id (GUID) of the registration definition.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[if(empty(parameters('resourceGroupName')), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId, parameters('resourceGroupName')))]`
 
 ### Parameter: `resourceGroupName`
@@ -644,7 +633,6 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

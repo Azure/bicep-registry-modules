@@ -36,7 +36,6 @@ The name of the backup vault.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -44,7 +43,6 @@ The name of the backup policy.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'DefaultPolicy'`
 
 ### Parameter: `properties`
@@ -53,7 +51,6 @@ The properties of the backup policy.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ## Outputs

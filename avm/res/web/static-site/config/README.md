@@ -35,7 +35,6 @@ Type of settings to apply.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -50,7 +49,6 @@ App settings.
 
 - Required: Yes
 - Type: object
-- Nullable: No
 
 ### Parameter: `staticSiteName`
 
@@ -58,7 +56,6 @@ The name of the parent Static Web App. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ## Outputs
 

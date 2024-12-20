@@ -36,7 +36,6 @@ The name of the parent Relay Namespace for the Relay Network Rule Set. Required 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `defaultAction`
 
@@ -44,7 +43,6 @@ Default Action for Network Rule Set. Default is "Allow". It will not be set if p
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Allow'`
 - Allowed:
   ```Bicep
@@ -60,7 +58,6 @@ List of IpRules. It will not be set if publicNetworkAccess is "Disabled". Otherw
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `publicNetworkAccess`
 
@@ -68,7 +65,6 @@ This determines if traffic is allowed over public network. Default is "Enabled".
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep

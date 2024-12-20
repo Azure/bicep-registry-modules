@@ -41,7 +41,6 @@ Login name of the managed instance administrator.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `sid`
 
@@ -49,7 +48,6 @@ SID (object ID) of the managed instance administrator.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `managedInstanceName`
 
@@ -57,7 +55,6 @@ The name of the parent SQL managed instance. Required if the template is used in
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `tenantId`
 
@@ -65,7 +62,6 @@ Tenant ID of the managed instance administrator.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

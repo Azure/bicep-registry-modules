@@ -1336,7 +1336,6 @@ The http management endpoint of the cluster.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -1344,7 +1343,6 @@ Name of the Service Fabric cluster.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `nodeTypes`
 
@@ -1352,7 +1350,6 @@ The list of node types in the cluster.
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 ### Parameter: `reliabilityLevel`
 
@@ -1360,7 +1357,6 @@ The reliability level sets the replica set size of system services. Learn about 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -1378,7 +1374,6 @@ The certificate to use for securing the cluster. The certificate provided will b
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1399,7 +1394,6 @@ The thumbprint of the primary certificate.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `certificate.thumbprintSecondary`
 
@@ -1407,7 +1401,6 @@ The thumbprint of the secondary certificate.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `certificate.x509StoreName`
 
@@ -1415,7 +1408,6 @@ The local certificate store location.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1436,7 +1428,6 @@ Describes a list of server certificates referenced by common name that are used 
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Required parameters**
 
@@ -1456,7 +1447,6 @@ The list of server certificates referenced by common name that are used to secur
 
 - Required: Yes
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1471,7 +1461,6 @@ The common name of the server certificate.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `certificateCommonNames.commonNames.certificateIssuerThumbprint`
 
@@ -1479,7 +1468,6 @@ The issuer thumbprint of the server certificate.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `certificateCommonNames.x509StoreName`
 
@@ -1487,7 +1475,6 @@ The local certificate store location.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1508,7 +1495,6 @@ The list of add-on features to enable in the cluster.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 - Allowed:
   ```Bicep
@@ -1526,7 +1512,6 @@ Array of Service Fabric cluster application types.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `azureActiveDirectory`
@@ -1535,7 +1520,6 @@ The settings to enable AAD authentication on the cluster.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `clientCertificateCommonNames`
@@ -1544,7 +1528,6 @@ The list of client certificates referenced by common name that are allowed to ma
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1560,7 +1543,6 @@ The common name of the client certificate.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `clientCertificateCommonNames.certificateIssuerThumbprint`
 
@@ -1568,7 +1550,6 @@ The issuer thumbprint of the client certificate.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `clientCertificateCommonNames.isAdmin`
 
@@ -1576,7 +1557,6 @@ Indicates if the client certificate has admin access to the cluster. Non admin c
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `clientCertificateThumbprints`
 
@@ -1584,7 +1564,6 @@ The list of client certificates referenced by thumbprint that are allowed to man
 
 - Required: No
 - Type: array
-- Nullable: No
 
 **Required parameters**
 
@@ -1599,7 +1578,6 @@ The thumbprint of the client certificate.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `clientCertificateThumbprints.isAdmin`
 
@@ -1607,7 +1585,6 @@ Indicates if the client certificate has admin access to the cluster. Non admin c
 
 - Required: Yes
 - Type: bool
-- Nullable: No
 
 ### Parameter: `clusterCodeVersion`
 
@@ -1615,7 +1592,6 @@ The Service Fabric runtime version of the cluster. This property can only by set
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `diagnosticsStorageAccountConfig`
 
@@ -1623,7 +1599,6 @@ The storage account information for storing Service Fabric diagnostic logs.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `enableTelemetry`
@@ -1632,7 +1607,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `eventStoreServiceEnabled`
@@ -1641,7 +1615,6 @@ Indicates if the event store service is enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `fabricSettings`
@@ -1650,7 +1623,6 @@ The list of custom fabric settings to configure the cluster.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `infrastructureServiceManager`
@@ -1659,7 +1631,6 @@ Indicates if infrastructure service manager is enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `location`
@@ -1668,7 +1639,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
@@ -1677,7 +1647,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: No
 
 **Optional parameters**
 
@@ -1692,7 +1661,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1708,7 +1676,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `maxUnusedVersionsToKeep`
 
@@ -1716,7 +1683,6 @@ Number of unused versions per application type to keep.
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `3`
 
 ### Parameter: `notifications`
@@ -1725,7 +1691,6 @@ Indicates a list of notification channels for cluster events.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `reverseProxyCertificate`
@@ -1734,7 +1699,6 @@ Describes the certificate details.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `reverseProxyCertificateCommonNames`
@@ -1743,7 +1707,6 @@ Describes a list of server certificates referenced by common name that are used 
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `roleAssignments`
@@ -1752,7 +1715,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1784,7 +1746,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1792,7 +1753,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1800,7 +1760,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1808,7 +1767,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1822,7 +1780,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.description`
 
@@ -1830,7 +1787,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.name`
 
@@ -1838,7 +1794,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1846,7 +1801,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -1864,7 +1818,6 @@ This property controls the logical grouping of VMs in upgrade domains (UDs). Thi
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Hierarchical'`
 - Allowed:
   ```Bicep
@@ -1880,7 +1833,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `upgradeDescription`
 
@@ -1888,7 +1840,6 @@ Describes the policy used when upgrading the cluster.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `upgradeMode`
@@ -1897,7 +1848,6 @@ The upgrade mode of the cluster when new Service Fabric runtime version is avail
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Automatic'`
 - Allowed:
   ```Bicep
@@ -1913,7 +1863,6 @@ Indicates the end date and time to pause automatic runtime version upgrades on t
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `upgradePauseStartTimestampUtc`
 
@@ -1921,7 +1870,6 @@ Indicates the start date and time to pause automatic runtime version upgrades on
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `upgradeWave`
 
@@ -1929,7 +1877,6 @@ Indicates when new cluster runtime version upgrades will be applied after they a
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Wave0'`
 - Allowed:
   ```Bicep
@@ -1946,7 +1893,6 @@ The VM image VMSS has been configured with. Generic names such as Windows or Lin
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `vmssZonalUpgradeMode`
 
@@ -1954,7 +1900,6 @@ This property defines the upgrade mode for the virtual machine scale set, it is 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Hierarchical'`
 - Allowed:
   ```Bicep
@@ -1970,7 +1915,6 @@ Boolean to pause automatic runtime version upgrades to the cluster.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ## Outputs

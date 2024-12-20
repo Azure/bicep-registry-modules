@@ -453,7 +453,6 @@ The total amount of cost or usage to track with the budget.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -461,7 +460,6 @@ The name of the budget.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `actionGroups`
 
@@ -469,7 +467,6 @@ List of action group resource IDs that will receive the alert. Required if neith
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `contactEmails`
 
@@ -477,7 +474,6 @@ The list of email addresses to send the budget notification to when the threshol
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `contactRoles`
 
@@ -485,7 +481,6 @@ The list of contact roles to send the budget notification to when the thresholds
 
 - Required: No
 - Type: array
-- Nullable: Yes
 
 ### Parameter: `category`
 
@@ -493,7 +488,6 @@ The category of the budget, whether the budget tracks cost or usage.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Cost'`
 - Allowed:
   ```Bicep
@@ -509,7 +503,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `endDate`
@@ -518,7 +511,6 @@ The end date for the budget. If not provided, it will default to 10 years from t
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `filter`
@@ -527,7 +519,6 @@ The filter to use for restricting which resources are considered within the budg
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ### Parameter: `location`
 
@@ -535,7 +526,6 @@ Location deployment metadata.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[deployment().location]`
 
 ### Parameter: `operator`
@@ -544,7 +534,6 @@ The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'GreaterThan'`
 - Allowed:
   ```Bicep
@@ -561,7 +550,6 @@ The time covered by a budget. Tracking of the amount will be reset based on the 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Monthly'`
 - Allowed:
   ```Bicep
@@ -581,7 +569,6 @@ The list of resource groups that contain the resources that are to be considered
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `startDate`
@@ -590,7 +577,6 @@ The start date for the budget. Start date should be the first day of the month a
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[format('{0}-{1}-01T00:00:00Z', utcNow('yyyy'), utcNow('MM'))]`
 
 ### Parameter: `thresholds`
@@ -599,7 +585,6 @@ Percent thresholds of budget for when to get a notification. Can be up to 5 thre
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -617,7 +602,6 @@ The type of threshold to use for the budget. The threshold type can be either `A
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Actual'`
 - Allowed:
   ```Bicep

@@ -46,7 +46,6 @@ The type of the certificate used for secure delivery.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - Allowed:
   ```Bicep
   [
@@ -62,7 +61,6 @@ The host name of the domain. Must be a domain name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -70,7 +68,6 @@ The name of the custom domain.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `profileName`
 
@@ -78,7 +75,6 @@ The name of the CDN profile.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `extendedProperties`
 
@@ -86,7 +82,6 @@ Key-Value pair representing migration properties for domains.
 
 - Required: No
 - Type: object
-- Nullable: No
 - Default: `{}`
 
 ### Parameter: `minimumTlsVersion`
@@ -95,7 +90,6 @@ The minimum TLS version required for the custom domain. Default value: TLS12.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'TLS12'`
 - Allowed:
   ```Bicep
@@ -111,7 +105,6 @@ Resource reference to the Azure resource where custom domain ownership was preva
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `secretName`
@@ -120,7 +113,6 @@ The name of the secret. ie. subs/rg/profile/secret.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `azureDnsZoneResourceId`
@@ -129,7 +121,6 @@ Resource reference to the Azure DNS zone.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ## Outputs

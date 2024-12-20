@@ -54,7 +54,6 @@ The port used for the internal endpoint.
 
 - Required: Yes
 - Type: int
-- Nullable: No
 - MinValue: 0
 - MaxValue: 65535
 
@@ -64,7 +63,6 @@ The name of the frontend IP address to set for the inbound NAT rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 0
 - MaxValue: 65535
 
@@ -74,7 +72,6 @@ The name of the inbound NAT rule.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 0
 - MaxValue: 65535
 
@@ -84,7 +81,6 @@ The port for the external endpoint. Port numbers for each rule must be unique wi
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 65534
 
@@ -94,7 +90,6 @@ The port range start for the external endpoint. This property is used together w
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 65534
 
@@ -104,7 +99,6 @@ The name of the parent load balancer. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 0
 - MaxValue: 65534
 
@@ -114,7 +108,6 @@ Name of the backend address pool.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 - MinValue: 0
 - MaxValue: 65534
@@ -125,7 +118,6 @@ Configures a virtual machine's endpoint for the floating IP capability required 
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 0
 - MaxValue: 65534
@@ -136,7 +128,6 @@ Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connectio
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 0
 - MaxValue: 65534
@@ -147,7 +138,6 @@ The timeout for the TCP idle connection. The value can be set between 4 and 30 m
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `4`
 - MinValue: 0
 - MaxValue: 65534
@@ -158,7 +148,6 @@ The transport protocol for the endpoint.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Tcp'`
 - Allowed:
   ```Bicep
@@ -177,7 +166,6 @@ The port range end for the external endpoint. This property is used together wit
 
 - Required: No
 - Type: int
-- Nullable: Yes
 - MinValue: 0
 - MaxValue: 65534
 

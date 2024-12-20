@@ -37,7 +37,6 @@ The resource ID of the linked server.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `redisCacheName`
 
@@ -45,7 +44,6 @@ Primary Redis cache name.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `linkedRedisCacheLocation`
 
@@ -53,7 +51,6 @@ The location of the linked server. If not provided, the location of the primary 
 
 - Required: No
 - Type: string
-- Nullable: Yes
 
 ### Parameter: `name`
 
@@ -61,7 +58,6 @@ The name of the secondary Redis cache. If not provided, the primary Redis cache 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[parameters('redisCacheName')]`
 
 ### Parameter: `serverRole`
@@ -70,7 +66,6 @@ The role of the linked server. Possible values include: "Primary", "Secondary". 
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Secondary'`
 
 ## Outputs

@@ -63,7 +63,6 @@ The name of the event hub.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `namespaceName`
 
@@ -71,7 +70,6 @@ The name of the parent event hub namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `authorizationRules`
 
@@ -79,7 +77,6 @@ Authorization Rules for the event hub.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -100,7 +97,6 @@ Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Y
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'`
 
 ### Parameter: `captureDescriptionDestinationBlobContainer`
@@ -109,7 +105,6 @@ Blob container Name.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `captureDescriptionDestinationName`
@@ -118,7 +113,6 @@ Name for capture destination.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'EventHubArchive.AzureBlockBlob'`
 
 ### Parameter: `captureDescriptionDestinationStorageAccountResourceId`
@@ -127,7 +121,6 @@ Resource ID of the storage account to be used to create the blobs.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `''`
 
 ### Parameter: `captureDescriptionEnabled`
@@ -136,7 +129,6 @@ A value that indicates whether capture description is enabled.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 
 ### Parameter: `captureDescriptionEncoding`
@@ -145,7 +137,6 @@ Enumerates the possible values for the encoding format of capture description. N
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Avro'`
 - Allowed:
   ```Bicep
@@ -161,7 +152,6 @@ The time window allows you to set the frequency with which the capture to Azure 
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `300`
 - MinValue: 60
 - MaxValue: 900
@@ -172,7 +162,6 @@ The size window defines the amount of data built up in your Event Hub before an 
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `314572800`
 - MinValue: 10485760
 - MaxValue: 524288000
@@ -183,7 +172,6 @@ A value that indicates whether to Skip Empty Archives.
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `False`
 - MinValue: 10485760
 - MaxValue: 524288000
@@ -194,7 +182,6 @@ The consumer groups to create in this event hub instance.
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default:
   ```Bicep
   [
@@ -212,7 +199,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 - MinValue: 10485760
 - MaxValue: 524288000
 
@@ -229,7 +215,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -247,7 +232,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 10485760
 - MaxValue: 524288000
 
@@ -257,7 +241,6 @@ Number of days to retain the events for this Event Hub, value should be 1 to 7 d
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 - MinValue: 1
 - MaxValue: 7
@@ -268,7 +251,6 @@ Number of partitions created for the Event Hub, allowed values are from 1 to 32 
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `2`
 - MinValue: 1
 - MaxValue: 32
@@ -279,7 +261,6 @@ Retention cleanup policy. Enumerates the possible values for cleanup policy.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Delete'`
 - Allowed:
   ```Bicep
@@ -297,7 +278,6 @@ Retention time in hours. Number of hours to retain the events for this Event Hub
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 - MinValue: 1
 - MaxValue: 168
@@ -308,7 +288,6 @@ Retention cleanup policy. Number of hours to retain the tombstone markers of a c
 
 - Required: No
 - Type: int
-- Nullable: No
 - Default: `1`
 - MinValue: 1
 - MaxValue: 168
@@ -319,7 +298,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 168
 - Roles configurable by name:
@@ -356,7 +334,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 168
 
@@ -366,7 +343,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- Nullable: No
 - MinValue: 1
 - MaxValue: 168
 
@@ -376,7 +352,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 168
 
@@ -386,7 +361,6 @@ Version of the condition.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -402,7 +376,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 168
 
@@ -412,7 +385,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 168
 
@@ -422,7 +394,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - MinValue: 1
 - MaxValue: 168
 
@@ -432,7 +403,6 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Nullable: Yes
 - Allowed:
   ```Bicep
   [
@@ -452,7 +422,6 @@ Enumerates the possible values for the status of the Event Hub.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Active'`
 - Allowed:
   ```Bicep

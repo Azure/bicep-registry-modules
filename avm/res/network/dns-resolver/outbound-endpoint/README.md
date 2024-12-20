@@ -37,7 +37,6 @@ Name of the DNS Private Resolver.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `name`
 
@@ -45,7 +44,6 @@ The name of the inbound endpoint.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `subnetResourceId`
 
@@ -53,7 +51,6 @@ The subnet ID of the inbound endpoint.
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `location`
 
@@ -61,7 +58,6 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `[resourceGroup().location]`
 
 ### Parameter: `tags`
@@ -70,7 +66,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Nullable: Yes
 
 ## Outputs
 

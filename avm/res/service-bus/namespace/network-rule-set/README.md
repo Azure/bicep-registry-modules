@@ -38,7 +38,6 @@ The name of the parent Service Bus Namespace for the Service Bus Network Rule Se
 
 - Required: Yes
 - Type: string
-- Nullable: No
 
 ### Parameter: `defaultAction`
 
@@ -46,7 +45,6 @@ Default Action for Network Rule Set. Default is "Allow". It will not be set if p
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Allow'`
 - Allowed:
   ```Bicep
@@ -62,7 +60,6 @@ List of IpRules. It will not be set if publicNetworkAccess is "Disabled". Otherw
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ### Parameter: `publicNetworkAccess`
@@ -71,7 +68,6 @@ This determines if traffic is allowed over public network. Default is "Enabled".
 
 - Required: No
 - Type: string
-- Nullable: No
 - Default: `'Enabled'`
 - Allowed:
   ```Bicep
@@ -87,7 +83,6 @@ Value that indicates whether Trusted Service Access is enabled or not. Default i
 
 - Required: No
 - Type: bool
-- Nullable: No
 - Default: `True`
 
 ### Parameter: `virtualNetworkRules`
@@ -96,7 +91,6 @@ List virtual network rules. It will not be set if publicNetworkAccess is "Disabl
 
 - Required: No
 - Type: array
-- Nullable: No
 - Default: `[]`
 
 ## Outputs
