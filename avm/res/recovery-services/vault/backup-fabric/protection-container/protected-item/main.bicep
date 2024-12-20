@@ -43,7 +43,6 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
   }
 }
 
-// Iterative validation
 resource protectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems@2024-10-01' = {
   name: '${recoveryVaultName}/Azure/${protectionContainerName}/${name}'
   location: location
