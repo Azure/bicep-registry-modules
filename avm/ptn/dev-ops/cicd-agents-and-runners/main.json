@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4749597093525960786"
+      "templateHash": "14555734508471938883"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -327,7 +327,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true
       }
@@ -614,7 +613,7 @@
       }
     },
     "computeTypesType": {
-      "type": "array",
+      "type": "string",
       "allowedValues": [
         "azure-container-app",
         "azure-container-instance"
@@ -640,7 +639,10 @@
       }
     },
     "computeTypes": {
-      "$ref": "#/definitions/computeTypesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/computeTypesType"
+      },
       "metadata": {
         "description": "Required. The compute target for the private runners."
       }

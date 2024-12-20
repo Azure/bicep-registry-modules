@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 param namingPrefix string
 
 @description('Required. The compute target for the private runners.')
-param computeTypes computeTypesType
+param computeTypes computeTypesType[]
 
 @description('Required. The self-hosted runner configuration. This can be either GitHub or Azure DevOps.')
 param selfHostedConfig selfHostedRunnerType
@@ -929,7 +929,7 @@ type azureContainerInstanceTargetType = {
 
   @description('Optional. The Azure Container Instance container port.')
   port: int?
-}?
+}
 
 @export()
 type azureContainerAppTargetType = {
@@ -1036,4 +1036,4 @@ type selfHostedRunnerType = gitHubRunnersType | devOpsAgentsType
 
 @export()
 @description('Required. The target compute environments for the private runners.')
-type computeTypesType = ('azure-container-app' | 'azure-container-instance')[]
+type computeTypesType = ('azure-container-app' | 'azure-container-instance')

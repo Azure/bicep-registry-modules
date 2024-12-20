@@ -363,7 +363,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryFileContent = $null
             }
 
-            .  (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
+            .  (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
             # load cross-references
             $crossReferencedModuleList = Get-CrossReferencedModuleList
 
