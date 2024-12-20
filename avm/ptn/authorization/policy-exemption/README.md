@@ -120,7 +120,7 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     displayName: '[DisplayName] Policy Exemption at the management group scope'
     enableTelemetry: true
     location: '<location>'
-    managementGroupId: 'alz-landingzones'
+    managementGroupId: '<managementGroupId>'
     metadata: {
       assignedBy: 'Bicep'
       category: 'Security'
@@ -187,7 +187,7 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
       "value": "<location>"
     },
     "managementGroupId": {
-      "value": "alz-landingzones"
+      "value": "<managementGroupId>"
     },
     "metadata": {
       "value": {
@@ -240,7 +240,7 @@ param description = '[Description] Policy Exemption at the management group scop
 param displayName = '[DisplayName] Policy Exemption at the management group scope'
 param enableTelemetry = true
 param location = '<location>'
-param managementGroupId = 'alz-landingzones'
+param managementGroupId = '<managementGroupId>'
 param metadata = {
   assignedBy: 'Bicep'
   category: 'Security'
@@ -847,7 +847,6 @@ This message will be part of response in case of policy violation.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `displayName`
 
@@ -855,7 +854,6 @@ The display name of the policy exemption. Maximum length is 128 characters.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -894,7 +892,6 @@ The policy exemption metadata. Metadata is an open ended object and is typically
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `policyDefinitionReferenceIds`
 
@@ -902,7 +899,6 @@ The policy definition reference ID list when the associated policy assignment is
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `resourceGroupName`
 
@@ -910,7 +906,6 @@ The Target Scope for the Policy. The name of the resource group for the policy e
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `resourceSelectors`
 
@@ -918,7 +913,6 @@ The resource selector list to filter policies by resource properties. Facilitate
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `subscriptionId`
 
@@ -926,7 +920,6 @@ The Target Scope for the Policy. The subscription ID of the subscription for the
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

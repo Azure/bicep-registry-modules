@@ -16,11 +16,11 @@ param name string
 param assignmentScopeValidation string = 'Default'
 
 @sys.description('Optional. This message will be part of response in case of policy violation.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. The display name of the policy exemption. Maximum length is 128 characters.')
 @maxLength(128)
-param displayName string = ''
+param displayName string?
 
 @sys.description('Required. The policy exemption category.')
 @allowed([
@@ -35,29 +35,29 @@ param exemptionCategory string
 param expiresOn string?
 
 @sys.description('Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs.')
-param metadata object = {}
+param metadata object?
 
 @sys.description('Required. Specifies the ID of the policy assignment that is being exempted.')
 param policyAssignmentId string
 
 @sys.description('Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition.')
-param policyDefinitionReferenceIds array = []
+param policyDefinitionReferenceIds string[]?
 
 @sys.description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location.')
-param resourceSelectors array = []
+param resourceSelectors array?
 
 resource policyExemption 'Microsoft.Authorization/policyExemptions@2022-07-01-preview' = {
   name: name
   properties: {
-    description: !empty(description) ? description : null
-    displayName: !empty(displayName) ? displayName : null
+    description: description
+    displayName: displayName
     assignmentScopeValidation: assignmentScopeValidation
     exemptionCategory: exemptionCategory
-    expiresOn: !empty(expiresOn) ? expiresOn : null
-    metadata: !empty(metadata) ? metadata : null
+    expiresOn: expiresOn
+    metadata: metadata
     policyAssignmentId: policyAssignmentId
-    policyDefinitionReferenceIds: !empty(policyDefinitionReferenceIds) ? policyDefinitionReferenceIds : null
-    resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : null
+    policyDefinitionReferenceIds: policyDefinitionReferenceIds
+    resourceSelectors: resourceSelectors
   }
 }
 

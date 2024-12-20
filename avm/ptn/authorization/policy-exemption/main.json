@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3002958387544113459"
+      "templateHash": "18445188542008261648"
     },
     "name": "Policy Exemptions (All scopes)",
     "description": "This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.",
@@ -33,14 +33,14 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. This message will be part of response in case of policy violation."
       }
     },
     "displayName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "maxLength": 128,
       "metadata": {
         "description": "Optional. The display name of the policy exemption. Maximum length is 128 characters."
@@ -67,7 +67,7 @@
     },
     "metadata": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
       }
@@ -80,14 +80,17 @@
     },
     "policyDefinitionReferenceIds": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition."
       }
     },
     "resourceSelectors": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location."
       }
@@ -101,14 +104,14 @@
     },
     "subscriptionId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy exemption."
       }
     },
     "resourceGroupName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Target Scope for the Policy. The name of the resource group for the policy exemption."
       }
@@ -166,8 +169,12 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', null()))]",
-          "displayName": "[if(not(empty(parameters('displayName'))), createObject('value', parameters('displayName')), createObject('value', null()))]",
+          "description": {
+            "value": "[parameters('description')]"
+          },
+          "displayName": {
+            "value": "[parameters('displayName')]"
+          },
           "assignmentScopeValidation": {
             "value": "[parameters('assignmentScopeValidation')]"
           },
@@ -177,12 +184,18 @@
           "expiresOn": {
             "value": "[parameters('expiresOn')]"
           },
-          "metadata": "[if(not(empty(parameters('metadata'))), createObject('value', parameters('metadata')), createObject('value', null()))]",
+          "metadata": {
+            "value": "[parameters('metadata')]"
+          },
           "policyAssignmentId": {
             "value": "[parameters('policyAssignmentId')]"
           },
-          "policyDefinitionReferenceIds": "[if(not(empty(parameters('policyDefinitionReferenceIds'))), createObject('value', parameters('policyDefinitionReferenceIds')), createObject('value', null()))]",
-          "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', null()))]"
+          "policyDefinitionReferenceIds": {
+            "value": "[parameters('policyDefinitionReferenceIds')]"
+          },
+          "resourceSelectors": {
+            "value": "[parameters('resourceSelectors')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -192,7 +205,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14565994321429024704"
+              "templateHash": "17217850393909725714"
             },
             "name": "Policy Exemptions (Management Group scope)",
             "description": "This module deploys a policy exemption at a Management Group scope.",
@@ -219,14 +232,14 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. This message will be part of response in case of policy violation."
               }
             },
             "displayName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "maxLength": 128,
               "metadata": {
                 "description": "Optional. The display name of the policy exemption. Maximum length is 128 characters."
@@ -253,7 +266,7 @@
             },
             "metadata": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
               }
@@ -266,14 +279,17 @@
             },
             "policyDefinitionReferenceIds": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition."
               }
             },
             "resourceSelectors": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location."
               }
@@ -285,15 +301,15 @@
               "apiVersion": "2022-07-01-preview",
               "name": "[parameters('name')]",
               "properties": {
-                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
-                "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                "description": "[parameters('description')]",
+                "displayName": "[parameters('displayName')]",
                 "assignmentScopeValidation": "[parameters('assignmentScopeValidation')]",
                 "exemptionCategory": "[parameters('exemptionCategory')]",
-                "expiresOn": "[if(not(empty(parameters('expiresOn'))), parameters('expiresOn'), null())]",
-                "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                "expiresOn": "[parameters('expiresOn')]",
+                "metadata": "[parameters('metadata')]",
                 "policyAssignmentId": "[parameters('policyAssignmentId')]",
-                "policyDefinitionReferenceIds": "[if(not(empty(parameters('policyDefinitionReferenceIds'))), parameters('policyDefinitionReferenceIds'), null())]",
-                "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), null())]"
+                "policyDefinitionReferenceIds": "[parameters('policyDefinitionReferenceIds')]",
+                "resourceSelectors": "[parameters('resourceSelectors')]"
               }
             }
           },
@@ -321,7 +337,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PolicyExemption-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[parameters('subscriptionId')]",
+      "subscriptionId": "[coalesce(parameters('subscriptionId'), '')]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -332,8 +348,12 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', null()))]",
-          "displayName": "[if(not(empty(parameters('displayName'))), createObject('value', parameters('displayName')), createObject('value', null()))]",
+          "description": {
+            "value": "[parameters('description')]"
+          },
+          "displayName": {
+            "value": "[parameters('displayName')]"
+          },
           "assignmentScopeValidation": {
             "value": "[parameters('assignmentScopeValidation')]"
           },
@@ -343,12 +363,18 @@
           "expiresOn": {
             "value": "[parameters('expiresOn')]"
           },
-          "metadata": "[if(not(empty(parameters('metadata'))), createObject('value', parameters('metadata')), createObject('value', null()))]",
+          "metadata": {
+            "value": "[parameters('metadata')]"
+          },
           "policyAssignmentId": {
             "value": "[parameters('policyAssignmentId')]"
           },
-          "policyDefinitionReferenceIds": "[if(not(empty(parameters('policyDefinitionReferenceIds'))), createObject('value', parameters('policyDefinitionReferenceIds')), createObject('value', null()))]",
-          "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', null()))]"
+          "policyDefinitionReferenceIds": {
+            "value": "[parameters('policyDefinitionReferenceIds')]"
+          },
+          "resourceSelectors": {
+            "value": "[parameters('resourceSelectors')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -358,7 +384,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10491130027469268041"
+              "templateHash": "2362298674161098325"
             },
             "name": "Policy Exemptions (Subscription scope)",
             "description": "This module deploys a policy exemption at a Subscription scope.",
@@ -385,14 +411,14 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. This message will be part of response in case of policy violation."
               }
             },
             "displayName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "maxLength": 128,
               "metadata": {
                 "description": "Optional. The display name of the policy exemption. Maximum length is 128 characters."
@@ -419,7 +445,7 @@
             },
             "metadata": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
               }
@@ -432,14 +458,17 @@
             },
             "policyDefinitionReferenceIds": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition."
               }
             },
             "resourceSelectors": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location."
               }
@@ -451,15 +480,15 @@
               "apiVersion": "2022-07-01-preview",
               "name": "[parameters('name')]",
               "properties": {
-                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
-                "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                "description": "[parameters('description')]",
+                "displayName": "[parameters('displayName')]",
                 "assignmentScopeValidation": "[parameters('assignmentScopeValidation')]",
                 "exemptionCategory": "[parameters('exemptionCategory')]",
-                "expiresOn": "[if(not(empty(parameters('expiresOn'))), parameters('expiresOn'), null())]",
-                "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                "expiresOn": "[parameters('expiresOn')]",
+                "metadata": "[parameters('metadata')]",
                 "policyAssignmentId": "[parameters('policyAssignmentId')]",
-                "policyDefinitionReferenceIds": "[if(not(empty(parameters('policyDefinitionReferenceIds'))), parameters('policyDefinitionReferenceIds'), null())]",
-                "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), null())]"
+                "policyDefinitionReferenceIds": "[parameters('policyDefinitionReferenceIds')]",
+                "resourceSelectors": "[parameters('resourceSelectors')]"
               }
             }
           },
@@ -487,8 +516,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PolicyExemption-RG-Module', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[parameters('subscriptionId')]",
-      "resourceGroup": "[parameters('resourceGroupName')]",
+      "subscriptionId": "[coalesce(parameters('subscriptionId'), '')]",
+      "resourceGroup": "[coalesce(parameters('resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -498,8 +527,12 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', null()))]",
-          "displayName": "[if(not(empty(parameters('displayName'))), createObject('value', parameters('displayName')), createObject('value', null()))]",
+          "description": {
+            "value": "[parameters('description')]"
+          },
+          "displayName": {
+            "value": "[parameters('displayName')]"
+          },
           "assignmentScopeValidation": {
             "value": "[parameters('assignmentScopeValidation')]"
           },
@@ -509,12 +542,18 @@
           "expiresOn": {
             "value": "[parameters('expiresOn')]"
           },
-          "metadata": "[if(not(empty(parameters('metadata'))), createObject('value', parameters('metadata')), createObject('value', null()))]",
+          "metadata": {
+            "value": "[parameters('metadata')]"
+          },
           "policyAssignmentId": {
             "value": "[parameters('policyAssignmentId')]"
           },
-          "policyDefinitionReferenceIds": "[if(not(empty(parameters('policyDefinitionReferenceIds'))), createObject('value', parameters('policyDefinitionReferenceIds')), createObject('value', null()))]",
-          "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', null()))]"
+          "policyDefinitionReferenceIds": {
+            "value": "[parameters('policyDefinitionReferenceIds')]"
+          },
+          "resourceSelectors": {
+            "value": "[parameters('resourceSelectors')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -524,7 +563,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1123885024493785932"
+              "templateHash": "8554892027886181020"
             },
             "name": "Policy Exemptions (Resource Group scope)",
             "description": "This module deploys a policy exemption at a Resource Group scope.",
@@ -551,14 +590,14 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. This message will be part of response in case of policy violation."
               }
             },
             "displayName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "maxLength": 128,
               "metadata": {
                 "description": "Optional. The display name of the policy exemption. Maximum length is 128 characters."
@@ -585,7 +624,7 @@
             },
             "metadata": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
               }
@@ -598,14 +637,17 @@
             },
             "policyDefinitionReferenceIds": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition."
               }
             },
             "resourceSelectors": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location."
               }
@@ -617,15 +659,15 @@
               "apiVersion": "2022-07-01-preview",
               "name": "[parameters('name')]",
               "properties": {
-                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
-                "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                "description": "[parameters('description')]",
+                "displayName": "[parameters('displayName')]",
                 "assignmentScopeValidation": "[parameters('assignmentScopeValidation')]",
                 "exemptionCategory": "[parameters('exemptionCategory')]",
-                "expiresOn": "[if(not(empty(parameters('expiresOn'))), parameters('expiresOn'), null())]",
-                "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                "expiresOn": "[parameters('expiresOn')]",
+                "metadata": "[parameters('metadata')]",
                 "policyAssignmentId": "[parameters('policyAssignmentId')]",
-                "policyDefinitionReferenceIds": "[if(not(empty(parameters('policyDefinitionReferenceIds'))), parameters('policyDefinitionReferenceIds'), null())]",
-                "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), null())]"
+                "policyDefinitionReferenceIds": "[parameters('policyDefinitionReferenceIds')]",
+                "resourceSelectors": "[parameters('resourceSelectors')]"
               }
             }
           },
