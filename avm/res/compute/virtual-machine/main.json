@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3974149047754872317"
+      "templateHash": "17689937671944537269"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -648,20 +648,7 @@
     },
     "extensionAntiMalwareConfig": {
       "type": "object",
-      "defaultValue": {
-        "enabled": true,
-        "settings": {
-          "AntimalwareEnabled": "true",
-          "Exclusions": {},
-          "RealtimeProtectionEnabled": "true",
-          "ScheduledScanSettings": {
-            "day": "7",
-            "isEnabled": "true",
-            "scanType": "Quick",
-            "time": "120"
-          }
-        }
-      },
+      "defaultValue": "[if(equals(parameters('osType'), 'Windows'), createObject('enabled', true(), 'settings', createObject('AntimalwareEnabled', 'true', 'Exclusions', createObject(), 'RealtimeProtectionEnabled', 'true', 'ScheduledScanSettings', createObject('day', '7', 'isEnabled', 'true', 'scanType', 'Quick', 'time', '120'))), createObject('enabled', false()))]",
       "metadata": {
         "description": "Optional. The configuration for the [Anti Malware] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }

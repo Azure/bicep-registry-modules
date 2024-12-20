@@ -5375,23 +5375,7 @@ The configuration for the [Anti Malware] extension. Must at least contain the ["
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      enabled: true
-      settings: {
-        AntimalwareEnabled: 'true'
-        Exclusions: {}
-        RealtimeProtectionEnabled: 'true'
-        ScheduledScanSettings: {
-          day: '7'
-          isEnabled: 'true'
-          scanType: 'Quick'
-          time: '120'
-        }
-      }
-  }
-  ```
+- Default: `[if(equals(parameters('osType'), 'Windows'), createObject('enabled', true(), 'settings', createObject('AntimalwareEnabled', 'true', 'Exclusions', createObject(), 'RealtimeProtectionEnabled', 'true', 'ScheduledScanSettings', createObject('day', '7', 'isEnabled', 'true', 'scanType', 'Quick', 'time', '120'))), createObject('enabled', false()))]`
 
 ### Parameter: `extensionAzureDiskEncryptionConfig`
 
