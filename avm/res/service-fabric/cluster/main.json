@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "11160466068108868601"
+      "version": "0.32.4.45862",
+      "templateHash": "5756653663103242994"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -528,37 +528,37 @@
         "name": "fabricSettingsVar",
         "count": "[length(parameters('fabricSettings'))]",
         "input": {
-          "name": "[if(contains(parameters('fabricSettings')[copyIndex('fabricSettingsVar')], 'name'), parameters('fabricSettings')[copyIndex('fabricSettingsVar')].name, null())]",
-          "parameters": "[if(contains(parameters('fabricSettings')[copyIndex('fabricSettingsVar')], 'parameters'), parameters('fabricSettings')[copyIndex('fabricSettingsVar')].parameters, null())]"
+          "name": "[tryGet(parameters('fabricSettings')[copyIndex('fabricSettingsVar')], 'name')]",
+          "parameters": "[tryGet(parameters('fabricSettings')[copyIndex('fabricSettingsVar')], 'parameters')]"
         }
       },
       {
         "name": "fnodeTypesVar",
         "count": "[length(parameters('nodeTypes'))]",
         "input": {
-          "applicationPorts": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'applicationPorts'), createObject('endPort', if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts, 'endPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts.endPort, null()), 'startPort', if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts, 'startPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts.startPort, null())), null())]",
-          "capacities": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'capacities'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].capacities, null())]",
-          "clientConnectionEndpointPort": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'clientConnectionEndpointPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].clientConnectionEndpointPort, null())]",
-          "durabilityLevel": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'durabilityLevel'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].durabilityLevel, null())]",
-          "ephemeralPorts": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'ephemeralPorts'), createObject('endPort', if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts, 'endPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts.endPort, null()), 'startPort', if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts, 'startPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts.startPort, null())), null())]",
-          "httpGatewayEndpointPort": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'httpGatewayEndpointPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].httpGatewayEndpointPort, null())]",
-          "isPrimary": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'isPrimary'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].isPrimary, null())]",
-          "isStateless": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'isStateless'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].isStateless, null())]",
-          "multipleAvailabilityZones": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'multipleAvailabilityZones'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].multipleAvailabilityZones, null())]",
-          "name": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'name'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].name, 'Node00')]",
-          "placementProperties": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'placementProperties'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].placementProperties, null())]",
-          "reverseProxyEndpointPort": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'reverseProxyEndpointPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].reverseProxyEndpointPort, null())]",
-          "vmInstanceCount": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'vmInstanceCount'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].vmInstanceCount, 1)]"
+          "applicationPorts": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'applicationPorts'), createObject('endPort', tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts, 'endPort'), 'startPort', tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts, 'startPort')), null())]",
+          "capacities": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'capacities')]",
+          "clientConnectionEndpointPort": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'clientConnectionEndpointPort')]",
+          "durabilityLevel": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'durabilityLevel')]",
+          "ephemeralPorts": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'ephemeralPorts'), createObject('endPort', tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts, 'endPort'), 'startPort', tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts, 'startPort')), null())]",
+          "httpGatewayEndpointPort": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'httpGatewayEndpointPort')]",
+          "isPrimary": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'isPrimary')]",
+          "isStateless": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'isStateless')]",
+          "multipleAvailabilityZones": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'multipleAvailabilityZones')]",
+          "name": "[coalesce(tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'name'), 'Node00')]",
+          "placementProperties": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'placementProperties')]",
+          "reverseProxyEndpointPort": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'reverseProxyEndpointPort')]",
+          "vmInstanceCount": "[coalesce(tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'vmInstanceCount'), 1)]"
         }
       },
       {
         "name": "notificationsVar",
         "count": "[length(parameters('notifications'))]",
         "input": {
-          "isEnabled": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'isEnabled'), parameters('notifications')[copyIndex('notificationsVar')].isEnabled, false())]",
-          "notificationCategory": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'notificationCategory'), parameters('notifications')[copyIndex('notificationsVar')].notificationCategory, 'WaveProgress')]",
-          "notificationLevel": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'notificationLevel'), parameters('notifications')[copyIndex('notificationsVar')].notificationLevel, 'All')]",
-          "notificationTargets": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'notificationTargets'), parameters('notifications')[copyIndex('notificationsVar')].notificationTargets, createArray())]"
+          "isEnabled": "[coalesce(tryGet(parameters('notifications')[copyIndex('notificationsVar')], 'isEnabled'), false())]",
+          "notificationCategory": "[coalesce(tryGet(parameters('notifications')[copyIndex('notificationsVar')], 'notificationCategory'), 'WaveProgress')]",
+          "notificationLevel": "[coalesce(tryGet(parameters('notifications')[copyIndex('notificationsVar')], 'notificationLevel'), 'All')]",
+          "notificationTargets": "[coalesce(tryGet(parameters('notifications')[copyIndex('notificationsVar')], 'notificationTargets'), createArray())]"
         }
       },
       {
@@ -567,7 +567,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "upgradeDescriptionVar": "[union(createObject('deltaHealthPolicy', createObject('applicationDeltaHealthPolicies', coalesce(tryGet(parameters('upgradeDescription'), 'applicationDeltaHealthPolicies'), createObject()), 'maxPercentDeltaUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyApplications'), 0), 'maxPercentDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyNodes'), 0), 'maxPercentUpgradeDomainDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentUpgradeDomainDeltaUnhealthyNodes'), 0)), 'forceRestart', if(contains(parameters('upgradeDescription'), 'forceRestart'), parameters('upgradeDescription').forceRestart, false()), 'healthCheckRetryTimeout', if(contains(parameters('upgradeDescription'), 'healthCheckRetryTimeout'), parameters('upgradeDescription').healthCheckRetryTimeout, '00:45:00'), 'healthCheckStableDuration', if(contains(parameters('upgradeDescription'), 'healthCheckStableDuration'), parameters('upgradeDescription').healthCheckStableDuration, '00:01:00'), 'healthCheckWaitDuration', if(contains(parameters('upgradeDescription'), 'healthCheckWaitDuration'), parameters('upgradeDescription').healthCheckWaitDuration, '00:00:30'), 'upgradeDomainTimeout', if(contains(parameters('upgradeDescription'), 'upgradeDomainTimeout'), parameters('upgradeDescription').upgradeDomainTimeout, '02:00:00'), 'upgradeReplicaSetCheckTimeout', if(contains(parameters('upgradeDescription'), 'upgradeReplicaSetCheckTimeout'), parameters('upgradeDescription').upgradeReplicaSetCheckTimeout, '1.00:00:00'), 'upgradeTimeout', if(contains(parameters('upgradeDescription'), 'upgradeTimeout'), parameters('upgradeDescription').upgradeTimeout, '02:00:00')), if(contains(parameters('upgradeDescription'), 'healthPolicy'), createObject('healthPolicy', createObject('applicationHealthPolicies', if(contains(parameters('upgradeDescription').healthPolicy, 'applicationHealthPolicies'), parameters('upgradeDescription').healthPolicy.applicationHealthPolicies, createObject()), 'maxPercentUnhealthyApplications', if(contains(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyApplications'), parameters('upgradeDescription').healthPolicy.maxPercentUnhealthyApplications, 0), 'maxPercentUnhealthyNodes', if(contains(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyNodes'), parameters('upgradeDescription').healthPolicy.maxPercentUnhealthyNodes, 0))), createObject()))]",
+    "upgradeDescriptionVar": "[union(createObject('deltaHealthPolicy', createObject('applicationDeltaHealthPolicies', coalesce(tryGet(parameters('upgradeDescription'), 'applicationDeltaHealthPolicies'), createObject()), 'maxPercentDeltaUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyApplications'), 0), 'maxPercentDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyNodes'), 0), 'maxPercentUpgradeDomainDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentUpgradeDomainDeltaUnhealthyNodes'), 0)), 'forceRestart', coalesce(tryGet(parameters('upgradeDescription'), 'forceRestart'), false()), 'healthCheckRetryTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckRetryTimeout'), '00:45:00'), 'healthCheckStableDuration', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckStableDuration'), '00:01:00'), 'healthCheckWaitDuration', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckWaitDuration'), '00:00:30'), 'upgradeDomainTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeDomainTimeout'), '02:00:00'), 'upgradeReplicaSetCheckTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeReplicaSetCheckTimeout'), '1.00:00:00'), 'upgradeTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeTimeout'), '02:00:00')), if(contains(parameters('upgradeDescription'), 'healthPolicy'), createObject('healthPolicy', createObject('applicationHealthPolicies', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'applicationHealthPolicies'), createObject()), 'maxPercentUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyApplications'), 0), 'maxPercentUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyNodes'), 0))), createObject()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -608,13 +608,13 @@
         "applicationTypeVersionsCleanupPolicy": {
           "maxUnusedVersionsToKeep": "[parameters('maxUnusedVersionsToKeep')]"
         },
-        "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', if(contains(parameters('azureActiveDirectory'), 'clientApplication'), parameters('azureActiveDirectory').clientApplication, null()), 'clusterApplication', if(contains(parameters('azureActiveDirectory'), 'clusterApplication'), parameters('azureActiveDirectory').clusterApplication, null()), 'tenantId', if(contains(parameters('azureActiveDirectory'), 'tenantId'), parameters('azureActiveDirectory').tenantId, null())), null())]",
-        "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', coalesce(tryGet(parameters('certificate'), 'thumbprint'), ''), 'thumbprintSecondary', coalesce(tryGet(parameters('certificate'), 'thumbprintSecondary'), null()), 'x509StoreName', coalesce(tryGet(parameters('certificate'), 'x509StoreName'), null())), null())]",
-        "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', coalesce(tryGet(parameters('certificateCommonNames'), 'commonNames'), createArray()), 'x509StoreName', coalesce(tryGet(parameters('certificateCommonNames'), 'x509StoreName'), null())), null())]",
+        "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', tryGet(parameters('azureActiveDirectory'), 'clientApplication'), 'clusterApplication', tryGet(parameters('azureActiveDirectory'), 'clusterApplication'), 'tenantId', tryGet(parameters('azureActiveDirectory'), 'tenantId')), null())]",
+        "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', coalesce(tryGet(parameters('certificate'), 'thumbprint'), ''), 'thumbprintSecondary', tryGet(parameters('certificate'), 'thumbprintSecondary'), 'x509StoreName', tryGet(parameters('certificate'), 'x509StoreName')), null())]",
+        "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', coalesce(tryGet(parameters('certificateCommonNames'), 'commonNames'), createArray()), 'x509StoreName', tryGet(parameters('certificateCommonNames'), 'x509StoreName')), null())]",
         "clientCertificateCommonNames": "[variables('clientCertificateCommonNamesVar')]",
         "clientCertificateThumbprints": "[variables('clientCertificateThumbprintsVar')]",
         "clusterCodeVersion": "[parameters('clusterCodeVersion')]",
-        "diagnosticsStorageAccountConfig": "[if(not(empty(parameters('diagnosticsStorageAccountConfig'))), createObject('blobEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'blobEndpoint'), parameters('diagnosticsStorageAccountConfig').blobEndpoint, null()), 'protectedAccountKeyName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName, null()), 'protectedAccountKeyName2', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName2'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName2, null()), 'queueEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'queueEndpoint'), parameters('diagnosticsStorageAccountConfig').queueEndpoint, null()), 'storageAccountName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'storageAccountName'), parameters('diagnosticsStorageAccountConfig').storageAccountName, null()), 'tableEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'tableEndpoint'), parameters('diagnosticsStorageAccountConfig').tableEndpoint, null())), null())]",
+        "diagnosticsStorageAccountConfig": "[if(not(empty(parameters('diagnosticsStorageAccountConfig'))), createObject('blobEndpoint', tryGet(parameters('diagnosticsStorageAccountConfig'), 'blobEndpoint'), 'protectedAccountKeyName', tryGet(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName'), 'protectedAccountKeyName2', tryGet(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName2'), 'queueEndpoint', tryGet(parameters('diagnosticsStorageAccountConfig'), 'queueEndpoint'), 'storageAccountName', tryGet(parameters('diagnosticsStorageAccountConfig'), 'storageAccountName'), 'tableEndpoint', tryGet(parameters('diagnosticsStorageAccountConfig'), 'tableEndpoint')), null())]",
         "eventStoreServiceEnabled": "[parameters('eventStoreServiceEnabled')]",
         "fabricSettings": "[if(not(empty(parameters('fabricSettings'))), variables('fabricSettingsVar'), null())]",
         "infrastructureServiceManager": "[parameters('infrastructureServiceManager')]",
@@ -622,8 +622,8 @@
         "nodeTypes": "[if(not(empty(parameters('nodeTypes'))), variables('fnodeTypesVar'), createArray())]",
         "notifications": "[if(not(empty(parameters('notifications'))), variables('notificationsVar'), null())]",
         "reliabilityLevel": "[if(not(empty(parameters('reliabilityLevel'))), parameters('reliabilityLevel'), 'None')]",
-        "reverseProxyCertificate": "[if(not(empty(parameters('reverseProxyCertificate'))), createObject('thumbprint', if(contains(parameters('reverseProxyCertificate'), 'thumbprint'), parameters('reverseProxyCertificate').thumbprint, null()), 'thumbprintSecondary', if(contains(parameters('reverseProxyCertificate'), 'thumbprintSecondary'), parameters('reverseProxyCertificate').thumbprintSecondary, null()), 'x509StoreName', if(contains(parameters('reverseProxyCertificate'), 'x509StoreName'), parameters('reverseProxyCertificate').x509StoreName, null())), null())]",
-        "reverseProxyCertificateCommonNames": "[if(not(empty(parameters('reverseProxyCertificateCommonNames'))), createObject('commonNames', if(contains(parameters('reverseProxyCertificateCommonNames'), 'commonNames'), parameters('reverseProxyCertificateCommonNames').commonNames, null()), 'x509StoreName', if(contains(parameters('reverseProxyCertificateCommonNames'), 'x509StoreName'), parameters('reverseProxyCertificateCommonNames').x509StoreName, null())), null())]",
+        "reverseProxyCertificate": "[if(not(empty(parameters('reverseProxyCertificate'))), createObject('thumbprint', tryGet(parameters('reverseProxyCertificate'), 'thumbprint'), 'thumbprintSecondary', tryGet(parameters('reverseProxyCertificate'), 'thumbprintSecondary'), 'x509StoreName', tryGet(parameters('reverseProxyCertificate'), 'x509StoreName')), null())]",
+        "reverseProxyCertificateCommonNames": "[if(not(empty(parameters('reverseProxyCertificateCommonNames'))), createObject('commonNames', tryGet(parameters('reverseProxyCertificateCommonNames'), 'commonNames'), 'x509StoreName', tryGet(parameters('reverseProxyCertificateCommonNames'), 'x509StoreName')), null())]",
         "sfZonalUpgradeMode": "[if(not(empty(parameters('sfZonalUpgradeMode'))), parameters('sfZonalUpgradeMode'), null())]",
         "upgradeDescription": "[if(not(empty(parameters('upgradeDescription'))), variables('upgradeDescriptionVar'), null())]",
         "upgradeMode": "[if(not(empty(parameters('upgradeMode'))), parameters('upgradeMode'), null())]",
@@ -702,8 +702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "8632559494589711330"
+              "version": "0.32.4.45862",
+              "templateHash": "4770865885039578272"
             },
             "name": "Service Fabric Cluster Application Types",
             "description": "This module deploys a Service Fabric Cluster Application Type.",
@@ -742,10 +742,7 @@
               "type": "Microsoft.ServiceFabric/clusters/applicationTypes",
               "apiVersion": "2021-06-01",
               "name": "[format('{0}/{1}', parameters('serviceFabricClusterName'), parameters('name'))]",
-              "tags": "[parameters('tags')]",
-              "dependsOn": [
-                "serviceFabricCluster"
-              ]
+              "tags": "[parameters('tags')]"
             }
           },
           "outputs": {
