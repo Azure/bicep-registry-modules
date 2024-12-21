@@ -1149,6 +1149,53 @@ Describe 'Module tests' -Tag 'Module' {
         }
     }
 
+    Context 'Changelog content tests' -Tag 'Changelog' {
+
+        $changelogFileTestCases = [System.Collections.ArrayList] @()
+
+        foreach ($moduleFolderPath in $moduleFolderPaths) {
+
+            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+            $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+
+            $changelogFileTestCases += @{
+                moduleFolderName    = $resourceTypeIdentifier
+                templateFileContent = $builtTestFileMap[$templateFilePath]
+                templateFilePath    = $templateFilePath
+                changelogFilePath   = Join-Path -Path $moduleFolderPath 'CHANGELOG.md'
+            }
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` must contain a `## unreleased` section an versions are orderd descending.' -TestCases $changelogFileTestCases {
+
+            param(
+                [string] $templateFilePath,
+                [hashtable] $templateFileContent,
+                [string] $changelogFilePath
+            )
+
+            $changelogContent = Get-Content $changelogFilePath
+            $sections = $changelogContent | Where-Object { $_ -match '^##' }
+            $changelogSection = $sections | Where-Object { $_ -match '^##\s+unreleased' }
+
+            $sections | ForEach-Object {
+                Write-Verbose 'The CHANGELOG.md file contains the following sections: $_'
+            }
+
+            # check for the presence of the `## unreleased` section
+            $changelogSection | Should -BeIn $sections -Because 'The `## unreleased` section should be in the changelog.'
+
+            # only one unrealeased section should be present
+            $changelogSection.Count | Should -BeExactly 1 -Because 'The `## unreleased` section should be in the changelog only once.'
+
+            # check for unrealeased being the first section
+            $sections[0] | Should -Be $changelogSection -Because 'The `## unreleased` section should be the first section in the changelog.'
+
+            # check for the order of the versions
+            ($changelogContent | Where-Object { $_ -match '^##' } | Sort-Object -Descending) | Should -BeExactly $sections 'The versions in the changelog should appear in descending order.'
+        }
+    }
+
 }
 
 Describe 'Governance tests' {
