@@ -118,10 +118,6 @@ resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleD
   name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
   scope: tenant()
 }
-resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
-  scope: tenant()
-}
 
 // =========== //
 // Deployments //
@@ -185,20 +181,25 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
   }
 }
 
-// MSI Subscription contributor assignment
-resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
-  name: guid(
-    subscription().id,
-    '${subscription().id}/resourceGroups/${resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${imageManagedIdentityName}',
-    contributorRole.id
-  )
-  properties: {
+// MSI RG contributor assignment
+module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+  scope: rg
+  name: '${deployment().name}-image-msi-rbac-main-rg'
+  params: {
     // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
-    principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-      ? imageMSI.outputs.principalId
+    msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
+      ? imageMSI.outputs.resourceId
       : ''
-    roleDefinitionId: contributorRole.id
-    principalType: 'ServicePrincipal'
+  }
+}
+module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+  scope: imageTemplateRg
+  name: '${deployment().name}-image-msi-rbac-main-rg'
+  params: {
+    // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
+    msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
+      ? imageMSI.outputs.resourceId
+      : ''
   }
 }
 
@@ -474,7 +475,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   }
   dependsOn: [
     storageAccount_upload
-    imageMSI_rbac
+    imageMSI_rg_rbac
     rg
     imageMSI
     azureComputeGallery
