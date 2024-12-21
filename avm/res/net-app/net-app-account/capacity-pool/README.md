@@ -262,7 +262,7 @@ List of volumnes to create in the capacity pool.
 | [`coolAccessRetrievalPolicy`](#parameter-volumescoolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-volumescoolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-volumescreationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
-| [`dataProtection`](#parameter-volumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication |
+| [`dataProtection`](#parameter-volumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`encryptionKeySource`](#parameter-volumesencryptionkeysource) | string | The source of the encryption key. |
 | [`exportPolicy`](#parameter-volumesexportpolicy) | object | Export policy rules. |
 | [`kerberosEnabled`](#parameter-volumeskerberosenabled) | bool | Define if a volume is KerberosEnabled. |
@@ -328,7 +328,7 @@ A unique file path for the volume. This is the name of the volume export. A volu
 
 ### Parameter: `volumes.dataProtection`
 
-DataProtection type volumes include an object containing details of the replication
+DataProtection type volumes include an object containing details of the replication.
 
 - Required: No
 - Type: object
@@ -354,11 +354,6 @@ Backup properties.
 | :-- | :-- | :-- |
 | [`backupPolicyName`](#parameter-volumesdataprotectionbackupbackuppolicyname) | string | The name of the backup policy to link. |
 | [`backupVaultName`](#parameter-volumesdataprotectionbackupbackupvaultname) | string | The name of the Backup Vault. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`policyEnforced`](#parameter-volumesdataprotectionbackuppolicyenforced) | bool | Enable to enforce the policy. |
 
 ### Parameter: `volumes.dataProtection.backup.backupPolicyName`
@@ -394,14 +389,9 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-volumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
+| [`remoteVolumeRegion`](#parameter-volumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 | [`remoteVolumeResourceId`](#parameter-volumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-volumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`remoteVolumeRegion`](#parameter-volumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 
 ### Parameter: `volumes.dataProtection.replication.endpointType`
 
@@ -416,6 +406,13 @@ Indicates whether the local volume is the source or destination for the Volume R
     'src'
   ]
   ```
+
+### Parameter: `volumes.dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `volumes.dataProtection.replication.remoteVolumeResourceId`
 
@@ -438,13 +435,6 @@ The replication schedule for the volume.
     'hourly'
   ]
   ```
-
-### Parameter: `volumes.dataProtection.replication.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `volumes.dataProtection.snapshot`
 
@@ -500,12 +490,12 @@ The Export policy rules.
 | [`kerberos5iReadOnly`](#parameter-volumesexportpolicyruleskerberos5ireadonly) | bool | Kerberos5i Read only access. |
 | [`kerberos5iReadWrite`](#parameter-volumesexportpolicyruleskerberos5ireadwrite) | bool | Kerberos5i Read and write access. |
 | [`kerberos5pReadOnly`](#parameter-volumesexportpolicyruleskerberos5preadonly) | bool | Kerberos5p Read only access. |
-| [`kerberos5pReadWrite`](#parameter-volumesexportpolicyruleskerberos5preadwrite) | bool | Kerberos5p Read and write access |
+| [`kerberos5pReadWrite`](#parameter-volumesexportpolicyruleskerberos5preadwrite) | bool | Kerberos5p Read and write access. |
 | [`kerberos5ReadOnly`](#parameter-volumesexportpolicyruleskerberos5readonly) | bool | Kerberos5 Read only access. |
-| [`kerberos5ReadWrite`](#parameter-volumesexportpolicyruleskerberos5readwrite) | bool | Kerberos5 Read and write access |
+| [`kerberos5ReadWrite`](#parameter-volumesexportpolicyruleskerberos5readwrite) | bool | Kerberos5 Read and write access. |
 | [`nfsv3`](#parameter-volumesexportpolicyrulesnfsv3) | bool | Allows NFSv3 protocol. Enable only for NFSv3 type volumes. |
 | [`nfsv41`](#parameter-volumesexportpolicyrulesnfsv41) | bool | Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes. |
-| [`ruleIndex`](#parameter-volumesexportpolicyrulesruleindex) | int | Order index |
+| [`ruleIndex`](#parameter-volumesexportpolicyrulesruleindex) | int | Order index. |
 | [`unixReadOnly`](#parameter-volumesexportpolicyrulesunixreadonly) | bool | Read only access. |
 | [`unixReadWrite`](#parameter-volumesexportpolicyrulesunixreadwrite) | bool | Read and write access. |
 
@@ -541,7 +531,7 @@ Kerberos5p Read only access.
 
 ### Parameter: `volumes.exportPolicy.rules.kerberos5pReadWrite`
 
-Kerberos5p Read and write access
+Kerberos5p Read and write access.
 
 - Required: Yes
 - Type: bool
@@ -555,7 +545,7 @@ Kerberos5 Read only access.
 
 ### Parameter: `volumes.exportPolicy.rules.kerberos5ReadWrite`
 
-Kerberos5 Read and write access
+Kerberos5 Read and write access.
 
 - Required: Yes
 - Type: bool
@@ -576,7 +566,7 @@ Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.
 
 ### Parameter: `volumes.exportPolicy.rules.ruleIndex`
 
-Order index
+Order index.
 
 - Required: Yes
 - Type: int

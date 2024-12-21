@@ -1,3 +1,7 @@
+metadata name = 'Azure NetApp Files Volume Backup'
+metadata description = 'This module create a backup of a NetApp Files Volume.'
+metadata owner = 'Azure/module-maintainers'
+
 @description('Optional. The name of the backup.')
 param name string = 'backup'
 

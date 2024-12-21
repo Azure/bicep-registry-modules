@@ -61,7 +61,7 @@ type dailyScheduleType = {
   @description('Required. The daily snapshot hour.')
   @minValue(0)
   @maxValue(23)
-  hour: int?
+  hour: int
 
   @description('Required. The daily snapshot minute.')
   @minValue(0)

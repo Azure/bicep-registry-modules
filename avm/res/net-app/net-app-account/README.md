@@ -1620,7 +1620,7 @@ List of volumnes to create in the capacity pool.
 | [`coolAccessRetrievalPolicy`](#parameter-capacitypoolsvolumescoolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-capacitypoolsvolumescoolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-capacitypoolsvolumescreationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
-| [`dataProtection`](#parameter-capacitypoolsvolumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication |
+| [`dataProtection`](#parameter-capacitypoolsvolumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`encryptionKeySource`](#parameter-capacitypoolsvolumesencryptionkeysource) | string | The source of the encryption key. |
 | [`exportPolicy`](#parameter-capacitypoolsvolumesexportpolicy) | object | Export policy rules. |
 | [`kerberosEnabled`](#parameter-capacitypoolsvolumeskerberosenabled) | bool | Define if a volume is KerberosEnabled. |
@@ -1686,7 +1686,7 @@ A unique file path for the volume. This is the name of the volume export. A volu
 
 ### Parameter: `capacityPools.volumes.dataProtection`
 
-DataProtection type volumes include an object containing details of the replication
+DataProtection type volumes include an object containing details of the replication.
 
 - Required: No
 - Type: object
@@ -1712,11 +1712,6 @@ Backup properties.
 | :-- | :-- | :-- |
 | [`backupPolicyName`](#parameter-capacitypoolsvolumesdataprotectionbackupbackuppolicyname) | string | The name of the backup policy to link. |
 | [`backupVaultName`](#parameter-capacitypoolsvolumesdataprotectionbackupbackupvaultname) | string | The name of the Backup Vault. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`policyEnforced`](#parameter-capacitypoolsvolumesdataprotectionbackuppolicyenforced) | bool | Enable to enforce the policy. |
 
 ### Parameter: `capacityPools.volumes.dataProtection.backup.backupPolicyName`
@@ -1752,14 +1747,9 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-capacitypoolsvolumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
+| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 | [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
 
@@ -1774,6 +1764,13 @@ Indicates whether the local volume is the source or destination for the Volume R
     'src'
   ]
   ```
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeResourceId`
 
@@ -1796,13 +1793,6 @@ The replication schedule for the volume.
     'hourly'
   ]
   ```
-
-### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `capacityPools.volumes.dataProtection.snapshot`
 
@@ -1858,12 +1848,12 @@ The Export policy rules.
 | [`kerberos5iReadOnly`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5ireadonly) | bool | Kerberos5i Read only access. |
 | [`kerberos5iReadWrite`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5ireadwrite) | bool | Kerberos5i Read and write access. |
 | [`kerberos5pReadOnly`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5preadonly) | bool | Kerberos5p Read only access. |
-| [`kerberos5pReadWrite`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5preadwrite) | bool | Kerberos5p Read and write access |
+| [`kerberos5pReadWrite`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5preadwrite) | bool | Kerberos5p Read and write access. |
 | [`kerberos5ReadOnly`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5readonly) | bool | Kerberos5 Read only access. |
-| [`kerberos5ReadWrite`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5readwrite) | bool | Kerberos5 Read and write access |
+| [`kerberos5ReadWrite`](#parameter-capacitypoolsvolumesexportpolicyruleskerberos5readwrite) | bool | Kerberos5 Read and write access. |
 | [`nfsv3`](#parameter-capacitypoolsvolumesexportpolicyrulesnfsv3) | bool | Allows NFSv3 protocol. Enable only for NFSv3 type volumes. |
 | [`nfsv41`](#parameter-capacitypoolsvolumesexportpolicyrulesnfsv41) | bool | Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes. |
-| [`ruleIndex`](#parameter-capacitypoolsvolumesexportpolicyrulesruleindex) | int | Order index |
+| [`ruleIndex`](#parameter-capacitypoolsvolumesexportpolicyrulesruleindex) | int | Order index. |
 | [`unixReadOnly`](#parameter-capacitypoolsvolumesexportpolicyrulesunixreadonly) | bool | Read only access. |
 | [`unixReadWrite`](#parameter-capacitypoolsvolumesexportpolicyrulesunixreadwrite) | bool | Read and write access. |
 
@@ -1899,7 +1889,7 @@ Kerberos5p Read only access.
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5pReadWrite`
 
-Kerberos5p Read and write access
+Kerberos5p Read and write access.
 
 - Required: Yes
 - Type: bool
@@ -1913,7 +1903,7 @@ Kerberos5 Read only access.
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5ReadWrite`
 
-Kerberos5 Read and write access
+Kerberos5 Read and write access.
 
 - Required: Yes
 - Type: bool
@@ -1934,7 +1924,7 @@ Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.ruleIndex`
 
-Order index
+Order index.
 
 - Required: Yes
 - Type: int
@@ -2553,7 +2543,7 @@ Daily schedule for the snapshot policy.
 
 The daily snapshot hour.
 
-- Required: No
+- Required: Yes
 - Type: int
 - MinValue: 0
 - MaxValue: 23

@@ -157,11 +157,6 @@ Backup properties.
 | :-- | :-- | :-- |
 | [`backupPolicyName`](#parameter-dataprotectionbackupbackuppolicyname) | string | The name of the backup policy to link. |
 | [`backupVaultName`](#parameter-dataprotectionbackupbackupvaultname) | string | The name of the Backup Vault. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`policyEnforced`](#parameter-dataprotectionbackuppolicyenforced) | bool | Enable to enforce the policy. |
 
 ### Parameter: `dataProtection.backup.backupPolicyName`
@@ -197,14 +192,9 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-dataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
+| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 | [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-dataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 
 ### Parameter: `dataProtection.replication.endpointType`
 
@@ -219,6 +209,13 @@ Indicates whether the local volume is the source or destination for the Volume R
     'src'
   ]
   ```
+
+### Parameter: `dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `dataProtection.replication.remoteVolumeResourceId`
 
@@ -241,13 +238,6 @@ The replication schedule for the volume.
     'hourly'
   ]
   ```
-
-### Parameter: `dataProtection.replication.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `dataProtection.snapshot`
 
@@ -296,12 +286,12 @@ The Export policy rules.
 | [`kerberos5iReadOnly`](#parameter-exportpolicyruleskerberos5ireadonly) | bool | Kerberos5i Read only access. |
 | [`kerberos5iReadWrite`](#parameter-exportpolicyruleskerberos5ireadwrite) | bool | Kerberos5i Read and write access. |
 | [`kerberos5pReadOnly`](#parameter-exportpolicyruleskerberos5preadonly) | bool | Kerberos5p Read only access. |
-| [`kerberos5pReadWrite`](#parameter-exportpolicyruleskerberos5preadwrite) | bool | Kerberos5p Read and write access |
+| [`kerberos5pReadWrite`](#parameter-exportpolicyruleskerberos5preadwrite) | bool | Kerberos5p Read and write access. |
 | [`kerberos5ReadOnly`](#parameter-exportpolicyruleskerberos5readonly) | bool | Kerberos5 Read only access. |
-| [`kerberos5ReadWrite`](#parameter-exportpolicyruleskerberos5readwrite) | bool | Kerberos5 Read and write access |
+| [`kerberos5ReadWrite`](#parameter-exportpolicyruleskerberos5readwrite) | bool | Kerberos5 Read and write access. |
 | [`nfsv3`](#parameter-exportpolicyrulesnfsv3) | bool | Allows NFSv3 protocol. Enable only for NFSv3 type volumes. |
 | [`nfsv41`](#parameter-exportpolicyrulesnfsv41) | bool | Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes. |
-| [`ruleIndex`](#parameter-exportpolicyrulesruleindex) | int | Order index |
+| [`ruleIndex`](#parameter-exportpolicyrulesruleindex) | int | Order index. |
 | [`unixReadOnly`](#parameter-exportpolicyrulesunixreadonly) | bool | Read only access. |
 | [`unixReadWrite`](#parameter-exportpolicyrulesunixreadwrite) | bool | Read and write access. |
 
@@ -337,7 +327,7 @@ Kerberos5p Read only access.
 
 ### Parameter: `exportPolicy.rules.kerberos5pReadWrite`
 
-Kerberos5p Read and write access
+Kerberos5p Read and write access.
 
 - Required: Yes
 - Type: bool
@@ -351,7 +341,7 @@ Kerberos5 Read only access.
 
 ### Parameter: `exportPolicy.rules.kerberos5ReadWrite`
 
-Kerberos5 Read and write access
+Kerberos5 Read and write access.
 
 - Required: Yes
 - Type: bool
@@ -372,7 +362,7 @@ Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.
 
 ### Parameter: `exportPolicy.rules.ruleIndex`
 
-Order index
+Order index.
 
 - Required: Yes
 - Type: int

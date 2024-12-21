@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2229338415342806128"
+      "templateHash": "15158638035389280293"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -254,7 +254,7 @@
         "policyEnforced": {
           "type": "bool",
           "metadata": {
-            "description": "Optional. Enable to enforce the policy."
+            "description": "Required. Enable to enforce the policy."
           }
         },
         "backupVaultName": {
@@ -314,7 +314,7 @@
               "ruleIndex": {
                 "type": "int",
                 "metadata": {
-                  "description": "Required. Order index"
+                  "description": "Required. Order index."
                 }
               },
               "allowedClients": {
@@ -358,7 +358,7 @@
               "kerberos5ReadWrite": {
                 "type": "bool",
                 "metadata": {
-                  "description": "Required. Kerberos5 Read and write access"
+                  "description": "Required. Kerberos5 Read and write access."
                 }
               },
               "kerberos5iReadOnly": {
@@ -382,7 +382,7 @@
               "kerberos5pReadWrite": {
                 "type": "bool",
                 "metadata": {
-                  "description": "Required. Kerberos5p Read and write access"
+                  "description": "Required. Kerberos5p Read and write access."
                 }
               },
               "nfsv3": {
@@ -439,7 +439,7 @@
         "remoteVolumeRegion": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The remote region for the other end of the Volume Replication."
+            "description": "Required. The remote region for the other end of the Volume Replication."
           }
         },
         "remoteVolumeResourceId": {
@@ -569,7 +569,6 @@
       "properties": {
         "hour": {
           "type": "int",
-          "nullable": true,
           "minValue": 0,
           "maxValue": 23,
           "metadata": {
@@ -860,7 +859,7 @@
           "$ref": "#/definitions/_1.dataProtectionType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. DataProtection type volumes include an object containing details of the replication"
+            "description": "Optional. DataProtection type volumes include an object containing details of the replication."
           }
         },
         "location": {
@@ -1561,7 +1560,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7977834112995190757"
+              "templateHash": "1902329922153674365"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
@@ -1573,7 +1572,6 @@
               "properties": {
                 "hour": {
                   "type": "int",
-                  "nullable": true,
                   "minValue": 0,
                   "maxValue": 23,
                   "metadata": {
@@ -1875,8 +1873,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16423721021668005511"
-            }
+              "templateHash": "17931068985495528099"
+            },
+            "name": "Azure NetApp Files Volume Backup Vault",
+            "description": "This module create a NetApps Files Backup Vault.",
+            "owner": "Azure/module-maintainers"
           },
           "definitions": {
             "backupType": {
@@ -2011,8 +2012,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12270306234338200615"
-                    }
+                      "templateHash": "10771924113864871555"
+                    },
+                    "name": "Azure NetApp Files Volume Backup",
+                    "description": "This module create a backup of a NetApp Files Volume.",
+                    "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
                     "name": {
@@ -2219,7 +2223,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8825794265540554475"
+              "templateHash": "16710897009015531707"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -2274,7 +2278,7 @@
                   "$ref": "#/definitions/dataProtectionType",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. DataProtection type volumes include an object containing details of the replication"
+                    "description": "Optional. DataProtection type volumes include an object containing details of the replication."
                   }
                 },
                 "location": {
@@ -2415,7 +2419,7 @@
                 "policyEnforced": {
                   "type": "bool",
                   "metadata": {
-                    "description": "Optional. Enable to enforce the policy."
+                    "description": "Required. Enable to enforce the policy."
                   }
                 },
                 "backupVaultName": {
@@ -2448,7 +2452,7 @@
                 "remoteVolumeRegion": {
                   "type": "string",
                   "metadata": {
-                    "description": "Optional. The remote region for the other end of the Volume Replication."
+                    "description": "Required. The remote region for the other end of the Volume Replication."
                   }
                 },
                 "remoteVolumeResourceId": {
@@ -2536,7 +2540,7 @@
                       "ruleIndex": {
                         "type": "int",
                         "metadata": {
-                          "description": "Required. Order index"
+                          "description": "Required. Order index."
                         }
                       },
                       "allowedClients": {
@@ -2580,7 +2584,7 @@
                       "kerberos5ReadWrite": {
                         "type": "bool",
                         "metadata": {
-                          "description": "Required. Kerberos5 Read and write access"
+                          "description": "Required. Kerberos5 Read and write access."
                         }
                       },
                       "kerberos5iReadOnly": {
@@ -2604,7 +2608,7 @@
                       "kerberos5pReadWrite": {
                         "type": "bool",
                         "metadata": {
-                          "description": "Required. Kerberos5p Read and write access"
+                          "description": "Required. Kerberos5p Read and write access."
                         }
                       },
                       "nfsv3": {
@@ -2958,7 +2962,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "17742143747229271957"
+                      "templateHash": "1562902934614972329"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -3011,7 +3015,7 @@
                         "remoteVolumeRegion": {
                           "type": "string",
                           "metadata": {
-                            "description": "Optional. The remote region for the other end of the Volume Replication."
+                            "description": "Required. The remote region for the other end of the Volume Replication."
                           }
                         },
                         "remoteVolumeResourceId": {
@@ -3048,7 +3052,7 @@
                         "policyEnforced": {
                           "type": "bool",
                           "metadata": {
-                            "description": "Optional. Enable to enforce the policy."
+                            "description": "Required. Enable to enforce the policy."
                           }
                         },
                         "backupVaultName": {
@@ -3087,7 +3091,7 @@
                               "ruleIndex": {
                                 "type": "int",
                                 "metadata": {
-                                  "description": "Required. Order index"
+                                  "description": "Required. Order index."
                                 }
                               },
                               "allowedClients": {
@@ -3131,7 +3135,7 @@
                               "kerberos5ReadWrite": {
                                 "type": "bool",
                                 "metadata": {
-                                  "description": "Required. Kerberos5 Read and write access"
+                                  "description": "Required. Kerberos5 Read and write access."
                                 }
                               },
                               "kerberos5iReadOnly": {
@@ -3155,7 +3159,7 @@
                               "kerberos5pReadWrite": {
                                 "type": "bool",
                                 "metadata": {
-                                  "description": "Required. Kerberos5p Read and write access"
+                                  "description": "Required. Kerberos5p Read and write access."
                                 }
                               },
                               "nfsv3": {
@@ -3712,8 +3716,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16423721021668005511"
-            }
+              "templateHash": "17931068985495528099"
+            },
+            "name": "Azure NetApp Files Volume Backup Vault",
+            "description": "This module create a NetApps Files Backup Vault.",
+            "owner": "Azure/module-maintainers"
           },
           "definitions": {
             "backupType": {
@@ -3848,8 +3855,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12270306234338200615"
-                    }
+                      "templateHash": "10771924113864871555"
+                    },
+                    "name": "Azure NetApp Files Volume Backup",
+                    "description": "This module create a backup of a NetApp Files Volume.",
+                    "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
                     "name": {

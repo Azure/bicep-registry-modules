@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17742143747229271957"
+      "templateHash": "1562902934614972329"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -59,7 +59,7 @@
         "remoteVolumeRegion": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The remote region for the other end of the Volume Replication."
+            "description": "Required. The remote region for the other end of the Volume Replication."
           }
         },
         "remoteVolumeResourceId": {
@@ -96,7 +96,7 @@
         "policyEnforced": {
           "type": "bool",
           "metadata": {
-            "description": "Optional. Enable to enforce the policy."
+            "description": "Required. Enable to enforce the policy."
           }
         },
         "backupVaultName": {
@@ -135,7 +135,7 @@
               "ruleIndex": {
                 "type": "int",
                 "metadata": {
-                  "description": "Required. Order index"
+                  "description": "Required. Order index."
                 }
               },
               "allowedClients": {
@@ -179,7 +179,7 @@
               "kerberos5ReadWrite": {
                 "type": "bool",
                 "metadata": {
-                  "description": "Required. Kerberos5 Read and write access"
+                  "description": "Required. Kerberos5 Read and write access."
                 }
               },
               "kerberos5iReadOnly": {
@@ -203,7 +203,7 @@
               "kerberos5pReadWrite": {
                 "type": "bool",
                 "metadata": {
-                  "description": "Required. Kerberos5p Read and write access"
+                  "description": "Required. Kerberos5p Read and write access."
                 }
               },
               "nfsv3": {

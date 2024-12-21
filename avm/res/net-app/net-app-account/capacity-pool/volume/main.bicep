@@ -29,9 +29,6 @@ param encryptionKeySource string
 @description('Optional. The resource ID of the key vault private endpoint.')
 param keyVaultPrivateEndpointResourceId string?
 
-// @description('Optional. The remote region for the other end of the Volume Replication.')
-// param remoteVolumeRegion string?
-
 @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string?
 
@@ -279,7 +276,7 @@ type replicationType = {
   @description('Required. Indicates whether the local volume is the source or destination for the Volume Replication.')
   endpointType: ('dst' | 'src')
 
-  @description('Optional. The remote region for the other end of the Volume Replication.')
+  @description('Required. The remote region for the other end of the Volume Replication.')
   remoteVolumeRegion: string
 
   @description('Required. The resource ID of the remote volume.')
@@ -294,7 +291,7 @@ type backupType = {
   @description('Required. The name of the backup policy to link.')
   backupPolicyName: string
 
-  @description('Optional. Enable to enforce the policy.')
+  @description('Required. Enable to enforce the policy.')
   policyEnforced: bool
 
   @description('Required. The name of the Backup Vault.')
@@ -312,7 +309,7 @@ type snapshotType = {
 type exportPolicyType = {
   @description('Required. The Export policy rules.')
   rules: {
-    @description('Required. Order index')
+    @description('Required. Order index.')
     ruleIndex: int
 
     @description('Optional. Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names.')
@@ -330,7 +327,7 @@ type exportPolicyType = {
     @description('Required. Kerberos5 Read only access.')
     kerberos5ReadOnly: bool
 
-    @description('Required. Kerberos5 Read and write access')
+    @description('Required. Kerberos5 Read and write access.')
     kerberos5ReadWrite: bool
 
     @description('Required. Kerberos5i Read only access.')
@@ -342,7 +339,7 @@ type exportPolicyType = {
     @description('Required. Kerberos5p Read only access.')
     kerberos5pReadOnly: bool
 
-    @description('Required. Kerberos5p Read and write access')
+    @description('Required. Kerberos5p Read and write access.')
     kerberos5pReadWrite: bool
 
     @description('Required. Allows NFSv3 protocol. Enable only for NFSv3 type volumes.')

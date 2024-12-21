@@ -179,7 +179,7 @@ type volumeType = {
   @description('Optional. The resource ID of the key vault private endpoint.')
   keyVaultPrivateEndpointResourceId: string?
 
-  @description('Optional. DataProtection type volumes include an object containing details of the replication')
+  @description('Optional. DataProtection type volumes include an object containing details of the replication.')
   dataProtection: dataProtectionType?
 
   @description('Optional. Location of the pool volume.')

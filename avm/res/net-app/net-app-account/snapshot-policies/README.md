@@ -66,7 +66,7 @@ Schedule for daily snapshots.
 
 The daily snapshot hour.
 
-- Required: No
+- Required: Yes
 - Type: int
 - MinValue: 0
 - MaxValue: 23
