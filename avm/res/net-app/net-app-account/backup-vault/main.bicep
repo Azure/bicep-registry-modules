@@ -30,7 +30,6 @@ module backupVault_backups 'backup/main.bicep' = [
       name: backup.?name
       label: backup.?label
       snapshotName: backup.?snapshotName
-      useExistingSnapshot: backup.?useExistingSnapshot
       volumeName: backup.volumeName
       capacityPoolName: backup.capacityPoolName
     }

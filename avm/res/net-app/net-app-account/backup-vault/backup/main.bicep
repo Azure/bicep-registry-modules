@@ -13,9 +13,6 @@ param label string?
 @description('Optional. The name of the snapshot.')
 param snapshotName string?
 
-@description('Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.')
-param useExistingSnapshot bool = false
-
 @description('Required. The name of the volume to backup.')
 param volumeName string
 
@@ -44,7 +41,6 @@ resource backup 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01
   properties: {
     label: label
     snapshotName: snapshotName
-    useExistingSnapshot: useExistingSnapshot
     volumeResourceId: netAppAccount::remoteCapacityPool::volumne.id
   }
 }
