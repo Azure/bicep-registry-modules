@@ -47,7 +47,7 @@ module hubdeployment 'deploy.hub.bicep' = {
 }
 
 module testEnvironment '../../modules/testenvrg.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-testenv-${serviceShort}'
   params: {
     certificateName: certificateName
     certificateSubjectName: 'acahello.demoapp.com'
