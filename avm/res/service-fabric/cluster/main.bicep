@@ -151,8 +151,8 @@ var clientCertificateThumbprintsVar = [
 
 var fabricSettingsVar = [
   for fabricSetting in fabricSettings: {
-    name: fabricSetting.?name ?? null
-    parameters: fabricSetting.?parameters ?? null
+    name: fabricSetting.?name
+    parameters: fabricSetting.?parameters
   }
 ]
 
@@ -160,26 +160,26 @@ var fnodeTypesVar = [
   for nodeType in nodeTypes: {
     applicationPorts: contains(nodeType, 'applicationPorts')
       ? {
-          endPort: nodeType.applicationPorts.?endPort ?? null
-          startPort: nodeType.applicationPorts.?startPort ?? null
+          endPort: nodeType.applicationPorts.?endPort
+          startPort: nodeType.applicationPorts.?startPort
         }
       : null
-    capacities: nodeType.?capacities ?? null
-    clientConnectionEndpointPort: nodeType.?clientConnectionEndpointPort ?? null
-    durabilityLevel: nodeType.?durabilityLevel ?? null
+    capacities: nodeType.?capacities
+    clientConnectionEndpointPort: nodeType.?clientConnectionEndpointPort
+    durabilityLevel: nodeType.?durabilityLevel
     ephemeralPorts: contains(nodeType, 'ephemeralPorts')
       ? {
-          endPort: nodeType.ephemeralPorts.?endPort ?? null
-          startPort: nodeType.ephemeralPorts.?startPort ?? null
+          endPort: nodeType.ephemeralPorts.?endPort
+          startPort: nodeType.ephemeralPorts.?startPort
         }
       : null
-    httpGatewayEndpointPort: nodeType.?httpGatewayEndpointPort ?? null
-    isPrimary: nodeType.?isPrimary ?? null
-    isStateless: nodeType.?isStateless ?? null
-    multipleAvailabilityZones: nodeType.?multipleAvailabilityZones ?? null
+    httpGatewayEndpointPort: nodeType.?httpGatewayEndpointPort
+    isPrimary: nodeType.?isPrimary
+    isStateless: nodeType.?isStateless
+    multipleAvailabilityZones: nodeType.?multipleAvailabilityZones
     name: nodeType.?name ?? 'Node00'
-    placementProperties: nodeType.?placementProperties ?? null
-    reverseProxyEndpointPort: nodeType.?reverseProxyEndpointPort ?? null
+    placementProperties: nodeType.?placementProperties
+    reverseProxyEndpointPort: nodeType.?reverseProxyEndpointPort
     vmInstanceCount: nodeType.?vmInstanceCount ?? 1
   }
 ]
@@ -276,22 +276,22 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     }
     azureActiveDirectory: !empty(azureActiveDirectory)
       ? {
-          clientApplication: azureActiveDirectory.?clientApplication ?? null
-          clusterApplication: azureActiveDirectory.?clusterApplication ?? null
-          tenantId: azureActiveDirectory.?tenantId ?? null
+          clientApplication: azureActiveDirectory.?clientApplication
+          clusterApplication: azureActiveDirectory.?clusterApplication
+          tenantId: azureActiveDirectory.?tenantId
         }
       : null
     certificate: !empty(certificate)
       ? {
           thumbprint: certificate.?thumbprint ?? ''
-          thumbprintSecondary: certificate.?thumbprintSecondary ?? null
-          x509StoreName: certificate.?x509StoreName ?? null
+          thumbprintSecondary: certificate.?thumbprintSecondary
+          x509StoreName: certificate.?x509StoreName
         }
       : null
     certificateCommonNames: !empty(certificateCommonNames)
       ? {
           commonNames: certificateCommonNames.?commonNames ?? []
-          x509StoreName: certificateCommonNames.?x509StoreName ?? null
+          x509StoreName: certificateCommonNames.?x509StoreName
         }
       : null
     clientCertificateCommonNames: clientCertificateCommonNamesVar
@@ -299,12 +299,12 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     clusterCodeVersion: clusterCodeVersion
     diagnosticsStorageAccountConfig: !empty(diagnosticsStorageAccountConfig)
       ? {
-          blobEndpoint: diagnosticsStorageAccountConfig.?blobEndpoint ?? null
-          protectedAccountKeyName: diagnosticsStorageAccountConfig.?protectedAccountKeyName ?? null
-          protectedAccountKeyName2: diagnosticsStorageAccountConfig.?protectedAccountKeyName2 ?? null
-          queueEndpoint: diagnosticsStorageAccountConfig.?queueEndpoint ?? null
-          storageAccountName: diagnosticsStorageAccountConfig.?storageAccountName ?? null
-          tableEndpoint: diagnosticsStorageAccountConfig.?tableEndpoint ?? null
+          blobEndpoint: diagnosticsStorageAccountConfig.?blobEndpoint
+          protectedAccountKeyName: diagnosticsStorageAccountConfig.?protectedAccountKeyName
+          protectedAccountKeyName2: diagnosticsStorageAccountConfig.?protectedAccountKeyName2
+          queueEndpoint: diagnosticsStorageAccountConfig.?queueEndpoint
+          storageAccountName: diagnosticsStorageAccountConfig.?storageAccountName
+          tableEndpoint: diagnosticsStorageAccountConfig.?tableEndpoint
         }
       : null
     eventStoreServiceEnabled: eventStoreServiceEnabled
@@ -316,15 +316,15 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     reliabilityLevel: !empty(reliabilityLevel) ? reliabilityLevel : 'None'
     reverseProxyCertificate: !empty(reverseProxyCertificate)
       ? {
-          thumbprint: reverseProxyCertificate.?thumbprint ?? null
-          thumbprintSecondary: reverseProxyCertificate.?thumbprintSecondary ?? null
-          x509StoreName: reverseProxyCertificate.?x509StoreName ?? null
+          thumbprint: reverseProxyCertificate.?thumbprint
+          thumbprintSecondary: reverseProxyCertificate.?thumbprintSecondary
+          x509StoreName: reverseProxyCertificate.?x509StoreName
         }
       : null
     reverseProxyCertificateCommonNames: !empty(reverseProxyCertificateCommonNames)
       ? {
-          commonNames: reverseProxyCertificateCommonNames.?commonNames ?? null
-          x509StoreName: reverseProxyCertificateCommonNames.?x509StoreName ?? null
+          commonNames: reverseProxyCertificateCommonNames.?commonNames
+          x509StoreName: reverseProxyCertificateCommonNames.?x509StoreName
         }
       : null
     sfZonalUpgradeMode: !empty(sfZonalUpgradeMode) ? sfZonalUpgradeMode : null
