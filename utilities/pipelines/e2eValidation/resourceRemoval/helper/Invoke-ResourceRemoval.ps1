@@ -74,23 +74,66 @@ function Invoke-ResourceRemoval {
         'Microsoft.NetApp/netAppAccounts' {
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
+            $subscriptionId = $ResourceId.Split('/')[2]
 
             # Remove porential backups first
             # ------------------------------
+            $listVaultsInputObject = @{
+                Method = 'GET'
+                Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
+            }
+            $listVaultsResponse = Invoke-AzRestMethod @listVaultsInputObject
 
-            foreach ($backupVault in (Get-AzNetAppFilesBackupVault -ResourceGroupName $resourceGroupName -AccountName $resourceName)) {
-                foreach ($backup in (Get-AzNetAppFilesBackup -ResourceGroupName $resourceGroupName -AccountName $resourceName -BackupVaultName $backupVault.Name)) {
-                    if ($PSCmdlet.ShouldProcess(('Backup [{0}] from backup vault [{1}] of NetApp account [{2}]' -f $backup.Name, $backupVault.Name, $resourceName), 'Remove')) {
-                        Remove-AzNetAppFilesBackup -ResourceGroupName $resourceGroupName -AccountName $resourceName -BackupVaultName $backupVault.Name -Name $backup.Name
+            if ($listVaultsResponse.StatusCode -notlike '2*') {
+                $responseContent = $listVaultsResponse.Content | ConvertFrom-Json
+                throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
+            }
+            $backupVaults = ($listVaultsResponse.Content | ConvertFrom-Json).Value
+
+            foreach ($backupVault in $backupVaults) {
+                $listBackupsInputObject = @{
+                    Method = 'GET'
+                    Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}/backups?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1]
+                }
+                $listBackupsResponse = Invoke-AzRestMethod @listBackupsInputObject
+
+                if ($listBackupsResponse.StatusCode -notlike '2*') {
+                    $responseContent = $listBackupsResponse.Content | ConvertFrom-Json
+                    throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
+                }
+                $backups = ($listBackupsResponse.Content | ConvertFrom-Json).Value
+
+                # Remove backup
+                foreach ($backup in $backups) {
+                    $deleteBackupInputObject = @{
+                        Method = 'DELETE'
+                        Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}/backups/{4}?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1], ($backup.id -split '\/')[-1]
+                    }
+                    if ($PSCmdlet.ShouldProcess(('Backup [{0}] from backup vault [{1}] of NetApp account [{2}]' -f ($backup.id -split '\/')[-1], ($backupVault.id -split '\/')[-1], $resourceName), 'Remove')) {
+                        $deleteBackupResponse = Invoke-AzRestMethod @deleteBackupInputObject
+                    }
+                    if ($deleteBackupResponse.StatusCode -notlike '2*') {
+                        $responseContent = $deleteBackupResponse.Content | ConvertFrom-Json
+                        throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
                     }
                 }
-                if ($PSCmdlet.ShouldProcess(('Backup vault [{0}] from NetApp account [{1}]' -f $backupVault.Name, $resourceName), 'Remove')) {
-                    $null = Remove-AzNetAppFilesBackupVault -ResourceGroupName $resourceGroupName -AccountName $resourceName -Name $backup.Name
+
+                # Remove backup vault
+                $removeBackpVaultInputObject = @{
+                    Method = 'DELETE'
+                    Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}/backups?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1]
+                }
+                if ($PSCmdlet.ShouldProcess(('Backup vault [{0}] from NetApp account [{1}]' -f ($backupVault.id -split '\/')[-1], $resourceName), 'Remove')) {
+                    $removeBackpVaultResponse = Invoke-AzRestMethod @removeBackpVaultInputObject
+                }
+                if ($removeBackpVaultResponse.StatusCode -notlike '2*') {
+                    $responseContent = $removeBackpVaultResponse.Content | ConvertFrom-Json
+                    throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
                 }
             }
 
-            # Actual removal
-            # --------------
+            # Main resource removal
+            # ---------------------
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
                 $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
             }
@@ -180,6 +223,7 @@ function Invoke-ResourceRemoval {
 
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
+            $subscriptionId = $ResourceId.Split('/')[2]
 
             # Remove resource
             if ($PSCmdlet.ShouldProcess("Image Template [$resourceName]", 'Remove')) {
@@ -207,7 +251,7 @@ function Invoke-ResourceRemoval {
 
                     if ($getReponse.StatusCode -eq 400) {
                         # Invalid request
-                        throw ($imageTgetReponseemplate.Content | ConvertFrom-Json).error.message
+                        throw ($getReponse.Content | ConvertFrom-Json).error.message
                     } elseif ($getReponse.StatusCode -eq 404) {
                         # Resource not found, removal was successful
                         $templateExists = $false
