@@ -71,6 +71,30 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.NetApp/netAppAccounts' {
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+
+            # Remove porential backups first
+            # ------------------------------
+
+            foreach ($backupVault in (Get-AzNetAppFilesBackupVault -ResourceGroupName $resourceGroupName -AccountName $resourceName)) {
+                foreach ($backup in (Get-AzNetAppFilesBackup -ResourceGroupName $resourceGroupName -AccountName $resourceName -BackupVaultName $backupVault.Name)) {
+                    if ($PSCmdlet.ShouldProcess(('Backup [{0}] from backup vault [{1}] of NetApp account [{2}]' -f $backup.Name, $backupVault.Name, $resourceName), 'Remove')) {
+                        Remove-AzNetAppFilesBackup -ResourceGroupName $resourceGroupName -AccountName $resourceName -BackupVaultName $backupVault.Name -Name $backup.Name
+                    }
+                }
+                if ($PSCmdlet.ShouldProcess(('Backup vault [{0}] from NetApp account [{1}]' -f $backupVault.Name, $resourceName), 'Remove')) {
+                    $null = Remove-AzNetAppFilesBackupVault -ResourceGroupName $resourceGroupName -AccountName $resourceName -Name $backup.Name
+                }
+            }
+
+            # Actual removal
+            # --------------
+            if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
+                $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
+            }
+        }
         'Microsoft.Compute/diskEncryptionSets' {
             # Pre-Removal
             # -----------
