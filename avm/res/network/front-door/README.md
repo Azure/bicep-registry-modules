@@ -1620,6 +1620,7 @@ Certificate name check time of the frontdoor resource.
 - Required: No
 - Type: int
 - Default: `240`
+- MaxValue: 240
 
 ### Parameter: `tags`
 
@@ -1627,6 +1628,7 @@ Resource tags.
 
 - Required: No
 - Type: object
+- MaxValue: 240
 
 ## Outputs
 

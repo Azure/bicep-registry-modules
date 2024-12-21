@@ -21,14 +21,14 @@ This module deploys self-hosted agents and runners for Azure DevOps and GitHub o
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ContainerInstance/containerGroups` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2023-05-01/containerGroups) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
+| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
 | `Microsoft.ContainerRegistry/registries/taskRuns` | [2019-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2019-06-01-preview/registries/taskRuns) |
 | `Microsoft.ContainerRegistry/registries/tasks` | [2019-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2019-06-01-preview/registries/tasks) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
@@ -89,9 +89,10 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-3-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
 - [Using large parameter set for Azure DevOps self-hosted agents using Azure Container Apps.](#example-4-using-large-parameter-set-for-azure-devops-self-hosted-agents-using-azure-container-apps)
 - [Using large parameter set for GitHub self-hosted runners using Azure Container Instances.](#example-5-using-large-parameter-set-for-github-self-hosted-runners-using-azure-container-instances)
-- [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-6-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
-- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-7-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
-- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
+- [Deploys GitHub self-hosted runners using Azure Container Apps for a GitHub organization scope.](#example-6-deploys-github-self-hosted-runners-using-azure-container-apps-for-a-github-organization-scope)
+- [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-7-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-9-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
 
 ### Example 1: _Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps._
 
@@ -750,7 +751,124 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 6: _Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet._
+### Example 6: _Deploys GitHub self-hosted runners using Azure Container Apps for a GitHub organization scope._
+
+This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps for a GitHub organization scope.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  name: 'cicdAgentsAndRunnersDeployment'
+  params: {
+    // Required parameters
+    computeTypes: [
+      'azure-container-app'
+    ]
+    namingPrefix: '<namingPrefix>'
+    networkingConfiguration: {
+      addressSpace: '10.0.0.0/16'
+      networkType: 'createNew'
+      virtualNetworkName: 'vnet-aca'
+    }
+    selfHostedConfig: {
+      githubOrganization: 'githHubOrganization'
+      personalAccessToken: '<personalAccessToken>'
+      runnerScope: 'org'
+      selfHostedType: 'github'
+    }
+    // Non-required parameters
+    location: '<location>'
+    privateNetworking: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-app"
+      ]
+    },
+    "namingPrefix": {
+      "value": "<namingPrefix>"
+    },
+    "networkingConfiguration": {
+      "value": {
+        "addressSpace": "10.0.0.0/16",
+        "networkType": "createNew",
+        "virtualNetworkName": "vnet-aca"
+      }
+    },
+    "selfHostedConfig": {
+      "value": {
+        "githubOrganization": "githHubOrganization",
+        "personalAccessToken": "<personalAccessToken>",
+        "runnerScope": "org",
+        "selfHostedType": "github"
+      }
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "privateNetworking": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-app'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  addressSpace: '10.0.0.0/16'
+  networkType: 'createNew'
+  virtualNetworkName: 'vnet-aca'
+}
+param selfHostedConfig = {
+  githubOrganization: 'githHubOrganization'
+  personalAccessToken: '<personalAccessToken>'
+  runnerScope: 'org'
+  selfHostedType: 'github'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = false
+```
+
+</details>
+<p>
+
+### Example 7: _Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet._
 
 This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.
 
@@ -900,7 +1018,7 @@ param privateNetworking = true
 </details>
 <p>
 
-### Example 7: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
+### Example 8: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.
 
@@ -1047,7 +1165,7 @@ param privateNetworking = true
 </details>
 <p>
 
-### Example 8: _Using only defaults for GitHub self-hosted runners using Private networking._
+### Example 9: _Using only defaults for GitHub self-hosted runners using Private networking._
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "2810003323744846464"
+      "version": "0.32.4.45862",
+      "templateHash": "1980681326708212688"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -861,6 +861,61 @@
         "__bicep_export!": true
       }
     },
+    "failoverGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the failover group."
+          }
+        },
+        "databases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. List of databases in the failover group."
+          }
+        },
+        "partnerServers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. List of the partner servers for the failover group."
+          }
+        },
+        "readOnlyEndpoint": {
+          "$ref": "#/definitions/failoverGroupReadOnlyEndpointType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Read-only endpoint of the failover group instance."
+          }
+        },
+        "readWriteEndpoint": {
+          "$ref": "#/definitions/failoverGroupReadWriteEndpointType",
+          "metadata": {
+            "description": "Required. Read-write endpoint of the failover group instance."
+          }
+        },
+        "secondaryType": {
+          "type": "string",
+          "allowedValues": [
+            "Geo",
+            "Standby"
+          ],
+          "metadata": {
+            "description": "Required. Databases secondary type on partner server."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -1252,6 +1307,59 @@
         "description": "The elastic pool SKU.",
         "__bicep_imported_from!": {
           "sourceTemplate": "elastic-pool/main.bicep"
+        }
+      }
+    },
+    "failoverGroupReadOnlyEndpointType": {
+      "type": "object",
+      "properties": {
+        "failoverPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. Failover policy of the read-only endpoint for the failover group."
+          }
+        },
+        "targetServer": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The target partner server where the read-only endpoint points to."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "failover-group/main.bicep"
+        }
+      }
+    },
+    "failoverGroupReadWriteEndpointType": {
+      "type": "object",
+      "properties": {
+        "failoverPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Automatic",
+            "Manual"
+          ],
+          "metadata": {
+            "description": "Required. Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required."
+          }
+        },
+        "failoverWithDataLossGracePeriodMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Grace period before failover with data loss is attempted for the read-write endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "failover-group/main.bicep"
         }
       }
     },
@@ -1893,9 +2001,11 @@
     },
     "auditSettings": {
       "$ref": "#/definitions/auditSettingsType",
-      "defaultValue": {},
+      "defaultValue": {
+        "state": "Enabled"
+      },
       "metadata": {
-        "description": "Optional. The audit settings configuration."
+        "description": "Optional. The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object."
       }
     },
     "secretsExportConfiguration": {
@@ -1903,6 +2013,16 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Key vault reference and secret settings for the module's secrets export."
+      }
+    },
+    "failoverGroups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/failoverGroupType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The failover groups configuration."
       }
     }
   },
@@ -2154,8 +2274,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "10088627667414343400"
+              "version": "0.32.4.45862",
+              "templateHash": "8657415553449823149"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -2794,10 +2914,7 @@
                 "sourceResourceId": "[parameters('sourceResourceId')]",
                 "useFreeLimit": "[parameters('useFreeLimit')]",
                 "zoneRedundant": "[parameters('zoneRedundant')]"
-              },
-              "dependsOn": [
-                "server"
-              ]
+              }
             },
             "database_diagnosticSettings": {
               "copy": {
@@ -2870,8 +2987,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "1465086214783345027"
+                      "version": "0.32.4.45862",
+                      "templateHash": "2726045612900421237"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -2988,8 +3105,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "3060709558343951533"
+                      "version": "0.32.4.45862",
+                      "templateHash": "1446282995445489550"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -3060,10 +3177,7 @@
                       "existing": true,
                       "type": "Microsoft.Sql/servers/databases",
                       "apiVersion": "2023-08-01-preview",
-                      "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]",
-                      "dependsOn": [
-                        "server"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
                     },
                     "server": {
                       "existing": true,
@@ -3082,10 +3196,7 @@
                         "weeklyRetention": "[parameters('weeklyRetention')]",
                         "weekOfYear": "[parameters('weekOfYear')]",
                         "yearlyRetention": "[parameters('yearlyRetention')]"
-                      },
-                      "dependsOn": [
-                        "server::database"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3222,8 +3333,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "9050866823207809352"
+              "version": "0.32.4.45862",
+              "templateHash": "9155929618024075319"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -3468,10 +3579,7 @@
                 "perDatabaseSettings": "[if(not(empty(parameters('perDatabaseSettings'))), createObject('autoPauseDelay', tryGet(parameters('perDatabaseSettings'), 'autoPauseDelay'), 'maxCapacity', json(tryGet(parameters('perDatabaseSettings'), 'maxCapacity')), 'minCapacity', json(tryGet(parameters('perDatabaseSettings'), 'minCapacity'))), null())]",
                 "preferredEnclaveType": "[parameters('preferredEnclaveType')]",
                 "zoneRedundant": "[parameters('zoneRedundant')]"
-              },
-              "dependsOn": [
-                "server"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4309,8 +4417,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "16725482503837347177"
+              "version": "0.32.4.45862",
+              "templateHash": "13930335465721760554"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule.",
@@ -4417,8 +4525,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "11325013625158751172"
+              "version": "0.32.4.45862",
+              "templateHash": "8387055438108067427"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
@@ -4540,8 +4648,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "15381579869855736341"
+              "version": "0.32.4.45862",
+              "templateHash": "3334922704579421997"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -4647,10 +4755,7 @@
                 "state": "[parameters('state')]",
                 "storageAccountAccessKey": "[parameters('storageAccountAccessKey')]",
                 "storageEndpoint": "[parameters('storageEndpoint')]"
-              },
-              "dependsOn": [
-                "server"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4719,8 +4824,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "12724764985088418792"
+              "version": "0.32.4.45862",
+              "templateHash": "8667024977156507359"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
@@ -4819,10 +4924,7 @@
                 "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
                 "storageAccountAccessKey": "[if(parameters('useStorageAccountAccessKey'), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
                 "recurringScans": "[parameters('recurringScans')]"
-              },
-              "dependsOn": [
-                "server"
-              ]
+              }
             },
             "storageAccount_sbdc_rbac": {
               "condition": "[and(not(parameters('useStorageAccountAccessKey')), parameters('createStorageRoleAssignment'))]",
@@ -4850,8 +4952,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "2903956714854050681"
+                      "version": "0.32.4.45862",
+                      "templateHash": "12732093554587495593"
                     }
                   },
                   "parameters": {
@@ -4946,8 +5048,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "16457177770650062823"
+              "version": "0.32.4.45862",
+              "templateHash": "9410818536577318640"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -5004,10 +5106,7 @@
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
                 "uri": "[parameters('uri')]"
-              },
-              "dependsOn": [
-                "server"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5069,8 +5168,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3436938593239210559"
+              "version": "0.32.4.45862",
+              "templateHash": "16275612719201291134"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector.",
@@ -5151,7 +5250,7 @@
       ]
     },
     "server_audit_settings": {
-      "condition": "[not(equals(parameters('auditSettings'), null()))]",
+      "condition": "[not(empty(parameters('auditSettings')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sql-AuditSettings', uniqueString(deployment().name, parameters('location')))]",
@@ -5202,8 +5301,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "4626140114742164628"
+              "version": "0.32.4.45862",
+              "templateHash": "14231897538103218394"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings.",
@@ -5320,10 +5419,7 @@
                 "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
                 "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
                 "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
-              },
-              "dependsOn": [
-                "server"
-              ]
+              }
             },
             "storageAccount_sbdc_rbac": {
               "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
@@ -5339,9 +5435,7 @@
                   "storageAccountName": {
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
-                  "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
-                  }
+                  "managedIdentityPrincipalId": "[if(equals(reference('server', '2023-08-01-preview', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2023-08-01-preview', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2023-08-01-preview', 'full').identity.principalId))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5349,15 +5443,15 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "2903956714854050681"
+                      "version": "0.32.4.45862",
+                      "templateHash": "6533631702047528762"
                     }
                   },
                   "parameters": {
                     "storageAccountName": {
                       "type": "string"
                     },
-                    "managedInstanceIdentityPrincipalId": {
+                    "managedIdentityPrincipalId": {
                       "type": "string"
                     }
                   },
@@ -5366,10 +5460,10 @@
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
-                      "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedInstanceIdentityPrincipalId')))]",
+                      "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedIdentityPrincipalId')))]",
                       "properties": {
                         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                        "principalId": "[parameters('managedInstanceIdentityPrincipalId')]",
+                        "principalId": "[parameters('managedIdentityPrincipalId')]",
                         "principalType": "ServicePrincipal"
                       }
                     }
@@ -5437,8 +5531,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17763074267065683265"
+              "version": "0.32.4.45862",
+              "templateHash": "13358857530802564116"
             }
           },
           "definitions": {
@@ -5529,10 +5623,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5558,6 +5649,224 @@
       },
       "dependsOn": [
         "server"
+      ]
+    },
+    "failover_groups": {
+      "copy": {
+        "name": "failover_groups",
+        "count": "[length(parameters('failoverGroups'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Sql-FailoverGroup-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('failoverGroups')[copyIndex()].name]"
+          },
+          "serverName": {
+            "value": "[parameters('name')]"
+          },
+          "databases": {
+            "value": "[parameters('failoverGroups')[copyIndex()].databases]"
+          },
+          "partnerServers": {
+            "value": "[parameters('failoverGroups')[copyIndex()].partnerServers]"
+          },
+          "readOnlyEndpoint": {
+            "value": "[tryGet(parameters('failoverGroups')[copyIndex()], 'readOnlyEndpoint')]"
+          },
+          "readWriteEndpoint": {
+            "value": "[parameters('failoverGroups')[copyIndex()].readWriteEndpoint]"
+          },
+          "secondaryType": {
+            "value": "[parameters('failoverGroups')[copyIndex()].secondaryType]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "9895671062189651492"
+            },
+            "name": "Azure SQL Server failover group",
+            "description": "This module deploys Azure SQL Server failover group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "failoverGroupReadOnlyEndpointType": {
+              "type": "object",
+              "properties": {
+                "failoverPolicy": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Disabled",
+                    "Enabled"
+                  ],
+                  "metadata": {
+                    "description": "Required. Failover policy of the read-only endpoint for the failover group."
+                  }
+                },
+                "targetServer": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The target partner server where the read-only endpoint points to."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "failoverGroupReadWriteEndpointType": {
+              "type": "object",
+              "properties": {
+                "failoverPolicy": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Automatic",
+                    "Manual"
+                  ],
+                  "metadata": {
+                    "description": "Required. Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required."
+                  }
+                },
+                "failoverWithDataLossGracePeriodMinutes": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Grace period before failover with data loss is attempted for the read-write endpoint."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the failover group."
+              }
+            },
+            "serverName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The Name of SQL Server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "databases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. List of databases in the failover group."
+              }
+            },
+            "partnerServers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. List of the partner servers for the failover group."
+              }
+            },
+            "readOnlyEndpoint": {
+              "$ref": "#/definitions/failoverGroupReadOnlyEndpointType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Read-only endpoint of the failover group instance."
+              }
+            },
+            "readWriteEndpoint": {
+              "$ref": "#/definitions/failoverGroupReadWriteEndpointType",
+              "metadata": {
+                "description": "Required. Read-write endpoint of the failover group instance."
+              }
+            },
+            "secondaryType": {
+              "type": "string",
+              "allowedValues": [
+                "Geo",
+                "Standby"
+              ],
+              "metadata": {
+                "description": "Required. Databases secondary type on partner server."
+              }
+            }
+          },
+          "resources": {
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "failoverGroup": {
+              "type": "Microsoft.Sql/servers/failoverGroups",
+              "apiVersion": "2024-05-01-preview",
+              "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "databases",
+                    "count": "[length(parameters('databases'))]",
+                    "input": "[resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databases')[copyIndex('databases')])]"
+                  },
+                  {
+                    "name": "partnerServers",
+                    "count": "[length(parameters('partnerServers'))]",
+                    "input": {
+                      "id": "[resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('partnerServers')[copyIndex('partnerServers')])]"
+                    }
+                  }
+                ],
+                "readOnlyEndpoint": "[if(not(empty(parameters('readOnlyEndpoint'))), createObject('failoverPolicy', parameters('readOnlyEndpoint').failoverPolicy, 'targetServer', resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('readOnlyEndpoint').targetServer)), null())]",
+                "readWriteEndpoint": "[parameters('readWriteEndpoint')]",
+                "secondaryType": "[parameters('secondaryType')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed failover group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed failover group."
+              },
+              "value": "[resourceId('Microsoft.Sql/servers/failoverGroups', parameters('serverName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed failover group."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "server",
+        "server_databases"
       ]
     }
   },
