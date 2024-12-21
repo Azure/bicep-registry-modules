@@ -443,7 +443,7 @@ The replication schedule for the volume.
 
 The remote region for the other end of the Volume Replication.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `volumes.dataProtection.snapshot`
@@ -836,7 +836,7 @@ Zone where the volume will be placed.
 | `name` | string | The name of the Capacity Pool. |
 | `resourceGroupName` | string | The name of the Resource Group the Capacity Pool was created in. |
 | `resourceId` | string | The resource ID of the Capacity Pool. |
-| `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
+| `volumeResourceIds` | array | The resource IDs of the volume created in the capacity pool. |
 
 ## Cross-referenced modules
 

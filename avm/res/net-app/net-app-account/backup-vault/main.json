@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5088995938272826163"
+      "templateHash": "16423721021668005511"
     }
   },
   "definitions": {
@@ -32,13 +32,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The name of the snapshot."
-          }
-        },
-        "useExistingSnapshot": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
           }
         },
         "volumeName": {
@@ -134,9 +127,6 @@
           "snapshotName": {
             "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'snapshotName')]"
           },
-          "useExistingSnapshot": {
-            "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'useExistingSnapshot')]"
-          },
           "volumeName": {
             "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].volumeName]"
           },
@@ -152,7 +142,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2407080182803759107"
+              "templateHash": "12270306234338200615"
             }
           },
           "parameters": {
@@ -187,13 +177,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. The name of the snapshot."
-              }
-            },
-            "useExistingSnapshot": {
-              "type": "bool",
-              "defaultValue": false,
-              "metadata": {
-                "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
               }
             },
             "volumeName": {
@@ -241,7 +224,6 @@
               "properties": {
                 "label": "[parameters('label')]",
                 "snapshotName": "[parameters('snapshotName')]",
-                "useExistingSnapshot": "[parameters('useExistingSnapshot')]",
                 "volumeResourceId": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
               }
             }

@@ -58,7 +58,6 @@ The list of backups to create.
 | [`label`](#parameter-backupslabel) | string | Label for backup. |
 | [`name`](#parameter-backupsname) | string | The name of the backup. |
 | [`snapshotName`](#parameter-backupssnapshotname) | string | The name of the snapshot. |
-| [`useExistingSnapshot`](#parameter-backupsuseexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
 
 ### Parameter: `backups.capacityPoolName`
 
@@ -94,13 +93,6 @@ The name of the snapshot.
 
 - Required: No
 - Type: string
-
-### Parameter: `backups.useExistingSnapshot`
-
-Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `location`
 

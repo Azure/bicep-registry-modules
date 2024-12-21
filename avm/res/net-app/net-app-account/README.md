@@ -33,9 +33,76 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/net-app/net-app-account:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using nfs31 parameter set](#example-3-using-nfs31-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using large parameter set_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
+  name: 'netAppAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'nanaamin001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nanaamin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaamin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -49,7 +116,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   name: 'netAppAccountDeployment'
   params: {
     // Required parameters
-    name: 'alsmax001'
+    name: 'nanaamax001'
     // Non-required parameters
     backupPolicies: [
       {
@@ -241,7 +308,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "alsmax001"
+      "value": "nanaamax001"
     },
     // Non-required parameters
     "backupPolicies": {
@@ -447,7 +514,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 using 'br/public:avm/res/net-app/net-app-account:<version>'
 
 // Required parameters
-param name = 'alsmax001'
+param name = 'nanaamax001'
 // Non-required parameters
 param backupPolicies = [
   {
@@ -626,6 +693,483 @@ param tags = {
 </details>
 <p>
 
+### Example 3: _Using nfs31 parameter set_
+
+This instance deploys the module with nfs31.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
+  name: 'netAppAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'nanaanfs3001'
+    // Non-required parameters
+    capacityPools: [
+      {
+        name: 'nanaanfs3-cp-001'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        serviceLevel: 'Premium'
+        size: 4398046511104
+        volumes: [
+          {
+            encryptionKeySource: '<encryptionKeySource>'
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  kerberos5iReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadOnly: false
+                  kerberos5pReadWrite: false
+                  kerberos5ReadOnly: false
+                  kerberos5ReadWrite: false
+                  nfsv3: true
+                  nfsv41: false
+                  ruleIndex: 1
+                  unixReadOnly: false
+                  unixReadWrite: true
+                }
+              ]
+            }
+            name: 'nanaanfs3-vol-001'
+            networkFeatures: 'Standard'
+            protocolTypes: [
+              'NFSv3'
+            ]
+            roleAssignments: [
+              {
+                principalId: '<principalId>'
+                principalType: 'ServicePrincipal'
+                roleDefinitionIdOrName: 'Reader'
+              }
+            ]
+            subnetResourceId: '<subnetResourceId>'
+            usageThreshold: 107374182400
+            zones: [
+              1
+            ]
+          }
+          {
+            encryptionKeySource: '<encryptionKeySource>'
+            name: 'nanaanfs3-vol-002'
+            networkFeatures: 'Standard'
+            protocolTypes: [
+              'NFSv3'
+            ]
+            subnetResourceId: '<subnetResourceId>'
+            usageThreshold: 107374182400
+            zones: [
+              1
+            ]
+          }
+        ]
+      }
+      {
+        name: 'nanaanfs3-cp-002'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        serviceLevel: 'Premium'
+        size: 4398046511104
+        volumes: []
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Contact: 'test.user@testcompany.com'
+      CostCenter: '7890'
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      PurchaseOrder: '1234'
+      Role: 'DeploymentValidation'
+      ServiceName: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nanaanfs3001"
+    },
+    // Non-required parameters
+    "capacityPools": {
+      "value": [
+        {
+          "name": "nanaanfs3-cp-001",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "serviceLevel": "Premium",
+          "size": 4398046511104,
+          "volumes": [
+            {
+              "encryptionKeySource": "<encryptionKeySource>",
+              "exportPolicy": {
+                "rules": [
+                  {
+                    "allowedClients": "0.0.0.0/0",
+                    "kerberos5iReadOnly": false,
+                    "kerberos5iReadWrite": false,
+                    "kerberos5pReadOnly": false,
+                    "kerberos5pReadWrite": false,
+                    "kerberos5ReadOnly": false,
+                    "kerberos5ReadWrite": false,
+                    "nfsv3": true,
+                    "nfsv41": false,
+                    "ruleIndex": 1,
+                    "unixReadOnly": false,
+                    "unixReadWrite": true
+                  }
+                ]
+              },
+              "name": "nanaanfs3-vol-001",
+              "networkFeatures": "Standard",
+              "protocolTypes": [
+                "NFSv3"
+              ],
+              "roleAssignments": [
+                {
+                  "principalId": "<principalId>",
+                  "principalType": "ServicePrincipal",
+                  "roleDefinitionIdOrName": "Reader"
+                }
+              ],
+              "subnetResourceId": "<subnetResourceId>",
+              "usageThreshold": 107374182400,
+              "zones": [
+                1
+              ]
+            },
+            {
+              "encryptionKeySource": "<encryptionKeySource>",
+              "name": "nanaanfs3-vol-002",
+              "networkFeatures": "Standard",
+              "protocolTypes": [
+                "NFSv3"
+              ],
+              "subnetResourceId": "<subnetResourceId>",
+              "usageThreshold": 107374182400,
+              "zones": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "name": "nanaanfs3-cp-002",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "serviceLevel": "Premium",
+          "size": 4398046511104,
+          "volumes": []
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Contact": "test.user@testcompany.com",
+        "CostCenter": "7890",
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "PurchaseOrder": "1234",
+        "Role": "DeploymentValidation",
+        "ServiceName": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaanfs3001'
+// Non-required parameters
+param capacityPools = [
+  {
+    name: 'nanaanfs3-cp-001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: [
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        exportPolicy: {
+          rules: [
+            {
+              allowedClients: '0.0.0.0/0'
+              kerberos5iReadOnly: false
+              kerberos5iReadWrite: false
+              kerberos5pReadOnly: false
+              kerberos5pReadWrite: false
+              kerberos5ReadOnly: false
+              kerberos5ReadWrite: false
+              nfsv3: true
+              nfsv41: false
+              ruleIndex: 1
+              unixReadOnly: false
+              unixReadWrite: true
+            }
+          ]
+        }
+        name: 'nanaanfs3-vol-001'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv3'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          1
+        ]
+      }
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        name: 'nanaanfs3-vol-002'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv3'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          1
+        ]
+      }
+    ]
+  }
+  {
+    name: 'nanaanfs3-cp-002'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: []
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Contact: 'test.user@testcompany.com'
+  CostCenter: '7890'
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  PurchaseOrder: '1234'
+  Role: 'DeploymentValidation'
+  ServiceName: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
+  name: 'netAppAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'nanaawaf001'
+    // Non-required parameters
+    location: '<location>'
+    tags: {
+      service: 'netapp'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nanaawaf001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "service": "netapp"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaawaf001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  service: 'netapp'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -794,7 +1338,6 @@ The list of backups to create.
 | [`label`](#parameter-backupvaultbackupslabel) | string | Label for backup. |
 | [`name`](#parameter-backupvaultbackupsname) | string | The name of the backup. |
 | [`snapshotName`](#parameter-backupvaultbackupssnapshotname) | string | The name of the snapshot. |
-| [`useExistingSnapshot`](#parameter-backupvaultbackupsuseexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
 
 ### Parameter: `backupVault.backups.capacityPoolName`
 
@@ -830,13 +1373,6 @@ The name of the snapshot.
 
 - Required: No
 - Type: string
-
-### Parameter: `backupVault.backups.useExistingSnapshot`
-
-Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `backupVault.location`
 
@@ -1265,7 +1801,7 @@ The replication schedule for the volume.
 
 The remote region for the other end of the Volume Replication.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `capacityPools.volumes.dataProtection.snapshot`
@@ -2256,11 +2792,11 @@ Tags for all resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `capacityPoolResourceIds` | array | The resource IDs of the created capacity pools & their volumes. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the NetApp account. |
 | `resourceGroupName` | string | The name of the Resource Group the NetApp account was created in. |
 | `resourceId` | string | The Resource ID of the NetApp account. |
-| `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
 
 ## Cross-referenced modules
 

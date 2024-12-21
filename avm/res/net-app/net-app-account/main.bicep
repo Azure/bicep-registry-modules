@@ -318,8 +318,16 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = netAppAccount.location
 
-@description('The resource IDs of the volume created in the capacity pool.')
-output volumeResourceId string = (capacityPools != []) ? netAppAccount_capacityPools[0].outputs.volumeResourceId : ''
+@description('The resource IDs of the created capacity pools & their volumes.')
+output capacityPoolResourceIds {
+  resourceId: string
+  volumneResourceIds: string[]
+}[] = [
+  for (capacityPools, index) in (capacityPools ?? []): {
+    resourceId: netAppAccount_capacityPools[index].outputs.resourceId
+    volumneResourceIds: netAppAccount_capacityPools[index].outputs.volumeResourceIds
+  }
+]
 
 // ================ //
 // Definitions      //

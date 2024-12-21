@@ -36,7 +36,6 @@
 | [`label`](#parameter-label) | string | Label for backup. |
 | [`name`](#parameter-name) | string | The name of the backup. |
 | [`snapshotName`](#parameter-snapshotname) | string | The name of the snapshot. |
-| [`useExistingSnapshot`](#parameter-useexistingsnapshot) | bool | Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups. |
 
 ### Parameter: `capacityPoolName`
 
@@ -87,14 +86,6 @@ The name of the snapshot.
 
 - Required: No
 - Type: string
-
-### Parameter: `useExistingSnapshot`
-
-Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ## Outputs
 

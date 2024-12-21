@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10201416840667198635"
+      "templateHash": "2229338415342806128"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -438,7 +438,6 @@
         },
         "remoteVolumeRegion": {
           "type": "string",
-          "nullable": true,
           "metadata": {
             "description": "Optional. The remote region for the other end of the Volume Replication."
           }
@@ -507,13 +506,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The name of the snapshot."
-          }
-        },
-        "useExistingSnapshot": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
           }
         },
         "volumeName": {
@@ -1883,7 +1875,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5088995938272826163"
+              "templateHash": "16423721021668005511"
             }
           },
           "definitions": {
@@ -1909,13 +1901,6 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The name of the snapshot."
-                  }
-                },
-                "useExistingSnapshot": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
                   }
                 },
                 "volumeName": {
@@ -2011,9 +1996,6 @@
                   "snapshotName": {
                     "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'snapshotName')]"
                   },
-                  "useExistingSnapshot": {
-                    "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'useExistingSnapshot')]"
-                  },
                   "volumeName": {
                     "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].volumeName]"
                   },
@@ -2029,7 +2011,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2407080182803759107"
+                      "templateHash": "12270306234338200615"
                     }
                   },
                   "parameters": {
@@ -2064,13 +2046,6 @@
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. The name of the snapshot."
-                      }
-                    },
-                    "useExistingSnapshot": {
-                      "type": "bool",
-                      "defaultValue": false,
-                      "metadata": {
-                        "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
                       }
                     },
                     "volumeName": {
@@ -2118,7 +2093,6 @@
                       "properties": {
                         "label": "[parameters('label')]",
                         "snapshotName": "[parameters('snapshotName')]",
-                        "useExistingSnapshot": "[parameters('useExistingSnapshot')]",
                         "volumeResourceId": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
                       }
                     }
@@ -2245,7 +2219,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3198820637491969304"
+              "templateHash": "8825794265540554475"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -2473,7 +2447,6 @@
                 },
                 "remoteVolumeRegion": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
                     "description": "Optional. The remote region for the other end of the Volume Replication."
                   }
@@ -2985,7 +2958,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8827589870895581395"
+                      "templateHash": "17742143747229271957"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -3037,7 +3010,6 @@
                         },
                         "remoteVolumeRegion": {
                           "type": "string",
-                          "nullable": true,
                           "metadata": {
                             "description": "Optional. The remote region for the other end of the Volume Replication."
                           }
@@ -3593,11 +3565,8 @@
                       "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "location": "[parameters('location')]",
-                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '////'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), 'dummyVault'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'), if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), reference('remoteNetAppAccount::remoteCapacityPool::remoteVolume', '2024-07-01', 'full').location, '')), 'remoteVolumeResourceId', tryGet(parameters('dataProtection'), 'replication', 'remoteVolumeResourceId'), 'replicationSchedule', tryGet(parameters('dataProtection'), 'replication', 'replicationSchedule')), createObject()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), createObject()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), createObject())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', parameters('exportPolicy'), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled'))))]",
-                      "zones": "[map(parameters('zones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
-                      "dependsOn": [
-                        "remoteNetAppAccount::remoteCapacityPool::remoteVolume"
-                      ]
+                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '////'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), 'dummyVault'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]), 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10], last(split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'dummyVolumne'), '/'))), 'remoteVolumeResourceId', tryGet(parameters('dataProtection'), 'replication', 'remoteVolumeResourceId'), 'replicationSchedule', tryGet(parameters('dataProtection'), 'replication', 'replicationSchedule')), createObject()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), createObject()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), createObject())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', parameters('exportPolicy'), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled'))))]",
+                      "zones": "[map(parameters('zones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]"
                     },
                     "volume_roleAssignments": {
                       "copy": {
@@ -3688,12 +3657,18 @@
               },
               "value": "[reference('capacityPool', '2024-03-01', 'full').location]"
             },
-            "volumeResourceId": {
-              "type": "string",
+            "volumeResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
               "metadata": {
                 "description": "The resource IDs of the volume created in the capacity pool."
               },
-              "value": "[if(not(equals(parameters('volumes'), createArray())), reference(format('capacityPool_volumes[{0}]', 0)).outputs.resourceId.value, '')]"
+              "copy": {
+                "count": "[length(coalesce(parameters('volumes'), createArray()))]",
+                "input": "[reference(format('capacityPool_volumes[{0}]', copyIndex())).outputs.resourceId.value]"
+              }
             }
           }
         }
@@ -3737,7 +3712,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5088995938272826163"
+              "templateHash": "16423721021668005511"
             }
           },
           "definitions": {
@@ -3763,13 +3738,6 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The name of the snapshot."
-                  }
-                },
-                "useExistingSnapshot": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
                   }
                 },
                 "volumeName": {
@@ -3865,9 +3833,6 @@
                   "snapshotName": {
                     "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'snapshotName')]"
                   },
-                  "useExistingSnapshot": {
-                    "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'useExistingSnapshot')]"
-                  },
                   "volumeName": {
                     "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].volumeName]"
                   },
@@ -3883,7 +3848,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2407080182803759107"
+                      "templateHash": "12270306234338200615"
                     }
                   },
                   "parameters": {
@@ -3918,13 +3883,6 @@
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. The name of the snapshot."
-                      }
-                    },
-                    "useExistingSnapshot": {
-                      "type": "bool",
-                      "defaultValue": false,
-                      "metadata": {
-                        "description": "Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups."
                       }
                     },
                     "volumeName": {
@@ -3972,7 +3930,6 @@
                       "properties": {
                         "label": "[parameters('label')]",
                         "snapshotName": "[parameters('snapshotName')]",
-                        "useExistingSnapshot": "[parameters('useExistingSnapshot')]",
                         "volumeResourceId": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
                       }
                     }
@@ -4074,12 +4031,32 @@
       },
       "value": "[reference('netAppAccount', '2024-03-01', 'full').location]"
     },
-    "volumeResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource IDs of the volume created in the capacity pool."
+    "capacityPoolResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "resourceId": {
+            "type": "string"
+          },
+          "volumneResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
-      "value": "[if(not(equals(parameters('capacityPools'), createArray())), reference(format('netAppAccount_capacityPools[{0}]', 0)).outputs.volumeResourceId.value, '')]"
+      "metadata": {
+        "description": "The resource IDs of the created capacity pools & their volumes."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('capacityPools'), createArray()))]",
+        "input": {
+          "resourceId": "[reference(format('netAppAccount_capacityPools[{0}]', copyIndex())).outputs.resourceId.value]",
+          "volumneResourceIds": "[reference(format('netAppAccount_capacityPools[{0}]', copyIndex())).outputs.volumeResourceIds.value]"
+        }
+      }
     }
   }
 }

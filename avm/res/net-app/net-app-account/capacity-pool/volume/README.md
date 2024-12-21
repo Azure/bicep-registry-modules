@@ -246,7 +246,7 @@ The replication schedule for the volume.
 
 The remote region for the other end of the Volume Replication.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `dataProtection.snapshot`
