@@ -47,6 +47,7 @@ module testDeployment '../../../main.bicep' = [
         fileUploadLimitInMb: 10
         state: 'Enabled'
         mode: 'Prevention'
+        jsChallengeCookieExpirationInMins: 60
       }
       managedRules: {
         managedRuleSets: [
