@@ -163,11 +163,6 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existi
   }
 }
 
-// TODO: Helps?
-var workaroundLocation = !empty(dataProtection.?replication.?remoteVolumeResourceId)
-  ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
-  : ''
-
 resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
   name: split(subnetResourceId, '/')[8]
   scope: resourceGroup(split(subnetResourceId, '/')[2], split(subnetResourceId, '/')[4])
@@ -201,11 +196,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           replication: !empty(dataProtection.?replication)
             ? {
                 endpointType: dataProtection.?replication!.endpointType
-                remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? workaroundLocation
-                // remoteVolumeRegion: contains(dataProtection.?replication ?? {}, 'remoteVolumeRegion')
-                //   ? dataProtection.?replication.?remoteVolumeRegion
-                //   : remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
-                // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? ''
+                remoteVolumeRegion: remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
                 remoteVolumeResourceId: dataProtection.?replication!.remoteVolumeResourceId
                 replicationSchedule: dataProtection.?replication!.replicationSchedule
               }
@@ -289,7 +280,7 @@ type replicationType = {
   endpointType: ('dst' | 'src')
 
   @description('Optional. The remote region for the other end of the Volume Replication.')
-  remoteVolumeRegion: string?
+  remoteVolumeRegion: string
 
   @description('Required. The resource ID of the remote volume.')
   remoteVolumeResourceId: string
