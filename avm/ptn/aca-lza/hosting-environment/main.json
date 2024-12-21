@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12759594003140815939"
+      "templateHash": "4553596412145052345"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -175,7 +175,7 @@
       }
     },
     "base64Certificate": {
-      "type": "string",
+      "type": "securestring",
       "metadata": {
         "description": "Required. The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener."
       }

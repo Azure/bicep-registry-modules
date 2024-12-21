@@ -115,7 +115,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
-    applicationGatewayCertificateKeyName: 'appgwcert'
+    applicationGatewayCertificateKeyName: '<applicationGatewayCertificateKeyName>'
     base64Certificate: '<base64Certificate>'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
@@ -128,7 +128,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+    vmLinuxSshAuthorizedKey: '<vmLinuxSshAuthorizedKey>'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     location: '<location>'
@@ -156,7 +156,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   "parameters": {
     // Required parameters
     "applicationGatewayCertificateKeyName": {
-      "value": "appgwcert"
+      "value": "<applicationGatewayCertificateKeyName>"
     },
     "base64Certificate": {
       "value": "<base64Certificate>"
@@ -191,7 +191,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmLinuxSshAuthorizedKey": {
-      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain"
+      "value": "<vmLinuxSshAuthorizedKey>"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -229,7 +229,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
-param applicationGatewayCertificateKeyName = 'appgwcert'
+param applicationGatewayCertificateKeyName = '<applicationGatewayCertificateKeyName>'
 base64Certificate: '<base64Certificate>'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
@@ -242,7 +242,7 @@ param spokeVNetAddressPrefixes = [
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+param vmLinuxSshAuthorizedKey = '<vmLinuxSshAuthorizedKey>'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param location = '<location>'
@@ -271,7 +271,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
-    applicationGatewayCertificateKeyName: 'appgwcert'
+    applicationGatewayCertificateKeyName: '<applicationGatewayCertificateKeyName>'
     base64Certificate: '<base64Certificate>'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
@@ -284,7 +284,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+    vmLinuxSshAuthorizedKey: '<vmLinuxSshAuthorizedKey>'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     deployZoneRedundantResources: true
@@ -319,7 +319,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   "parameters": {
     // Required parameters
     "applicationGatewayCertificateKeyName": {
-      "value": "appgwcert"
+      "value": "<applicationGatewayCertificateKeyName>"
     },
     "base64Certificate": {
       "value": "<base64Certificate>"
@@ -354,7 +354,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmLinuxSshAuthorizedKey": {
-      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain"
+      "value": "<vmLinuxSshAuthorizedKey>"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -413,7 +413,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
-param applicationGatewayCertificateKeyName = 'appgwcert'
+param applicationGatewayCertificateKeyName = '<applicationGatewayCertificateKeyName>'
 base64Certificate: '<base64Certificate>'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
@@ -426,7 +426,7 @@ param spokeVNetAddressPrefixes = [
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+param vmLinuxSshAuthorizedKey = '<vmLinuxSshAuthorizedKey>'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param deployZoneRedundantResources = true
@@ -475,7 +475,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+    vmLinuxSshAuthorizedKey: '<vmLinuxSshAuthorizedKey>'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     deployZoneRedundantResources: true
@@ -543,7 +543,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmLinuxSshAuthorizedKey": {
-      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain"
+      "value": "<vmLinuxSshAuthorizedKey>"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -609,7 +609,7 @@ param spokeVNetAddressPrefixes = [
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+param vmLinuxSshAuthorizedKey = '<vmLinuxSshAuthorizedKey>'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param deployZoneRedundantResources = true
@@ -636,7 +636,7 @@ param workloadName = '<workloadName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationGatewayCertificateKeyName`](#parameter-applicationgatewaycertificatekeyname) | string | The name of the certificate key to use for Application Gateway certificate. |
-| [`base64Certificate`](#parameter-base64certificate) | string | The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
+| [`base64Certificate`](#parameter-base64certificate) | securestring | The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
 | [`enableApplicationInsights`](#parameter-enableapplicationinsights) | bool | Enable or disable the createion of Application Insights. |
 | [`enableDaprInstrumentation`](#parameter-enabledaprinstrumentation) | bool | Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored. |
 | [`spokeApplicationGatewaySubnetAddressPrefix`](#parameter-spokeapplicationgatewaysubnetaddressprefix) | string | CIDR of the Spoke Application Gateway Subnet. |
@@ -683,7 +683,7 @@ The name of the certificate key to use for Application Gateway certificate.
 The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `enableApplicationInsights`
 
