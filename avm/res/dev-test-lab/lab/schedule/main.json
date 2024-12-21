@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "5104168587634139273"
+      "version": "0.32.4.45862",
+      "templateHash": "13638649976661412429"
     },
     "name": "DevTest Lab Schedules",
     "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
@@ -221,10 +221,7 @@
         "targetResourceId": "[parameters('targetResourceId')]",
         "timeZoneId": "[parameters('timeZoneId')]",
         "notificationSettings": "[parameters('notificationSettings')]"
-      },
-      "dependsOn": [
-        "lab"
-      ]
+      }
     }
   },
   "outputs": {

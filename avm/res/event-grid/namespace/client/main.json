@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "10456542411882263533"
+      "version": "0.32.4.45862",
+      "templateHash": "10938336378655510581"
     },
     "name": "Eventgrid Namespace Clients",
     "description": "This module deploys an Eventgrid Namespace Client.",
@@ -101,10 +101,7 @@
           "allowedThumbprints": "[if(equals(parameters('clientCertificateAuthenticationValidationSchema'), 'ThumbprintMatch'), parameters('clientCertificateAuthenticationAllowedThumbprints'), null())]"
         },
         "state": "[parameters('state')]"
-      },
-      "dependsOn": [
-        "namespace"
-      ]
+      }
     }
   },
   "outputs": {
