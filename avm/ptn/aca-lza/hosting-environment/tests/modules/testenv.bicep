@@ -73,7 +73,7 @@ resource testCertificate 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   properties: {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
-    arguments: '-KeyVaultName "${keyVault.name}" -CertNameme "${certificateName}" -CertSubjectName "${certificateSubjectName}"'
+    arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certificateName}" -CertSubjectName "${certificateSubjectName}"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
   }
   dependsOn: [
