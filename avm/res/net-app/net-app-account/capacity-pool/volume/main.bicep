@@ -163,7 +163,8 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existi
   }
 }
 
-// var t = !empty(dataProtection.?replication.?remoteVolumeResourceId)
+// TODO: Needed?
+// var workaroundLocation = !empty(dataProtection.?replication.?remoteVolumeResourceId)
 //   ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
 //   : ''
 
@@ -200,10 +201,11 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           replication: !empty(dataProtection.?replication)
             ? {
                 endpointType: dataProtection.?replication!.endpointType
-                // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? (!empty(dataProtection.?replication.?remoteVolumeResourceId)
-                //   ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
-                //   : '')
-                remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? ''
+                // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? workaroundLocation
+                remoteVolumeRegion: contains(dataProtection.?replication ?? {}, 'remoteVolumeRegion')
+                  ? dataProtection.?replication.?remoteVolumeRegion
+                  : remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
+                // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? ''
                 remoteVolumeResourceId: dataProtection.?replication!.remoteVolumeResourceId
                 replicationSchedule: dataProtection.?replication!.replicationSchedule
               }
