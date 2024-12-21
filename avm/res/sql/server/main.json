@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8415683220466959567"
+      "templateHash": "1980681326708212688"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -2001,16 +2001,11 @@
     },
     "auditSettings": {
       "$ref": "#/definitions/auditSettingsType",
-      "defaultValue": {},
+      "defaultValue": {
+        "state": "Enabled"
+      },
       "metadata": {
-        "description": "Optional. The audit settings configuration."
-      }
-    },
-    "enableAuditSettings": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Set to false to disable audit settings completely. Default is true to enable audit settings."
+        "description": "Optional. The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object."
       }
     },
     "secretsExportConfiguration": {
@@ -5255,7 +5250,7 @@
       ]
     },
     "server_audit_settings": {
-      "condition": "[and(not(equals(parameters('auditSettings'), null())), parameters('enableAuditSettings'))]",
+      "condition": "[not(empty(parameters('auditSettings')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sql-AuditSettings', uniqueString(deployment().name, parameters('location')))]",
