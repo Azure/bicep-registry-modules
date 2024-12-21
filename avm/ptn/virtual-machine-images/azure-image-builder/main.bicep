@@ -35,8 +35,9 @@ param imageManagedIdentityName string = 'msi-aib'
 @description('Required. The name of the Azure Compute Gallery.')
 param computeGalleryName string
 
+import { imageType } from 'br/public:avm/res/compute/gallery:0.8.0'
 @description('Required. The Image Definitions in the Azure Compute Gallery.')
-param computeGalleryImageDefinitions array
+param computeGalleryImageDefinitions imageType[]
 
 // Storage Account Parameters
 @description('Optional. The name of the storage account. Only needed if you want to upload scripts to be used during image baking.')
@@ -202,7 +203,7 @@ resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if
 }
 
 // Azure Compute Gallery
-module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module azureComputeGallery 'br/public:avm/res/compute/gallery:0.8.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-acg'
   scope: rg
   params: {

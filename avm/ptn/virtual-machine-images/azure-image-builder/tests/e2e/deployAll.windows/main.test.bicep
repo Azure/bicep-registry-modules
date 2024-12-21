@@ -46,9 +46,12 @@ module testDeployment '../../../main.bicep' = [
           hyperVGeneration: 'V2'
           name: computeGalleryImageDefinitionName
           osType: 'Windows'
-          publisher: 'devops'
-          offer: 'devops_windows'
-          sku: 'devops_windows_az'
+          osState: 'Generalized'
+          identifier: {
+            sku: 'devops_windows_az'
+            offer: 'devops_windows'
+            publisher: 'devops'
+          }
         }
       ]
       storageAccountFilesToUpload: [
