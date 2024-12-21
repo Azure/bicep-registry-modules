@@ -121,7 +121,7 @@ function Invoke-ResourceRemoval {
                 # Remove backup vault
                 $removeBackpVaultInputObject = @{
                     Method = 'DELETE'
-                    Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}/backups?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1]
+                    Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1]
                 }
                 if ($PSCmdlet.ShouldProcess(('Backup vault [{0}] from NetApp account [{1}]' -f ($backupVault.id -split '\/')[-1], $resourceName), 'Remove')) {
                     $removeBackpVaultResponse = Invoke-AzRestMethod @removeBackpVaultInputObject
