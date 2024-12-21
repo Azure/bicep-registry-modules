@@ -21,6 +21,24 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
+var certificateName = 'appgwcert'
+
+// ============ //
+// Dependencies //
+// ============ //
+module testEnvironment '../../modules/testenvrg.bicep' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  params: {
+    certificateName: certificateName
+    certificateSubjectName: 'acahello.demoapp.com'
+  }
+}
+
+resource envKeyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
+  scope: resourceGroup(testEnvironment.outputs.resourceGroupName)
+  name: testEnvironment.outputs.keyVaultName
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -37,7 +55,7 @@ module testDeployment '../../../main.bicep' = {
     storageAccountType: 'Premium_LRS'
     vmAdminUsername: 'vmadmin'
     vmAdminPassword: password
-    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+    vmLinuxSshAuthorizedKey: testEnvironment.outputs.sshKey
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
@@ -50,7 +68,7 @@ module testDeployment '../../../main.bicep' = {
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     applicationGatewayCertificateKeyName: 'appgwcert'
-    base64Certificate: loadFileAsBase64('../../configuration/acahello.demoapp.com.pfx')
+    base64Certificate: envKeyVault.getSecret(testEnvironment.outputs.certificateSecureUrl)
     deployZoneRedundantResources: true
     exposeContainerAppsWith: 'applicationGateway'
     enableDdosProtection: true

@@ -88,6 +88,7 @@ param enableDaprInstrumentation bool
 param applicationGatewayFqdn string = ''
 
 @description('Required. The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.')
+@secure()
 param base64Certificate string
 
 @description('Required. The name of the certificate key to use for Application Gateway certificate.')
