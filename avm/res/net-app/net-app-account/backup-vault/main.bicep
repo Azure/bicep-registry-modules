@@ -63,9 +63,6 @@ type backupType = {
   @description('Optional. The name of the snapshot.')
   snapshotName: string?
 
-  @description('Optional. Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups.')
-  useExistingSnapshot: bool?
-
   @description('Required. The name of the volume to backup.')
   volumeName: string
 
