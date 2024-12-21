@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15158638035389280293"
+      "templateHash": "6791336763539972282"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -2223,7 +2223,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16710897009015531707"
+              "templateHash": "1416631145312613356"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -2962,7 +2962,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1562902934614972329"
+                      "templateHash": "11702372667065216843"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -3426,7 +3426,7 @@
                       "$ref": "#/definitions/dataProtectionType",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. DataProtection type volumes include an object containing details of the replication"
+                        "description": "Optional. DataProtection type volumes include an object containing details of the replication."
                       }
                     },
                     "smbEncryption": {

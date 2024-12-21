@@ -72,7 +72,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. DataProtection type volumes include an object containing details of the replication')
+@description('Optional. DataProtection type volumes include an object containing details of the replication.')
 param dataProtection dataProtectionType?
 
 @description('Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume.')

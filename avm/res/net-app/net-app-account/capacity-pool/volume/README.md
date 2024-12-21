@@ -42,7 +42,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | :-- | :-- | :-- |
 | [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
-| [`dataProtection`](#parameter-dataprotection) | object | DataProtection type volumes include an object containing details of the replication |
+| [`dataProtection`](#parameter-dataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`exportPolicy`](#parameter-exportpolicy) | object | The export policy rules. |
 | [`kerberosEnabled`](#parameter-kerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-keyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
@@ -131,7 +131,7 @@ A unique file path for the volume. This is the name of the volume export. A volu
 
 ### Parameter: `dataProtection`
 
-DataProtection type volumes include an object containing details of the replication
+DataProtection type volumes include an object containing details of the replication.
 
 - Required: No
 - Type: object
