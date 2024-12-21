@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Deploying all resources'
-metadata description = 'This instance deploys the module with the conditions set up to deploy all resource and build the image.'
+metadata description = 'This instance deploys the module with the conditions set up to deploy all resource and build a Linux image.'
 
 // ========== //
 // Parameters //
@@ -91,49 +91,6 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-
-      // Windoes example
-      // var installPwshScriptName = 'Install-WindowsPowerShell.ps1'
-      // var initializeSoftwareScriptName = 'Initialize-WindowsSoftware.ps1'
-      // computeGalleryImageDefinitions: [
-      //   {
-      //     hyperVGeneration: 'V2'
-      //     name: 'sid-windows'
-      //     osType: 'Windows'
-      //     publisher: 'devops'
-      //     offer: 'devops_windows'
-      //     sku: 'devops_windows_az'
-      //   }
-      // ]
-      // imageTemplateImageSource: {
-      //   type: 'PlatformImage'
-      //   publisher: 'microsoftwindowsdesktop'
-      //   offer: 'windows-11'
-      //   sku: 'win11-23h2-pro'
-      //   version: 'latest'
-      // }
-      // imageTemplateCustomizationSteps: [
-      //   {
-      //     type: 'PowerShell'
-      //     name: 'PowerShell installation'
-      //     scriptUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}'
-      //     runElevated: true
-      //   }
-      //   {
-      //     type: 'File'
-      //     name: 'Download ${initializeSoftwareScriptName}'
-      //     sourceUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}'
-      //     destination: initializeSoftwareScriptName
-      //   }
-      //   {
-      //     type: 'PowerShell'
-      //     name: 'Software installation'
-      //     inline: [
-      //       'pwsh \'${initializeSoftwareScriptName}\''
-      //     ]
-      //     runElevated: true
-      //   }
-      // ]
     }
   }
 ]
