@@ -163,6 +163,10 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existi
   }
 }
 
+// var t = !empty(dataProtection.?replication.?remoteVolumeResourceId)
+//   ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
+//   : ''
+
 resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
   name: split(subnetResourceId, '/')[8]
   scope: resourceGroup(split(subnetResourceId, '/')[2], split(subnetResourceId, '/')[4])
@@ -196,10 +200,10 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           replication: !empty(dataProtection.?replication)
             ? {
                 endpointType: dataProtection.?replication!.endpointType
-                remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? (!empty(dataProtection.?replication.?remoteVolumeResourceId)
-                  ? (remoteNetAppAccount::remoteCapacityPool::remoteVolume).location
-                  : '')
-                // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? ''
+                // remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? (!empty(dataProtection.?replication.?remoteVolumeResourceId)
+                //   ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.location
+                //   : '')
+                remoteVolumeRegion: dataProtection.?replication.?remoteVolumeRegion ?? ''
                 remoteVolumeResourceId: dataProtection.?replication!.remoteVolumeResourceId
                 replicationSchedule: dataProtection.?replication!.replicationSchedule
               }
