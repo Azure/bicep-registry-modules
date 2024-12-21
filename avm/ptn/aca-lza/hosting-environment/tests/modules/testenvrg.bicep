@@ -15,10 +15,10 @@ param certificateName string = 'test-env-cert'
 @description('Optional. The name of the certificate subject name.')
 param certificateSubjectName string = 'acahello.demoapp.com'
 
-var rgName = 'test-env-rg'
+var rgName = '${take(uniqueString(deployment().name, deployment().location),4)}-testenv-rg'
 
 module testenvrg 'br/public:avm/res/resources/resource-group:0.2.3' = {
-  name: take('test-${deployment().name}', 64)
+  name: '${take(uniqueString(deployment().name, deployment().location),4)}-testenv-rg-deployment'
   params: {
     name: rgName
     location: deployment().location
@@ -27,7 +27,7 @@ module testenvrg 'br/public:avm/res/resources/resource-group:0.2.3' = {
 }
 
 module testenv 'testenv.bicep' = {
-  name: 'testenv'
+  name: '${take(uniqueString(deployment().name, deployment().location),4)}-testenv-deployment'
   scope: resourceGroup(rgName)
   params: {
     location: testenvrg.outputs.location

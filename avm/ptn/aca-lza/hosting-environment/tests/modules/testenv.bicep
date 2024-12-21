@@ -18,11 +18,11 @@ param certificateName string
 @description('Required. The name of the certificate subject name.')
 param certificateSubjectName string
 
-var sshDeploymentScriptName = 'sshDeploymentScript'
-var certDeploymentScriptName = 'certDeploymentScript'
+var sshDeploymentScriptName = '${take(uniqueString(deployment().name, location),4)}-sshDeploymentScript'
+var certDeploymentScriptName = '${take(uniqueString(deployment().name, location),4)}-certDeploymentScript'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
+  name: '${uniqueString(deployment().name, location)}-${managedIdentityName}'
   location: location
 }
 
@@ -82,7 +82,7 @@ resource testCertificate 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
 }
 
 resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
-  name: sshKeyName
+  name: '${take(uniqueString(deployment().name, location),4)}-${sshKeyName}'
   location: location
   properties: {
     publicKey: sshDeploymentScript.properties.outputs.publicKey
@@ -90,7 +90,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: keyVaultName
+  name: '${take(uniqueString(deployment().name, location),4)}-${keyVaultName}'
   location: location
   properties: {
     sku: {
