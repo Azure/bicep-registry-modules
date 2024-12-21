@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14841477015461182740"
+      "version": "0.32.4.45862",
+      "templateHash": "7801716337979819896"
     },
     "name": "Public DNS Zone CNAME record",
     "description": "This module deploys a Public DNS Zone CNAME record.",
@@ -173,10 +173,7 @@
         "metadata": "[parameters('metadata')]",
         "TTL": "[parameters('ttl')]",
         "targetResource": "[if(not(empty(parameters('targetResourceId'))), createObject('id', parameters('targetResourceId')), null())]"
-      },
-      "dependsOn": [
-        "dnsZone"
-      ]
+      }
     },
     "CNAME_roleAssignments": {
       "copy": {
