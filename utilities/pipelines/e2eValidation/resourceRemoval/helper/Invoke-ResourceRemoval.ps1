@@ -71,73 +71,73 @@ function Invoke-ResourceRemoval {
             }
             break
         }
-        'Microsoft.NetApp/netAppAccounts' {
-            $resourceGroupName = $ResourceId.Split('/')[4]
-            $resourceName = Split-Path $ResourceId -Leaf
-            $subscriptionId = $ResourceId.Split('/')[2]
+        # 'Microsoft.NetApp/netAppAccounts' {
+        #     $resourceGroupName = $ResourceId.Split('/')[4]
+        #     $resourceName = Split-Path $ResourceId -Leaf
+        #     $subscriptionId = $ResourceId.Split('/')[2]
 
-            # Remove porential backups first
-            # ------------------------------
-            $listVaultsInputObject = @{
-                Method = 'GET'
-                Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
-            }
-            $listVaultsResponse = Invoke-AzRestMethod @listVaultsInputObject
+        #     # Remove porential backups first
+        #     # ------------------------------
+        #     $listVaultsInputObject = @{
+        #         Method = 'GET'
+        #         Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
+        #     }
+        #     $listVaultsResponse = Invoke-AzRestMethod @listVaultsInputObject
 
-            if ($listVaultsResponse.StatusCode -notlike '2*') {
-                $responseContent = $listVaultsResponse.Content | ConvertFrom-Json
-                throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
-            }
-            $backupVaults = ($listVaultsResponse.Content | ConvertFrom-Json).Value
+        #     if ($listVaultsResponse.StatusCode -notlike '2*') {
+        #         $responseContent = $listVaultsResponse.Content | ConvertFrom-Json
+        #         throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
+        #     }
+        #     $backupVaults = ($listVaultsResponse.Content | ConvertFrom-Json).Value
 
-            foreach ($backupVault in $backupVaults) {
-                $listBackupsInputObject = @{
-                    Method = 'GET'
-                    Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}/backups?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1]
-                }
-                $listBackupsResponse = Invoke-AzRestMethod @listBackupsInputObject
+        #     foreach ($backupVault in $backupVaults) {
+        #         $listBackupsInputObject = @{
+        #             Method = 'GET'
+        #             Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}/backups?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1]
+        #         }
+        #         $listBackupsResponse = Invoke-AzRestMethod @listBackupsInputObject
 
-                if ($listBackupsResponse.StatusCode -notlike '2*') {
-                    $responseContent = $listBackupsResponse.Content | ConvertFrom-Json
-                    throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
-                }
-                $backups = ($listBackupsResponse.Content | ConvertFrom-Json).Value
+        #         if ($listBackupsResponse.StatusCode -notlike '2*') {
+        #             $responseContent = $listBackupsResponse.Content | ConvertFrom-Json
+        #             throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
+        #         }
+        #         $backups = ($listBackupsResponse.Content | ConvertFrom-Json).Value
 
-                # Remove backup
-                foreach ($backup in $backups) {
-                    $deleteBackupInputObject = @{
-                        Method = 'DELETE'
-                        Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}/backups/{4}?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1], ($backup.id -split '\/')[-1]
-                    }
-                    if ($PSCmdlet.ShouldProcess(('Backup [{0}] from backup vault [{1}] of NetApp account [{2}]' -f ($backup.id -split '\/')[-1], ($backupVault.id -split '\/')[-1], $resourceName), 'Remove')) {
-                        $deleteBackupResponse = Invoke-AzRestMethod @deleteBackupInputObject
-                    }
-                    if ($deleteBackupResponse.StatusCode -notlike '2*') {
-                        $responseContent = $deleteBackupResponse.Content | ConvertFrom-Json
-                        throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
-                    }
-                }
+        #         # Remove backup
+        #         foreach ($backup in $backups) {
+        #             $deleteBackupInputObject = @{
+        #                 Method = 'DELETE'
+        #                 Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}/backups/{4}?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1], ($backup.id -split '\/')[-1]
+        #             }
+        #             if ($PSCmdlet.ShouldProcess(('Backup [{0}] from backup vault [{1}] of NetApp account [{2}]' -f ($backup.id -split '\/')[-1], ($backupVault.id -split '\/')[-1], $resourceName), 'Remove')) {
+        #                 $deleteBackupResponse = Invoke-AzRestMethod @deleteBackupInputObject
+        #             }
+        #             if ($deleteBackupResponse.StatusCode -notlike '2*') {
+        #                 $responseContent = $deleteBackupResponse.Content | ConvertFrom-Json
+        #                 throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
+        #             }
+        #         }
 
-                # Remove backup vault
-                $removeBackpVaultInputObject = @{
-                    Method = 'DELETE'
-                    Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1]
-                }
-                if ($PSCmdlet.ShouldProcess(('Backup vault [{0}] from NetApp account [{1}]' -f ($backupVault.id -split '\/')[-1], $resourceName), 'Remove')) {
-                    $removeBackpVaultResponse = Invoke-AzRestMethod @removeBackpVaultInputObject
-                }
-                if ($removeBackpVaultResponse.StatusCode -notlike '2*') {
-                    $responseContent = $removeBackpVaultResponse.Content | ConvertFrom-Json
-                    throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
-                }
-            }
+        #         # Remove backup vault
+        #         $removeBackpVaultInputObject = @{
+        #             Method = 'DELETE'
+        #             Path   = 'subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.NetApp/netAppAccounts/{2}/backupVaults/{3}?api-version=2024-07-01' -f $subscriptionId, $resourceGroupName, $resourceName, ($backupVault.id -split '\/')[-1]
+        #         }
+        #         if ($PSCmdlet.ShouldProcess(('Backup vault [{0}] from NetApp account [{1}]' -f ($backupVault.id -split '\/')[-1], $resourceName), 'Remove')) {
+        #             $removeBackpVaultResponse = Invoke-AzRestMethod @removeBackpVaultInputObject
+        #         }
+        #         if ($removeBackpVaultResponse.StatusCode -notlike '2*') {
+        #             $responseContent = $removeBackpVaultResponse.Content | ConvertFrom-Json
+        #             throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
+        #         }
+        #     }
 
-            # Main resource removal
-            # ---------------------
-            if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
-                $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
-            }
-        }
+        #     # Main resource removal
+        #     # ---------------------
+        #     if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
+        #         $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
+        #     }
+        # }
         'Microsoft.Compute/diskEncryptionSets' {
             # Pre-Removal
             # -----------

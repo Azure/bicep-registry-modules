@@ -95,7 +95,11 @@ function Initialize-DeploymentRemoval {
             'Microsoft.ContainerInstance/containerGroups' # Must be removed before their MSI
             'Microsoft.ManagedIdentity/userAssignedIdentities',
             'Microsoft.Databricks/workspaces',
-            'Microsoft.NetApp/netAppAccounts',
+            'Microsoft.NetApp/netAppAccounts/backupVaults/backups', # Must be deleted before netapp account
+            'Microsoft.NetApp/netAppAccounts/backupVaults', # Must be deleted before netapp account
+            'Microsoft.NetApp/netAppAccounts/snapshotPolicies/mySnapshotPolicy', # Must be deleted before netapp account
+            'Microsoft.NetApp/netAppAccounts/backupPolicies/myBackupPolicy', # Must be deleted before netapp account
+            'Microsoft.NetApp/netAppAccounts/capacityPools', # Must be deleted before netapp account
             'Microsoft.Resources/resourceGroups'
         )
 
