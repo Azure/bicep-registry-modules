@@ -184,7 +184,7 @@ function Invoke-ResourceRemoval {
 
                     if ($getReponse.StatusCode -eq 400) {
                         # Invalid request
-                        throw ($getReponse.Content | ConvertFrom-Json).error.message
+                        throw ($imageTgetResponseemplate.Content | ConvertFrom-Json).error.message
                     } elseif ($getReponse.StatusCode -eq 404) {
                         # Resource not found, removal was successful
                         $templateExists = $false
