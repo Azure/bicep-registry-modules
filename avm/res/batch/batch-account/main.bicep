@@ -1,6 +1,5 @@
 metadata name = 'Batch Accounts'
 metadata description = 'This module deploys a Batch Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure Batch.')
 param name string

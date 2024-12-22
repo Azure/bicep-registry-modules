@@ -1,6 +1,5 @@
 metadata name = 'App Configuration Replicas'
 metadata description = 'This module deploys an App Configuration Replica.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the replica.')
 param name string

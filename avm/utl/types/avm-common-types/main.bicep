@@ -4,7 +4,6 @@ This module provides you with all common variants for AVM interfaces to be used 
 
 Details for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).
 '''
-metadata owner = 'Azure/module-maintainers'
 
 //  ====================== //
 //   Diagnostic Settings   //

@@ -1,6 +1,5 @@
 metadata name = 'API Management Service Authorization Servers'
 metadata description = 'This module deploys an API Management Service Authorization Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Identifier of the authorization server.')
 param name string

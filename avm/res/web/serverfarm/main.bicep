@@ -1,6 +1,5 @@
 metadata name = 'App Service Plan'
 metadata description = 'This module deploys an App Service Plan.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the app service plan.')
 @minLength(1)

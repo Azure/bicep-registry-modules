@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Server Firewall Rule'
 metadata description = 'This module deploys an Azure SQL Server Firewall Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Server Firewall Rule.')
 param name string

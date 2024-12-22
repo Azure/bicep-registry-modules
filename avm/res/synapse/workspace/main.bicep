@@ -1,6 +1,5 @@
 metadata name = 'Synapse Workspaces'
 metadata description = 'This module deploys a Synapse Workspace.'
-metadata owner = 'Azure/module-maintainers'
 
 // Parameters
 @maxLength(50)
