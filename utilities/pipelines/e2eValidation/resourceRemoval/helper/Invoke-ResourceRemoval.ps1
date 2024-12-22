@@ -156,7 +156,6 @@ function Invoke-ResourceRemoval {
 
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
-            $subscriptionId = $ResourceId.Split('/')[2]
 
             # Remove resource
             if ($PSCmdlet.ShouldProcess("Image Template [$resourceName]", 'Remove')) {
@@ -184,7 +183,7 @@ function Invoke-ResourceRemoval {
 
                     if ($getReponse.StatusCode -eq 400) {
                         # Invalid request
-                        throw ($imageTgetResponseemplate.Content | ConvertFrom-Json).error.message
+                        throw ($imageTgetReponseemplate.Content | ConvertFrom-Json).error.message
                     } elseif ($getReponse.StatusCode -eq 404) {
                         # Resource not found, removal was successful
                         $templateExists = $false
