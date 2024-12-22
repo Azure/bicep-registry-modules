@@ -20,6 +20,7 @@ param certificateSubjectName string
 
 var sshDeploymentScriptName = '${take(uniqueString(deployment().name, location),4)}-sshDeploymentScript'
 var certDeploymentScriptName = '${take(uniqueString(deployment().name, location),4)}-certDeploymentScript'
+var keyVaultSecretUserRoleGuid = '4633458b-17de-408a-b874-0445c86b69e6'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: '${uniqueString(deployment().name, location)}-${managedIdentityName}'
@@ -78,6 +79,7 @@ resource testCertificate 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   }
   dependsOn: [
     msiRGContrRoleAssignment
+    keyvaultSecretUserRoleAssignment
   ]
 }
 
@@ -90,7 +92,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: '${take(uniqueString(deployment().name, location),4)}-${keyVaultName}'
+  name: '${keyVaultName}-${take(uniqueString(deployment().name, location),4)}'
   location: location
   properties: {
     sku: {
@@ -105,6 +107,16 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     enabledForDeployment: true
     enableRbacAuthorization: true
     accessPolicies: []
+  }
+}
+
+resource keyvaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().id, keyVault.id, managedIdentity.name, 'KeyVaultSecretUser')
+  scope: keyVault
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', keyVaultSecretUserRoleGuid)
+    principalType: 'ServicePrincipal'
   }
 }
 

@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+param location string
+
 @description('Optional. The name of the Managed Identity to create.')
 param managedIdentityName string = 'test-env-mi'
 
@@ -21,7 +23,7 @@ module testenvrg 'br/public:avm/res/resources/resource-group:0.2.3' = {
   name: '${take(uniqueString(deployment().name, deployment().location),4)}-testenv-rg-deployment'
   params: {
     name: rgName
-    location: deployment().location
+    location: location
     enableTelemetry: false
   }
 }
@@ -30,7 +32,7 @@ module testenv 'testenv.bicep' = {
   name: '${take(uniqueString(deployment().name, deployment().location),4)}-testenv-deployment'
   scope: resourceGroup(rgName)
   params: {
-    location: testenvrg.outputs.location
+    location: location
     managedIdentityName: managedIdentityName
     keyVaultName: keyVaultName
     certificateName: certificateName

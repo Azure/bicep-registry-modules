@@ -29,6 +29,7 @@ var certificateName = 'appgwcert'
 module testEnvironment '../../modules/testenvrg.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-testenv-${serviceShort}'
   params: {
+    location: resourceLocation
     certificateName: certificateName
     certificateSubjectName: 'acahello.demoapp.com'
   }

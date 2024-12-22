@@ -10,6 +10,7 @@ param appGatewayUserAssignedIdentityPrincipalId string
 
 param appGatewayCertificateKeyName string
 
+@secure()
 param appGatewayCertificateData string
 
 // ------------------
