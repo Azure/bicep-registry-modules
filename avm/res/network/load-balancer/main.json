@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5891499018083711599"
+      "templateHash": "761519156622598447"
     },
     "name": "Load Balancers",
-    "description": "This module deploys a Load Balancer.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Load Balancer."
   },
   "definitions": {
     "diagnosticSettingType": {
@@ -580,11 +579,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17961169732410014510"
+              "templateHash": "1858226960694905370"
             },
             "name": "Load Balancer Backend Address Pools",
-            "description": "This module deploys a Load Balancer Backend Address Pools.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Load Balancer Backend Address Pools."
           },
           "parameters": {
             "loadBalancerName": {
@@ -734,11 +732,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11972266991775052277"
+              "templateHash": "16950982858394467575"
             },
             "name": "Load Balancer Inbound NAT Rules",
-            "description": "This module deploys a Load Balancer Inbound NAT Rules.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Load Balancer Inbound NAT Rules."
           },
           "parameters": {
             "loadBalancerName": {

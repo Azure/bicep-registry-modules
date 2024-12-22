@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12898926018221194533"
+      "templateHash": "4640910085245880380"
     },
     "name": "Site Api Management Config",
-    "description": "This module deploys a Site Api Management Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Site Api Management Configuration."
   },
   "parameters": {
     "appName": {

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "9499978663434993488"
+      "version": "0.32.4.45862",
+      "templateHash": "13708664764642631468"
     },
     "name": "Local Network Gateways",
-    "description": "This module deploys a Local Network Gateway.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Local Network Gateway."
   },
   "definitions": {
     "lockType": {

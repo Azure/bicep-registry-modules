@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "15143229112798242850"
+      "version": "0.32.4.45862",
+      "templateHash": "13222003463237903084"
     },
     "name": "Azure Virtual Desktop Host Pool",
-    "description": "This module deploys an Azure Virtual Desktop Host Pool",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Virtual Desktop Host Pool"
   },
   "definitions": {
     "diagnosticSettingType": {

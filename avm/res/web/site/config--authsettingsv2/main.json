@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2449688454246020150"
+      "templateHash": "10824739052407753356"
     },
     "name": "Site Auth Settings V2 Config",
-    "description": "This module deploys a Site Auth Settings V2 Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Site Auth Settings V2 Configuration."
   },
   "parameters": {
     "appName": {

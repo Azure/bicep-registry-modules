@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15439682235813635403"
+      "version": "0.32.4.45862",
+      "templateHash": "13747202428999353609"
     },
     "name": "Resource Graph Queries",
-    "description": "This module deploys a Resource Graph Query.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Resource Graph Query."
   },
   "definitions": {
     "lockType": {

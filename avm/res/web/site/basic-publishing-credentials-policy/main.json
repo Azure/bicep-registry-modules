@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17238693910097535438"
+      "templateHash": "5380302396415553534"
     },
     "name": "Web Site Basic Publishing Credentials Policies",
-    "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
   },
   "parameters": {
     "name": {

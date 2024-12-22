@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13694467319022455305"
+      "templateHash": "11511247021887754128"
     },
     "name": "App Service Plan",
-    "description": "This module deploys an App Service Plan.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an App Service Plan."
   },
   "definitions": {
     "lockType": {

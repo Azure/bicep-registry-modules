@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "6778188667859767695"
+      "version": "0.32.4.45862",
+      "templateHash": "8100498608484333585"
     },
     "name": "Static Web Apps",
-    "description": "This module deploys a Static Web App.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Static Web App."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -647,12 +646,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "850520350862215676"
+              "version": "0.32.4.45862",
+              "templateHash": "8275628450081231495"
             },
             "name": "Static Web App Site Linked Backends",
-            "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
           },
           "parameters": {
             "backendResourceId": {
@@ -749,12 +747,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1193937759400806376"
+              "version": "0.32.4.45862",
+              "templateHash": "12709536246529127181"
             },
             "name": "Static Web App Site Config",
-            "description": "This module deploys a Static Web App Site Config.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Static Web App Site Config."
           },
           "parameters": {
             "kind": {
@@ -844,12 +841,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1193937759400806376"
+              "version": "0.32.4.45862",
+              "templateHash": "12709536246529127181"
             },
             "name": "Static Web App Site Config",
-            "description": "This module deploys a Static Web App Site Config.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Static Web App Site Config."
           },
           "parameters": {
             "kind": {
@@ -940,12 +936,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "777053581790816891"
+              "version": "0.32.4.45862",
+              "templateHash": "2208155866464160058"
             },
             "name": "Static Web App Site Custom Domains",
-            "description": "This module deploys a Static Web App Site Custom Domain.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Static Web App Site Custom Domain."
           },
           "parameters": {
             "name": {

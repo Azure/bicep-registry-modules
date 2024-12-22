@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1980681326708212688"
+      "templateHash": "13558110921106279786"
     },
     "name": "Azure SQL Servers",
-    "description": "This module deploys an Azure SQL Server.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server."
   },
   "definitions": {
     "auditSettingsType": {
@@ -2275,11 +2274,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8657415553449823149"
+              "templateHash": "1475818485840642586"
             },
             "name": "SQL Server Database",
-            "description": "This module deploys an Azure SQL Server Database.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database."
           },
           "definitions": {
             "databaseSkuType": {
@@ -2988,11 +2986,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2726045612900421237"
+                      "templateHash": "8347007377955822668"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
-                    "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
                   },
                   "parameters": {
                     "serverName": {
@@ -3106,11 +3103,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1446282995445489550"
+                      "templateHash": "13013838179261859853"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
-                    "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
                   },
                   "parameters": {
                     "serverName": {
@@ -3334,11 +3330,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9155929618024075319"
+              "templateHash": "10716835460312206047"
             },
             "name": "SQL Server Elastic Pool",
-            "description": "This module deploys an Azure SQL Server Elastic Pool.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Elastic Pool."
           },
           "definitions": {
             "elasticPoolPerDatabaseSettingsType": {
@@ -4418,11 +4413,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13930335465721760554"
+              "templateHash": "7395824066284972652"
             },
             "name": "Azure SQL Server Firewall Rule",
-            "description": "This module deploys an Azure SQL Server Firewall Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Firewall Rule."
           },
           "parameters": {
             "name": {
@@ -4526,11 +4520,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8387055438108067427"
+              "templateHash": "14402023042001645353"
             },
             "name": "Azure SQL Server Virtual Network Rules",
-            "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Virtual Network Rule."
           },
           "parameters": {
             "name": {
@@ -4649,11 +4642,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3334922704579421997"
+              "templateHash": "14011027130533341844"
             },
             "name": "Azure SQL Server Security Alert Policies",
-            "description": "This module deploys an Azure SQL Server Security Alert Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Security Alert Policy."
           },
           "parameters": {
             "name": {
@@ -4825,11 +4817,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8667024977156507359"
+              "templateHash": "5714266708780122328"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
-            "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
           },
           "definitions": {
             "recurringScansType": {
@@ -5049,11 +5040,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9410818536577318640"
+              "templateHash": "10291818452210242472"
             },
             "name": "Azure SQL Server Keys",
-            "description": "This module deploys an Azure SQL Server Key.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Key."
           },
           "parameters": {
             "name": {
@@ -5169,11 +5159,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16275612719201291134"
+              "templateHash": "429232439511678598"
             },
             "name": "Azure SQL Server Encryption Protector",
-            "description": "This module deploys an Azure SQL Server Encryption Protector.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Encryption Protector."
           },
           "parameters": {
             "sqlServerName": {
@@ -5302,11 +5291,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14231897538103218394"
+              "templateHash": "8313305822041721469"
             },
             "name": "Azure SQL Server Audit Settings",
-            "description": "This module deploys an Azure SQL Server Audit Settings.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Audit Settings."
           },
           "parameters": {
             "name": {
@@ -5695,11 +5683,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9895671062189651492"
+              "templateHash": "15941259123124748032"
             },
             "name": "Azure SQL Server failover group",
-            "description": "This module deploys Azure SQL Server failover group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys Azure SQL Server failover group."
           },
           "definitions": {
             "failoverGroupReadOnlyEndpointType": {

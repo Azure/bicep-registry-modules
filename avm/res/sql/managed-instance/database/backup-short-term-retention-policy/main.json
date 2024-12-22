@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15474672245187293584"
+      "templateHash": "5286316596090026143"
     },
     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
-    "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
   },
   "parameters": {
     "name": {

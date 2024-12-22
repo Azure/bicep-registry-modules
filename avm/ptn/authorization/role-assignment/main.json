@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "11572179981104603818"
+      "version": "0.32.4.45862",
+      "templateHash": "14350436150116324082"
     },
     "name": "Role Assignments (All scopes)",
-    "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope."
   },
   "parameters": {
     "roleDefinitionIdOrName": {
@@ -164,12 +163,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "16307162966269052514"
+              "version": "0.32.4.45862",
+              "templateHash": "18190764083853592670"
             },
             "name": "Role Assignments (Management Group scope)",
-            "description": "This module deploys a Role Assignment at a Management Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Role Assignment at a Management Group scope."
           },
           "parameters": {
             "roleDefinitionIdOrName": {
@@ -328,12 +326,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7865292958983636483"
+              "version": "0.32.4.45862",
+              "templateHash": "7435202744295706832"
             },
             "name": "Role Assignments (Subscription scope)",
-            "description": "This module deploys a Role Assignment at a Subscription scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Role Assignment at a Subscription scope."
           },
           "parameters": {
             "roleDefinitionIdOrName": {
@@ -500,12 +497,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4013817963006824674"
+              "version": "0.32.4.45862",
+              "templateHash": "14094889880586881828"
             },
             "name": "Role Assignments (Resource Group scope)",
-            "description": "This module deploys a Role Assignment at a Resource Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Role Assignment at a Resource Group scope."
           },
           "parameters": {
             "roleDefinitionIdOrName": {

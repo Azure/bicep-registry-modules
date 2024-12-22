@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8976700881133740118"
+      "templateHash": "310721194074737721"
     },
     "name": "Web/Function App Deployment Slots",
-    "description": "This module deploys a Web or Function App Deployment Slot.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Web or Function App Deployment Slot."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -984,11 +983,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4424839419368047088"
+              "templateHash": "12593498828692661102"
             },
             "name": "Site Slot App Settings",
-            "description": "This module deploys a Site Slot App Setting.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site Slot App Setting."
           },
           "parameters": {
             "slotName": {
@@ -1162,11 +1160,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7520862438079257784"
+              "templateHash": "11956111477910256491"
             },
             "name": "Site Slot Auth Settings V2 Config",
-            "description": "This module deploys a Site Auth Settings V2 Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site Auth Settings V2 Configuration."
           },
           "parameters": {
             "appName": {
@@ -1283,11 +1280,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7825465991750589571"
+              "templateHash": "16525011754125714141"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
-            "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
           },
           "parameters": {
             "name": {
@@ -1408,11 +1404,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17077514105319261327"
+              "templateHash": "12278764467295410702"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
-            "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
           },
           "parameters": {
             "hybridConnectionResourceId": {
@@ -1513,11 +1508,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6009904765637009298"
+              "templateHash": "14665418953327685943"
             },
             "name": "Site Deployment Extension ",
-            "description": "This module deploys a Site extension for MSDeploy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site extension for MSDeploy."
           },
           "parameters": {
             "appName": {

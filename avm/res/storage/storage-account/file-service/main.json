@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16770140342047484752"
+      "templateHash": "18093486321007334753"
     },
     "name": "Storage Account File Share Services",
-    "description": "This module deploys a Storage Account File Share Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account File Share Service."
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -290,11 +289,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14754019327939013287"
+              "templateHash": "17317615516230027298"
             },
             "name": "Storage Account File Shares",
-            "description": "This module deploys a Storage Account File Share.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account File Share."
           },
           "definitions": {
             "roleAssignmentType": {

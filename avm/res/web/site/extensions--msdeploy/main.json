@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6009904765637009298"
+      "templateHash": "14665418953327685943"
     },
     "name": "Site Deployment Extension ",
-    "description": "This module deploys a Site extension for MSDeploy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Site extension for MSDeploy."
   },
   "parameters": {
     "appName": {

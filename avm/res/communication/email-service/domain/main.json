@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13257581356656266104"
+      "templateHash": "4327042524422256200"
     },
     "name": "Email Services Domains",
-    "description": "This module deploys an Email Service Domain",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Email Service Domain"
   },
   "definitions": {
     "lockType": {
@@ -291,11 +290,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15079268999081259084"
+              "templateHash": "18024083037530918442"
             },
             "name": "Sender Usernames",
-            "description": "This module deploys an Sender",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Sender"
           },
           "parameters": {
             "emailServiceName": {

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1809118536099017554"
+      "templateHash": "7823574388364558878"
     },
     "name": "Service Bus Namespaces",
-    "description": "This module deploys a Service Bus Namespace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace."
   },
   "definitions": {
     "skuType": {
@@ -1610,11 +1609,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16941040945280325093"
+              "templateHash": "11843582332513126053"
             },
             "name": "Service Bus Namespace Authorization Rules",
-            "description": "This module deploys a Service Bus Namespace Authorization Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Bus Namespace Authorization Rule."
           },
           "parameters": {
             "namespaceName": {
@@ -1714,11 +1712,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6045281070856510388"
+              "templateHash": "953280430524155799"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
-            "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
           },
           "parameters": {
             "namespaceName": {
@@ -1819,11 +1816,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4308366012674731026"
+              "templateHash": "1185508580247696644"
             },
             "name": "Service Bus Namespace Migration Configuration",
-            "description": "This module deploys a Service Bus Namespace Migration Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Bus Namespace Migration Configuration."
           },
           "parameters": {
             "namespaceName": {
@@ -1924,11 +1920,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4147662315978859720"
+              "templateHash": "286643555978658471"
             },
             "name": "Service Bus Namespace Network Rule Sets",
-            "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a ServiceBus Namespace Network Rule Set."
           },
           "parameters": {
             "namespaceName": {
@@ -2124,11 +2119,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9350216516948360717"
+              "templateHash": "15815594990067444066"
             },
             "name": "Service Bus Namespace Queue",
-            "description": "This module deploys a Service Bus Namespace Queue.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Bus Namespace Queue."
           },
           "definitions": {
             "lockType": {
@@ -2524,11 +2518,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "295229783279934486"
+                      "templateHash": "4106322932640263973"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
-                    "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
                   },
                   "parameters": {
                     "name": {
@@ -2705,11 +2698,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15505054661432037372"
+              "templateHash": "12566221968716440496"
             },
             "name": "Service Bus Namespace Topic",
-            "description": "This module deploys a Service Bus Namespace Topic.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Bus Namespace Topic."
           },
           "definitions": {
             "subscriptionType": {
@@ -3208,11 +3200,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14898317070826327530"
+                      "templateHash": "9054915416075794466"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
-                    "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
                   },
                   "parameters": {
                     "name": {
@@ -3358,11 +3349,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8883045388912253995"
+                      "templateHash": "4818812192791839216"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
-                    "description": "This module deploys a Service Bus Namespace Topic Subscription.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Service Bus Namespace Topic Subscription."
                   },
                   "parameters": {
                     "name": {

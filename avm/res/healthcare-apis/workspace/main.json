@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1517116079261831480"
+      "templateHash": "8497599531477204854"
     },
     "name": "Healthcare API Workspaces",
-    "description": "This module deploys a Healthcare API Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Healthcare API Workspace."
   },
   "definitions": {
     "lockType": {
@@ -395,11 +394,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2858322501760724975"
+              "templateHash": "720257412430408145"
             },
             "name": "Healthcare API Workspace FHIR Services",
-            "description": "This module deploys a Healthcare API Workspace FHIR Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace FHIR Service."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1126,11 +1124,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5239077988285512611"
+              "templateHash": "15725443146645806343"
             },
             "name": "Healthcare API Workspace DICOM Services",
-            "description": "This module deploys a Healthcare API Workspace DICOM Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace DICOM Service."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1590,11 +1587,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6338145646645616333"
+              "templateHash": "15307253086923849247"
             },
             "name": "Healthcare API Workspace IoT Connectors",
-            "description": "This module deploys a Healthcare API Workspace IoT Connector.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace IoT Connector."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1974,11 +1970,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "11549574411337350390"
+                      "templateHash": "4307853570131837135"
                     },
                     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
-                    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."
                   },
                   "parameters": {
                     "name": {

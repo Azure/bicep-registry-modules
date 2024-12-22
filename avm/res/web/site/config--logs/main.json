@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11579934153834477476"
+      "templateHash": "11249021671014861591"
     },
     "name": "Site logs Config",
-    "description": "This module deploys a Site logs Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Site logs Configuration."
   },
   "parameters": {
     "appName": {
