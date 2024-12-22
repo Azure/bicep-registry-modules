@@ -216,7 +216,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.8.0' = if (deplo
 }
 
 // Image Template Virtual Network
-module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module vnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-vnet'
   scope: rg
   params: {
@@ -249,7 +249,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deploymentsT
 }
 
 // Assets Storage Account
-module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-files-sa'
   scope: rg
   params: {
@@ -306,7 +306,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
 }
 
 // Deployment scripts & their storage account
-module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-sa'
   scope: rg
   params: {
@@ -353,7 +353,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
 // ============================== //
 
 // Upload storage account files
-module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
+module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.5.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
   name: '${deployment().name}-storage-upload-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -362,7 +362,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.4.
     azPowerShellVersion: '12.0'
     enableTelemetry: enableTelemetry
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         resourceId(
           subscription().subscriptionId,
           resourceGroupName,
@@ -421,7 +421,7 @@ resource dsMsi_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-0
   scope: resourceGroup(resourceGroupName)
 }
 
-module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.4.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-it'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -484,7 +484,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
 }
 
 // Deployment script to trigger image build
-module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-imageTemplate-trigger-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -492,7 +492,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.4.
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         resourceId(
           subscription().subscriptionId,
           resourceGroupName,
@@ -538,7 +538,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.4.
   ]
 }
 
-module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.4.0' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
+module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.0' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
   name: '${deployment().name}-imageTemplate-wait-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -546,7 +546,7 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.4.0' 
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         resourceId(
           subscription().subscriptionId,
           resourceGroupName,
