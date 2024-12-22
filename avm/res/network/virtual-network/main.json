@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "17189690206142535748"
+      "version": "0.32.4.45862",
+      "templateHash": "1491337934694739005"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -826,8 +826,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6385219422012602265"
+              "version": "0.32.4.45862",
+              "templateHash": "16307553544578422105"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -1095,10 +1095,7 @@
                 "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]",
                 "defaultOutboundAccess": "[parameters('defaultOutboundAccess')]",
                 "sharingScope": "[parameters('sharingScope')]"
-              },
-              "dependsOn": [
-                "virtualNetwork"
-              ]
+              }
             },
             "subnet_roleAssignments": {
               "copy": {
@@ -1211,8 +1208,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "345394220621166229"
+              "version": "0.32.4.45862",
+              "templateHash": "8973052275744789294"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering.",
@@ -1369,8 +1366,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "345394220621166229"
+              "version": "0.32.4.45862",
+              "templateHash": "8973052275744789294"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering.",

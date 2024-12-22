@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "16337037731346424792"
+      "version": "0.32.4.45862",
+      "templateHash": "11609548636042160381"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -1308,8 +1308,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "136709431680015650"
+              "version": "0.32.4.45862",
+              "templateHash": "6588565032345183133"
             },
             "name": "DevTest Lab Virtual Networks",
             "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
@@ -1507,10 +1507,7 @@
                 "externalProviderResourceId": "[parameters('externalProviderResourceId')]",
                 "allowedSubnets": "[parameters('allowedSubnets')]",
                 "subnetOverrides": "[parameters('subnetOverrides')]"
-              },
-              "dependsOn": [
-                "lab"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1587,8 +1584,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "15278651865125879516"
+              "version": "0.32.4.45862",
+              "templateHash": "14772587239006370946"
             },
             "name": "DevTest Lab Policy Sets Policies",
             "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
@@ -1766,8 +1763,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "5104168587634139273"
+              "version": "0.32.4.45862",
+              "templateHash": "13638649976661412429"
             },
             "name": "DevTest Lab Schedules",
             "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
@@ -1982,10 +1979,7 @@
                 "targetResourceId": "[parameters('targetResourceId')]",
                 "timeZoneId": "[parameters('timeZoneId')]",
                 "notificationSettings": "[parameters('notificationSettings')]"
-              },
-              "dependsOn": [
-                "lab"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2063,8 +2057,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "1470030882457989802"
+              "version": "0.32.4.45862",
+              "templateHash": "1242120487437062161"
             },
             "name": "DevTest Lab Notification Channels",
             "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
@@ -2155,10 +2149,7 @@
                 "emailRecipient": "[parameters('emailRecipient')]",
                 "webHookUrl": "[parameters('webHookUrl')]",
                 "notificationLocale": "[parameters('notificationLocale')]"
-              },
-              "dependsOn": [
-                "lab"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2245,8 +2236,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "14783992773855757023"
+              "version": "0.32.4.45862",
+              "templateHash": "15987847567505288979"
             },
             "name": "DevTest Lab Artifact Sources",
             "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
@@ -2358,10 +2349,7 @@
                 "sourceType": "[parameters('sourceType')]",
                 "status": "[parameters('status')]",
                 "uri": "[parameters('uri')]"
-              },
-              "dependsOn": [
-                "lab"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2466,8 +2454,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "11453149540789698717"
+              "version": "0.32.4.45862",
+              "templateHash": "5097530253256865964"
             },
             "name": "DevTest Lab Costs",
             "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
@@ -2712,10 +2700,7 @@
                     }
                   ]
                 }
-              },
-              "dependsOn": [
-                "lab"
-              ]
+              }
             }
           },
           "outputs": {

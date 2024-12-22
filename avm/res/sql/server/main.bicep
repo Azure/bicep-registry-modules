@@ -123,8 +123,10 @@ param encryptionProtectorObj encryptionProtectorType?
 @description('Optional. The vulnerability assessment configuration.')
 param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
 
-@description('Optional. The audit settings configuration.')
-param auditSettings auditSettingsType = {} //Use the defaults from the child module
+@description('Optional. The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object.')
+param auditSettings auditSettingsType = {
+  state: 'Enabled'
+}
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
@@ -472,7 +474,7 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (encryp
   ]
 }
 
-module server_audit_settings 'audit-settings/main.bicep' = if (auditSettings != null) {
+module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
