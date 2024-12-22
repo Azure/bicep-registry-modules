@@ -179,22 +179,22 @@ function Invoke-ResourceRemoval {
                         Method = 'GET'
                         Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
                     }
-                    $getReponse = Invoke-AzRestMethod @getRequestInputObject
+                    $getResponse = Invoke-AzRestMethod @getRequestInputObject
 
-                    if ($getReponse.StatusCode -eq 400) {
+                    if ($getResponse.StatusCode -eq 400) {
                         # Invalid request
-                        throw ($imageTgetReponseemplate.Content | ConvertFrom-Json).error.message
-                    } elseif ($getReponse.StatusCode -eq 404) {
+                        throw ($getResponse.Content | ConvertFrom-Json).error.message
+                    } elseif ($getResponse.StatusCode -eq 404) {
                         # Resource not found, removal was successful
                         $templateExists = $false
-                    } elseif ($getReponse.StatusCode -eq '200') {
+                    } elseif ($getResponse.StatusCode -eq '200') {
                         # Resource still around - try again
                         $templateExists = $true
                         Write-Verbose ('    [⏱️] Waiting {0} seconds for Image Template to be removed. [{1}/{2}]' -f $retryInterval, $retryCount, $retryLimit) -Verbose
                         Start-Sleep -Seconds $retryInterval
                         $retryCount++
                     } else {
-                        throw ('Failed request. Response: [{0}]' -f ($getReponse | Out-String))
+                        throw ('Failed request. Response: [{0}]' -f ($getResponse | Out-String))
                     }
                 } while ($templateExists -and $retryCount -lt $retryLimit)
 
