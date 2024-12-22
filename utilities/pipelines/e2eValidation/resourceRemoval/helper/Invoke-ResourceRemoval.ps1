@@ -156,6 +156,7 @@ function Invoke-ResourceRemoval {
 
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
+            $subscriptionId = $ResourceId.Split('/')[2]
 
             # Remove resource
             if ($PSCmdlet.ShouldProcess("Image Template [$resourceName]", 'Remove')) {
