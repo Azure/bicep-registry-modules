@@ -235,47 +235,28 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
         }
       }
     ]
-    httpListeners: (empty(base64Certificate))
-      ? [
-          {
-            name: 'httpListener'
-            properties: {
-              frontendIPConfiguration: {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendIPConfigurations/appGwPublicFrontendIp'
-              }
-              frontendPort: {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendPorts/port_80'
-              }
-              protocol: 'Http'
-              hostnames: []
-              requireServerNameIndication: false
-            }
+    httpListeners: [
+      {
+        name: 'httpsListener'
+        properties: {
+          frontendIPConfiguration: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendIPConfigurations/appGwPublicFrontendIp'
           }
-        ]
-      : [
-          {
-            name: 'httpsListener'
-            properties: {
-              frontendIPConfiguration: {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendIPConfigurations/appGwPublicFrontendIp'
-              }
-              frontendPort: {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendPorts/port_443'
-              }
-              protocol: 'Https'
-              sslCertificate: {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/sslCertificates/${certName}'
-              }
-              hostnames: []
-              requireServerNameIndication: false
-            }
+          frontendPort: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendPorts/port_443'
           }
-        ]
+          protocol: 'Https'
+          sslCertificate: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/sslCertificates/${certName}'
+          }
+          hostnames: []
+          requireServerNameIndication: false
+        }
+      }
+    ]
     location: location
     managedIdentities: {
       userAssignedResourceIds: [
@@ -310,15 +291,10 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
         properties: {
           ruleType: 'Basic'
           priority: 100
-          httpListener: (empty(base64Certificate))
-            ? {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpListener'
-              }
-            : {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpsListener'
-              }
+          httpListener: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpsListener'
+          }
           backendAddressPool: {
             #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
