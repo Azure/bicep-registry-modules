@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8002941313281543900"
+      "templateHash": "2382194774753981850"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4701055090011339692"
+              "templateHash": "331701857005138147"
             }
           },
           "parameters": {
@@ -7244,7 +7244,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16391018231186274758"
+                      "templateHash": "612965683425593672"
                     }
                   },
                   "parameters": {
@@ -8176,7 +8176,7 @@
                           "maintenanceConfigurationResourceId": {
                             "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]"
                           },
-                          "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', if(not(empty(parameters('vmSshPublicKey'))), parameters('vmSshPublicKey'), reference(resourceId('Microsoft.Resources/deploymentScripts', variables('sshDeploymentScriptName')), '2020-10-01').outputs.publicKey), 'path', format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))))), createObject('value', createArray()))]",
+                          "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', if(not(empty(parameters('vmSshPublicKey'))), parameters('vmSshPublicKey'), reference(resourceId('Microsoft.Compute/sshPublicKeys', format('{0}-{1}', take(uniqueString(deployment().name, parameters('location')), 4), variables('sshKeyName'))), '2022-03-01').publicKey), 'path', format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))))), createObject('value', createArray()))]",
                           "nicConfigurations": {
                             "value": [
                               {
@@ -13607,7 +13607,7 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]",
-                        "[resourceId('Microsoft.Resources/deploymentScripts', variables('sshDeploymentScriptName'))]",
+                        "[resourceId('Microsoft.Compute/sshPublicKeys', format('{0}-{1}', take(uniqueString(deployment().name, parameters('location')), 4), variables('sshKeyName')))]",
                         "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[0], split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[1])]"
                       ]
                     }
