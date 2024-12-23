@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9271078516931506518"
+      "templateHash": "593222018755932611"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -37341,7 +37341,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14613841573461597603"
+              "templateHash": "44934276000867910"
             }
           },
           "parameters": {
@@ -38943,7 +38943,27 @@
                       }
                     ]
                   },
-                  "httpListeners": "[if(empty(parameters('base64Certificate')), createObject('value', createArray(createObject('name', 'httpListener', 'properties', createObject('frontendIPConfiguration', createObject('id', format('{0}/frontendIPConfigurations/appGwPublicFrontendIp', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'frontendPort', createObject('id', format('{0}/frontendPorts/port_80', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'protocol', 'Http', 'hostnames', createArray(), 'requireServerNameIndication', false())))), createObject('value', createArray(createObject('name', 'httpsListener', 'properties', createObject('frontendIPConfiguration', createObject('id', format('{0}/frontendIPConfigurations/appGwPublicFrontendIp', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'frontendPort', createObject('id', format('{0}/frontendPorts/port_443', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'protocol', 'Https', 'sslCertificate', createObject('id', format('{0}/sslCertificates/{1}', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway), variables('certName'))), 'hostnames', createArray(), 'requireServerNameIndication', false())))))]",
+                  "httpListeners": {
+                    "value": [
+                      {
+                        "name": "httpsListener",
+                        "properties": {
+                          "frontendIPConfiguration": {
+                            "id": "[format('{0}/frontendIPConfigurations/appGwPublicFrontendIp', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))]"
+                          },
+                          "frontendPort": {
+                            "id": "[format('{0}/frontendPorts/port_443', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))]"
+                          },
+                          "protocol": "Https",
+                          "sslCertificate": {
+                            "id": "[format('{0}/sslCertificates/{1}', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway), variables('certName'))]"
+                          },
+                          "hostnames": [],
+                          "requireServerNameIndication": false
+                        }
+                      }
+                    ]
+                  },
                   "location": {
                     "value": "[parameters('location')]"
                   },
@@ -38962,7 +38982,9 @@
                         "properties": {
                           "ruleType": "Basic",
                           "priority": 100,
-                          "httpListener": "[if(empty(parameters('base64Certificate')), createObject('id', format('{0}/httpListeners/httpListener', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), createObject('id', format('{0}/httpListeners/httpsListener', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))))]",
+                          "httpListener": {
+                            "id": "[format('{0}/httpListeners/httpsListener', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))]"
+                          },
                           "backendAddressPool": {
                             "id": "[format('{0}/backendAddressPools/acaServiceBackend', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))]"
                           },
