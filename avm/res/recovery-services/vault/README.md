@@ -20,7 +20,7 @@ This module deploys a Recovery Services Vault.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.RecoveryServices/vaults` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults) |
+| `Microsoft.RecoveryServices/vaults` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-04-01/vaults) |
 | `Microsoft.RecoveryServices/vaults/backupconfig` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupconfig) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
@@ -649,10 +649,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
-    backupStorageConfig: {
-      crossRegionRestoreFlag: true
-      storageModelType: 'GeoRedundant'
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -680,10 +676,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     }
     monitoringSettings: {
       azureMonitorAlertSettings: {
+        alertsForAllFailoverIssues: 'Enabled'
         alertsForAllJobFailures: 'Enabled'
+        alertsForAllReplicationIssues: 'Enabled'
       }
       classicAlertSettings: {
         alertsForCriticalOperations: 'Enabled'
+        emailNotificationsForSiteRecovery: 'Enabled'
       }
     }
     privateEndpoints: [
@@ -1040,12 +1039,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
-    "backupStorageConfig": {
-      "value": {
-        "crossRegionRestoreFlag": true,
-        "storageModelType": "GeoRedundant"
-      }
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1082,10 +1075,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "monitoringSettings": {
       "value": {
         "azureMonitorAlertSettings": {
-          "alertsForAllJobFailures": "Enabled"
+          "alertsForAllFailoverIssues": "Enabled",
+          "alertsForAllJobFailures": "Enabled",
+          "alertsForAllReplicationIssues": "Enabled"
         },
         "classicAlertSettings": {
-          "alertsForCriticalOperations": "Enabled"
+          "alertsForCriticalOperations": "Enabled",
+          "emailNotificationsForSiteRecovery": "Enabled"
         }
       }
     },
@@ -1445,10 +1441,6 @@ param backupPolicies = [
     }
   }
 ]
-param backupStorageConfig = {
-  crossRegionRestoreFlag: true
-  storageModelType: 'GeoRedundant'
-}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1476,10 +1468,13 @@ param managedIdentities = {
 }
 param monitoringSettings = {
   azureMonitorAlertSettings: {
+    alertsForAllFailoverIssues: 'Enabled'
     alertsForAllJobFailures: 'Enabled'
+    alertsForAllReplicationIssues: 'Enabled'
   }
   classicAlertSettings: {
     alertsForCriticalOperations: 'Enabled'
+    emailNotificationsForSiteRecovery: 'Enabled'
   }
 }
 param privateEndpoints = [
@@ -1832,10 +1827,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
-    backupStorageConfig: {
-      crossRegionRestoreFlag: true
-      storageModelType: 'GeoRedundant'
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1863,10 +1854,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     }
     monitoringSettings: {
       azureMonitorAlertSettings: {
+        alertsForAllFailoverIssues: 'Enabled'
         alertsForAllJobFailures: 'Enabled'
+        alertsForAllReplicationIssues: 'Enabled'
       }
       classicAlertSettings: {
         alertsForCriticalOperations: 'Enabled'
+        emailNotificationsForSiteRecovery: 'Enabled'
       }
     }
     privateEndpoints: [
@@ -2204,12 +2198,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
-    "backupStorageConfig": {
-      "value": {
-        "crossRegionRestoreFlag": true,
-        "storageModelType": "GeoRedundant"
-      }
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -2246,10 +2234,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "monitoringSettings": {
       "value": {
         "azureMonitorAlertSettings": {
-          "alertsForAllJobFailures": "Enabled"
+          "alertsForAllFailoverIssues": "Enabled",
+          "alertsForAllJobFailures": "Enabled",
+          "alertsForAllReplicationIssues": "Enabled"
         },
         "classicAlertSettings": {
-          "alertsForCriticalOperations": "Enabled"
+          "alertsForCriticalOperations": "Enabled",
+          "emailNotificationsForSiteRecovery": "Enabled"
         }
       }
     },
@@ -2588,10 +2579,6 @@ param backupPolicies = [
     }
   }
 ]
-param backupStorageConfig = {
-  crossRegionRestoreFlag: true
-  storageModelType: 'GeoRedundant'
-}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2619,10 +2606,13 @@ param managedIdentities = {
 }
 param monitoringSettings = {
   azureMonitorAlertSettings: {
+    alertsForAllFailoverIssues: 'Enabled'
     alertsForAllJobFailures: 'Enabled'
+    alertsForAllReplicationIssues: 'Enabled'
   }
   classicAlertSettings: {
     alertsForCriticalOperations: 'Enabled'
+    emailNotificationsForSiteRecovery: 'Enabled'
   }
 }
 param privateEndpoints = [
@@ -2721,6 +2711,7 @@ param tags = {
 | [`backupConfig`](#parameter-backupconfig) | object | The backup configuration. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | List of all backup policies. |
 | [`backupStorageConfig`](#parameter-backupstorageconfig) | object | The storage configuration for the Azure Recovery Service Vault. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -2730,9 +2721,11 @@ param tags = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`protectionContainers`](#parameter-protectioncontainers) | array | List of all protection containers. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
+| [`redundancySettings`](#parameter-redundancysettings) | object | The redundancy settings of the vault. |
 | [`replicationAlertSettings`](#parameter-replicationalertsettings) | object | Replication alert settings. |
 | [`replicationFabrics`](#parameter-replicationfabrics) | array | List of all replication fabrics. |
 | [`replicationPolicies`](#parameter-replicationpolicies) | array | List of all replication policies. |
+| [`restoreSettings`](#parameter-restoresettings) | object | The restore settings of the vault. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securitySettings`](#parameter-securitysettings) | object | Security Settings of the vault. |
 | [`tags`](#parameter-tags) | object | Tags of the Recovery Service Vault resource. |
@@ -2767,6 +2760,76 @@ The storage configuration for the Azure Recovery Service Vault.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`infrastructureEncryption`](#parameter-customermanagedkeyinfrastructureencryption) | string | The resource ID of the key vault. |
+| [`kekIdentity`](#parameter-customermanagedkeykekidentity) | object | The details of the identity used for CMK	. |
+| [`keyVaultProperties`](#parameter-customermanagedkeykeyvaultproperties) | object | The properties of the Key Vault which hosts CMK. |
+
+### Parameter: `customerManagedKey.infrastructureEncryption`
+
+The resource ID of the key vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.kekIdentity`
+
+The details of the identity used for CMK	.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentity`](#parameter-customermanagedkeykekidentityuserassignedidentity) | string | The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned. |
+| [`useSystemAssignedIdentity`](#parameter-customermanagedkeykekidentityusesystemassignedidentity) | bool | Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field. |
+
+### Parameter: `customerManagedKey.kekIdentity.userAssignedIdentity`
+
+The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.kekIdentity.useSystemAssignedIdentity`
+
+Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `customerManagedKey.keyVaultProperties`
+
+The properties of the Key Vault which hosts CMK.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyUri`](#parameter-customermanagedkeykeyvaultpropertieskeyuri) | string | The key uri of the Customer Managed Key. |
+
+### Parameter: `customerManagedKey.keyVaultProperties.keyUri`
+
+The key uri of the Customer Managed Key.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -3436,6 +3499,34 @@ Whether or not public network access is allowed for this resource. For security 
   ]
   ```
 
+### Parameter: `redundancySettings`
+
+The redundancy settings of the vault.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossRegionRestore`](#parameter-redundancysettingscrossregionrestore) | string | Flag to show if Cross Region Restore is enabled on the Vault or not. |
+| [`standardTierStorageRedundancy`](#parameter-redundancysettingsstandardtierstorageredundancy) | string | The storage redundancy setting of a vault. |
+
+### Parameter: `redundancySettings.crossRegionRestore`
+
+Flag to show if Cross Region Restore is enabled on the Vault or not.
+
+- Required: No
+- Type: string
+
+### Parameter: `redundancySettings.standardTierStorageRedundancy`
+
+The storage redundancy setting of a vault.
+
+- Required: No
+- Type: string
+
 ### Parameter: `replicationAlertSettings`
 
 Replication alert settings.
@@ -3459,6 +3550,39 @@ List of all replication policies.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `restoreSettings`
+
+The restore settings of the vault.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossSubscriptionRestoreSettings`](#parameter-restoresettingscrosssubscriptionrestoresettings) | object | The restore settings of the vault. |
+
+### Parameter: `restoreSettings.crossSubscriptionRestoreSettings`
+
+The restore settings of the vault.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossSubscriptionRestoreState`](#parameter-restoresettingscrosssubscriptionrestoresettingscrosssubscriptionrestorestate) | string | The restore settings of the vault. |
+
+### Parameter: `restoreSettings.crossSubscriptionRestoreSettings.crossSubscriptionRestoreState`
+
+The restore settings of the vault.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments`
 
