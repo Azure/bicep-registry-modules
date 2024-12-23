@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16905849120117313772"
+      "templateHash": "16552450576432230086"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17766744145042782764"
+              "templateHash": "12434518689607808603"
             }
           },
           "parameters": {
@@ -7244,7 +7244,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5449504037454113769"
+                      "templateHash": "17937571576250792627"
                     }
                   },
                   "parameters": {
@@ -8173,7 +8173,7 @@
                           "maintenanceConfigurationResourceId": {
                             "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]"
                           },
-                          "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', parameters('vmSshPublicKey'), 'path', format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))))), createObject('value', createArray()))]",
+                          "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', if(not(empty(parameters('vmSshPublicKey'))), parameters('vmSshPublicKey'), reference(resourceId('Microsoft.Resources/deploymentScripts', variables('sshDeploymentScriptName')), '2020-10-01').outputs.publicKey), 'path', format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))))), createObject('value', createArray()))]",
                           "nicConfigurations": {
                             "value": [
                               {
@@ -13604,6 +13604,7 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]",
+                        "[resourceId('Microsoft.Resources/deploymentScripts', variables('sshDeploymentScriptName'))]",
                         "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[0], split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[1])]"
                       ]
                     }
