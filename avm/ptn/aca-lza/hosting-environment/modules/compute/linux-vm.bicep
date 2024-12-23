@@ -183,7 +183,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
     publicKeys: ((vmAuthenticationType == 'sshPublicKey')
       ? [
           {
-            keyData: (!empty(vmSshPublicKey)) ? vmSshPublicKey : sshDeploymentScript.properties.outputs.publicKey
+            keyData: (!empty(vmSshPublicKey)) ? vmSshPublicKey : sshKey.properties.publicKey
             path: '/home/${vmAdminUsername}/.ssh/authorized_keys'
           }
         ]
