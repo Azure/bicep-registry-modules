@@ -53,6 +53,19 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
+resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, 'ssh-Contributor', managedIdentity.id)
+  scope: resourceGroup()
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(vmSshPublicKey)) {
   name: sshDeploymentScriptName
   location: location
@@ -69,6 +82,9 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' 
     arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
   }
+  dependsOn: [
+    msiRGContrRoleAssignment
+  ]
 }
 
 resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {

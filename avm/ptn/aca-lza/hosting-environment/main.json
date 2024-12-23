@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "593222018755932611"
+      "templateHash": "16905849120117313772"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16423132108524991662"
+              "templateHash": "17766744145042782764"
             }
           },
           "parameters": {
@@ -7244,7 +7244,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "402738852174571413"
+                      "templateHash": "5449504037454113769"
                     }
                   },
                   "parameters": {
@@ -7336,6 +7336,19 @@
                       "location": "[parameters('location')]"
                     },
                     {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[guid(resourceGroup().id, 'ssh-Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName'))))]",
+                      "properties": {
+                        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName'))), '2018-11-30').principalId]",
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                        "principalType": "ServicePrincipal"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName')))]"
+                      ]
+                    },
+                    {
                       "condition": "[empty(parameters('vmSshPublicKey'))]",
                       "type": "Microsoft.Resources/deploymentScripts",
                       "apiVersion": "2020-10-01",
@@ -7355,7 +7368,8 @@
                         "scriptContent": "[variables('$fxv#0')]"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName')))]"
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName')))]",
+                        "[resourceId('Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, 'ssh-Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName')))))]"
                       ]
                     },
                     {
