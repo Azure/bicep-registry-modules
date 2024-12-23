@@ -245,6 +245,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     base64Certificate: base64Certificate
     keyVaultId: supportingServices.outputs.keyVaultResourceId
+    keyVaultSubnetResourceId: spoke.outputs.spokePrivateEndpointsSubnetResourceId
     deployZoneRedundantResources: deployZoneRedundantResources
     enableDdosProtection: enableDdosProtection
     applicationGatewayLogAnalyticsId: spoke.outputs.logAnalyticsWorkspaceId

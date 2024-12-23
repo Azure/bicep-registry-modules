@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6519159026764424492"
+      "templateHash": "8002941313281543900"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2116665309508348514"
+              "templateHash": "4701055090011339692"
             }
           },
           "parameters": {
@@ -20038,6 +20038,13 @@
               },
               "value": "[parameters('spokePrivateEndpointsSubnetName')]"
             },
+            "spokePrivateEndpointsSubnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the spoke private endpoints subnet."
+              },
+              "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Network/virtualNetworks/subnets', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('vnetSpoke-{0}', deployment().name), 64)), '2022-09-01').outputs.name.value, parameters('spokePrivateEndpointsSubnetName'))]"
+            },
             "spokeApplicationGatewaySubnetId": {
               "type": "string",
               "metadata": {
@@ -37342,6 +37349,9 @@
           "keyVaultId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.keyVaultResourceId.value]"
           },
+          "keyVaultSubnetResourceId": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.spokePrivateEndpointsSubnetResourceId.value]"
+          },
           "deployZoneRedundantResources": {
             "value": "[parameters('deployZoneRedundantResources')]"
           },
@@ -37359,7 +37369,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3779230977783040254"
+              "templateHash": "10825392352590915388"
             }
           },
           "parameters": {
@@ -37447,6 +37457,12 @@
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the existing Key Vault which contains Application Gateway's cert."
+              }
+            },
+            "keyVaultSubnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The subnet resource ID of the subnet where the key vault is deployed."
               }
             },
             "deployZoneRedundantResources": {
@@ -38089,6 +38105,9 @@
                   "keyVaultName": {
                     "value": "[variables('keyVaultName')]"
                   },
+                  "keyVaultSubnetResourceId": {
+                    "value": "[parameters('keyVaultSubnetResourceId')]"
+                  },
                   "appGatewayCertificateData": {
                     "value": "[parameters('base64Certificate')]"
                   },
@@ -38106,15 +38125,27 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "4152414913069928654"
+                      "templateHash": "16721150391695207990"
                     }
                   },
                   "parameters": {
                     "keyVaultName": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the key vault where the certificate will be stored."
+                      }
+                    },
+                    "keyVaultSubnetResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The subnet resource ID of the subnet where the key vault is deployed."
+                      }
                     },
                     "location": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the location where the resources will be deployed."
+                      }
                     },
                     "tags": {
                       "type": "object",
@@ -38156,7 +38187,7 @@
                       "name": "[guid(resourceGroup().id, 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location')))))]",
                       "properties": {
                         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location')))), '2018-11-30').principalId]",
-                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
                         "principalType": "ServicePrincipal"
                       },
                       "dependsOn": [
@@ -38166,7 +38197,7 @@
                     {
                       "condition": "[empty(parameters('appGatewayCertificateData'))]",
                       "type": "Microsoft.Resources/deploymentScripts",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2023-08-01",
                       "name": "[format('{0}-certDeploymentScript', take(uniqueString(deployment().name, 'self-signed-cert', parameters('location')), 4))]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -38181,7 +38212,14 @@
                         "azPowerShellVersion": "9.0",
                         "retentionInterval": "P1D",
                         "arguments": "[format('-KeyVaultName \"{0}\" -CertName \"{1}\" -CertSubjectName \"{2}\"', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'), variables('selfSignedCertificateSubject'))]",
-                        "scriptContent": "[variables('$fxv#0')]"
+                        "scriptContent": "[variables('$fxv#0')]",
+                        "containerSettings": {
+                          "subnetIds": [
+                            {
+                              "id": "[parameters('keyVaultSubnetResourceId')]"
+                            }
+                          ]
+                        }
                       },
                       "dependsOn": [
                         "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), 'Microsoft.Authorization/roleAssignments', guid(subscription().id, resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('appGatewayUserAssignedIdentityPrincipalId'), 'KeyVaultSecretUser'))]",
@@ -38220,7 +38258,7 @@
                   "outputs": {
                     "SecretUri": {
                       "type": "string",
-                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2023-07-01').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(deployment().name, 'self-signed-cert', parameters('location')), 4))), '2020-10-01').outputs.secretUrl)]"
+                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2023-07-01').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(deployment().name, 'self-signed-cert', parameters('location')), 4))), '2023-08-01').outputs.secretUrl)]"
                     }
                   }
                 }

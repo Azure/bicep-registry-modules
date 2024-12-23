@@ -46,6 +46,9 @@ param applicationGatewayLogAnalyticsId string = ''
 @description('The resource ID of the existing Key Vault which contains Application Gateway\'s cert.')
 param keyVaultId string
 
+@description('The subnet resource ID of the subnet where the key vault is deployed.')
+param keyVaultSubnetResourceId string
+
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
@@ -111,6 +114,7 @@ module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
     location: location
     tags: tags
     keyVaultName: keyVaultName
+    keyVaultSubnetResourceId: keyVaultSubnetResourceId
     appGatewayCertificateData: base64Certificate
     appGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     appGatewayUserAssignedIdentityPrincipalId: userAssignedIdentity.outputs.principalId

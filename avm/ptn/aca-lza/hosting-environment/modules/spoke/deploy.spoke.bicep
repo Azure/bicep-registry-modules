@@ -581,6 +581,9 @@ output spokeInfraSubnetName string = vnetSpokeCreated::spokeInfraSubnet.name
 @description('The name of the spoke private endpoints subnet.')
 output spokePrivateEndpointsSubnetName string = vnetSpokeCreated::spokePrivateEndpointsSubnet.name
 
+@description('The resource ID of the spoke private endpoints subnet.')
+output spokePrivateEndpointsSubnetResourceId string = vnetSpokeCreated::spokePrivateEndpointsSubnet.id
+
 @description('The resource ID of the spoke Application Gateway subnet. This is \'\' if the subnet was not created.')
 output spokeApplicationGatewaySubnetId string = (!empty(spokeApplicationGatewaySubnetAddressPrefix))
   ? vnetSpokeCreated::spokeApplicationGatewaySubnet.id

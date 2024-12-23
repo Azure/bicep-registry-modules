@@ -3,9 +3,13 @@ targetScope = 'resourceGroup'
 // ------------------
 //    PARAMETERS
 // ------------------
-
+@description('The name of the key vault where the certificate will be stored.')
 param keyVaultName string
 
+@description('The subnet resource ID of the subnet where the key vault is deployed.')
+param keyVaultSubnetResourceId string
+
+@description('The name of the location where the resources will be deployed.')
 param location string
 
 @description('Optional. The tags to be assigned to the created resources.')
@@ -49,13 +53,16 @@ resource selfSignedCertManagedIdentityRoleAssignment 'Microsoft.Authorization/ro
     principalId: selfSignedCertManagedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    ) // Contributor
+      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+    ) // Key Vault Administrator
     principalType: 'ServicePrincipal'
   }
 }
 
-resource selfSignedCertificate 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(appGatewayCertificateData)) {
+// Create a deployment script to generate a self signed cert and write it to the KV
+// script needs to run from within the virtual network to be able to access the key vault
+
+resource selfSignedCertificate 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(appGatewayCertificateData)) {
   name: '${take(uniqueString(deployment().name, 'self-signed-cert', location),4)}-certDeploymentScript'
   location: location
   tags: tags
@@ -71,6 +78,13 @@ resource selfSignedCertificate 'Microsoft.Resources/deploymentScripts@2020-10-01
     retentionInterval: 'P1D'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${appGatewayCertificateKeyName}" -CertSubjectName "${selfSignedCertificateSubject}"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
+    containerSettings: {
+      subnetIds: [
+        {
+          id: keyVaultSubnetResourceId
+        }
+      ]
+    }
   }
   dependsOn: [
     keyvaultSecretUserRoleAssignment
