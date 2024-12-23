@@ -8,6 +8,9 @@ param keyVaultName string
 
 param location string
 
+@description('Optional. The tags to be assigned to the created resources.')
+param tags object = {}
+
 param appGatewayUserAssignedIdentityPrincipalId string
 
 param appGatewayCertificateKeyName string
@@ -35,6 +38,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 resource selfSignedCertManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = if (empty(appGatewayCertificateData)) {
   name: '${uniqueString(deployment().name, location)}-selfSignedCertManagedIdentity'
   location: location
+  tags: tags
 }
 
 // Assign the managed identity the contributor role on the KV to write the self signed cert
@@ -54,6 +58,7 @@ resource selfSignedCertManagedIdentityRoleAssignment 'Microsoft.Authorization/ro
 resource selfSignedCertificate 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(appGatewayCertificateData)) {
   name: '${take(uniqueString(deployment().name, 'self-signed-cert', location),4)}-certDeploymentScript'
   location: location
+  tags: tags
   kind: 'AzurePowerShell'
   identity: {
     type: 'UserAssigned'
@@ -76,6 +81,7 @@ resource selfSignedCertificate 'Microsoft.Resources/deploymentScripts@2020-10-01
 resource sslCertSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (!empty(appGatewayCertificateData)) {
   parent: keyVault
   name: appGatewayCertificateKeyName
+  tags: tags
   properties: {
     value: appGatewayCertificateData
     contentType: 'application/x-pkcs12'

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16552450576432230086"
+      "templateHash": "6519159026764424492"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12434518689607808603"
+              "templateHash": "2116665309508348514"
             }
           },
           "parameters": {
@@ -7244,7 +7244,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "17937571576250792627"
+                      "templateHash": "16391018231186274758"
                     }
                   },
                   "parameters": {
@@ -7333,6 +7333,7 @@
                       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
                       "apiVersion": "2018-11-30",
                       "name": "[format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName'))]",
+                      "tags": "[parameters('tags')]",
                       "location": "[parameters('location')]"
                     },
                     {
@@ -7354,6 +7355,7 @@
                       "apiVersion": "2020-10-01",
                       "name": "[variables('sshDeploymentScriptName')]",
                       "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
                       "kind": "AzurePowerShell",
                       "identity": {
                         "type": "UserAssigned",
@@ -7377,6 +7379,7 @@
                       "apiVersion": "2022-03-01",
                       "name": "[format('{0}-{1}', take(uniqueString(deployment().name, parameters('location')), 4), variables('sshKeyName'))]",
                       "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
                       "properties": {
                         "publicKey": "[if(not(empty(parameters('vmSshPublicKey'))), parameters('vmSshPublicKey'), reference(resourceId('Microsoft.Resources/deploymentScripts', variables('sshDeploymentScriptName')), '2020-10-01').outputs.publicKey)]"
                       },
@@ -37356,7 +37359,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "44934276000867910"
+              "templateHash": "3779230977783040254"
             }
           },
           "parameters": {
@@ -38080,6 +38083,9 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  },
                   "keyVaultName": {
                     "value": "[variables('keyVaultName')]"
                   },
@@ -38100,7 +38106,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "9991616977571736622"
+                      "templateHash": "4152414913069928654"
                     }
                   },
                   "parameters": {
@@ -38109,6 +38115,13 @@
                     },
                     "location": {
                       "type": "string"
+                    },
+                    "tags": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. The tags to be assigned to the created resources."
+                      }
                     },
                     "appGatewayUserAssignedIdentityPrincipalId": {
                       "type": "string"
@@ -38132,7 +38145,8 @@
                       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
                       "apiVersion": "2018-11-30",
                       "name": "[format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location')))]",
-                      "location": "[parameters('location')]"
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]"
                     },
                     {
                       "condition": "[empty(parameters('appGatewayCertificateData'))]",
@@ -38155,6 +38169,7 @@
                       "apiVersion": "2020-10-01",
                       "name": "[format('{0}-certDeploymentScript', take(uniqueString(deployment().name, 'self-signed-cert', parameters('location')), 4))]",
                       "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
                       "kind": "AzurePowerShell",
                       "identity": {
                         "type": "UserAssigned",
@@ -38178,6 +38193,7 @@
                       "type": "Microsoft.KeyVault/vaults/secrets",
                       "apiVersion": "2023-07-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'))]",
+                      "tags": "[parameters('tags')]",
                       "properties": {
                         "value": "[parameters('appGatewayCertificateData')]",
                         "contentType": "application/x-pkcs12",
