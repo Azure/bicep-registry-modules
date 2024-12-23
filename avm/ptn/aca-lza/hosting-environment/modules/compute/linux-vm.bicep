@@ -41,10 +41,43 @@ param location string = resourceGroup().location
 // ------------------
 // VARIABLES
 // ------------------
-
+var managedIdentityName = 'sshKeyGenIdentity'
+var sshKeyName = 'sshKey'
+var sshDeploymentScriptName = '${take(uniqueString(deployment().name, location),4)}-sshDeploymentScript'
 // ------------------
 // RESOURCES
 // ------------------
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = if (empty(vmSshPublicKey)) {
+  name: '${uniqueString(deployment().name, location)}-${managedIdentityName}'
+  location: location
+}
+
+resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(vmSshPublicKey)) {
+  name: sshDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    azPowerShellVersion: '9.0'
+    retentionInterval: 'P1D'
+    arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
+    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
+  }
+}
+
+resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
+  name: '${take(uniqueString(deployment().name, location),4)}-${sshKeyName}'
+  location: location
+  properties: {
+    publicKey: (!empty(vmSshPublicKey)) ? vmSshPublicKey : sshDeploymentScript.properties.outputs.publicKey
+  }
+}
 
 module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.2.0' = {
   name: 'vmNetworkSecurityDeployment'

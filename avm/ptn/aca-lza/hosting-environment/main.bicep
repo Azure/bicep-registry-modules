@@ -45,9 +45,9 @@ param vmAdminUsername string
 @secure()
 param vmAdminPassword string
 
-@description('Required. The SSH public key to use for the virtual machine.')
+@description('Optional. The SSH public key to use for the virtual machine. If not provided one will be generated. Default is empty.')
 @secure()
-param vmLinuxSshAuthorizedKey string
+param vmLinuxSshAuthorizedKey string = ''
 
 @description('Optional. Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password".')
 @allowed([
@@ -87,9 +87,9 @@ param enableDaprInstrumentation bool
 @description('Optional. The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty.')
 param applicationGatewayFqdn string = ''
 
-@description('Required. The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.')
+@description('Optional. The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.')
 @secure()
-param base64Certificate string
+param base64Certificate string = ''
 
 @description('Required. The name of the certificate key to use for Application Gateway certificate.')
 param applicationGatewayCertificateKeyName string

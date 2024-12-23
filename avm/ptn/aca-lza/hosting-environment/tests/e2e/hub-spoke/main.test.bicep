@@ -46,20 +46,6 @@ module hubdeployment 'deploy.hub.bicep' = {
   }
 }
 
-module testEnvironment '../../modules/testenvrg.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-testenv-${serviceShort}'
-  params: {
-    location: resourceLocation
-    certificateName: certificateName
-    certificateSubjectName: 'acahello.demoapp.com'
-  }
-}
-
-resource envKeyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
-  scope: resourceGroup(testEnvironment.outputs.resourceGroupName)
-  name: testEnvironment.outputs.keyVaultName
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -78,7 +64,6 @@ module testDeployment '../../../main.bicep' = {
     storageAccountType: 'Premium_LRS'
     vmAdminUsername: 'vmadmin'
     vmAdminPassword: password
-    vmLinuxSshAuthorizedKey: testEnvironment.outputs.sshKey
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
@@ -91,7 +76,6 @@ module testDeployment '../../../main.bicep' = {
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     applicationGatewayCertificateKeyName: certificateName
-    base64Certificate: envKeyVault.getSecret(testEnvironment.outputs.certificateSecureUrl)
     deployZoneRedundantResources: true
     exposeContainerAppsWith: 'applicationGateway'
     enableDdosProtection: true

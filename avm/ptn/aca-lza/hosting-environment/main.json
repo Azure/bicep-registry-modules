@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4199760932159379693"
+      "templateHash": "9271078516931506518"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -91,8 +91,9 @@
     },
     "vmLinuxSshAuthorizedKey": {
       "type": "securestring",
+      "defaultValue": "",
       "metadata": {
-        "description": "Required. The SSH public key to use for the virtual machine."
+        "description": "Optional. The SSH public key to use for the virtual machine. If not provided one will be generated. Default is empty."
       }
     },
     "vmAuthenticationType": {
@@ -176,8 +177,9 @@
     },
     "base64Certificate": {
       "type": "securestring",
+      "defaultValue": "",
       "metadata": {
-        "description": "Required. The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener."
+        "description": "Optional. The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener."
       }
     },
     "applicationGatewayCertificateKeyName": {
@@ -476,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14066200747590682992"
+              "templateHash": "16423132108524991662"
             }
           },
           "parameters": {
@@ -618,6 +620,7 @@
             },
             "vmLinuxSshAuthorizedKey": {
               "type": "securestring",
+              "defaultValue": "",
               "metadata": {
                 "description": "The SSH public key to use for the jump box. Only relevant for Linux."
               }
@@ -7241,7 +7244,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8606544680215053417"
+                      "templateHash": "402738852174571413"
                     }
                   },
                   "parameters": {
@@ -7318,7 +7321,55 @@
                       "defaultValue": "[resourceGroup().location]"
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Requires conversion as the script otherwise returns an object instead of the plain public key string\n    publicKey = $publicKey | Out-String\n}\n",
+                    "managedIdentityName": "sshKeyGenIdentity",
+                    "sshKeyName": "sshKey",
+                    "sshDeploymentScriptName": "[format('{0}-sshDeploymentScript', take(uniqueString(deployment().name, parameters('location')), 4))]"
+                  },
                   "resources": [
+                    {
+                      "condition": "[empty(parameters('vmSshPublicKey'))]",
+                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                      "apiVersion": "2018-11-30",
+                      "name": "[format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName'))]",
+                      "location": "[parameters('location')]"
+                    },
+                    {
+                      "condition": "[empty(parameters('vmSshPublicKey'))]",
+                      "type": "Microsoft.Resources/deploymentScripts",
+                      "apiVersion": "2020-10-01",
+                      "name": "[variables('sshDeploymentScriptName')]",
+                      "location": "[parameters('location')]",
+                      "kind": "AzurePowerShell",
+                      "identity": {
+                        "type": "UserAssigned",
+                        "userAssignedIdentities": {
+                          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName'))))]": {}
+                        }
+                      },
+                      "properties": {
+                        "azPowerShellVersion": "9.0",
+                        "retentionInterval": "P1D",
+                        "arguments": "[format('-SSHKeyName \"{0}\" -ResourceGroupName \"{1}\"', variables('sshKeyName'), resourceGroup().name)]",
+                        "scriptContent": "[variables('$fxv#0')]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(deployment().name, parameters('location')), variables('managedIdentityName')))]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Compute/sshPublicKeys",
+                      "apiVersion": "2022-03-01",
+                      "name": "[format('{0}-{1}', take(uniqueString(deployment().name, parameters('location')), 4), variables('sshKeyName'))]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "publicKey": "[if(not(empty(parameters('vmSshPublicKey'))), parameters('vmSshPublicKey'), reference(resourceId('Microsoft.Resources/deploymentScripts', variables('sshDeploymentScriptName')), '2020-10-01').outputs.publicKey)]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Resources/deploymentScripts', variables('sshDeploymentScriptName'))]"
+                      ]
+                    },
                     {
                       "type": "Microsoft.Network/virtualNetworks/subnets",
                       "apiVersion": "2023-11-01",
@@ -37290,7 +37341,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16835208915376865097"
+              "templateHash": "14613841573461597603"
             }
           },
           "parameters": {
@@ -38011,6 +38062,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
                   "keyVaultName": {
                     "value": "[variables('keyVaultName')]"
                   },
@@ -38031,11 +38085,14 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5439421040390840962"
+                      "templateHash": "9991616977571736622"
                     }
                   },
                   "parameters": {
                     "keyVaultName": {
+                      "type": "string"
+                    },
+                    "location": {
                       "type": "string"
                     },
                     "appGatewayUserAssignedIdentityPrincipalId": {
@@ -38049,10 +38106,60 @@
                     }
                   },
                   "variables": {
-                    "keyVaultSecretUserRoleGuid": "4633458b-17de-408a-b874-0445c86b69e6"
+                    "$fxv#0": "<#\n.SYNOPSIS\nGenerate a new Key Vault Certificate or fetch its secret reference if already existing.\n\n.DESCRIPTION\nGenerate a new Key Vault Certificate or fetch its secret reference if already existing.\n\n.PARAMETER KeyVaultName\nMandatory. The name of the Key Vault to add a new certificate to, or fetch the secret reference it from\n\n.PARAMETER CertName\nMandatory. The name of the certificate to generate or fetch the secret reference from\n\n.PARAMETER CertSubjectName\nOptional. The subject distinguished name is the name of the user of the certificate. The distinguished name for the certificate is a textual representation of the subject or issuer of the certificate. Default name is \"CN=fabrikam.com\"\n\n.EXAMPLE\n./Set-CertificateInKeyVault.ps1 -KeyVaultName 'myVault' -CertName 'myCert' -CertSubjectName 'CN=fabrikam.com'\n\nGenerate a new Key Vault Certificate with the default or provided subject name, or fetch its secret reference if already existing as 'myCert' in Key Vault 'myVault'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $KeyVaultName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $CertName,\n\n    [Parameter(Mandatory = $false)]\n    [string] $CertSubjectName = 'CN=fabrikam.com'\n)\n\n$certificate = Get-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -ErrorAction 'SilentlyContinue'\n\nif (-not $certificate) {\n    $policyInputObject = @{\n        SecretContentType = 'application/x-pkcs12'\n        SubjectName       = $CertSubjectName\n        IssuerName        = 'Self'\n        ValidityInMonths  = 12\n        ReuseKeyOnRenewal = $true\n    }\n    $certPolicy = New-AzKeyVaultCertificatePolicy @policyInputObject\n\n    $null = Add-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -CertificatePolicy $certPolicy\n    Write-Verbose ('Initiated creation of certificate [{0}] in key vault [{1}]' -f $CertName, $KeyVaultName) -Verbose\n\n    while (-not (Get-AzKeyVaultCertificateOperation -VaultName $KeyVaultName -Name $CertName).Status -eq 'completed') {\n        Write-Verbose 'Waiting 10 seconds for certificate creation' -Verbose\n        Start-Sleep 10\n    }\n\n    Write-Verbose 'Certificate created' -Verbose\n}\n\n$secretId = $certificate.SecretId\nwhile ([String]::IsNullOrEmpty($secretId)) {\n    Write-Verbose 'Waiting 10 seconds until certificate can be fetched' -Verbose\n    Start-Sleep 10\n    $certificate = Get-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -ErrorAction 'Stop'\n    $secretId = $certificate.SecretId\n}\n\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    secretUrl = $secretId\n}\n",
+                    "keyVaultSecretUserRoleGuid": "4633458b-17de-408a-b874-0445c86b69e6",
+                    "selfSignedCertificateSubject": "CN=contoso.com",
+                    "useSelfSignedCert": "[empty(parameters('appGatewayCertificateData'))]"
                   },
                   "resources": [
                     {
+                      "condition": "[empty(parameters('appGatewayCertificateData'))]",
+                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                      "apiVersion": "2018-11-30",
+                      "name": "[format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location')))]",
+                      "location": "[parameters('location')]"
+                    },
+                    {
+                      "condition": "[empty(parameters('appGatewayCertificateData'))]",
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
+                      "name": "[guid(resourceGroup().id, 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location')))))]",
+                      "properties": {
+                        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location')))), '2018-11-30').principalId]",
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                        "principalType": "ServicePrincipal"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location'))))]"
+                      ]
+                    },
+                    {
+                      "condition": "[empty(parameters('appGatewayCertificateData'))]",
+                      "type": "Microsoft.Resources/deploymentScripts",
+                      "apiVersion": "2020-10-01",
+                      "name": "[format('{0}-certDeploymentScript', take(uniqueString(deployment().name, 'self-signed-cert', parameters('location')), 4))]",
+                      "location": "[parameters('location')]",
+                      "kind": "AzurePowerShell",
+                      "identity": {
+                        "type": "UserAssigned",
+                        "userAssignedIdentities": {
+                          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location')))))]": {}
+                        }
+                      },
+                      "properties": {
+                        "azPowerShellVersion": "9.0",
+                        "retentionInterval": "P1D",
+                        "arguments": "[format('-KeyVaultName \"{0}\" -CertName \"{1}\" -CertSubjectName \"{2}\"', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'), variables('selfSignedCertificateSubject'))]",
+                        "scriptContent": "[variables('$fxv#0')]"
+                      },
+                      "dependsOn": [
+                        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), 'Microsoft.Authorization/roleAssignments', guid(subscription().id, resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('appGatewayUserAssignedIdentityPrincipalId'), 'KeyVaultSecretUser'))]",
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(deployment().name, parameters('location'))))]"
+                      ]
+                    },
+                    {
+                      "condition": "[not(empty(parameters('appGatewayCertificateData')))]",
                       "type": "Microsoft.KeyVault/vaults/secrets",
                       "apiVersion": "2023-07-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'))]",
@@ -38082,7 +38189,7 @@
                   "outputs": {
                     "SecretUri": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2023-07-01').secretUri]"
+                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2023-07-01').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(deployment().name, 'self-signed-cert', parameters('location')), 4))), '2020-10-01').outputs.secretUrl)]"
                     }
                   }
                 }

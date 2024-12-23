@@ -108,6 +108,7 @@ module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
   name: take('appGatewayAddCertificates-Deployment-${uniqueString(resourceGroup().id)}', 64)
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
   params: {
+    location: location
     keyVaultName: keyVaultName
     appGatewayCertificateData: base64Certificate
     appGatewayCertificateKeyName: applicationGatewayCertificateKeyName

@@ -78,7 +78,7 @@ param vmAdminPassword string
 
 @description('The SSH public key to use for the jump box. Only relevant for Linux.')
 @secure()
-param vmLinuxSshAuthorizedKey string
+param vmLinuxSshAuthorizedKey string = ''
 
 @description('The OS of the jump box virtual machine to create. If set to "none", no jump box will be created.')
 @allowed(['linux', 'windows', 'none'])

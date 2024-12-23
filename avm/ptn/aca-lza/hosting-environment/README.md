@@ -31,6 +31,7 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.Cdn/profiles/ruleSets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets) |
 | `Microsoft.Cdn/profiles/ruleSets/rules` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets/rules) |
 | `Microsoft.Cdn/profiles/secrets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/secrets) |
+| `Microsoft.Compute/sshPublicKeys` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-01/sshPublicKeys) |
 | `Microsoft.Compute/virtualMachines` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
 | `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
@@ -45,10 +46,11 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
 | `Microsoft.Maintenance/maintenanceConfigurations` | [2023-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-10-01-preview/maintenanceConfigurations) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2018-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2018-11-30/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/applicationGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/applicationGateways) |
@@ -68,14 +70,14 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateLinkServices` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateLinkServices) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
@@ -87,6 +89,7 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
+| `Microsoft.Resources/deploymentScripts` | [2020-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2020-10-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
 
 ## Usage examples
@@ -116,7 +119,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: '<applicationGatewayCertificateKeyName>'
-    base64Certificate: '<base64Certificate>'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -128,7 +130,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: '<vmLinuxSshAuthorizedKey>'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     location: '<location>'
@@ -158,9 +159,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     "applicationGatewayCertificateKeyName": {
       "value": "<applicationGatewayCertificateKeyName>"
     },
-    "base64Certificate": {
-      "value": "<base64Certificate>"
-    },
     "enableApplicationInsights": {
       "value": true
     },
@@ -189,9 +187,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
-    },
-    "vmLinuxSshAuthorizedKey": {
-      "value": "<vmLinuxSshAuthorizedKey>"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -230,7 +225,6 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = '<applicationGatewayCertificateKeyName>'
-base64Certificate: '<base64Certificate>'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -242,7 +236,6 @@ param spokeVNetAddressPrefixes = [
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = '<vmLinuxSshAuthorizedKey>'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param location = '<location>'
@@ -272,7 +265,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: '<applicationGatewayCertificateKeyName>'
-    base64Certificate: '<base64Certificate>'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -284,7 +276,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: '<vmLinuxSshAuthorizedKey>'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     deployZoneRedundantResources: true
@@ -321,9 +312,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     "applicationGatewayCertificateKeyName": {
       "value": "<applicationGatewayCertificateKeyName>"
     },
-    "base64Certificate": {
-      "value": "<base64Certificate>"
-    },
     "enableApplicationInsights": {
       "value": true
     },
@@ -352,9 +340,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
-    },
-    "vmLinuxSshAuthorizedKey": {
-      "value": "<vmLinuxSshAuthorizedKey>"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -414,7 +399,6 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = '<applicationGatewayCertificateKeyName>'
-base64Certificate: '<base64Certificate>'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -426,7 +410,6 @@ param spokeVNetAddressPrefixes = [
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = '<vmLinuxSshAuthorizedKey>'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param deployZoneRedundantResources = true
@@ -463,7 +446,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: 'appgwcert'
-    base64Certificate: '<base64Certificate>'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -475,7 +457,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: '<vmLinuxSshAuthorizedKey>'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     deployZoneRedundantResources: true
@@ -510,9 +491,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     "applicationGatewayCertificateKeyName": {
       "value": "appgwcert"
     },
-    "base64Certificate": {
-      "value": "<base64Certificate>"
-    },
     "enableApplicationInsights": {
       "value": true
     },
@@ -541,9 +519,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
-    },
-    "vmLinuxSshAuthorizedKey": {
-      "value": "<vmLinuxSshAuthorizedKey>"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -597,7 +572,6 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = 'appgwcert'
-base64Certificate: '<base64Certificate>'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -609,7 +583,6 @@ param spokeVNetAddressPrefixes = [
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = '<vmLinuxSshAuthorizedKey>'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param deployZoneRedundantResources = true
@@ -636,7 +609,6 @@ param workloadName = '<workloadName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationGatewayCertificateKeyName`](#parameter-applicationgatewaycertificatekeyname) | string | The name of the certificate key to use for Application Gateway certificate. |
-| [`base64Certificate`](#parameter-base64certificate) | securestring | The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
 | [`enableApplicationInsights`](#parameter-enableapplicationinsights) | bool | Enable or disable the createion of Application Insights. |
 | [`enableDaprInstrumentation`](#parameter-enabledaprinstrumentation) | bool | Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored. |
 | [`spokeApplicationGatewaySubnetAddressPrefix`](#parameter-spokeapplicationgatewaysubnetaddressprefix) | string | CIDR of the Spoke Application Gateway Subnet. |
@@ -646,7 +618,6 @@ param workloadName = '<workloadName>'
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | The password to use for the virtual machine. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | string | The username to use for the virtual machine. |
 | [`vmJumpBoxSubnetAddressPrefix`](#parameter-vmjumpboxsubnetaddressprefix) | string | CIDR to use for the virtual machine subnet. |
-| [`vmLinuxSshAuthorizedKey`](#parameter-vmlinuxsshauthorizedkey) | securestring | The SSH public key to use for the virtual machine. |
 | [`vmSize`](#parameter-vmsize) | string | The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information. |
 
 **Optional parameters**
@@ -654,6 +625,7 @@ param workloadName = '<workloadName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationGatewayFqdn`](#parameter-applicationgatewayfqdn) | string | The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty. |
+| [`base64Certificate`](#parameter-base64certificate) | securestring | The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
 | [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
 | [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
 | [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
@@ -669,6 +641,7 @@ param workloadName = '<workloadName>'
 | [`tags`](#parameter-tags) | object | Tags related to the Azure Container Apps deployment. Default is empty. |
 | [`vmAuthenticationType`](#parameter-vmauthenticationtype) | string | Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password". |
 | [`vmJumpboxOSType`](#parameter-vmjumpboxostype) | string | The operating system type of the virtual machine. Default is "none" which results in no VM deployment. Default is "none". |
+| [`vmLinuxSshAuthorizedKey`](#parameter-vmlinuxsshauthorizedkey) | securestring | The SSH public key to use for the virtual machine. If not provided one will be generated. Default is empty. |
 | [`workloadName`](#parameter-workloadname) | string | The name of the workload that is being deployed. Up to 10 characters long. |
 
 ### Parameter: `applicationGatewayCertificateKeyName`
@@ -677,13 +650,6 @@ The name of the certificate key to use for Application Gateway certificate.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `base64Certificate`
-
-The base64 encoded certificate to use for Application Gateway certificate. When provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.
-
-- Required: Yes
-- Type: securestring
 
 ### Parameter: `enableApplicationInsights`
 
@@ -748,13 +714,6 @@ CIDR to use for the virtual machine subnet.
 - Required: Yes
 - Type: string
 
-### Parameter: `vmLinuxSshAuthorizedKey`
-
-The SSH public key to use for the virtual machine.
-
-- Required: Yes
-- Type: securestring
-
 ### Parameter: `vmSize`
 
 The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.
@@ -768,6 +727,14 @@ The FQDN of the Application Gateway. Required and must match if the TLS Certific
 
 - Required: No
 - Type: string
+- Default: `''`
+
+### Parameter: `base64Certificate`
+
+The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.
+
+- Required: No
+- Type: securestring
 - Default: `''`
 
 ### Parameter: `bastionResourceId`
@@ -911,6 +878,14 @@ The operating system type of the virtual machine. Default is "none" which result
     'windows'
   ]
   ```
+
+### Parameter: `vmLinuxSshAuthorizedKey`
+
+The SSH public key to use for the virtual machine. If not provided one will be generated. Default is empty.
+
+- Required: No
+- Type: securestring
+- Default: `''`
 
 ### Parameter: `workloadName`
 
