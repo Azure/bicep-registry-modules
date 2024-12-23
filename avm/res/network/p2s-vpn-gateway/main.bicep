@@ -1,6 +1,5 @@
 metadata name = 'P2S VPN Gateway'
 metadata description = 'This module deploys a Virtual Hub P2S Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the P2S VPN Gateway.')
 param name string
@@ -105,19 +104,27 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-01-01' = {
         properties: {
           enableInternetSecurity: enableInternetSecurity
           routingConfiguration: {
-            associatedRouteTable:  {
-              id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${virtualHubName}','${associatedRouteTableName}')
+            associatedRouteTable: {
+              id: resourceId(
+                'Microsoft.Network/virtualHubs/hubRouteTables',
+                '${virtualHubName}',
+                '${associatedRouteTableName}'
+              )
             }
-            inboundRouteMap: (!empty(inboundRouteMapResourceId)) ? {
-              id:  inboundRouteMapResourceId
-            } : null
-            outboundRouteMap: (!empty(outboundRouteMapResourceId)) ? {
-              id: outboundRouteMapResourceId
-            } : null
+            inboundRouteMap: (!empty(inboundRouteMapResourceId))
+              ? {
+                  id: inboundRouteMapResourceId
+                }
+              : null
+            outboundRouteMap: (!empty(outboundRouteMapResourceId))
+              ? {
+                  id: outboundRouteMapResourceId
+                }
+              : null
             propagatedRouteTables: {
               ids: [
                 for table in (propagatedRouteTableNames): {
-                  id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${virtualHubName}','${table}')
+                  id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', '${virtualHubName}', '${table}')
                 }
               ]
               labels: propagatedLabelNames
@@ -195,4 +202,3 @@ type vnetRoutesStaticRoutesType = {
     vnetLocalRouteOverrideCriteria: string?
   }?
 }
-

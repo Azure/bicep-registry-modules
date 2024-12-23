@@ -1,6 +1,5 @@
 metadata name = 'Log Analytics Workspace Linked Services'
 metadata description = 'This module deploys a Log Analytics Workspace Linked Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment.')
 param logAnalyticsWorkspaceName string

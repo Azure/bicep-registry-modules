@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3552527309245713268"
+      "templateHash": "11971903042804542737"
     },
     "name": "SQL Managed Instances",
-    "description": "This module deploys a SQL Managed Instance.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Managed Instance."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -725,11 +724,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11883696320773904364"
+              "templateHash": "1538162937602224879"
             },
             "name": "SQL Managed Instance Databases",
-            "description": "This module deploys a SQL Managed Instance Database.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Managed Instance Database."
           },
           "definitions": {
             "lockType": {
@@ -1078,11 +1076,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "15474672245187293584"
+                      "templateHash": "5286316596090026143"
                     },
                     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
-                    "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
                   },
                   "parameters": {
                     "name": {
@@ -1182,11 +1179,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7864105980271921372"
+                      "templateHash": "7325115054986992226"
                     },
                     "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
-                    "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
                   },
                   "parameters": {
                     "name": {
@@ -1342,11 +1338,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14271102698222565475"
+              "templateHash": "1471785569704218082"
             },
             "name": "SQL Managed Instance Security Alert Policies",
-            "description": "This module deploys a SQL Managed Instance Security Alert Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Managed Instance Security Alert Policy."
           },
           "parameters": {
             "name": {
@@ -1453,11 +1448,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11023825535203573075"
+              "templateHash": "13562050841974548564"
             },
             "name": "SQL Managed Instance Vulnerability Assessments",
-            "description": "This module deploys a SQL Managed Instance Vulnerability Assessment.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Managed Instance Vulnerability Assessment."
           },
           "parameters": {
             "name": {
@@ -1649,11 +1643,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13411921307348987988"
+              "templateHash": "4882070616166685102"
             },
             "name": "SQL Managed Instance Keys",
-            "description": "This module deploys a SQL Managed Instance Key.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Managed Instance Key."
           },
           "parameters": {
             "name": {
@@ -1758,11 +1751,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7043641224577658925"
+              "templateHash": "7260688356936426268"
             },
             "name": "SQL Managed Instance Encryption Protector",
-            "description": "This module deploys a SQL Managed Instance Encryption Protector.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Managed Instance Encryption Protector."
           },
           "parameters": {
             "managedInstanceName": {
@@ -1867,11 +1859,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1072047084371259561"
+              "templateHash": "13987437906799315739"
             },
             "name": "SQL Managed Instances Administrator",
-            "description": "This module deploys a SQL Managed Instance Administrator.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Managed Instance Administrator."
           },
           "parameters": {
             "managedInstanceName": {

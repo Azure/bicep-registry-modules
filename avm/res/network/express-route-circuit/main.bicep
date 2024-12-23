@@ -1,6 +1,5 @@
 metadata name = 'ExpressRoute Circuits'
 metadata description = 'This module deploys an Express Route Circuit.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. This is the name of the ExpressRoute circuit.')
 param name string

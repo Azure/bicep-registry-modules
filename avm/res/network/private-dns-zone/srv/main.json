@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5790774778713328446"
+      "templateHash": "9015292509771221683"
     },
     "name": "Private DNS Zone SRV record",
-    "description": "This module deploys a Private DNS Zone SRV record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Private DNS Zone SRV record."
   },
   "definitions": {
     "roleAssignmentType": {

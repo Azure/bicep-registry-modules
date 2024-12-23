@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12280129054844550830"
+      "version": "0.32.4.45862",
+      "templateHash": "7597103854801256053"
     },
     "name": "Resource Groups",
-    "description": "This module deploys a Resource Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Resource Group."
   },
   "definitions": {
     "lockType": {
@@ -209,8 +208,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "16740360506283584978"
+              "version": "0.32.4.45862",
+              "templateHash": "1203907446887412297"
             }
           },
           "definitions": {
@@ -295,8 +294,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10992477577200576081"
+              "version": "0.32.4.45862",
+              "templateHash": "6029968255804453751"
             }
           },
           "definitions": {

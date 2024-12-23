@@ -1,6 +1,5 @@
 metadata name = 'Container job toolkit'
 metadata description = 'This module deploys a container to run as a job.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 // Parameters     //

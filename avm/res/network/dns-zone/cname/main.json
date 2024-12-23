@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7801716337979819896"
+      "templateHash": "12621931033265041406"
     },
     "name": "Public DNS Zone CNAME record",
-    "description": "This module deploys a Public DNS Zone CNAME record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone CNAME record."
   },
   "definitions": {
     "roleAssignmentType": {

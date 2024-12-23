@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7825465991750589571"
+      "templateHash": "16525011754125714141"
     },
     "name": "Web Site Slot Basic Publishing Credentials Policies",
-    "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
   },
   "parameters": {
     "name": {

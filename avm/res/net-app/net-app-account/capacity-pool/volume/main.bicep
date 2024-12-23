@@ -1,6 +1,5 @@
 metadata name = 'Azure NetApp Files Capacity Pool Volumes'
 metadata description = 'This module deploys an Azure NetApp Files Capacity Pool Volume.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment.')
 param netAppAccountName string

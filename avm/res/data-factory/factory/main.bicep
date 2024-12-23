@@ -1,6 +1,5 @@
 metadata name = 'Data Factories'
 metadata description = 'This module deploys a Data Factory.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Azure Factory to create.')
 param name string

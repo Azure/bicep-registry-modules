@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14555734508471938883"
+      "templateHash": "5382537109905181094"
     },
     "name": "CI CD Agents and Runners",
-    "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
   },
   "definitions": {
     "newNetworkType": {

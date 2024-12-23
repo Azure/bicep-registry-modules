@@ -1,6 +1,5 @@
 metadata name = 'Data Factory Linked Service'
 metadata description = 'This module deploys a Data Factory Linked Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent Azure Data Factory. Required if the template is used in a standalone deployment.')
 param dataFactoryName string

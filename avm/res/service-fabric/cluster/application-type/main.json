@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4770865885039578272"
+      "templateHash": "4295209679863031973"
     },
     "name": "Service Fabric Cluster Application Types",
-    "description": "This module deploys a Service Fabric Cluster Application Type.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Fabric Cluster Application Type."
   },
   "parameters": {
     "serviceFabricClusterName": {

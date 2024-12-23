@@ -1,6 +1,5 @@
 metadata name = 'Event Hub Namespace Network Rule Sets'
 metadata description = 'This module deploys an Event Hub Namespace Network Rule Set.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string

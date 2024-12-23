@@ -1,6 +1,5 @@
 metadata name = 'Logic Apps (Workflows)'
 metadata description = 'This module deploys a Logic App (Workflow).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The logic app workflow name.')
 param name string

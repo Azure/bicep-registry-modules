@@ -1,6 +1,5 @@
 metadata name = 'Service Fabric Clusters'
 metadata description = 'This module deploys a Service Fabric Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Service Fabric cluster.')
 param name string

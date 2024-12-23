@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13126987498401118493"
+      "templateHash": "8093952642750500375"
     },
     "name": "Data Factory Integration RunTimes",
-    "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
   },
   "parameters": {
     "dataFactoryName": {

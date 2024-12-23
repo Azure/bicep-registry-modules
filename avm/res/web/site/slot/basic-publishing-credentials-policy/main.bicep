@@ -1,6 +1,5 @@
 metadata name = 'Web Site Slot Basic Publishing Credentials Policies'
 metadata description = 'This module deploys a Web Site Slot Basic Publishing Credentials Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the resource.')
 @allowed([

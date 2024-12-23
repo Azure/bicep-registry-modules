@@ -1,6 +1,5 @@
 metadata name = 'Azure Synapse Analytics'
 metadata description = 'This module deploys an Azure Synapse Analytics (Private Link Hub).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Private Link Hub.')
 param name string

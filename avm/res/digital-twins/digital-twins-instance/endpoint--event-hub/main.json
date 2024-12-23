@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13923156882372448729"
+      "templateHash": "11377864419942663747"
     },
     "name": "Digital Twins Instance EventHub Endpoint",
-    "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Digital Twins Instance EventHub Endpoint."
   },
   "definitions": {
     "managedIdentitiesType": {

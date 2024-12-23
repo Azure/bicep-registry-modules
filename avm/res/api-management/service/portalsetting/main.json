@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "9587521329160400551"
+      "version": "0.32.4.45862",
+      "templateHash": "14695705243556531686"
     },
     "name": "API Management Service Portal Settings",
-    "description": "This module deploys an API Management Service Portal Setting.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Portal Setting."
   },
   "parameters": {
     "apiManagementServiceName": {

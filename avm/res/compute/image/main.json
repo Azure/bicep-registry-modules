@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5852863975337426972"
+      "templateHash": "18090742218039979023"
     },
     "name": "Images",
-    "description": "This module deploys a Compute Image.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Compute Image."
   },
   "definitions": {
     "roleAssignmentType": {

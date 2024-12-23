@@ -2,7 +2,6 @@ metadata name = 'DevTest Lab Virtual Networks'
 metadata description = '''This module deploys a DevTest Lab Virtual Network.
 
 Lab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent lab. Required if the template is used in a standalone deployment.')
 param labName string

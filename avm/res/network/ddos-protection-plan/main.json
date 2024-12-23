@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15571786459104289484"
+      "version": "0.32.4.45862",
+      "templateHash": "7591812138560338682"
     },
     "name": "DDoS Protection Plans",
-    "description": "This module deploys a DDoS Protection Plan.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DDoS Protection Plan."
   },
   "definitions": {
     "lockType": {

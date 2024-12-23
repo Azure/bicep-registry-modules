@@ -1,6 +1,5 @@
 metadata name = 'Kusto Cluster'
 metadata description = 'This module deploys a Kusto Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(4)
 @maxLength(22)

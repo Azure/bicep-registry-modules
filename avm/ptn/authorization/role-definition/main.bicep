@@ -1,6 +1,5 @@
 metadata name = 'avm/ptn/authorization/role-definition'
 metadata description = 'This module deploys a custom role definition to a Management Group.'
-metadata owner = '@jtracey93'
 
 targetScope = 'managementGroup'
 

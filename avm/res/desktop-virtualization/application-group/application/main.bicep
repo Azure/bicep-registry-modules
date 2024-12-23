@@ -1,6 +1,5 @@
 metadata name = 'Azure Virtual Desktop Application Group Application'
 metadata description = 'This module deploys an Azure Virtual Desktop Application Group Application.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent Application Group to create the application(s) in. Required if the template is used in a standalone deployment.')
 param applicationGroupName string

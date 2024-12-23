@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9360899285262740387"
+      "templateHash": "10597332526973247563"
     },
     "name": "Key Vaults",
-    "description": "This module deploys a Key Vault.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Key Vault."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -1379,11 +1378,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3969955574908853094"
+              "templateHash": "3868112645859422684"
             },
             "name": "Key Vault Access Policies",
-            "description": "This module deploys a Key Vault Access Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Access Policy."
           },
           "definitions": {
             "accessPoliciesType": {
@@ -1645,11 +1643,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17861251076091988255"
+              "templateHash": "11464409253806177585"
             },
             "name": "Key Vault Secrets",
-            "description": "This module deploys a Key Vault Secret.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Secret."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1960,11 +1957,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15613133519974526575"
+              "templateHash": "15339020829927086732"
             },
             "name": "Key Vault Keys",
-            "description": "This module deploys a Key Vault Key.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Key."
           },
           "definitions": {
             "roleAssignmentType": {

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10324618530995904011"
+      "templateHash": "16427795222629898111"
     },
     "name": "Storage Account Local Users",
-    "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
   },
   "definitions": {
     "sshAuthorizedKeyType": {

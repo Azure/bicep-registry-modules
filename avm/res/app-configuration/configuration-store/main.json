@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2494796385676696617"
+      "templateHash": "2153109225497217544"
     },
     "name": "App Configuration Stores",
-    "description": "This module deploys an App Configuration Store.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an App Configuration Store."
   },
   "definitions": {
     "dataPlaneProxyType": {
@@ -960,11 +959,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1257304987024829675"
+              "templateHash": "13095124618196842295"
             },
             "name": "App Configuration Stores Key Values",
-            "description": "This module deploys an App Configuration Store Key Value.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an App Configuration Store Key Value."
           },
           "parameters": {
             "name": {
@@ -1078,11 +1076,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5469955128467975062"
+              "templateHash": "4070298136487551153"
             },
             "name": "App Configuration Replicas",
-            "description": "This module deploys an App Configuration Replica.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an App Configuration Replica."
           },
           "parameters": {
             "name": {

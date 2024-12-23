@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "16890042810141709976"
+      "version": "0.32.4.45862",
+      "templateHash": "17577946536259530978"
     },
     "name": "Managed DevOps Pool",
-    "description": "This module deploys the Managed DevOps Pool resource.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys the Managed DevOps Pool resource."
   },
   "definitions": {
     "osProfileType": {

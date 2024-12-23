@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14705419803255524703"
+      "templateHash": "3603934328068593686"
     },
     "name": "Application Insights Linked Storage Account",
-    "description": "This component deploys an Application Insights Linked Storage Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This component deploys an Application Insights Linked Storage Account."
   },
   "parameters": {
     "appInsightsName": {

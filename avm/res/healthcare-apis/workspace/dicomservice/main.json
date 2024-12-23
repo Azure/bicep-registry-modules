@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5239077988285512611"
+      "templateHash": "15725443146645806343"
     },
     "name": "Healthcare API Workspace DICOM Services",
-    "description": "This module deploys a Healthcare API Workspace DICOM Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Healthcare API Workspace DICOM Service."
   },
   "definitions": {
     "managedIdentitiesType": {

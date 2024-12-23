@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "13075925260036107325"
+      "version": "0.32.4.45862",
+      "templateHash": "16708365191698233547"
     },
     "name": "Virtual Network Gateway Connections",
-    "description": "This module deploys a Virtual Network Gateway Connection.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Network Gateway Connection."
   },
   "definitions": {
     "lockType": {

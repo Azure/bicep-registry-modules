@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6653951445614700931"
+      "templateHash": "9828503900264294678"
     },
     "name": "Private DNS Zone SOA record",
-    "description": "This module deploys a Private DNS Zone SOA record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Private DNS Zone SOA record."
   },
   "definitions": {
     "roleAssignmentType": {

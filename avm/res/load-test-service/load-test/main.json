@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10799569622118484973"
+      "templateHash": "9443799476574829668"
     },
     "name": "Load Testing Service",
-    "description": "This module deploys a Load test.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Load test."
   },
   "definitions": {
     "customerManagedKeyType": {

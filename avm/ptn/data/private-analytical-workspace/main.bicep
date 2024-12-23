@@ -1,6 +1,5 @@
 metadata name = 'private-analytical-workspace'
 metadata description = 'This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the private analytical workspace solution and its components. Used to ensure unique resource names.')
 param name string

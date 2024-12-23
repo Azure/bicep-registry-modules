@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14437175207078546495"
+      "version": "0.32.4.45862",
+      "templateHash": "14261669365957624019"
     },
     "name": "Virtual Hubs",
-    "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
   },
   "definitions": {
     "lockType": {
@@ -320,12 +319,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "9080948373192033748"
+              "version": "0.32.4.45862",
+              "templateHash": "15649735189663073116"
             },
             "name": "Virtual Hub Routing Intent",
-            "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
           },
           "parameters": {
             "azureFirewallResourceId": {
@@ -421,12 +419,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2767725465951482406"
+              "version": "0.32.4.45862",
+              "templateHash": "9133722157433973850"
             },
             "name": "Virtual Hub Route Tables",
-            "description": "This module deploys a Virtual Hub Route Table.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Hub Route Table."
           },
           "parameters": {
             "name": {
@@ -528,12 +525,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12641692391238745355"
+              "version": "0.32.4.45862",
+              "templateHash": "13762641450479393784"
             },
             "name": "Virtual Hub Virtual Network Connections",
-            "description": "This module deploys a Virtual Hub Virtual Network Connection.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Hub Virtual Network Connection."
           },
           "parameters": {
             "name": {
