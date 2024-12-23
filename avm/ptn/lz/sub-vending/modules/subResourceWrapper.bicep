@@ -67,6 +67,18 @@ param virtualNetworkPeeringEnabled bool = false
 @sys.description('Whether to deploy a NAT gateway to the created virtual network.')
 param virtualNetworkDeployNatGateway bool = false
 
+@sys.description('The NAT Gateway configuration object.')
+param natGatewayConfiguration natGatewayType = {
+  name: 'nat-gw-${virtualNetworkName}-gw'
+  zones: 0
+  publicIPAddressProperties: [
+    {
+      name: 'nat-gw-${virtualNetworkName}-pip'
+      zones: [1, 2, 3]
+    }
+  ]
+}
+
 @sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection.')
 param hubNetworkResourceId string = ''
 
@@ -267,6 +279,10 @@ var deploymentNames = {
     'lz-vend-ds-stg-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deploymentScriptLocation, deploymentScriptStorageAccountName, deployment().name)}',
     64
   )
+  createNatGateway: take(
+    'lz-vend-nat-gw-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkName, deployment().name)}',
+    64
+  )
 }
 
 // Role Assignments filtering and splitting
@@ -422,7 +438,15 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
           }
         ]
       : null
-    subnets: virtualNetworkSubnets ?? null
+    subnets: [
+      for subnet in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
+        ? {
+            name: subnet.name
+            addressPrefix: subnet.addressPrefix
+            natGatewayResourceId: !empty(natGatewayConfiguration) ? createNatGateway.outputs.resourceId : null
+          }
+        : {}
+    ]
     enableTelemetry: enableTelemetry
   }
 }
@@ -690,6 +714,60 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
   }
 }
 
+module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virtualNetworkDeployNatGateway && virtualNetworkEnabled) {
+  scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+  name: deploymentNames.createNatGateway
+  params: {
+    name: 'nat-gw-${virtualNetworkName}'
+    zone: natGatewayConfiguration.?zones ?? 0
+    location: virtualNetworkLocation
+    enableTelemetry: enableTelemetry
+    lock: virtualNetworkResourceGroupLockEnabled
+      ? {
+          kind: 'CanNotDelete'
+          name: 'CanNotDelete'
+        }
+      : null
+    tags: virtualNetworkTags
+    publicIPAddressObjects: [
+      for publicIp in natGatewayConfiguration.?publicIPAddressProperties ?? []: {
+        name: publicIp.?name ?? '${natGatewayConfiguration.?name}-pip'
+        publicIPAddressSku: 'Standard'
+        publicIPAddressVersion: 'IPv4'
+        publicIPAllocationMethod: 'Static'
+        zones: publicIp.zones ?? (natGatewayConfiguration.?zones != 0 ? [natGatewayConfiguration.?zones] : null)
+        skuTier: 'Regional'
+        ddosSettings: !empty(virtualNetworkDdosPlanResourceId)
+          ? {
+              ddosProtectionPlan: {
+                id: virtualNetworkDdosPlanResourceId
+              }
+              protectionMode: 'Enabled'
+            }
+          : null
+        enableTelemetry: enableTelemetry
+        idleTimeoutInMinutes: 4
+      }
+    ]
+    publicIPPrefixObjects: [
+      for publicIpPrefix in natGatewayConfiguration.?publicIPAddressPrefixesProperties ?? []: {
+        name: publicIpPrefix.?name ?? '${natGatewayConfiguration.?name}-prefix'
+        location: virtualNetworkLocation
+        lock: virtualNetworkResourceGroupLockEnabled
+          ? {
+              kind: 'CanNotDelete'
+              name: 'CanNotDelete'
+            }
+          : null
+        prefixLength: publicIpPrefix.?prefixLength
+        customIPPrefix: publicIpPrefix.?customIPPrefix
+        tags: virtualNetworkTags
+        enableTelemetry: enableTelemetry
+      }
+    ]
+  }
+}
+
 // OUTPUTS
 output failedProviders string = !empty(resourceProviders)
   ? registerResourceProviders.outputs.outputs.failedProvidersRegistrations
@@ -701,6 +779,21 @@ output failedFeatures string = !empty(resourceProviders)
 // ================ //
 // Definitions      //
 // ================ //
+
+@export()
+type natGatewayType = {
+  @description('The name of the NAT gateway.')
+  name: string?
+
+  @description('The availability zones of the NAT gateway.')
+  zones: int?
+
+  @description('The Public IP address(es) properties to be attached to the NAT gateway.')
+  publicIPAddressProperties: array?
+
+  @description('The Public IP address(es) prefixes properties to be attached to the NAT gateway.')
+  publicIPAddressPrefixesProperties: array?
+}
 
 @export()
 type roleAssignmentType = {
