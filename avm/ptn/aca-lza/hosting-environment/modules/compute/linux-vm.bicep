@@ -21,7 +21,7 @@ param vmAdminUsername string
 param vmAdminPassword string
 
 @secure()
-param vmSshPublicKey string
+param vmSshPublicKey string = ''
 
 @description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
 @allowed([
@@ -163,7 +163,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
   }
 }
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
   name: 'vmDeployment'
   params: {
     name: vmName
