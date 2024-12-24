@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "2277340268999354626"
+      "version": "0.32.4.45862",
+      "templateHash": "6946860018452981899"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -836,10 +836,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -913,7 +910,7 @@
         "zoneRedundancy": "[if(equals(parameters('acrSku'), 'Premium'), parameters('zoneRedundancy'), null())]"
       },
       "dependsOn": [
-        "cMKKeyVault",
+        "cMKKeyVault::cMKKey",
         "cMKUserAssignedIdentity"
       ]
     },
@@ -1028,8 +1025,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "17963190751439748514"
+              "version": "0.32.4.45862",
+              "templateHash": "6478760541409131297"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
@@ -1080,10 +1077,7 @@
               "properties": {
                 "actions": "[parameters('actions')]",
                 "description": "[parameters('description')]"
-              },
-              "dependsOn": [
-                "registry"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1155,8 +1149,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "4997004041066797666"
+              "version": "0.32.4.45862",
+              "templateHash": "15524157492175197471"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication.",
@@ -1224,10 +1218,7 @@
               "properties": {
                 "regionEndpointEnabled": "[parameters('regionEndpointEnabled')]",
                 "zoneRedundancy": "[parameters('zoneRedundancy')]"
-              },
-              "dependsOn": [
-                "registry"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1303,8 +1294,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "7759513970094711275"
+              "version": "0.32.4.45862",
+              "templateHash": "13759527494082170327"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set.",
@@ -1400,10 +1391,7 @@
               "properties": {
                 "authCredentials": "[parameters('authCredentials')]",
                 "loginServer": "[parameters('loginServer')]"
-              },
-              "dependsOn": [
-                "registry"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1478,8 +1466,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1396902957012921251"
+              "version": "0.32.4.45862",
+              "templateHash": "14613404195108533908"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -1610,8 +1598,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10216591470402784498"
+              "version": "0.32.4.45862",
+              "templateHash": "7106022181114238286"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
@@ -1711,10 +1699,7 @@
                 "scope": "[parameters('scope')]",
                 "serviceUri": "[parameters('serviceUri')]",
                 "status": "[parameters('status')]"
-              },
-              "dependsOn": [
-                "registry"
-              ]
+              }
             }
           },
           "outputs": {

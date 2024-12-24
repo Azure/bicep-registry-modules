@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "15386799594233335228"
+      "version": "0.32.4.45862",
+      "templateHash": "9360899285262740387"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1378,8 +1378,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "2943121976508120416"
+              "version": "0.32.4.45862",
+              "templateHash": "3969955574908853094"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy.",
@@ -1563,10 +1563,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
               "properties": {
                 "accessPolicies": "[variables('formattedAccessPolicies')]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1647,8 +1644,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "15057494123851631617"
+              "version": "0.32.4.45862",
+              "templateHash": "17861251076091988255"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -1837,10 +1834,7 @@
                   "nbf": "[parameters('attributesNbf')]"
                 },
                 "value": "[parameters('value')]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             },
             "secret_roleAssignments": {
               "copy": {
@@ -1965,8 +1959,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "16374679780625197074"
+              "version": "0.32.4.45862",
+              "templateHash": "15613133519974526575"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -2198,10 +2192,7 @@
               "apiVersion": "2022-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
-              "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(not(empty(parameters('rotationPolicy'))), createObject('rotationPolicy', parameters('rotationPolicy')), createObject())))]",
-              "dependsOn": [
-                "keyVault"
-              ]
+              "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(not(empty(parameters('rotationPolicy'))), createObject('rotationPolicy', parameters('rotationPolicy')), createObject())))]"
             },
             "key_roleAssignments": {
               "copy": {
