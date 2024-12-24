@@ -2171,7 +2171,7 @@ param vulnerabilityAssessmentsObj = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. |
+| [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -2308,11 +2308,16 @@ The resource ID of a user assigned identity to be used by default. Required if "
 
 ### Parameter: `auditSettings`
 
-The audit settings configuration.
+The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object.
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      state: 'Enabled'
+  }
+  ```
 
 **Optional parameters**
 

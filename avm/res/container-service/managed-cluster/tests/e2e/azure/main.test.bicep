@@ -222,11 +222,6 @@ module testDeployment '../../../main.bicep' = [
       enableKeyvaultSecretsProvider: true
       enablePodSecurityPolicy: false
       enableAzureMonitorProfileMetrics: true
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-        keyVaultNetworkAccess: 'Public'
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
