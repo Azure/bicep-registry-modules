@@ -103,7 +103,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
   }
 }
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
   name: 'vmDeployment'
   params: {
     name: vmName
@@ -152,7 +152,13 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
     extensionMonitoringAgentConfig: {
       enabled: true
       tags: tags
-      monitoringWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+      extensionMonitoringAgentConfig: {
+        dataCollectionRuleAssociations: [
+          {
+            dataCollectionRuleResourceId: logAnalyticsWorkspaceResourceId
+          }
+        ]
+      }
     }
   }
 }

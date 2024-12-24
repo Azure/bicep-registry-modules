@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15545752969026358778"
+      "templateHash": "6460133168416502303"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -229,7 +229,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+    "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
     "namingRules": "[json(variables('$fxv#0'))]",
     "rgSpokeName": "[if(not(empty(parameters('spokeResourceGroupName'))), parameters('spokeResourceGroupName'), format('{0}-{1}-spoke-{2}-{3}', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]"
   },
@@ -319,7 +319,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+            "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
             "naming": "[json(variables('$fxv#0'))]",
             "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
             "resourceTypeToken": "RES_TYPE",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5651101229825236008"
+              "templateHash": "9486774024592617353"
             }
           },
           "parameters": {
@@ -663,7 +663,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+            "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
             "locationVar": "[if(equals(parameters('location'), 'francecentral'), 'centralfrance', parameters('location'))]",
             "namingRules": "[json(variables('$fxv#0'))]",
             "rgSpokeName": "[if(not(empty(parameters('spokeResourceGroupName'))), parameters('spokeResourceGroupName'), format('{0}-{1}-{2}-{3}-spoke', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]"
@@ -1194,7 +1194,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+                    "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -7244,7 +7244,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2014295494350566192"
+                      "templateHash": "1806823827016723596"
                     }
                   },
                   "parameters": {
@@ -8222,7 +8222,13 @@
                             "value": {
                               "enabled": true,
                               "tags": "[parameters('tags')]",
-                              "monitoringWorkspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                              "extensionMonitoringAgentConfig": {
+                                "dataCollectionRuleAssociations": [
+                                  {
+                                    "dataCollectionRuleResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                                  }
+                                ]
+                              }
                             }
                           }
                         },
@@ -13861,7 +13867,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7846302471904031395"
+                      "templateHash": "12083031297543754263"
                     }
                   },
                   "parameters": {
@@ -14763,7 +14769,13 @@
                             "value": {
                               "enabled": true,
                               "tags": "[parameters('tags')]",
-                              "monitoringWorkspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                              "extensionMonitoringAgentConfig": {
+                                "dataCollectionRuleAssociations": [
+                                  {
+                                    "dataCollectionRuleResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                                  }
+                                ]
+                              }
                             }
                           }
                         },
@@ -14774,8 +14786,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "7195052428088092384"
+                              "version": "0.32.4.45862",
+                              "templateHash": "13337545341058810747"
                             },
                             "name": "Virtual Machines",
                             "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -14835,6 +14847,13 @@
                               "items": {
                                 "type": "object",
                                 "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                    }
+                                  },
                                   "roleDefinitionIdOrName": {
                                     "type": "string",
                                     "metadata": {
@@ -14908,8 +14927,9 @@
                                 },
                                 "diskSizeGB": {
                                   "type": "int",
+                                  "nullable": true,
                                   "metadata": {
-                                    "description": "Required. Specifies the size of an empty data disk in gigabytes."
+                                    "description": "Optional. Specifies the size of an empty data disk in gigabytes."
                                   }
                                 },
                                 "createOption": {
@@ -14961,8 +14981,9 @@
                                         "Standard_LRS",
                                         "UltraSSD_LRS"
                                       ],
+                                      "nullable": true,
                                       "metadata": {
-                                        "description": "Required. Specifies the storage account type for the managed disk."
+                                        "description": "Optional. Specifies the storage account type for the managed disk."
                                       }
                                     },
                                     "diskEncryptionSetResourceId": {
@@ -15039,6 +15060,20 @@
                                       "description": "Optional. Specifies the caching requirements."
                                     }
                                   },
+                                  "diskIOPSReadWrite": {
+                                    "type": "int",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes."
+                                    }
+                                  },
+                                  "diskMBpsReadWrite": {
+                                    "type": "int",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10."
+                                    }
+                                  },
                                   "managedDisk": {
                                     "type": "object",
                                     "properties": {
@@ -15062,6 +15097,13 @@
                                         "nullable": true,
                                         "metadata": {
                                           "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
+                                        }
+                                      },
+                                      "id": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "metadata": {
+                                          "description": "Optional. Specifies the customer managed disk id for the managed disk."
                                         }
                                       }
                                     },
@@ -15104,8 +15146,13 @@
                             "securityType": {
                               "type": "string",
                               "defaultValue": "",
+                              "allowedValues": [
+                                "",
+                                "ConfidentialVM",
+                                "TrustedLaunch"
+                              ],
                               "metadata": {
-                                "description": "Optional. Specifies the SecurityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings."
+                                "description": "Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set."
                               }
                             },
                             "secureBootEnabled": {
@@ -15165,6 +15212,13 @@
                               "defaultValue": "",
                               "metadata": {
                                 "description": "Optional. When specifying a Windows Virtual Machine, this value should be passed."
+                              }
+                            },
+                            "userData": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here."
                               }
                             },
                             "customData": {
@@ -15375,9 +15429,7 @@
                             },
                             "extensionAntiMalwareConfig": {
                               "type": "object",
-                              "defaultValue": {
-                                "enabled": false
-                              },
+                              "defaultValue": "[if(equals(parameters('osType'), 'Windows'), createObject('enabled', true()), createObject('enabled', false()))]",
                               "metadata": {
                                 "description": "Optional. The configuration for the [Anti Malware] extension. Must at least contain the [\"enabled\": true] property to be executed."
                               }
@@ -15385,7 +15437,8 @@
                             "extensionMonitoringAgentConfig": {
                               "type": "object",
                               "defaultValue": {
-                                "enabled": false
+                                "enabled": false,
+                                "dataCollectionRuleAssociations": []
                               },
                               "metadata": {
                                 "description": "Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
@@ -15608,6 +15661,13 @@
                                 "description": "Optional. VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours."
                               }
                             },
+                            "enableHotpatching": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'."
+                              }
+                            },
                             "timeZone": {
                               "type": "string",
                               "defaultValue": "",
@@ -15646,6 +15706,11 @@
                                   "path": "[parameters('publicKeys')[copyIndex('publicKeysFormatted')].path]",
                                   "keyData": "[parameters('publicKeys')[copyIndex('publicKeysFormatted')].keyData]"
                                 }
+                              },
+                              {
+                                "name": "formattedRoleAssignments",
+                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
                               }
                             ],
                             "linuxConfiguration": {
@@ -15659,7 +15724,7 @@
                             "windowsConfiguration": {
                               "provisionVMAgent": "[parameters('provisionVMAgent')]",
                               "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
-                              "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
+                              "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'enableHotpatching', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), parameters('enableHotpatching'), false()), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
                               "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
                               "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
                               "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM')), null())]"
@@ -15686,7 +15751,7 @@
                               "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
                               "Virtual Machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
                               "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
@@ -15698,8 +15763,8 @@
                             "avmTelemetry": {
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2023-07-01",
-                              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -15715,9 +15780,31 @@
                                 }
                               }
                             },
+                            "managedDataDisks": {
+                              "copy": {
+                                "name": "managedDataDisks",
+                                "count": "[length(coalesce(parameters('dataDisks'), createArray()))]"
+                              },
+                              "type": "Microsoft.Compute/disks",
+                              "apiVersion": "2024-03-02",
+                              "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex(), 1), 2, '0')))]",
+                              "location": "[parameters('location')]",
+                              "sku": {
+                                "name": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk.storageAccountType]"
+                              },
+                              "properties": {
+                                "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].diskSizeGB]",
+                                "creationData": {
+                                  "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'createoption'), 'Empty')]"
+                                },
+                                "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
+                                "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]"
+                              },
+                              "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]"
+                            },
                             "vm": {
                               "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2023-09-01",
+                              "apiVersion": "2024-07-01",
                               "name": "[parameters('name')]",
                               "location": "[parameters('location')]",
                               "identity": "[variables('identity')]",
@@ -15742,11 +15829,12 @@
                                         "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
                                         "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))]",
                                         "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].diskSizeGB]",
-                                        "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty')]",
+                                        "createOption": "[if(not(equals(resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null())), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
                                         "deleteOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete')]",
                                         "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
                                         "managedDisk": {
                                           "storageAccountType": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.storageAccountType]",
+                                          "id": "[resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
                                           "diskEncryptionSet": {
                                             "id": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId')]"
                                           }
@@ -15789,10 +15877,10 @@
                                       "count": "[length(parameters('nicConfigurations'))]",
                                       "input": {
                                         "properties": {
-                                          "deleteOption": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'deleteOption'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].deleteOption, 'Delete')]",
+                                          "deleteOption": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'deleteOption'), 'Delete')]",
                                           "primary": "[if(equals(copyIndex('networkInterfaces'), 0), true(), false())]"
                                         },
-                                        "id": "[resourceId('Microsoft.Network/networkInterfaces', if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].name, format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix)))]"
+                                        "id": "[resourceId('Microsoft.Network/networkInterfaces', coalesce(tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'name'), format('{0}{1}', parameters('name'), tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'nicSuffix'))))]"
                                       }
                                     }
                                   ]
@@ -15811,9 +15899,11 @@
                                 "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
                                 "billingProfile": "[if(and(not(empty(parameters('priority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', json(parameters('maxPriceForLowPriorityVm'))), null())]",
                                 "host": "[if(not(empty(parameters('dedicatedHostId'))), createObject('id', parameters('dedicatedHostId')), null())]",
-                                "licenseType": "[if(not(empty(parameters('licenseType'))), parameters('licenseType'), null())]"
+                                "licenseType": "[if(not(empty(parameters('licenseType'))), parameters('licenseType'), null())]",
+                                "userData": "[if(not(empty(parameters('userData'))), base64(parameters('userData')), null())]"
                               },
                               "dependsOn": [
+                                "managedDataDisks",
                                 "vm_nic"
                               ]
                             },
@@ -15852,27 +15942,36 @@
                               "name": "[format('shutdown-computevm-{0}', parameters('name'))]",
                               "location": "[parameters('location')]",
                               "properties": {
-                                "status": "[if(contains(parameters('autoShutdownConfig'), 'status'), parameters('autoShutdownConfig').status, 'Disabled')]",
+                                "status": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'status'), 'Disabled')]",
                                 "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
                                 "taskType": "ComputeVmShutdownTask",
                                 "dailyRecurrence": {
-                                  "time": "[if(contains(parameters('autoShutdownConfig'), 'dailyRecurrenceTime'), parameters('autoShutdownConfig').dailyRecurrenceTime, '19:00')]"
+                                  "time": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'dailyRecurrenceTime'), '19:00')]"
                                 },
-                                "timeZoneId": "[if(contains(parameters('autoShutdownConfig'), 'timeZone'), parameters('autoShutdownConfig').timeZone, 'UTC')]",
-                                "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), parameters('autoShutdownConfig').notificationStatus, 'Disabled'), 'emailRecipient', if(contains(parameters('autoShutdownConfig'), 'notificationEmail'), parameters('autoShutdownConfig').notificationEmail, ''), 'notificationLocale', if(contains(parameters('autoShutdownConfig'), 'notificationLocale'), parameters('autoShutdownConfig').notificationLocale, 'en'), 'webhookUrl', if(contains(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), parameters('autoShutdownConfig').notificationWebhookUrl, ''), 'timeInMinutes', if(contains(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), parameters('autoShutdownConfig').notificationTimeInMinutes, 30)), null())]"
+                                "timeZoneId": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'timeZone'), 'UTC')]",
+                                "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationStatus'), 'Disabled'), 'emailRecipient', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationEmail'), ''), 'notificationLocale', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationLocale'), 'en'), 'webhookUrl', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), ''), 'timeInMinutes', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), 30)), null())]"
                               },
                               "dependsOn": [
                                 "vm"
                               ]
                             },
-                            "vm_logAnalyticsWorkspace": {
-                              "condition": "[not(empty(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId')))]",
-                              "existing": true,
-                              "type": "Microsoft.OperationalInsights/workspaces",
-                              "apiVersion": "2021-06-01",
-                              "subscriptionId": "[split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '//'), '/')[2]]",
-                              "resourceGroup": "[split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '////'), '/')[4]]",
-                              "name": "[last(split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, 'law'), '/'))]"
+                            "vm_dataCollectionRuleAssociations": {
+                              "copy": {
+                                "name": "vm_dataCollectionRuleAssociations",
+                                "count": "[length(parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations)]"
+                              },
+                              "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
+                              "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+                              "apiVersion": "2023-03-11",
+                              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+                              "name": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].name]",
+                              "properties": {
+                                "dataCollectionRuleId": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].dataCollectionRuleResourceId]"
+                              },
+                              "dependsOn": [
+                                "vm",
+                                "vm_azureMonitorAgentExtension"
+                              ]
                             },
                             "AzureWindowsBaseline": {
                               "condition": "[not(empty(parameters('guestConfiguration')))]",
@@ -15906,20 +16005,20 @@
                             "vm_roleAssignments": {
                               "copy": {
                                 "name": "vm_roleAssignments",
-                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
                               },
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2022-04-01",
                               "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
-                              "name": "[guid(resourceId('Microsoft.Compute/virtualMachines', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Compute/virtualMachines', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                               "properties": {
-                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
                               },
                               "dependsOn": [
                                 "vm"
@@ -15939,17 +16038,25 @@
                                 },
                                 "mode": "Incremental",
                                 "parameters": {
-                                  "networkInterfaceName": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'name'), createObject('value', parameters('nicConfigurations')[copyIndex()].name), createObject('value', format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix)))]",
+                                  "networkInterfaceName": {
+                                    "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'name'), format('{0}{1}', parameters('name'), tryGet(parameters('nicConfigurations')[copyIndex()], 'nicSuffix')))]"
+                                  },
                                   "virtualMachineName": {
                                     "value": "[parameters('name')]"
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
                                   },
-                                  "enableIPForwarding": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'enableIPForwarding'), createObject('value', parameters('nicConfigurations')[copyIndex()].enableIPForwarding), createObject('value', false()))]",
-                                  "enableAcceleratedNetworking": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'enableAcceleratedNetworking'), createObject('value', parameters('nicConfigurations')[copyIndex()].enableAcceleratedNetworking), createObject('value', true()))]",
+                                  "enableIPForwarding": {
+                                    "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableIPForwarding'), false())]"
+                                  },
+                                  "enableAcceleratedNetworking": {
+                                    "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableAcceleratedNetworking'), true())]"
+                                  },
                                   "dnsServers": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'dnsServers'), if(not(empty(parameters('nicConfigurations')[copyIndex()].dnsServers)), createObject('value', parameters('nicConfigurations')[copyIndex()].dnsServers), createObject('value', createArray())), createObject('value', createArray()))]",
-                                  "networkSecurityGroupResourceId": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'networkSecurityGroupResourceId'), createObject('value', parameters('nicConfigurations')[copyIndex()].networkSecurityGroupResourceId), createObject('value', ''))]",
+                                  "networkSecurityGroupResourceId": {
+                                    "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'networkSecurityGroupResourceId'), '')]"
+                                  },
                                   "ipConfigurations": {
                                     "value": "[parameters('nicConfigurations')[copyIndex()].ipConfigurations]"
                                   },
@@ -15976,8 +16083,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "6185170122493883924"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "4332293246640728460"
                                     }
                                   },
                                   "definitions": {
@@ -16266,7 +16373,7 @@
                                         "name": "networkInterface_publicIPAddresses",
                                         "count": "[length(parameters('ipConfigurations'))]"
                                       },
-                                      "condition": "[contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration')]",
+                                      "condition": "[and(contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), not(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressResourceId')))]",
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
                                       "name": "[format('{0}-publicIP-{1}', deployment().name, copyIndex())]",
@@ -16276,7 +16383,9 @@
                                         },
                                         "mode": "Incremental",
                                         "parameters": {
-                                          "name": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'name'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.name), createObject('value', format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIpNameSuffix)))]",
+                                          "name": {
+                                            "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIpNameSuffix')))]"
+                                          },
                                           "diagnosticSettings": {
                                             "value": "[tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings')]"
                                           },
@@ -16295,16 +16404,30 @@
                                           "dnsSettings": {
                                             "value": "[tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'dnsSettings')]"
                                           },
-                                          "publicIPAddressVersion": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressVersion'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPAddressVersion), createObject('value', 'IPv4'))]",
-                                          "publicIPAllocationMethod": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAllocationMethod'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPAllocationMethod), createObject('value', 'Static'))]",
-                                          "publicIpPrefixResourceId": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPPrefixResourceId'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPPrefixResourceId), createObject('value', ''))]",
-                                          "roleAssignments": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'roleAssignments'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.roleAssignments), createObject('value', createArray()))]",
-                                          "skuName": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuName'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.skuName), createObject('value', 'Standard'))]",
-                                          "skuTier": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuTier'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.skuTier), createObject('value', 'Regional'))]",
+                                          "publicIPAddressVersion": {
+                                            "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressVersion'), 'IPv4')]"
+                                          },
+                                          "publicIPAllocationMethod": {
+                                            "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAllocationMethod'), 'Static')]"
+                                          },
+                                          "publicIpPrefixResourceId": {
+                                            "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPPrefixResourceId'), '')]"
+                                          },
+                                          "roleAssignments": {
+                                            "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'roleAssignments'), createArray())]"
+                                          },
+                                          "skuName": {
+                                            "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuName'), 'Standard')]"
+                                          },
+                                          "skuTier": {
+                                            "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuTier'), 'Regional')]"
+                                          },
                                           "tags": {
                                             "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'tags'), parameters('tags'))]"
                                           },
-                                          "zones": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'zones'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.zones), createObject('value', createArray(1, 2, 3)))]",
+                                          "zones": {
+                                            "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'zones'), createArray(1, 2, 3))]"
+                                          },
                                           "enableTelemetry": {
                                             "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                                           }
@@ -16316,8 +16439,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.27.1.19265",
-                                              "templateHash": "10356333973104369631"
+                                              "version": "0.29.47.4906",
+                                              "templateHash": "16693645977675862540"
                                             },
                                             "name": "Public IP Addresses",
                                             "description": "This module deploys a Public IP Address.",
@@ -16329,6 +16452,13 @@
                                               "items": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "name": {
+                                                    "type": "string",
+                                                    "nullable": true,
+                                                    "metadata": {
+                                                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                                    }
+                                                  },
                                                   "roleDefinitionIdOrName": {
                                                     "type": "string",
                                                     "metadata": {
@@ -16742,6 +16872,13 @@
                                             }
                                           },
                                           "variables": {
+                                            "copy": [
+                                              {
+                                                "name": "formattedRoleAssignments",
+                                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                                                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                                              }
+                                            ],
                                             "builtInRoleNames": {
                                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                                               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -16752,15 +16889,15 @@
                                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                                               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
                                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+                                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
                                             }
                                           },
                                           "resources": {
                                             "avmTelemetry": {
                                               "condition": "[parameters('enableTelemetry')]",
                                               "type": "Microsoft.Resources/deployments",
-                                              "apiVersion": "2023-07-01",
-                                              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                                              "apiVersion": "2024-03-01",
+                                              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                                               "properties": {
                                                 "mode": "Incremental",
                                                 "template": {
@@ -16814,20 +16951,20 @@
                                             "publicIpAddress_roleAssignments": {
                                               "copy": {
                                                 "name": "publicIpAddress_roleAssignments",
-                                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                                                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
                                               },
                                               "type": "Microsoft.Authorization/roleAssignments",
                                               "apiVersion": "2022-04-01",
                                               "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
-                                              "name": "[guid(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                                              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                                               "properties": {
-                                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                                                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                                                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                                                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                                                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                                                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                                                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                                                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                                                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                                                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
                                               },
                                               "dependsOn": [
                                                 "publicIpAddress"
@@ -16933,7 +17070,7 @@
                                               {
                                                 "name": "value",
                                                 "count": "[length(parameters('ipConfigurations'))]",
-                                                "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), resourceId('Microsoft.Network/publicIPAddresses', if(contains(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'name'), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.name, format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIpNameSuffix))), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerBackendAddressPools, null()), 'applicationSecurityGroups', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), parameters('ipConfigurations')[copyIndex('value')].applicationSecurityGroups, null()), 'applicationGatewayBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].applicationGatewayBackendAddressPools, null()), 'gatewayLoadBalancer', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), parameters('ipConfigurations')[copyIndex('value')].gatewayLoadBalancer, null()), 'loadBalancerInboundNatRules', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerInboundNatRules, null()), 'privateIPAddressVersion', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), parameters('ipConfigurations')[copyIndex('value')].privateIPAddressVersion, null()), 'virtualNetworkTaps', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), parameters('ipConfigurations')[copyIndex('value')].virtualNetworkTaps, null()))]"
+                                                "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), if(not(contains(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'publicIPAddressResourceId')), resourceId('Microsoft.Network/publicIPAddresses', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'publicIpNameSuffix')))), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIPAddressResourceId), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), null()), 'applicationSecurityGroups', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), null()), 'applicationGatewayBackendAddressPools', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), null()), 'gatewayLoadBalancer', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), null()), 'loadBalancerInboundNatRules', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), null()), 'privateIPAddressVersion', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), null()), 'virtualNetworkTaps', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), null()))]"
                                               }
                                             ]
                                           },
@@ -16969,8 +17106,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.25.53.49325",
-                                              "templateHash": "1612343535299711142"
+                                              "version": "0.29.47.4906",
+                                              "templateHash": "9226998037927576702"
                                             },
                                             "name": "Network Interface",
                                             "description": "This module deploys a Network Interface.",
@@ -17102,6 +17239,13 @@
                                               "items": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "name": {
+                                                    "type": "string",
+                                                    "nullable": true,
+                                                    "metadata": {
+                                                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                                    }
+                                                  },
                                                   "roleDefinitionIdOrName": {
                                                     "type": "string",
                                                     "metadata": {
@@ -17304,6 +17448,13 @@
                                             }
                                           },
                                           "variables": {
+                                            "copy": [
+                                              {
+                                                "name": "formattedRoleAssignments",
+                                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                                                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                                              }
+                                            ],
                                             "builtInRoleNames": {
                                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                                               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -17312,15 +17463,15 @@
                                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                                               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
                                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+                                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
                                             }
                                           },
                                           "resources": {
                                             "avmTelemetry": {
                                               "condition": "[parameters('enableTelemetry')]",
                                               "type": "Microsoft.Resources/deployments",
-                                              "apiVersion": "2023-07-01",
-                                              "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.2.4', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                                              "apiVersion": "2024-03-01",
+                                              "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                                               "properties": {
                                                 "mode": "Incremental",
                                                 "template": {
@@ -17426,20 +17577,20 @@
                                             "networkInterface_roleAssignments": {
                                               "copy": {
                                                 "name": "networkInterface_roleAssignments",
-                                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                                                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
                                               },
                                               "type": "Microsoft.Authorization/roleAssignments",
                                               "apiVersion": "2022-04-01",
                                               "scope": "[format('Microsoft.Network/networkInterfaces/{0}', parameters('name'))]",
-                                              "name": "[guid(resourceId('Microsoft.Network/networkInterfaces', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                                              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/networkInterfaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                                               "properties": {
-                                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                                                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                                                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                                                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                                                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                                                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                                                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                                                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                                                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                                                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
                                               },
                                               "dependsOn": [
                                                 "networkInterface"
@@ -17510,10 +17661,18 @@
                                     "value": "Microsoft.Azure.ActiveDirectory"
                                   },
                                   "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AADLoginForWindows'), createObject('value', 'AADSSHLoginforLinux'))]",
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAadJoinConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '2.0'), createObject('value', '1.0')))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAadJoinConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAadJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-                                  "settings": "[if(contains(parameters('extensionAadJoinConfig'), 'settings'), createObject('value', parameters('extensionAadJoinConfig').settings), createObject('value', createObject()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '2.0', '1.0'))]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+                                  },
+                                  "settings": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'settings'), createObject())]"
+                                  },
                                   "supressFailures": {
                                     "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'supressFailures'), false())]"
                                   },
@@ -17528,8 +17687,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -17644,10 +17803,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -17712,9 +17868,15 @@
                                   "type": {
                                     "value": "JsonADDomainExtension"
                                   },
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDomainJoinConfig').typeHandlerVersion), createObject('value', '1.3'))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDomainJoinConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDomainJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), '1.3')]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+                                  },
                                   "settings": {
                                     "value": "[parameters('extensionDomainJoinConfig').settings]"
                                   },
@@ -17737,8 +17899,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -17853,10 +18015,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -17922,11 +18081,17 @@
                                   "type": {
                                     "value": "IaaSAntimalware"
                                   },
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAntiMalwareConfig').typeHandlerVersion), createObject('value', '1.3'))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAntiMalwareConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAntiMalwareConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), '1.3')]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), false())]"
+                                  },
                                   "settings": {
-                                    "value": "[parameters('extensionAntiMalwareConfig').settings]"
+                                    "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'settings'), createObject('AntimalwareEnabled', 'true', 'Exclusions', createObject(), 'RealtimeProtectionEnabled', 'true', 'ScheduledScanSettings', createObject('day', '7', 'isEnabled', 'true', 'scanType', 'Quick', 'time', '120')))]"
                                   },
                                   "supressFailures": {
                                     "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'supressFailures'), false())]"
@@ -17942,8 +18107,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -18058,10 +18223,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -18134,22 +18296,11 @@
                                   "enableAutomaticUpgrade": {
                                     "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), false())]"
                                   },
-                                  "settings": {
-                                    "value": {
-                                      "workspaceId": "[if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), reference('vm_logAnalyticsWorkspace').customerId, '')]",
-                                      "GCS_AUTO_CONFIG": "[if(equals(parameters('osType'), 'Linux'), true(), null())]"
-                                    }
-                                  },
                                   "supressFailures": {
                                     "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'supressFailures'), false())]"
                                   },
                                   "tags": {
                                     "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'tags'), parameters('tags'))]"
-                                  },
-                                  "protectedSettings": {
-                                    "value": {
-                                      "workspaceKey": "[if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '//'), '/')[2], split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
-                                    }
                                   }
                                 },
                                 "template": {
@@ -18159,8 +18310,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -18275,10 +18426,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -18315,7 +18463,6 @@
                               },
                               "dependsOn": [
                                 "vm",
-                                "vm_logAnalyticsWorkspace",
                                 "vm_microsoftAntiMalwareExtension"
                               ]
                             },
@@ -18343,12 +18490,18 @@
                                     "value": "Microsoft.Azure.Monitoring.DependencyAgent"
                                   },
                                   "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'DependencyAgentWindows'), createObject('value', 'DependencyAgentLinux'))]",
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.10'))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDependencyAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), '9.10')]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), true())]"
+                                  },
                                   "settings": {
                                     "value": {
-                                      "enableAMA": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAMA'), parameters('extensionDependencyAgentConfig').enableAMA, true())]"
+                                      "enableAMA": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'enableAMA'), true())]"
                                     }
                                   },
                                   "supressFailures": {
@@ -18365,8 +18518,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -18481,10 +18634,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -18548,9 +18698,15 @@
                                     "value": "Microsoft.Azure.NetworkWatcher"
                                   },
                                   "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'NetworkWatcherAgentWindows'), createObject('value', 'NetworkWatcherAgentLinux'))]",
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').typeHandlerVersion), createObject('value', '1.4'))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), '1.4')]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), false())]"
+                                  },
                                   "supressFailures": {
                                     "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'supressFailures'), false())]"
                                   },
@@ -18565,8 +18721,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -18681,10 +18837,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -18750,17 +18903,27 @@
                                   "type": {
                                     "value": "DSC"
                                   },
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionDSCConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDSCConfig').typeHandlerVersion), createObject('value', '2.77'))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDSCConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDSCConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-                                  "settings": "[if(contains(parameters('extensionDSCConfig'), 'settings'), createObject('value', parameters('extensionDSCConfig').settings), createObject('value', createObject()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'typeHandlerVersion'), '2.77')]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), false())]"
+                                  },
+                                  "settings": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'settings'), createObject())]"
+                                  },
                                   "supressFailures": {
                                     "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'supressFailures'), false())]"
                                   },
                                   "tags": {
                                     "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'tags'), parameters('tags'))]"
                                   },
-                                  "protectedSettings": "[if(contains(parameters('extensionDSCConfig'), 'protectedSettings'), createObject('value', parameters('extensionDSCConfig').protectedSettings), createObject('value', createObject()))]"
+                                  "protectedSettings": {
+                                    "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'protectedSettings'), createObject())]"
+                                  }
                                 },
                                 "template": {
                                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -18769,8 +18932,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -18885,10 +19048,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -18950,9 +19110,15 @@
                                   },
                                   "publisher": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'Microsoft.Compute'), createObject('value', 'Microsoft.Azure.Extensions'))]",
                                   "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'CustomScriptExtension'), createObject('value', 'CustomScript'))]",
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionCustomScriptConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.10'), createObject('value', '2.1')))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionCustomScriptConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionCustomScriptConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '1.10', '2.1'))]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), false())]"
+                                  },
                                   "settings": {
                                     "value": {
                                       "copy": [
@@ -18981,8 +19147,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -19097,10 +19263,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -19164,10 +19327,18 @@
                                     "value": "Microsoft.Azure.Security"
                                   },
                                   "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureDiskEncryption'), createObject('value', 'AzureDiskEncryptionForLinux'))]",
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '2.2'), createObject('value', '1.1')))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-                                  "forceUpdateTag": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').forceUpdateTag), createObject('value', '1.0'))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '2.2', '1.1'))]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'enableAutomaticUpgrade'), false())]"
+                                  },
+                                  "forceUpdateTag": {
+                                    "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), '1.0')]"
+                                  },
                                   "settings": {
                                     "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'settings'), createObject())]"
                                   },
@@ -19185,8 +19356,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -19301,10 +19472,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -19370,9 +19538,15 @@
                                   "type": {
                                     "value": "NvidiaGpuDriverWindows"
                                   },
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'typeHandlerVersion'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').typeHandlerVersion), createObject('value', '1.4'))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').enableAutomaticUpgrade), createObject('value', false()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'typeHandlerVersion'), '1.4')]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'enableAutomaticUpgrade'), false())]"
+                                  },
                                   "supressFailures": {
                                     "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'supressFailures'), false())]"
                                   },
@@ -19387,8 +19561,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -19503,10 +19677,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -19572,9 +19743,15 @@
                                   "type": {
                                     "value": "DSC"
                                   },
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionHostPoolRegistration'), 'typeHandlerVersion'), createObject('value', parameters('extensionHostPoolRegistration').typeHandlerVersion), createObject('value', '2.77'))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionHostPoolRegistration'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionHostPoolRegistration').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionHostPoolRegistration'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionHostPoolRegistration').enableAutomaticUpgrade), createObject('value', false()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'typeHandlerVersion'), '2.77')]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'enableAutomaticUpgrade'), false())]"
+                                  },
                                   "settings": {
                                     "value": {
                                       "modulesUrl": "[parameters('extensionHostPoolRegistration').modulesUrl]",
@@ -19598,8 +19775,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -19714,10 +19891,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -19779,11 +19953,21 @@
                                     "value": "Microsoft.GuestConfiguration"
                                   },
                                   "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'ConfigurationforWindows'), createObject('value', 'ConfigurationForLinux'))]",
-                                  "typeHandlerVersion": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'typeHandlerVersion'), createObject('value', parameters('extensionGuestConfigurationExtension').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.0'), createObject('value', '1.0')))]",
-                                  "autoUpgradeMinorVersion": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionGuestConfigurationExtension').autoUpgradeMinorVersion), createObject('value', true()))]",
-                                  "enableAutomaticUpgrade": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionGuestConfigurationExtension').enableAutomaticUpgrade), createObject('value', true()))]",
-                                  "forceUpdateTag": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'forceUpdateTag'), createObject('value', parameters('extensionGuestConfigurationExtension').forceUpdateTag), createObject('value', '1.0'))]",
-                                  "settings": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'settings'), createObject('value', parameters('extensionGuestConfigurationExtension').settings), createObject('value', createObject()))]",
+                                  "typeHandlerVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '1.0', '1.0'))]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'autoUpgradeMinorVersion'), true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'enableAutomaticUpgrade'), true())]"
+                                  },
+                                  "forceUpdateTag": {
+                                    "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'forceUpdateTag'), '1.0')]"
+                                  },
+                                  "settings": {
+                                    "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'settings'), createObject())]"
+                                  },
                                   "supressFailures": {
                                     "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'supressFailures'), false())]"
                                   },
@@ -19801,8 +19985,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "15287507275706455668"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
                                     "description": "This module deploys a Virtual Machine Extension.",
@@ -19917,10 +20101,7 @@
                                         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                                         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                                         "suppressFailures": "[parameters('supressFailures')]"
-                                      },
-                                      "dependsOn": [
-                                        "virtualMachine"
-                                      ]
+                                      }
                                     }
                                   },
                                   "outputs": {
@@ -20000,8 +20181,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "4311417160342913977"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "8409556960090427141"
                                     },
                                     "name": "Recovery Service Vaults Protection Container Protected Item",
                                     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
@@ -20135,14 +20316,14 @@
                               "metadata": {
                                 "description": "The principal ID of the system assigned identity."
                               },
-                              "value": "[coalesce(tryGet(tryGet(reference('vm', '2023-09-01', 'full'), 'identity'), 'principalId'), '')]"
+                              "value": "[coalesce(tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId'), '')]"
                             },
                             "location": {
                               "type": "string",
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('vm', '2023-09-01', 'full').location]"
+                              "value": "[reference('vm', '2024-07-01', 'full').location]"
                             }
                           }
                         }
@@ -20429,7 +20610,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+                    "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -32321,7 +32502,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+                    "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -37721,7 +37902,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+                    "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -41482,7 +41663,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+                    "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
