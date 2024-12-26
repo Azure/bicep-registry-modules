@@ -152,13 +152,11 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
     extensionMonitoringAgentConfig: {
       enabled: true
       tags: tags
-      extensionMonitoringAgentConfig: {
-        dataCollectionRuleAssociations: [
-          {
-            dataCollectionRuleResourceId: logAnalyticsWorkspaceResourceId
-          }
-        ]
-      }
+      dataCollectionRuleAssociations: [
+        {
+          dataCollectionRuleResourceId: logAnalyticsWorkspaceResourceId
+        }
+      ]
     }
   }
 }
