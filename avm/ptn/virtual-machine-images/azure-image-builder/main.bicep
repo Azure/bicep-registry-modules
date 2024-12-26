@@ -99,7 +99,7 @@ param computeGalleryImageDefinitionName string
 param waitForImageBuild bool = true
 
 @description('Optional. A parameter to control the timeout of the deployment script waiting for the image build.')
-param waitForImageBuildTimeout string = 'PT1H'
+param waitForImageBuildTimeout string = 'PT2H'
 
 // Shared Parameters
 @description('Optional. The location to deploy into.')
