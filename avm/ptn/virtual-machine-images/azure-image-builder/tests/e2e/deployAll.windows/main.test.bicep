@@ -78,8 +78,8 @@ module testDeployment '../../../main.bicep' = [
       }
       imageTemplateCustomizationSteps: [
         {
-          type: 'Shell'
-          name: 'PowerShell installation'
+          type: 'PowerShell'
+          name: 'PowerShell Core installation'
           scriptUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}'
         }
         {
