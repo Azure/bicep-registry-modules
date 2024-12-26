@@ -89,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
           destination: initializeSoftwareScriptName
         }
         {
-          type: 'Shell'
+          type: 'PowerShell'
           name: 'Software installation'
           inline: [
             'pwsh \'${initializeSoftwareScriptName}\''
