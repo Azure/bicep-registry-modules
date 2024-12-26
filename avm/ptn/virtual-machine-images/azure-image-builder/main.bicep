@@ -245,6 +245,7 @@ module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform 
     msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
       ? imageMSI.outputs.resourceId
       : ''
+    roleDefinitionId: !empty(aibRoleDefinitionName) ? aibRoleDefinition.id : contributorRole.id
   }
 }
 
