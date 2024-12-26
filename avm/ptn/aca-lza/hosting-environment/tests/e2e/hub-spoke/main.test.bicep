@@ -62,7 +62,6 @@ module testDeployment '../../../main.bicep' = {
     location: resourceLocation
     vmSize: 'Standard_B1s'
     storageAccountType: 'Premium_LRS'
-    vmAdminUsername: 'vmadmin'
     vmAdminPassword: password
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'

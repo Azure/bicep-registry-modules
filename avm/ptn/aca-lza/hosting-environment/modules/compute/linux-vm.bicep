@@ -15,7 +15,6 @@ param vmNetworkSecurityGroupName string
 param vmNetworkInterfaceName string
 param logAnalyticsWorkspaceResourceId string
 param bastionResourceId string
-param vmAdminUsername string
 
 @secure()
 param vmAdminPassword string
@@ -172,7 +171,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
     enableTelemetry: enableTelemetry
     osType: 'Linux'
     computerName: vmName
-    adminUsername: vmAdminUsername
+    adminUsername: 'localAdministrator'
     adminPassword: ((vmAuthenticationType == 'password') ? vmAdminPassword : null)
     disablePasswordAuthentication: ((vmAuthenticationType == 'password') ? false : true)
     encryptionAtHost: false
@@ -184,7 +183,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
       ? [
           {
             keyData: (!empty(vmSshPublicKey)) ? vmSshPublicKey : sshKey.properties.publicKey
-            path: '/home/${vmAdminUsername}/.ssh/authorized_keys'
+            path: '/home/localAdministrator/.ssh/authorized_keys'
           }
         ]
       : [])

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5558981273371862259"
+      "templateHash": "6184630408180586715"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -75,12 +75,6 @@
       "defaultValue": "Standard_LRS",
       "metadata": {
         "description": "Optional. The storage account type to use for the jump box. Defaults to `Standard_LRS`."
-      }
-    },
-    "vmAdminUsername": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The username to use for the virtual machine."
       }
     },
     "vmAdminPassword": {
@@ -452,9 +446,6 @@
           "storageAccountType": {
             "value": "[parameters('storageAccountType')]"
           },
-          "vmAdminUsername": {
-            "value": "[parameters('vmAdminUsername')]"
-          },
           "vmAdminPassword": {
             "value": "[parameters('vmAdminPassword')]"
           },
@@ -478,7 +469,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4820032458760624353"
+              "templateHash": "4794053448185941377"
             }
           },
           "parameters": {
@@ -604,12 +595,6 @@
               "defaultValue": "Standard_LRS",
               "metadata": {
                 "description": "Optional. The storage account type to use for the jump box. Defaults to Standard_LRS."
-              }
-            },
-            "vmAdminUsername": {
-              "type": "string",
-              "metadata": {
-                "description": "The username to use for the jump box."
               }
             },
             "vmAdminPassword": {
@@ -7197,9 +7182,6 @@
                   "bastionResourceId": {
                     "value": "[parameters('bastionResourceId')]"
                   },
-                  "vmAdminUsername": {
-                    "value": "[parameters('vmAdminUsername')]"
-                  },
                   "vmAdminPassword": {
                     "value": "[parameters('vmAdminPassword')]"
                   },
@@ -7244,7 +7226,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14793598064672446997"
+                      "templateHash": "8870905689251206156"
                     }
                   },
                   "parameters": {
@@ -7281,9 +7263,6 @@
                       "type": "string"
                     },
                     "bastionResourceId": {
-                      "type": "string"
-                    },
-                    "vmAdminUsername": {
                       "type": "string"
                     },
                     "vmAdminPassword": {
@@ -8246,7 +8225,7 @@
                             "value": "[parameters('vmName')]"
                           },
                           "adminUsername": {
-                            "value": "[parameters('vmAdminUsername')]"
+                            "value": "localAdministrator"
                           },
                           "adminPassword": "[if(equals(parameters('vmAuthenticationType'), 'password'), createObject('value', parameters('vmAdminPassword')), createObject('value', null()))]",
                           "disablePasswordAuthentication": "[if(equals(parameters('vmAuthenticationType'), 'password'), createObject('value', false()), createObject('value', true()))]",
@@ -8265,7 +8244,7 @@
                           "maintenanceConfigurationResourceId": {
                             "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]"
                           },
-                          "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', if(not(empty(parameters('vmSshPublicKey'))), parameters('vmSshPublicKey'), reference(resourceId('Microsoft.Compute/sshPublicKeys', format('{0}-{1}', take(uniqueString(deployment().name, parameters('location')), 4), variables('sshKeyName'))), '2022-03-01').publicKey), 'path', format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))))), createObject('value', createArray()))]",
+                          "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', if(not(empty(parameters('vmSshPublicKey'))), parameters('vmSshPublicKey'), reference(resourceId('Microsoft.Compute/sshPublicKeys', format('{0}-{1}', take(uniqueString(deployment().name, parameters('location')), 4), variables('sshKeyName'))), '2022-03-01').publicKey), 'path', '/home/localAdministrator/.ssh/authorized_keys'))), createObject('value', createArray()))]",
                           "nicConfigurations": {
                             "value": [
                               {
@@ -13914,9 +13893,6 @@
                   "bastionResourceId": {
                     "value": "[parameters('bastionResourceId')]"
                   },
-                  "vmAdminUsername": {
-                    "value": "[parameters('vmAdminUsername')]"
-                  },
                   "vmAdminPassword": {
                     "value": "[parameters('vmAdminPassword')]"
                   },
@@ -13955,7 +13931,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2894228873796159360"
+                      "templateHash": "16374480384678840548"
                     }
                   },
                   "parameters": {
@@ -13996,9 +13972,6 @@
                       "type": "string"
                     },
                     "bastionResourceId": {
-                      "type": "string"
-                    },
-                    "vmAdminUsername": {
                       "type": "string"
                     },
                     "vmAdminPassword": {
@@ -14881,7 +14854,7 @@
                             "value": "[parameters('vmName')]"
                           },
                           "adminUsername": {
-                            "value": "[parameters('vmAdminUsername')]"
+                            "value": "localAdministrator"
                           },
                           "adminPassword": {
                             "value": "[parameters('vmAdminPassword')]"

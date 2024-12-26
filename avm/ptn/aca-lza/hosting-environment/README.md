@@ -132,7 +132,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       '10.1.0.0/22'
     ]
     vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
     vmSize: 'Standard_B1s'
     // Non-required parameters
@@ -186,9 +185,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
-    "vmAdminUsername": {
-      "value": "vmadmin"
-    },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
     },
@@ -238,7 +234,6 @@ param spokeVNetAddressPrefixes = [
   '10.1.0.0/22'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
@@ -278,7 +273,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       '10.1.0.0/22'
     ]
     vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
     vmSize: 'Standard_B1s'
     // Non-required parameters
@@ -338,9 +332,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
-    },
-    "vmAdminUsername": {
-      "value": "vmadmin"
     },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
@@ -412,7 +403,6 @@ param spokeVNetAddressPrefixes = [
   '10.1.0.0/22'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
@@ -459,7 +449,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       '10.1.0.0/22'
     ]
     vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
     vmSize: 'Standard_B1s'
     // Non-required parameters
@@ -517,9 +506,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
-    },
-    "vmAdminUsername": {
-      "value": "vmadmin"
     },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
@@ -585,7 +571,6 @@ param spokeVNetAddressPrefixes = [
   '10.1.0.0/22'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
@@ -620,7 +605,6 @@ param workloadName = '<workloadName>'
 | [`spokePrivateEndpointsSubnetAddressPrefix`](#parameter-spokeprivateendpointssubnetaddressprefix) | string | CIDR of the Spoke Private Endpoints Subnet. |
 | [`spokeVNetAddressPrefixes`](#parameter-spokevnetaddressprefixes) | array | CIDR of the Spoke Virtual Network. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | The password to use for the virtual machine. |
-| [`vmAdminUsername`](#parameter-vmadminusername) | string | The username to use for the virtual machine. |
 | [`vmJumpBoxSubnetAddressPrefix`](#parameter-vmjumpboxsubnetaddressprefix) | string | CIDR to use for the virtual machine subnet. |
 | [`vmSize`](#parameter-vmsize) | string | The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information. |
 
@@ -703,13 +687,6 @@ The password to use for the virtual machine.
 
 - Required: Yes
 - Type: securestring
-
-### Parameter: `vmAdminUsername`
-
-The username to use for the virtual machine.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `vmJumpBoxSubnetAddressPrefix`
 

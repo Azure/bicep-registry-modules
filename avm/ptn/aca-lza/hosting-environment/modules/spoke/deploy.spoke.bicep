@@ -69,9 +69,6 @@ param vmZone int = 0
 @description('Optional. The storage account type to use for the jump box. Defaults to Standard_LRS.')
 param storageAccountType string = 'Standard_LRS'
 
-@description('The username to use for the jump box.')
-param vmAdminUsername string
-
 @description('The password to use for the jump box.')
 @secure()
 param vmAdminPassword string
@@ -502,7 +499,6 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linu
     enableTelemetry: enableTelemetry
     vmName: naming.outputs.resourcesNames.vmJumpBox
     bastionResourceId: bastionResourceId
-    vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword
     vmSshPublicKey: vmLinuxSshAuthorizedKey
     vmSize: vmSize
@@ -528,7 +524,6 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
     enableTelemetry: enableTelemetry
     vmName: naming.outputs.resourcesNames.vmJumpBox
     bastionResourceId: bastionResourceId
-    vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword
     vmSize: vmSize
     vmZone: vmZone

@@ -16,7 +16,6 @@ param vmNetworkSecurityGroupName string
 param vmNetworkInterfaceName string
 param logAnalyticsWorkspaceResourceId string
 param bastionResourceId string
-param vmAdminUsername string
 
 @secure()
 param vmAdminPassword string
@@ -112,7 +111,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
     enableTelemetry: enableTelemetry
     osType: 'Windows'
     computerName: vmName
-    adminUsername: vmAdminUsername
+    adminUsername: 'localAdministrator'
     adminPassword: vmAdminPassword
     encryptionAtHost: false
     enableAutomaticUpdates: true
