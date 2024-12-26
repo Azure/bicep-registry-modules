@@ -461,7 +461,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
       imageSubnetName
     )
     location: location
-    // stagingResourceGroupResourceId: imageTemplateRg.id
+    stagingResourceGroupResourceId: imageTemplateRg.id
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Contributor'
