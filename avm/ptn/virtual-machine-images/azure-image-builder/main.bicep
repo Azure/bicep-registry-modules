@@ -471,7 +471,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   name: '${deployment().name}-it'
   scope: resourceGroup(resourceGroupName)
   params: {
-    // customizationSteps: imageTemplateCustomizationSteps
+    customizationSteps: imageTemplateCustomizationSteps
     imageSource: imageTemplateImageSource
     name: imageTemplateName
     enableTelemetry: enableTelemetry
