@@ -54,7 +54,7 @@ The name of the parent Database Account. Required if the template is used in a s
 
 ### Parameter: `autoscaleSettingsMaxThroughput`
 
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level.
 
 - Required: No
 - Type: int
@@ -76,7 +76,7 @@ Tags of the SQL database resource.
 
 ### Parameter: `throughput`
 
-Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.  Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level.
 
 - Required: No
 - Type: int
