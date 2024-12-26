@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6460133168416502303"
+      "templateHash": "14264383479280743170"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9486774024592617353"
+              "templateHash": "3255276405479286542"
             }
           },
           "parameters": {
@@ -7244,7 +7244,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1806823827016723596"
+                      "templateHash": "1490730469586755712"
                     }
                   },
                   "parameters": {
@@ -8222,13 +8222,12 @@
                             "value": {
                               "enabled": true,
                               "tags": "[parameters('tags')]",
-                              "extensionMonitoringAgentConfig": {
-                                "dataCollectionRuleAssociations": [
-                                  {
-                                    "dataCollectionRuleResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
-                                  }
-                                ]
-                              }
+                              "dataCollectionRuleAssociations": [
+                                {
+                                  "name": "SendMetricsToLAW",
+                                  "dataCollectionRuleResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                                }
+                              ]
                             }
                           }
                         },
@@ -13867,7 +13866,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12083031297543754263"
+                      "templateHash": "12504028584963063183"
                     }
                   },
                   "parameters": {
@@ -14769,13 +14768,12 @@
                             "value": {
                               "enabled": true,
                               "tags": "[parameters('tags')]",
-                              "extensionMonitoringAgentConfig": {
-                                "dataCollectionRuleAssociations": [
-                                  {
-                                    "dataCollectionRuleResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
-                                  }
-                                ]
-                              }
+                              "dataCollectionRuleAssociations": [
+                                {
+                                  "name": "SendMetricsToLAW",
+                                  "dataCollectionRuleResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                                }
+                              ]
                             }
                           }
                         },

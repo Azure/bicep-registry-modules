@@ -223,6 +223,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
       tags: tags
       dataCollectionRuleAssociations: [
         {
+          name: 'SendMetricsToLAW'
           dataCollectionRuleResourceId: logAnalyticsWorkspaceResourceId
         }
       ]
