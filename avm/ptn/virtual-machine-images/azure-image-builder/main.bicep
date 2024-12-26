@@ -471,7 +471,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   name: '${deployment().name}-it'
   scope: resourceGroup(resourceGroupName)
   params: {
-    customizationSteps: imageTemplateCustomizationSteps
+    // customizationSteps: imageTemplateCustomizationSteps
     imageSource: imageTemplateImageSource
     name: imageTemplateName
     enableTelemetry: enableTelemetry
@@ -507,7 +507,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
       imageSubnetName
     )
     location: location
-    stagingResourceGroupResourceId: imageTemplateRg.id
+    // stagingResourceGroupResourceId: imageTemplateRg.id // TODO : Re-enable
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Contributor'
