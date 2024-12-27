@@ -38,8 +38,8 @@ env:
   modulePath: "avm/ptn/virtual-machine-images/azure-image-builder"
   workflowPath: ".github/workflows/avm.ptn.virtual-machine-images.azure-image-builder.yml"
 
-concurrency:
-  group: ${{ github.workflow }}
+# concurrency:
+#   group: ${{ github.workflow }}
 
 jobs:
   ###########################
