@@ -82,8 +82,7 @@ jobs:
     uses: ./.github/workflows/avm.template.module.yml
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
-      # moduleTestFilePaths: "[{\"name\":\"deployAll.linux\",\"path\":\"tests/e2e/deployAll.linux/main.test.bicep\"}]"
-      moduleTestFilePaths: "[{\"name\":\"deployAll.windows\",\"path\":\"tests/e2e/deployAll.windows/main.test.bicep\"}]"
+      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath }}"
     secrets: inherit
