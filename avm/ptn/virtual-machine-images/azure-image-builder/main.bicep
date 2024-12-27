@@ -155,7 +155,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToP
 }
 
 // Always deployed as both an infra element & needed as a staging resource group for image building
-resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2024-03-01' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
   name: imageTemplateResourceGroupName
   location: location
 }
@@ -231,7 +231,7 @@ module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == '
     roleDefinitionId: deployAndUseCustomRoleDefinition ? aibRoleDefinition.id : contributorRole.id
   }
 }
-module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
   scope: imageTemplateRg
   name: '${deployment().name}-image-msi-rbac-main-rg'
   params: {
@@ -497,8 +497,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
         )
       }
     ]
-
-    // subnetResourceId: vnet.outputs.subnetResourceIds[0] // Image Subnet
     subnetResourceId: resourceId(
       subscription().subscriptionId,
       resourceGroupName,
@@ -507,7 +505,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
       imageSubnetName
     )
     location: location
-    // stagingResourceGroupResourceId: imageTemplateRg.id // TODO : Re-enable
+    stagingResourceGroupResourceId: !empty(imageTemplateResourceGroupName) ? imageTemplateRg.id : null
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Contributor'

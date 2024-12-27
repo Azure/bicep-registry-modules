@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16836950206834246445"
+      "templateHash": "11227891723786387080"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
@@ -548,7 +548,7 @@
       "location": "[parameters('location')]"
     },
     "imageTemplateRg": {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
+      "condition": "[and(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), not(empty(parameters('imageTemplateResourceGroupName'))))]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2024-03-01",
       "name": "[parameters('imageTemplateResourceGroupName')]",
@@ -1607,7 +1607,7 @@
       ]
     },
     "imageMSI_aib_rg_rbac": {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
+      "condition": "[and(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), not(empty(parameters('imageTemplateResourceGroupName'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-image-msi-rbac-main-rg', deployment().name)]",
@@ -16724,6 +16724,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "stagingResourceGroupResourceId": "[if(not(empty(parameters('imageTemplateResourceGroupName'))), createObject('value', subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('imageTemplateResourceGroupName'))), createObject('value', null()))]",
           "roleAssignments": {
             "value": [
               {
@@ -17472,6 +17473,7 @@
         "dsMsi_existing",
         "imageMSI",
         "imageMSI_rg_rbac",
+        "imageTemplateRg",
         "rg",
         "storageAccount_upload",
         "vnet"

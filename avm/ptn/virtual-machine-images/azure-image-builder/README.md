@@ -517,6 +517,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         type: 'PowerShell'
       }
     ]
+    imageTemplateResourceGroupName: ''
     location: '<location>'
     resourceGroupName: '<resourceGroupName>'
     storageAccountFilesToUpload: [
@@ -608,6 +609,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         }
       ]
     },
+    "imageTemplateResourceGroupName": {
+      "value": ""
+    },
     "location": {
       "value": "<location>"
     },
@@ -687,6 +691,7 @@ param imageTemplateCustomizationSteps = [
     type: 'PowerShell'
   }
 ]
+param imageTemplateResourceGroupName = ''
 param location = '<location>'
 param resourceGroupName = '<resourceGroupName>'
 param storageAccountFilesToUpload = [
