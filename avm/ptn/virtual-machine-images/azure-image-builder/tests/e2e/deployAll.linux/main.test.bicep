@@ -37,7 +37,6 @@ module testDeployment '../../../main.bicep' = [
       deploymentsToPerform: iteration == 'init' ? 'All' : 'Only base' // Restricting to only infra on re-run as we don't want to back 2 images but only test idempotency
       resourceGroupName: resourceGroupName
       location: resourceLocation
-      customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (${serviceShort} - ${namePrefix})'
       assetsStorageAccountName: assetsStorageAccountName
       assetsStorageAccountContainerName: assetsStorageAccountContainerName
       computeGalleryName: 'gal${namePrefix}${serviceShort}'

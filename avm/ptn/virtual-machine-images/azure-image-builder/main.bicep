@@ -31,12 +31,6 @@ param deploymentScriptManagedIdentityName string = 'msi-ds'
 @description('Optional. The name of the Managed Identity used by the Azure Image Builder.')
 param imageManagedIdentityName string = 'msi-aib'
 
-@description('Optional. Then name of the AIB role definition to create.')
-param customAIBRoleDefinitionName string = 'Custom Azure Image Builder Image Definition'
-
-@description('Optional. Define whether or not to deploy a custom, least priviledge, role for the Azure Image Builder on a subscription level and apply it to the deployed managed identities on the resource group level. If set to false, the Contributor role is applied instead.')
-param deployAndUseCustomAIBRoleDefinition bool = true
-
 // Azure Compute Gallery Parameters
 @description('Required. The name of the Azure Compute Gallery.')
 param computeGalleryName string
@@ -175,42 +169,8 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
   }
 }
 
-// Custom role
-resource aibRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = if (deployAndUseCustomAIBRoleDefinition) {
-  name: guid(subscription().id, customAIBRoleDefinitionName)
-  properties: {
-    roleName: customAIBRoleDefinitionName
-    description: 'Image Builder access to create & access resources for the image build.'
-    type: 'customRole'
-    permissions: [
-      {
-        actions: [
-          // Allow VM Image Builder to distribute images
-          'Microsoft.Compute/images/write'
-          'Microsoft.Compute/galleries/images/versions/write'
-          'Microsoft.Compute/images/delete'
-
-          // Permission to customize existing images
-          'Microsoft.Compute/images/read'
-          'Microsoft.Compute/galleries/read'
-          'Microsoft.Compute/galleries/images/read'
-          'Microsoft.Compute/galleries/images/versions/read'
-
-          // Permission to customize images on your virtual networks
-          'Microsoft.Network/virtualNetworks/read'
-          'Microsoft.Network/virtualNetworks/subnets/join/action'
-        ]
-        notActions: []
-      }
-    ]
-    assignableScopes: [
-      subscription().id
-    ]
-  }
-}
-
 // MSI RG contributor assignment
-resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = if (!deployAndUseCustomAIBRoleDefinition) {
+resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
   scope: tenant()
 }
@@ -222,7 +182,7 @@ module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == '
     msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
       ? imageMSI.outputs.resourceId
       : ''
-    roleDefinitionId: deployAndUseCustomAIBRoleDefinition ? aibRoleDefinition.id : contributorRole.id
+    roleDefinitionId: contributorRole.id
   }
 }
 
@@ -238,7 +198,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = if (
         principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
           ? imageMSI.outputs.principalId
           : ''
-        roleDefinitionIdOrName: deployAndUseCustomAIBRoleDefinition ? aibRoleDefinition.id : contributorRole.id
+        roleDefinitionIdOrName: contributorRole.id
         principalType: 'ServicePrincipal'
       }
     ]

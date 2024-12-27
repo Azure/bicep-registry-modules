@@ -59,7 +59,6 @@ module testDeployment '../../../main.bicep' = {
     deploymentsToPerform: 'Only image'
     resourceGroupName: nestedDependencies.outputs.resourceGroupName
     location: resourceLocation
-    customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (${serviceShort} - ${namePrefix})'
     computeGalleryName: nestedDependencies.outputs.computeGalleryName
     computeGalleryImageDefinitions: nestedDependencies.outputs.computeGalleryImageDefinitions
     computeGalleryImageDefinitionName: nestedDependencies.outputs.computeGalleryImageDefinitions[0].name
