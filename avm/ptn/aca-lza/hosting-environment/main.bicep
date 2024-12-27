@@ -183,11 +183,11 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    spokePrivateEndpointSubnetName: spoke.outputs.spokePrivateEndpointsSubnetName
+    spokePrivateEndpointSubnetResourceId: spoke.outputs.spokePrivateEndpointsSubnetResourceId
     environment: environment
     workloadName: workloadName
-    spokeVNetId: spoke.outputs.spokeVNetId
-    hubVNetId: hubVirtualNetworkResourceId
+    spokeVNetResourceId: spoke.outputs.spokeVNetId
+    hubVNetResourceId: hubVirtualNetworkResourceId
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
   }
 }
@@ -241,7 +241,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     base64Certificate: base64Certificate
     keyVaultId: supportingServices.outputs.keyVaultResourceId
-    virtualNetworkResourceId: spoke.outputs.spokeVNetId
+    storageAccountName: supportingServices.outputs.storageAccountName
     keyVaultSubnetResourceId: spoke.outputs.spokePrivateEndpointsSubnetResourceId
     deployZoneRedundantResources: deployZoneRedundantResources
     enableDdosProtection: enableDdosProtection

@@ -9,19 +9,22 @@ param keyVaultName string
 @description('The subnet resource ID of the subnet where the key vault is deployed.')
 param keyVaultSubnetResourceId string
 
-@description('The resource ID of the virtual network where the resources will be deployed.')
-param virtualNetworkResourceId string
-
 @description('The name of the location where the resources will be deployed.')
 param location string
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('The name of the storage account where the deployment script will be stored.')
+param storageAccountName string
+
+@description('The application gateway principal id that needs access to key vault to read the certificate.')
 param appGatewayUserAssignedIdentityPrincipalId string
 
+@description('The certificate key name to be used in the key vault.')
 param appGatewayCertificateKeyName string
 
+@description('The certificate data to be stored in the key vault. If not provided, a self-signed certificate will be generated.')
 @secure()
 param appGatewayCertificateData string
 
@@ -32,12 +35,14 @@ param appGatewayCertificateData string
 var keyVaultSecretUserRoleGuid = '4633458b-17de-408a-b874-0445c86b69e6'
 var selfSignedCertificateSubject = 'CN=contoso.com'
 var useSelfSignedCert = empty(appGatewayCertificateData)
-var storagePrivateDnsZoneName = 'privatelink.file.${environment().suffixes.storage}'
-var storageShare = 'smbfileshare'
 
 // ------------------
 // RESOURCES
 // ------------------
+
+resource storage 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
+  name: storageAccountName
+}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
@@ -52,7 +57,7 @@ resource selfSignedCertManagedIdentity 'Microsoft.ManagedIdentity/userAssignedId
 
 // Assign the managed identity the contributor role on the KV to write the self signed cert
 resource selfSignedCertManagedIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (empty(appGatewayCertificateData)) {
-  name: guid(resourceGroup().id, 'Contributor', selfSignedCertManagedIdentity.id)
+  name: guid(resourceGroup().id, keyVault.name, 'Contributor', selfSignedCertManagedIdentity.id)
   scope: keyVault
   properties: {
     principalId: selfSignedCertManagedIdentity.properties.principalId
@@ -64,62 +69,17 @@ resource selfSignedCertManagedIdentityRoleAssignment 'Microsoft.Authorization/ro
   }
 }
 
-//Storage account for the deployment script
-module storage 'br/public:avm/res/storage/storage-account:0.14.3' = {
-  name: '${take(uniqueString(deployment().name, location),4)}-ci-storage-deployment'
-  params: {
-    location: location
-    kind: 'StorageV2'
-    skuName: 'Standard_LRS'
-    name: 'cistorage'
-    publicNetworkAccess: 'Disabled'
-    networkAcls: { bypass: 'AzureServices', defaultAction: 'Deny' }
-    secretsExportConfiguration: {
-      keyVaultResourceId: keyVault.id
-      accessKey1: 'ciStorageAccessKey1'
-    }
-    fileServices: {
-      shares: [
-        {
-          enabledProtocols: 'SMB'
-          name: storageShare
-        }
-      ]
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
-        principalId: selfSignedCertManagedIdentity.properties.principalId
-        principalType: 'ServicePrincipal'
-        name: guid(selfSignedCertManagedIdentity.id, 'StorageFileDataPrivilegedContributor', 'cistorage')
-      }
-    ]
-    privateEndpoints: [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: storagePrivateDnsZone.outputs.resourceId
-            }
-          ]
-        }
-        service: 'file'
-        subnetResourceId: keyVaultSubnetResourceId
-      }
-    ]
-    tags: tags
-  }
-}
-module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
-  name: '${take(uniqueString(deployment().name, location),4)}-storagePrivateDnsZone-deployment'
-  params: {
-    location: 'global'
-    name: storagePrivateDnsZoneName
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: virtualNetworkResourceId
-      }
-    ]
+//Assign the managed identity the role to write to the storage account where the deployment script will be stored
+resource storageRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, storage.name, 'Contributor', selfSignedCertManagedIdentity.id)
+  scope: storage
+  properties: {
+    principalId: selfSignedCertManagedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
+    )
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -142,7 +102,7 @@ resource selfSignedCertificateGeneration 'Microsoft.Resources/deploymentScripts@
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${appGatewayCertificateKeyName}" -CertSubjectName "${selfSignedCertificateSubject}"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
     storageAccountSettings: {
-      storageAccountName: storage.outputs.name
+      storageAccountName: storageAccountName
     }
     containerSettings: {
       subnetIds: [

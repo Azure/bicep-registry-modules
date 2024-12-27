@@ -17,13 +17,13 @@ param tags object = {}
 param enableTelemetry bool
 
 @description('Optional. The resource ID of the Hub Virtual Network.')
-param hubVNetId string = ''
+param hubVNetResourceId string = ''
 
 @description('The resource ID of the VNet to which the private endpoint will be connected.')
-param spokeVNetId string
+param spokeVNetResourceId string
 
-@description('The name of the subnet in the VNet to which the private endpoint will be connected.')
-param spokePrivateEndpointSubnetName string
+@description('The resource id of the subnet in the VNet to which the private endpoint will be connected.')
+param spokePrivateEndpointSubnetResourceId string
 
 @description('Optional. The name of the private endpoint to be created for Azure Container Registry. If left empty, it defaults to "<resourceName>-pep')
 param containerRegistryPrivateEndpointName string = 'acr-pep'
@@ -42,22 +42,18 @@ param deployZoneRedundantResources bool = true
 // ------------------
 
 var acrDnsZoneName = 'privatelink.azurecr.io'
-var spokeVNetIdTokens = split(spokeVNetId, '/')
-var spokeSubscriptionId = spokeVNetIdTokens[2]
-var spokeResourceGroupName = spokeVNetIdTokens[4]
-var spokeVNetName = spokeVNetIdTokens[8]
 var containerRegistryPullRoleGuid = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var virtualNetworkLinks = concat(
   [
     {
-      virtualNetworkResourceId: spokeVNetId
+      virtualNetworkResourceId: spokeVNetResourceId
       registrationEnabled: false
     }
   ],
-  (!empty(hubVNetId))
+  (!empty(hubVNetResourceId))
     ? [
         {
-          virtualNetworkResourceId: hubVNetId
+          virtualNetworkResourceId: hubVNetResourceId
           registrationEnabled: false
         }
       ]
@@ -66,16 +62,6 @@ var virtualNetworkLinks = concat(
 // ------------------
 // RESOURCES
 // ------------------
-resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
-  scope: resourceGroup(spokeSubscriptionId, spokeResourceGroupName)
-  name: spokeVNetName
-}
-
-resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  parent: vnetSpoke
-  name: spokePrivateEndpointSubnetName
-}
-
 module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
   name: containerRegistryUserAssignedIdentityName
   params: {
@@ -132,7 +118,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
         privateDnsZoneResourceIds: [
           acrdnszone.outputs.resourceId
         ]
-        subnetResourceId: spokePrivateEndpointSubnet.id
+        subnetResourceId: spokePrivateEndpointSubnetResourceId
       }
     ]
     quarantinePolicyStatus: 'enabled'

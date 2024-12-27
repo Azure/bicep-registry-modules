@@ -46,8 +46,8 @@ param applicationGatewayLogAnalyticsId string = ''
 @description('The resource ID of the existing Key Vault which contains Application Gateway\'s cert.')
 param keyVaultId string
 
-@description('The resource ID of the virtual network where the resources will be deployed.')
-param virtualNetworkResourceId string
+@description('The name of the storage account where a deployment script will be stored.')
+param storageAccountName string
 
 @description('The subnet resource ID of the subnet where the key vault is deployed.')
 param keyVaultSubnetResourceId string
@@ -117,7 +117,7 @@ module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
     location: location
     tags: tags
     keyVaultName: keyVaultName
-    virtualNetworkResourceId: virtualNetworkResourceId
+    storageAccountName: storageAccountName
     keyVaultSubnetResourceId: keyVaultSubnetResourceId
     appGatewayCertificateData: base64Certificate
     appGatewayCertificateKeyName: applicationGatewayCertificateKeyName

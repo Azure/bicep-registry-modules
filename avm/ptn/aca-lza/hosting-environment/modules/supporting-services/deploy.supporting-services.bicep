@@ -24,14 +24,14 @@ param enableTelemetry bool
 
 // Hub
 @description('The resource ID of the existing hub virtual network.')
-param hubVNetId string
+param hubVNetResourceId string
 
 // Spoke
 @description('The resource ID of the existing spoke virtual network to which the private endpoint will be connected.')
-param spokeVNetId string
+param spokeVNetResourceId string
 
-@description('The name of the existing subnet in the spoke virtual to which the private endpoint will be connected.')
-param spokePrivateEndpointSubnetName string
+@description('The resource id of the existing subnet in the spoke virtual network to which the private endpoint will be connected.')
+param spokePrivateEndpointSubnetResourceId string
 
 @description('Optional. Resource ID of the diagnostic log analytics workspace. If left empty, no diagnostics settings will be defined.')
 param logAnalyticsWorkspaceId string = ''
@@ -62,9 +62,9 @@ module containerRegistry 'modules/container-registry.module.bicep' = {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    spokeVNetId: spokeVNetId
-    hubVNetId: hubVNetId
-    spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
+    spokeVNetResourceId: spokeVNetResourceId
+    hubVNetResourceId: hubVNetResourceId
+    spokePrivateEndpointSubnetResourceId: spokePrivateEndpointSubnetResourceId
     containerRegistryPrivateEndpointName: naming.outputs.resourcesNames.containerRegistryPep
     containerRegistryUserAssignedIdentityName: naming.outputs.resourcesNames.containerRegistryUserAssignedIdentity
     diagnosticWorkspaceId: logAnalyticsWorkspaceId
@@ -80,10 +80,25 @@ module keyVault 'modules/key-vault.bicep' = {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    spokeVNetId: spokeVNetId
-    hubVNetId: hubVNetId
-    spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
+    spokeVNetResourceId: spokeVNetResourceId
+    hubVNetResourceId: hubVNetResourceId
+    spokePrivateEndpointSubnetResourceId: spokePrivateEndpointSubnetResourceId
     keyVaultPrivateEndpointName: naming.outputs.resourcesNames.keyVaultPep
+    diagnosticWorkspaceId: logAnalyticsWorkspaceId
+  }
+}
+
+module storage 'modules/storage.bicep' = {
+  name: 'storage-${uniqueString(resourceGroup().id)}'
+  params: {
+    location: location
+    storageAccountName: naming.outputs.resourcesNames.storageAccount
+    tags: tags
+    enableTelemetry: enableTelemetry
+    hubVNetResourceId: hubVNetResourceId
+    keyVaultResourceId: keyVault.outputs.keyVaultResourceId
+    spokeVNetResourceId: spokeVNetResourceId
+    spokePrivateEndpointSubnetResourceId: spokePrivateEndpointSubnetResourceId
     diagnosticWorkspaceId: logAnalyticsWorkspaceId
   }
 }
@@ -105,7 +120,13 @@ output containerRegistryLoginServer string = containerRegistry.outputs.container
 output containerRegistryUserAssignedIdentityId string = containerRegistry.outputs.containerRegistryUserAssignedIdentityId
 
 @description('The resource ID of the Azure Key Vault.')
-output keyVaultResourceId string = keyVault.outputs.keyVaultId
+output keyVaultResourceId string = keyVault.outputs.keyVaultResourceId
 
 @description('The name of the Azure Key Vault.')
 output keyVaultName string = keyVault.outputs.keyVaultName
+
+@description('The account name of the storage account.')
+output storageAccountName string = storage.outputs.storageAccountName
+
+@description('The resource ID of the storage account.')
+output storageAccountResourceId string = storage.outputs.storageAccountResourceId

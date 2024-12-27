@@ -17,13 +17,13 @@ param tags object = {}
 param enableTelemetry bool
 
 @description('The resource ID of the Hub Virtual Network.')
-param hubVNetId string
+param hubVNetResourceId string
 
 @description('The resource ID of the VNet to which the private endpoint will be connected.')
-param spokeVNetId string
+param spokeVNetResourceId string
 
-@description('The name of the subnet in the VNet to which the private endpoint will be connected.')
-param spokePrivateEndpointSubnetName string
+@description('The resource id of the subnet in the VNet to which the private endpoint will be connected.')
+param spokePrivateEndpointSubnetResourceId string
 
 @description('Optional. The name of the private endpoint to be created for Key Vault. If left empty, it defaults to "<resourceName>-pep')
 param keyVaultPrivateEndpointName string = 'keyvault-pep'
@@ -39,21 +39,17 @@ param diagnosticSettingsName string = 'keyvault-diagnosticSettings'
 // ------------------
 
 var vaultDnsZoneName = 'privatelink.vaultcore.azure.net'
-var spokeVNetIdTokens = split(spokeVNetId, '/')
-var spokeSubscriptionId = spokeVNetIdTokens[2]
-var spokeResourceGroupName = spokeVNetIdTokens[4]
-var spokeVNetName = spokeVNetIdTokens[8]
 var virtualNetworkLinks = concat(
   [
     {
-      virtualNetworkResourceId: spokeVNetId
+      virtualNetworkResourceId: spokeVNetResourceId
       registrationEnabled: false
     }
   ],
-  (!empty(hubVNetId))
+  (!empty(hubVNetResourceId))
     ? [
         {
-          virtualNetworkResourceId: hubVNetId
+          virtualNetworkResourceId: hubVNetResourceId
           registrationEnabled: false
         }
       ]
@@ -62,16 +58,6 @@ var virtualNetworkLinks = concat(
 // ------------------
 // RESOURCES
 // ------------------
-
-resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
-  scope: resourceGroup(spokeSubscriptionId, spokeResourceGroupName)
-  name: spokeVNetName
-}
-
-resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  parent: vnetSpoke
-  name: spokePrivateEndpointSubnetName
-}
 
 module vaultdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
   name: 'keyvaultDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
@@ -108,7 +94,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.6.1' = {
         privateDnsZoneResourceIds: [
           vaultdnszone.outputs.resourceId
         ]
-        subnetResourceId: spokePrivateEndpointSubnet.id
+        subnetResourceId: spokePrivateEndpointSubnetResourceId
       }
     ]
     diagnosticSettings: [
@@ -133,7 +119,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.6.1' = {
 // ------------------
 
 @description('The resource ID of the key vault.')
-output keyVaultId string = keyvault.outputs.resourceId
+output keyVaultResourceId string = keyvault.outputs.resourceId
 
 @description('The name of the key vault.')
 output keyVaultName string = keyvault.outputs.name
