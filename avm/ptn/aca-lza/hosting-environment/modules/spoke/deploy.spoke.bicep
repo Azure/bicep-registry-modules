@@ -128,6 +128,14 @@ var defaultSubnets = [
     name: spokePrivateEndpointsSubnetName
     addressPrefix: spokePrivateEndpointsSubnetAddressPrefix
     networkSecurityGroupResourceId: nsgPep.outputs.resourceId
+    delegations: [
+      {
+        name: 'containerDelegation'
+        properties: {
+          serviceName: 'Microsoft.ContainerInstance/containerGroups'
+        }
+      }
+    ]
   }
 ]
 

@@ -46,6 +46,9 @@ param applicationGatewayLogAnalyticsId string = ''
 @description('The resource ID of the existing Key Vault which contains Application Gateway\'s cert.')
 param keyVaultId string
 
+@description('The resource ID of the virtual network where the resources will be deployed.')
+param virtualNetworkResourceId string
+
 @description('The subnet resource ID of the subnet where the key vault is deployed.')
 param keyVaultSubnetResourceId string
 
@@ -106,7 +109,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 // => Certificates (supports only 1 for now)
 
-// @description('Adds the PFX file into Azure Key Vault for consumption by Application Gateway.')
+// @description('Adds the certificate into Azure Key Vault for consumption by Application Gateway.')
 module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
   name: take('appGatewayAddCertificates-Deployment-${uniqueString(resourceGroup().id)}', 64)
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
@@ -114,6 +117,7 @@ module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
     location: location
     tags: tags
     keyVaultName: keyVaultName
+    virtualNetworkResourceId: virtualNetworkResourceId
     keyVaultSubnetResourceId: keyVaultSubnetResourceId
     appGatewayCertificateData: base64Certificate
     appGatewayCertificateKeyName: applicationGatewayCertificateKeyName

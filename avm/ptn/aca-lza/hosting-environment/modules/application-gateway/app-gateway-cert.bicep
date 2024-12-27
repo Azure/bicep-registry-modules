@@ -9,6 +9,9 @@ param keyVaultName string
 @description('The subnet resource ID of the subnet where the key vault is deployed.')
 param keyVaultSubnetResourceId string
 
+@description('The resource ID of the virtual network where the resources will be deployed.')
+param virtualNetworkResourceId string
+
 @description('The name of the location where the resources will be deployed.')
 param location string
 
@@ -29,6 +32,8 @@ param appGatewayCertificateData string
 var keyVaultSecretUserRoleGuid = '4633458b-17de-408a-b874-0445c86b69e6'
 var selfSignedCertificateSubject = 'CN=contoso.com'
 var useSelfSignedCert = empty(appGatewayCertificateData)
+var storagePrivateDnsZoneName = 'privatelink.file.${environment().suffixes.storage}'
+var storageShare = 'smbfileshare'
 
 // ------------------
 // RESOURCES
@@ -59,10 +64,68 @@ resource selfSignedCertManagedIdentityRoleAssignment 'Microsoft.Authorization/ro
   }
 }
 
+//Storage account for the deployment script
+module storage 'br/public:avm/res/storage/storage-account:0.14.3' = {
+  name: '${take(uniqueString(deployment().name, location),4)}-ci-storage-deployment'
+  params: {
+    location: location
+    kind: 'StorageV2'
+    skuName: 'Standard_LRS'
+    name: 'cistorage'
+    publicNetworkAccess: 'Disabled'
+    networkAcls: { bypass: 'AzureServices', defaultAction: 'Deny' }
+    secretsExportConfiguration: {
+      keyVaultResourceId: keyVault.id
+      accessKey1: 'ciStorageAccessKey1'
+    }
+    fileServices: {
+      shares: [
+        {
+          enabledProtocols: 'SMB'
+          name: storageShare
+        }
+      ]
+    }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
+        principalId: selfSignedCertManagedIdentity.properties.principalId
+        principalType: 'ServicePrincipal'
+        name: guid(selfSignedCertManagedIdentity.id, 'StorageFileDataPrivilegedContributor', 'cistorage')
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: storagePrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        service: 'file'
+        subnetResourceId: keyVaultSubnetResourceId
+      }
+    ]
+    tags: tags
+  }
+}
+module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
+  name: '${take(uniqueString(deployment().name, location),4)}-storagePrivateDnsZone-deployment'
+  params: {
+    location: 'global'
+    name: storagePrivateDnsZoneName
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetworkResourceId
+      }
+    ]
+  }
+}
+
 // Create a deployment script to generate a self signed cert and write it to the KV
 // script needs to run from within the virtual network to be able to access the key vault
-
-resource selfSignedCertificate 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(appGatewayCertificateData)) {
+resource selfSignedCertificateGeneration 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(appGatewayCertificateData)) {
   name: '${take(uniqueString(deployment().name, 'self-signed-cert', location),4)}-certDeploymentScript'
   location: location
   tags: tags
@@ -78,6 +141,9 @@ resource selfSignedCertificate 'Microsoft.Resources/deploymentScripts@2023-08-01
     retentionInterval: 'P1D'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${appGatewayCertificateKeyName}" -CertSubjectName "${selfSignedCertificateSubject}"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
+    storageAccountSettings: {
+      storageAccountName: storage.outputs.name
+    }
     containerSettings: {
       subnetIds: [
         {
@@ -119,4 +185,4 @@ resource keyvaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignmen
 // Using SecretUri instead of SecretUriWithVersion to avoid having to update the App Gateway configuration when the secret version changes
 output SecretUri string = (!useSelfSignedCert)
   ? sslCertSecret.properties.secretUri
-  : selfSignedCertificate.properties.outputs.secretUrl
+  : selfSignedCertificateGeneration.properties.outputs.secretUrl
