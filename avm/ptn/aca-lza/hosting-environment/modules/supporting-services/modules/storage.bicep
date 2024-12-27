@@ -103,14 +103,20 @@ module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' 
   params: {
     location: 'global'
     name: storagePrivateDnsZoneName
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: spokeVNetResourceId
-      }
-      {
-        virtualNetworkResourceId: hubVNetResourceId
-      }
-    ]
+    virtualNetworkLinks: !empty(hubVNetResourceId)
+      ? [
+          {
+            virtualNetworkResourceId: spokeVNetResourceId
+          }
+          {
+            virtualNetworkResourceId: hubVNetResourceId
+          }
+        ]
+      : [
+          {
+            virtualNetworkResourceId: spokeVNetResourceId
+          }
+        ]
   }
 }
 

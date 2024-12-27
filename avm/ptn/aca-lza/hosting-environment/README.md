@@ -143,7 +143,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
     spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
     spokeVNetAddressPrefixes: [
-      '10.1.0.0/22'
+      '10.1.0.0/21'
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
@@ -196,7 +196,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "spokeVNetAddressPrefixes": {
       "value": [
-        "10.1.0.0/22"
+        "10.1.0.0/21"
       ]
     },
     "vmAdminPassword": {
@@ -249,7 +249,7 @@ param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
 param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
 param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
 param spokeVNetAddressPrefixes = [
-  '10.1.0.0/22'
+  '10.1.0.0/21'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
@@ -289,7 +289,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
     spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
     spokeVNetAddressPrefixes: [
-      '10.1.0.0/22'
+      '10.1.0.0/21'
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
@@ -349,7 +349,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "spokeVNetAddressPrefixes": {
       "value": [
-        "10.1.0.0/22"
+        "10.1.0.0/21"
       ]
     },
     "vmAdminPassword": {
@@ -423,7 +423,7 @@ param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
 param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
 param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
 param spokeVNetAddressPrefixes = [
-  '10.1.0.0/22'
+  '10.1.0.0/21'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
@@ -470,7 +470,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
     spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
     spokeVNetAddressPrefixes: [
-      '10.1.0.0/22'
+      '10.1.0.0/21'
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
@@ -528,7 +528,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "spokeVNetAddressPrefixes": {
       "value": [
-        "10.1.0.0/22"
+        "10.1.0.0/21"
       ]
     },
     "vmAdminPassword": {
@@ -596,7 +596,7 @@ param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
 param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
 param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
 param spokeVNetAddressPrefixes = [
-  '10.1.0.0/22'
+  '10.1.0.0/21'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'

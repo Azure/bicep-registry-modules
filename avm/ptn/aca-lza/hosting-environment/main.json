@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3836854703566290686"
+      "templateHash": "14836537702775685774"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -20667,7 +20667,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16145508705620638144"
+              "templateHash": "14146820131415912461"
             }
           },
           "parameters": {
@@ -32469,7 +32469,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14779358687570376721"
+                      "templateHash": "10349904199551301941"
                     }
                   },
                   "parameters": {
@@ -37937,16 +37937,7 @@
                           "name": {
                             "value": "[variables('storagePrivateDnsZoneName')]"
                           },
-                          "virtualNetworkLinks": {
-                            "value": [
-                              {
-                                "virtualNetworkResourceId": "[parameters('spokeVNetResourceId')]"
-                              },
-                              {
-                                "virtualNetworkResourceId": "[parameters('hubVNetResourceId')]"
-                              }
-                            ]
-                          }
+                          "virtualNetworkLinks": "[if(not(empty(parameters('hubVNetResourceId'))), createObject('value', createArray(createObject('virtualNetworkResourceId', parameters('spokeVNetResourceId')), createObject('virtualNetworkResourceId', parameters('hubVNetResourceId')))), createObject('value', createArray(createObject('virtualNetworkResourceId', parameters('spokeVNetResourceId')))))]"
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

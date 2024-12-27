@@ -46,7 +46,7 @@ module testDeployment '../../../main.bicep' = {
     vmJumpboxOSType: 'linux'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
     spokeVNetAddressPrefixes: [
-      '10.1.0.0/22'
+      '10.1.0.0/21'
     ]
     spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
     spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
