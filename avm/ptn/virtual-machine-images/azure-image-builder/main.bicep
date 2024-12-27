@@ -239,6 +239,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = if (
           ? imageMSI.outputs.principalId
           : ''
         roleDefinitionIdOrName: deployAndUseCustomAIBRoleDefinition ? aibRoleDefinition.id : contributorRole.id
+        principalType: 'ServicePrincipal'
       }
     ]
   }
