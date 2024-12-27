@@ -309,7 +309,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' =
 
 // Role required for deployment script to be able to use a storage account via private networking
 resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
+  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
   scope: tenant()
 }
 
@@ -325,7 +325,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' = if 
       {
         // Allow MSI to leverage the storage account for private networking of container instance
         // ref: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep#access-private-virtual-network
-        roleDefinitionIdOrName: storageFileDataPrivilegedContributorRole.id // Storage File Data Priveleged Contributor
+        roleDefinitionIdOrName: storageFileDataPrivilegedContributorRole.id // Storage File Data Privileged Contributor
         principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
           ? dsMsi.outputs.principalId
           : '' // Requires condition als Bicep will otherwise try to resolve the null reference
