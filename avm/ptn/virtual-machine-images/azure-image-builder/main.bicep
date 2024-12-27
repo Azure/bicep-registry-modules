@@ -148,15 +148,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 //   START: ONLY BASE   //
 // ==================== //
 
-// Resource Groups
+// Primary Resource Group
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: resourceGroupName
-  location: location
-}
-
-// Always deployed as both an infra element & needed as a staging resource group for image building
-resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2024-03-01' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
-  name: imageTemplateResourceGroupName
   location: location
 }
 
@@ -231,15 +225,22 @@ module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == '
     roleDefinitionId: deployAndUseCustomAIBRoleDefinition ? aibRoleDefinition.id : contributorRole.id
   }
 }
-module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
-  scope: resourceGroup(imageTemplateRg.?name ?? 'dummy')
-  name: '${deployment().name}-image-msi-rbac-main-rg'
+
+// Optional Image Staging RG
+module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
+  name: '${deployment().name}-image-rg'
   params: {
-    // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
-    msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-      ? imageMSI.outputs.resourceId
-      : ''
-    roleDefinitionId: deployAndUseCustomAIBRoleDefinition ? aibRoleDefinition.id : contributorRole.id
+    name: imageTemplateResourceGroupName
+    location: location
+    enableTelemetry: enableTelemetry
+    roleAssignments: [
+      {
+        principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
+          ? imageMSI.outputs.principalId
+          : ''
+        roleDefinitionIdOrName: deployAndUseCustomAIBRoleDefinition ? aibRoleDefinition.id : contributorRole.id
+      }
+    ]
   }
 }
 

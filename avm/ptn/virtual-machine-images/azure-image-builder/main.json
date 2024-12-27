@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11778294758856890530"
+      "templateHash": "12768997687427160465"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
@@ -1611,7 +1611,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-image-msi-rbac-main-rg', deployment().name)]",
-      "resourceGroup": "[parameters('imageTemplateResourceGroupName')]",
+      "resourceGroup": "[coalesce(parameters('imageTemplateResourceGroupName'), 'dummy')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -16724,7 +16724,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "stagingResourceGroupResourceId": "[if(not(empty(parameters('imageTemplateResourceGroupName'))), createObject('value', subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('imageTemplateResourceGroupName'))), createObject('value', null()))]",
+          "stagingResourceGroupResourceId": "[if(not(empty(parameters('imageTemplateResourceGroupName'))), createObject('value', resourceId(subscription().subscriptionId, parameters('imageTemplateResourceGroupName'))), createObject('value', null()))]",
           "roleAssignments": {
             "value": [
               {
@@ -17473,7 +17473,6 @@
         "dsMsi_existing",
         "imageMSI",
         "imageMSI_rg_rbac",
-        "imageTemplateRg",
         "rg",
         "storageAccount_upload",
         "vnet"
