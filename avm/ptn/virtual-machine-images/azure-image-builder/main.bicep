@@ -232,7 +232,7 @@ module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == '
   }
 }
 module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
-  scope: resourceGroup(imageTemplateRg.name ?? 'dummy')
+  scope: resourceGroup(imageTemplateRg.?name ?? 'dummy')
   name: '${deployment().name}-image-msi-rbac-main-rg'
   params: {
     // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
