@@ -234,7 +234,7 @@ module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == '
     msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
       ? imageMSI.outputs.resourceId
       : ''
-    roleDefinitionId: !empty(aibRoleDefinitionName) ? aibRoleDefinition.id : contributorRole.id
+    roleDefinitionId: deployAndUseCustomRoleDefinition ? aibRoleDefinition.id : contributorRole.id
   }
 }
 module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
@@ -245,7 +245,7 @@ module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform 
     msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
       ? imageMSI.outputs.resourceId
       : ''
-    roleDefinitionId: !empty(aibRoleDefinitionName) ? aibRoleDefinition.id : contributorRole.id
+    roleDefinitionId: deployAndUseCustomRoleDefinition ? aibRoleDefinition.id : contributorRole.id
   }
 }
 
