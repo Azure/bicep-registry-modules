@@ -232,7 +232,7 @@ module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == '
   }
 }
 module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
-  scope: resourceGroup(imageTemplateResourceGroupName)
+  scope: resourceGroup(imageTemplateResourceGroupName ?? 'dummy')
   name: '${deployment().name}-image-msi-rbac-main-rg'
   params: {
     // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
@@ -509,7 +509,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
     )
     location: location
     stagingResourceGroupResourceId: !empty(imageTemplateResourceGroupName)
-      ? resourceId(subscription().subscriptionId, resourceGroupName)
+      ? resourceId(subscription().subscriptionId, imageTemplateResourceGroupName)
       : null
     roleAssignments: [
       {
