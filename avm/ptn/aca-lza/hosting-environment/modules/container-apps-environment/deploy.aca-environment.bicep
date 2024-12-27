@@ -39,8 +39,14 @@ param enableApplicationInsights bool
 @description('Enable or disable Dapr application instrumentation using Application Insights. If enableApplicationInsights is false, this parameter is ignored.')
 param enableDaprInstrumentation bool
 
+@description('The storage account name to be mounted to the ACA environment.')
+param storageAccountName string
+
 @description('The resource id of an existing Azure Log Analytics Workspace.')
 param logAnalyticsWorkspaceId string
+
+@description('Any storage accounts that need to be mounted to the ACA environment.')
+param containerAppsEnvironmentStorages array = []
 
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
@@ -66,6 +72,18 @@ var virtualNetworkLinks = concat(
         }
       ]
     : []
+)
+var storageShare = 'smbfileshare'
+var storages = concat(
+  [
+    {
+      accessMode: 'ReadWrite'
+      kind: 'SMB'
+      shareName: storageShare
+      storageAccountName: storageAccountName
+    }
+  ],
+  containerAppsEnvironmentStorages
 )
 
 // ------------------
@@ -109,7 +127,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = if (en
 }
 
 @description('The Azure Container Apps (ACA) cluster.')
-module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1' = {
+module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.8.1' = {
   name: take('acaenv-${uniqueString(resourceGroup().id)}', 64)
   params: {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceId
@@ -135,6 +153,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1
         workloadProfileType: 'D4'
       }
     ]
+    storages: storages
     zoneRedundant: deployZoneRedundantResources
   }
 }

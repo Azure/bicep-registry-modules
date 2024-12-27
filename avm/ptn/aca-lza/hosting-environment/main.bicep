@@ -206,6 +206,7 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
     spokeInfraSubnetName: spoke.outputs.spokeInfraSubnetName
     enableApplicationInsights: enableApplicationInsights
     enableDaprInstrumentation: enableDaprInstrumentation
+    storageAccountName: supportingServices.outputs.storageAccountName
     containerRegistryUserAssignedIdentityId: supportingServices.outputs.containerRegistryUserAssignedIdentityId
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
   }
