@@ -34,7 +34,7 @@ param imageManagedIdentityName string = 'msi-aib'
 @description('Optional. Then name of the AIB role definition to create.')
 param aibRoleDefinitionName string = 'Custom Azure Image Builder Image Definition'
 
-@description('Optional. Define whether or not to deploy a custom role for the Azure Image Builder on a subscription level and apply it to the deployed managed identities. If set to false, the Contributor role is applied instead.')
+@description('Optional. Define whether or not to deploy a custom, least priviledge, role for the Azure Image Builder on a subscription level and apply it to the deployed managed identities on the resource group level. If set to false, the Contributor role is applied instead.')
 param deployAndUseCustomRoleDefinition bool = true
 
 // Azure Compute Gallery Parameters
@@ -118,12 +118,6 @@ param enableTelemetry bool = true
 param baseTime string = utcNow()
 
 var formattedTime = replace(replace(replace(baseTime, ':', ''), '-', ''), ' ', '')
-
-// Role required for deployment script to be able to use a storage account via private networking
-resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
-  scope: tenant()
-}
 
 // =========== //
 // Deployments //
@@ -349,6 +343,12 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' =
       containerDeleteRetentionPolicyDays: 10
     }
   }
+}
+
+// Role required for deployment script to be able to use a storage account via private networking
+resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
+  scope: tenant()
 }
 
 // Deployment scripts & their storage account
