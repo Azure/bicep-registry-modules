@@ -10,4 +10,4 @@ spec:
   if:
     source: Template
     withinPath:
-      - avm/ptn/virtual-machine-images/azure-image-builder/
+      - avm/ptn/virtual-machine-images/azure-image-builder/ # Storage Accounts the AIB is supposed to access may not have active firewalls

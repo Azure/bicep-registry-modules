@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying all resources'
+metadata name = 'Deploying full solution for Linux'
 metadata description = 'This instance deploys the module with the conditions set up to deploy all resource and build a Linux image.'
 
 // ========== //
