@@ -33,6 +33,7 @@ module testDeployment '../../../main.bicep' = [
       deploymentsToPerform: 'Only base'
       resourceGroupName: resourceGroupName
       location: resourceLocation
+      customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (${serviceShort} - ${namePrefix})'
       assetsStorageAccountName: 'st${namePrefix}${serviceShort}'
       imageManagedIdentityName: 'msi-it-${namePrefix}-${serviceShort}'
       computeGalleryName: 'gal${namePrefix}${serviceShort}'

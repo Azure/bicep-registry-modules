@@ -38,6 +38,7 @@ module testDeployment '../../../main.bicep' = [
       resourceGroupName: resourceGroupName
       imageTemplateResourceGroupName: '' // Setting to empty as a custom staging resource group currently fails the creation of a windows image for an unknown reason
       location: resourceLocation
+      customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (${serviceShort} - ${namePrefix})'
       assetsStorageAccountName: assetsStorageAccountName
       assetsStorageAccountContainerName: assetsStorageAccountContainerName
       computeGalleryName: 'gal${namePrefix}${serviceShort}'

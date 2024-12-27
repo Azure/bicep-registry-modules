@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11227891723786387080"
+      "templateHash": "11778294758856890530"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
@@ -327,14 +327,14 @@
         "description": "Optional. The name of the Managed Identity used by the Azure Image Builder."
       }
     },
-    "aibRoleDefinitionName": {
+    "customAIBRoleDefinitionName": {
       "type": "string",
       "defaultValue": "Custom Azure Image Builder Image Definition",
       "metadata": {
         "description": "Optional. Then name of the AIB role definition to create."
       }
     },
-    "deployAndUseCustomRoleDefinition": {
+    "deployAndUseCustomAIBRoleDefinition": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -555,12 +555,12 @@
       "location": "[parameters('location')]"
     },
     "aibRoleDefinition": {
-      "condition": "[parameters('deployAndUseCustomRoleDefinition')]",
+      "condition": "[parameters('deployAndUseCustomAIBRoleDefinition')]",
       "type": "Microsoft.Authorization/roleDefinitions",
       "apiVersion": "2022-04-01",
-      "name": "[guid(subscription().id, parameters('aibRoleDefinitionName'))]",
+      "name": "[guid(subscription().id, parameters('customAIBRoleDefinitionName'))]",
       "properties": {
-        "roleName": "[parameters('aibRoleDefinitionName')]",
+        "roleName": "[parameters('customAIBRoleDefinitionName')]",
         "description": "Image Builder access to create & access resources for the image build.",
         "type": "customRole",
         "permissions": [
@@ -585,7 +585,7 @@
       }
     },
     "contributorRole": {
-      "condition": "[not(parameters('deployAndUseCustomRoleDefinition'))]",
+      "condition": "[not(parameters('deployAndUseCustomAIBRoleDefinition'))]",
       "existing": true,
       "type": "Microsoft.Authorization/roleDefinitions",
       "apiVersion": "2022-04-01",
@@ -1560,7 +1560,7 @@
         "mode": "Incremental",
         "parameters": {
           "msiResourceId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), createObject('value', reference('imageMSI').outputs.resourceId.value), createObject('value', ''))]",
-          "roleDefinitionId": "[if(parameters('deployAndUseCustomRoleDefinition'), createObject('value', subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().id, parameters('aibRoleDefinitionName')))), createObject('value', tenantResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')))]"
+          "roleDefinitionId": "[if(parameters('deployAndUseCustomAIBRoleDefinition'), createObject('value', subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().id, parameters('customAIBRoleDefinitionName')))), createObject('value', tenantResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1619,7 +1619,7 @@
         "mode": "Incremental",
         "parameters": {
           "msiResourceId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), createObject('value', reference('imageMSI').outputs.resourceId.value), createObject('value', ''))]",
-          "roleDefinitionId": "[if(parameters('deployAndUseCustomRoleDefinition'), createObject('value', subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().id, parameters('aibRoleDefinitionName')))), createObject('value', tenantResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')))]"
+          "roleDefinitionId": "[if(parameters('deployAndUseCustomAIBRoleDefinition'), createObject('value', subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().id, parameters('customAIBRoleDefinitionName')))), createObject('value', tenantResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

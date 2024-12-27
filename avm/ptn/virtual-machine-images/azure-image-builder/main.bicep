@@ -32,10 +32,10 @@ param deploymentScriptManagedIdentityName string = 'msi-ds'
 param imageManagedIdentityName string = 'msi-aib'
 
 @description('Optional. Then name of the AIB role definition to create.')
-param aibRoleDefinitionName string = 'Custom Azure Image Builder Image Definition'
+param customAIBRoleDefinitionName string = 'Custom Azure Image Builder Image Definition'
 
 @description('Optional. Define whether or not to deploy a custom, least priviledge, role for the Azure Image Builder on a subscription level and apply it to the deployed managed identities on the resource group level. If set to false, the Contributor role is applied instead.')
-param deployAndUseCustomRoleDefinition bool = true
+param deployAndUseCustomAIBRoleDefinition bool = true
 
 // Azure Compute Gallery Parameters
 @description('Required. The name of the Azure Compute Gallery.')
@@ -182,10 +182,10 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
 }
 
 // Custom role
-resource aibRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = if (deployAndUseCustomRoleDefinition) {
-  name: guid(subscription().id, aibRoleDefinitionName)
+resource aibRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = if (deployAndUseCustomAIBRoleDefinition) {
+  name: guid(subscription().id, customAIBRoleDefinitionName)
   properties: {
-    roleName: aibRoleDefinitionName
+    roleName: customAIBRoleDefinitionName
     description: 'Image Builder access to create & access resources for the image build.'
     type: 'customRole'
     permissions: [
@@ -216,7 +216,7 @@ resource aibRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' 
 }
 
 // MSI RG contributor assignment
-resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = if (!deployAndUseCustomRoleDefinition) {
+resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = if (!deployAndUseCustomAIBRoleDefinition) {
   name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
   scope: tenant()
 }
@@ -228,7 +228,7 @@ module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == '
     msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
       ? imageMSI.outputs.resourceId
       : ''
-    roleDefinitionId: deployAndUseCustomRoleDefinition ? aibRoleDefinition.id : contributorRole.id
+    roleDefinitionId: deployAndUseCustomAIBRoleDefinition ? aibRoleDefinition.id : contributorRole.id
   }
 }
 module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
@@ -239,7 +239,7 @@ module imageMSI_aib_rg_rbac 'modules/msi_rbac.bicep' = if ((deploymentsToPerform
     msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
       ? imageMSI.outputs.resourceId
       : ''
-    roleDefinitionId: deployAndUseCustomRoleDefinition ? aibRoleDefinition.id : contributorRole.id
+    roleDefinitionId: deployAndUseCustomAIBRoleDefinition ? aibRoleDefinition.id : contributorRole.id
   }
 }
 

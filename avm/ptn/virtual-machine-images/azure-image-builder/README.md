@@ -249,6 +249,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     // Non-required parameters
     assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
     assetsStorageAccountName: '<assetsStorageAccountName>'
+    customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (apvmiaibal - )'
     deploymentsToPerform: '<deploymentsToPerform>'
     imageTemplateCustomizationSteps: [
       {
@@ -336,6 +337,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     "assetsStorageAccountName": {
       "value": "<assetsStorageAccountName>"
     },
+    "customAIBRoleDefinitionName": {
+      "value": "Custom Azure Image Builder Image Definition (apvmiaibal - )"
+    },
     "deploymentsToPerform": {
       "value": "<deploymentsToPerform>"
     },
@@ -419,6 +423,7 @@ param imageTemplateImageSource = {
 // Non-required parameters
 param assetsStorageAccountContainerName = '<assetsStorageAccountContainerName>'
 param assetsStorageAccountName = '<assetsStorageAccountName>'
+param customAIBRoleDefinitionName = 'Custom Azure Image Builder Image Definition (apvmiaibal - )'
 param deploymentsToPerform = '<deploymentsToPerform>'
 param imageTemplateCustomizationSteps = [
   {
@@ -496,6 +501,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     // Non-required parameters
     assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
     assetsStorageAccountName: '<assetsStorageAccountName>'
+    customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (apvmiaibaw - )'
     deploymentsToPerform: '<deploymentsToPerform>'
     imageTemplateCustomizationSteps: [
       {
@@ -584,6 +590,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     "assetsStorageAccountName": {
       "value": "<assetsStorageAccountName>"
     },
+    "customAIBRoleDefinitionName": {
+      "value": "Custom Azure Image Builder Image Definition (apvmiaibaw - )"
+    },
     "deploymentsToPerform": {
       "value": "<deploymentsToPerform>"
     },
@@ -670,6 +679,7 @@ param imageTemplateImageSource = {
 // Non-required parameters
 param assetsStorageAccountContainerName = '<assetsStorageAccountContainerName>'
 param assetsStorageAccountName = '<assetsStorageAccountName>'
+param customAIBRoleDefinitionName = 'Custom Azure Image Builder Image Definition (apvmiaibaw - )'
 param deploymentsToPerform = '<deploymentsToPerform>'
 param imageTemplateCustomizationSteps = [
   {
@@ -736,6 +746,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     // Non-required parameters
     assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
     assetsStorageAccountName: '<assetsStorageAccountName>'
+    customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (apvmiaiboaai - )'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
@@ -800,6 +811,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     },
     "assetsStorageAccountName": {
       "value": "<assetsStorageAccountName>"
+    },
+    "customAIBRoleDefinitionName": {
+      "value": "Custom Azure Image Builder Image Definition (apvmiaiboaai - )"
     },
     "deploymentScriptManagedIdentityName": {
       "value": "<deploymentScriptManagedIdentityName>"
@@ -876,6 +890,7 @@ param imageTemplateImageSource = {
 // Non-required parameters
 param assetsStorageAccountContainerName = '<assetsStorageAccountContainerName>'
 param assetsStorageAccountName = '<assetsStorageAccountName>'
+param customAIBRoleDefinitionName = 'Custom Azure Image Builder Image Definition (apvmiaiboaai - )'
 param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
 param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
@@ -942,6 +957,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     }
     // Non-required parameters
     assetsStorageAccountName: 'stapvmiaibob'
+    customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (apvmiaibob - )'
     deploymentsToPerform: 'Only base'
     imageManagedIdentityName: 'msi-it-apvmiaibob'
     location: '<location>'
@@ -997,6 +1013,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     "assetsStorageAccountName": {
       "value": "stapvmiaibob"
     },
+    "customAIBRoleDefinitionName": {
+      "value": "Custom Azure Image Builder Image Definition (apvmiaibob - )"
+    },
     "deploymentsToPerform": {
       "value": "Only base"
     },
@@ -1048,6 +1067,7 @@ param imageTemplateImageSource = {
 }
 // Non-required parameters
 param assetsStorageAccountName = 'stapvmiaibob'
+param customAIBRoleDefinitionName = 'Custom Azure Image Builder Image Definition (apvmiaibob - )'
 param deploymentsToPerform = 'Only base'
 param imageManagedIdentityName = 'msi-it-apvmiaibob'
 param location = '<location>'
@@ -1082,6 +1102,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       version: 'latest'
     }
     // Non-required parameters
+    customAIBRoleDefinitionName: 'Custom Azure Image Builder Image Definition (apvmiaiboi - )'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
@@ -1135,6 +1156,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       }
     },
     // Non-required parameters
+    "customAIBRoleDefinitionName": {
+      "value": "Custom Azure Image Builder Image Definition (apvmiaiboi - )"
+    },
     "deploymentScriptManagedIdentityName": {
       "value": "<deploymentScriptManagedIdentityName>"
     },
@@ -1200,6 +1224,7 @@ param imageTemplateImageSource = {
   version: 'latest'
 }
 // Non-required parameters
+param customAIBRoleDefinitionName = 'Custom Azure Image Builder Image Definition (apvmiaiboi - )'
 param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
 param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
@@ -1237,10 +1262,10 @@ param virtualNetworkName = '<virtualNetworkName>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aibRoleDefinitionName`](#parameter-aibroledefinitionname) | string | Then name of the AIB role definition to create. |
 | [`assetsStorageAccountContainerName`](#parameter-assetsstorageaccountcontainername) | string | The name of container in the Storage Account. |
 | [`assetsStorageAccountName`](#parameter-assetsstorageaccountname) | string | The name of the storage account. Only needed if you want to upload scripts to be used during image baking. |
-| [`deployAndUseCustomRoleDefinition`](#parameter-deployandusecustomroledefinition) | bool | Define whether or not to deploy a custom, least priviledge, role for the Azure Image Builder on a subscription level and apply it to the deployed managed identities on the resource group level. If set to false, the Contributor role is applied instead. |
+| [`customAIBRoleDefinitionName`](#parameter-customaibroledefinitionname) | string | Then name of the AIB role definition to create. |
+| [`deployAndUseCustomAIBRoleDefinition`](#parameter-deployandusecustomaibroledefinition) | bool | Define whether or not to deploy a custom, least priviledge, role for the Azure Image Builder on a subscription level and apply it to the deployed managed identities on the resource group level. If set to false, the Contributor role is applied instead. |
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the Managed Identity used by deployment scripts. |
 | [`deploymentScriptStorageAccountName`](#parameter-deploymentscriptstorageaccountname) | string | The name of the storage account. |
 | [`deploymentScriptSubnetName`](#parameter-deploymentscriptsubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
@@ -1593,14 +1618,6 @@ The image source to use for the Image Template.
 - Required: Yes
 - Type: object
 
-### Parameter: `aibRoleDefinitionName`
-
-Then name of the AIB role definition to create.
-
-- Required: No
-- Type: string
-- Default: `'Custom Azure Image Builder Image Definition'`
-
 ### Parameter: `assetsStorageAccountContainerName`
 
 The name of container in the Storage Account.
@@ -1616,7 +1633,15 @@ The name of the storage account. Only needed if you want to upload scripts to be
 - Required: No
 - Type: string
 
-### Parameter: `deployAndUseCustomRoleDefinition`
+### Parameter: `customAIBRoleDefinitionName`
+
+Then name of the AIB role definition to create.
+
+- Required: No
+- Type: string
+- Default: `'Custom Azure Image Builder Image Definition'`
+
+### Parameter: `deployAndUseCustomAIBRoleDefinition`
 
 Define whether or not to deploy a custom, least priviledge, role for the Azure Image Builder on a subscription level and apply it to the deployed managed identities on the resource group level. If set to false, the Contributor role is applied instead.
 
