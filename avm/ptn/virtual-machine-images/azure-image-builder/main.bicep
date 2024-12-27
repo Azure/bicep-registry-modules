@@ -508,7 +508,11 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
     )
     location: location
     stagingResourceGroupResourceId: !empty(imageTemplateResourceGroupName)
-      ? resourceId(subscription().subscriptionId, imageTemplateResourceGroupName)
+      ? subscriptionResourceId(
+          subscription().subscriptionId,
+          'Microsoft.Resources/resourceGroups',
+          imageTemplateResourceGroupName
+        )
       : null
     roleAssignments: [
       {
