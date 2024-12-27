@@ -71,11 +71,6 @@ module testDeployment '../../../main.bicep' = [
         offer: 'Windows-11'
         sku: 'win11-24h2-avd'
         version: 'latest'
-        // type: 'PlatformImage'
-        // publisher: 'microsoftwindowsdesktop'
-        // offer: 'windows-11'
-        // sku: 'win11-23h2-pro'
-        // version: 'latest'
       }
       imageTemplateCustomizationSteps: [
         {
