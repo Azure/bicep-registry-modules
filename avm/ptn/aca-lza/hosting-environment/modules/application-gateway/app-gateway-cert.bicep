@@ -6,8 +6,8 @@ targetScope = 'resourceGroup'
 @description('The name of the key vault where the certificate will be stored.')
 param keyVaultName string
 
-@description('The subnet resource ID of the subnet where the key vault is deployed.')
-param keyVaultSubnetResourceId string
+@description('The subnet resource ID of the subnet where the deployment script is going to be deployed.')
+param deploymentSubnetResourceId string
 
 @description('The name of the location where the resources will be deployed.')
 param location string
@@ -107,7 +107,7 @@ resource selfSignedCertificateGeneration 'Microsoft.Resources/deploymentScripts@
     containerSettings: {
       subnetIds: [
         {
-          id: keyVaultSubnetResourceId
+          id: deploymentSubnetResourceId
         }
       ]
     }

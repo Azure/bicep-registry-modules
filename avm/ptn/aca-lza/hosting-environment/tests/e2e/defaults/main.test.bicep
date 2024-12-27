@@ -45,6 +45,7 @@ module testDeployment '../../../main.bicep' = {
     spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
     spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
+    deploymentSubnetAddressPrefix: '10.1.4.0/24'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     applicationGatewayCertificateKeyName: certificateName

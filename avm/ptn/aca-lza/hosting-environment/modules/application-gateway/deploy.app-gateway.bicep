@@ -49,8 +49,8 @@ param keyVaultId string
 @description('The name of the storage account where a deployment script will be stored.')
 param storageAccountName string
 
-@description('The subnet resource ID of the subnet where the key vault is deployed.')
-param keyVaultSubnetResourceId string
+@description('The subnet resource ID of the subnet where the deployment script is going to be deployed.')
+param deploymentSubnetResourceId string
 
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
@@ -118,7 +118,7 @@ module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
     tags: tags
     keyVaultName: keyVaultName
     storageAccountName: storageAccountName
-    keyVaultSubnetResourceId: keyVaultSubnetResourceId
+    deploymentSubnetResourceId: deploymentSubnetResourceId
     appGatewayCertificateData: base64Certificate
     appGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     appGatewayUserAssignedIdentityPrincipalId: userAssignedIdentity.outputs.principalId

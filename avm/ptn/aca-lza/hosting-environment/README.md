@@ -136,6 +136,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: '<applicationGatewayCertificateKeyName>'
+    deploymentSubnetAddressPrefix: '10.1.4.0/24'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -174,6 +175,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Required parameters
     "applicationGatewayCertificateKeyName": {
       "value": "<applicationGatewayCertificateKeyName>"
+    },
+    "deploymentSubnetAddressPrefix": {
+      "value": "10.1.4.0/24"
     },
     "enableApplicationInsights": {
       "value": true
@@ -238,6 +242,7 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = '<applicationGatewayCertificateKeyName>'
+param deploymentSubnetAddressPrefix = '10.1.4.0/24'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -277,6 +282,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: '<applicationGatewayCertificateKeyName>'
+    deploymentSubnetAddressPrefix: '10.1.4.0/24'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -322,6 +328,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Required parameters
     "applicationGatewayCertificateKeyName": {
       "value": "<applicationGatewayCertificateKeyName>"
+    },
+    "deploymentSubnetAddressPrefix": {
+      "value": "10.1.4.0/24"
     },
     "enableApplicationInsights": {
       "value": true
@@ -407,6 +416,7 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = '<applicationGatewayCertificateKeyName>'
+param deploymentSubnetAddressPrefix = '10.1.4.0/24'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -453,6 +463,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: 'appgwcert'
+    deploymentSubnetAddressPrefix: '10.1.4.0/24'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
@@ -496,6 +507,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Required parameters
     "applicationGatewayCertificateKeyName": {
       "value": "appgwcert"
+    },
+    "deploymentSubnetAddressPrefix": {
+      "value": "10.1.4.0/24"
     },
     "enableApplicationInsights": {
       "value": true
@@ -575,6 +589,7 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = 'appgwcert'
+param deploymentSubnetAddressPrefix = '10.1.4.0/24'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
@@ -611,6 +626,7 @@ param workloadName = '<workloadName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationGatewayCertificateKeyName`](#parameter-applicationgatewaycertificatekeyname) | string | The name of the certificate key to use for Application Gateway certificate. |
+| [`deploymentSubnetAddressPrefix`](#parameter-deploymentsubnetaddressprefix) | string | The CIDR to use for Deployment scripts subnet. |
 | [`enableApplicationInsights`](#parameter-enableapplicationinsights) | bool | Enable or disable the createion of Application Insights. |
 | [`enableDaprInstrumentation`](#parameter-enabledaprinstrumentation) | bool | Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored. |
 | [`spokeApplicationGatewaySubnetAddressPrefix`](#parameter-spokeapplicationgatewaysubnetaddressprefix) | string | CIDR of the Spoke Application Gateway Subnet. |
@@ -637,6 +653,7 @@ param workloadName = '<workloadName>'
 | [`hubVirtualNetworkResourceId`](#parameter-hubvirtualnetworkresourceid) | string | The resource ID of the hub virtual network. If set, the spoke virtual network will be peered with the hub virtual network. Default is empty. |
 | [`location`](#parameter-location) | string | The location of the Azure Container Apps deployment. Default is the location of the deployment location. |
 | [`networkApplianceIpAddress`](#parameter-networkapplianceipaddress) | string | If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty. |
+| [`routeSpokeTrafficInternally`](#parameter-routespoketrafficinternally) | bool | Define whether to route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network. Default is false. |
 | [`spokeResourceGroupName`](#parameter-spokeresourcegroupname) | string | The name of the resource group to create the resources in. If set, it overrides the name generated by the template. Default is empty. |
 | [`storageAccountType`](#parameter-storageaccounttype) | string | The storage account type to use for the jump box. Defaults to `Standard_LRS`. |
 | [`tags`](#parameter-tags) | object | Tags related to the Azure Container Apps deployment. Default is empty. |
@@ -648,6 +665,13 @@ param workloadName = '<workloadName>'
 ### Parameter: `applicationGatewayCertificateKeyName`
 
 The name of the certificate key to use for Application Gateway certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSubnetAddressPrefix`
+
+The CIDR to use for Deployment scripts subnet.
 
 - Required: Yes
 - Type: string
@@ -791,6 +815,7 @@ Specify the way container apps is going to be exposed. Options are applicationGa
   [
     'applicationGateway'
     'frontDoor'
+    'none'
   ]
   ```
 
@@ -817,6 +842,14 @@ If set, the spoke virtual network will be peered with the hub virtual network an
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `routeSpokeTrafficInternally`
+
+Define whether to route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network. Default is false.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `spokeResourceGroupName`
 
