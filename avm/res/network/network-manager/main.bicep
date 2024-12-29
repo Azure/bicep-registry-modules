@@ -25,7 +25,7 @@ param tags object?
 @sys.description('Optional. A description of the Network Manager.')
 param description string = ''
 
-@sys.description('Required. Scope Access. String array containing any of "Connectivity", "SecurityAdmin". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs.')
+@sys.description('Required. Scope Access. String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, the parameter should be an empty array. Network Manager also allows features like "IPAM" and "Virtual Network Verifier" that do not require other features to be enabled, but are still available when scope access is set to an empty array.')
 param networkManagerScopeAccesses networkManagerScopeAccessType
 
 @sys.description('Required. Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription.')
@@ -232,7 +232,7 @@ type networkGroupType = {
   staticMembers: staticMembersType?
 }[]?
 
-type networkManagerScopeAccessType = ('Connectivity' | 'SecurityAdmin')[]
+type networkManagerScopeAccessType = ('Connectivity' | 'SecurityAdmin' | 'Routing')[]
 
 type networkManagerScopesType = {
   @sys.description('Conditional.  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: \'/providers/Microsoft.Management/managementGroups/{managementGroupId}\'.')

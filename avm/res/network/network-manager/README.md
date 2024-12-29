@@ -54,9 +54,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
   params: {
     // Required parameters
     name: 'nnmmin001'
-    networkManagerScopeAccesses: [
-      'Connectivity'
-    ]
+    networkManagerScopeAccesses: []
     networkManagerScopes: {
       subscriptions: [
         '<id>'
@@ -85,9 +83,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       "value": "nnmmin001"
     },
     "networkManagerScopeAccesses": {
-      "value": [
-        "Connectivity"
-      ]
+      "value": []
     },
     "networkManagerScopes": {
       "value": {
@@ -116,9 +112,7 @@ using 'br/public:avm/res/network/network-manager:<version>'
 
 // Required parameters
 param name = 'nnmmin001'
-param networkManagerScopeAccesses = [
-  'Connectivity'
-]
+param networkManagerScopeAccesses = []
 param networkManagerScopes = {
   subscriptions: [
     '<id>'
@@ -1019,7 +1013,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Network Manager. |
-| [`networkManagerScopeAccesses`](#parameter-networkmanagerscopeaccesses) | array | Scope Access. String array containing any of "Connectivity", "SecurityAdmin". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. |
+| [`networkManagerScopeAccesses`](#parameter-networkmanagerscopeaccesses) | array | Scope Access. String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, the parameter should be an empty array. Network Manager also allows features like "IPAM" and "Virtual Network Verifier" that do not require other features to be enabled, but are still available when scope access is set to an empty array. |
 | [`networkManagerScopes`](#parameter-networkmanagerscopes) | object | Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription. |
 
 **Conditional parameters**
@@ -1051,7 +1045,7 @@ Name of the Network Manager.
 
 ### Parameter: `networkManagerScopeAccesses`
 
-Scope Access. String array containing any of "Connectivity", "SecurityAdmin". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs.
+Scope Access. String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, the parameter should be an empty array. Network Manager also allows features like "IPAM" and "Virtual Network Verifier" that do not require other features to be enabled, but are still available when scope access is set to an empty array.
 
 - Required: Yes
 - Type: array
@@ -1059,6 +1053,7 @@ Scope Access. String array containing any of "Connectivity", "SecurityAdmin". Th
   ```Bicep
   [
     'Connectivity'
+    'Routing'
     'SecurityAdmin'
   ]
   ```
