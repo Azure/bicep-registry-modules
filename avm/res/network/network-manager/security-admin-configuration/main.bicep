@@ -17,19 +17,27 @@ param description string?
 @sys.description('Required. Enum list of network intent policy based services.')
 param applyOnNetworkIntentPolicyBasedServices applyOnNetworkIntentPolicyBasedServicesType
 
+@allowed([
+  'None'
+  'Manual'
+])
+@sys.description('Optional. Determine update behavior for changes to network groups referenced within the rules in this configuration.')
+param networkGroupAddressSpaceAggregationOption string = 'None'
+
 @sys.description('Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules.')
 param ruleCollections ruleCollectionType
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 }
 
-resource securityAdminConfigurations 'Microsoft.Network/networkManagers/securityAdminConfigurations@2023-11-01' = {
+resource securityAdminConfigurations 'Microsoft.Network/networkManagers/securityAdminConfigurations@2024-05-01' = {
   name: name
   parent: networkManager
   properties: {
     description: description ?? ''
     applyOnNetworkIntentPolicyBasedServices: applyOnNetworkIntentPolicyBasedServices
+    networkGroupAddressSpaceAggregationOption: networkGroupAddressSpaceAggregationOption
   }
 }
 
@@ -60,8 +68,11 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
+@export()
 type applyOnNetworkIntentPolicyBasedServicesType = ('None' | 'All' | 'AllowRulesOnly')[]
 
+import { appliesToGroupsType, rulesType } from './rule-collection/main.bicep'
+@export()
 type ruleCollectionType = {
   @sys.description('Required. The name of the admin rule collection.')
   name: string

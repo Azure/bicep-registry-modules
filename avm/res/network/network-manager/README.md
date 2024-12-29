@@ -8,6 +8,7 @@ This module deploys a Network Manager.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -17,14 +18,14 @@ This module deploys a Network Manager.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/networkManagers` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers) |
-| `Microsoft.Network/networkManagers/connectivityConfigurations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/connectivityConfigurations) |
-| `Microsoft.Network/networkManagers/networkGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/networkGroups) |
-| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/networkGroups/staticMembers) |
-| `Microsoft.Network/networkManagers/scopeConnections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/scopeConnections) |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/securityAdminConfigurations) |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/securityAdminConfigurations/ruleCollections) |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/securityAdminConfigurations/ruleCollections/rules) |
+| `Microsoft.Network/networkManagers` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers) |
+| `Microsoft.Network/networkManagers/connectivityConfigurations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/connectivityConfigurations) |
+| `Microsoft.Network/networkManagers/networkGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups) |
+| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups/staticMembers) |
+| `Microsoft.Network/networkManagers/scopeConnections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/scopeConnections) |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations) |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections) |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections/rules) |
 
 ## Usage examples
 
@@ -1108,6 +1109,7 @@ Network Groups and static members to create for the network manager. Required if
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-networkgroupsdescription) | string | A description of the network group. |
+| [`memberType`](#parameter-networkgroupsmembertype) | string | The type of the group member. Subnet member type is used for routing configurations. |
 | [`staticMembers`](#parameter-networkgroupsstaticmembers) | array | Static Members to create for the network group. Contains virtual networks to add to the network group. |
 
 ### Parameter: `networkGroups.name`
@@ -1123,6 +1125,20 @@ A description of the network group.
 
 - Required: No
 - Type: string
+
+### Parameter: `networkGroups.memberType`
+
+The type of the group member. Subnet member type is used for routing configurations.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Subnet'
+    'VirtualNetwork'
+  ]
+  ```
 
 ### Parameter: `networkGroups.staticMembers`
 
@@ -1376,7 +1392,7 @@ Array of role assignments to create.
 - Type: array
 - Roles configurable by name:
   - `'Contributor'`
-  - `'IPAM Pool Contributor'`
+  - `'IPAM Pool User'`
   - `'LocalNGFirewallAdministrator role'`
   - `'Network Contributor'`
   - `'Owner'`
@@ -1845,6 +1861,14 @@ Tags of the resource.
 | `name` | string | The name of the network manager. |
 | `resourceGroupName` | string | The resource group the network manager was deployed into. |
 | `resourceId` | string | The resource ID of the network manager. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Notes
 
