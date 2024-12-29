@@ -1217,6 +1217,27 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
+
+            It '[<moduleFolderName>] A UDT should always end wth the suffix "Type".' -TestCases $moduleFolderTestCases -Tag 'UDT' {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                if (-not $templateFileContent.definitions) {
+                    Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+                    return
+                }
+
+                $incorrectTypes = [System.Collections.ArrayList]@()
+                foreach ($typeName in $templateFileContent.definitions.Keys) {
+                    if ($typeName -notmatch '.+Type$') {
+                        $incorrectTypes += $typeName
+                    }
+                }
+
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+            }
         }
     }
 }
