@@ -1176,7 +1176,7 @@ Describe 'Module tests' -Tag 'Module' {
 
         Context 'UDT-spcific' {
 
-            It '[<moduleFolderName>] A UDT should not be of type array, but instead the parameter that uses it.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
+            It '[<moduleFolderName>] A UDT should not be of type array, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
 
                 param(
                     [hashtable] $templateFileContent
@@ -1197,7 +1197,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
-            It '[<moduleFolderName>] A UDT should not be nullable, but instead the parameter that uses it.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
+            It '[<moduleFolderName>] A UDT should not be nullable, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
 
                 param(
                     [hashtable] $templateFileContent
@@ -1218,7 +1218,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
-            It '[<moduleFolderName>] A UDT should always end wth the suffix "Type".' -TestCases $moduleFolderTestCases -Tag 'UDT' {
+            It '[<moduleFolderName>] A UDT should always end wth the suffix "Type". AVM-Spec-Ref: BCPNFR19.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
 
                 param(
                     [hashtable] $templateFileContent
