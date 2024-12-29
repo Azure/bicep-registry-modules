@@ -116,8 +116,14 @@ output virtualNetworkHubId string = virtualNetworkHub.id
 @description('The resource ID of the created Spoke 1 Virtual Network.')
 output virtualNetworkSpoke1Id string = virtualNetworkSpoke1.id
 
+@description('The resource ID of the created Spoke 1 Virtual Network subnet.')
+output virtualNetworkSpoke1SubnetId string = virtualNetworkSpoke1.properties.subnets[0].id
+
 @description('The resource ID of the created Spoke 2 Virtual Network.')
 output virtualNetworkSpoke2Id string = virtualNetworkSpoke2.id
+
+@description('The resource ID of the created Spoke 2 Virtual Network subnet.')
+output virtualNetworkSpoke2SubnetId string = virtualNetworkSpoke2.properties.subnets[0].id
 
 @description('The resource ID of the created Spoke 3 Virtual Network.')
 output virtualNetworkSpoke3Id string = virtualNetworkSpoke3.id
