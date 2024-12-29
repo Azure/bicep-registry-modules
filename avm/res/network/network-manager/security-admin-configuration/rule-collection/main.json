@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4144788389903008600"
+      "templateHash": "1973250789772009977"
     },
     "name": "Network Manager Security Admin Configuration Rule Collections",
     "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
@@ -274,9 +274,9 @@
         "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]"
       }
     },
-    "securityAdminConfigurations_rules": {
+    "ruleCollection_rules": {
       "copy": {
-        "name": "securityAdminConfigurations_rules",
+        "name": "ruleCollection_rules",
         "count": "[length(coalesce(parameters('rules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",

@@ -43,7 +43,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      networkManagerScopeAccesses: []
+      networkManagerScopeAccesses: [
+        'Routing'
+      ]
       networkManagerScopes: {
         subscriptions: [
           subscription().id

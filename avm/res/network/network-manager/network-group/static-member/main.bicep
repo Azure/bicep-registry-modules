@@ -18,7 +18,7 @@ param resourceId string
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 
-  resource networkGroup 'networkGroups@2024-05-01' existing = {
+  resource networkGroup 'networkGroups' existing = {
     name: networkGroupName
   }
 }

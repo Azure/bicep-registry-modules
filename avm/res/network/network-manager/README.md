@@ -22,6 +22,9 @@ This module deploys a Network Manager.
 | `Microsoft.Network/networkManagers/connectivityConfigurations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/connectivityConfigurations) |
 | `Microsoft.Network/networkManagers/networkGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups) |
 | `Microsoft.Network/networkManagers/networkGroups/staticMembers` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups/staticMembers) |
+| `Microsoft.Network/networkManagers/routingConfigurations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations) |
+| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations/ruleCollections) |
+| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations/ruleCollections/rules) |
 | `Microsoft.Network/networkManagers/scopeConnections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/scopeConnections) |
 | `Microsoft.Network/networkManagers/securityAdminConfigurations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations) |
 | `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections) |
@@ -54,7 +57,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
   params: {
     // Required parameters
     name: 'nnmmin001'
-    networkManagerScopeAccesses: []
     networkManagerScopes: {
       subscriptions: [
         '<id>'
@@ -62,6 +64,9 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     }
     // Non-required parameters
     location: '<location>'
+    networkManagerScopeAccesses: [
+      'Routing'
+    ]
   }
 }
 ```
@@ -82,9 +87,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     "name": {
       "value": "nnmmin001"
     },
-    "networkManagerScopeAccesses": {
-      "value": []
-    },
     "networkManagerScopes": {
       "value": {
         "subscriptions": [
@@ -95,6 +97,11 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "networkManagerScopeAccesses": {
+      "value": [
+        "Routing"
+      ]
     }
   }
 }
@@ -112,7 +119,6 @@ using 'br/public:avm/res/network/network-manager:<version>'
 
 // Required parameters
 param name = 'nnmmin001'
-param networkManagerScopeAccesses = []
 param networkManagerScopes = {
   subscriptions: [
     '<id>'
@@ -120,6 +126,9 @@ param networkManagerScopes = {
 }
 // Non-required parameters
 param location = '<location>'
+param networkManagerScopeAccesses = [
+  'Routing'
+]
 ```
 
 </details>
@@ -140,10 +149,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
   params: {
     // Required parameters
     name: '<name>'
-    networkManagerScopeAccesses: [
-      'Connectivity'
-      'SecurityAdmin'
-    ]
     networkManagerScopes: {
       managementGroups: [
         '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
@@ -209,6 +214,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     networkGroups: [
       {
         description: 'network-group-spokes description'
+        memberType: 'VirtualNetwork'
         name: 'network-group-spokes-1'
         staticMembers: [
           {
@@ -222,17 +228,38 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
         ]
       }
       {
+        memberType: 'VirtualNetwork'
         name: 'network-group-spokes-2'
         staticMembers: [
           {
-            name: 'virtualNetworkSpoke3'
+            name: 'default'
             resourceId: '<resourceId>'
           }
         ]
       }
       {
+        memberType: 'VirtualNetwork'
         name: 'network-group-spokes-3'
       }
+      {
+        memberType: 'Subnet'
+        name: 'network-groups-subnets-1'
+        staticMembers: [
+          {
+            name: 'virtualNetworkSpoke1-defaultSubnet'
+            resourceId: '<resourceId>'
+          }
+          {
+            name: 'virtualNetworkSpoke2-defaultSubnet'
+            resourceId: '<resourceId>'
+          }
+        ]
+      }
+    ]
+    networkManagerScopeAccesses: [
+      'Connectivity'
+      'Routing'
+      'SecurityAdmin'
     ]
     roleAssignments: [
       {
@@ -251,6 +278,62 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    routingConfigurations: [
+      {
+        description: 'description of the routing config'
+        name: 'test-routing-config-1'
+      }
+      {
+        name: 'test-routing-config-2'
+        ruleCollections: [
+          {
+            appliesTo: [
+              {
+                networkGroupResourceId: '<networkGroupResourceId>'
+              }
+            ]
+            disableBgpRoutePropagation: false
+            name: 'test-routing-rule-collection-1-subnet'
+            rules: [
+              {
+                destination: {
+                  destinationAddress: 'AzureCloud'
+                  type: 'ServiceTag'
+                }
+                name: 'test-routing-rule-1'
+                nextHop: {
+                  nextHopType: 'VnetLocal'
+                }
+              }
+              {
+                destination: {
+                  destinationAddress: '10.10.10.10/32'
+                  type: 'AddressPrefix'
+                }
+                name: 'test-routing-rule-2'
+                nextHop: {
+                  nextHopAddress: '192.168.1.1'
+                  nextHopType: 'VirtualAppliance'
+                }
+              }
+            ]
+          }
+        ]
+      }
+      {
+        name: 'test-routing-config-3'
+        ruleCollections: [
+          {
+            appliesTo: [
+              {
+                networkGroupResourceId: '<networkGroupResourceId>'
+              }
+            ]
+            name: 'test-routing-rule-collection-2-virtual-network'
+          }
+        ]
       }
     ]
     scopeConnections: [
@@ -392,12 +475,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "networkManagerScopeAccesses": {
-      "value": [
-        "Connectivity",
-        "SecurityAdmin"
-      ]
-    },
     "networkManagerScopes": {
       "value": {
         "managementGroups": [
@@ -472,6 +549,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       "value": [
         {
           "description": "network-group-spokes description",
+          "memberType": "VirtualNetwork",
           "name": "network-group-spokes-1",
           "staticMembers": [
             {
@@ -485,17 +563,40 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           ]
         },
         {
+          "memberType": "VirtualNetwork",
           "name": "network-group-spokes-2",
           "staticMembers": [
             {
-              "name": "virtualNetworkSpoke3",
+              "name": "default",
               "resourceId": "<resourceId>"
             }
           ]
         },
         {
+          "memberType": "VirtualNetwork",
           "name": "network-group-spokes-3"
+        },
+        {
+          "memberType": "Subnet",
+          "name": "network-groups-subnets-1",
+          "staticMembers": [
+            {
+              "name": "virtualNetworkSpoke1-defaultSubnet",
+              "resourceId": "<resourceId>"
+            },
+            {
+              "name": "virtualNetworkSpoke2-defaultSubnet",
+              "resourceId": "<resourceId>"
+            }
+          ]
         }
+      ]
+    },
+    "networkManagerScopeAccesses": {
+      "value": [
+        "Connectivity",
+        "Routing",
+        "SecurityAdmin"
       ]
     },
     "roleAssignments": {
@@ -516,6 +617,64 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "routingConfigurations": {
+      "value": [
+        {
+          "description": "description of the routing config",
+          "name": "test-routing-config-1"
+        },
+        {
+          "name": "test-routing-config-2",
+          "ruleCollections": [
+            {
+              "appliesTo": [
+                {
+                  "networkGroupResourceId": "<networkGroupResourceId>"
+                }
+              ],
+              "disableBgpRoutePropagation": false,
+              "name": "test-routing-rule-collection-1-subnet",
+              "rules": [
+                {
+                  "destination": {
+                    "destinationAddress": "AzureCloud",
+                    "type": "ServiceTag"
+                  },
+                  "name": "test-routing-rule-1",
+                  "nextHop": {
+                    "nextHopType": "VnetLocal"
+                  }
+                },
+                {
+                  "destination": {
+                    "destinationAddress": "10.10.10.10/32",
+                    "type": "AddressPrefix"
+                  },
+                  "name": "test-routing-rule-2",
+                  "nextHop": {
+                    "nextHopAddress": "192.168.1.1",
+                    "nextHopType": "VirtualAppliance"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "test-routing-config-3",
+          "ruleCollections": [
+            {
+              "appliesTo": [
+                {
+                  "networkGroupResourceId": "<networkGroupResourceId>"
+                }
+              ],
+              "name": "test-routing-rule-collection-2-virtual-network"
+            }
+          ]
         }
       ]
     },
@@ -660,10 +819,6 @@ using 'br/public:avm/res/network/network-manager:<version>'
 
 // Required parameters
 param name = '<name>'
-param networkManagerScopeAccesses = [
-  'Connectivity'
-  'SecurityAdmin'
-]
 param networkManagerScopes = {
   managementGroups: [
     '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
@@ -729,6 +884,7 @@ param lock = {
 param networkGroups = [
   {
     description: 'network-group-spokes description'
+    memberType: 'VirtualNetwork'
     name: 'network-group-spokes-1'
     staticMembers: [
       {
@@ -742,17 +898,38 @@ param networkGroups = [
     ]
   }
   {
+    memberType: 'VirtualNetwork'
     name: 'network-group-spokes-2'
     staticMembers: [
       {
-        name: 'virtualNetworkSpoke3'
+        name: 'default'
         resourceId: '<resourceId>'
       }
     ]
   }
   {
+    memberType: 'VirtualNetwork'
     name: 'network-group-spokes-3'
   }
+  {
+    memberType: 'Subnet'
+    name: 'network-groups-subnets-1'
+    staticMembers: [
+      {
+        name: 'virtualNetworkSpoke1-defaultSubnet'
+        resourceId: '<resourceId>'
+      }
+      {
+        name: 'virtualNetworkSpoke2-defaultSubnet'
+        resourceId: '<resourceId>'
+      }
+    ]
+  }
+]
+param networkManagerScopeAccesses = [
+  'Connectivity'
+  'Routing'
+  'SecurityAdmin'
 ]
 param roleAssignments = [
   {
@@ -771,6 +948,62 @@ param roleAssignments = [
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param routingConfigurations = [
+  {
+    description: 'description of the routing config'
+    name: 'test-routing-config-1'
+  }
+  {
+    name: 'test-routing-config-2'
+    ruleCollections: [
+      {
+        appliesTo: [
+          {
+            networkGroupResourceId: '<networkGroupResourceId>'
+          }
+        ]
+        disableBgpRoutePropagation: false
+        name: 'test-routing-rule-collection-1-subnet'
+        rules: [
+          {
+            destination: {
+              destinationAddress: 'AzureCloud'
+              type: 'ServiceTag'
+            }
+            name: 'test-routing-rule-1'
+            nextHop: {
+              nextHopType: 'VnetLocal'
+            }
+          }
+          {
+            destination: {
+              destinationAddress: '10.10.10.10/32'
+              type: 'AddressPrefix'
+            }
+            name: 'test-routing-rule-2'
+            nextHop: {
+              nextHopAddress: '192.168.1.1'
+              nextHopType: 'VirtualAppliance'
+            }
+          }
+        ]
+      }
+    ]
+  }
+  {
+    name: 'test-routing-config-3'
+    ruleCollections: [
+      {
+        appliesTo: [
+          {
+            networkGroupResourceId: '<networkGroupResourceId>'
+          }
+        ]
+        name: 'test-routing-rule-collection-2-virtual-network'
+      }
+    ]
   }
 ]
 param scopeConnections = [
@@ -912,9 +1145,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
   params: {
     // Required parameters
     name: 'nnmwaf001'
-    networkManagerScopeAccesses: [
-      'SecurityAdmin'
-    ]
     networkManagerScopes: {
       subscriptions: [
         '<id>'
@@ -922,6 +1152,9 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     }
     // Non-required parameters
     location: '<location>'
+    networkManagerScopeAccesses: [
+      'SecurityAdmin'
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -947,11 +1180,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     "name": {
       "value": "nnmwaf001"
     },
-    "networkManagerScopeAccesses": {
-      "value": [
-        "SecurityAdmin"
-      ]
-    },
     "networkManagerScopes": {
       "value": {
         "subscriptions": [
@@ -962,6 +1190,11 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "networkManagerScopeAccesses": {
+      "value": [
+        "SecurityAdmin"
+      ]
     },
     "tags": {
       "value": {
@@ -986,9 +1219,6 @@ using 'br/public:avm/res/network/network-manager:<version>'
 
 // Required parameters
 param name = 'nnmwaf001'
-param networkManagerScopeAccesses = [
-  'SecurityAdmin'
-]
 param networkManagerScopes = {
   subscriptions: [
     '<id>'
@@ -996,6 +1226,9 @@ param networkManagerScopes = {
 }
 // Non-required parameters
 param location = '<location>'
+param networkManagerScopeAccesses = [
+  'SecurityAdmin'
+]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1013,7 +1246,6 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Network Manager. |
-| [`networkManagerScopeAccesses`](#parameter-networkmanagerscopeaccesses) | array | Scope Access. String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, the parameter should be an empty array. Network Manager also allows features like "IPAM" and "Virtual Network Verifier" that do not require other features to be enabled, but are still available when scope access is set to an empty array. |
 | [`networkManagerScopes`](#parameter-networkmanagerscopes) | object | Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription. |
 
 **Conditional parameters**
@@ -1031,9 +1263,11 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`networkManagerScopeAccesses`](#parameter-networkmanagerscopeaccesses) | array | Scope Access (Also known as features). String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, then this parameter does not need to be specified, which then only enables features like "IPAM" and "Virtual Network Verifier". |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`routingConfigurations`](#parameter-routingconfigurations) | array | Routing Configurations requires enabling the "Routing" feature on Network Manager. A routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules. |
 | [`scopeConnections`](#parameter-scopeconnections) | array | Scope Connections to create for the network manager. Allows network manager to manage resources from another tenant. Supports management groups or subscriptions from another tenant. |
-| [`securityAdminConfigurations`](#parameter-securityadminconfigurations) | array | Security Admin Configurations, Rule Collections and Rules to create for the network manager. Azure Virtual Network Manager provides two different types of configurations you can deploy across your virtual networks, one of them being a SecurityAdmin configuration. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to. |
+| [`securityAdminConfigurations`](#parameter-securityadminconfigurations) | array | Security Admin Configurations requires enabling the "SecurityAdmin" feature on Network Manager. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -1042,21 +1276,6 @@ Name of the Network Manager.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `networkManagerScopeAccesses`
-
-Scope Access. String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, the parameter should be an empty array. Network Manager also allows features like "IPAM" and "Virtual Network Verifier" that do not require other features to be enabled, but are still available when scope access is set to an empty array.
-
-- Required: Yes
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    'Connectivity'
-    'Routing'
-    'SecurityAdmin'
-  ]
-  ```
 
 ### Parameter: `networkManagerScopes`
 
@@ -1379,6 +1598,21 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `networkManagerScopeAccesses`
+
+Scope Access (Also known as features). String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, then this parameter does not need to be specified, which then only enables features like "IPAM" and "Virtual Network Verifier".
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Connectivity'
+    'Routing'
+    'SecurityAdmin'
+  ]
+  ```
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -1486,6 +1720,216 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `routingConfigurations`
+
+Routing Configurations requires enabling the "Routing" feature on Network Manager. A routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-routingconfigurationsname) | string | The name of the routing configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-routingconfigurationsdescription) | string | A description of the routing configuration. |
+| [`ruleCollections`](#parameter-routingconfigurationsrulecollections) | array | Rule collections to create for the routing configuration. |
+
+### Parameter: `routingConfigurations.name`
+
+The name of the routing configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routingConfigurations.description`
+
+A description of the routing configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `routingConfigurations.ruleCollections`
+
+Rule collections to create for the routing configuration.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`appliesTo`](#parameter-routingconfigurationsrulecollectionsappliesto) | array | List of network groups for configuration. A routing rule collection must be associated to at least one network group. |
+| [`name`](#parameter-routingconfigurationsrulecollectionsname) | string | The name of the rule collection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-routingconfigurationsrulecollectionsdescription) | string | A description of the rule collection. |
+| [`disableBgpRoutePropagation`](#parameter-routingconfigurationsrulecollectionsdisablebgproutepropagation) | bool | Disables BGP route propagation for the rule collection. Defaults to true. |
+| [`rules`](#parameter-routingconfigurationsrulecollectionsrules) | array | List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager. |
+
+### Parameter: `routingConfigurations.ruleCollections.appliesTo`
+
+List of network groups for configuration. A routing rule collection must be associated to at least one network group.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`networkGroupResourceId`](#parameter-routingconfigurationsrulecollectionsappliestonetworkgroupresourceid) | string | The resource ID of the network group. |
+
+### Parameter: `routingConfigurations.ruleCollections.appliesTo.networkGroupResourceId`
+
+The resource ID of the network group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routingConfigurations.ruleCollections.name`
+
+The name of the rule collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routingConfigurations.ruleCollections.description`
+
+A description of the rule collection.
+
+- Required: No
+- Type: string
+
+### Parameter: `routingConfigurations.ruleCollections.disableBgpRoutePropagation`
+
+Disables BGP route propagation for the rule collection. Defaults to true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `routingConfigurations.ruleCollections.rules`
+
+List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-routingconfigurationsrulecollectionsrulesdestination) | object | The destination can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure. |
+| [`name`](#parameter-routingconfigurationsrulecollectionsrulesname) | string | The name of the rule. |
+| [`nextHop`](#parameter-routingconfigurationsrulecollectionsrulesnexthop) | object | The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-routingconfigurationsrulecollectionsrulesdescription) | string | A description of the rule. |
+
+### Parameter: `routingConfigurations.ruleCollections.rules.destination`
+
+The destination can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinationAddress`](#parameter-routingconfigurationsrulecollectionsrulesdestinationdestinationaddress) | string | The destination IP addresses or Service Tag for this route. For IP addresses, it is the IP address range in CIDR notation that this route applies to. If the destination IP address of a packet falls in this range, it matches this route. As for Service Tags, valid identifiers can be "AzureCloud", "Storage.AustraliaEast", etc. See https://docs.microsoft.com/en-us/azure/virtual-network/service-tags-overview for more information on service tags. |
+| [`type`](#parameter-routingconfigurationsrulecollectionsrulesdestinationtype) | string | The destination type can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure. |
+
+### Parameter: `routingConfigurations.ruleCollections.rules.destination.destinationAddress`
+
+The destination IP addresses or Service Tag for this route. For IP addresses, it is the IP address range in CIDR notation that this route applies to. If the destination IP address of a packet falls in this range, it matches this route. As for Service Tags, valid identifiers can be "AzureCloud", "Storage.AustraliaEast", etc. See https://docs.microsoft.com/en-us/azure/virtual-network/service-tags-overview for more information on service tags.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routingConfigurations.ruleCollections.rules.destination.type`
+
+The destination type can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AddressPrefix'
+    'ServiceTag'
+  ]
+  ```
+
+### Parameter: `routingConfigurations.ruleCollections.rules.name`
+
+The name of the rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routingConfigurations.ruleCollections.rules.nextHop`
+
+The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`nextHopType`](#parameter-routingconfigurationsrulecollectionsrulesnexthopnexthoptype) | string | The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`nextHopAddress`](#parameter-routingconfigurationsrulecollectionsrulesnexthopnexthopaddress) | string | The IP address of the next hop. Required if the next hop type is VirtualAppliance. |
+
+### Parameter: `routingConfigurations.ruleCollections.rules.nextHop.nextHopType`
+
+The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Internet'
+    'NoNextHop'
+    'VirtualAppliance'
+    'VirtualNetworkGateway'
+    'VnetLocal'
+  ]
+  ```
+
+### Parameter: `routingConfigurations.ruleCollections.rules.nextHop.nextHopAddress`
+
+The IP address of the next hop. Required if the next hop type is VirtualAppliance.
+
+- Required: No
+- Type: string
+
+### Parameter: `routingConfigurations.ruleCollections.rules.description`
+
+A description of the rule.
+
+- Required: No
+- Type: string
+
 ### Parameter: `scopeConnections`
 
 Scope Connections to create for the network manager. Allows network manager to manage resources from another tenant. Supports management groups or subscriptions from another tenant.
@@ -1537,7 +1981,7 @@ A description of the scope connection.
 
 ### Parameter: `securityAdminConfigurations`
 
-Security Admin Configurations, Rule Collections and Rules to create for the network manager. Azure Virtual Network Manager provides two different types of configurations you can deploy across your virtual networks, one of them being a SecurityAdmin configuration. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to.
+Security Admin Configurations requires enabling the "SecurityAdmin" feature on Network Manager. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to.
 
 - Required: No
 - Type: array

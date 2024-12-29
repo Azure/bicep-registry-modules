@@ -26,7 +26,7 @@ param rules rulesType
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 
-  resource securityAdminConfiguration 'securityAdminConfigurations@2024-05-01' existing = {
+  resource securityAdminConfiguration 'securityAdminConfigurations' existing = {
     name: securityAdminConfigurationName
   }
 }
@@ -42,7 +42,7 @@ resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigur
   }
 }
 
-module securityAdminConfigurations_rules 'rule/main.bicep' = [
+module ruleCollection_rules 'rule/main.bicep' = [
   for (rule, index) in rules ?? []: {
     name: '${uniqueString(deployment().name)}-RuleCollections-Rules-${index}'
     params: {

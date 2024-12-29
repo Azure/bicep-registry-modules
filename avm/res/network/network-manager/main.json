@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "409921305975164724"
+      "templateHash": "10505023227224298722"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -59,7 +59,8 @@
         "Connectivity",
         "Routing",
         "SecurityAdmin"
-      ]
+      ],
+      "nullable": true
     },
     "networkManagerScopesType": {
       "type": "object",
@@ -204,7 +205,7 @@
             }
           },
           "ruleCollections": {
-            "$ref": "#/definitions/ruleCollectionType",
+            "$ref": "#/definitions/securityAdminConfigurationRuleCollectionType",
             "nullable": true,
             "metadata": {
               "description": "Optional. Rule collections to create for the security admin configuration."
@@ -213,6 +214,350 @@
         }
       },
       "nullable": true
+    },
+    "routingConfigurationsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the routing configuration."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the routing configuration."
+            }
+          },
+          "ruleCollections": {
+            "$ref": "#/definitions/routingConfigurationRuleCollectionType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Rule collections to create for the routing configuration."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "_1.appliesToType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "networkGroupResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the network group."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "routing-configuration/rule-collection/main.bicep"
+        }
+      }
+    },
+    "_1.rulesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the rule."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the rule."
+            }
+          },
+          "destination": {
+            "$ref": "#/definitions/_2.destinationType",
+            "metadata": {
+              "description": "Required. The destination can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure."
+            }
+          },
+          "nextHop": {
+            "$ref": "#/definitions/_2.nextHopType",
+            "metadata": {
+              "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "routing-configuration/rule-collection/main.bicep"
+        }
+      }
+    },
+    "_2.destinationType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "AddressPrefix",
+            "ServiceTag"
+          ],
+          "metadata": {
+            "description": "Required. The destination type can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure."
+          }
+        },
+        "destinationAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The destination IP addresses or Service Tag for this route. For IP addresses, it is the IP address range in CIDR notation that this route applies to. If the destination IP address of a packet falls in this range, it matches this route. As for Service Tags, valid identifiers can be \"AzureCloud\", \"Storage.AustraliaEast\", etc. See https://docs.microsoft.com/en-us/azure/virtual-network/service-tags-overview for more information on service tags."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "routing-configuration/rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "_2.nextHopType": {
+      "type": "object",
+      "properties": {
+        "nextHopType": {
+          "type": "string",
+          "allowedValues": [
+            "Internet",
+            "NoNextHop",
+            "VirtualAppliance",
+            "VirtualNetworkGateway",
+            "VnetLocal"
+          ],
+          "metadata": {
+            "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
+          }
+        },
+        "nextHopAddress": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The IP address of the next hop. Required if the next hop type is VirtualAppliance."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "routing-configuration/rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "_3.appliesToGroupsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "networkGroupResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the network group."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "security-admin-configuration/rule-collection/main.bicep"
+        }
+      }
+    },
+    "_3.rulesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the rule."
+            }
+          },
+          "access": {
+            "type": "string",
+            "allowedValues": [
+              "Allow",
+              "AlwaysAllow",
+              "Deny"
+            ],
+            "metadata": {
+              "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the rule."
+            }
+          },
+          "destinationPortRanges": {
+            "$ref": "#/definitions/_4.destinationPortRangesType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+            }
+          },
+          "destinations": {
+            "$ref": "#/definitions/_4.destinationsType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+            }
+          },
+          "direction": {
+            "type": "string",
+            "allowedValues": [
+              "Inbound",
+              "Outbound"
+            ],
+            "metadata": {
+              "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
+            }
+          },
+          "priority": {
+            "type": "int",
+            "minValue": 1,
+            "maxValue": 4096,
+            "metadata": {
+              "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+            }
+          },
+          "protocol": {
+            "type": "string",
+            "allowedValues": [
+              "Ah",
+              "Any",
+              "Esp",
+              "Icmp",
+              "Tcp",
+              "Udp"
+            ],
+            "metadata": {
+              "description": "Required. Network protocol this rule applies to."
+            }
+          },
+          "sourcePortRanges": {
+            "$ref": "#/definitions/_4.sourcePortRangesType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+            }
+          },
+          "sources": {
+            "$ref": "#/definitions/_4.sourcesType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "security-admin-configuration/rule-collection/main.bicep"
+        }
+      }
+    },
+    "_4.destinationPortRangesType": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "security-admin-configuration/rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "_4.destinationsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "addressPrefixType": {
+            "type": "string",
+            "allowedValues": [
+              "IPPrefix",
+              "ServiceTag"
+            ],
+            "metadata": {
+              "description": "Required. Address prefix type."
+            }
+          },
+          "addressPrefix": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Address prefix."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "security-admin-configuration/rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "_4.sourcePortRangesType": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "security-admin-configuration/rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "_4.sourcesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "addressPrefixType": {
+            "type": "string",
+            "allowedValues": [
+              "IPPrefix",
+              "ServiceTag"
+            ],
+            "metadata": {
+              "description": "Required. Address prefix type."
+            }
+          },
+          "addressPrefix": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Address prefix."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "security-admin-configuration/rule-collection/rule/main.bicep"
+        }
+      }
     },
     "appliesToGroupsType": {
       "type": "array",
@@ -404,7 +749,54 @@
         }
       }
     },
-    "ruleCollectionType": {
+    "routingConfigurationRuleCollectionType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the rule collection."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the rule collection."
+            }
+          },
+          "appliesTo": {
+            "$ref": "#/definitions/_1.appliesToType",
+            "metadata": {
+              "description": "Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group."
+            }
+          },
+          "disableBgpRoutePropagation": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Disables BGP route propagation for the rule collection. Defaults to true."
+            }
+          },
+          "rules": {
+            "$ref": "#/definitions/_1.rulesType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "routing-configuration/main.bicep"
+        }
+      }
+    },
+    "securityAdminConfigurationRuleCollectionType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -423,161 +815,13 @@
             }
           },
           "appliesToGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "networkGroupResourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The resource ID of the network group."
-                  }
-                }
-              }
-            },
+            "$ref": "#/definitions/_3.appliesToGroupsType",
             "metadata": {
               "description": "Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group."
             }
           },
           "rules": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the rule."
-                  }
-                },
-                "access": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Allow",
-                    "AlwaysAllow",
-                    "Deny"
-                  ],
-                  "metadata": {
-                    "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
-                  }
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. A description of the rule."
-                  }
-                },
-                "destinationPortRanges": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
-                  }
-                },
-                "destinations": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "addressPrefixType": {
-                        "type": "string",
-                        "allowedValues": [
-                          "IPPrefix",
-                          "ServiceTag"
-                        ],
-                        "metadata": {
-                          "description": "Required. Address prefix type."
-                        }
-                      },
-                      "addressPrefix": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. Address prefix."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
-                  }
-                },
-                "direction": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Inbound",
-                    "Outbound"
-                  ],
-                  "metadata": {
-                    "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
-                  }
-                },
-                "priority": {
-                  "type": "int",
-                  "minValue": 1,
-                  "maxValue": 4096,
-                  "metadata": {
-                    "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
-                  }
-                },
-                "protocol": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Ah",
-                    "Any",
-                    "Esp",
-                    "Icmp",
-                    "Tcp",
-                    "Udp"
-                  ],
-                  "metadata": {
-                    "description": "Required. Network protocol this rule applies to."
-                  }
-                },
-                "sourcePortRanges": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
-                  }
-                },
-                "sources": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "addressPrefixType": {
-                        "type": "string",
-                        "allowedValues": [
-                          "IPPrefix",
-                          "ServiceTag"
-                        ],
-                        "metadata": {
-                          "description": "Required. Address prefix type."
-                        }
-                      },
-                      "addressPrefix": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. Address prefix."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
-                  }
-                }
-              }
-            },
+            "$ref": "#/definitions/_3.rulesType",
             "nullable": true,
             "metadata": {
               "description": "Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
@@ -670,7 +914,7 @@
     "networkManagerScopeAccesses": {
       "$ref": "#/definitions/networkManagerScopeAccessType",
       "metadata": {
-        "description": "Required. Scope Access. String array containing any of \"Connectivity\", \"SecurityAdmin\", or \"Routing\". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, the parameter should be an empty array. Network Manager also allows features like \"IPAM\" and \"Virtual Network Verifier\" that do not require other features to be enabled, but are still available when scope access is set to an empty array."
+        "description": "Optional. Scope Access (Also known as features). String array containing any of \"Connectivity\", \"SecurityAdmin\", or \"Routing\". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, then this parameter does not need to be specified, which then only enables features like \"IPAM\" and \"Virtual Network Verifier\"."
       }
     },
     "networkManagerScopes": {
@@ -700,7 +944,13 @@
     "securityAdminConfigurations": {
       "$ref": "#/definitions/securityAdminConfigurationsType",
       "metadata": {
-        "description": "Optional. Security Admin Configurations, Rule Collections and Rules to create for the network manager. Azure Virtual Network Manager provides two different types of configurations you can deploy across your virtual networks, one of them being a SecurityAdmin configuration. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to."
+        "description": "Optional. Security Admin Configurations requires enabling the \"SecurityAdmin\" feature on Network Manager. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to."
+      }
+    },
+    "routingConfigurations": {
+      "$ref": "#/definitions/routingConfigurationsType",
+      "metadata": {
+        "description": "Optional. Routing Configurations requires enabling the \"Routing\" feature on Network Manager. A routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
       }
     },
     "enableTelemetry": {
@@ -1458,7 +1708,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15707445484953698955"
+              "templateHash": "17536977948281707304"
             },
             "name": "Network Manager Security Admin Configurations",
             "description": "This module deploys an Network Manager Security Admin Configuration.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
@@ -1476,7 +1726,7 @@
                 "__bicep_export!": true
               }
             },
-            "ruleCollectionType": {
+            "securityAdminConfigurationRuleCollectionType": {
               "type": "array",
               "items": {
                 "type": "object",
@@ -1495,161 +1745,13 @@
                     }
                   },
                   "appliesToGroups": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "networkGroupResourceId": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The resource ID of the network group."
-                          }
-                        }
-                      }
-                    },
+                    "$ref": "#/definitions/appliesToGroupsType",
                     "metadata": {
                       "description": "Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group."
                     }
                   },
                   "rules": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The name of the rule."
-                          }
-                        },
-                        "access": {
-                          "type": "string",
-                          "allowedValues": [
-                            "Allow",
-                            "AlwaysAllow",
-                            "Deny"
-                          ],
-                          "metadata": {
-                            "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
-                          }
-                        },
-                        "description": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. A description of the rule."
-                          }
-                        },
-                        "destinationPortRanges": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
-                          }
-                        },
-                        "destinations": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "addressPrefixType": {
-                                "type": "string",
-                                "allowedValues": [
-                                  "IPPrefix",
-                                  "ServiceTag"
-                                ],
-                                "metadata": {
-                                  "description": "Required. Address prefix type."
-                                }
-                              },
-                              "addressPrefix": {
-                                "type": "string",
-                                "metadata": {
-                                  "description": "Required. Address prefix."
-                                }
-                              }
-                            }
-                          },
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
-                          }
-                        },
-                        "direction": {
-                          "type": "string",
-                          "allowedValues": [
-                            "Inbound",
-                            "Outbound"
-                          ],
-                          "metadata": {
-                            "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
-                          }
-                        },
-                        "priority": {
-                          "type": "int",
-                          "minValue": 1,
-                          "maxValue": 4096,
-                          "metadata": {
-                            "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
-                          }
-                        },
-                        "protocol": {
-                          "type": "string",
-                          "allowedValues": [
-                            "Ah",
-                            "Any",
-                            "Esp",
-                            "Icmp",
-                            "Tcp",
-                            "Udp"
-                          ],
-                          "metadata": {
-                            "description": "Required. Network protocol this rule applies to."
-                          }
-                        },
-                        "sourcePortRanges": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
-                          }
-                        },
-                        "sources": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "addressPrefixType": {
-                                "type": "string",
-                                "allowedValues": [
-                                  "IPPrefix",
-                                  "ServiceTag"
-                                ],
-                                "metadata": {
-                                  "description": "Required. Address prefix type."
-                                }
-                              },
-                              "addressPrefix": {
-                                "type": "string",
-                                "metadata": {
-                                  "description": "Required. Address prefix."
-                                }
-                              }
-                            }
-                          },
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
-                          }
-                        }
-                      }
-                    },
+                    "$ref": "#/definitions/rulesType",
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
@@ -1904,7 +2006,7 @@
               }
             },
             "ruleCollections": {
-              "$ref": "#/definitions/ruleCollectionType",
+              "$ref": "#/definitions/securityAdminConfigurationRuleCollectionType",
               "metadata": {
                 "description": "Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules."
               }
@@ -1968,7 +2070,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "4144788389903008600"
+                      "templateHash": "1973250789772009977"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
@@ -2236,9 +2338,9 @@
                         "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]"
                       }
                     },
-                    "securityAdminConfigurations_rules": {
+                    "ruleCollection_rules": {
                       "copy": {
-                        "name": "securityAdminConfigurations_rules",
+                        "name": "ruleCollection_rules",
                         "count": "[length(coalesce(parameters('rules'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
@@ -2608,6 +2710,756 @@
               "type": "string",
               "metadata": {
                 "description": "The resource group the security admin configuration was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "networkManager",
+        "networkManager_networkGroups"
+      ]
+    },
+    "networkManager_routingConfigurations": {
+      "copy": {
+        "name": "networkManager_routingConfigurations",
+        "count": "[length(coalesce(parameters('routingConfigurations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-NetworkManager-RoutingConfigurations-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('routingConfigurations'), createArray())[copyIndex()].name]"
+          },
+          "networkManagerName": {
+            "value": "[parameters('name')]"
+          },
+          "description": {
+            "value": "[coalesce(tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'description'), '')]"
+          },
+          "ruleCollections": {
+            "value": "[coalesce(tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'ruleCollections'), createArray())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "18415269314245269186"
+            },
+            "name": "Network Manager Routing Configurations",
+            "description": "This module deploys an Network Manager Routing Configuration.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "routingConfigurationRuleCollectionType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the rule collection."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A description of the rule collection."
+                    }
+                  },
+                  "appliesTo": {
+                    "$ref": "#/definitions/appliesToType",
+                    "metadata": {
+                      "description": "Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group."
+                    }
+                  },
+                  "disableBgpRoutePropagation": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Disables BGP route propagation for the rule collection. Defaults to true."
+                    }
+                  },
+                  "rules": {
+                    "$ref": "#/definitions/rulesType",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "_1.destinationType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AddressPrefix",
+                    "ServiceTag"
+                  ],
+                  "metadata": {
+                    "description": "Required. The destination type can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure."
+                  }
+                },
+                "destinationAddress": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The destination IP addresses or Service Tag for this route. For IP addresses, it is the IP address range in CIDR notation that this route applies to. If the destination IP address of a packet falls in this range, it matches this route. As for Service Tags, valid identifiers can be \"AzureCloud\", \"Storage.AustraliaEast\", etc. See https://docs.microsoft.com/en-us/azure/virtual-network/service-tags-overview for more information on service tags."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule-collection/rule/main.bicep"
+                }
+              }
+            },
+            "_1.nextHopType": {
+              "type": "object",
+              "properties": {
+                "nextHopType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Internet",
+                    "NoNextHop",
+                    "VirtualAppliance",
+                    "VirtualNetworkGateway",
+                    "VnetLocal"
+                  ],
+                  "metadata": {
+                    "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
+                  }
+                },
+                "nextHopAddress": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The IP address of the next hop. Required if the next hop type is VirtualAppliance."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule-collection/rule/main.bicep"
+                }
+              }
+            },
+            "appliesToType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "networkGroupResourceId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The resource ID of the network group."
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule-collection/main.bicep"
+                }
+              }
+            },
+            "rulesType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the rule."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A description of the rule."
+                    }
+                  },
+                  "destination": {
+                    "$ref": "#/definitions/_1.destinationType",
+                    "metadata": {
+                      "description": "Required. The destination can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure."
+                    }
+                  },
+                  "nextHop": {
+                    "$ref": "#/definitions/_1.nextHopType",
+                    "metadata": {
+                      "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule-collection/main.bicep"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "networkManagerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. The name of the routing configuration."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 500,
+              "metadata": {
+                "description": "Optional. A description of the routing configuration."
+              }
+            },
+            "ruleCollections": {
+              "$ref": "#/definitions/routingConfigurationRuleCollectionType",
+              "metadata": {
+                "description": "Optional. A routing configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more routing rules."
+              }
+            }
+          },
+          "resources": {
+            "networkManager": {
+              "existing": true,
+              "type": "Microsoft.Network/networkManagers",
+              "apiVersion": "2024-05-01",
+              "name": "[parameters('networkManagerName')]"
+            },
+            "routingConfigurations": {
+              "type": "Microsoft.Network/networkManagers/routingConfigurations",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
+              "properties": {
+                "description": "[coalesce(parameters('description'), '')]"
+              }
+            },
+            "routingConfigurations_ruleCollections": {
+              "copy": {
+                "name": "routingConfigurations_ruleCollections",
+                "count": "[length(coalesce(parameters('ruleCollections'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RoutingConfigurations-RuleCollections-{1}', uniqueString(deployment().name), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "networkManagerName": {
+                    "value": "[parameters('networkManagerName')]"
+                  },
+                  "routingConfigurationName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].name]"
+                  },
+                  "description": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description'), '')]"
+                  },
+                  "appliesTo": {
+                    "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].appliesTo]"
+                  },
+                  "disableBgpRoutePropagation": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'disableBgpRoutePropagation'), true())]"
+                  },
+                  "rules": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'rules'), createArray())]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "14732426630196097695"
+                    },
+                    "name": "Network Manager Routing Configuration Rule Collections",
+                    "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "appliesToType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "networkGroupResourceId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The resource ID of the network group."
+                            }
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
+                    },
+                    "rulesType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The name of the rule."
+                            }
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. A description of the rule."
+                            }
+                          },
+                          "destination": {
+                            "$ref": "#/definitions/destinationType",
+                            "metadata": {
+                              "description": "Required. The destination can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure."
+                            }
+                          },
+                          "nextHop": {
+                            "$ref": "#/definitions/nextHopType",
+                            "metadata": {
+                              "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
+                    },
+                    "destinationType": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AddressPrefix",
+                            "ServiceTag"
+                          ],
+                          "metadata": {
+                            "description": "Required. The destination type can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure."
+                          }
+                        },
+                        "destinationAddress": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The destination IP addresses or Service Tag for this route. For IP addresses, it is the IP address range in CIDR notation that this route applies to. If the destination IP address of a packet falls in this range, it matches this route. As for Service Tags, valid identifiers can be \"AzureCloud\", \"Storage.AustraliaEast\", etc. See https://docs.microsoft.com/en-us/azure/virtual-network/service-tags-overview for more information on service tags."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "rule/main.bicep"
+                        }
+                      }
+                    },
+                    "nextHopType": {
+                      "type": "object",
+                      "properties": {
+                        "nextHopType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Internet",
+                            "NoNextHop",
+                            "VirtualAppliance",
+                            "VirtualNetworkGateway",
+                            "VnetLocal"
+                          ],
+                          "metadata": {
+                            "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
+                          }
+                        },
+                        "nextHopAddress": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Conditional. The IP address of the next hop. Required if the next hop type is VirtualAppliance."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "rule/main.bicep"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "networkManagerName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "routingConfigurationName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Routing Configuration. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 64,
+                      "metadata": {
+                        "description": "Required. The name of the routing rule collection."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true,
+                      "maxLength": 500,
+                      "metadata": {
+                        "description": "Optional. A description of the routing rule collection."
+                      }
+                    },
+                    "appliesTo": {
+                      "$ref": "#/definitions/appliesToType",
+                      "metadata": {
+                        "description": "Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group."
+                      }
+                    },
+                    "disableBgpRoutePropagation": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Determines whether BGP route propagation is enabled for the routing rule collection. Defaults to true."
+                      }
+                    },
+                    "rules": {
+                      "$ref": "#/definitions/rulesType",
+                      "metadata": {
+                        "description": "Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "networkManager::routingConfiguration": {
+                      "existing": true,
+                      "type": "Microsoft.Network/networkManagers/routingConfigurations",
+                      "apiVersion": "2024-05-01",
+                      "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
+                    },
+                    "networkManager": {
+                      "existing": true,
+                      "type": "Microsoft.Network/networkManagers",
+                      "apiVersion": "2024-05-01",
+                      "name": "[parameters('networkManagerName')]"
+                    },
+                    "ruleCollection": {
+                      "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
+                      "apiVersion": "2024-05-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('name'))]",
+                      "properties": {
+                        "description": "[coalesce(parameters('description'), '')]",
+                        "appliesTo": "[map(parameters('appliesTo'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]",
+                        "disableBgpRoutePropagation": "[string(parameters('disableBgpRoutePropagation'))]"
+                      }
+                    },
+                    "ruleCollection_rules": {
+                      "copy": {
+                        "name": "ruleCollection_rules",
+                        "count": "[length(coalesce(parameters('rules'), createArray()))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-RuleCollections-Rules-{1}', uniqueString(deployment().name), copyIndex())]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "networkManagerName": {
+                            "value": "[parameters('networkManagerName')]"
+                          },
+                          "routingConfigurationName": {
+                            "value": "[parameters('routingConfigurationName')]"
+                          },
+                          "ruleCollectionName": {
+                            "value": "[parameters('name')]"
+                          },
+                          "name": {
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
+                          },
+                          "description": {
+                            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description'), '')]"
+                          },
+                          "destination": {
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].destination]"
+                          },
+                          "nextHop": {
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].nextHop]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.32.4.45862",
+                              "templateHash": "12580129683316720338"
+                            },
+                            "name": "Network Manager Routing configuration Rule Collection Rules",
+                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\r\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
+                            "owner": "Azure/module-maintainers"
+                          },
+                          "definitions": {
+                            "destinationType": {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "AddressPrefix",
+                                    "ServiceTag"
+                                  ],
+                                  "metadata": {
+                                    "description": "Required. The destination type can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure."
+                                  }
+                                },
+                                "destinationAddress": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The destination IP addresses or Service Tag for this route. For IP addresses, it is the IP address range in CIDR notation that this route applies to. If the destination IP address of a packet falls in this range, it matches this route. As for Service Tags, valid identifiers can be \"AzureCloud\", \"Storage.AustraliaEast\", etc. See https://docs.microsoft.com/en-us/azure/virtual-network/service-tags-overview for more information on service tags."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "__bicep_export!": true
+                              }
+                            },
+                            "nextHopType": {
+                              "type": "object",
+                              "properties": {
+                                "nextHopType": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "Internet",
+                                    "NoNextHop",
+                                    "VirtualAppliance",
+                                    "VirtualNetworkGateway",
+                                    "VnetLocal"
+                                  ],
+                                  "metadata": {
+                                    "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
+                                  }
+                                },
+                                "nextHopAddress": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Conditional. The IP address of the next hop. Required if the next hop type is VirtualAppliance."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "__bicep_export!": true
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "networkManagerName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "routingConfigurationName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent Routing configuration. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "ruleCollectionName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent rule collection. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "maxLength": 64,
+                              "metadata": {
+                                "description": "Required. The name of the rule."
+                              }
+                            },
+                            "description": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500,
+                              "metadata": {
+                                "description": "Optional. A description of the rule."
+                              }
+                            },
+                            "destination": {
+                              "$ref": "#/definitions/destinationType",
+                              "metadata": {
+                                "description": "Required. The destination can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure."
+                              }
+                            },
+                            "nextHop": {
+                              "$ref": "#/definitions/nextHopType",
+                              "metadata": {
+                                "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
+                              }
+                            }
+                          },
+                          "resources": {
+                            "networkManager::routingConfiguration::ruleCollection": {
+                              "existing": true,
+                              "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
+                              "apiVersion": "2024-05-01",
+                              "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'))]"
+                            },
+                            "networkManager::routingConfiguration": {
+                              "existing": true,
+                              "type": "Microsoft.Network/networkManagers/routingConfigurations",
+                              "apiVersion": "2024-05-01",
+                              "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
+                            },
+                            "networkManager": {
+                              "existing": true,
+                              "type": "Microsoft.Network/networkManagers",
+                              "apiVersion": "2024-05-01",
+                              "name": "[parameters('networkManagerName')]"
+                            },
+                            "rule": {
+                              "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules",
+                              "apiVersion": "2024-05-01",
+                              "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
+                              "properties": {
+                                "description": "[coalesce(parameters('description'), '')]",
+                                "destination": "[parameters('destination')]",
+                                "nextHop": "[parameters('nextHop')]"
+                              }
+                            }
+                          },
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the deployed rule."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the deployed rule."
+                              },
+                              "value": "[resourceId('Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource group the rule was deployed into."
+                              },
+                              "value": "[resourceGroup().name]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "ruleCollection"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed routing rule collection."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed routing rule collection."
+                      },
+                      "value": "[resourceId('Microsoft.Network/networkManagers/routingConfigurations/ruleCollections', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the routing rule collection was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "routingConfigurations"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed routing configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed routing configuration."
+              },
+              "value": "[resourceId('Microsoft.Network/networkManagers/routingConfigurations', parameters('networkManagerName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the routing configuration was deployed into."
               },
               "value": "[resourceGroup().name]"
             }

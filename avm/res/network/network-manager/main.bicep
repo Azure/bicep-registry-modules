@@ -25,7 +25,7 @@ param tags object?
 @sys.description('Optional. A description of the Network Manager.')
 param description string = ''
 
-@sys.description('Required. Scope Access. String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, the parameter should be an empty array. Network Manager also allows features like "IPAM" and "Virtual Network Verifier" that do not require other features to be enabled, but are still available when scope access is set to an empty array.')
+@sys.description('Optional. Scope Access (Also known as features). String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, then this parameter does not need to be specified, which then only enables features like "IPAM" and "Virtual Network Verifier".')
 param networkManagerScopeAccesses networkManagerScopeAccessType
 
 @sys.description('Required. Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription.')
@@ -40,8 +40,11 @@ param connectivityConfigurations connectivityConfigurationsType
 @sys.description('Optional. Scope Connections to create for the network manager. Allows network manager to manage resources from another tenant. Supports management groups or subscriptions from another tenant.')
 param scopeConnections scopeConnectionType
 
-@sys.description('Optional. Security Admin Configurations, Rule Collections and Rules to create for the network manager. Azure Virtual Network Manager provides two different types of configurations you can deploy across your virtual networks, one of them being a SecurityAdmin configuration. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to.')
+@sys.description('Optional. Security Admin Configurations requires enabling the "SecurityAdmin" feature on Network Manager. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to.')
 param securityAdminConfigurations securityAdminConfigurationsType
+
+@sys.description('Optional. Routing Configurations requires enabling the "Routing" feature on Network Manager. A routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.')
+param routingConfigurations routingConfigurationsType
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -174,6 +177,19 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
   }
 ]
 
+module networkManager_routingConfigurations 'routing-configuration/main.bicep' = [
+  for (routingConfiguration, index) in routingConfigurations ?? []: {
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-RoutingConfigurations-${index}'
+    params: {
+      name: routingConfiguration.name
+      networkManagerName: networkManager.name
+      description: routingConfiguration.?description ?? ''
+      ruleCollections: routingConfiguration.?ruleCollections ?? []
+    }
+    dependsOn: networkManager_networkGroups
+  }
+]
+
 resource networkManager_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
@@ -232,7 +248,7 @@ type networkGroupType = {
   staticMembers: staticMembersType?
 }[]?
 
-type networkManagerScopeAccessType = ('Connectivity' | 'SecurityAdmin' | 'Routing')[]
+type networkManagerScopeAccessType = ('Connectivity' | 'SecurityAdmin' | 'Routing')[]?
 
 type networkManagerScopesType = {
   @sys.description('Conditional.  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: \'/providers/Microsoft.Management/managementGroups/{managementGroupId}\'.')
@@ -280,7 +296,7 @@ type connectivityConfigurationsType = {
   isGlobal: bool?
 }[]?
 
-import { applyOnNetworkIntentPolicyBasedServicesType, ruleCollectionType } from 'security-admin-configuration/main.bicep'
+import { applyOnNetworkIntentPolicyBasedServicesType, securityAdminConfigurationRuleCollectionType } from 'security-admin-configuration/main.bicep'
 type securityAdminConfigurationsType = {
   @sys.description('Required. The name of the security admin configuration.')
   name: string
@@ -292,5 +308,17 @@ type securityAdminConfigurationsType = {
   applyOnNetworkIntentPolicyBasedServices: applyOnNetworkIntentPolicyBasedServicesType
 
   @sys.description('Optional. Rule collections to create for the security admin configuration.')
-  ruleCollections: ruleCollectionType?
+  ruleCollections: securityAdminConfigurationRuleCollectionType?
+}[]?
+
+import { routingConfigurationRuleCollectionType } from 'routing-configuration/main.bicep'
+type routingConfigurationsType = {
+  @sys.description('Required. The name of the routing configuration.')
+  name: string
+
+  @sys.description('Optional. A description of the routing configuration.')
+  description: string?
+
+  @sys.description('Optional. Rule collections to create for the routing configuration.')
+  ruleCollections: routingConfigurationRuleCollectionType?
 }[]?

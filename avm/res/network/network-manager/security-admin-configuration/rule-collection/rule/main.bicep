@@ -66,10 +66,10 @@ param sources sourcesType
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 
-  resource securityAdminConfiguration 'securityAdminConfigurations@2024-05-01' existing = {
+  resource securityAdminConfiguration 'securityAdminConfigurations' existing = {
     name: securityAdminConfigurationName
 
-    resource ruleCollection 'ruleCollections@2024-05-01' existing = {
+    resource ruleCollection 'ruleCollections' existing = {
       name: ruleCollectionName
     }
   }
