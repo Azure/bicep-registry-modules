@@ -1231,12 +1231,12 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $incorrectTypes = [System.Collections.ArrayList]@()
                 foreach ($typeName in $templateFileContent.definitions.Keys) {
-                    if ($typeName -cnotmatch '^[a-z].+Type$') {
+                    if ($typeName -cnotmatch '^[a-z].*Type$') {
                         $incorrectTypes += $typeName
                     }
                 }
 
-                $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
         }
     }
