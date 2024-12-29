@@ -64,9 +64,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     }
     // Non-required parameters
     location: '<location>'
-    networkManagerScopeAccesses: [
-      'Routing'
-    ]
   }
 }
 ```
@@ -97,11 +94,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "networkManagerScopeAccesses": {
-      "value": [
-        "Routing"
-      ]
     }
   }
 }
@@ -126,9 +118,6 @@ param networkManagerScopes = {
 }
 // Non-required parameters
 param location = '<location>'
-param networkManagerScopeAccesses = [
-  'Routing'
-]
 ```
 
 </details>
