@@ -55,11 +55,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       allowConfigFileUpdates: true
       enterpriseGradeCdnStatus: 'Disabled'
-      location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
@@ -96,8 +91,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
