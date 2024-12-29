@@ -546,11 +546,11 @@ output slotResourceIds array = [for (slot, index) in (slots ?? []): app_slots[in
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = app.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = app.?identity.?principalId
 
 @description('The principal ID of the system assigned identity of slots.')
-output slotSystemAssignedMIPrincipalIds array = [
-  for (slot, index) in (slots ?? []): app_slots[index].outputs.systemAssignedMIPrincipalId
+output slotSystemAssignedMIPrincipalIds string[] = [
+  for (slot, index) in (slots ?? []): app_slots[index].outputs.systemAssignedMIPrincipalId ?? ''
 ]
 
 @description('The location the resource was deployed into.')

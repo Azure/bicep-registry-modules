@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5690768017433067511"
+      "templateHash": "14869174765277398478"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -1747,7 +1747,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10242376674970843283"
+              "templateHash": "3402731674189950073"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -4166,10 +4166,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('slot', '2023-12-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('slot', '2023-12-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
@@ -5235,19 +5236,23 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('app', '2023-12-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('app', '2023-12-01', 'full'), 'identity'), 'principalId')]"
     },
     "slotSystemAssignedMIPrincipalIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "metadata": {
         "description": "The principal ID of the system assigned identity of slots."
       },
       "copy": {
         "count": "[length(coalesce(parameters('slots'), createArray()))]",
-        "input": "[reference(format('app_slots[{0}]', copyIndex())).outputs.systemAssignedMIPrincipalId.value]"
+        "input": "[coalesce(reference(format('app_slots[{0}]', copyIndex())).outputs.systemAssignedMIPrincipalId.value, '')]"
       }
     },
     "location": {
