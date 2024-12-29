@@ -1218,7 +1218,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
-            It '[<moduleFolderName>] A UDT should always end wth the suffix "Type". AVM-Spec-Ref: BCPNFR19.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
+            It '[<moduleFolderName>] A UDT should always be camel-cased and end with the suffix "Type". AVM-Spec-Ref: BCPNFR19.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
 
                 param(
                     [hashtable] $templateFileContent
@@ -1231,7 +1231,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $incorrectTypes = [System.Collections.ArrayList]@()
                 foreach ($typeName in $templateFileContent.definitions.Keys) {
-                    if ($typeName -cnotmatch '.+Type$') {
+                    if ($typeName -cnotmatch '^[a-z].+Type$') {
                         $incorrectTypes += $typeName
                     }
                 }
