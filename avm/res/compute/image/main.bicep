@@ -11,19 +11,38 @@ param location string = resourceGroup().location
 @description('Required. The Virtual Hard Disk.')
 param osDiskBlobUri string
 
-@description('Required. This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image. - Windows or Linux.')
+@description('Required. This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image.')
+@allowed([
+  'Windows'
+  'Linux'
+])
 param osType string
 
-@description('Optional. Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage. - None, ReadOnly, ReadWrite.')
+@description('Required. Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage.')
+@allowed([
+  'None'
+  'ReadOnly'
+  'ReadWrite'
+])
 param osDiskCaching string
 
-@description('Optional. Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. - Standard_LRS, Premium_LRS, StandardSSD_LRS, UltraSSD_LRS.')
+@description('Required. Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk.')
+@allowed([
+  'Standard_LRS'
+  'Premium_LRS'
+  'StandardSSD_LRS'
+  'UltraSSD_LRS'
+])
 param osAccountType string
 
 @description('Optional. Default is false. Specifies whether an image is zone resilient or not. Zone resilient images can be created only in regions that provide Zone Redundant Storage (ZRS).')
 param zoneResilient bool = false
 
-@description('Optional. Gets the HyperVGenerationType of the VirtualMachine created from the image. - V1 or V2.')
+@description('Optional. Gets the HyperVGenerationType of the VirtualMachine created from the image.')
+@allowed([
+  'V1'
+  'V2'
+])
 param hyperVGeneration string = 'V1'
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
@@ -34,10 +53,10 @@ param roleAssignments roleAssignmentType[]?
 param tags object?
 
 @description('Optional. The extended location of the Image.')
-param extendedLocation object = {}
+param extendedLocation object?
 
 @description('Optional. The source virtual machine from which Image is created.')
-param sourceVirtualMachineResourceId string = ''
+param sourceVirtualMachineResourceId string?
 
 @description('Optional. Specifies the customer managed disk encryption set resource ID for the managed image disk.')
 param diskEncryptionSetResourceId string?
@@ -108,11 +127,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource image 'Microsoft.Compute/images@2022-11-01' = {
+resource image 'Microsoft.Compute/images@2024-07-01' = {
   name: name
   location: location
   tags: tags
-  extendedLocation: !empty(extendedLocation) ? extendedLocation : null
+  extendedLocation: extendedLocation
   properties: {
     storageProfile: {
       osDisk: {
