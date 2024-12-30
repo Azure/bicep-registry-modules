@@ -493,8 +493,8 @@ The subscription rules
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`action`](#parameter-subscriptionsrulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression |
-| [`correlationFilter`](#parameter-subscriptionsrulescorrelationfilter) | object | Properties of correlationFilter |
+| [`action`](#parameter-subscriptionsrulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
+| [`correlationFilter`](#parameter-subscriptionsrulescorrelationfilter) | object | Properties of correlationFilter. |
 | [`filterType`](#parameter-subscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
 | [`sqlFilter`](#parameter-subscriptionsrulessqlfilter) | object | Properties of sqlFilter |
 
@@ -507,7 +507,7 @@ The name of the service bus namespace topic subscription rule.
 
 ### Parameter: `subscriptions.rules.action`
 
-Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression
+Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.
 
 - Required: No
 - Type: object
@@ -518,7 +518,7 @@ Represents the filter actions which are allowed for the transformation of a mess
 | :-- | :-- | :-- |
 | [`compatibilityLevel`](#parameter-subscriptionsrulesactioncompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
 | [`requiresPreprocessing`](#parameter-subscriptionsrulesactionrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
-| [`sqlExpression`](#parameter-subscriptionsrulesactionsqlexpression) | string | SQL expression. e.g. MyProperty='ABC' |
+| [`sqlExpression`](#parameter-subscriptionsrulesactionsqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
 
 ### Parameter: `subscriptions.rules.action.compatibilityLevel`
 
@@ -536,17 +536,23 @@ Value that indicates whether the rule action requires preprocessing.
 
 ### Parameter: `subscriptions.rules.action.sqlExpression`
 
-SQL expression. e.g. MyProperty='ABC'
+SQL expression. e.g. MyProperty='ABC'.
 
 - Required: No
 - Type: string
 
 ### Parameter: `subscriptions.rules.correlationFilter`
 
-Properties of correlationFilter
+Properties of correlationFilter.
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`to`](#parameter-subscriptionsrulescorrelationfilterto) | string | Address to send to. |
 
 **Optional parameters**
 
@@ -556,12 +562,18 @@ Properties of correlationFilter
 | [`correlationId`](#parameter-subscriptionsrulescorrelationfiltercorrelationid) | string | Identifier of the correlation. |
 | [`label`](#parameter-subscriptionsrulescorrelationfilterlabel) | string | Application specific label. |
 | [`messageId`](#parameter-subscriptionsrulescorrelationfiltermessageid) | string | Identifier of the message. |
-| [`properties`](#parameter-subscriptionsrulescorrelationfilterproperties) | array | dictionary object for custom filters |
+| [`properties`](#parameter-subscriptionsrulescorrelationfilterproperties) | array | dictionary object for custom filters. |
 | [`replyTo`](#parameter-subscriptionsrulescorrelationfilterreplyto) | string | Address of the queue to reply to. |
 | [`replyToSessionId`](#parameter-subscriptionsrulescorrelationfilterreplytosessionid) | string | Session identifier to reply to. |
 | [`requiresPreprocessing`](#parameter-subscriptionsrulescorrelationfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
 | [`sessionId`](#parameter-subscriptionsrulescorrelationfiltersessionid) | string | Session identifier. |
-| [`to`](#parameter-subscriptionsrulescorrelationfilterto) | string | Address to send to. |
+
+### Parameter: `subscriptions.rules.correlationFilter.to`
+
+Address to send to.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `subscriptions.rules.correlationFilter.contentType`
 
@@ -593,7 +605,7 @@ Identifier of the message.
 
 ### Parameter: `subscriptions.rules.correlationFilter.properties`
 
-dictionary object for custom filters
+dictionary object for custom filters.
 
 - Required: No
 - Type: array
@@ -632,13 +644,6 @@ Session identifier.
 - Required: No
 - Type: string
 
-### Parameter: `subscriptions.rules.correlationFilter.to`
-
-Address to send to.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `subscriptions.rules.filterType`
 
 Filter type that is evaluated against a BrokeredMessage.
@@ -666,7 +671,7 @@ Properties of sqlFilter
 | :-- | :-- | :-- |
 | [`compatibilityLevel`](#parameter-subscriptionsrulessqlfiltercompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
 | [`requiresPreprocessing`](#parameter-subscriptionsrulessqlfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
-| [`sqlExpression`](#parameter-subscriptionsrulessqlfiltersqlexpression) | string | SQL expression. e.g. MyProperty='ABC' |
+| [`sqlExpression`](#parameter-subscriptionsrulessqlfiltersqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
 
 ### Parameter: `subscriptions.rules.sqlFilter.compatibilityLevel`
 
@@ -684,7 +689,7 @@ Value that indicates whether the rule action requires preprocessing.
 
 ### Parameter: `subscriptions.rules.sqlFilter.sqlExpression`
 
-SQL expression. e.g. MyProperty='ABC'
+SQL expression. e.g. MyProperty='ABC'.
 
 - Required: No
 - Type: string

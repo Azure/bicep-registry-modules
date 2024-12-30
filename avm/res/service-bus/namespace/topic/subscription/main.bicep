@@ -1,5 +1,6 @@
 metadata name = 'Service Bus Namespace Topic Subscription'
 metadata description = 'This module deploys a Service Bus Namespace Topic Subscription.'
+metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the service bus namespace topic subscription.')
 param name string
@@ -129,7 +130,7 @@ type ruleType = {
   @description('Required. The name of the service bus namespace topic subscription rule.')
   name: string
 
-  @description('Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression')
+  @description('Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.')
   action: {
     @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
     compatibilityLevel: int?
@@ -137,11 +138,11 @@ type ruleType = {
     @description('Optional. Value that indicates whether the rule action requires preprocessing.')
     requiresPreprocessing: bool?
 
-    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'')
+    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'.')
     sqlExpression: string?
   }?
 
-  @description('Optional. Properties of correlationFilter')
+  @description('Optional. Properties of correlationFilter.')
   correlationFilter: {
     @description('Optional. Content type of the message.')
     contentType: string?
@@ -155,7 +156,7 @@ type ruleType = {
     @description('Optional. Identifier of the message.')
     messageId: string?
 
-    @description('Optional. dictionary object for custom filters')
+    @description('Optional. dictionary object for custom filters.')
     properties: {}[]?
 
     @description('Optional. Address of the queue to reply to.')
@@ -170,7 +171,7 @@ type ruleType = {
     @description('Optional. Session identifier.')
     sessionId: string?
 
-    @description('Optional. Address to send to.')
+    @description('Required. Address to send to.')
     to: string
   }?
 
@@ -185,7 +186,7 @@ type ruleType = {
     @description('Optional. Value that indicates whether the rule action requires preprocessing.')
     requiresPreprocessing: bool?
 
-    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'')
+    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'.')
     sqlExpression: string?
   }?
 }

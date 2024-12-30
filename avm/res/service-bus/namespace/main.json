@@ -6,10 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2523129038011259505"
+      "templateHash": "16909745941028986054"
     },
     "name": "Service Bus Namespaces",
-    "description": "This module deploys a Service Bus Namespace."
+    "description": "This module deploys a Service Bus Namespace.",
+    "owner": "Azure/module-maintainers"
   },
   "definitions": {
     "skuType": {
@@ -35,7 +36,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a SKU."
       }
     },
     "authorizationRuleType": {
@@ -61,7 +63,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an authorization rule."
       }
     },
     "disasterRecoveryConfigType": {
@@ -90,10 +93,11 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a disaster recovery configuration."
       }
     },
-    "migrationConfigurationsType": {
+    "migrationConfigurationType": {
       "type": "object",
       "properties": {
         "postMigrationName": {
@@ -110,7 +114,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a migration configuration"
       }
     },
     "networkRuleSetType": {
@@ -199,7 +204,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a network rule set."
       }
     },
     "queueType": {
@@ -363,7 +369,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a queue."
       }
     },
     "topicType": {
@@ -645,13 +652,13 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. SQL expression. e.g. MyProperty='ABC'"
+                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
               }
             }
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression"
+            "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
           }
         },
         "correlationFilter": {
@@ -692,7 +699,7 @@
               ],
               "nullable": true,
               "metadata": {
-                "description": "Optional. dictionary object for custom filters"
+                "description": "Optional. dictionary object for custom filters."
               }
             },
             "replyTo": {
@@ -726,13 +733,13 @@
             "to": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Address to send to."
+                "description": "Required. Address to send to."
               }
             }
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Properties of correlationFilter"
+            "description": "Optional. Properties of correlationFilter."
           }
         },
         "filterType": {
@@ -767,7 +774,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. SQL expression. e.g. MyProperty='ABC'"
+                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
               }
             }
           },
@@ -1455,7 +1462,7 @@
       }
     },
     "migrationConfiguration": {
-      "$ref": "#/definitions/migrationConfigurationsType",
+      "$ref": "#/definitions/migrationConfigurationType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The migration configuration."
@@ -1790,10 +1797,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11843582332513126053"
+              "templateHash": "16941040945280325093"
             },
             "name": "Service Bus Namespace Authorization Rules",
-            "description": "This module deploys a Service Bus Namespace Authorization Rule."
+            "description": "This module deploys a Service Bus Namespace Authorization Rule.",
+            "owner": "Azure/module-maintainers"
           },
           "parameters": {
             "namespaceName": {
@@ -1893,10 +1901,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "953280430524155799"
+              "templateHash": "6045281070856510388"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
-            "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
+            "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
+            "owner": "Azure/module-maintainers"
           },
           "parameters": {
             "namespaceName": {
@@ -1969,7 +1978,7 @@
         "serviceBusNamespace"
       ]
     },
-    "serviceBusNamespace_migrationConfigurations": {
+    "serviceBusNamespace_migrationConfiguration": {
       "condition": "[not(empty(coalesce(parameters('migrationConfiguration'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1997,10 +2006,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1185508580247696644"
+              "templateHash": "4308366012674731026"
             },
             "name": "Service Bus Namespace Migration Configuration",
-            "description": "This module deploys a Service Bus Namespace Migration Configuration."
+            "description": "This module deploys a Service Bus Namespace Migration Configuration.",
+            "owner": "Azure/module-maintainers"
           },
           "parameters": {
             "namespaceName": {
@@ -2101,10 +2111,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "286643555978658471"
+              "templateHash": "4147662315978859720"
             },
             "name": "Service Bus Namespace Network Rule Sets",
-            "description": "This module deploys a ServiceBus Namespace Network Rule Set."
+            "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
+            "owner": "Azure/module-maintainers"
           },
           "parameters": {
             "namespaceName": {
@@ -2300,10 +2311,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15815594990067444066"
+              "templateHash": "9350216516948360717"
             },
             "name": "Service Bus Namespace Queue",
-            "description": "This module deploys a Service Bus Namespace Queue."
+            "description": "This module deploys a Service Bus Namespace Queue.",
+            "owner": "Azure/module-maintainers"
           },
           "definitions": {
             "lockType": {
@@ -2699,10 +2711,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "4106322932640263973"
+                      "templateHash": "295229783279934486"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
-                    "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
+                    "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
+                    "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
                     "name": {
@@ -2879,10 +2892,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8216750396825671556"
+              "templateHash": "10837737200905735929"
             },
             "name": "Service Bus Namespace Topic",
-            "description": "This module deploys a Service Bus Namespace Topic."
+            "description": "This module deploys a Service Bus Namespace Topic.",
+            "owner": "Azure/module-maintainers"
           },
           "definitions": {
             "subscriptionType": {
@@ -3176,13 +3190,13 @@
                       "type": "string",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. SQL expression. e.g. MyProperty='ABC'"
+                        "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
                       }
                     }
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression"
+                    "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
                   }
                 },
                 "correlationFilter": {
@@ -3223,7 +3237,7 @@
                       ],
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. dictionary object for custom filters"
+                        "description": "Optional. dictionary object for custom filters."
                       }
                     },
                     "replyTo": {
@@ -3257,13 +3271,13 @@
                     "to": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. Address to send to."
+                        "description": "Required. Address to send to."
                       }
                     }
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Properties of correlationFilter"
+                    "description": "Optional. Properties of correlationFilter."
                   }
                 },
                 "filterType": {
@@ -3298,7 +3312,7 @@
                       "type": "string",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. SQL expression. e.g. MyProperty='ABC'"
+                        "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
                       }
                     }
                   },
@@ -3561,10 +3575,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "9054915416075794466"
+                      "templateHash": "14898317070826327530"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
-                    "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
+                    "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
+                    "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
                     "name": {
@@ -3714,10 +3729,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12180145173242625422"
+                      "templateHash": "15382485599296475518"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
-                    "description": "This module deploys a Service Bus Namespace Topic Subscription."
+                    "description": "This module deploys a Service Bus Namespace Topic Subscription.",
+                    "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
                     "ruleType": {
@@ -3750,13 +3766,13 @@
                               "type": "string",
                               "nullable": true,
                               "metadata": {
-                                "description": "Optional. SQL expression. e.g. MyProperty='ABC'"
+                                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
                               }
                             }
                           },
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression"
+                            "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
                           }
                         },
                         "correlationFilter": {
@@ -3797,7 +3813,7 @@
                               ],
                               "nullable": true,
                               "metadata": {
-                                "description": "Optional. dictionary object for custom filters"
+                                "description": "Optional. dictionary object for custom filters."
                               }
                             },
                             "replyTo": {
@@ -3831,13 +3847,13 @@
                             "to": {
                               "type": "string",
                               "metadata": {
-                                "description": "Optional. Address to send to."
+                                "description": "Required. Address to send to."
                               }
                             }
                           },
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Properties of correlationFilter"
+                            "description": "Optional. Properties of correlationFilter."
                           }
                         },
                         "filterType": {
@@ -3872,7 +3888,7 @@
                               "type": "string",
                               "nullable": true,
                               "metadata": {
-                                "description": "Optional. SQL expression. e.g. MyProperty='ABC'"
+                                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
                               }
                             }
                           },
@@ -4108,10 +4124,11 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "11662501456617166086"
+                              "templateHash": "16591058618250128511"
                             },
                             "name": "Service Bus Namespace Topic Subscription Rule",
-                            "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
+                            "description": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
+                            "owner": "Azure/module-maintainers"
                           },
                           "parameters": {
                             "name": {
