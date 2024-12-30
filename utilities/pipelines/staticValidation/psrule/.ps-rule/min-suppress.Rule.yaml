@@ -48,6 +48,8 @@ spec:
     - Azure.APIM.ManagedIdentity
     # AKS specific
     - Azure.AKS.MaintenanceWindow # Excluded as it requires user input
+    # Service-Bus specific
+    - Azure.ServiceBus.AuditLogs # Diagnostic Settings cannot be set by default, but require user input
   if:
     name: "."
     contains:

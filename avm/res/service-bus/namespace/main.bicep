@@ -45,7 +45,7 @@ param authorizationRules authorizationRuleType[] = [
 ]
 
 @description('Optional. The migration configuration.')
-param migrationConfiguration migrationConfigurationsType?
+param migrationConfiguration migrationConfigurationType?
 
 @description('Optional. The disaster recovery configuration.')
 param disasterRecoveryConfig disasterRecoveryConfigType?
@@ -257,7 +257,7 @@ module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main
   }
 }
 
-module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration ?? {})) {
+module serviceBusNamespace_migrationConfiguration 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration ?? {})) {
   name: '${uniqueString(deployment().name, location)}-MigrationConfigurations'
   params: {
     namespaceName: serviceBusNamespace.name
@@ -477,6 +477,7 @@ output privateEndpoints array = [
 // =============== //
 
 @export()
+@description('The type for a SKU.')
 type skuType = {
   @description('Required. Name of this SKU. - Basic, Standard, Premium.')
   name: ('Basic' | 'Standard' | 'Premium')
@@ -486,6 +487,7 @@ type skuType = {
 }
 
 @export()
+@description('The type for an authorization rule.')
 type authorizationRuleType = {
   @description('Required. The name of the authorization rule.')
   name: string
@@ -495,6 +497,7 @@ type authorizationRuleType = {
 }
 
 @export()
+@description('The type for a disaster recovery configuration.')
 type disasterRecoveryConfigType = {
   @description('Optional. The name of the disaster recovery config.')
   name: string?
@@ -507,7 +510,8 @@ type disasterRecoveryConfigType = {
 }
 
 @export()
-type migrationConfigurationsType = {
+@description('The type for a migration configuration')
+type migrationConfigurationType = {
   @description('Required. Name to access Standard Namespace after migration.')
   postMigrationName: string
 
@@ -516,6 +520,7 @@ type migrationConfigurationsType = {
 }
 
 @export()
+@description('The type for a network rule set.')
 type networkRuleSetType = {
   @description('Optional. This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied.')
   publicNetworkAccess: ('Disabled' | 'Enabled')?
@@ -546,6 +551,7 @@ type networkRuleSetType = {
 }
 
 @export()
+@description('The type for a queue.')
 type queueType = {
   @description('Required. The name of the queue.')
   name: string
@@ -619,6 +625,7 @@ type queueType = {
 
 import { subscriptionType } from 'topic/main.bicep'
 @export()
+@description('The type for a topic.')
 type topicType = {
   @description('Required. The name of the topic.')
   name: string

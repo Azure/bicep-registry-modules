@@ -61,7 +61,6 @@ module testDeployment '../../../main.bicep' = [
         name: 'Premium'
         capacity: 1
       }
-      location: resourceLocation
       managedIdentities: {
         systemAssigned: false
         userAssignedResourceIds: [
@@ -74,8 +73,5 @@ module testDeployment '../../../main.bicep' = [
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

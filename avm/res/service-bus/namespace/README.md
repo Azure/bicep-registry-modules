@@ -30,6 +30,7 @@ This module deploys a Service Bus Namespace.
 | `Microsoft.ServiceBus/namespaces/topics` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics) |
 | `Microsoft.ServiceBus/namespaces/topics/authorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/authorizationRules) |
 | `Microsoft.ServiceBus/namespaces/topics/subscriptions` | [2021-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2021-11-01/namespaces/topics/subscriptions) |
+| `Microsoft.ServiceBus/namespaces/topics/subscriptions/rules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/subscriptions/rules) |
 
 ## Usage examples
 
@@ -60,7 +61,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Required parameters
     name: 'sbnmin001'
     // Non-required parameters
-    location: '<location>'
     skuObject: {
       capacity: 2
       name: 'Premium'
@@ -86,9 +86,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       "value": "sbnmin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "skuObject": {
       "value": {
         "capacity": 2,
@@ -112,7 +109,6 @@ using 'br/public:avm/res/service-bus/namespace:<version>'
 // Required parameters
 param name = 'sbnmin001'
 // Non-required parameters
-param location = '<location>'
 param skuObject = {
   capacity: 2
   name: 'Premium'
@@ -143,7 +139,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -182,9 +177,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
@@ -221,7 +213,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: false
   userAssignedResourceIds: [
@@ -480,6 +471,15 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         subscriptions: [
           {
             name: 'subscription001'
+            rules: [
+              {
+                filterType: 'SqlFilter'
+                name: 'test-filter'
+                sqlFilter: {
+                  sqlExpression: 'Test=1'
+                }
+              }
+            ]
           }
         ]
       }
@@ -762,7 +762,16 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           ],
           "subscriptions": [
             {
-              "name": "subscription001"
+              "name": "subscription001",
+              "rules": [
+                {
+                  "filterType": "SqlFilter",
+                  "name": "test-filter",
+                  "sqlFilter": {
+                    "sqlExpression": "Test=1"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -1012,6 +1021,15 @@ param topics = [
     subscriptions: [
       {
         name: 'subscription001'
+        rules: [
+          {
+            filterType: 'SqlFilter'
+            name: 'test-filter'
+            sqlFilter: {
+              sqlExpression: 'Test=1'
+            }
+          }
+        ]
       }
     ]
   }
@@ -1062,7 +1080,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     networkRuleSets: {
       defaultAction: 'Deny'
       ipRules: [
@@ -1204,9 +1221,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "networkRuleSets": {
       "value": {
@@ -1354,7 +1368,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param networkRuleSets = {
   defaultAction: 'Deny'
   ipRules: [
@@ -3329,7 +3342,8 @@ The subscriptions of the topic.
 | [`lockDuration`](#parameter-topicssubscriptionslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-topicssubscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
 | [`requiresSession`](#parameter-topicssubscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
-| [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown. |
+| [`rules`](#parameter-topicssubscriptionsrules) | array | The subscription rules. |
+| [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. |
 
 ### Parameter: `topics.subscriptions.name`
 
@@ -3463,9 +3477,227 @@ A value that indicates whether the subscription supports the concept of session.
 - Required: No
 - Type: bool
 
+### Parameter: `topics.subscriptions.rules`
+
+The subscription rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-topicssubscriptionsrulesname) | string | The name of the service bus namespace topic subscription rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-topicssubscriptionsrulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
+| [`correlationFilter`](#parameter-topicssubscriptionsrulescorrelationfilter) | object | Properties of correlationFilter. |
+| [`filterType`](#parameter-topicssubscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
+| [`sqlFilter`](#parameter-topicssubscriptionsrulessqlfilter) | object | Properties of sqlFilter. |
+
+### Parameter: `topics.subscriptions.rules.name`
+
+The name of the service bus namespace topic subscription rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.action`
+
+Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`compatibilityLevel`](#parameter-topicssubscriptionsrulesactioncompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
+| [`requiresPreprocessing`](#parameter-topicssubscriptionsrulesactionrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sqlExpression`](#parameter-topicssubscriptionsrulesactionsqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
+
+### Parameter: `topics.subscriptions.rules.action.compatibilityLevel`
+
+This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.
+
+- Required: No
+- Type: int
+
+### Parameter: `topics.subscriptions.rules.action.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `topics.subscriptions.rules.action.sqlExpression`
+
+SQL expression. e.g. MyProperty='ABC'.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter`
+
+Properties of correlationFilter.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`to`](#parameter-topicssubscriptionsrulescorrelationfilterto) | string | Address to send to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentType`](#parameter-topicssubscriptionsrulescorrelationfiltercontenttype) | string | Content type of the message. |
+| [`correlationId`](#parameter-topicssubscriptionsrulescorrelationfiltercorrelationid) | string | Identifier of the correlation. |
+| [`label`](#parameter-topicssubscriptionsrulescorrelationfilterlabel) | string | Application specific label. |
+| [`messageId`](#parameter-topicssubscriptionsrulescorrelationfiltermessageid) | string | Identifier of the message. |
+| [`properties`](#parameter-topicssubscriptionsrulescorrelationfilterproperties) | array | dictionary object for custom filters. |
+| [`replyTo`](#parameter-topicssubscriptionsrulescorrelationfilterreplyto) | string | Address of the queue to reply to. |
+| [`replyToSessionId`](#parameter-topicssubscriptionsrulescorrelationfilterreplytosessionid) | string | Session identifier to reply to. |
+| [`requiresPreprocessing`](#parameter-topicssubscriptionsrulescorrelationfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sessionId`](#parameter-topicssubscriptionsrulescorrelationfiltersessionid) | string | Session identifier. |
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.to`
+
+Address to send to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.contentType`
+
+Content type of the message.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.correlationId`
+
+Identifier of the correlation.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.label`
+
+Application specific label.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.messageId`
+
+Identifier of the message.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.properties`
+
+dictionary object for custom filters.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    {}
+  ]
+  ```
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.replyTo`
+
+Address of the queue to reply to.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.replyToSessionId`
+
+Session identifier to reply to.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.sessionId`
+
+Session identifier.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.filterType`
+
+Filter type that is evaluated against a BrokeredMessage.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CorrelationFilter'
+    'SqlFilter'
+  ]
+  ```
+
+### Parameter: `topics.subscriptions.rules.sqlFilter`
+
+Properties of sqlFilter.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`compatibilityLevel`](#parameter-topicssubscriptionsrulessqlfiltercompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
+| [`requiresPreprocessing`](#parameter-topicssubscriptionsrulessqlfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sqlExpression`](#parameter-topicssubscriptionsrulessqlfiltersqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
+
+### Parameter: `topics.subscriptions.rules.sqlFilter.compatibilityLevel`
+
+This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.
+
+- Required: No
+- Type: int
+
+### Parameter: `topics.subscriptions.rules.sqlFilter.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `topics.subscriptions.rules.sqlFilter.sqlExpression`
+
+SQL expression. e.g. MyProperty='ABC'.
+
+- Required: No
+- Type: string
+
 ### Parameter: `topics.subscriptions.status`
 
-Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.
+Enumerates the possible values for the status of a messaging entity.
 
 - Required: No
 - Type: string
