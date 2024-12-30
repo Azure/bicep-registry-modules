@@ -1,0 +1,171 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "5096305151549437249"
+    },
+    "name": "Network Security Perimeter Profile",
+    "description": "This module deploys a Network Security Perimeter Profile.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "subscriptionIdType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The subscription id."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "accessRulesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the access rule."
+            }
+          },
+          "direction": {
+            "type": "string",
+            "allowedValues": [
+              "Inbound",
+              "Outbound"
+            ],
+            "metadata": {
+              "description": "Required. Direction that specifies whether the access rules is inbound/outbound."
+            }
+          },
+          "addressPrefixes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Inbound address prefixes (IPv4/IPv6).s"
+            }
+          },
+          "emailAddresses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Outbound rules email address format."
+            }
+          },
+          "fullyQualifiedDomainNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Outbound rules fully qualified domain name format."
+            }
+          },
+          "phoneNumbers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Outbound rules phone number format."
+            }
+          },
+          "serviceTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Inbound rules service tag names."
+            }
+          },
+          "subscriptions": {
+            "$ref": "#/definitions/subscriptionIdType",
+            "metadata": {
+              "description": "Optional. List of subscription ids."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The access rule type."
+      }
+    }
+  },
+  "parameters": {
+    "networkPerimeterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent network perimeter. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "Required. The name of the network security perimeter profile."
+      }
+    },
+    "accessRules": {
+      "$ref": "#/definitions/accessRulesType",
+      "metadata": {
+        "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
+      }
+    }
+  },
+  "resources": {
+    "networkSecurityPerimeter": {
+      "existing": true,
+      "type": "Microsoft.Network/networkSecurityPerimeters",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[parameters('networkPerimeterName')]"
+    },
+    "networkSecurityPerimeter_profile": {
+      "type": "Microsoft.Network/networkSecurityPerimeters/profiles",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[format('{0}/{1}', parameters('networkPerimeterName'), parameters('name'))]"
+    },
+    "nsp_accessRules": {
+      "copy": {
+        "name": "nsp_accessRules",
+        "count": "[length(parameters('accessRules'))]"
+      },
+      "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('name'), parameters('accessRules')[copyIndex()].name)]",
+      "properties": {
+        "addressPrefixes": "[tryGet(parameters('accessRules')[copyIndex()], 'addressPrefixes')]",
+        "direction": "[parameters('accessRules')[copyIndex()].direction]",
+        "emailAddresses": "[tryGet(parameters('accessRules')[copyIndex()], 'emailAddresses')]",
+        "fullyQualifiedDomainNames": "[tryGet(parameters('accessRules')[copyIndex()], 'fullyQualifiedDomainNames')]",
+        "phoneNumbers": "[tryGet(parameters('accessRules')[copyIndex()], 'phoneNumbers')]",
+        "serviceTags": "[tryGet(parameters('accessRules')[copyIndex()], 'serviceTags')]",
+        "subscriptions": "[tryGet(parameters('accessRules')[copyIndex()], 'subscriptions')]"
+      },
+      "dependsOn": [
+        "networkSecurityPerimeter_profile"
+      ]
+    }
+  }
+}
