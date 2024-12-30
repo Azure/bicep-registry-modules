@@ -44,7 +44,6 @@ The following section provides usage examples for the module, which were used to
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
-- [Using only defaults](#example-5-using-only-defaults)
 
 ### Example 1: _Using only defaults_
 
@@ -472,6 +471,15 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         subscriptions: [
           {
             name: 'subscription001'
+            rules: [
+              {
+                filterType: 'SqlFilter'
+                name: 'test-filter'
+                sqlFilter: {
+                  sqlExpression: 'Test=1'
+                }
+              }
+            ]
           }
         ]
       }
@@ -754,7 +762,16 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           ],
           "subscriptions": [
             {
-              "name": "subscription001"
+              "name": "subscription001",
+              "rules": [
+                {
+                  "filterType": "SqlFilter",
+                  "name": "test-filter",
+                  "sqlFilter": {
+                    "sqlExpression": "Test=1"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -1004,6 +1021,15 @@ param topics = [
     subscriptions: [
       {
         name: 'subscription001'
+        rules: [
+          {
+            filterType: 'SqlFilter'
+            name: 'test-filter'
+            sqlFilter: {
+              sqlExpression: 'Test=1'
+            }
+          }
+        ]
       }
     ]
   }
@@ -1432,135 +1458,6 @@ param topics = [
     ]
     name: 'sbnwaft001'
     roleAssignments: []
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 5: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
-  params: {
-    // Required parameters
-    name: 'sbnmin001'
-    // Non-required parameters
-    skuObject: {
-      name: 'Standard'
-    }
-    topics: [
-      {
-        name: 'sbt-test'
-        subscriptions: [
-          {
-            name: 'sbt-test-subsc'
-            rules: [
-              {
-                filterType: 'SqlFilter'
-                name: 'test-filter'
-                sqlFilter: {
-                  sqlExpression: 'Test=1'
-                }
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "sbnmin001"
-    },
-    // Non-required parameters
-    "skuObject": {
-      "value": {
-        "name": "Standard"
-      }
-    },
-    "topics": {
-      "value": [
-        {
-          "name": "sbt-test",
-          "subscriptions": [
-            {
-              "name": "sbt-test-subsc",
-              "rules": [
-                {
-                  "filterType": "SqlFilter",
-                  "name": "test-filter",
-                  "sqlFilter": {
-                    "sqlExpression": "Test=1"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/service-bus/namespace:<version>'
-
-// Required parameters
-param name = 'sbnmin001'
-// Non-required parameters
-param skuObject = {
-  name: 'Standard'
-}
-param topics = [
-  {
-    name: 'sbt-test'
-    subscriptions: [
-      {
-        name: 'sbt-test-subsc'
-        rules: [
-          {
-            filterType: 'SqlFilter'
-            name: 'test-filter'
-            sqlFilter: {
-              sqlExpression: 'Test=1'
-            }
-          }
-        ]
-      }
-    ]
   }
 ]
 ```
