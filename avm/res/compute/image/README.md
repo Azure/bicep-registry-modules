@@ -8,6 +8,7 @@ This module deploys a Compute Image.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -48,8 +49,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     osDiskBlobUri: '<osDiskBlobUri>'
     osDiskCaching: 'ReadWrite'
     osType: 'Windows'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -81,10 +80,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     },
     "osType": {
       "value": "Windows"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -106,8 +101,6 @@ param osAccountType = 'Standard_LRS'
 param osDiskBlobUri = '<osDiskBlobUri>'
 param osDiskCaching = 'ReadWrite'
 param osType = 'Windows'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -321,7 +314,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     diskSizeGB: 128
     hyperVGeneration: 'V1'
-    location: '<location>'
     osState: 'Generalized'
     tags: {
       Environment: 'Non-Prod'
@@ -371,9 +363,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     "hyperVGeneration": {
       "value": "V1"
     },
-    "location": {
-      "value": "<location>"
-    },
     "osState": {
       "value": "Generalized"
     },
@@ -411,7 +400,6 @@ param osType = 'Windows'
 param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
 param diskSizeGB = 128
 param hyperVGeneration = 'V1'
-param location = '<location>'
 param osState = 'Generalized'
 param tags = {
   Environment: 'Non-Prod'
@@ -490,7 +478,6 @@ Specifies the customer managed disk encryption set resource ID for the managed i
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diskSizeGB`
 
@@ -538,7 +525,6 @@ The managedDisk.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `osAccountType`
 
@@ -678,7 +664,6 @@ The snapshot resource ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `sourceVirtualMachineResourceId`
 
@@ -711,6 +696,14 @@ Default is false. Specifies whether an image is zone resilient or not. Zone resi
 | `name` | string | The name of the image. |
 | `resourceGroupName` | string | The resource group the image was deployed into. |
 | `resourceId` | string | The resource ID of the image. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 

@@ -191,13 +191,17 @@ resource keyVaultKeyCryptoRole 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 }
 
-module waitForDeployment 'main.wait.bicep' = {
+// Waiting for the role assignment to propagate
+resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   dependsOn: [keyVaultKeyCryptoRole]
-  scope: resourceGroup()
-  name: '${uniqueString(deployment().name, location)}-waitForDeployment'
-  params: {
-    resourceLocation: location
-    waitTimeInSeconds: '15'
+  name: '${uniqueString(deployment().name, location)}-wait'
+  location: location
+  kind: 'AzurePowerShell'
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 15"; start-sleep -Seconds 15'
   }
 }
 
