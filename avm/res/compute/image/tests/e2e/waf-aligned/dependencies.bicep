@@ -25,6 +25,9 @@ param triggerImageDeploymentScriptName string
 @description('Required. The name of the Deployment Script to copy the VHD to a destination storage account.')
 param copyVhdDeploymentScriptName string
 
+@description('Required. The name of the deployment script that waits for a role assignment to propagate.')
+param waitDeploymentScriptName string
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
@@ -194,7 +197,7 @@ resource keyVaultKeyCryptoRole 'Microsoft.Authorization/roleAssignments@2022-04-
 // Waiting for the role assignment to propagate
 resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   dependsOn: [keyVaultKeyCryptoRole]
-  name: '${uniqueString(deployment().name, location)}-wait'
+  name: waitDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
   properties: {
