@@ -405,6 +405,8 @@ output location string = serviceFabricCluster.location
 //   Definitions   //
 // =============== //
 
+@export()
+@description('The type for a certificate.')
 type certificateType = {
   @description('Required. The thumbprint of the primary certificate.')
   thumbprint: string
@@ -424,6 +426,8 @@ type certificateType = {
     | 'TrustedPublisher')?
 }
 
+@export()
+@description('The type for a certificate common name.')
 type certificateCommonNameType = {
   @description('Required. The list of server certificates referenced by common name that are used to secure the cluster.')
   commonNames: serverCertificateCommonNameType[]
@@ -440,6 +444,7 @@ type certificateCommonNameType = {
     | 'TrustedPublisher')?
 }
 
+@description('The type for a server certificate common name.')
 type serverCertificateCommonNameType = {
   @description('Required. The common name of the server certificate.')
   certificateCommonName: string
@@ -448,6 +453,7 @@ type serverCertificateCommonNameType = {
   certificateIssuerThumbprint: string
 }
 
+@description('The type for a client certificate common name.')
 type clientCertificateCommonNameType = {
   @description('Required. The common name of the client certificate.')
   certificateCommonName: string
@@ -459,6 +465,8 @@ type clientCertificateCommonNameType = {
   isAdmin: bool
 }
 
+@export()
+@description('The type for a client certificate thumprint.')
 type clientCertificateThumbprintType = {
   @description('Required. The thumbprint of the client certificate.')
   certificateThumbprint: string

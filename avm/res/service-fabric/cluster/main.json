@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1554917311866750797"
+      "templateHash": "14246680550204400370"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -46,6 +46,10 @@
             "description": "Optional. The local certificate store location."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a certificate."
       }
     },
     "certificateCommonNameType": {
@@ -77,6 +81,10 @@
             "description": "Optional. The local certificate store location."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a certificate common name."
       }
     },
     "serverCertificateCommonNameType": {
@@ -94,6 +102,9 @@
             "description": "Required. The issuer thumbprint of the server certificate."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a server certificate common name."
       }
     },
     "clientCertificateCommonNameType": {
@@ -117,6 +128,9 @@
             "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a client certificate common name."
       }
     },
     "clientCertificateThumbprintType": {
@@ -134,6 +148,10 @@
             "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a client certificate thumprint."
       }
     },
     "lockType": {
