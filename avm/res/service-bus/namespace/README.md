@@ -44,6 +44,7 @@ The following section provides usage examples for the module, which were used to
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults](#example-5-using-only-defaults)
 
 ### Example 1: _Using only defaults_
 
@@ -61,7 +62,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Required parameters
     name: 'sbnmin001'
     // Non-required parameters
-    location: '<location>'
     skuObject: {
       capacity: 2
       name: 'Premium'
@@ -87,9 +87,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       "value": "sbnmin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "skuObject": {
       "value": {
         "capacity": 2,
@@ -113,7 +110,6 @@ using 'br/public:avm/res/service-bus/namespace:<version>'
 // Required parameters
 param name = 'sbnmin001'
 // Non-required parameters
-param location = '<location>'
 param skuObject = {
   capacity: 2
   name: 'Premium'
@@ -144,7 +140,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -183,9 +178,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
@@ -222,7 +214,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: false
   userAssignedResourceIds: [
@@ -1063,7 +1054,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     networkRuleSets: {
       defaultAction: 'Deny'
       ipRules: [
@@ -1205,9 +1195,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "networkRuleSets": {
       "value": {
@@ -1355,7 +1342,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param networkRuleSets = {
   defaultAction: 'Deny'
   ipRules: [
@@ -1446,6 +1432,135 @@ param topics = [
     ]
     name: 'sbnwaft001'
     roleAssignments: []
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
+  name: 'namespaceDeployment'
+  params: {
+    // Required parameters
+    name: 'sbnmin001'
+    // Non-required parameters
+    skuObject: {
+      name: 'Standard'
+    }
+    topics: [
+      {
+        name: 'sbt-test'
+        subscriptions: [
+          {
+            name: 'sbt-test-subsc'
+            rules: [
+              {
+                filterType: 'SqlFilter'
+                name: 'test-filter'
+                sqlFilter: {
+                  sqlExpression: 'Test=1'
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sbnmin001"
+    },
+    // Non-required parameters
+    "skuObject": {
+      "value": {
+        "name": "Standard"
+      }
+    },
+    "topics": {
+      "value": [
+        {
+          "name": "sbt-test",
+          "subscriptions": [
+            {
+              "name": "sbt-test-subsc",
+              "rules": [
+                {
+                  "filterType": "SqlFilter",
+                  "name": "test-filter",
+                  "sqlFilter": {
+                    "sqlExpression": "Test=1"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnmin001'
+// Non-required parameters
+param skuObject = {
+  name: 'Standard'
+}
+param topics = [
+  {
+    name: 'sbt-test'
+    subscriptions: [
+      {
+        name: 'sbt-test-subsc'
+        rules: [
+          {
+            filterType: 'SqlFilter'
+            name: 'test-filter'
+            sqlFilter: {
+              sqlExpression: 'Test=1'
+            }
+          }
+        ]
+      }
+    ]
   }
 ]
 ```
@@ -3331,7 +3446,7 @@ The subscriptions of the topic.
 | [`maxDeliveryCount`](#parameter-topicssubscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
 | [`requiresSession`](#parameter-topicssubscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
 | [`rules`](#parameter-topicssubscriptionsrules) | array | The subscription rules |
-| [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown. |
+| [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. |
 
 ### Parameter: `topics.subscriptions.name`
 
@@ -3680,7 +3795,7 @@ SQL expression. e.g. MyProperty='ABC'
 
 ### Parameter: `topics.subscriptions.status`
 
-Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.
+Enumerates the possible values for the status of a messaging entity.
 
 - Required: No
 - Type: string

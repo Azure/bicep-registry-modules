@@ -181,7 +181,212 @@ The subscription rules
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-rulesname) | string | The name of the service bus namespace topic subscription rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-rulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression |
+| [`correlationFilter`](#parameter-rulescorrelationfilter) | object | Properties of correlationFilter |
+| [`filterType`](#parameter-rulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
+| [`sqlFilter`](#parameter-rulessqlfilter) | object | Properties of sqlFilter |
+
+### Parameter: `rules.name`
+
+The name of the service bus namespace topic subscription rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `rules.action`
+
+Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`compatibilityLevel`](#parameter-rulesactioncompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
+| [`requiresPreprocessing`](#parameter-rulesactionrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sqlExpression`](#parameter-rulesactionsqlexpression) | string | SQL expression. e.g. MyProperty='ABC' |
+
+### Parameter: `rules.action.compatibilityLevel`
+
+This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.
+
+- Required: No
+- Type: int
+
+### Parameter: `rules.action.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `rules.action.sqlExpression`
+
+SQL expression. e.g. MyProperty='ABC'
+
+- Required: No
+- Type: string
+
+### Parameter: `rules.correlationFilter`
+
+Properties of correlationFilter
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentType`](#parameter-rulescorrelationfiltercontenttype) | string | Content type of the message. |
+| [`correlationId`](#parameter-rulescorrelationfiltercorrelationid) | string | Identifier of the correlation. |
+| [`label`](#parameter-rulescorrelationfilterlabel) | string | Application specific label. |
+| [`messageId`](#parameter-rulescorrelationfiltermessageid) | string | Identifier of the message. |
+| [`properties`](#parameter-rulescorrelationfilterproperties) | array | dictionary object for custom filters |
+| [`replyTo`](#parameter-rulescorrelationfilterreplyto) | string | Address of the queue to reply to. |
+| [`replyToSessionId`](#parameter-rulescorrelationfilterreplytosessionid) | string | Session identifier to reply to. |
+| [`requiresPreprocessing`](#parameter-rulescorrelationfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sessionId`](#parameter-rulescorrelationfiltersessionid) | string | Session identifier. |
+| [`to`](#parameter-rulescorrelationfilterto) | string | Address to send to. |
+
+### Parameter: `rules.correlationFilter.contentType`
+
+Content type of the message.
+
+- Required: No
+- Type: string
+
+### Parameter: `rules.correlationFilter.correlationId`
+
+Identifier of the correlation.
+
+- Required: No
+- Type: string
+
+### Parameter: `rules.correlationFilter.label`
+
+Application specific label.
+
+- Required: No
+- Type: string
+
+### Parameter: `rules.correlationFilter.messageId`
+
+Identifier of the message.
+
+- Required: No
+- Type: string
+
+### Parameter: `rules.correlationFilter.properties`
+
+dictionary object for custom filters
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    {}
+  ]
+  ```
+
+### Parameter: `rules.correlationFilter.replyTo`
+
+Address of the queue to reply to.
+
+- Required: No
+- Type: string
+
+### Parameter: `rules.correlationFilter.replyToSessionId`
+
+Session identifier to reply to.
+
+- Required: No
+- Type: string
+
+### Parameter: `rules.correlationFilter.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `rules.correlationFilter.sessionId`
+
+Session identifier.
+
+- Required: No
+- Type: string
+
+### Parameter: `rules.correlationFilter.to`
+
+Address to send to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `rules.filterType`
+
+Filter type that is evaluated against a BrokeredMessage.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CorrelationFilter'
+    'SqlFilter'
+  ]
+  ```
+
+### Parameter: `rules.sqlFilter`
+
+Properties of sqlFilter
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`compatibilityLevel`](#parameter-rulessqlfiltercompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
+| [`requiresPreprocessing`](#parameter-rulessqlfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sqlExpression`](#parameter-rulessqlfiltersqlexpression) | string | SQL expression. e.g. MyProperty='ABC' |
+
+### Parameter: `rules.sqlFilter.compatibilityLevel`
+
+This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.
+
+- Required: No
+- Type: int
+
+### Parameter: `rules.sqlFilter.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `rules.sqlFilter.sqlExpression`
+
+SQL expression. e.g. MyProperty='ABC'
+
+- Required: No
+- Type: string
 
 ### Parameter: `status`
 

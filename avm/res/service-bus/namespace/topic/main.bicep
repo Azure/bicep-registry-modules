@@ -1,6 +1,5 @@
 metadata name = 'Service Bus Namespace Topic'
 metadata description = 'This module deploys a Service Bus Namespace Topic.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment.')
 @minLength(1)
@@ -181,21 +180,21 @@ module topic_subscription 'subscription/main.bicep' = [
       name: subscription.name
       namespaceName: namespace.name
       topicName: topic.name
-      autoDeleteOnIdle: subscription.?autoDeleteOnIdle ?? 'PT1H'
+      autoDeleteOnIdle: subscription.?autoDeleteOnIdle
       defaultMessageTimeToLive: subscription.?defaultMessageTimeToLive ?? 'P14D'
-      duplicateDetectionHistoryTimeWindow: subscription.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
-      enableBatchedOperations: subscription.?enableBatchedOperations ?? true
-      clientAffineProperties: subscription.?clientAffineProperties ?? {}
+      duplicateDetectionHistoryTimeWindow: subscription.?duplicateDetectionHistoryTimeWindow
+      enableBatchedOperations: subscription.?enableBatchedOperations
+      clientAffineProperties: subscription.?clientAffineProperties
       deadLetteringOnFilterEvaluationExceptions: subscription.?deadLetteringOnFilterEvaluationExceptions ?? true
-      deadLetteringOnMessageExpiration: subscription.?deadLetteringOnMessageExpiration ?? false
+      deadLetteringOnMessageExpiration: subscription.?deadLetteringOnMessageExpiration
       forwardDeadLetteredMessagesTo: subscription.?forwardDeadLetteredMessagesTo
       forwardTo: subscription.?forwardTo
-      isClientAffine: subscription.?isClientAffine ?? false
-      lockDuration: subscription.?lockDuration ?? 'PT1M'
-      maxDeliveryCount: subscription.?maxDeliveryCount ?? 10
-      requiresSession: subscription.?requiresSession ?? false
+      isClientAffine: subscription.?isClientAffine
+      lockDuration: subscription.?lockDuration
+      maxDeliveryCount: subscription.?maxDeliveryCount
+      requiresSession: subscription.?requiresSession
       rules: subscription.?rules
-      status: subscription.?status ?? 'Active'
+      status: subscription.?status
     }
   }
 ]
@@ -213,7 +212,9 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
+import { ruleType } from 'subscription/main.bicep'
 @export()
+@description('The type for a subscription.')
 type subscriptionType = {
   @description('Required. The name of the service bus namespace topic subscription.')
   name: string
@@ -267,72 +268,9 @@ type subscriptionType = {
   requiresSession: bool?
 
   @description('Optional. The subscription rules')
-  rules: {
-    @description('Required. The name of the service bus namespace topic subscription rule.')
-    name: string
+  rules: ruleType[]?
 
-    @description('Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression')
-    action: {
-      @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
-      compatibilityLevel: int?
-
-      @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-      requiresPreprocessing: bool?
-
-      @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'')
-      sqlExpression: string?
-    }?
-
-    @description('Optional. Properties of correlationFilter')
-    correlationFilter: {
-      @description('Optional. Content type of the message.')
-      contentType: string?
-
-      @description('Optional. Identifier of the correlation.')
-      correlationId: string?
-
-      @description('Optional. Application specific label.')
-      label: string?
-
-      @description('Optional. Identifier of the message.')
-      messageId: string?
-
-      @description('Optional. dictionary object for custom filters')
-      properties: {}[]?
-
-      @description('Optional. Address of the queue to reply to.')
-      replyTo: string?
-
-      @description('Optional. Session identifier to reply to.')
-      replyToSessionId: string?
-
-      @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-      requiresPreprocessing: bool?
-
-      @description('Optional. Session identifier.')
-      sessionId: string?
-
-      @description('Optional. Address to send to.')
-      to: string
-    }?
-
-    @description('Optional. Filter type that is evaluated against a BrokeredMessage.')
-    filterType: ('CorrelationFilter' | 'SqlFilter')?
-
-    @description('Optional. Properties of sqlFilter')
-    sqlFilter: {
-      @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
-      compatibilityLevel: int?
-
-      @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-      requiresPreprocessing: bool?
-
-      @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'')
-      sqlExpression: string?
-    }?
-  }[]?
-
-  @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
+  @description('Optional. Enumerates the possible values for the status of a messaging entity.')
   status: (
     | 'Active'
     | 'Disabled'

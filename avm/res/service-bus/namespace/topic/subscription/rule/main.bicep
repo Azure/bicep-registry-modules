@@ -1,6 +1,5 @@
 metadata name = 'Service Bus Namespace Topic Subscription Rule'
 metadata description = 'This module deploys a Service Bus Namespace Topic Subscription Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the service bus namespace topic subscription rule.')
 param name string
@@ -42,7 +41,7 @@ resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing
   }
 }
 
-resource symbolicname 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2022-10-01-preview' = {
+resource rule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2022-10-01-preview' = {
   name: name
   parent: namespace::topic::subscription
   properties: {
@@ -52,3 +51,12 @@ resource symbolicname 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rule
     sqlFilter: sqlFilter
   }
 }
+
+@description('The name of the rule.')
+output name string = rule.name
+
+@description('The Resource ID of the rule.')
+output resourceId string = rule.id
+
+@description('The name of the Resource Group the rule was created in.')
+output resourceGroupName string = resourceGroup().name

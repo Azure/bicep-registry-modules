@@ -1,6 +1,5 @@
 metadata name = 'Service Bus Namespaces'
 metadata description = 'This module deploys a Service Bus Namespace.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Service Bus Namespace.')
 @maxLength(260)
@@ -619,6 +618,7 @@ type queueType = {
 
 import { subscriptionType } from 'topic/main.bicep'
 @export()
+@description('The type for a topic.')
 type topicType = {
   @description('Required. The name of the topic.')
   name: string

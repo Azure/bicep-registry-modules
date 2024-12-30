@@ -5,18 +5,29 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "11445949177763307107"
+      "version": "0.32.4.45862",
+      "templateHash": "11662501456617166086"
     },
     "name": "Service Bus Namespace Topic Subscription Rule",
-    "description": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
   },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
         "description": "Required. The name of the service bus namespace topic subscription rule."
+      }
+    },
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "topicName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment."
       }
     },
     "subscriptionName": {
@@ -59,25 +70,57 @@
     }
   },
   "resources": {
-    "subscription": {
+    "namespace::topic::subscription": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-      "apiVersion": "2022-10-01-preview",
-      "name": "[parameters('subscriptionName')]"
+      "apiVersion": "2021-11-01",
+      "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'))]"
     },
-    "symbolicname": {
+    "namespace::topic": {
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
+    },
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "rule": {
       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
       "apiVersion": "2022-10-01-preview",
-      "name": "[format('{0}/{1}/{2}/{3}', split(parameters('subscriptionName'), '/')[0], split(parameters('subscriptionName'), '/')[1], split(parameters('subscriptionName'), '/')[2], parameters('name'))]",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]",
       "properties": {
         "action": "[parameters('action')]",
         "correlationFilter": "[parameters('correlationFilter')]",
         "filterType": "[parameters('filterType')]",
         "sqlFilter": "[parameters('sqlFilter')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the rule."
       },
-      "dependsOn": [
-        "subscription"
-      ]
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the rule."
+      },
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions/rules', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the rule was created in."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }
