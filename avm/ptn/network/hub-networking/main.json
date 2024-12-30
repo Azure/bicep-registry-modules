@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "10817443316191820673"
+      "version": "0.32.4.45862",
+      "templateHash": "2451390268367753375"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -703,8 +703,6 @@
       },
       "dependsOn": [
         "hubVirtualNetwork",
-        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
-        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]"
       ]
     },
@@ -723,8 +721,6 @@
       },
       "dependsOn": [
         "[format('hubAzureFirewall[{0}]', copyIndex())]",
-        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
-        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
         "hubVirtualNetworkPeering"
       ]
@@ -2345,8 +2341,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "5407453106862679302"
+              "version": "0.32.4.45862",
+              "templateHash": "4177030311595855308"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network.",
@@ -6473,8 +6469,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "16076301727176806098"
+              "version": "0.32.4.45862",
+              "templateHash": "1933725775015836334"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet.",
@@ -6556,8 +6552,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3114934486774261221"
+              "version": "0.32.4.45862",
+              "templateHash": "8143181163953716366"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -6792,10 +6788,7 @@
                 "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
                 "ipAllocations": "[parameters('ipAllocations')]",
                 "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]"
-              },
-              "dependsOn": [
-                "virtualNetwork"
-              ]
+              }
             },
             "subnet_roleAssignments": {
               "copy": {
@@ -6909,7 +6902,7 @@
       },
       "copy": {
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall, createObject('resourceGroupName', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value, 'location', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value, 'name', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value, 'resourceId', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value), createObject())]"
+        "input": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall, createObject('resourceGroupName', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value, 'location', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value, 'name', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value, 'resourceId', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value, 'privateIp', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.privateIp.value), createObject())]"
       }
     },
     "hubVirtualNetworkSubnets": {

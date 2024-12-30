@@ -77,7 +77,7 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
-@description('Optional. Name of a managed cluster SKU.')
+@description('Optional. Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
 @allowed([
   'Base'
   'Automatic'
@@ -113,8 +113,12 @@ param enableRBAC bool = true
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
 param disableLocalAccounts bool = true
 
-@description('Optional. Node provisioning settings that apply to the whole cluster.')
-param nodeProvisioningProfile object?
+@description('Optional. Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
+@allowed([
+  'Auto'
+  'Manual'
+])
+param nodeProvisioningProfileMode string?
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
@@ -363,9 +367,6 @@ param kedaAddon bool = false
 @description('Optional. Whether to enable VPA add-on in cluster. Default value is false.')
 param vpaAddon bool = false
 
-@description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
-
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
 
@@ -525,18 +526,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-  )
-
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
-  }
-}
-
 // ============== //
 // Main Resources //
 // ============== //
@@ -689,7 +678,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
     nodeResourceGroupProfile: nodeResourceGroupProfile
-    nodeProvisioningProfile: nodeProvisioningProfile
+    nodeProvisioningProfile: !empty(nodeProvisioningProfileMode)
+      ? {
+          mode: nodeProvisioningProfileMode
+        }
+      : null
     enablePodSecurityPolicy: enablePodSecurityPolicy
     workloadAutoScalerProfile: {
       keda: {
@@ -720,15 +713,17 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     publicNetworkAccess: publicNetworkAccess
-    aadProfile: !empty(aadProfile) ? {
-      clientAppID: aadProfile.?aadProfileClientAppID
-      serverAppID: aadProfile.?aadProfileServerAppID
-      serverAppSecret: aadProfile.?aadProfileServerAppSecret
-      managed: aadProfile.?aadProfileManaged
-      enableAzureRBAC: aadProfile.?aadProfileEnableAzureRBAC
-      adminGroupObjectIDs: aadProfile.?aadProfileAdminGroupObjectIDs
-      tenantID: aadProfile.?aadProfileTenantId
-    } : null
+    aadProfile: !empty(aadProfile)
+      ? {
+          clientAppID: aadProfile.?aadProfileClientAppID
+          serverAppID: aadProfile.?aadProfileServerAppID
+          serverAppSecret: aadProfile.?aadProfileServerAppSecret
+          managed: aadProfile.?aadProfileManaged
+          enableAzureRBAC: aadProfile.?aadProfileEnableAzureRBAC
+          adminGroupObjectIDs: aadProfile.?aadProfileAdminGroupObjectIDs
+          tenantID: aadProfile.?aadProfileTenantId
+        }
+      : null
     autoScalerProfile: {
       'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
       expander: autoScalerProfileExpander
@@ -1295,21 +1290,6 @@ type extensionType = {
 
   @description('Optional. The flux configurations of the extension.')
   configurations: array?
-}
-
-@export()
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
-  keyVaultNetworkAccess: ('Private' | 'Public')
 }
 
 @export()

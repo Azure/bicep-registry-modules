@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 param namingPrefix string
 
 @description('Required. The compute target for the private runners.')
-param computeTypes computeTypesType
+param computeTypes computeTypesType[]
 
 @description('Required. The self-hosted runner configuration. This can be either GitHub or Azure DevOps.')
 param selfHostedConfig selfHostedRunnerType
@@ -50,7 +50,7 @@ var imagePaths = [
   }
 ]
 
-var githubURL = 'https://github.com/azure/bicep-registry-modules#main:avm/ptn/dev-ops/cicd-agents-and-runners/scripts'
+var githubURL = 'https://github.com/azure/avm-container-images-cicd-agents-and-runners#main'
 
 var acaGitHubRules = (selfHostedConfig.selfHostedType == 'github')
   ? [
@@ -59,7 +59,7 @@ var acaGitHubRules = (selfHostedConfig.selfHostedType == 'github')
         type: 'github-runner'
         metadata: {
           owner: selfHostedConfig.githubOrganization
-          repos: selfHostedConfig.githubRepository
+          repos: selfHostedConfig.?runnerScope != 'repo' ? null : selfHostedConfig.?githubRepository
           targetWorkflowQueueLength: selfHostedConfig.?targetWorkflowQueueLength ?? '1'
           runnerScope: selfHostedConfig.?runnerScope ?? 'repo'
         }
@@ -83,36 +83,42 @@ var acaGitHubSecrets = (selfHostedConfig.selfHostedType == 'github')
   : []
 
 var acaGitHubEnvVariables = (selfHostedConfig.selfHostedType == 'github')
-  ? [
-      {
-        name: 'RUNNER_NAME_PREFIX'
-        value: selfHostedConfig.?runnerNamePrefix ?? 'gh-runner'
-      }
-      {
-        name: 'REPO_URL'
-        value: gitHubRunnerURL
-      }
-      {
-        name: 'RUNNER_SCOPE'
-        value: selfHostedConfig.?runnerScope ?? 'repo'
-      }
-      {
-        name: 'EPHEMERAL'
-        value: selfHostedConfig.?ephemeral ?? 'true'
-      }
-      {
-        name: 'ORG_NAME'
-        value: selfHostedConfig.?gitHubOrganization
-      }
-      {
-        name: 'RUNNER_GROUP'
-        value: selfHostedConfig.?runnerGroup ?? ''
-      }
-      {
-        name: 'ACCESS_TOKEN'
-        secretRef: 'personal-access-token'
-      }
-    ]
+  ? union(
+      selfHostedConfig.?runnerScope == 'repo'
+        ? [
+            {
+              name: 'REPO_URL'
+              value: gitHubRunnerURL
+            }
+          ]
+        : [],
+      [
+        {
+          name: 'RUNNER_NAME_PREFIX'
+          value: selfHostedConfig.?runnerNamePrefix ?? 'gh-runner'
+        }
+        {
+          name: 'RUNNER_SCOPE'
+          value: selfHostedConfig.?runnerScope ?? 'repo'
+        }
+        {
+          name: 'EPHEMERAL'
+          value: selfHostedConfig.?ephemeral ?? 'true'
+        }
+        {
+          name: 'ORG_NAME'
+          value: selfHostedConfig.?gitHubOrganization
+        }
+        {
+          name: 'RUNNER_GROUP'
+          value: selfHostedConfig.?runnerGroup ?? ''
+        }
+        {
+          name: 'ACCESS_TOKEN'
+          secretRef: 'personal-access-token'
+        }
+      ]
+    )
   : []
 
 var acaAzureDevOpsEnvVariables = (selfHostedConfig.selfHostedType == 'azuredevops')
@@ -411,9 +417,9 @@ resource buildImages 'Microsoft.ContainerRegistry/registries/tasks@2019-06-01-pr
         dockerFilePath: 'dockerfile'
         type: 'Docker'
         contextPath: contains(computeTypes, 'azure-container-app')
-          ? '${githubURL}/${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-app')[0].imagePath}'
+          ? '${githubURL}:${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-app')[0].imagePath}'
           : contains(computeTypes, 'azure-container-instance')
-              ? '${githubURL}/${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-instance')[0].imagePath}'
+              ? '${githubURL}:${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-instance')[0].imagePath}'
               : null
         imageNames: [
           '${acr.outputs.loginServer}/${selfHostedConfig.selfHostedType}-${image}:latest'
@@ -798,6 +804,7 @@ output location string = location
 // Definitions      //
 // ================ //
 
+@export()
 type newNetworkType = {
   @description('Required. The network type. This can be either createNew or useExisting.')
   networkType: 'createNew'
@@ -848,6 +855,7 @@ type newNetworkType = {
   deploymentScriptPrivateDnsZoneResourceId: string?
 }
 
+@export()
 type existingNetworkType = {
   @description('Required. The network type. This can be either createNew or useExisting.')
   networkType: 'useExisting'
@@ -871,6 +879,7 @@ type existingNetworkType = {
   computeNetworking: computeNetworkingType
 }
 
+@export()
 type containerAppNetworkConfigType = {
   @description('Required. The Azure Container App networking type.')
   computeNetworkType: 'azureContainerApp'
@@ -896,12 +905,15 @@ type containerInstanceNetworkConfigType = {
   containerInstanceSubnetName: string
 }
 
+@export()
 @discriminator('networkType')
 type networkType = newNetworkType | existingNetworkType
 
+@export()
 @discriminator('computeNetworkType')
 type computeNetworkingType = containerAppNetworkConfigType | containerInstanceNetworkConfigType
 
+@export()
 type azureContainerInstanceTargetType = {
   @description('Optional. The Azure Container Instance Sku name.')
   sku: 'Standard' | 'Dedicated'?
@@ -917,18 +929,20 @@ type azureContainerInstanceTargetType = {
 
   @description('Optional. The Azure Container Instance container port.')
   port: int?
-}?
+}
 
+@export()
 type azureContainerAppTargetType = {
   @description('Optional. The Azure Container App Job CPU and memory resources.')
   resources: acaResourcesType?
 }
 
+@export()
 type gitHubRunnersType = {
   @description('Required. The self-hosted runner type.')
   selfHostedType: 'github'
 
-  @description('Required. The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions.')
+  @description('Required. The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions. The permissions will change based on the scope of the runner.')
   @secure()
   personalAccessToken: string
 
@@ -936,7 +950,7 @@ type gitHubRunnersType = {
   githubOrganization: string
 
   @description('Required. The GitHub repository name.')
-  githubRepository: string
+  githubRepository: string?
 
   @description('Optional. The GitHub runner name.')
   runnerName: string?
@@ -947,7 +961,7 @@ type gitHubRunnersType = {
   @description('Optional. The GitHub runner name prefix.')
   runnerNamePrefix: string?
 
-  @description('Optional. The GitHub runner scope.')
+  @description('Optional. The GitHub runner scope. Depending on the scope, you would need to set the right permissions for your Personal Access Token.')
   runnerScope: 'repo' | 'org' | 'ent'?
 
   @description('Optional. Deploy ephemeral runners.')
@@ -963,6 +977,7 @@ type gitHubRunnersType = {
   azureContainerAppTarget: azureContainerAppTargetType?
 }
 
+@export()
 type devOpsAgentsType = {
   @description('Required. The self-hosted runner type.')
   selfHostedType: 'azuredevops'
@@ -996,6 +1011,7 @@ type devOpsAgentsType = {
   azureContainerAppTarget: azureContainerAppTargetType?
 }
 
+@export()
 type acaResourcesType =
   | { cpu: '0.25', memory: '0.5Gi' }
   | { cpu: '0.5', memory: '1Gi' }
@@ -1014,8 +1030,10 @@ type acaResourcesType =
   | { cpu: '3.75', memory: '7.5Gi' }
   | { cpu: '4', memory: '8Gi' }
 
+@export()
 @discriminator('selfHostedType')
 type selfHostedRunnerType = gitHubRunnersType | devOpsAgentsType
 
+@export()
 @description('Required. The target compute environments for the private runners.')
-type computeTypesType = ('azure-container-app' | 'azure-container-instance')[]
+type computeTypesType = ('azure-container-app' | 'azure-container-instance')

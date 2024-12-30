@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "6071389975562170906"
+      "version": "0.32.4.45862",
+      "templateHash": "92251714130346832"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones",
@@ -234,7 +234,12 @@
       "eastasia": "ea",
       "chilecentral": "clc",
       "westus": "wus",
-      "swedensouth": "sds"
+      "swedensouth": "sds",
+      "usgovvirginia": "ugv",
+      "usgovtexas": "ugt",
+      "usgovarizona": "uga",
+      "usdodeast": "ude",
+      "usdodcentral": "udc"
     },
     "azureRegionShortNameDisplayNameAsKey": {
       "australia southeast": "australiasoutheast",
@@ -293,7 +298,12 @@
       "south africa west": "southafricawest",
       "west us 3": "westus3",
       "taiwan north": "taiwannorth",
-      "sweden central": "swedencentral"
+      "sweden central": "swedencentral",
+      "usgov virginia": "usgovvirginia",
+      "usgov texas": "usgovtexas",
+      "usgov arizona": "usgovarizona",
+      "usdod east": "usdodeast",
+      "usdod central": "usdodcentral"
     },
     "locationLowered": "[toLower(parameters('location'))]",
     "locationLoweredAndSpacesRemoved": "[if(contains(variables('locationLowered'), ' '), variables('azureRegionShortNameDisplayNameAsKey')[variables('locationLowered')], variables('locationLowered'))]",
