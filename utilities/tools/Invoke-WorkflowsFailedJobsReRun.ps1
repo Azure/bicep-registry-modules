@@ -72,7 +72,7 @@ function Get-GitHubModuleWorkflowList {
         }
 
         if (-not $response.workflows) {
-            Write-Error "Request failed. Reponse: [$response]"
+            Write-Error "Request failed. Response: [$response]"
         }
 
         $allWorkflows += $response.workflows | Select-Object -Property @('id', 'name', 'path', 'badge_url', 'state') | Where-Object {
@@ -206,7 +206,7 @@ function Get-GitHubModuleWorkflowLatestRun {
     }
 
     if (-not $response.workflow_runs) {
-        Write-Error "Request failed. Reponse: [$response]"
+        Write-Error "Request failed. Response: [$response]"
     }
 
     return $response.workflow_runs | Select-Object -Property @('id', 'name', 'path', 'status', 'head_branch', 'created_at', 'run_number', 'run_attempt', 'conclusion')

@@ -396,14 +396,14 @@ Describe 'Module tests' -Tag 'Module' {
             # Compare
             $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
             if (-not $filesAreTheSame) {
-                $diffReponse = git diff $readMeFilePath
-                Write-Warning ($diffReponse | Out-String) -Verbose
+                $diffResponse = git diff $readMeFilePath
+                Write-Warning ($diffResponse | Out-String) -Verbose
 
                 # Reset readme file to original state
                 git checkout HEAD -- $readMeFilePath
             }
 
-            $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
+            $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
             $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
         }
     }
