@@ -50,7 +50,7 @@ param maxDeliveryCount int = 10
 @description('Optional. A value that indicates whether the subscription supports the concept of session.')
 param requiresSession bool = false
 
-@description('Optional. The subscription rules')
+@description('Optional. The subscription rules.')
 param rules ruleType[]?
 
 @description('Optional. Enumerates the possible values for the status of a messaging entity.')

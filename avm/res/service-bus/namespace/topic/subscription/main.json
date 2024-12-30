@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2897362577327188585"
+      "templateHash": "5397578841675471522"
     },
     "name": "Service Bus Namespace Topic Subscription",
     "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -298,7 +298,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The subscription rules"
+        "description": "Optional. The subscription rules."
       }
     },
     "status": {
