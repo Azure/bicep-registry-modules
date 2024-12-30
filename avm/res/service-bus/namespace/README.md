@@ -3342,7 +3342,7 @@ The subscriptions of the topic.
 | [`lockDuration`](#parameter-topicssubscriptionslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-topicssubscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
 | [`requiresSession`](#parameter-topicssubscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
-| [`rules`](#parameter-topicssubscriptionsrules) | array | The subscription rules |
+| [`rules`](#parameter-topicssubscriptionsrules) | array | The subscription rules. |
 | [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. |
 
 ### Parameter: `topics.subscriptions.name`
@@ -3479,7 +3479,7 @@ A value that indicates whether the subscription supports the concept of session.
 
 ### Parameter: `topics.subscriptions.rules`
 
-The subscription rules
+The subscription rules.
 
 - Required: No
 - Type: array
@@ -3497,7 +3497,7 @@ The subscription rules
 | [`action`](#parameter-topicssubscriptionsrulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
 | [`correlationFilter`](#parameter-topicssubscriptionsrulescorrelationfilter) | object | Properties of correlationFilter. |
 | [`filterType`](#parameter-topicssubscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
-| [`sqlFilter`](#parameter-topicssubscriptionsrulessqlfilter) | object | Properties of sqlFilter |
+| [`sqlFilter`](#parameter-topicssubscriptionsrulessqlfilter) | object | Properties of sqlFilter. |
 
 ### Parameter: `topics.subscriptions.rules.name`
 
@@ -3661,7 +3661,7 @@ Filter type that is evaluated against a BrokeredMessage.
 
 ### Parameter: `topics.subscriptions.rules.sqlFilter`
 
-Properties of sqlFilter
+Properties of sqlFilter.
 
 - Required: No
 - Type: object

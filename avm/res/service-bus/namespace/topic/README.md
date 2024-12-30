@@ -341,7 +341,7 @@ The subscriptions of the topic.
 | [`lockDuration`](#parameter-subscriptionslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-subscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
 | [`requiresSession`](#parameter-subscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
-| [`rules`](#parameter-subscriptionsrules) | array | The subscription rules |
+| [`rules`](#parameter-subscriptionsrules) | array | The subscription rules. |
 | [`status`](#parameter-subscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. |
 
 ### Parameter: `subscriptions.name`
@@ -478,7 +478,7 @@ A value that indicates whether the subscription supports the concept of session.
 
 ### Parameter: `subscriptions.rules`
 
-The subscription rules
+The subscription rules.
 
 - Required: No
 - Type: array
@@ -496,7 +496,7 @@ The subscription rules
 | [`action`](#parameter-subscriptionsrulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
 | [`correlationFilter`](#parameter-subscriptionsrulescorrelationfilter) | object | Properties of correlationFilter. |
 | [`filterType`](#parameter-subscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
-| [`sqlFilter`](#parameter-subscriptionsrulessqlfilter) | object | Properties of sqlFilter |
+| [`sqlFilter`](#parameter-subscriptionsrulessqlfilter) | object | Properties of sqlFilter. |
 
 ### Parameter: `subscriptions.rules.name`
 
@@ -660,7 +660,7 @@ Filter type that is evaluated against a BrokeredMessage.
 
 ### Parameter: `subscriptions.rules.sqlFilter`
 
-Properties of sqlFilter
+Properties of sqlFilter.
 
 - Required: No
 - Type: object

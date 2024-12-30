@@ -178,7 +178,7 @@ type ruleType = {
   @description('Optional. Filter type that is evaluated against a BrokeredMessage.')
   filterType: ('CorrelationFilter' | 'SqlFilter')?
 
-  @description('Optional. Properties of sqlFilter')
+  @description('Optional. Properties of sqlFilter.')
   sqlFilter: {
     @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
     compatibilityLevel: int?

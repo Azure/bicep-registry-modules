@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15382485599296475518"
+      "templateHash": "16255972802045630565"
     },
     "name": "Service Bus Namespace Topic Subscription",
     "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -171,7 +171,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Properties of sqlFilter"
+            "description": "Optional. Properties of sqlFilter."
           }
         }
       },

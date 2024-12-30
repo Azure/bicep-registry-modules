@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16909745941028986054"
+      "templateHash": "10886922287727237407"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -780,7 +780,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Properties of sqlFilter"
+            "description": "Optional. Properties of sqlFilter."
           }
         }
       },
@@ -1354,7 +1354,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The subscription rules"
+            "description": "Optional. The subscription rules."
           }
         },
         "status": {
@@ -2892,7 +2892,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10837737200905735929"
+              "templateHash": "8943620977549291103"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -3028,7 +3028,7 @@
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The subscription rules"
+                    "description": "Optional. The subscription rules."
                   }
                 },
                 "status": {
@@ -3318,7 +3318,7 @@
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Properties of sqlFilter"
+                    "description": "Optional. Properties of sqlFilter."
                   }
                 }
               },
@@ -3729,7 +3729,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "15382485599296475518"
+                      "templateHash": "16255972802045630565"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -3894,7 +3894,7 @@
                           },
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Properties of sqlFilter"
+                            "description": "Optional. Properties of sqlFilter."
                           }
                         }
                       },

@@ -195,7 +195,7 @@ The subscription rules
 | [`action`](#parameter-rulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
 | [`correlationFilter`](#parameter-rulescorrelationfilter) | object | Properties of correlationFilter. |
 | [`filterType`](#parameter-rulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
-| [`sqlFilter`](#parameter-rulessqlfilter) | object | Properties of sqlFilter |
+| [`sqlFilter`](#parameter-rulessqlfilter) | object | Properties of sqlFilter. |
 
 ### Parameter: `rules.name`
 
@@ -359,7 +359,7 @@ Filter type that is evaluated against a BrokeredMessage.
 
 ### Parameter: `rules.sqlFilter`
 
-Properties of sqlFilter
+Properties of sqlFilter.
 
 - Required: No
 - Type: object

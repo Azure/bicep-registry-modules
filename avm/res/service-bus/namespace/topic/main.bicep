@@ -268,7 +268,7 @@ type subscriptionType = {
   @description('Optional. A value that indicates whether the subscription supports the concept of session.')
   requiresSession: bool?
 
-  @description('Optional. The subscription rules')
+  @description('Optional. The subscription rules.')
   rules: ruleType[]?
 
   @description('Optional. Enumerates the possible values for the status of a messaging entity.')
