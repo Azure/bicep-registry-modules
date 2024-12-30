@@ -12,6 +12,9 @@ Mandatory. Path to the Bicep/ARM module that is being tested
 .PARAMETER ModuleTestFilePath
 Optional. Path to the template file/folder that is to be tested with the template file. Defaults to the module's default '.test' folder. Will be used if the DeploymentTest/ValidationTest switches are set.
 
+.PARAMETER PesterTag
+Optional. A string array that can be specified to run only Pester tests with the specified tag
+
 .PARAMETER PesterTest
 Optional. A switch parameter that triggers a Pester test for the module
 
@@ -136,6 +139,10 @@ function Test-ModuleLocally {
         [hashtable] $AdditionalTokens = @{},
 
         [Parameter(Mandatory = $false)]
+        [Alias('PesterTags')]
+        [string[]] $PesterTag,
+
+        [Parameter(Mandatory = $false)]
         [switch] $PesterTest,
 
         [Parameter(Mandatory = $false)]
@@ -186,7 +193,7 @@ function Test-ModuleLocally {
                     }
                 }
 
-                Invoke-Pester -Configuration @{
+                $configuration = @{
                     Run    = @{
                         Container = New-PesterContainer -Path $testFiles -Data @{
                             repoRootPath      = $repoRootPath
@@ -197,6 +204,14 @@ function Test-ModuleLocally {
                         Verbosity = 'Detailed'
                     }
                 }
+
+                if (-not [String]::IsNullOrEmpty($PesterTag)) {
+                    $configuration['Filter'] = @{
+                        Tag = $PesterTag
+                    }
+                }
+
+                Invoke-Pester -Configuration $configuration
             } catch {
                 $PSItem.Exception.Message
             }
