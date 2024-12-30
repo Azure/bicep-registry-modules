@@ -456,7 +456,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = serviceBusNamespace.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = serviceBusNamespace.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = serviceBusNamespace.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = serviceBusNamespace.location

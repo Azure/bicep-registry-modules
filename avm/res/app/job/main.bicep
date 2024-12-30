@@ -280,7 +280,7 @@ output location string = job.location
 @metadata({
   example: '00000000-0000-0000-0000-000000000000'
 })
-output systemAssignedMIPrincipalId string = job.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = job.?identity.?principalId
 
 // =============== //
 //   Definitions   //
