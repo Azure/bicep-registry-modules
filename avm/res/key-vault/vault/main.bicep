@@ -425,6 +425,7 @@ output keys credentialOutputType[] = [
 // Definitions      //
 // ================ //
 @export()
+@description('The type for a private endpoint output.')
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
   name: string
@@ -449,6 +450,7 @@ type privateEndpointOutputType = {
 }
 
 @export()
+@description('The type for a credential output.')
 type credentialOutputType = {
   @description('The item\'s resourceId.')
   resourceId: string
@@ -461,6 +463,7 @@ type credentialOutputType = {
 }
 
 @export()
+@description('The type for an access policy.')
 type accessPolicyType = {
   @description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
   tenantId: string?
@@ -541,6 +544,7 @@ type accessPolicyType = {
 }
 
 @export()
+@description('The type for a secret output.')
 type secretType = {
   @description('Required. The name of the secret.')
   name: string
@@ -571,6 +575,7 @@ type secretType = {
 }
 
 @export()
+@description('The type for a key.')
 type keyType = {
   @description('Required. The name of the key.')
   name: string
@@ -617,6 +622,7 @@ type keyType = {
   roleAssignments: roleAssignmentType[]?
 }
 
+@description('The type for a rotation policy.')
 type rotationPolicyType = {
   @description('Optional. The attributes of key rotation policy.')
   attributes: {
