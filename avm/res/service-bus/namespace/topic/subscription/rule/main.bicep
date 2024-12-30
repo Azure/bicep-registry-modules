@@ -14,10 +14,10 @@ param topicName string
 @description('Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment.')
 param subscriptionName string
 
-@description('Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression')
+@description('Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.')
 param action object = {}
 
-@description('Opional. Properties of correlationFilter')
+@description('Opional. Properties of a correlation filter.')
 param correlationFilter object = {}
 
 @description('Optional. Filter type that is evaluated against a BrokeredMessage.')
@@ -27,7 +27,7 @@ param correlationFilter object = {}
 ])
 param filterType string?
 
-@description('Opional. Properties of sqlFilter')
+@description('Opional. The properties of an SQL filter.')
 param sqlFilter object = {}
 
 resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {

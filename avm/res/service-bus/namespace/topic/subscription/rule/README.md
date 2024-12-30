@@ -40,9 +40,9 @@ This module deploys a Service Bus Namespace Topic Subscription Rule.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`action`](#parameter-action) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression |
-| [`correlationFilter`](#parameter-correlationfilter) | object | Properties of correlationFilter |
-| [`sqlFilter`](#parameter-sqlfilter) | object | Properties of sqlFilter |
+| [`action`](#parameter-action) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
+| [`correlationFilter`](#parameter-correlationfilter) | object | Properties of a correlation filter. |
+| [`sqlFilter`](#parameter-sqlfilter) | object | The properties of an SQL filter. |
 
 ### Parameter: `name`
 
@@ -88,7 +88,7 @@ Filter type that is evaluated against a BrokeredMessage.
 
 ### Parameter: `action`
 
-Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression
+Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.
 
 - Required: No
 - Type: object
@@ -96,7 +96,7 @@ Represents the filter actions which are allowed for the transformation of a mess
 
 ### Parameter: `correlationFilter`
 
-Properties of correlationFilter
+Properties of a correlation filter.
 
 - Required: No
 - Type: object
@@ -104,7 +104,7 @@ Properties of correlationFilter
 
 ### Parameter: `sqlFilter`
 
-Properties of sqlFilter
+The properties of an SQL filter.
 
 - Required: No
 - Type: object

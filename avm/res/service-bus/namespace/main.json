@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10886922287727237407"
+      "templateHash": "3899957708494517331"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -2892,7 +2892,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8943620977549291103"
+              "templateHash": "11481220108104469375"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -3729,7 +3729,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16255972802045630565"
+                      "templateHash": "2897362577327188585"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -4124,7 +4124,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "16591058618250128511"
+                              "templateHash": "4927933480188968739"
                             },
                             "name": "Service Bus Namespace Topic Subscription Rule",
                             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
@@ -4159,14 +4159,14 @@
                               "type": "object",
                               "defaultValue": {},
                               "metadata": {
-                                "description": "Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression"
+                                "description": "Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
                               }
                             },
                             "correlationFilter": {
                               "type": "object",
                               "defaultValue": {},
                               "metadata": {
-                                "description": "Opional. Properties of correlationFilter"
+                                "description": "Opional. Properties of a correlation filter."
                               }
                             },
                             "filterType": {
@@ -4184,7 +4184,7 @@
                               "type": "object",
                               "defaultValue": {},
                               "metadata": {
-                                "description": "Opional. Properties of sqlFilter"
+                                "description": "Opional. The properties of an SQL filter."
                               }
                             }
                           },

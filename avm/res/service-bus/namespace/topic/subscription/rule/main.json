@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16591058618250128511"
+      "templateHash": "4927933480188968739"
     },
     "name": "Service Bus Namespace Topic Subscription Rule",
     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
@@ -41,14 +41,14 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression"
+        "description": "Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
       }
     },
     "correlationFilter": {
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Opional. Properties of correlationFilter"
+        "description": "Opional. Properties of a correlation filter."
       }
     },
     "filterType": {
@@ -66,7 +66,7 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Opional. Properties of sqlFilter"
+        "description": "Opional. The properties of an SQL filter."
       }
     }
   },
