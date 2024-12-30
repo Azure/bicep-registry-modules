@@ -23,12 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    location: resourceLocation
     name: 'avm-${namePrefix}-resources.resourcegroups-${serviceShort}-rg'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
