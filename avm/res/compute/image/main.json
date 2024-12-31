@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "512614744065007360"
+      "templateHash": "3106672883286346461"
     },
     "name": "Images",
     "description": "This module deploys a Compute Image."
