@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Web App'
-metadata description = 'This instance deploys the module as Web App with the set of api management configuration.'
+metadata name = 'Web App, with Web Configuration'
+metadata description = 'This instance deploys the module as a Web App with web configuration to demonstrate its usage. Deploying a configuration containing API Management and Ip Security Restrictions.'
 
 // ========== //
 // Parameters //
@@ -57,8 +57,20 @@ module testDeployment '../../../main.bicep' = [
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       appInsightResourceId: nestedDependencies.outputs.applicationInsigtsResourceId
-      apiManagementConfiguration: {
-        id: '${nestedDependencies.outputs.apiManagementResourceId}/apis/todo-api'
+      webConfiguration: {
+        ipSecurityRestrictions: [
+          {
+            action: 'Allow'
+            description: 'Test IP Restriction'
+            tag: 'ServiceTag'
+            name: 'Test Restriction'
+            priority: 200
+            ipAddress: 'ApiManagement'
+          }
+        ]
+        apiManagementConfig: {
+          id: '${nestedDependencies.outputs.apiManagementResourceId}/apis/todo-api'
+        }
       }
       managedIdentities: {
         systemAssigned: true
