@@ -215,11 +215,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource app 'Microsoft.Web/sites@2023-12-01' existing = {
+resource app 'Microsoft.Web/sites@2024-04-01' existing = {
   name: appName
 }
 
-resource slot 'Microsoft.Web/sites/slots@2023-12-01' = {
+resource slot 'Microsoft.Web/sites/slots@2024-04-01' = {
   name: name
   parent: app
   location: location
