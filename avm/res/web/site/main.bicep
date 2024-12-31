@@ -179,6 +179,9 @@ param hybridConnectionRelays array?
 ])
 param publicNetworkAccess string?
 
+@description('Optional. End to End Encryption Setting.')
+param e2eEncryptionEnabled bool?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -288,6 +291,7 @@ resource app 'Microsoft.Web/sites@2023-12-01' = {
     vnetImagePullEnabled: vnetImagePullEnabled
     vnetRouteAllEnabled: vnetRouteAllEnabled
     scmSiteAlsoStopped: scmSiteAlsoStopped
+    endToEndEncryptionEnabled: e2eEncryptionEnabled
   }
 }
 
@@ -571,6 +575,8 @@ output privateEndpoints array = [
 @description('The private endpoints of the slots.')
 output slotPrivateEndpoints array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.privateEndpoints]
 
+@description('The outbound IP addresses of the app.')
+output outboundIpAddresses string = app.properties.outboundIpAddresses
 // =============== //
 //   Definitions   //
 // =============== //
