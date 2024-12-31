@@ -258,7 +258,7 @@ resource slot 'Microsoft.Web/sites/slots@2023-12-01' = {
   }
 }
 
-module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
+module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs) || !empty(appInsightResourceId) || !empty(storageAccountResourceId)) {
   name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
   params: {
     slotName: slot.name
