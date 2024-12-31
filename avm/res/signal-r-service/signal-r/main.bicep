@@ -1,6 +1,5 @@
 metadata name = 'SignalR Service SignalR'
 metadata description = 'This module deploys a SignalR Service SignalR.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //

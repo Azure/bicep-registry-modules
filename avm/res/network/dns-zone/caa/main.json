@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9019647418715778214"
+      "templateHash": "11491148399190061858"
     },
     "name": "Public DNS Zone CAA record",
-    "description": "This module deploys a Public DNS Zone CAA record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone CAA record."
   },
   "definitions": {
     "roleAssignmentType": {

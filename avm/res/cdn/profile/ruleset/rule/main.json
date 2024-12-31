@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14540406126609060699"
+      "templateHash": "5126669469544382460"
     },
     "name": "CDN Profiles Rules",
-    "description": "This module deploys a CDN Profile rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile rule."
   },
   "definitions": {
     "ruleType": {

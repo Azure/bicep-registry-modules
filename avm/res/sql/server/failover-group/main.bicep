@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Server failover group'
 metadata description = 'This module deploys Azure SQL Server failover group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the failover group.')
 param name string

@@ -1,7 +1,6 @@
 metadata name = 'Network Manager Security Admin Configuration Rule Collections'
 metadata description = '''This module deploys an Network Manager Security Admin Configuration Rule Collection.
 A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment.')
 param networkManagerName string

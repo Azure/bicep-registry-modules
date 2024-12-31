@@ -1,6 +1,5 @@
 metadata name = 'Web/Function App Deployment Slots'
 metadata description = 'This module deploys a Web or Function App Deployment Slot.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the slot.')
 param name string

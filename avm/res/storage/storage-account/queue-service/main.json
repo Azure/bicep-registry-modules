@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15558678445347429038"
+      "templateHash": "16202185276669663739"
     },
     "name": "Storage Account Queue Services",
-    "description": "This module deploys a Storage Account Queue Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Queue Service."
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -254,11 +253,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11255566639202978270"
+              "templateHash": "11769628477701423736"
             },
             "name": "Storage Account Queues",
-            "description": "This module deploys a Storage Account Queue.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Queue."
           },
           "definitions": {
             "roleAssignmentType": {

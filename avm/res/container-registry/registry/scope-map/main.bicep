@@ -1,6 +1,5 @@
 metadata name = 'Container Registries scopeMaps'
 metadata description = 'This module deploys an Azure Container Registry (ACR) scopeMap.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string

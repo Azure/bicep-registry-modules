@@ -1,6 +1,5 @@
 metadata name = 'Communication Services'
 metadata description = 'This module deploys a Communication Service'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(1)
 @maxLength(63)

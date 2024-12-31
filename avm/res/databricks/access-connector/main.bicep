@@ -1,6 +1,5 @@
 metadata name = 'Azure Databricks Access Connectors'
 metadata description = 'This module deploys an Azure Databricks Access Connector.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Azure Databricks access connector to create.')
 param name string

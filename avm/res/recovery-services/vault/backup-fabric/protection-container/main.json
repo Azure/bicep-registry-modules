@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "3738002202831366506"
+      "version": "0.32.4.45862",
+      "templateHash": "2342312580952650656"
     },
     "name": "Recovery Services Vault Protection Container",
-    "description": "This module deploys a Recovery Services Vault Protection Container.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Recovery Services Vault Protection Container."
   },
   "parameters": {
     "recoveryVaultName": {
@@ -144,12 +143,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "12193073774274736616"
+              "version": "0.32.4.45862",
+              "templateHash": "10896311401307689711"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
-            "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
           },
           "parameters": {
             "name": {

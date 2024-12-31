@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Server Audit Settings'
 metadata description = 'This module deploys an Azure SQL Server Audit Settings.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the audit settings.')
 param name string

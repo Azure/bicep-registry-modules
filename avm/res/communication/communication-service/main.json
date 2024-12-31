@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12710453655201949687"
+      "version": "0.32.4.45862",
+      "templateHash": "605200063153991260"
     },
     "name": "Communication Services",
-    "description": "This module deploys a Communication Service",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Communication Service"
   },
   "definitions": {
     "managedIdentitiesType": {

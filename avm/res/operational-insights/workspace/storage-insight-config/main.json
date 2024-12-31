@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2068175338477699308"
+      "templateHash": "12148501849006788324"
     },
     "name": "Log Analytics Workspace Storage Insight Configs",
-    "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
   },
   "parameters": {
     "logAnalyticsWorkspaceName": {

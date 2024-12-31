@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13329670122964938480"
+      "version": "0.32.4.45862",
+      "templateHash": "3777530971909273110"
     },
     "name": "Redis Cache",
-    "description": "This module deploys a Redis Cache.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Redis Cache."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -1727,12 +1726,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "4764248912015671674"
+              "version": "0.32.4.45862",
+              "templateHash": "9818219089257499387"
             },
             "name": "Redis Cache Linked Servers",
-            "description": "This module connects a primary and secondary Redis Cache together for geo-replication.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
           },
           "parameters": {
             "redisCacheName": {

@@ -1,6 +1,5 @@
 metadata name = 'Elastic SAN Volume Snapshots'
 metadata description = 'This module deploys an Elastic SAN Volume Snapshot.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.minLength(3)
 @sys.maxLength(24)

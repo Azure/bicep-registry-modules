@@ -1,6 +1,5 @@
 metadata name = 'Express Route Gateways'
 metadata description = 'This module deploys an Express Route Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Express Route Gateway.')
 param name string

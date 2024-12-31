@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13891951858408318693"
+      "templateHash": "5395177598018249169"
     },
     "name": "DocumentDB Database Account SQL Databases",
-    "description": "This module deploys a SQL Database in a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Database in a CosmosDB Account."
   },
   "parameters": {
     "databaseAccountName": {
@@ -139,11 +138,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10312240160742899636"
+              "templateHash": "14154254485660719674"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
-            "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Database Container in a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {

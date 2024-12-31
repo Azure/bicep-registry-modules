@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15584597177796856132"
+      "templateHash": "41477956919222872"
     },
     "name": "Synapse Workspaces",
-    "description": "This module deploys a Synapse Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Synapse Workspace."
   },
   "definitions": {
     "administratorType": {
@@ -1005,11 +1004,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15698775390725353911"
+              "templateHash": "4041527016841476160"
             },
             "name": "Synapse Workspace Integration Runtimes",
-            "description": "This module deploys a Synapse Workspace Integration Runtime.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Synapse Workspace Integration Runtime."
           },
           "parameters": {
             "workspaceName": {
@@ -1191,11 +1189,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4273615943190868716"
+              "templateHash": "9285184380796627148"
             },
             "name": "Synapse Workspaces Keys",
-            "description": "This module deploys a Synapse Workspaces Key.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Synapse Workspaces Key."
           },
           "parameters": {
             "name": {
@@ -1298,11 +1295,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10436464142591465228"
+              "templateHash": "7870636790140091356"
             },
             "name": "Synapse Workspaces Administrators",
-            "description": "This module deploys Synapse Workspaces Administrators.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys Synapse Workspaces Administrators."
           },
           "parameters": {
             "workspaceName": {
@@ -1413,11 +1409,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4423004143872202690"
+              "templateHash": "3403338957196025610"
             },
             "name": "Synapse Workspaces Firewall Rules",
-            "description": "This module deploys Synapse Workspaces Firewall Rules.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys Synapse Workspaces Firewall Rules."
           },
           "parameters": {
             "workspaceName": {

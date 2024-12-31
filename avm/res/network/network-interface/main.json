@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14943826288469538068"
+      "version": "0.32.4.45862",
+      "templateHash": "11102907122675548882"
     },
     "name": "Network Interface",
-    "description": "This module deploys a Network Interface.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network Interface."
   },
   "definitions": {
     "diagnosticSettingType": {

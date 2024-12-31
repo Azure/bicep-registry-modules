@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6478760541409131297"
+      "templateHash": "12313465250221246597"
     },
     "name": "Container Registries scopeMaps",
-    "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
   },
   "parameters": {
     "registryName": {

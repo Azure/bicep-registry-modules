@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4235667434763749307"
+      "templateHash": "2233835364121960452"
     },
     "name": "Data Factory Linked Service",
-    "description": "This module deploys a Data Factory Linked Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Factory Linked Service."
   },
   "parameters": {
     "dataFactoryName": {

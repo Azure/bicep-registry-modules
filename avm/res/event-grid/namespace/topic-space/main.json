@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6625543502444650153"
+      "templateHash": "936984304688301643"
     },
     "name": "Eventgrid Namespace Topic Spaces",
-    "description": "This module deploys an Eventgrid Namespace Topic Space.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Eventgrid Namespace Topic Space."
   },
   "definitions": {
     "roleAssignmentType": {

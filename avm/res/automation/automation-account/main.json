@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7322194552342116892"
+      "templateHash": "16427250452433742384"
     },
     "name": "Automation Accounts",
-    "description": "This module deploys an Azure Automation Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Automation Account."
   },
   "definitions": {
     "credentialType": {
@@ -1023,11 +1022,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14072663101928459073"
+              "templateHash": "10206419659334193725"
             },
             "name": "Automation Account Credential",
-            "description": "This module deploys Azure Automation Account Credential.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys Azure Automation Account Credential."
           },
           "parameters": {
             "automationAccountName": {
@@ -1150,11 +1148,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11043846710506937492"
+              "templateHash": "3828537230935003385"
             },
             "name": "Automation Account Modules",
-            "description": "This module deploys an Azure Automation Account Module.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Module."
           },
           "parameters": {
             "name": {
@@ -1303,11 +1300,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2769963466163535886"
+              "templateHash": "6875246782544956895"
             },
             "name": "Automation Account Schedules",
-            "description": "This module deploys an Azure Automation Account Schedule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Schedule."
           },
           "parameters": {
             "name": {
@@ -1488,11 +1484,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10628373878524632674"
+              "templateHash": "15686123148609089393"
             },
             "name": "Automation Account Runbooks",
-            "description": "This module deploys an Azure Automation Account Runbook.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Runbook."
           },
           "parameters": {
             "name": {
@@ -1692,11 +1687,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17724956402217558185"
+              "templateHash": "4203011213224324137"
             },
             "name": "Automation Account Job Schedules",
-            "description": "This module deploys an Azure Automation Account Job Schedule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Job Schedule."
           },
           "parameters": {
             "name": {
@@ -1824,11 +1818,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "995071399213667449"
+              "templateHash": "16330558441628473023"
             },
             "name": "Automation Account Variables",
-            "description": "This module deploys an Azure Automation Account Variable.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Variable."
           },
           "parameters": {
             "automationAccountName": {
@@ -1939,11 +1932,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17097798234862446049"
+              "templateHash": "11223130094132311066"
             },
             "name": "Log Analytics Workspace Linked Services",
-            "description": "This module deploys a Log Analytics Workspace Linked Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Linked Service."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -2339,11 +2331,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11568533167274650070"
+              "templateHash": "18142998771588913270"
             },
             "name": "Automation Account Software Update Configurations",
-            "description": "This module deploys an Azure Automation Account Software Update Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Software Update Configuration."
           },
           "parameters": {
             "name": {

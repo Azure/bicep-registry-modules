@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3042103818368767967"
+      "templateHash": "2710025845349133598"
     },
     "name": "Private DNS Zones",
-    "description": "This module deploys a Private DNS zone.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Private DNS zone."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -866,11 +865,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2531120132215940282"
+              "templateHash": "12329988072380606270"
             },
             "name": "Private DNS Zone A record",
-            "description": "This module deploys a Private DNS Zone A record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone A record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1116,11 +1114,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16709340450244912125"
+              "templateHash": "18144761159622341175"
             },
             "name": "Private DNS Zone AAAA record",
-            "description": "This module deploys a Private DNS Zone AAAA record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone AAAA record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1366,11 +1363,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9976020649752073181"
+              "templateHash": "8900024794567849685"
             },
             "name": "Private DNS Zone CNAME record",
-            "description": "This module deploys a Private DNS Zone CNAME record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone CNAME record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1616,11 +1612,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2520323624213076361"
+              "templateHash": "10186845181379684291"
             },
             "name": "Private DNS Zone MX record",
-            "description": "This module deploys a Private DNS Zone MX record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone MX record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1866,11 +1861,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3080404733048745471"
+              "templateHash": "12397116547796665355"
             },
             "name": "Private DNS Zone PTR record",
-            "description": "This module deploys a Private DNS Zone PTR record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone PTR record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2116,11 +2110,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6653951445614700931"
+              "templateHash": "9828503900264294678"
             },
             "name": "Private DNS Zone SOA record",
-            "description": "This module deploys a Private DNS Zone SOA record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone SOA record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2366,11 +2359,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5790774778713328446"
+              "templateHash": "9015292509771221683"
             },
             "name": "Private DNS Zone SRV record",
-            "description": "This module deploys a Private DNS Zone SRV record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone SRV record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2616,11 +2608,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1855369119498044639"
+              "templateHash": "816236401965037598"
             },
             "name": "Private DNS Zone TXT record",
-            "description": "This module deploys a Private DNS Zone TXT record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone TXT record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2869,11 +2860,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15326596012552051215"
+              "templateHash": "15937807282215500764"
             },
             "name": "Private DNS Zone Virtual Network Link",
-            "description": "This module deploys a Private DNS Zone Virtual Network Link.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone Virtual Network Link."
           },
           "parameters": {
             "privateDnsZoneName": {

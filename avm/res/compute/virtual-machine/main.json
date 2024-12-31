@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "18035592397318794838"
+      "templateHash": "10289731629167661521"
     },
     "name": "Virtual Machines",
-    "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -2907,11 +2906,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3119,11 +3117,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3327,11 +3324,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3530,11 +3526,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3738,11 +3733,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3941,11 +3935,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4152,11 +4145,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4367,11 +4359,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4576,11 +4567,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4781,11 +4771,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4995,11 +4984,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -5205,11 +5193,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12912200857967286939"
+              "templateHash": "17394804773765276039"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -5401,11 +5388,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8409556960090427141"
+              "templateHash": "10896311401307689711"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
-            "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
           },
           "parameters": {
             "name": {

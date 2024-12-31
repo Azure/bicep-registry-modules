@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4306934588544765678"
+      "templateHash": "7761447372947910331"
     },
     "name": "Compute Galleries Applications",
-    "description": "This module deploys an Azure Compute Gallery Application.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Compute Gallery Application."
   },
   "definitions": {
     "customActionType": {

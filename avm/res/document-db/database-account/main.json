@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16155049665849608519"
+      "templateHash": "16124066283294132870"
     },
     "name": "DocumentDB Database Accounts",
-    "description": "This module deploys a DocumentDB Database Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DocumentDB Database Account."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -1410,11 +1409,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13891951858408318693"
+              "templateHash": "5395177598018249169"
             },
             "name": "DocumentDB Database Account SQL Databases",
-            "description": "This module deploys a SQL Database in a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Database in a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {
@@ -1543,11 +1541,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "10312240160742899636"
+                      "templateHash": "14154254485660719674"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
-                    "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a SQL Database Container in a CosmosDB Account."
                   },
                   "parameters": {
                     "databaseAccountName": {
@@ -1797,11 +1794,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5835214316063453536"
+              "templateHash": "6559464455472088945"
             },
             "name": "DocumentDB Database Account SQL Role.",
-            "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {
@@ -1884,11 +1880,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2988995240332079717"
+                      "templateHash": "14750214357725995743"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
-                    "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
                   },
                   "parameters": {
                     "databaseAccountName": {
@@ -2005,11 +2000,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14595063605642768334"
+                      "templateHash": "12764194787789521059"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
-                    "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
                   },
                   "parameters": {
                     "databaseAccountName": {
@@ -2119,11 +2113,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12201850926589437696"
+              "templateHash": "16170265776669849917"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
-            "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a MongoDB Database within a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {
@@ -2222,11 +2215,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "6624674794933817904"
+                      "templateHash": "4979189253519864875"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
-                    "description": "This module deploys a MongoDB Database Collection.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a MongoDB Database Collection."
                   },
                   "parameters": {
                     "databaseAccountName": {
@@ -2382,11 +2374,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9048997200136932160"
+              "templateHash": "5205338319140588627"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
-            "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Gremlin Database within a CosmosDB Account."
           },
           "parameters": {
             "name": {
@@ -2488,11 +2479,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "11166187042354172574"
+                      "templateHash": "1700064870992628026"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
-                    "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
                   },
                   "parameters": {
                     "name": {
@@ -2661,11 +2651,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "424696651537600433"
+              "templateHash": "2653851241415133906"
             },
             "name": "Azure Cosmos DB account tables",
-            "description": "This module deploys a table within an Azure Cosmos DB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a table within an Azure Cosmos DB Account."
           },
           "parameters": {
             "name": {

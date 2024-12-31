@@ -1,6 +1,5 @@
 metadata name = 'Machine Learning Services Workspaces Connections'
 metadata description = 'This module creates a connection in a Machine Learning Services workspace.'
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //

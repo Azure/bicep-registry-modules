@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Security Policy'
 metadata description = 'This module deploys a CDN Profile Security Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The resource name.')
 param name string

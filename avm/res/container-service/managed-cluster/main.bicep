@@ -1,6 +1,5 @@
 metadata name = 'Azure Kubernetes Service (AKS) Managed Clusters'
 metadata description = 'This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Specifies the name of the AKS cluster.')
 param name string
