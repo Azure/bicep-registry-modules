@@ -84,6 +84,8 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       agentPoolSize: 'Standard'
+      aadProfile: null
+      disableLocalAccounts: false
       systemPoolConfig: [
         {
           name: 'npsystem'

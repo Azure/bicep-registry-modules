@@ -60,6 +60,10 @@ module testDeployment '../../../main.bicep' = [
       principalId: nestedDependencies.outputs.identityPrincipalId
       monitoringWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsResourceId
       principalType: 'ServicePrincipal'
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
     }
   }
 ]
