@@ -8,6 +8,7 @@ This module deploys an App Service Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -44,10 +45,7 @@ This instance deploys the module with a base set of parameters. Note it does inc
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   name: 'serverfarmDeployment'
   params: {
-    // Required parameters
     name: 'wsfmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -64,13 +62,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "wsfmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -86,10 +79,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/web/serverfarm:<version>'
 
-// Required parameters
 param name = 'wsfmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -349,11 +339,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'app'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'lock'
-    }
     skuCapacity: 3
     skuName: 'P1v3'
     tags: {
@@ -401,15 +386,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     "kind": {
       "value": "app"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "lock"
-      }
     },
     "skuCapacity": {
       "value": 3
@@ -459,11 +435,6 @@ param diagnosticSettings = [
   }
 ]
 param kind = 'app'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'lock'
-}
 param skuCapacity = 3
 param skuName = 'P1v3'
 param tags = {
@@ -923,6 +894,14 @@ Zone Redundant server farms can only be used on Premium or ElasticPremium SKU ti
 | `name` | string | The name of the app service plan. |
 | `resourceGroupName` | string | The resource group the app service plan was deployed into. |
 | `resourceId` | string | The resource ID of the app service plan. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 
