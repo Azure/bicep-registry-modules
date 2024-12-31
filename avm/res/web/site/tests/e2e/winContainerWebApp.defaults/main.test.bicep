@@ -51,7 +51,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       kind: 'app,container,windows'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       siteConfig: {
@@ -66,9 +65,5 @@ module testDeployment '../../../main.bicep' = [
         windowsFxVersion: 'DOCKER|mcr.microsoft.com/azure-app-service/windows/parkingpage:latest'
       }
     }
-
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
