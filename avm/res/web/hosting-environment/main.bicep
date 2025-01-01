@@ -253,7 +253,7 @@ output name string = appServiceEnvironment.name
 output location string = appServiceEnvironment.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = appServiceEnvironment.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = appServiceEnvironment.?identity.?principalId
 
 // =============== //
 //   Definitions   //

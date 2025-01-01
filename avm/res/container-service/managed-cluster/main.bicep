@@ -1016,7 +1016,7 @@ output controlPlaneFQDN string = enablePrivateCluster
   : managedCluster.properties.fqdn
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = managedCluster.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = managedCluster.?identity.?principalId
 
 @description('The Client ID of the AKS identity.')
 output kubeletIdentityClientId string = managedCluster.properties.?identityProfile.?kubeletidentity.?clientId ?? ''
