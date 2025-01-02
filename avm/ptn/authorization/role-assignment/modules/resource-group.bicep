@@ -56,9 +56,7 @@ var builtInRoleNames = {
   )
 }
 
-var roleDefinitionIdVar = (contains(builtInRoleNames, roleDefinitionIdOrName)
-  ? builtInRoleNames[roleDefinitionIdOrName]
-  : roleDefinitionIdOrName)
+var roleDefinitionIdVar = (builtInRoleNames[?roleDefinitionIdOrName] ?? roleDefinitionIdOrName)
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(subscriptionId, resourceGroupName, roleDefinitionIdVar, principalId)
