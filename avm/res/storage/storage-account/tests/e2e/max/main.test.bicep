@@ -269,15 +269,15 @@ module testDeployment '../../../main.bicep' = [
               'x-ms-meta-target-path'
               'x-ms-meta-source-path'
             ]
-            maxAgeInSeconds: 200
-            methods: [
-              'GET'
-              'PUT'
-            ]
-            origins: [
+            allowedOrigins: [
               'http://*.contoso.com'
               'http://www.fabrikam.com'
             ]
+            allowedMethods: [
+              'GET'
+              'PUT'
+            ]
+            maxAgeInSeconds: 200
           }
         ]
       }
