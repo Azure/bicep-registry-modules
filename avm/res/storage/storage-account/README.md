@@ -573,20 +573,20 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             'x-ms-meta-source-path'
             'x-ms-meta-target-path'
           ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
           exposedHeaders: [
             'x-ms-meta-data'
             'x-ms-meta-source-path'
             'x-ms-meta-target-path'
           ]
           maxAgeInSeconds: 200
-          methods: [
-            'GET'
-            'PUT'
-          ]
-          origins: [
-            'http://*.contoso.com'
-            'http://www.fabrikam.com'
-          ]
         }
       ]
       diagnosticSettings: [
@@ -810,20 +810,20 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             'x-ms-meta-source-path'
             'x-ms-meta-target-path'
           ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
           exposedHeaders: [
             'x-ms-meta-data'
             'x-ms-meta-source-path'
             'x-ms-meta-target-path'
           ]
           maxAgeInSeconds: 200
-          methods: [
-            'GET'
-            'PUT'
-          ]
-          origins: [
-            'http://*.contoso.com'
-            'http://www.fabrikam.com'
-          ]
         }
       ]
       diagnosticSettings: [
@@ -901,20 +901,20 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             'x-ms-meta-source-path'
             'x-ms-meta-target-path'
           ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
           exposedHeaders: [
             'x-ms-meta-data'
             'x-ms-meta-source-path'
             'x-ms-meta-target-path'
           ]
           maxAgeInSeconds: 200
-          methods: [
-            'GET'
-            'PUT'
-          ]
-          origins: [
-            'http://*.contoso.com'
-            'http://www.fabrikam.com'
-          ]
         }
       ]
       diagnosticSettings: [
@@ -1117,20 +1117,20 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "x-ms-meta-source-path",
               "x-ms-meta-target-path"
             ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
             "exposedHeaders": [
               "x-ms-meta-data",
               "x-ms-meta-source-path",
               "x-ms-meta-target-path"
             ],
-            "maxAgeInSeconds": 200,
-            "methods": [
-              "GET",
-              "PUT"
-            ],
-            "origins": [
-              "http://*.contoso.com",
-              "http://www.fabrikam.com"
-            ]
+            "maxAgeInSeconds": 200
           }
         ],
         "diagnosticSettings": [
@@ -1372,20 +1372,20 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "x-ms-meta-source-path",
               "x-ms-meta-target-path"
             ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
             "exposedHeaders": [
               "x-ms-meta-data",
               "x-ms-meta-source-path",
               "x-ms-meta-target-path"
             ],
-            "maxAgeInSeconds": 200,
-            "methods": [
-              "GET",
-              "PUT"
-            ],
-            "origins": [
-              "http://*.contoso.com",
-              "http://www.fabrikam.com"
-            ]
+            "maxAgeInSeconds": 200
           }
         ],
         "diagnosticSettings": [
@@ -1473,20 +1473,20 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "x-ms-meta-source-path",
               "x-ms-meta-target-path"
             ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
             "exposedHeaders": [
               "x-ms-meta-data",
               "x-ms-meta-source-path",
               "x-ms-meta-target-path"
             ],
-            "maxAgeInSeconds": 200,
-            "methods": [
-              "GET",
-              "PUT"
-            ],
-            "origins": [
-              "http://*.contoso.com",
-              "http://www.fabrikam.com"
-            ]
+            "maxAgeInSeconds": 200
           }
         ],
         "diagnosticSettings": [
@@ -1675,20 +1675,20 @@ param fileServices = {
         'x-ms-meta-source-path'
         'x-ms-meta-target-path'
       ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
       exposedHeaders: [
         'x-ms-meta-data'
         'x-ms-meta-source-path'
         'x-ms-meta-target-path'
       ]
       maxAgeInSeconds: 200
-      methods: [
-        'GET'
-        'PUT'
-      ]
-      origins: [
-        'http://*.contoso.com'
-        'http://www.fabrikam.com'
-      ]
     }
   ]
   diagnosticSettings: [
@@ -1912,20 +1912,20 @@ param queueServices = {
         'x-ms-meta-source-path'
         'x-ms-meta-target-path'
       ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
       exposedHeaders: [
         'x-ms-meta-data'
         'x-ms-meta-source-path'
         'x-ms-meta-target-path'
       ]
       maxAgeInSeconds: 200
-      methods: [
-        'GET'
-        'PUT'
-      ]
-      origins: [
-        'http://*.contoso.com'
-        'http://www.fabrikam.com'
-      ]
     }
   ]
   diagnosticSettings: [
@@ -2003,20 +2003,20 @@ param tableServices = {
         'x-ms-meta-source-path'
         'x-ms-meta-target-path'
       ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
       exposedHeaders: [
         'x-ms-meta-data'
         'x-ms-meta-source-path'
         'x-ms-meta-target-path'
       ]
       maxAgeInSeconds: 200
-      methods: [
-        'GET'
-        'PUT'
-      ]
-      origins: [
-        'http://*.contoso.com'
-        'http://www.fabrikam.com'
-      ]
     }
   ]
   diagnosticSettings: [
