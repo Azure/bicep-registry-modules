@@ -215,11 +215,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource app 'Microsoft.Web/sites@2023-12-01' existing = {
+resource app 'Microsoft.Web/sites@2024-04-01' existing = {
   name: appName
 }
 
-resource slot 'Microsoft.Web/sites/slots@2023-12-01' = {
+resource slot 'Microsoft.Web/sites/slots@2024-04-01' = {
   name: name
   parent: app
   location: location
@@ -258,7 +258,7 @@ resource slot 'Microsoft.Web/sites/slots@2023-12-01' = {
   }
 }
 
-module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
+module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs) || !empty(appInsightResourceId) || !empty(storageAccountResourceId)) {
   name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
   params: {
     slotName: slot.name

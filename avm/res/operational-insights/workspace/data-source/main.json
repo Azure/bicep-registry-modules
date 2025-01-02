@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "3019400626196043317"
+      "version": "0.32.4.45862",
+      "templateHash": "17349115996815882874"
     },
     "name": "Log Analytics Workspace Datasources",
     "description": "This module deploys a Log Analytics Workspace Data Source.",
@@ -152,10 +152,7 @@
         "syslogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxSyslog')), parameters('syslogName'), null())]",
         "syslogSeverities": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'LinuxSyslog'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('syslogSeverities'), null())]",
         "performanceCounters": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxPerformanceObject')), parameters('performanceCounters'), null())]"
-      },
-      "dependsOn": [
-        "workspace"
-      ]
+      }
     }
   },
   "outputs": {
