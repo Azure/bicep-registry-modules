@@ -48,6 +48,31 @@ module testDeployment '../../../main.bicep' = [
         defaultAction: 'Deny'
         bypass: 'AzureServices'
       }
+      blobServices: {
+        corsRules: [
+          {
+            allowedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            exposedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            maxAgeInSeconds: 200
+            methods: [
+              'GET'
+              'PUT'
+            ]
+            origins: [
+              'http://*.contoso.com'
+              'http://www.fabrikam.com'
+            ]
+          }
+        ]
+      }
     }
   }
 ]
