@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "3210797771365278499"
+      "version": "0.32.4.45862",
+      "templateHash": "4064950797693018837"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone.",
@@ -969,8 +969,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17184746855591114267"
+              "version": "0.32.4.45862",
+              "templateHash": "2326491541446487905"
             },
             "name": "Public DNS Zone A record",
             "description": "This module deploys a Public DNS Zone A record.",
@@ -1137,10 +1137,7 @@
                 "metadata": "[parameters('metadata')]",
                 "TTL": "[parameters('ttl')]",
                 "targetResource": "[if(not(empty(parameters('targetResourceId'))), createObject('id', parameters('targetResourceId')), null())]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "A_roleAssignments": {
               "copy": {
@@ -1237,8 +1234,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7817764105789679714"
+              "version": "0.32.4.45862",
+              "templateHash": "17050721962929786080"
             },
             "name": "Public DNS Zone AAAA record",
             "description": "This module deploys a Public DNS Zone AAAA record.",
@@ -1405,10 +1402,7 @@
                 "metadata": "[parameters('metadata')]",
                 "TTL": "[parameters('ttl')]",
                 "targetResource": "[if(not(empty(parameters('targetResourceId'))), createObject('id', parameters('targetResourceId')), null())]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "AAAA_roleAssignments": {
               "copy": {
@@ -1505,8 +1499,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "14841477015461182740"
+              "version": "0.32.4.45862",
+              "templateHash": "7801716337979819896"
             },
             "name": "Public DNS Zone CNAME record",
             "description": "This module deploys a Public DNS Zone CNAME record.",
@@ -1673,10 +1667,7 @@
                 "metadata": "[parameters('metadata')]",
                 "TTL": "[parameters('ttl')]",
                 "targetResource": "[if(not(empty(parameters('targetResourceId'))), createObject('id', parameters('targetResourceId')), null())]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "CNAME_roleAssignments": {
               "copy": {
@@ -1770,8 +1761,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7392290278324947651"
+              "version": "0.32.4.45862",
+              "templateHash": "9019647418715778214"
             },
             "name": "Public DNS Zone CAA record",
             "description": "This module deploys a Public DNS Zone CAA record.",
@@ -1930,10 +1921,7 @@
                 "metadata": "[parameters('metadata')]",
                 "caaRecords": "[parameters('caaRecords')]",
                 "TTL": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "CAA_roleAssignments": {
               "copy": {
@@ -2027,8 +2015,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6270819353969968995"
+              "version": "0.32.4.45862",
+              "templateHash": "6127933726132900344"
             },
             "name": "Public DNS Zone MX record",
             "description": "This module deploys a Public DNS Zone MX record.",
@@ -2187,10 +2175,7 @@
                 "metadata": "[parameters('metadata')]",
                 "MXRecords": "[parameters('mxRecords')]",
                 "TTL": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "MX_roleAssignments": {
               "copy": {
@@ -2284,8 +2269,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "14380397644512533588"
+              "version": "0.32.4.45862",
+              "templateHash": "5272805845421818843"
             },
             "name": "Public DNS Zone NS record",
             "description": "This module deploys a Public DNS Zone NS record.",
@@ -2444,10 +2429,7 @@
                 "metadata": "[parameters('metadata')]",
                 "NSRecords": "[parameters('nsRecords')]",
                 "TTL": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "NS_roleAssignments": {
               "copy": {
@@ -2541,8 +2523,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "832235689182152716"
+              "version": "0.32.4.45862",
+              "templateHash": "7174722682201993647"
             },
             "name": "Public DNS Zone PTR record",
             "description": "This module deploys a Public DNS Zone PTR record.",
@@ -2701,10 +2683,7 @@
                 "metadata": "[parameters('metadata')]",
                 "PTRRecords": "[parameters('ptrRecords')]",
                 "TTL": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "PTR_roleAssignments": {
               "copy": {
@@ -2798,8 +2777,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "18205185605727276078"
+              "version": "0.32.4.45862",
+              "templateHash": "8699513060398264509"
             },
             "name": "Public DNS Zone SOA record",
             "description": "This module deploys a Public DNS Zone SOA record.",
@@ -2958,10 +2937,7 @@
                 "metadata": "[parameters('metadata')]",
                 "SOARecord": "[parameters('soaRecord')]",
                 "TTL": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "SOA_roleAssignments": {
               "copy": {
@@ -3055,8 +3031,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17838962507786847676"
+              "version": "0.32.4.45862",
+              "templateHash": "9201580860688784326"
             },
             "name": "Public DNS Zone SRV record",
             "description": "This module deploys a Public DNS Zone SRV record.",
@@ -3215,10 +3191,7 @@
                 "metadata": "[parameters('metadata')]",
                 "SRVRecords": "[parameters('srvRecords')]",
                 "TTL": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "SRV_roleAssignments": {
               "copy": {
@@ -3312,8 +3285,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "8037353991621891503"
+              "version": "0.32.4.45862",
+              "templateHash": "12041383892639375688"
             },
             "name": "Public DNS Zone TXT record",
             "description": "This module deploys a Public DNS Zone TXT record.",
@@ -3472,10 +3445,7 @@
                 "metadata": "[parameters('metadata')]",
                 "TTL": "[parameters('ttl')]",
                 "TXTRecords": "[parameters('txtRecords')]"
-              },
-              "dependsOn": [
-                "dnsZone"
-              ]
+              }
             },
             "TXT_roleAssignments": {
               "copy": {
