@@ -615,6 +615,7 @@ module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileSe
     protocolSettings: fileServices.?protocolSettings
     shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
     shares: fileServices.?shares
+    corsRules: queueServices.?corsRules
   }
 }
 
@@ -625,6 +626,7 @@ module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queu
     storageAccountName: storageAccount.name
     diagnosticSettings: queueServices.?diagnosticSettings
     queues: queueServices.?queues
+    corsRules: queueServices.?corsRules
   }
 }
 
@@ -635,6 +637,7 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
     storageAccountName: storageAccount.name
     diagnosticSettings: tableServices.?diagnosticSettings
     tables: tableServices.?tables
+    corsRules: tableServices.?corsRules
   }
 }
 

@@ -28,8 +28,8 @@ param containerDeleteRetentionPolicyDays int?
 @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
 param containerDeleteRetentionPolicyAllowPermanentDelete bool = false
 
-@description('Optional. Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service.')
-param corsRules array = []
+@description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
+param corsRules corsRule[]?
 
 @description('Optional. Indicates the default version to use for requests to the Blob service if an incoming request\'s version is not specified. Possible values include version 2008-10-27 and all more recent versions.')
 param defaultServiceVersion string = ''
@@ -90,9 +90,11 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
         ? containerDeleteRetentionPolicyAllowPermanentDelete
         : null
     }
-    cors: {
-      corsRules: corsRules
-    }
+    cors: corsRules != null
+      ? {
+          corsRules: corsRules
+        }
+      : null
     defaultServiceVersion: !empty(defaultServiceVersion) ? defaultServiceVersion : null
     deleteRetentionPolicy: {
       enabled: deleteRetentionPolicyEnabled
@@ -173,3 +175,26 @@ output resourceId string = blobServices.id
 
 @description('The name of the deployed blob service.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for a cors rule.')
+type corsRule = {
+  @description('Required. A list of headers allowed to be part of the cross-origin request.')
+  allowedHeaders: string[]
+
+  @description('Required. A list of HTTP methods that are allowed to be executed by the origin.')
+  allowedMethods: ('CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'MERGE' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE')[]
+
+  @description('Required. A list of origin domains that will be allowed via CORS, or "*" to allow all domains')
+  allowedOrigins: string[]
+
+  @description('Required. A list of response headers to expose to CORS clients.')
+  exposedHeaders: string[]
+
+  @description('Required. The number of seconds that the client/browser should cache a preflight response.')
+  maxAgeInSeconds: int
+}

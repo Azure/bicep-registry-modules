@@ -257,6 +257,29 @@ module testDeployment '../../../main.bicep' = [
         containerDeleteRetentionPolicyDays: 10
         deleteRetentionPolicyEnabled: true
         deleteRetentionPolicyDays: 9
+        corsRules: [
+          {
+            allowedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            exposedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            maxAgeInSeconds: 200
+            methods: [
+              'GET'
+              'PUT'
+            ]
+            origins: [
+              'http://*.contoso.com'
+              'http://www.fabrikam.com'
+            ]
+          }
+        ]
       }
       fileServices: {
         diagnosticSettings: [
@@ -304,6 +327,29 @@ module testDeployment '../../../main.bicep' = [
           {
             name: 'avdprofiles2'
             shareQuota: 102400
+          }
+        ]
+        corsRules: [
+          {
+            allowedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            exposedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            maxAgeInSeconds: 200
+            methods: [
+              'GET'
+              'PUT'
+            ]
+            origins: [
+              'http://*.contoso.com'
+              'http://www.fabrikam.com'
+            ]
           }
         ]
       }
@@ -370,6 +416,29 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         ]
+        corsRules: [
+          {
+            allowedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            exposedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            maxAgeInSeconds: 200
+            methods: [
+              'GET'
+              'PUT'
+            ]
+            origins: [
+              'http://*.contoso.com'
+              'http://www.fabrikam.com'
+            ]
+          }
+        ]
       }
       queueServices: {
         diagnosticSettings: [
@@ -417,6 +486,29 @@ module testDeployment '../../../main.bicep' = [
           {
             name: 'queue2'
             metadata: {}
+          }
+        ]
+        corsRules: [
+          {
+            allowedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            exposedHeaders: [
+              'x-ms-meta-data'
+              'x-ms-meta-target-path'
+              'x-ms-meta-source-path'
+            ]
+            maxAgeInSeconds: 200
+            methods: [
+              'GET'
+              'PUT'
+            ]
+            origins: [
+              'http://*.contoso.com'
+              'http://www.fabrikam.com'
+            ]
           }
         ]
       }
@@ -503,9 +595,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

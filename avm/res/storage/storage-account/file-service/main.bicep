@@ -18,8 +18,8 @@ param shareDeleteRetentionPolicy object = {
   days: 7
 }
 
-@description('Optional. Specifies CORS rules for the File service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the File service.')
-param corsRules array = []
+@description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
+param corsRules corsRule[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 
@@ -39,9 +39,11 @@ resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01
   name: name
   parent: storageAccount
   properties: {
-    cors: {
-      corsRules: corsRules
-    }
+    cors: corsRules != null
+      ? {
+          corsRules: corsRules
+        }
+      : null
     protocolSettings: protocolSettings
     shareDeleteRetentionPolicy: shareDeleteRetentionPolicy
   }
@@ -100,3 +102,26 @@ output resourceId string = fileServices.id
 
 @description('The resource group of the deployed file share service.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for a cors rule.')
+type corsRule = {
+  @description('Required. A list of headers allowed to be part of the cross-origin request.')
+  allowedHeaders: string[]
+
+  @description('Required. A list of HTTP methods that are allowed to be executed by the origin.')
+  allowedMethods: ('CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'MERGE' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE')[]
+
+  @description('Required. A list of origin domains that will be allowed via CORS, or "*" to allow all domains')
+  allowedOrigins: string[]
+
+  @description('Required. A list of response headers to expose to CORS clients.')
+  exposedHeaders: string[]
+
+  @description('Required. The number of seconds that the client/browser should cache a preflight response.')
+  maxAgeInSeconds: int
+}
