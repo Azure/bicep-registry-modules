@@ -98,7 +98,7 @@ type corsRule = {
   @description('Required. A list of HTTP methods that are allowed to be executed by the origin.')
   allowedMethods: ('CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'MERGE' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE')[]
 
-  @description('Required. A list of origin domains that will be allowed via CORS, or "*" to allow all domains')
+  @description('Required. A list of origin domains that will be allowed via CORS, or "*" to allow all domains.')
   allowedOrigins: string[]
 
   @description('Required. A list of response headers to expose to CORS clients.')

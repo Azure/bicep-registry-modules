@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13888237391523939663"
+      "templateHash": "11827515814796864310"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -2623,7 +2623,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1030823195542256081"
+              "templateHash": "7252642994593643480"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
@@ -2666,7 +2666,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains"
+                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
                   }
                 },
                 "exposedHeaders": {
@@ -3562,7 +3562,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "18117189768772036839"
+              "templateHash": "18143375699147338954"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service.",
@@ -3605,7 +3605,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains"
+                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
                   }
                 },
                 "exposedHeaders": {
@@ -4403,7 +4403,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1912357054656496188"
+              "templateHash": "6583754380159166860"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service.",
@@ -4446,7 +4446,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains"
+                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
                   }
                 },
                 "exposedHeaders": {
@@ -4994,7 +4994,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1781486174862432339"
+              "templateHash": "13926418529151806401"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service.",
@@ -5037,7 +5037,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains"
+                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
                   }
                 },
                 "exposedHeaders": {
