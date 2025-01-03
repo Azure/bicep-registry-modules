@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14090341461051325079"
+      "templateHash": "1829947756542609050"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -2119,7 +2119,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12201850926589437696"
+              "templateHash": "11837640174240239957"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -2142,7 +2142,7 @@
               "type": "int",
               "defaultValue": 400,
               "metadata": {
-                "description": "Optional. Request Units per second."
+                "description": "Optional. Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level."
               }
             },
             "collections": {
@@ -2222,7 +2222,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "6624674794933817904"
+                      "templateHash": "12154958259971251860"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -2251,7 +2251,7 @@
                       "type": "int",
                       "defaultValue": 400,
                       "metadata": {
-                        "description": "Optional. Request Units per second."
+                        "description": "Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level."
                       }
                     },
                     "indexes": {
