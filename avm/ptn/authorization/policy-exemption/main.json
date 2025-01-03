@@ -1,0 +1,710 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "18445188542008261648"
+    },
+    "name": "Policy Exemptions (All scopes)",
+    "description": "This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Required. Specifies the name of the policy exemption. Maximum length is 24 characters for management group scope."
+      }
+    },
+    "assignmentScopeValidation": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "DoNotValidate",
+        "Default"
+      ],
+      "metadata": {
+        "description": "Optional. The option to validate whether the exemption is at or under the assignment scope."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. This message will be part of response in case of policy violation."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 128,
+      "metadata": {
+        "description": "Optional. The display name of the policy exemption. Maximum length is 128 characters."
+      }
+    },
+    "exemptionCategory": {
+      "type": "string",
+      "allowedValues": [
+        "Mitigated",
+        "Waiver"
+      ],
+      "metadata": {
+        "description": "Required. The policy exemption category."
+      }
+    },
+    "expiresOn": {
+      "type": "string",
+      "nullable": true,
+      "minLength": 20,
+      "maxLength": 20,
+      "metadata": {
+        "description": "Optional. The expiration date and time (in UTC ISO 8601 format yyyy-MM-ddTHH:mm:ssZ) of the policy exemption."
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+      }
+    },
+    "policyAssignmentId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the ID of the policy assignment that is being exempted."
+      }
+    },
+    "policyDefinitionReferenceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition."
+      }
+    },
+    "resourceSelectors": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location."
+      }
+    },
+    "managementGroupId": {
+      "type": "string",
+      "defaultValue": "[managementGroup().name]",
+      "metadata": {
+        "description": "Optional. The Target Scope for the Policy. The name of the management group for the policy exemption. If not provided, will use the current scope for deployment."
+      }
+    },
+    "subscriptionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy exemption."
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Target Scope for the Policy. The name of the resource group for the policy exemption."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[take(format('46d3xbcp.ptn.authorization-policyexemption.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "policyExemption_mg": {
+      "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PolicyExemption-MG-Module', uniqueString(deployment().name, parameters('location')))]",
+      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "description": {
+            "value": "[parameters('description')]"
+          },
+          "displayName": {
+            "value": "[parameters('displayName')]"
+          },
+          "assignmentScopeValidation": {
+            "value": "[parameters('assignmentScopeValidation')]"
+          },
+          "exemptionCategory": {
+            "value": "[parameters('exemptionCategory')]"
+          },
+          "expiresOn": {
+            "value": "[parameters('expiresOn')]"
+          },
+          "metadata": {
+            "value": "[parameters('metadata')]"
+          },
+          "policyAssignmentId": {
+            "value": "[parameters('policyAssignmentId')]"
+          },
+          "policyDefinitionReferenceIds": {
+            "value": "[parameters('policyDefinitionReferenceIds')]"
+          },
+          "resourceSelectors": {
+            "value": "[parameters('resourceSelectors')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "17217850393909725714"
+            },
+            "name": "Policy Exemptions (Management Group scope)",
+            "description": "This module deploys a policy exemption at a Management Group scope.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy exemption. Maximum length is 64 characters for management group scope."
+              }
+            },
+            "assignmentScopeValidation": {
+              "type": "string",
+              "defaultValue": "Default",
+              "allowedValues": [
+                "DoNotValidate",
+                "Default"
+              ],
+              "metadata": {
+                "description": "Optional. The option to validate whether the exemption is at or under the assignment scope."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. This message will be part of response in case of policy violation."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 128,
+              "metadata": {
+                "description": "Optional. The display name of the policy exemption. Maximum length is 128 characters."
+              }
+            },
+            "exemptionCategory": {
+              "type": "string",
+              "allowedValues": [
+                "Mitigated",
+                "Waiver"
+              ],
+              "metadata": {
+                "description": "Required. The policy exemption category."
+              }
+            },
+            "expiresOn": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 20,
+              "maxLength": 20,
+              "metadata": {
+                "description": "Optional. The expiration date and time (in UTC ISO 8601 format yyyy-MM-ddTHH:mm:ssZ) of the policy exemption."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+              }
+            },
+            "policyAssignmentId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the ID of the policy assignment that is being exempted."
+              }
+            },
+            "policyDefinitionReferenceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition."
+              }
+            },
+            "resourceSelectors": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location."
+              }
+            }
+          },
+          "resources": {
+            "policyExemption": {
+              "type": "Microsoft.Authorization/policyExemptions",
+              "apiVersion": "2022-07-01-preview",
+              "name": "[parameters('name')]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "displayName": "[parameters('displayName')]",
+                "assignmentScopeValidation": "[parameters('assignmentScopeValidation')]",
+                "exemptionCategory": "[parameters('exemptionCategory')]",
+                "expiresOn": "[parameters('expiresOn')]",
+                "metadata": "[parameters('metadata')]",
+                "policyAssignmentId": "[parameters('policyAssignmentId')]",
+                "policyDefinitionReferenceIds": "[parameters('policyDefinitionReferenceIds')]",
+                "resourceSelectors": "[parameters('resourceSelectors')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy exemption name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy exemption resource ID."
+              },
+              "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyExemptions', parameters('name'))]"
+            }
+          }
+        }
+      }
+    },
+    "policyExemption_sub": {
+      "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PolicyExemption-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[coalesce(parameters('subscriptionId'), '')]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "description": {
+            "value": "[parameters('description')]"
+          },
+          "displayName": {
+            "value": "[parameters('displayName')]"
+          },
+          "assignmentScopeValidation": {
+            "value": "[parameters('assignmentScopeValidation')]"
+          },
+          "exemptionCategory": {
+            "value": "[parameters('exemptionCategory')]"
+          },
+          "expiresOn": {
+            "value": "[parameters('expiresOn')]"
+          },
+          "metadata": {
+            "value": "[parameters('metadata')]"
+          },
+          "policyAssignmentId": {
+            "value": "[parameters('policyAssignmentId')]"
+          },
+          "policyDefinitionReferenceIds": {
+            "value": "[parameters('policyDefinitionReferenceIds')]"
+          },
+          "resourceSelectors": {
+            "value": "[parameters('resourceSelectors')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "2362298674161098325"
+            },
+            "name": "Policy Exemptions (Subscription scope)",
+            "description": "This module deploys a policy exemption at a Subscription scope.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy exemption. Maximum length is 64 characters for subscription scope."
+              }
+            },
+            "assignmentScopeValidation": {
+              "type": "string",
+              "defaultValue": "Default",
+              "allowedValues": [
+                "DoNotValidate",
+                "Default"
+              ],
+              "metadata": {
+                "description": "Optional. The option to validate whether the exemption is at or under the assignment scope."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. This message will be part of response in case of policy violation."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 128,
+              "metadata": {
+                "description": "Optional. The display name of the policy exemption. Maximum length is 128 characters."
+              }
+            },
+            "exemptionCategory": {
+              "type": "string",
+              "allowedValues": [
+                "Mitigated",
+                "Waiver"
+              ],
+              "metadata": {
+                "description": "Required. The policy exemption category."
+              }
+            },
+            "expiresOn": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 20,
+              "maxLength": 20,
+              "metadata": {
+                "description": "Optional. The expiration date and time (in UTC ISO 8601 format yyyy-MM-ddTHH:mm:ssZ) of the policy exemption."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+              }
+            },
+            "policyAssignmentId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the ID of the policy assignment that is being exempted."
+              }
+            },
+            "policyDefinitionReferenceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition."
+              }
+            },
+            "resourceSelectors": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location."
+              }
+            }
+          },
+          "resources": {
+            "policyExemption": {
+              "type": "Microsoft.Authorization/policyExemptions",
+              "apiVersion": "2022-07-01-preview",
+              "name": "[parameters('name')]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "displayName": "[parameters('displayName')]",
+                "assignmentScopeValidation": "[parameters('assignmentScopeValidation')]",
+                "exemptionCategory": "[parameters('exemptionCategory')]",
+                "expiresOn": "[parameters('expiresOn')]",
+                "metadata": "[parameters('metadata')]",
+                "policyAssignmentId": "[parameters('policyAssignmentId')]",
+                "policyDefinitionReferenceIds": "[parameters('policyDefinitionReferenceIds')]",
+                "resourceSelectors": "[parameters('resourceSelectors')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy exemption name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy exemption resource ID."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Authorization/policyExemptions', parameters('name'))]"
+            }
+          }
+        }
+      }
+    },
+    "policyExemption_rg": {
+      "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PolicyExemption-RG-Module', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[coalesce(parameters('subscriptionId'), '')]",
+      "resourceGroup": "[coalesce(parameters('resourceGroupName'), '')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "description": {
+            "value": "[parameters('description')]"
+          },
+          "displayName": {
+            "value": "[parameters('displayName')]"
+          },
+          "assignmentScopeValidation": {
+            "value": "[parameters('assignmentScopeValidation')]"
+          },
+          "exemptionCategory": {
+            "value": "[parameters('exemptionCategory')]"
+          },
+          "expiresOn": {
+            "value": "[parameters('expiresOn')]"
+          },
+          "metadata": {
+            "value": "[parameters('metadata')]"
+          },
+          "policyAssignmentId": {
+            "value": "[parameters('policyAssignmentId')]"
+          },
+          "policyDefinitionReferenceIds": {
+            "value": "[parameters('policyDefinitionReferenceIds')]"
+          },
+          "resourceSelectors": {
+            "value": "[parameters('resourceSelectors')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "8554892027886181020"
+            },
+            "name": "Policy Exemptions (Resource Group scope)",
+            "description": "This module deploys a policy exemption at a Resource Group scope.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy exemption. Maximum length is 64 characters for resource group scope."
+              }
+            },
+            "assignmentScopeValidation": {
+              "type": "string",
+              "defaultValue": "Default",
+              "allowedValues": [
+                "DoNotValidate",
+                "Default"
+              ],
+              "metadata": {
+                "description": "Optional. The option to validate whether the exemption is at or under the assignment scope."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. This message will be part of response in case of policy violation."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 128,
+              "metadata": {
+                "description": "Optional. The display name of the policy exemption. Maximum length is 128 characters."
+              }
+            },
+            "exemptionCategory": {
+              "type": "string",
+              "allowedValues": [
+                "Mitigated",
+                "Waiver"
+              ],
+              "metadata": {
+                "description": "Required. The policy exemption category."
+              }
+            },
+            "expiresOn": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 20,
+              "maxLength": 20,
+              "metadata": {
+                "description": "Optional. The expiration date and time (in UTC ISO 8601 format yyyy-MM-ddTHH:mm:ssZ) of the policy exemption."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+              }
+            },
+            "policyAssignmentId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the ID of the policy assignment that is being exempted."
+              }
+            },
+            "policyDefinitionReferenceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition."
+              }
+            },
+            "resourceSelectors": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location."
+              }
+            }
+          },
+          "resources": {
+            "policyExemption": {
+              "type": "Microsoft.Authorization/policyExemptions",
+              "apiVersion": "2022-07-01-preview",
+              "name": "[parameters('name')]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "displayName": "[parameters('displayName')]",
+                "assignmentScopeValidation": "[parameters('assignmentScopeValidation')]",
+                "exemptionCategory": "[parameters('exemptionCategory')]",
+                "expiresOn": "[parameters('expiresOn')]",
+                "metadata": "[parameters('metadata')]",
+                "policyAssignmentId": "[parameters('policyAssignmentId')]",
+                "policyDefinitionReferenceIds": "[parameters('policyDefinitionReferenceIds')]",
+                "resourceSelectors": "[parameters('resourceSelectors')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy exemption name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy exemption resource ID."
+              },
+              "value": "[resourceId('Microsoft.Authorization/policyExemptions', parameters('name'))]"
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Policy Exemption Name."
+      },
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('policyExemption_mg').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('policyExemption_sub').outputs.name.value, reference('policyExemption_rg').outputs.name.value))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Policy Exemption resource ID."
+      },
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('policyExemption_mg').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('policyExemption_sub').outputs.resourceId.value, reference('policyExemption_rg').outputs.resourceId.value))]"
+    }
+  }
+}

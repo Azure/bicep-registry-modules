@@ -64,6 +64,23 @@ module testDeployment '../../../main.bicep' = [
       tier: 'GeneralPurpose'
       delegatedSubnetResourceId: nestedDependencies.outputs.subnetResourceId
       privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+      firewallRules: [
+        {
+          endIpAddress: '0.0.0.0'
+          name: 'AllowAllWindowsAzureIps'
+          startIpAddress: '0.0.0.0'
+        }
+        {
+          endIpAddress: '10.10.10.10'
+          name: 'test-rule1'
+          startIpAddress: '10.10.10.1'
+        }
+        {
+          endIpAddress: '100.100.100.10'
+          name: 'test-rule2'
+          startIpAddress: '100.100.100.1'
+        }
+      ]
       storageAutoIoScaling: 'Enabled'
       storageSizeGB: 64
       storageIOPS: 400

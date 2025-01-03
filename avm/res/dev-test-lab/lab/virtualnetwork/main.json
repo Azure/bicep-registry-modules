@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12122718661184299591"
+      "version": "0.32.4.45862",
+      "templateHash": "6588565032345183133"
     },
     "name": "DevTest Lab Virtual Networks",
     "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
@@ -204,10 +204,7 @@
         "externalProviderResourceId": "[parameters('externalProviderResourceId')]",
         "allowedSubnets": "[parameters('allowedSubnets')]",
         "subnetOverrides": "[parameters('subnetOverrides')]"
-      },
-      "dependsOn": [
-        "lab"
-      ]
+      }
     }
   },
   "outputs": {

@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Web App, using large parameter set'
+metadata name = 'Linux Web App, using large parameter set'
 metadata description = 'This instance deploys the module asa Linux Web App with most of its features enabled.'
 
 // ========== //
@@ -47,7 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {

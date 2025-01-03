@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "10498063087675421166"
+      "version": "0.32.4.45862",
+      "templateHash": "11891154534022239824"
     },
     "name": "DBforMySQL Flexible Server Firewall Rules",
     "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule.",
