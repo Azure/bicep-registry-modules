@@ -160,11 +160,11 @@ output eventHubNamespaceName string = eventHubNamespace.name
 @description('The name of the Event Hub Namespace Event Hub Authorization Rule.')
 output eventHubNamespaceEventHubAuthorizationRuleName string = eventHubNamespace::eventHub::authorizationRule.name
 
-@description('The resource ID of the Service Bus Topic.')
+@description('The resource ID of the Service Bus Namespace Topic.')
 output serviceBusNamespaceTopicResourceId string = serviceBusNamespace::topic.id
 
-@description('The resource ID of the Service Bus Authorization Rule.')
-output serviceBusNamespaceTopicAuthorizationRuleResourceId string = serviceBusNamespace::topic::authorizationRule.id
+@description('The resource ID of the Service Bus Namespace Topic Authorization Rule.')
+output serviceBusNamespaceTopicAuthorizationRuleName string = serviceBusNamespace::topic::authorizationRule.name
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
