@@ -135,7 +135,15 @@ output name string = endpoint.name
 //   Definitions   //
 // =============== //
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+// NOTE: This managed identity type (either-or) is not available in the AVM-Common-Types module.
+@description('The type for the managed identity.')
+type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource.')
+  userAssignedResourceId: string?
+}
 
 @description('The type for the Digital Twin Endpoint.')
 @discriminator('endpointType')
@@ -156,7 +164,7 @@ type eventGridPropertiesType = {
   deadLetterUri: string?
 
   @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-  managedIdentities: managedIdentityAllType?
+  managedIdentities: managedIdentitiesType?
 
   @description('Required. The resource ID of the Event Grid Topic to get access keys from.')
   eventGridTopicResourceId: string
@@ -176,7 +184,7 @@ type eventHubPropertiesType = {
   deadLetterUri: string?
 
   @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-  managedIdentities: managedIdentityAllType?
+  managedIdentities: managedIdentitiesType?
 
   @description('Required. Specifies the authentication type being used for connecting to the endpoint.')
   authentication: eventHubAuthorizationPropertiesType
@@ -224,7 +232,7 @@ type serviceBusPropertiesType = {
   deadLetterUri: string?
 
   @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-  managedIdentities: managedIdentityAllType?
+  managedIdentities: managedIdentitiesType?
 }
 
 @discriminator('type')

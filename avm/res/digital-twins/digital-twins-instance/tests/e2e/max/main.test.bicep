@@ -94,9 +94,7 @@ module testDeployment '../../../main.bicep' = [
               type: 'IdentityBased'
             }
             managedIdentities: {
-              userAssignedResourceIds: [
-                nestedDependencies.outputs.managedIdentityResourceId
-              ]
+              userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
             }
           }
         }
@@ -110,9 +108,7 @@ module testDeployment '../../../main.bicep' = [
               type: 'KeyBased'
             }
             managedIdentities: {
-              userAssignedResourceIds: [
-                nestedDependencies.outputs.managedIdentityResourceId
-              ]
+              userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
             }
           }
         }
