@@ -100,18 +100,29 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
 
   resource topic 'topics@2022-10-01-preview' = {
     name: 'topic'
-  }
 
-  resource authorizationRule 'AuthorizationRules@2024-01-01' = {
-    name: 'testRule'
-    properties: {
-      rights: [
-        'Listen'
-        'Send'
-        'Manage'
-      ]
+    resource authorizationRule 'authorizationRules@2024-01-01' = {
+      name: 'testRule'
+      properties: {
+        rights: [
+          'Listen'
+          'Send'
+          'Manage'
+        ]
+      }
     }
   }
+
+  // resource authorizationRule 'AuthorizationRules@2024-01-01' = {
+  //   name: 'testRule'
+  //   properties: {
+  //     rights: [
+  //       'Listen'
+  //       'Send'
+  //       'Manage'
+  //     ]
+  //   }
+  // }
 }
 
 resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
@@ -164,7 +175,7 @@ output eventHubNamespaceEventHubAuthorizationRuleName string = eventHubNamespace
 output serviceBusNamespaceTopicResourceId string = serviceBusNamespace::topic.id
 
 @description('The resource ID of the Service Bus Authorization Rule.')
-output serviceBusNamespaceAuthorizationRuleResourceId string = serviceBusNamespace::authorizationRule.id
+output serviceBusNamespaceAuthorizationRuleResourceId string = serviceBusNamespace::topic::authorizationRule.id
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
