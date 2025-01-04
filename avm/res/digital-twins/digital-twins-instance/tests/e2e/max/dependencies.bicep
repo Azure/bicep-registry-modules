@@ -67,6 +67,11 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
+resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
+  name: eventGridTopicName
+  location: location
+}
+
 resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
   name: eventHubNamespaceName
   location: location
@@ -112,11 +117,6 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
       }
     }
   }
-}
-
-resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
-  name: eventGridTopicName
-  location: location
 }
 
 resource eventHubNamespaceRbacAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
