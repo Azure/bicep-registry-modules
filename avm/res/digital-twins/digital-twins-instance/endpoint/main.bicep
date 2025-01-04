@@ -10,12 +10,12 @@ param digitalTwinInstanceName string
 @description('Required. The properties of the endpoint.')
 param properties propertiesType
 
-var identity = !empty(properties.authentication.?managedIdentities)
+var identity = !empty(properties.?authentication.?managedIdentities)
   ? {
-      type: (properties.authentication.?managedIdentities.?systemAssigned ?? false)
+      type: (properties.?authentication.?managedIdentities.?systemAssigned ?? false)
         ? 'SystemAssigned'
-        : (!empty(properties.authentication.?managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
-      userAssignedIdentity: properties.authentication.?managedIdentities.?userAssignedResourceId
+        : (!empty(properties.?authentication.?managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
+      userAssignedIdentity: properties.?authentication.?managedIdentities.?userAssignedResourceId
     }
   : null
 
