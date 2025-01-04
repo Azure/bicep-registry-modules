@@ -89,7 +89,7 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
           authenticationType: properties.authentication.type
           ...(properties.authentication.type == 'IdentityBased'
             ? {
-                endpointUri: 'sb://${eventHubNamespace.name}.servicebus.windows.net/'
+                endpointUri: 'sb://${eventHubNamespace.name}.servicebus.windows.net'
                 entityPath: eventHubNamespace::eventHub.name
               }
             : {
@@ -105,7 +105,7 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
           authenticationType: properties.authentication.type
           ...(properties.authentication.type == 'IdentityBased'
             ? {
-                endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net/'
+                endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net'
                 entityPath: serviceBusNamespace::topic.name
               }
             : {
