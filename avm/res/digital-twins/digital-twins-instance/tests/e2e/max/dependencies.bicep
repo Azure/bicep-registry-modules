@@ -112,17 +112,6 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
       }
     }
   }
-
-  // resource authorizationRule 'AuthorizationRules@2024-01-01' = {
-  //   name: 'testRule'
-  //   properties: {
-  //     rights: [
-  //       'Listen'
-  //       'Send'
-  //       'Manage'
-  //     ]
-  //   }
-  // }
 }
 
 resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
@@ -182,6 +171,9 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Event Grid Topic.')
 output eventGridTopicResourceId string = eventGridTopic.id
+
+@description('The endpoint of the created Event Grid Topic.')
+output eventGridTopicEndpoint string = eventGridTopic.properties.endpoint
 
 @description('The resource ID of the created Event Hub Namespace Event Hub.')
 output eventHubNamespaceEventHubResourceId string = eventHubNamespace::eventHub.id

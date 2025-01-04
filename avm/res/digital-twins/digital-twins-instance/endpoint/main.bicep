@@ -82,7 +82,9 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
     ...(properties.endpointType == 'EventGrid'
       ? {
           authenticationType: 'KeyBased'
-          TopicEndpoint: 'dummy' // eventGridTopic.properties.endpoint // Introduces a breaking dependency
+          // Should use the comment code for simplification, but this introduces a bug where all deployments not using the eventGridTopic resourceId will fail as they cannot resolve the dependency (that they're not using). Asking for the TopicEndpoints is a workaround.
+          // TopicEndpoint: eventGridTopic.properties.endpoint // Introduces a breaking dependency. E.g., https://dep-dtdmax-evgt-01.eastus-1.eventgrid.azure.net/api/events
+          TopicEndpoint: properties.topicEndpoint
           accessKey1: eventGridTopic.listkeys().key1
           accessKey2: eventGridTopic.listkeys().key2
         }
@@ -168,6 +170,9 @@ type eventGridPropertiesType = {
 
   @description('Required. The resource ID of the Event Grid Topic to get access keys from.')
   eventGridTopicResourceId: string
+
+  @description('Required. The endpoint of the Event Grid Topic to get access keys from.')
+  eventGridTopicEndpoint: string
 }
 
 @export()

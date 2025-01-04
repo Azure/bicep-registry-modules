@@ -83,6 +83,7 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             endpointType: 'EventGrid'
             eventGridTopicResourceId: nestedDependencies.outputs.eventGridTopicResourceId
+            eventGridTopicEndpoint: nestedDependencies.outputs.eventGridTopicEndpoint
           }
         }
         {
