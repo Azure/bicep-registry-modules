@@ -58,11 +58,11 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existi
       )
 
   resource topic 'topics@2024-01-01' existing = if (!empty(properties.authentication.?serviceBusNamespaceTopicResourceId)) {
-    name: properties.authentication.?serviceBusNamespaceTopicResourceId
+    name: last(split(properties.authentication.?serviceBusNamespaceTopicResourceId, '/'))
   }
 
   resource authorizationRule 'AuthorizationRules@2024-01-01' existing = if (!empty(properties.authentication.?serviceBusNamespaceAuthorizationRuleResourceId)) {
-    name: properties.authentication.?serviceBusNamespaceAuthorizationRuleResourceId
+    name: last(split(properties.authentication.?serviceBusNamespaceAuthorizationRuleResourceId, '/'))
   }
 }
 
