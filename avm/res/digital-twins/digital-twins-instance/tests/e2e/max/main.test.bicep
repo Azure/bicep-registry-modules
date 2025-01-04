@@ -93,9 +93,9 @@ module testDeployment '../../../main.bicep' = [
             authentication: {
               eventHubResourceId: nestedDependencies.outputs.eventHubNamespaceEventHubResourceId
               type: 'IdentityBased'
-            }
-            managedIdentities: {
-              userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              managedIdentities: {
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              }
             }
           }
         }
@@ -108,9 +108,6 @@ module testDeployment '../../../main.bicep' = [
               eventHubResourceId: nestedDependencies.outputs.eventHubNamespaceEventHubResourceId
               type: 'KeyBased'
             }
-            managedIdentities: {
-              userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
-            }
           }
         }
         {
@@ -120,6 +117,9 @@ module testDeployment '../../../main.bicep' = [
             authentication: {
               type: 'IdentityBased'
               serviceBusNamespaceTopicResourceId: nestedDependencies.outputs.serviceBusNamespaceTopicResourceId
+              managedIdentities: {
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              }
             }
           }
         }
@@ -130,9 +130,9 @@ module testDeployment '../../../main.bicep' = [
             authentication: {
               type: 'IdentityBased'
               serviceBusNamespaceTopicResourceId: nestedDependencies.outputs.serviceBusNamespaceTopicResourceId
-            }
-            managedIdentities: {
-              systemAssigned: true
+              managedIdentities: {
+                systemAssigned: true
+              }
             }
           }
         }

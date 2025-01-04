@@ -10,12 +10,12 @@ param digitalTwinInstanceName string
 @description('Required. The properties of the endpoint.')
 param properties propertiesType
 
-var identity = !empty(properties.?managedIdentities)
+var identity = !empty(properties.authentication.?managedIdentities)
   ? {
-      type: (properties.?managedIdentities.?systemAssigned ?? false)
+      type: (properties.authentication.?managedIdentities.?systemAssigned ?? false)
         ? 'SystemAssigned'
-        : (!empty(properties.?managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
-      userAssignedIdentity: properties.?managedIdentities.?userAssignedResourceId
+        : (!empty(properties.authentication.?managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
+      userAssignedIdentity: properties.authentication.?managedIdentities.?userAssignedResourceId
     }
   : null
 
@@ -158,9 +158,6 @@ type eventGridPropertiesType = {
   @description('Optional. Dead letter storage URL for identity-based authentication.')
   deadLetterUri: string?
 
-  @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-  managedIdentities: managedIdentitiesType?
-
   @description('Required. The resource ID of the Event Grid Topic to get access keys from.')
   eventGridTopicResourceId: string
 
@@ -181,9 +178,6 @@ type eventHubPropertiesType = {
   @description('Optional. Dead letter storage URL for identity-based authentication.')
   deadLetterUri: string?
 
-  @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-  managedIdentities: managedIdentitiesType?
-
   @description('Required. Specifies the authentication type being used for connecting to the endpoint.')
   authentication: eventHubAuthorizationPropertiesType
 }
@@ -197,6 +191,9 @@ type eventHubAuthorizationPropertiesType =
 type eventHubIdentityBasedAuthenticationPropertiesType = {
   @description('Required. Specifies the authentication type being used for connecting to the endpoint. If \'KeyBased\' is selected, a connection string must be specified (at least the primary connection string). If \'IdentityBased\' is select, the endpointUri and entityPath properties must be specified.')
   type: 'IdentityBased'
+
+  @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
+  managedIdentities: managedIdentitiesType?
 
   @description('Required. The resource ID of the Event Hub Namespace Event Hub.')
   eventHubResourceId: string
@@ -228,9 +225,6 @@ type serviceBusPropertiesType = {
 
   @description('Optional. Dead letter storage URL for identity-based authentication.')
   deadLetterUri: string?
-
-  @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-  managedIdentities: managedIdentitiesType?
 }
 
 @discriminator('type')
@@ -242,6 +236,9 @@ type serviceBusNamespaceAuthorizationPropertiesType =
 type serviceBusNamespaceIdentityBasedAuthenticationPropertiesType = {
   @description('Required. Specifies the authentication type being used for connecting to the endpoint. If \'KeyBased\' is selected, a connection string must be specified (at least the primary connection string). If \'IdentityBased\' is select, the endpointUri and entityPath properties must be specified.')
   type: 'IdentityBased'
+
+  @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
+  managedIdentities: managedIdentitiesType?
 
   @description('Required. The ServiceBus Namespace Topic resource ID.')
   serviceBusNamespaceTopicResourceId: string
