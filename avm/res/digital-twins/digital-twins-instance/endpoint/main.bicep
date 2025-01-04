@@ -20,7 +20,7 @@ var identity = !empty(properties.?managedIdentities)
   : null
 
 resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' existing = if (properties.endpointType == 'EventGrid') {
-  name: split(properties.?eventGridTopicResourceId, '/')[1]
+  name: last(split(properties.?eventGridTopicResourceId, '/'))
   scope: resourceGroup(
     split((properties.?eventGridTopicResourceId ?? '//'), '/')[2],
     split((properties.?eventGridTopicResourceId ?? '////'), '/')[4]
