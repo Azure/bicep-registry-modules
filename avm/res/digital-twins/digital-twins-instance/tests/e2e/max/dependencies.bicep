@@ -108,6 +108,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
       rights: [
         'Listen'
         'Send'
+        'Manage'
       ]
     }
   }

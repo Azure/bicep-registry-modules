@@ -91,7 +91,7 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
     // EventHub Event Hub
     ...(properties.endpointType == 'EventHub'
       ? {
-          authenticationType: properties.authenticationType
+          authenticationType: properties.authentication.type
           ...(properties.authentication.type == 'IdentityBased'
             ? {
                 endpointUri: 'sb://${eventHubNamespace.name}.servicebus.windows.net/'
