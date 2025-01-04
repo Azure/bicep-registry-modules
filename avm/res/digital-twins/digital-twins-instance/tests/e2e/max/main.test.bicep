@@ -140,7 +140,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'KeyBasedServiceBusEndpoint'
           properties: {
             authentication: {
-              serviceBusNamespaceAuthorizationRuleResourceId: nestedDependencies.outputs.serviceBusNamespaceAuthorizationRuleResourceId
+              serviceBusNamespaceTopicAuthorizationRuleResourceId: nestedDependencies.outputs.serviceBusNamespaceTopicAuthorizationRuleResourceId
               type: 'KeyBased'
             }
             endpointType: 'ServiceBus'

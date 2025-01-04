@@ -46,23 +46,23 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' existing =
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = if (properties.endpointType == 'ServiceBus') {
   name: properties.authentication.type == 'IdentityBased'
     ? split(properties.authentication.?serviceBusNamespaceTopicResourceId, '/')[8]
-    : split(properties.authentication.?serviceBusNamespaceAuthorizationRuleResourceId, '/')[8]
+    : split(properties.authentication.?serviceBusNamespaceTopicAuthorizationRuleResourceId, '/')[8]
   scope: properties.authentication.type == 'IdentityBased'
     ? resourceGroup(
         split((properties.authentication.?serviceBusNamespaceTopicResourceId ?? '//'), '/')[2],
         split((properties.authentication.?serviceBusNamespaceTopicResourceId ?? '////'), '/')[4]
       )
     : resourceGroup(
-        split((properties.authentication.?serviceBusNamespaceAuthorizationRuleResourceId ?? '//'), '/')[2],
-        split((properties.authentication.?serviceBusNamespaceAuthorizationRuleResourceId ?? '////'), '/')[4]
+        split((properties.authentication.?serviceBusNamespaceTopicAuthorizationRuleResourceId ?? '//'), '/')[2],
+        split((properties.authentication.?serviceBusNamespaceTopicAuthorizationRuleResourceId ?? '////'), '/')[4]
       )
 
   resource topic 'topics@2024-01-01' existing = if (!empty(properties.authentication.?serviceBusNamespaceTopicResourceId)) {
     name: last(split(properties.authentication.?serviceBusNamespaceTopicResourceId, '/'))
-  }
 
-  resource authorizationRule 'AuthorizationRules@2024-01-01' existing = if (!empty(properties.authentication.?serviceBusNamespaceAuthorizationRuleResourceId)) {
-    name: last(split(properties.authentication.?serviceBusNamespaceAuthorizationRuleResourceId, '/'))
+    resource authorizationRule 'AuthorizationRules@2024-01-01' existing = if (!empty(properties.authentication.?serviceBusNamespaceTopicAuthorizationRuleResourceId)) {
+      name: last(split(properties.authentication.?serviceBusNamespaceTopicAuthorizationRuleResourceId, '/'))
+    }
   }
 }
 
@@ -116,8 +116,8 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
                 entityPath: serviceBusNamespace::topic.name
               }
             : {
-                primaryConnectionString: serviceBusNamespace::authorizationRule.listKeys().primaryConnectionString
-                secondaryConnectionString: serviceBusNamespace::authorizationRule.listKeys().secondaryConnectionString
+                primaryConnectionString: serviceBusNamespace::topic::authorizationRule.listKeys().primaryConnectionString
+                secondaryConnectionString: serviceBusNamespace::topic::authorizationRule.listKeys().secondaryConnectionString
               })
         }
       : {})
@@ -259,5 +259,5 @@ type serviceBusNamespaceKeyBasedAuthenticationPropertiesType = {
   type: 'KeyBased'
 
   @description('Required. The ServiceBus Namespace Authorization Rule resource ID.')
-  serviceBusNamespaceAuthorizationRuleResourceId: string
+  serviceBusNamespaceTopicAuthorizationRuleResourceId: string
 }
