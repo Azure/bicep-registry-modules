@@ -82,9 +82,9 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
     ...(properties.endpointType == 'EventGrid'
       ? {
           authenticationType: 'KeyBased'
-          TopicEndpoint: properties.endpointType == 'EventGrid' ? eventGridTopic.properties.endpoint : null
-          accessKey1: properties.endpointType == 'EventGrid' ? eventGridTopic.listkeys().key1 : null
-          accessKey2: properties.endpointType == 'EventGrid' ? eventGridTopic.listkeys().key2 : null
+          TopicEndpoint: eventGridTopic.properties.endpoint
+          accessKey1: eventGridTopic.listkeys().key1
+          accessKey2: eventGridTopic.listkeys().key2
         }
       : {})
 
