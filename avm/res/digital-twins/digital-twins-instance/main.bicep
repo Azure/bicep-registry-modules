@@ -131,9 +131,7 @@ module digitalTwinsInstance_endpoints 'endpoint/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-${index}'
     params: {
       digitalTwinInstanceName: digitalTwinsInstance.name
-      name: endpoint.?name ?? (endpoint.endpointType == 'EventGrid'
-        ? 'EventGridEndpoint'
-        : endpoint.endpointType == 'EventHub' ? 'EventHubEndpoint' : 'ServiceBusEndpoint')
+      name: endpoint.?name ?? '${endpoint.properties.endpointType}Endpoint'
       properties: endpoint.properties
     }
   }
