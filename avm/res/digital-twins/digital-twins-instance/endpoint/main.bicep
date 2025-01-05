@@ -121,7 +121,7 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
 }
 
 module test 'temp.bicep' = if (properties.endpointType == 'ServiceBus') {
-  name: 'serviceBusIdentityBasedParemTest'
+  name: 'serviceBusIdentityBasedParemTest-${name}'
   params: {
     authenticationType: properties.authentication.type
     endpointUri: properties.authentication.type == 'IdentityBased'
