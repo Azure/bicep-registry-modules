@@ -63,62 +63,59 @@ resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023
   name: digitalTwinInstanceName
 }
 
-resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-01-31' = {
-  name: name
-  parent: digitalTwinsInstance
-  properties: {
-    endpointType: properties.endpointType
-    identity: identity
-    deadLetterSecret: properties.?deadLetterSecret
-    deadLetterUri: properties.?deadLetterUri
-    // Event Grid Event Hub
-    ...(properties.endpointType == 'EventGrid'
-      ? {
-          authenticationType: 'KeyBased'
-          // Should use the comment code for simplification, but this introduces a bug where all deployments not using the eventGridTopic resourceId will fail as they cannot resolve the dependency (that they're not using). Asking for the TopicEndpoints is a workaround.
-          // TopicEndpoint: eventGridTopic.properties.endpoint // Introduces a breaking dependency. E.g., https://dep-dtdmax-evgt-01.eastus-1.eventgrid.azure.net/api/events
-          TopicEndpoint: properties.eventGridTopicEndpoint
-          accessKey1: eventGridTopic.listkeys().key1
-          accessKey2: eventGridTopic.listkeys().key2
-        }
-      : {})
+// resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-01-31' = {
+//   name: name
+//   parent: digitalTwinsInstance
+//   properties: {
+//     endpointType: properties.endpointType
+//     identity: identity
+//     deadLetterSecret: properties.?deadLetterSecret
+//     deadLetterUri: properties.?deadLetterUri
+//     // Event Grid Event Hub
+//     ...(properties.endpointType == 'EventGrid'
+//       ? {
+//           authenticationType: 'KeyBased'
+//           // Should use the comment code for simplification, but this introduces a bug where all deployments not using the eventGridTopic resourceId will fail as they cannot resolve the dependency (that they're not using). Asking for the TopicEndpoints is a workaround.
+//           // TopicEndpoint: eventGridTopic.properties.endpoint // Introduces a breaking dependency. E.g., https://dep-dtdmax-evgt-01.eastus-1.eventgrid.azure.net/api/events
+//           TopicEndpoint: properties.eventGridTopicEndpoint
+//           accessKey1: eventGridTopic.listkeys().key1
+//           accessKey2: eventGridTopic.listkeys().key2
+//         }
+//       : {})
 
-    // EventHub Event Hub
-    ...(properties.endpointType == 'EventHub'
-      ? {
-          authenticationType: properties.authentication.type
-          ...(properties.authentication.type == 'IdentityBased'
-            ? {
-                endpointUri: 'sb://${eventHubNamespace.name}.servicebus.windows.net'
-                entityPath: eventHubNamespace::eventHub.name
-              }
-            : {
-                connectionStringPrimaryKey: eventHubNamespace::eventHub::authorizationRule.listKeys().primaryConnectionString
-                connectionStringSecondaryKey: eventHubNamespace::eventHub::authorizationRule.listKeys().secondaryConnectionString
-              })
-        }
-      : {})
+//     // EventHub Event Hub
+//     ...(properties.endpointType == 'EventHub'
+//       ? {
+//           authenticationType: properties.authentication.type
+//           ...(properties.authentication.type == 'IdentityBased'
+//             ? {
+//                 endpointUri: 'sb://${eventHubNamespace.name}.servicebus.windows.net'
+//                 entityPath: eventHubNamespace::eventHub.name
+//               }
+//             : {
+//                 connectionStringPrimaryKey: eventHubNamespace::eventHub::authorizationRule.listKeys().primaryConnectionString
+//                 connectionStringSecondaryKey: eventHubNamespace::eventHub::authorizationRule.listKeys().secondaryConnectionString
+//               })
+//         }
+//       : {})
 
-    // Service Bus Event Hub
-    ...(properties.endpointType == 'ServiceBus'
-      ? {
-          authenticationType: properties.authentication.type
-          ...(properties.authentication.type == 'IdentityBased'
-            ? {
-                endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net'
-                entityPath: serviceBusNamespace::topic.name
-              }
-            : {
-                primaryConnectionString: serviceBusNamespace::topic::authorizationRule.listKeys().primaryConnectionString
-                secondaryConnectionString: serviceBusNamespace::topic::authorizationRule.listKeys().secondaryConnectionString
-              })
-        }
-      : {})
-  }
-  dependsOn: [
-    test
-  ]
-}
+//     // Service Bus Event Hub
+//     ...(properties.endpointType == 'ServiceBus'
+//       ? {
+//           authenticationType: properties.authentication.type
+//           ...(properties.authentication.type == 'IdentityBased'
+//             ? {
+//                 endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net'
+//                 entityPath: serviceBusNamespace::topic.name
+//               }
+//             : {
+//                 primaryConnectionString: serviceBusNamespace::topic::authorizationRule.listKeys().primaryConnectionString
+//                 secondaryConnectionString: serviceBusNamespace::topic::authorizationRule.listKeys().secondaryConnectionString
+//               })
+//         }
+//       : {})
+//   }
+// }
 
 module test 'temp.bicep' = if (properties.endpointType == 'ServiceBus') {
   name: 'serviceBusIdentityBasedParemTest-${name}'
@@ -137,14 +134,14 @@ module test 'temp.bicep' = if (properties.endpointType == 'ServiceBus') {
   }
 }
 
-@description('The resource ID of the Endpoint.')
-output resourceId string = endpoint.id
+// @description('The resource ID of the Endpoint.')
+// output resourceId string = endpoint.id
 
-@description('The name of the resource group the resource was created in.')
-output resourceGroupName string = resourceGroup().name
+// @description('The name of the resource group the resource was created in.')
+// output resourceGroupName string = resourceGroup().name
 
-@description('The name of the Endpoint.')
-output name string = endpoint.name
+// @description('The name of the Endpoint.')
+// output name string = endpoint.name
 
 // =============== //
 //   Definitions   //
