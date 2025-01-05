@@ -71,7 +71,7 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
     identity: identity
     deadLetterSecret: properties.?deadLetterSecret
     deadLetterUri: properties.?deadLetterUri
-    // Event Grid Event Hub
+    // Event Grid
     ...(properties.endpointType == 'EventGrid'
       ? {
           authenticationType: 'KeyBased'
@@ -83,7 +83,7 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
         }
       : {})
 
-    // EventHub Event Hub
+    // Event Hub
     ...(properties.endpointType == 'EventHub'
       ? {
           authenticationType: properties.authentication.type
@@ -99,16 +99,17 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
         }
       : {})
 
-    // Service Bus Event Hub
+    // Service Bus
     ...(properties.endpointType == 'ServiceBus'
       ? {
           authenticationType: properties.authentication.type
           ...(properties.authentication.type == 'IdentityBased'
             ? {
-                // endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net/'
-                // entityPath: serviceBusNamespace::topic.name
-                endpointUri: 'sb://${split(properties.authentication.serviceBusNamespaceTopicResourceId, '/')[8]}.servicebus.windows.net/'
-                entityPath: last(split((properties.authentication.serviceBusNamespaceTopicResourceId ?? '/'), '/'))
+                endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net/'
+                entityPath: serviceBusNamespace::topic.name
+                // Did not help
+                // endpointUri: 'sb://${split(properties.authentication.serviceBusNamespaceTopicResourceId, '/')[8]}.servicebus.windows.net/'
+                // entityPath: last(split((properties.authentication.serviceBusNamespaceTopicResourceId ?? '/'), '/'))
               }
             : {
                 primaryConnectionString: serviceBusNamespace::topic::authorizationRule.listKeys().primaryConnectionString
