@@ -29,6 +29,7 @@ This module deploys a Storage Account File Share Service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`corsRules`](#parameter-corsrules) | array | Specifies CORS rules for the File service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the File service. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`name`](#parameter-name) | string | The name of the file service. |
 | [`protocolSettings`](#parameter-protocolsettings) | object | Protocol settings for file service. |
@@ -41,6 +42,14 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+
+### Parameter: `corsRules`
+
+Specifies CORS rules for the File service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the File service.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `diagnosticSettings`
 

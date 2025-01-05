@@ -81,7 +81,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableSecretRotation: true
     kedaAddon: true
     kubernetesVersion: '1.28'
-    location: '<location>'
     maintenanceConfigurations: [
       {
         maintenanceWindow: {
@@ -169,9 +168,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "kubernetesVersion": {
       "value": "1.28"
     },
-    "location": {
-      "value": "<location>"
-    },
     "maintenanceConfigurations": {
       "value": [
         {
@@ -257,7 +253,6 @@ param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
 param kedaAddon = true
 param kubernetesVersion = '1.28'
-param location = '<location>'
 param maintenanceConfigurations = [
   {
     maintenanceWindow: {
@@ -510,7 +505,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -809,7 +804,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -1076,7 +1071,7 @@ param maintenanceConfigurations = [
   }
 ]
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -1143,7 +1138,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       aadProfileEnableAzureRBAC: true
       aadProfileManaged: true
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -1184,9 +1178,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "aadProfileManaged": true
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -1221,7 +1212,6 @@ param aadProfile = {
   aadProfileEnableAzureRBAC: true
   aadProfileManaged: true
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -1476,9 +1466,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -1597,12 +1586,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -1716,9 +1702,8 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -1778,7 +1763,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     aadProfile: '<aadProfile>'
     disableLocalAccounts: false
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -1819,9 +1803,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "disableLocalAccounts": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -1854,7 +1835,6 @@ param primaryAgentPoolProfiles = [
 // Non-required parameters
 param aadProfile = '<aadProfile>'
 param disableLocalAccounts = false
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -1930,9 +1910,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     dnsServiceIP: '10.10.200.10'
     enablePrivateCluster: true
-    location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -2022,12 +2001,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "enablePrivateCluster": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -2112,9 +2088,8 @@ param agentPools = [
 ]
 param dnsServiceIP = '10.10.200.10'
 param enablePrivateCluster = true
-param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -2248,7 +2223,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     dnsServiceIP: '10.10.200.10'
     enableAzureDefender: true
     enablePrivateCluster: true
-    location: '<location>'
     maintenanceConfigurations: [
       {
         maintenanceWindow: {
@@ -2282,7 +2256,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -2444,9 +2418,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "enablePrivateCluster": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "maintenanceConfigurations": {
       "value": [
         {
@@ -2483,7 +2454,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -2638,7 +2609,6 @@ param disableLocalAccounts = true
 param dnsServiceIP = '10.10.200.10'
 param enableAzureDefender = true
 param enablePrivateCluster = true
-param location = '<location>'
 param maintenanceConfigurations = [
   {
     maintenanceWindow: {
@@ -2672,7 +2642,7 @@ param maintenanceConfigurations = [
   }
 ]
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -3904,7 +3874,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -4014,7 +3984,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -4269,14 +4239,14 @@ The configuration protected settings of the extension.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`sshPrivateKey`](#parameter-fluxextensionconfigurationprotectedsettingssshprivatekey) | string | The SSH private key to use for Git authentication. |
+| [`sshPrivateKey`](#parameter-fluxextensionconfigurationprotectedsettingssshprivatekey) | securestring | The SSH private key to use for Git authentication. |
 
 ### Parameter: `fluxExtension.configurationProtectedSettings.sshPrivateKey`
 
 The SSH private key to use for Git authentication.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `fluxExtension.configurations`
 
@@ -4601,7 +4571,7 @@ The managed identity definition for this resource. Only one type of identity is 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -4611,9 +4581,9 @@ Enables system assigned managed identity on the resource.
 - Type: bool
 - MinValue: 24
 
-### Parameter: `managedIdentities.userAssignedResourcesIds`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -5103,6 +5073,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/kubernetes-configuration/extension:0.2.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 
