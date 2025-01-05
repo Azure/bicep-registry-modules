@@ -105,8 +105,10 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
           authenticationType: properties.authentication.type
           ...(properties.authentication.type == 'IdentityBased'
             ? {
-                endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net/'
-                entityPath: serviceBusNamespace::topic.name
+                // endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net/'
+                // entityPath: serviceBusNamespace::topic.name
+                endpointUri: 'sb://${split(properties.authentication.serviceBusNamespaceTopicResourceId, '/')[8]}.servicebus.windows.net/'
+                entityPath: last(split((properties.authentication.serviceBusNamespaceTopicResourceId ?? '/'), '/'))
               }
             : {
                 primaryConnectionString: serviceBusNamespace::topic::authorizationRule.listKeys().primaryConnectionString
