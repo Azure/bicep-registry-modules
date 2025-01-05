@@ -117,6 +117,23 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
   }
 }
 
+module test 'temp.bicep' = if (properties.endpointType == 'ServiceBus') {
+  name: 'serviceBusIdentityBasedParemTest'
+  params: {
+    authenticationType: properties.authentication.type
+    endpointUri: properties.authentication.type == 'IdentityBased'
+      ? 'sb://${serviceBusNamespace.name}.servicebus.windows.net'
+      : null
+    entityPath: properties.authentication.type == 'IdentityBased' ? serviceBusNamespace::topic.name : null
+    primaryConnectionString: properties.authentication.type != 'IdentityBased'
+      ? serviceBusNamespace::topic::authorizationRule.listKeys().primaryConnectionString
+      : null
+    secondaryConnectionString: properties.authentication.type != 'IdentityBased'
+      ? serviceBusNamespace::topic::authorizationRule.listKeys().secondaryConnectionString
+      : null
+  }
+}
+
 @description('The resource ID of the Endpoint.')
 output resourceId string = endpoint.id
 
