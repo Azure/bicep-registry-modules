@@ -115,6 +115,9 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
         }
       : {})
   }
+  dependsOn: [
+    test
+  ]
 }
 
 module test 'temp.bicep' = if (properties.endpointType == 'ServiceBus') {
