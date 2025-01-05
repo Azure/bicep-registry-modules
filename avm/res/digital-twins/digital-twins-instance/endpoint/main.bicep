@@ -89,7 +89,7 @@ resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023
 //           authenticationType: properties.authentication.type
 //           ...(properties.authentication.type == 'IdentityBased'
 //             ? {
-//                 endpointUri: 'sb://${eventHubNamespace.name}.servicebus.windows.net'
+//                 endpointUri: 'sb://${eventHubNamespace.name}.servicebus.windows.net/'
 //                 entityPath: eventHubNamespace::eventHub.name
 //               }
 //             : {
@@ -105,7 +105,7 @@ resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023
 //           authenticationType: properties.authentication.type
 //           ...(properties.authentication.type == 'IdentityBased'
 //             ? {
-//                 endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net'
+//                 endpointUri: 'sb://${serviceBusNamespace.name}.servicebus.windows.net/'
 //                 entityPath: serviceBusNamespace::topic.name
 //               }
 //             : {
@@ -118,11 +118,11 @@ resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023
 // }
 
 module test 'temp.bicep' = if (properties.endpointType == 'ServiceBus') {
-  name: 'serviceBusIdentityBasedParemTest-${name}'
+  name: 'paremTest-${name}'
   params: {
     authenticationType: properties.authentication.type
     endpointUri: properties.authentication.type == 'IdentityBased'
-      ? 'sb://${serviceBusNamespace.name}.servicebus.windows.net'
+      ? 'sb://${serviceBusNamespace.name}.servicebus.windows.net/'
       : null
     entityPath: properties.authentication.type == 'IdentityBased' ? serviceBusNamespace::topic.name : null
     primaryConnectionString: properties.authentication.type != 'IdentityBased'
@@ -142,6 +142,9 @@ module test 'temp.bicep' = if (properties.endpointType == 'ServiceBus') {
 
 // @description('The name of the Endpoint.')
 // output name string = endpoint.name
+
+// @description('The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API.')
+// output systemAssignedMIPrincipalId string? = endpoint.?identity.?principalId
 
 // =============== //
 //   Definitions   //
