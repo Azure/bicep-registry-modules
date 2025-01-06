@@ -1881,6 +1881,7 @@ Runtime configuration for the Container App.
 
 - Required: No
 - Type: object
+- Default: `{}`
 - MinValue: 1
 - MaxValue: 100
 
@@ -1944,7 +1945,7 @@ Enable jmx core metrics for the java app.
 
 Enable java agent injection for the java app.
 
-- Required: No
+- Required: Yes
 - Type: object
 - MinValue: 1
 - MaxValue: 100
@@ -1969,7 +1970,7 @@ Enable java agent injection for the java app.
 
 Capabilities on the java logging scenario.
 
-- Required: No
+- Required: Yes
 - Type: object
 - MinValue: 1
 - MaxValue: 100

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "520458021902896799"
+      "templateHash": "5729924031419865634"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -509,13 +509,11 @@
                       }
                     }
                   },
-                  "nullable": true,
                   "metadata": {
                     "description": "Required. Capabilities on the java logging scenario."
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "description": "Required. Enable java agent injection for the java app."
               }
@@ -942,7 +940,7 @@
     },
     "runtime": {
       "$ref": "#/definitions/runtimeType",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. Runtime configuration for the Container App."
       }
@@ -1051,7 +1049,7 @@
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
           "secrets": "[variables('secretList')]",
           "revisionTransitionThreshold": "[parameters('revisionTransitionThreshold')]",
-          "runtime": "[parameters('runtime')]"
+          "runtime": "[coalesce(parameters('runtime'), null())]"
         },
         "template": {
           "containers": "[parameters('containers')]",

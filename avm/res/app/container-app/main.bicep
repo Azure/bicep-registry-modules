@@ -132,7 +132,7 @@ param dapr object = {}
 param maxInactiveRevisions int = 0
 
 @description('Optional. Runtime configuration for the Container App.')
-param runtime runtimeType?
+param runtime runtimeType = {}
 
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
@@ -269,7 +269,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
       registries: !empty(registries) ? registries : null
       secrets: secretList
       revisionTransitionThreshold: revisionTransitionThreshold
-      runtime: runtime
+      runtime: runtime ?? null
     }
     template: {
       containers: containers
@@ -538,8 +538,8 @@ type runtimeType = {
             logger: string
           }
         ]
-      }?
-    }?
+      }
+    }
   }?
 }
 
