@@ -519,7 +519,6 @@ type runtimeType = {
     @description('Optional. Enable to auto configure the ASP.NET Core Data Protection feature.')
     autoConfigureDataProtection: bool
   }?
-
   @description('Optional. Runtime configuration for Java.')
   java: {
     @description('Required. Enable jmx core metrics for the java app.')
