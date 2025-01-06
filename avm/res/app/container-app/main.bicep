@@ -88,11 +88,6 @@ param tags object?
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 param registries array = []
 
-@description('Optional. The percent of the total number of replicas that must be brought up before revision transition occurs.')
-@minValue(1)
-@maxValue(100)
-param revisionTransitionThreshold int = 100
-
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
@@ -132,7 +127,7 @@ param dapr object = {}
 param maxInactiveRevisions int = 0
 
 @description('Optional. Runtime configuration for the Container App.')
-param runtime runtimeType = {}
+param runtime runtimeType
 
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
@@ -268,8 +263,20 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secretList
-      revisionTransitionThreshold: revisionTransitionThreshold
-      runtime: runtime
+      runtime: {
+        dotnet: !empty(runtime.?dotnet) ? {
+          autoConfigureDataProtection: runtime.?dotnet.autoConfigureDataProtection
+        } : null
+        java: !empty(runtime.?java) ? {
+          enableMetrics: runtime.?java.enableMetrics
+          javaAgent: {
+            enabled: runtime.?java.enableJavaAgent
+            logging: {
+              loggerSettings: runtime.?java.?loggerSettings
+            }
+          }
+        } : null
+      }
     }
     template: {
       containers: containers
@@ -519,27 +526,22 @@ type runtimeType = {
     @description('Required. Enable to auto configure the ASP.NET Core Data Protection feature.')
     autoConfigureDataProtection: bool
   }?
+
   @description('Optional. Runtime configuration for Java.')
   java: {
-    @description('Required. Enable jmx core metrics for the java app.')
+    @description('Required. Enable JMX core metrics for the Java app.')
     enableMetrics: bool
-    @description('Required. Enable java agent injection for the java app.')
-    javaAgent: {
-      @description('Required. Enable java agent injection for the java app.')
-      enabled: bool
-      @description('Required. Capabilities on the java logging scenario.')
-      logging: {
-        @description('Required. Settings of the logger for the java app.')
-        loggerSettings: [
-          {
-            @description('Required. The specified logger log level.')
-            level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
-            @description('Required. The logger name.')
-            logger: string
-          }
-        ]
-      }
-    }
-  }?
-}
 
+    @description('Required. Enable Java agent injection for the Java app.')
+    enableJavaAgent: bool
+
+    @description('Optional. Java agent logging configuration.')
+    loggerSettings: {
+      @description('Required. Name of the logger.')
+      logger: string
+
+      @description('Required. Java agent logging level.')
+      level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
+    }[]?
+  }?
+}?

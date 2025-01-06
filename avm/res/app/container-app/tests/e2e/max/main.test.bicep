@@ -147,19 +147,15 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       runtime: {
-        java:{
-          enableMetrics: true
-          javaAgent: {
-            enabled: true
-            logging:{
-              loggerSettings: [
-                {
-                  level: 'off'
-                  logger: 'Test Logger'
-                }
-              ]
+        java: {
+          enableJavaAgent: true
+          enableMetrics: false
+          loggerSettings:[
+            {
+              level: 'info'
+              logger: 'test'
             }
-          }
+          ]
         }
       }
     }

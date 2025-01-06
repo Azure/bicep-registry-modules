@@ -325,18 +325,14 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ]
     runtime: {
       java: {
-        enableMetrics: true
-        javaAgent: {
-          enabled: true
-          logging: {
-            loggerSettings: [
-              {
-                level: 'off'
-                logger: 'Test Logger'
-              }
-            ]
+        enableJavaAgent: true
+        enableMetrics: false
+        loggerSettings: [
+          {
+            level: 'info'
+            logger: 'test'
           }
-        }
+        ]
       }
     }
     secrets: {
@@ -459,18 +455,14 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "runtime": {
       "value": {
         "java": {
-          "enableMetrics": true,
-          "javaAgent": {
-            "enabled": true,
-            "logging": {
-              "loggerSettings": [
-                {
-                  "level": "off",
-                  "logger": "Test Logger"
-                }
-              ]
+          "enableJavaAgent": true,
+          "enableMetrics": false,
+          "loggerSettings": [
+            {
+              "level": "info",
+              "logger": "test"
             }
-          }
+          ]
         }
       }
     },
@@ -581,18 +573,14 @@ param roleAssignments = [
 ]
 param runtime = {
   java: {
-    enableMetrics: true
-    javaAgent: {
-      enabled: true
-      logging: {
-        loggerSettings: [
-          {
-            level: 'off'
-            logger: 'Test Logger'
-          }
-        ]
+    enableJavaAgent: true
+    enableMetrics: false
+    loggerSettings: [
+      {
+        level: 'info'
+        logger: 'test'
       }
-    }
+    ]
   }
 }
 param secrets = {
@@ -1004,7 +992,6 @@ param tags = {
 | [`maxInactiveRevisions`](#parameter-maxinactiverevisions) | int | Max inactive revisions a Container App can have. |
 | [`registries`](#parameter-registries) | array | Collection of private container registry credentials for containers used by the Container app. |
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
-| [`revisionTransitionThreshold`](#parameter-revisiontransitionthreshold) | int | The percent of the total number of replicas that must be brought up before revision transition occurs. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. |
 | [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
@@ -1743,24 +1730,12 @@ User friendly suffix that is appended to the revision name.
 - Type: string
 - Default: `''`
 
-### Parameter: `revisionTransitionThreshold`
-
-The percent of the total number of replicas that must be brought up before revision transition occurs.
-
-- Required: No
-- Type: int
-- Default: `100`
-- MinValue: 1
-- MaxValue: 100
-
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 100
 - Roles configurable by name:
   - `'ContainerApp Reader'`
   - `'Contributor'`
@@ -1793,8 +1768,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1802,8 +1775,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1811,8 +1782,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1826,8 +1795,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1835,8 +1802,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `roleAssignments.description`
 
@@ -1844,8 +1809,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `roleAssignments.name`
 
@@ -1853,8 +1816,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1872,8 +1833,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `runtime`
 
@@ -1881,9 +1840,6 @@ Runtime configuration for the Container App.
 
 - Required: No
 - Type: object
-- Default: `{}`
-- MinValue: 1
-- MaxValue: 100
 
 **Optional parameters**
 
@@ -1898,8 +1854,6 @@ Runtime configuration for ASP.NET Core.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 100
 
 **Required parameters**
 
@@ -1913,8 +1867,6 @@ Enable to auto configure the ASP.NET Core Data Protection feature.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `runtime.java`
 
@@ -1922,73 +1874,72 @@ Runtime configuration for Java.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 100
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableMetrics`](#parameter-runtimejavaenablemetrics) | bool | Enable jmx core metrics for the java app. |
-| [`javaAgent`](#parameter-runtimejavajavaagent) | object | Enable java agent injection for the java app. |
+| [`enableJavaAgent`](#parameter-runtimejavaenablejavaagent) | bool | Enable Java agent injection for the Java app. |
+| [`enableMetrics`](#parameter-runtimejavaenablemetrics) | bool | Enable JMX core metrics for the Java app. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerSettings`](#parameter-runtimejavaloggersettings) | array | Java agent logging configuration. |
+
+### Parameter: `runtime.java.enableJavaAgent`
+
+Enable Java agent injection for the Java app.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `runtime.java.enableMetrics`
 
-Enable jmx core metrics for the java app.
+Enable JMX core metrics for the Java app.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 100
 
-### Parameter: `runtime.java.javaAgent`
+### Parameter: `runtime.java.loggerSettings`
 
-Enable java agent injection for the java app.
+Java agent logging configuration.
 
-- Required: Yes
-- Type: object
-- MinValue: 1
-- MaxValue: 100
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-runtimejavajavaagentenabled) | bool | Enable java agent injection for the java app. |
-| [`logging`](#parameter-runtimejavajavaagentlogging) | object | Capabilities on the java logging scenario. |
-
-### Parameter: `runtime.java.javaAgent.enabled`
-
-Enable java agent injection for the java app.
-
-- Required: Yes
-- Type: bool
-- MinValue: 1
-- MaxValue: 100
-
-### Parameter: `runtime.java.javaAgent.logging`
-
-Capabilities on the java logging scenario.
-
-- Required: Yes
-- Type: object
-- MinValue: 1
-- MaxValue: 100
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`loggerSettings`](#parameter-runtimejavajavaagentloggingloggersettings) | array | Settings of the logger for the java app. |
-
-### Parameter: `runtime.java.javaAgent.logging.loggerSettings`
-
-Settings of the logger for the java app.
-
-- Required: Yes
+- Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 100
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`level`](#parameter-runtimejavaloggersettingslevel) | string | Java agent logging level. |
+| [`logger`](#parameter-runtimejavaloggersettingslogger) | string | Name of the logger. |
+
+### Parameter: `runtime.java.loggerSettings.level`
+
+Java agent logging level.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'debug'
+    'error'
+    'info'
+    'off'
+    'trace'
+    'warn'
+  ]
+  ```
+
+### Parameter: `runtime.java.loggerSettings.logger`
+
+Name of the logger.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `scaleMaxReplicas`
 
@@ -1997,8 +1948,6 @@ Maximum number of container replicas. Defaults to 10 if not set.
 - Required: No
 - Type: int
 - Default: `10`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `scaleMinReplicas`
 
@@ -2007,8 +1956,6 @@ Minimum number of container replicas. Defaults to 3 if not set.
 - Required: No
 - Type: int
 - Default: `3`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `scaleRules`
 
@@ -2017,8 +1964,6 @@ Scaling rules.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `secrets`
 
@@ -2027,8 +1972,6 @@ The secrets of the Container App.
 - Required: No
 - Type: secureObject
 - Default: `{}`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `service`
 
@@ -2037,8 +1980,6 @@ Dev ContainerApp service type.
 - Required: No
 - Type: object
 - Default: `{}`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `serviceBinds`
 
@@ -2046,8 +1987,6 @@ List of container app services bound to the app.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 100
 
 **Required parameters**
 
@@ -2062,8 +2001,6 @@ The name of the service.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `serviceBinds.serviceId`
 
@@ -2071,8 +2008,6 @@ The service ID.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `stickySessionsAffinity`
 
@@ -2088,8 +2023,6 @@ Bool indicating if the Container App should enable session affinity.
     'sticky'
   ]
   ```
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `tags`
 
@@ -2097,8 +2030,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `trafficLabel`
 
@@ -2107,8 +2038,6 @@ Associates a traffic label with a revision. Label name should be consist of lowe
 - Required: No
 - Type: string
 - Default: `'label-1'`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `trafficLatestRevision`
 
@@ -2117,8 +2046,6 @@ Indicates that the traffic weight belongs to a latest stable revision.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `trafficRevisionName`
 
@@ -2127,8 +2054,6 @@ Name of a revision.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `trafficWeight`
 
@@ -2137,8 +2062,6 @@ Traffic weight assigned to a revision.
 - Required: No
 - Type: int
 - Default: `100`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `volumes`
 
@@ -2147,8 +2070,6 @@ List of volume definitions for the Container App.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 1
-- MaxValue: 100
 
 ### Parameter: `workloadProfileName`
 
@@ -2157,8 +2078,6 @@ Workload profile name to pin for container app execution.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 100
 
 ## Outputs
 
