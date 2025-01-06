@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "593495076821201322"
+      "templateHash": "3273945625733153858"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -491,13 +491,13 @@
                                 "warn"
                               ],
                               "metadata": {
-                                "description": "Conditional. The specified logger log level. Required if logger is specified."
+                                "description": "Required. The specified logger log level."
                               }
                             },
                             "logger": {
                               "type": "string",
                               "metadata": {
-                                "description": "Conditional. The logger name. Required if level is specified."
+                                "description": "Required. The logger name."
                               }
                             }
                           }
