@@ -174,7 +174,7 @@ module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
   }
 }
 
-resource aseExisting 'Microsoft.Web/hostingEnvironments@2024-04-01' existing = {
+resource aseExisting 'Microsoft.Web/hostingEnvironments@2023-12-01' existing = {
   name: name
 }
 

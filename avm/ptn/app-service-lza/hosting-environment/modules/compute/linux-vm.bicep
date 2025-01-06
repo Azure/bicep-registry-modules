@@ -33,7 +33,7 @@ param vmAuthenticationType string = 'password'
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('Required. Whether to enable deplotment telemetry.')
+@description('Required. Whether to enable deployment telemetry.')
 param enableTelemetry bool
 
 param location string = resourceGroup().location

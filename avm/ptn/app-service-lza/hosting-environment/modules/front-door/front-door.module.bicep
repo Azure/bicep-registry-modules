@@ -110,6 +110,55 @@ var contentTypeCompressionList = [
   'text/x-java-source'
 ]
 
+module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.0' = {
+  name: wafPolicyName
+  params: {
+    name: 'waffrontdoor'
+    location: 'Global'
+    sku: skuName
+    policySettings: {
+      enabledState: wafPolicyState
+      mode: wafPolicyMode
+      requestBodyCheck: 'Enabled'
+    }
+    customRules: {
+      rules: [
+        {
+          name: 'BlockMethod'
+          enabledState: 'Enabled'
+          action: 'Block'
+          ruleType: 'MatchRule'
+          priority: 10
+          rateLimitDurationInMinutes: 1
+          rateLimitThreshold: 100
+          matchConditions: [
+            {
+              matchVariable: 'RequestMethod'
+              operator: 'Equal'
+              negateCondition: true
+              matchValue: [
+                'GET'
+                'OPTIONS'
+                'HEAD'
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleSetType: 'Microsoft_DefaultRuleSet'
+          ruleSetVersion: '2.1'
+          ruleSetAction: wafRuleSetAction
+          ruleGroupOverrides: []
+        }
+      ]
+    }
+  }
+}
+
 module frontDoor 'br/public:avm/res/cdn/profile:0.7.0' = {
   name: afdName
   params: {
@@ -183,13 +232,24 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.7.0' = {
         ]
       }
     ]
+
     securityPolicies: [
       {
-        name: 'afdWafSecurityPolicy'
+        name: 'webApplicationFirewall'
         wafPolicyResourceId: waf.outputs.resourceId
         associations: [
           {
-            domains: []
+            domains: [
+              {
+                id: resourceId(
+                  subscription().subscriptionId,
+                  resourceGroup().name,
+                  'Microsoft.Cdn/profiles/afdEndpoints',
+                  afdName,
+                  '${endpointName}'
+                )
+              }
+            ]
             patternsToMatch: [
               '/*'
             ]
@@ -197,55 +257,6 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.7.0' = {
         ]
       }
     ]
-  }
-}
-
-module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.1' = {
-  name: wafPolicyName
-  params: {
-    name: wafPolicyName
-    location: 'Global'
-    sku: skuName
-    policySettings: {
-      enabledState: wafPolicyState
-      mode: wafPolicyMode
-      requestBodyCheck: 'Enabled'
-    }
-    customRules: {
-      rules: [
-        {
-          name: 'BlockMethod'
-          enabledState: 'Enabled'
-          action: 'Block'
-          ruleType: 'MatchRule'
-          priority: 10
-          rateLimitDurationInMinutes: 1
-          rateLimitThreshold: 100
-          matchConditions: [
-            {
-              matchVariable: 'RequestMethod'
-              operator: 'Equal'
-              negateCondition: true
-              matchValue: [
-                'GET'
-                'OPTIONS'
-                'HEAD'
-              ]
-            }
-          ]
-        }
-      ]
-    }
-    managedRules: {
-      managedRuleSets: [
-        {
-          ruleSetType: 'Microsoft_DefaultRuleSet'
-          ruleSetVersion: '2.1'
-          ruleSetAction: wafRuleSetAction
-          ruleGroupOverrides: []
-        }
-      ]
-    }
   }
 }
 
@@ -258,8 +269,8 @@ output afdProfileId string = frontDoor.outputs.resourceId
 @description('Name of the endpoint.')
 output endpointName string = frontDoor.outputs.endpointName
 
-// @description('HostName of the endpoint.')
-// output afdEndpointHostName string = frontDoor.outputs.
+@description('HostName of the endpoint.')
+output afdEndpointHostName string = frontDoor.outputs.uri
 
 @description('The resource group where the CDN profile is deployed.')
 output resourceGroupName string = resourceGroup().name

@@ -64,7 +64,7 @@ param subnetIdForVnetInjection string
 @description('Optional. If true, apps assigned to this App Service plan can be scaled independently. If false, apps assigned to this App Service plan will scale to all instances of the plan.')
 param perSiteScaling bool = false
 
-@description('Optional, dafualt is 20. Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.')
+@description('Optional, default is 20. Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.')
 param maximumElasticWorkerCount int = 20
 
 // @description('Optional, default is false. If true, then starts with minimum 3 instances')
@@ -89,16 +89,14 @@ param serverOS string = 'Windows'
 param targetWorkerSize int = 0
 
 @description('Optional. The name of metrics that will be streamed.')
-@allowed([
-  {
-    category: 'AllMetrics'
-    enabled: true
-  }
-])
 param diagnosticMetricsToEnable array = [
   {
-    category: 'AllMetrics'
-    enabled: true
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    workspaceResourceId: logAnalyticsWsId
   }
 ]
 
@@ -303,7 +301,7 @@ output webAppLocation string = webApp.outputs.location
 output webAppSystemAssignedPrincipalId string = webApp.outputs.systemAssignedMIPrincipalId
 
 @description('The Internal ingress IP of the ASE.')
-output internalInboundIpAddress string = ase.outputs.internalInboundIpAddress
+output internalInboundIpAddress string = deployAseV3 ? ase.outputs.internalInboundIpAddress : ''
 
 @description('The name of the ASE.')
-output aseName string = ase.outputs.name
+output aseName string = deployAseV3 ? ase.outputs.name : ''

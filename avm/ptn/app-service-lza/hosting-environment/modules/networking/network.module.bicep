@@ -15,9 +15,6 @@ param vnetSpokeAddressSpace string
 @description('CIDR of the subnet that will hold the app services plan')
 param subnetSpokeAppSvcAddressSpace string
 
-@description('CIDR of the subnet that will hold devOps agents etc ')
-param subnetSpokeDevOpsAddressSpace string
-
 @description('CIDR of the subnet that will hold the private endpoints of the supporting services')
 param subnetSpokePrivateEndpointAddressSpace string
 
@@ -68,12 +65,6 @@ var subnets = [
       : null
   }
   {
-    name: resourceNames.snetDevOps
-    addressPrefix: subnetSpokeDevOpsAddressSpace
-    privateEndpointNetworkPolicies: 'Enabled'
-    networkSecurityGroupResourceId: nsgPep.outputs.resourceId
-  }
-  {
     name: resourceNames.snetPe
     addressPrefix: subnetSpokePrivateEndpointAddressSpace
     privateEndpointNetworkPolicies: 'Disabled'
@@ -104,7 +95,7 @@ module routeTableToFirewall 'br/public:avm/res/network/route-table:0.4.0' = if (
   }
 }
 
-@description('NSG for the private enpoint subnet.')
+@description('NSG for the private endpoint subnet.')
 module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
   name: take('nsgPep-${deployment().name}', 64)
   params: {
@@ -165,6 +156,6 @@ resource vnetPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2
 
 output vnetSpokeId string = vnetSpoke.outputs.resourceId
 output vnetSpokeName string = vnetSpoke.outputs.name
-output snetAppSvcId string = vnetSpoke.outputs.subnetResourceIds[0].id
-output snetDevOpsId string = vnetSpoke.outputs.subnetResourceIds[1].id
-output snetPeId string = vnetSpoke.outputs.subnetResourceIds[2].id
+output snetAppSvcId string = vnetSpoke.outputs.subnetResourceIds[0]
+output snetPeId string = vnetSpoke.outputs.subnetResourceIds[1]
+output snetPeName string = vnetSpoke.outputs.subnetNames[1]
