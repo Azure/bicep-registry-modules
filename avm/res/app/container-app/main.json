@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5729924031419865634"
+      "templateHash": "14935262703233148545"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -1049,7 +1049,7 @@
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
           "secrets": "[variables('secretList')]",
           "revisionTransitionThreshold": "[parameters('revisionTransitionThreshold')]",
-          "runtime": "[coalesce(parameters('runtime'), null())]"
+          "runtime": "[parameters('runtime')]"
         },
         "template": {
           "containers": "[parameters('containers')]",

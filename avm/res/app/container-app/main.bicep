@@ -269,7 +269,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
       registries: !empty(registries) ? registries : null
       secrets: secretList
       revisionTransitionThreshold: revisionTransitionThreshold
-      runtime: runtime ?? null
+      runtime: runtime
     }
     template: {
       containers: containers
