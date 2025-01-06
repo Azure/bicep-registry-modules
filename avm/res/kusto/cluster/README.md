@@ -1153,6 +1153,8 @@ The Kusto Cluster databases.
 
 - Required: No
 - Type: array
+- MinValue: 2
+- MaxValue: 999
 
 **Required parameters**
 
@@ -1180,6 +1182,8 @@ The object type of the databse.
     'ReadWrite'
   ]
   ```
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `databases.name`
 
@@ -1187,6 +1191,8 @@ The name of the Kusto Cluster database.
 
 - Required: Yes
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `databases.readWriteProperties`
 
@@ -1194,6 +1200,8 @@ Required if the database kind is ReadWrite. Contains the properties of the datab
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Optional parameters**
 
@@ -1209,6 +1217,8 @@ Te time the data should be kept in cache for fast queries in TimeSpan.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `databases.readWriteProperties.keyVaultProperties`
 
@@ -1216,6 +1226,8 @@ The properties of the key vault.
 
 - Required: No
 - Type: object
+- MinValue: 2
+- MaxValue: 999
 
 **Optional parameters**
 
@@ -1232,6 +1244,8 @@ The name of the key.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `databases.readWriteProperties.keyVaultProperties.keyVaultUri`
 
@@ -1239,6 +1253,8 @@ The Uri of the key vault.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `databases.readWriteProperties.keyVaultProperties.keyVersion`
 
@@ -1246,6 +1262,8 @@ The version of the key.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `databases.readWriteProperties.keyVaultProperties.userIdentity`
 
@@ -1253,6 +1271,8 @@ The user identity.
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `databases.readWriteProperties.softDeletePeriod`
 
@@ -1260,6 +1280,8 @@ The time the data should be kept before it stops being accessible to queries in 
 
 - Required: No
 - Type: string
+- MinValue: 2
+- MaxValue: 999
 
 ### Parameter: `diagnosticSettings`
 
