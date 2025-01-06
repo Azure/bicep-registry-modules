@@ -146,9 +146,22 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
+      runtime: {
+        java:{
+          enableMetrics: true
+          javaAgent: {
+            enabled: true
+            logging:{
+              loggerSettings: [
+                {
+                  level: 'off'
+                  logger: 'Test Logger'
+                }
+              ]
+            }
+          }
+        }
+      }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

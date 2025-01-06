@@ -88,6 +88,11 @@ param tags object?
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 param registries array = []
 
+@description('Optional. The percent of the total number of replicas that must be brought up before revision transition occurs.')
+@minValue(1)
+@maxValue(100)
+param revisionTransitionThreshold int = 100
+
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
@@ -125,6 +130,9 @@ param dapr object = {}
 
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
+
+@description('Optional. Runtime configuration for the Container App.')
+param runtime runtimeType?
 
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
@@ -210,7 +218,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
+resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
   name: name
   tags: tags
   location: location
@@ -260,6 +268,8 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secretList
+      revisionTransitionThreshold: revisionTransitionThreshold
+      runtime: runtime
     }
     template: {
       containers: containers
@@ -500,3 +510,37 @@ type volumeMountType = {
   @description('Required. This must match the Name of a Volume.')
   volumeName: string
 }
+
+@export()
+@description('Optional. App runtime configuration for the Container App.')
+type runtimeType = {
+  @description('Optional. Runtime configuration for ASP.NET Core.')
+  dotnet: {
+    @description('Optional. Enable to auto configure the ASP.NET Core Data Protection feature.')
+    autoConfigureDataProtection: bool
+  }?
+
+  @description('Optional. Runtime configuration for Java.')
+  java: {
+    @description('Required. Enable jmx core metrics for the java app.')
+    enableMetrics: bool
+    @description('Optional. Enable jmx core metrics for the java app.')
+    javaAgent: {
+      @description('Required. Enable java agent injection for the java app.')
+      enabled: bool
+      @description('Optional. Capabilities on the java logging scenario.')
+      logging: {
+        @description('Optional. Settings of the logger for the java app.')
+        loggerSettings: [
+          {
+            @description('Conditional. The specified logger log level. Requuired if logger is specified.')
+            level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
+            @description('Conditional. The logger name. Required if level is specified.')
+            logger: string
+          }
+        ]
+      }?
+    }?
+  }?
+}
+
