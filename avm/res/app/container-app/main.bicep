@@ -516,25 +516,25 @@ type volumeMountType = {
 type runtimeType = {
   @description('Optional. Runtime configuration for ASP.NET Core.')
   dotnet: {
-    @description('Optional. Enable to auto configure the ASP.NET Core Data Protection feature.')
+    @description('Required. Enable to auto configure the ASP.NET Core Data Protection feature.')
     autoConfigureDataProtection: bool
   }?
   @description('Optional. Runtime configuration for Java.')
   java: {
     @description('Required. Enable jmx core metrics for the java app.')
     enableMetrics: bool
-    @description('Optional. Enable jmx core metrics for the java app.')
+    @description('Required. Enable java agent injection for the java app.')
     javaAgent: {
       @description('Required. Enable java agent injection for the java app.')
       enabled: bool
-      @description('Optional. Capabilities on the java logging scenario.')
+      @description('Required. Capabilities on the java logging scenario.')
       logging: {
-        @description('Optional. Settings of the logger for the java app.')
+        @description('Required. Settings of the logger for the java app.')
         loggerSettings: [
           {
             @description('Required. The specified logger log level.')
             level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
-            @description('Required. The logger name.')
+            @description('Required The logger name.')
             logger: string
           }
         ]

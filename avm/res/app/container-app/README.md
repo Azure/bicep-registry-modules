@@ -1900,7 +1900,7 @@ Runtime configuration for ASP.NET Core.
 - MinValue: 1
 - MaxValue: 100
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -1929,12 +1929,7 @@ Runtime configuration for Java.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableMetrics`](#parameter-runtimejavaenablemetrics) | bool | Enable jmx core metrics for the java app. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`javaAgent`](#parameter-runtimejavajavaagent) | object | Enable jmx core metrics for the java app. |
+| [`javaAgent`](#parameter-runtimejavajavaagent) | object | Enable java agent injection for the java app. |
 
 ### Parameter: `runtime.java.enableMetrics`
 
@@ -1947,7 +1942,7 @@ Enable jmx core metrics for the java app.
 
 ### Parameter: `runtime.java.javaAgent`
 
-Enable jmx core metrics for the java app.
+Enable java agent injection for the java app.
 
 - Required: No
 - Type: object
@@ -1959,11 +1954,6 @@ Enable jmx core metrics for the java app.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-runtimejavajavaagentenabled) | bool | Enable java agent injection for the java app. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`logging`](#parameter-runtimejavajavaagentlogging) | object | Capabilities on the java logging scenario. |
 
 ### Parameter: `runtime.java.javaAgent.enabled`
@@ -1984,7 +1974,7 @@ Capabilities on the java logging scenario.
 - MinValue: 1
 - MaxValue: 100
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |

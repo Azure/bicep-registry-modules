@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3273945625733153858"
+      "templateHash": "13281736690197756493"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -444,7 +444,7 @@
             "autoConfigureDataProtection": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Enable to auto configure the ASP.NET Core Data Protection feature."
+                "description": "Required. Enable to auto configure the ASP.NET Core Data Protection feature."
               }
             }
           },
@@ -497,7 +497,7 @@
                             "logger": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. The logger name."
+                                "description": "Required The logger name."
                               }
                             }
                           }
@@ -505,19 +505,19 @@
                       ],
                       "items": false,
                       "metadata": {
-                        "description": "Optional. Settings of the logger for the java app."
+                        "description": "Required. Settings of the logger for the java app."
                       }
                     }
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Capabilities on the java logging scenario."
+                    "description": "Required. Capabilities on the java logging scenario."
                   }
                 }
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. Enable jmx core metrics for the java app."
+                "description": "Required. Enable java agent injection for the java app."
               }
             }
           },
