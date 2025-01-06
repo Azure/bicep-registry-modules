@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13169512908722082078"
+      "templateHash": "7410970552090214950"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -435,6 +435,84 @@
         "description": "The type for a volume mount."
       }
     },
+    "runtimeType": {
+      "type": "object",
+      "properties": {
+        "dotnet": {
+          "type": "object",
+          "properties": {
+            "autoConfigureDataProtection": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Enable to auto configure the ASP.NET Core Data Protection feature."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Runtime configuration for ASP.NET Core."
+          }
+        },
+        "java": {
+          "type": "object",
+          "properties": {
+            "enableMetrics": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Enable JMX core metrics for the Java app."
+              }
+            },
+            "enableJavaAgent": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Enable Java agent injection for the Java app."
+              }
+            },
+            "loggerSettings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "logger": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the logger."
+                    }
+                  },
+                  "level": {
+                    "type": "string",
+                    "allowedValues": [
+                      "debug",
+                      "error",
+                      "info",
+                      "off",
+                      "trace",
+                      "warn"
+                    ],
+                    "metadata": {
+                      "description": "Required. Java agent logging level."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Java agent logging configuration."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Runtime configuration for Java."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. App runtime configuration for the Container App."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -834,6 +912,12 @@
         "description": "Optional. Max inactive revisions a Container App can have."
       }
     },
+    "runtime": {
+      "$ref": "#/definitions/runtimeType",
+      "metadata": {
+        "description": "Optional. Runtime configuration for the Container App."
+      }
+    },
     "containers": {
       "type": "array",
       "items": {
@@ -922,7 +1006,7 @@
     },
     "containerApp": {
       "type": "Microsoft.App/containerApps",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-10-02-preview",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -936,7 +1020,11 @@
           "service": "[if(and(parameters('includeAddOns'), not(empty(parameters('service')))), parameters('service'), null())]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
-          "secrets": "[variables('secretList')]"
+          "secrets": "[variables('secretList')]",
+          "runtime": {
+            "dotnet": "[if(not(empty(tryGet(parameters('runtime'), 'dotnet'))), createObject('autoConfigureDataProtection', tryGet(parameters('runtime'), 'dotnet', 'autoConfigureDataProtection')), null())]",
+            "java": "[if(not(empty(tryGet(parameters('runtime'), 'java'))), createObject('enableMetrics', tryGet(parameters('runtime'), 'java', 'enableMetrics'), 'javaAgent', createObject('enabled', tryGet(parameters('runtime'), 'java', 'enableJavaAgent'), 'logging', createObject('loggerSettings', tryGet(tryGet(parameters('runtime'), 'java'), 'loggerSettings')))), null())]"
+          }
         },
         "template": {
           "containers": "[parameters('containers')]",
@@ -1024,14 +1112,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('containerApp', '2024-03-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('containerApp', '2024-10-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('containerApp', '2024-03-01', 'full').location]"
+      "value": "[reference('containerApp', '2024-10-02-preview', 'full').location]"
     }
   }
 }

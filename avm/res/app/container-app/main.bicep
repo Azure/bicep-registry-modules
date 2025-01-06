@@ -126,6 +126,9 @@ param dapr object = {}
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
+@description('Optional. Runtime configuration for the Container App.')
+param runtime runtimeType
+
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
 
@@ -210,7 +213,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
+resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
   name: name
   tags: tags
   location: location
@@ -260,6 +263,20 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secretList
+      runtime: {
+        dotnet: !empty(runtime.?dotnet) ? {
+          autoConfigureDataProtection: runtime.?dotnet.autoConfigureDataProtection
+        } : null
+        java: !empty(runtime.?java) ? {
+          enableMetrics: runtime.?java.enableMetrics
+          javaAgent: {
+            enabled: runtime.?java.enableJavaAgent
+            logging: {
+              loggerSettings: runtime.?java.?loggerSettings
+            }
+          }
+        } : null
+      }
     }
     template: {
       containers: containers
@@ -500,3 +517,31 @@ type volumeMountType = {
   @description('Required. This must match the Name of a Volume.')
   volumeName: string
 }
+
+@export()
+@description('Optional. App runtime configuration for the Container App.')
+type runtimeType = {
+  @description('Optional. Runtime configuration for ASP.NET Core.')
+  dotnet: {
+    @description('Required. Enable to auto configure the ASP.NET Core Data Protection feature.')
+    autoConfigureDataProtection: bool
+  }?
+
+  @description('Optional. Runtime configuration for Java.')
+  java: {
+    @description('Required. Enable JMX core metrics for the Java app.')
+    enableMetrics: bool
+
+    @description('Required. Enable Java agent injection for the Java app.')
+    enableJavaAgent: bool
+
+    @description('Optional. Java agent logging configuration.')
+    loggerSettings: {
+      @description('Required. Name of the logger.')
+      logger: string
+
+      @description('Required. Java agent logging level.')
+      level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
+    }[]?
+  }?
+}?

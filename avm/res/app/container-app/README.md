@@ -15,7 +15,7 @@ This module deploys a Container App.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/containerApps) |
+| `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -323,6 +323,18 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    runtime: {
+      java: {
+        enableJavaAgent: true
+        enableMetrics: false
+        loggerSettings: [
+          {
+            level: 'info'
+            logger: 'test'
+          }
+        ]
+      }
+    }
     secrets: {
       secureList: [
         {
@@ -440,6 +452,20 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
+    "runtime": {
+      "value": {
+        "java": {
+          "enableJavaAgent": true,
+          "enableMetrics": false,
+          "loggerSettings": [
+            {
+              "level": "info",
+              "logger": "test"
+            }
+          ]
+        }
+      }
+    },
     "secrets": {
       "value": {
         "secureList": [
@@ -545,6 +571,18 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param runtime = {
+  java: {
+    enableJavaAgent: true
+    enableMetrics: false
+    loggerSettings: [
+      {
+        level: 'info'
+        logger: 'test'
+      }
+    ]
+  }
+}
 param secrets = {
   secureList: [
     {
@@ -955,6 +993,7 @@ param tags = {
 | [`registries`](#parameter-registries) | array | Collection of private container registry credentials for containers used by the Container app. |
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. |
 | [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
 | [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
@@ -1794,6 +1833,113 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `runtime`
+
+Runtime configuration for the Container App.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dotnet`](#parameter-runtimedotnet) | object | Runtime configuration for ASP.NET Core. |
+| [`java`](#parameter-runtimejava) | object | Runtime configuration for Java. |
+
+### Parameter: `runtime.dotnet`
+
+Runtime configuration for ASP.NET Core.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoConfigureDataProtection`](#parameter-runtimedotnetautoconfiguredataprotection) | bool | Enable to auto configure the ASP.NET Core Data Protection feature. |
+
+### Parameter: `runtime.dotnet.autoConfigureDataProtection`
+
+Enable to auto configure the ASP.NET Core Data Protection feature.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java`
+
+Runtime configuration for Java.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableJavaAgent`](#parameter-runtimejavaenablejavaagent) | bool | Enable Java agent injection for the Java app. |
+| [`enableMetrics`](#parameter-runtimejavaenablemetrics) | bool | Enable JMX core metrics for the Java app. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerSettings`](#parameter-runtimejavaloggersettings) | array | Java agent logging configuration. |
+
+### Parameter: `runtime.java.enableJavaAgent`
+
+Enable Java agent injection for the Java app.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java.enableMetrics`
+
+Enable JMX core metrics for the Java app.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java.loggerSettings`
+
+Java agent logging configuration.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`level`](#parameter-runtimejavaloggersettingslevel) | string | Java agent logging level. |
+| [`logger`](#parameter-runtimejavaloggersettingslogger) | string | Name of the logger. |
+
+### Parameter: `runtime.java.loggerSettings.level`
+
+Java agent logging level.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'debug'
+    'error'
+    'info'
+    'off'
+    'trace'
+    'warn'
+  ]
+  ```
+
+### Parameter: `runtime.java.loggerSettings.logger`
+
+Name of the logger.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `scaleMaxReplicas`
 
