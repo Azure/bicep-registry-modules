@@ -534,7 +534,7 @@ type runtimeType = {
           {
             @description('Required. The specified logger log level.')
             level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
-            @description('Required The logger name.')
+            @description('Required. The logger name.')
             logger: string
           }
         ]

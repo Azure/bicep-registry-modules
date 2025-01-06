@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13281736690197756493"
+      "templateHash": "520458021902896799"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -497,7 +497,7 @@
                             "logger": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required The logger name."
+                                "description": "Required. The logger name."
                               }
                             }
                           }
