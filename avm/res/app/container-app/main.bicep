@@ -532,7 +532,7 @@ type runtimeType = {
         @description('Optional. Settings of the logger for the java app.')
         loggerSettings: [
           {
-            @description('Conditional. The specified logger log level. Requuired if logger is specified.')
+            @description('Conditional. The specified logger log level. Required if logger is specified.')
             level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
             @description('Conditional. The logger name. Required if level is specified.')
             logger: string
