@@ -14,16 +14,16 @@ param source string?
 @description('Optional. Value of the configuration.')
 param value string?
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
   name: flexibleServerName
 }
 
-resource configuration 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2022-12-01' = {
+resource configuration 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2024-08-01' = {
   name: name
   parent: flexibleServer
   properties: {
-    source: !empty(source) ? source : null
-    value: !empty(value) ? value : null
+    source: source
+    value: value
   }
 }
 
@@ -33,5 +33,5 @@ output name string = configuration.name
 @description('The resource ID of the deployed configuration.')
 output resourceId string = configuration.id
 
-@description('The resource group of the deployed configuration.')
+@description('The resource group name of the deployed configuration.')
 output resourceGroupName string = resourceGroup().name

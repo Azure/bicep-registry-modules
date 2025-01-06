@@ -45,6 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: if (true == false) {
     scope: resourceGroup

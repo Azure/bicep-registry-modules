@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "926318145633714589"
+      "version": "0.32.4.45862",
+      "templateHash": "8473230975051576034"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway.",
@@ -235,8 +235,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7845337943961022453"
+              "version": "0.32.4.45862",
+              "templateHash": "15612745804641436550"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule.",
@@ -316,10 +316,7 @@
                 "ipConfigurationId": "[parameters('ipConfigurationId')]",
                 "mode": "[parameters('mode')]",
                 "type": "[parameters('type')]"
-              },
-              "dependsOn": [
-                "vpnGateway"
-              ]
+              }
             }
           },
           "outputs": {
@@ -404,6 +401,9 @@
           "vpnConnectionProtocolType": {
             "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'vpnConnectionProtocolType')]"
           },
+          "ipsecPolicies": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'ipsecPolicies')]"
+          },
           "trafficSelectorPolicies": {
             "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'trafficSelectorPolicies')]"
           },
@@ -417,8 +417,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "15901314411176214938"
+              "version": "0.32.4.45862",
+              "templateHash": "7898038972076024212"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection.",
