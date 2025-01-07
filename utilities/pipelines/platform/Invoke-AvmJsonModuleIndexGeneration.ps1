@@ -135,6 +135,84 @@ function Invoke-AvmJsonModuleIndexGeneration {
                     $anyErrorsOccurred = $true
                     Write-Error "Error message: $($_.Exception.Message)"
                 }
+
+                ## Find child modules that contain a main.bicep, main.json, README.md and version.json file
+                $verifiedChildModules = @()
+                $possibleChildModules = (Get-ChildItem -Path $modulePath -Directory -Exclude 'tests').Name
+                Write-Verbose '  Checking for possible child modules...' -Verbose
+                if ($possibleChildModules.Count -ne 0) {
+                    Write-Verbose "  Possible child modules: $possibleChildModules" -Verbose
+                    foreach ($possibleChildModule in $possibleChildModules) {
+                        Write-Verbose "    Processing possible child module: $possibleChildModule" -Verbose
+
+                        $checkChildModuleContainsRequiredFilesForPublishing = (Test-Path -Path "$modulePath/$possibleChildModule/main.bicep") -and (Test-Path -Path "$modulePath/$possibleChildModule/main.json") -and (Test-Path -Path "$modulePath/$possibleChildModule/README.md") -and (Test-Path -Path "$modulePath/$possibleChildModule/version.json")
+                        Write-Verbose "      Child module contains required files for publishing?: $checkChildModuleContainsRequiredFilesForPublishing" -Verbose
+
+                        if ($checkChildModuleContainsRequiredFilesForPublishing) {
+                            Write-Verbose '      Add child module to array for inclusion in index JSON generation...' -Verbose
+                            $verifiedChildModules += $possibleChildModule
+                        }
+                    }
+                } else {
+                    Write-Verbose '  No possible child modules found for this module.' -Verbose
+                }
+
+                foreach ($verifiedChildModule in $verifiedChildModules) {
+                    $childModulePath = "$modulePath/$verifiedChildModule"
+                    $childModuleMainJsonPath = "$childModulePath/main.json"
+                    $childModuleTagListUrl = "https://mcr.microsoft.com/v2/bicep/$childModulePath$mod/tags/list"
+
+                    try {
+                        Write-Verbose "Processing AVM Module '$childModulePath'..." -Verbose
+                        Write-Verbose "  Getting available tags at '$childModuleTagListUrl'..." -Verbose
+
+                        try {
+                            $childModuleTagListResponse = Invoke-RestMethod -Uri $childModuleTagListUrl
+                        } catch {
+                            $anyErrorsOccurred = $true
+                            Write-Error "Error occurred while accessing URL: $childModuleTagListUrl"
+                            Write-Error "Error message: $($_.Exception.Message)"
+                            continue
+                        }
+                        $childModuleTags = $childModuleTagListResponse.tags | Sort-Object -Culture 'en-US'
+
+                        # Sort tags by order of semantic versioning with the latest version last
+                        $childModuleTags = $childModuleTags | Sort-Object -Property { [semver] $_ }
+
+                        $childModuleProperties = [ordered]@{}
+                        foreach ($childModuleTag in $childModuleTags) {
+                            $childModuleGitTag = "$childModulePath/$childModuleTag"
+                            $childModuleDocumentationUri = "https://github.com/Azure/bicep-registry-modules/tree/$childModuleGitTag/$childModulePath/README.md"
+
+                            try {
+                                $childModuleMainJsonUri = "https://raw.githubusercontent.com/Azure/bicep-registry-modules/$childModuleGitTag/$childModuleMainJsonPath"
+                                Write-Verbose "    Getting available description for tag $childModuleGitTag via '$childModuleMainJsonUri'..." -Verbose
+                                $childModuleMainJsonUriResponse = Invoke-RestMethod -Uri $childModuleMainJsonUri
+                                $description = $childModuleMainJsonUriResponse.metadata.description
+                            } catch {
+                                $anyErrorsOccurred = $true
+                                Write-Error "Error occurred while accessing description for tag $childModuleGitTag via '$childModuleMainJsonUri'"
+                                Write-Error "Error message: $($_.Exception.Message)"
+                                continue
+                            }
+
+                            $childModuleProperties[$childModuleGitTag] = [ordered]@{
+                                description      = $description
+                                documentationUri = $childModuleDocumentationUri
+                            }
+                        }
+
+                        $moduleIndexData += [ordered]@{
+                            moduleName = $childModulePath
+                            tags       = @($childModuleTags)
+                            properties = $childModuleProperties
+                        }
+                    } catch {
+                        $anyErrorsOccurred = $true
+                        Write-Error "Error message: $($_.Exception.Message)"
+                    }
+                }
+
             }
 
             $numberOfModuleGroupsProcessed++
