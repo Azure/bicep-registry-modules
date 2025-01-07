@@ -1,6 +1,25 @@
 # Changelog
 
-## 0.1.1 (2024-10-11)
+## unreleased
+
+New Features
+
+- new feature
+
+Changes
+
+- this changed
+- and this also
+
+Bugfixes
+
+- the deployment does now deploy with the correct settings
+
+Breaking Changes
+
+- none
+
+## 0.2.1 (2024-10-11)
 
 Changes
 
@@ -30,24 +49,3 @@ Breaking Changes
 New Features
 
 - Initial Release
-
-<!-- Template for a new version
-## unreleased
-
-New Features
-
-- new feature
-
-Changes
-
-- this changed
-- and this also
-
-Bugfixes
-
-- the deployment does now deploy with the correct settings
-
-Breaking Changes
-
-- none
--->
