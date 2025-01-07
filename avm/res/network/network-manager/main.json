@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10505023227224298722"
+      "templateHash": "1504460440051474288"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -1088,10 +1088,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5321753315118506798"
+              "templateHash": "13579623804017149117"
             },
             "name": "Network Manager Network Groups",
-            "description": "This module deploys a Network Manager Network Group.\r\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
+            "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1210,10 +1210,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "10207263536223853430"
+                      "templateHash": "12783997347897331234"
                     },
                     "name": "Network Manager Network Group Static Members",
-                    "description": "This module deploys a Network Manager Network Group Static Member.\r\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
+                    "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
                     "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
@@ -1358,10 +1358,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7203347966546325640"
+              "templateHash": "12807816660171449397"
             },
             "name": "Network Manager Connectivity Configurations",
-            "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+            "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1582,10 +1582,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17569322561713603603"
+              "templateHash": "14643863748768762221"
             },
             "name": "Network Manager Scope Connections",
-            "description": "This module deploys a Network Manager Scope Connection.\r\nCreate a cross-tenant connection to manage a resource from another tenant.",
+            "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1708,10 +1708,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17536977948281707304"
+              "templateHash": "2606645191240920573"
             },
             "name": "Network Manager Security Admin Configurations",
-            "description": "This module deploys an Network Manager Security Admin Configuration.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+            "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -2070,10 +2070,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1973250789772009977"
+                      "templateHash": "7611627113756715103"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
-                    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
+                    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
                     "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
@@ -2400,10 +2400,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "12515265750098030927"
+                              "templateHash": "15780279491759929080"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
                             "owner": "Azure/module-maintainers"
                           },
                           "definitions": {
@@ -2756,10 +2756,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "18415269314245269186"
+              "templateHash": "8639281905611546216"
             },
             "name": "Network Manager Routing Configurations",
-            "description": "This module deploys an Network Manager Routing Configuration.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.",
+            "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -3011,10 +3011,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14732426630196097695"
+                      "templateHash": "12642071982345641146"
                     },
                     "name": "Network Manager Routing Configuration Rule Collections",
-                    "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
+                    "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
                     "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
@@ -3244,10 +3244,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "12580129683316720338"
+                              "templateHash": "16716750923283805388"
                             },
                             "name": "Network Manager Routing configuration Rule Collection Rules",
-                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\r\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
+                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
                             "owner": "Azure/module-maintainers"
                           },
                           "definitions": {
