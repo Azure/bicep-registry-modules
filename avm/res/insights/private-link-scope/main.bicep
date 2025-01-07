@@ -10,22 +10,24 @@ param name string
 
   * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.
   * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode.''')
-param accessModeSettings accessModeType
+param accessModeSettings accessModeType?
 
 @description('Optional. The location of the private link scope. Should be global.')
 param location string = 'global'
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Configuration details for Azure Monitor Resources.')
-param scopedResources scopedResourceType
+param scopedResources scopedResourceType[]?
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointType[]?
 
 @description('Optional. Resource tags.')
 param tags object?
@@ -154,10 +156,19 @@ resource privateLinkScope_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: privateLinkScope
 }
 
-module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-privateLinkScope-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    // use the subnet resource group if the resource group is not explicitly provided
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -244,7 +255,7 @@ output privateEndpoints array = [
     resourceId: privateLinkScope_privateEndpoints[i].outputs.resourceId
     groupId: privateLinkScope_privateEndpoints[i].outputs.groupId
     customDnsConfig: privateLinkScope_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: privateLinkScope_privateEndpoints[i].outputs.networkInterfaceIds
+    networkInterfaceIds: privateLinkScope_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -252,40 +263,8 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
+@export()
+@description('The private endpoint type.')
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')
   name: string?
@@ -358,10 +337,10 @@ type privateEndpointType = {
   customNetworkInterfaceName: string?
 
   @description('Optional. Specify the type of lock.')
-  lock: lockType
+  lock: lockType?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
@@ -371,32 +350,36 @@ type privateEndpointType = {
 
   @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
   resourceGroupName: string?
-}[]?
+}
 
+@export()
+@description('The scoped resource type.')
 type scopedResourceType = {
   @description('Required. Name of the private link scoped resource.')
   name: string
 
   @description('Required. The resource ID of the scoped Azure monitor resource.')
   linkedResourceId: string
-}[]?
+}
 
+@export()
+@description('The access mode type.')
 type accessModeType = {
-  @description('Optional. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.')
+  @description('Required. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.')
   exclusions: {
-    @description('Required. The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.')
-    privateEndpointConnectionName: string
+    @description('Optional. The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.')
+    privateEndpointConnectionName: string?
 
     @description('Required. Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion.')
     ingestionAccessMode: 'Open' | 'PrivateOnly'
 
     @description('Required. Specifies the access mode of queries through the specified private endpoint connection in the exclusion.')
     queryAccessMode: 'Open' | 'PrivateOnly'
-  }[]?
+  }[]
 
-  @description('Optional. Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.')
-  ingestionAccessMode: 'Open' | 'PrivateOnly'?
+  @description('Required. Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.')
+  ingestionAccessMode: 'Open' | 'PrivateOnly'
 
-  @description('Optional. Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.')
-  queryAccessMode: 'Open' | 'PrivateOnly'?
-}?
+  @description('Required. Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.')
+  queryAccessMode: 'Open' | 'PrivateOnly'
+}
