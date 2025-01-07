@@ -1,22 +1,22 @@
-metadata name = 'Site Api Management Config'
-metadata description = 'This module deploys a Site Api Management Configuration.'
+metadata name = 'Site Web Config'
+metadata description = 'This module deploys web settings configuration available under sites/config name: web.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent site resource.')
 param appName string
 
-@description('Optional. The web settings api management configuration.')
-param apiManagementConfiguration object?
+@description('Optional. The Site Config, Web settings to deploy.')
+param webConfiguration object?
 
-resource app 'Microsoft.Web/sites@2023-12-01' existing = {
+resource app 'Microsoft.Web/sites@2024-04-01' existing = {
   name: appName
 }
 
-resource webSettings 'Microsoft.Web/sites/config@2023-12-01' = {
+resource webSettings 'Microsoft.Web/sites/config@2024-04-01' = {
   name: 'web'
   kind: 'string'
   parent: app
-  properties: apiManagementConfiguration
+  properties: webConfiguration
 }
 
 @description('The name of the site config.')

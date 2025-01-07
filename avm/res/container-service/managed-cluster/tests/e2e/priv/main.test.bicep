@@ -53,7 +53,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       enablePrivateCluster: true
       aadProfile: {
         aadProfileEnableAzureRBAC: true
@@ -110,13 +109,10 @@ module testDeployment '../../../main.bicep' = [
       serviceCidr: '10.10.200.0/24'
       privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
       managedIdentities: {
-        userAssignedResourcesIds: [
+        userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
