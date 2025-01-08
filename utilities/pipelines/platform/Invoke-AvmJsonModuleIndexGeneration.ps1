@@ -71,8 +71,8 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
     Write-Verbose "Generating the current generated moduleIndex.json file and saving to: $currentGeneratedModuleIndexJsonFilePath ..." -Verbose
 
-    $anyErrorsOccurred = $false
-    $moduleIndexData = @()
+    $global:anyErrorsOccurred = $false
+    $global:moduleIndexData = @()
 
     foreach ($avmModuleRoot in @('avm/res', 'avm/ptn', 'avm/utl')) {
         $avmModuleGroups = (Get-ChildItem -Path $avmModuleRoot -Directory).Name
@@ -86,55 +86,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
                 $mainJsonPath = "$modulePath/main.json"
                 $tagListUrl = "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list"
 
-                try {
-                    Write-Verbose "Processing AVM Module '$modulePath'..." -Verbose
-                    Write-Verbose "  Getting available tags at '$tagListUrl'..." -Verbose
-
-                    try {
-                        $tagListResponse = Invoke-RestMethod -Uri $tagListUrl
-                    } catch {
-                        $anyErrorsOccurred = $true
-                        Write-Error "Error occurred while accessing URL: $tagListUrl"
-                        Write-Error "Error message: $($_.Exception.Message)"
-                        continue
-                    }
-                    $tags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
-
-                    # Sort tags by order of semantic versioning with the latest version last
-                    $tags = $tags | Sort-Object -Property { [semver] $_ }
-
-                    $properties = [ordered]@{}
-                    foreach ($tag in $tags) {
-                        $gitTag = "$modulePath/$tag"
-                        $documentationUri = "https://github.com/Azure/bicep-registry-modules/tree/$gitTag/$modulePath/README.md"
-
-                        try {
-                            $moduleMainJsonUri = "https://raw.githubusercontent.com/Azure/bicep-registry-modules/$gitTag/$mainJsonPath"
-                            Write-Verbose "    Getting available description for tag $tag via '$moduleMainJsonUri'..." -Verbose
-                            $moduleMainJsonUriResponse = Invoke-RestMethod -Uri $moduleMainJsonUri
-                            $description = $moduleMainJsonUriResponse.metadata.description
-                        } catch {
-                            $anyErrorsOccurred = $true
-                            Write-Error "Error occurred while accessing description for tag $tag via '$moduleMainJsonUri'"
-                            Write-Error "Error message: $($_.Exception.Message)"
-                            continue
-                        }
-
-                        $properties[$tag] = [ordered]@{
-                            description      = $description
-                            documentationUri = $documentationUri
-                        }
-                    }
-
-                    $moduleIndexData += [ordered]@{
-                        moduleName = $modulePath
-                        tags       = @($tags)
-                        properties = $properties
-                    }
-                } catch {
-                    $anyErrorsOccurred = $true
-                    Write-Error "Error message: $($_.Exception.Message)"
-                }
+                Add-ModuleToAvmJsonModuleIndex -modulePath $modulePath -mainJsonPath $mainJsonPath -tagListUrl $tagListUrl
 
                 ## Find child modules that contain a main.bicep, main.json, README.md and version.json file
                 $verifiedChildModules = @()
@@ -162,55 +114,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
                     $childModuleMainJsonPath = "$childModulePath/main.json"
                     $childModuleTagListUrl = "https://mcr.microsoft.com/v2/bicep/$childModulePath$mod/tags/list"
 
-                    try {
-                        Write-Verbose "Processing AVM Module '$childModulePath'..." -Verbose
-                        Write-Verbose "  Getting available tags at '$childModuleTagListUrl'..." -Verbose
-
-                        try {
-                            $childModuleTagListResponse = Invoke-RestMethod -Uri $childModuleTagListUrl
-                        } catch {
-                            $anyErrorsOccurred = $true
-                            Write-Error "Error occurred while accessing URL: $childModuleTagListUrl"
-                            Write-Error "Error message: $($_.Exception.Message)"
-                            continue
-                        }
-                        $childModuleTags = $childModuleTagListResponse.tags | Sort-Object -Culture 'en-US'
-
-                        # Sort tags by order of semantic versioning with the latest version last
-                        $childModuleTags = $childModuleTags | Sort-Object -Property { [semver] $_ }
-
-                        $childModuleProperties = [ordered]@{}
-                        foreach ($childModuleTag in $childModuleTags) {
-                            $childModuleGitTag = "$childModulePath/$childModuleTag"
-                            $childModuleDocumentationUri = "https://github.com/Azure/bicep-registry-modules/tree/$childModuleGitTag/$childModulePath/README.md"
-
-                            try {
-                                $childModuleMainJsonUri = "https://raw.githubusercontent.com/Azure/bicep-registry-modules/$childModuleGitTag/$childModuleMainJsonPath"
-                                Write-Verbose "    Getting available description for tag $childModuleGitTag via '$childModuleMainJsonUri'..." -Verbose
-                                $childModuleMainJsonUriResponse = Invoke-RestMethod -Uri $childModuleMainJsonUri
-                                $description = $childModuleMainJsonUriResponse.metadata.description
-                            } catch {
-                                $anyErrorsOccurred = $true
-                                Write-Error "Error occurred while accessing description for tag $childModuleGitTag via '$childModuleMainJsonUri'"
-                                Write-Error "Error message: $($_.Exception.Message)"
-                                continue
-                            }
-
-                            $childModuleProperties[$childModuleGitTag] = [ordered]@{
-                                description      = $description
-                                documentationUri = $childModuleDocumentationUri
-                            }
-                        }
-
-                        $moduleIndexData += [ordered]@{
-                            moduleName = $childModulePath
-                            tags       = @($childModuleTags)
-                            properties = $childModuleProperties
-                        }
-                    } catch {
-                        $anyErrorsOccurred = $true
-                        Write-Error "Error message: $($_.Exception.Message)"
-                    }
+                    Add-ModuleToAvmJsonModuleIndex -modulePath $childModulePath -mainJsonPath $childModuleMainJsonPath -tagListUrl $childModuleTagListUrl
                 }
 
             }
@@ -220,10 +124,10 @@ function Invoke-AvmJsonModuleIndexGeneration {
     }
 
     Write-Verbose "Processed $numberOfModuleGroupsProcessed modules groups." -Verbose
-    Write-Verbose "Processed $($moduleIndexData.Count) total modules." -Verbose
+    Write-Verbose "Processed $($global:moduleIndexData.Count) total modules." -Verbose
 
     Write-Verbose "Convert moduleIndexData variable to JSON and save as 'generated-moduleIndex.json'" -Verbose
-    $moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $currentGeneratedModuleIndexJsonFilePath
+    $global:moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $currentGeneratedModuleIndexJsonFilePath
 
     ## Download the current published moduleIndex.json from the storage account if the $doNotMergeWithLastModuleIndexJsonFileVersion is set to $false
     if (-not $doNotMergeWithLastModuleIndexJsonFileVersion) {
@@ -293,9 +197,74 @@ function Invoke-AvmJsonModuleIndexGeneration {
     }
     if ($doNotMergeWithLastModuleIndexJsonFileVersion -eq $true) {
         Write-Verbose "Convert currentGeneratedModuleIndexData variable to JSON and save as 'moduleIndex.json to overwrite it as `doNotMergeWithLastModuleIndexJsonFileVersion` was specified'" -Verbose
-        $moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath -Force
+        $global:moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath -Force
     }
 
-    return ($anyErrorsOccurred ? $false : $true)
+    return ($global:anyErrorsOccurred ? $false : $true)
 
+}
+
+function Add-ModuleToAvmJsonModuleIndex {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $modulePath,
+
+        [Parameter(Mandatory = $false)]
+        [string] $mainJsonPath = "$modulePath/main.json",
+
+        [Parameter(Mandatory = $false)]
+        [string] $tagListUrl = "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list"
+    )
+
+    try {
+        Write-Verbose "Processing AVM Module '$modulePath'..." -Verbose
+        Write-Verbose "  Getting available tags at '$tagListUrl'..." -Verbose
+
+        try {
+            $tagListResponse = Invoke-RestMethod -Uri $tagListUrl
+        } catch {
+            $global:anyErrorsOccurred = $true
+            Write-Error "Error occurred while accessing URL: $tagListUrl"
+            Write-Error "Error message: $($_.Exception.Message)"
+            continue
+        }
+        $tags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
+
+        # Sort tags by order of semantic versioning with the latest version last
+        $tags = $tags | Sort-Object -Property { [semver] $_ }
+
+        $properties = [ordered]@{}
+        foreach ($tag in $tags) {
+            $gitTag = "$modulePath/$tag"
+            $documentationUri = "https://github.com/Azure/bicep-registry-modules/tree/$gitTag/$modulePath/README.md"
+
+            try {
+                $moduleMainJsonUri = "https://raw.githubusercontent.com/Azure/bicep-registry-modules/$gitTag/$mainJsonPath"
+                Write-Verbose "    Getting available description for tag $tag via '$moduleMainJsonUri'..." -Verbose
+                $moduleMainJsonUriResponse = Invoke-RestMethod -Uri $moduleMainJsonUri
+                $description = $moduleMainJsonUriResponse.metadata.description
+            } catch {
+                $global:anyErrorsOccurred = $true
+                Write-Error "Error occurred while accessing description for tag $tag via '$moduleMainJsonUri'"
+                Write-Error "Error message: $($_.Exception.Message)"
+                continue
+            }
+
+            $properties[$tag] = [ordered]@{
+                description      = $description
+                documentationUri = $documentationUri
+            }
+        }
+
+        $global:moduleIndexData += [ordered]@{
+            moduleName = $modulePath
+            tags       = @($tags)
+            properties = $properties
+        }
+    } catch {
+        $global:anyErrorsOccurred = $true
+        Write-Error "Error message: $($_.Exception.Message)"
+    }
+
+    return ($global:anyErrorsOccurred ? $false : $true)
 }
