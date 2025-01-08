@@ -62,7 +62,7 @@ var virtualNetworkLinks = concat(
 // ------------------
 // RESOURCES
 // ------------------
-module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: containerRegistryUserAssignedIdentityName
   params: {
     name: containerRegistryUserAssignedIdentityName
@@ -72,7 +72,7 @@ module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned
   }
 }
 
-module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
+module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: 'acrDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: acrDnsZoneName
@@ -83,7 +83,7 @@ module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
   }
 }
 
-module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
   name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerRegistryName
@@ -115,9 +115,13 @@ module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
     privateEndpoints: [
       {
         name: containerRegistryPrivateEndpointName
-        privateDnsZoneResourceIds: [
-          acrdnszone.outputs.resourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: acrdnszone.outputs.resourceId
+            }
+          ]
+        }
         subnetResourceId: spokePrivateEndpointSubnetResourceId
       }
     ]

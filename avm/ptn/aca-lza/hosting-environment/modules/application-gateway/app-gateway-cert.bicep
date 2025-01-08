@@ -49,7 +49,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 }
 
 // Create a managed identity to write to KV a self signed cert if the appGatewayCertificateData is not provided
-resource selfSignedCertManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = if (empty(appGatewayCertificateData)) {
+resource selfSignedCertManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = if (empty(appGatewayCertificateData)) {
   name: '${uniqueString(deployment().name, location)}-selfSignedCertManagedIdentity'
   location: location
   tags: tags
@@ -118,7 +118,7 @@ resource selfSignedCertificateGeneration 'Microsoft.Resources/deploymentScripts@
 }
 
 //TODO: this needs to be updated to use the AVM module when it is available
-resource sslCertSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (!empty(appGatewayCertificateData)) {
+resource sslCertSecret 'Microsoft.KeyVault/vaults/secrets@2024-04-01-preview' = if (!empty(appGatewayCertificateData)) {
   parent: keyVault
   name: appGatewayCertificateKeyName
   tags: tags

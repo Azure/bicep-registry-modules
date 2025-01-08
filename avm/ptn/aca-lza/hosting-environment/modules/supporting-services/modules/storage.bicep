@@ -50,7 +50,7 @@ var shares = concat(storageShares, [
 ])
 
 //Storage account for the deployment script
-module storage 'br/public:avm/res/storage/storage-account:0.14.3' = {
+module storage 'br/public:avm/res/storage/storage-account:0.15.0' = {
   name: '${take(uniqueString(deployment().name, location),4)}-ci-storage-deployment'
   params: {
     location: location
@@ -98,7 +98,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.14.3' = {
     tags: tags
   }
 }
-module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
+module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: '${take(uniqueString(deployment().name, location),4)}-storagePrivateDnsZone-deployment'
   params: {
     location: 'global'

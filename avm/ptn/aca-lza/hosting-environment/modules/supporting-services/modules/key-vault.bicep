@@ -59,7 +59,7 @@ var virtualNetworkLinks = concat(
 // RESOURCES
 // ------------------
 
-module vaultdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
+module vaultdnszone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: 'keyvaultDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: vaultDnsZoneName
@@ -70,7 +70,7 @@ module vaultdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
   }
 }
 
-module keyvault 'br/public:avm/res/key-vault/vault:0.6.1' = {
+module keyvault 'br/public:avm/res/key-vault/vault:0.11.1' = {
   name: 'vault-${uniqueString(resourceGroup().id)}'
   params: {
     name: keyVaultName
@@ -91,9 +91,13 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.6.1' = {
     privateEndpoints: [
       {
         name: keyVaultPrivateEndpointName
-        privateDnsZoneResourceIds: [
-          vaultdnszone.outputs.resourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: vaultdnszone.outputs.resourceId
+            }
+          ]
+        }
         subnetResourceId: spokePrivateEndpointSubnetResourceId
       }
     ]

@@ -218,7 +218,7 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    containerAppsEnvironmentId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
+    containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
     workloadProfileName: containerAppsEnvironment.outputs.workloadProfileNames[0]
     containerRegistryUserAssignedIdentityId: supportingServices.outputs.containerRegistryUserAssignedIdentityId
   }
@@ -248,7 +248,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.acalza-hostingenvironment.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {

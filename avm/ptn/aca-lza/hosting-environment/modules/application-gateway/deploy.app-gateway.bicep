@@ -73,7 +73,7 @@ var keyVaultName = keyVaultIdTokens[8]
 
 // TODO: Check if this is required if enableApplicationCertificate is false
 @description('A user-assigned managed identity that enables Application Gateway to access Key Vault for its TLS certs.')
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: take('appGwUserAssignedIdentity-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -106,7 +106,7 @@ module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
   }
 }
 
-module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.4.1' = {
+module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.7.1' = {
   name: take('applicationGatewayPublicIp-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -319,7 +319,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
   }
 }
 
-module appGwWafPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.1' = {
+module appGwWafPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.2.0' = {
   name: take('appGwWafPolicy-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {

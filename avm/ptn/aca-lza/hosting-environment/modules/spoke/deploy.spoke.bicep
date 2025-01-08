@@ -163,7 +163,7 @@ var spokeSubnets = vmJumpboxOSType != 'none'
 // RESOURCES
 // ------------------
 
-module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
+module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
   name: take('rg-${deployment().name}', 64)
   params: {
     name: resourcesNames.resourceGroup
@@ -174,7 +174,7 @@ module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
 }
 
 @description('The spoke virtual network in which the workload will run from. This virtual network would normally already be provisioned by your subscription vending process, and only the subnets would need to be configured.')
-module vnetSpoke 'br/public:avm/res/network/virtual-network:0.1.6' = {
+module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.2' = {
   name: take('vnetSpoke-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -194,7 +194,7 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.1.6' = {
             remotePeeringAllowVirtualNetworkAccess: true
             remotePeeringEnabled: true
             remotePeeringName: 'spokeToHub'
-            remoteVirtualNetworkId: hubVNetId
+            remoteVirtualNetworkResourceId: hubVNetId
             useRemoteGateways: false
           }
         ]
@@ -203,7 +203,7 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.1.6' = {
 }
 
 @description('The log sink for Azure Diagnostics')
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.3.4' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.9.1' = {
   name: take('logAnalyticsWs-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -215,7 +215,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 }
 
 @description('Network security group rules for the Container Apps cluster.')
-module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-group:0.2.0' = {
+module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-group:0.5.0' = {
   name: take('nsgContainerAppsEnvironment-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -338,7 +338,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
 }
 
 @description('NSG Rules for the Application Gateway.')
-module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
+module nsgAppGw 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
   name: take('nsgAppGw-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -427,7 +427,7 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!
 }
 
 @description('NSG Rules for the private enpoint subnet.')
-module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
+module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
   name: take('nsgPep-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -463,7 +463,7 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
 }
 
 @description('The Route Table deployment')
-module egressLockdownUdr 'br/public:avm/res/network/route-table:0.2.2' = if (!empty(hubVNetId) && !empty(networkApplianceIpAddress)) {
+module egressLockdownUdr 'br/public:avm/res/network/route-table:0.4.0' = if (!empty(hubVNetId) && !empty(networkApplianceIpAddress)) {
   name: take('egressLockdownUdr-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -547,7 +547,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
 // OUTPUTS
 // ------------------
 
-resource vnetSpokeCreated 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+resource vnetSpokeCreated 'Microsoft.Network/virtualNetworks@2024-05-01' existing = {
   name: vnetSpoke.outputs.name
   scope: resourceGroup(resourcesNames.resourceGroup)
 

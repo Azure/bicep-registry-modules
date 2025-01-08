@@ -85,7 +85,7 @@ var storages = concat(
 // ------------------
 
 @description('The existing spoke virtual network.')
-resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
+resource spokeVNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = {
   name: spokeVNetName
   scope: resourceGroup(resourcesNames.resourceGroup)
   resource infraSubnet 'subnets' existing = {
@@ -98,7 +98,7 @@ resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
 // ------------------
 
 @description('Azure Application Insights, the workload\' log & metric sink and APM tool')
-module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = if (enableApplicationInsights) {
+module applicationInsights 'br/public:avm/res/insights/component:0.4.2' = if (enableApplicationInsights) {
   name: take('applicationInsights-${uniqueString(resourcesNames.resourceGroup)}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -144,7 +144,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.8.1
 }
 
 @description('The Private DNS zone containing the ACA load balancer IP')
-module containerAppsEnvironmentPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
+module containerAppsEnvironmentPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: 'acaDnsZoneDeployment-${uniqueString(resourcesNames.resourceGroup)}'
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {

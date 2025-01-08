@@ -36,7 +36,7 @@ param location string = resourceGroup().location
 // RESOURCES
 // ------------------
 
-module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.2.0' = {
+module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.0' = {
   name: 'vmNetworkSecurityDeployment'
   params: {
     name: vmNetworkSecurityGroupName
@@ -65,7 +65,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
 }
 
 //TODO: Subnet deployment needs to be updated with AVM module once it is available
-resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
+resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
   name: '${vmVnetName}/${vmSubnetName}'
   properties: {
     addressPrefix: vmSubnetAddressPrefix

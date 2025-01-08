@@ -47,7 +47,7 @@ var sshDeploymentScriptName = '${take(uniqueString(deployment().name, location),
 // RESOURCES
 // ------------------
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = if (empty(vmSshPublicKey)) {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = if (empty(vmSshPublicKey)) {
   name: '${uniqueString(deployment().name, location)}-${managedIdentityName}'
   tags: tags
   location: location
@@ -66,7 +66,7 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   }
 }
 
-resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(vmSshPublicKey)) {
+resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(vmSshPublicKey)) {
   name: sshDeploymentScriptName
   location: location
   tags: tags
@@ -88,7 +88,7 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' 
   ]
 }
 
-resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
+resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
   name: '${take(uniqueString(deployment().name, location),4)}-${sshKeyName}'
   location: location
   tags: tags
@@ -97,7 +97,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
   }
 }
 
-module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.2.0' = {
+module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.0' = {
   name: 'vmNetworkSecurityDeployment'
   params: {
     name: vmNetworkSecurityGroupName
@@ -126,7 +126,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
 }
 
 //TODO: Subnet deployment needs to be updated with AVM module once it is available
-resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
+resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
   name: '${vmVnetName}/${vmSubnetName}'
   properties: {
     addressPrefix: vmSubnetAddressPrefix

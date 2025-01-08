@@ -24,7 +24,7 @@ param helloWorldContainerAppName string = 'ca-simple-hello'
 param containerRegistryUserAssignedIdentityId string
 
 @description('The resource ID of the existing Container Apps environment in which the Container App will be deployed.')
-param containerAppsEnvironmentId string
+param containerAppsEnvironmentResourceId string
 
 @description('The container apps environment workload profile to use for the Container App.')
 param workloadProfileName string
@@ -33,7 +33,7 @@ param workloadProfileName string
 // RESOURCES
 // ------------------
 
-module sampleApplication 'br/public:avm/res/app/container-app:0.4.0' = {
+module sampleApplication 'br/public:avm/res/app/container-app:0.12.0' = {
   name: helloWorldContainerAppName
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
@@ -41,7 +41,7 @@ module sampleApplication 'br/public:avm/res/app/container-app:0.4.0' = {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    environmentId: containerAppsEnvironmentId
+    environmentResourceId: containerAppsEnvironmentResourceId
     managedIdentities: {
       userAssignedResourceIds: [
         containerRegistryUserAssignedIdentityId
