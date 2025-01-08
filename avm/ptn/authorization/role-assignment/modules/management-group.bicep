@@ -41,13 +41,10 @@ param principalType string = ''
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  Owner: subscriptionResourceId(
-    '/providers/Microsoft.Authorization/roleDefinitions',
-    '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-  )
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
   'Resource Policy Contributor': subscriptionResourceId(
-    '/providers/Microsoft.Authorization/roleDefinitions',
+    'Microsoft.Authorization/roleDefinitions',
     '36243c78-bf99-498c-9df9-86d9f8d28608'
   )
   'Role Based Access Control Administrator': subscriptionResourceId(
