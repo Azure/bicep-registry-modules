@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7611627113756715103"
+      "templateHash": "11555299168771769835"
     },
     "name": "Network Manager Security Admin Configuration Rule Collections",
-    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
+    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -233,7 +233,7 @@
     },
     "description": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the admin rule collection."
@@ -270,7 +270,7 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
       "properties": {
-        "description": "[coalesce(parameters('description'), '')]",
+        "description": "[parameters('description')]",
         "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]"
       }
     },
@@ -304,7 +304,7 @@
             "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].access]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description')]"
           },
           "destinationPortRanges": {
             "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'destinationPortRanges'), createArray())]"
@@ -336,10 +336,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15780279491759929080"
+              "templateHash": "11831246248888143865"
             },
             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -448,7 +448,7 @@
             },
             "description": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the rule."
@@ -556,7 +556,7 @@
               "kind": "Custom",
               "properties": {
                 "access": "[parameters('access')]",
-                "description": "[coalesce(parameters('description'), '')]",
+                "description": "[parameters('description')]",
                 "destinationPortRanges": "[parameters('destinationPortRanges')]",
                 "destinations": "[parameters('destinations')]",
                 "direction": "[parameters('direction')]",

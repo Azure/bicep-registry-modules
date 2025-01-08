@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16716750923283805388"
+      "templateHash": "16150172197183244404"
     },
     "name": "Network Manager Routing configuration Rule Collection Rules",
-    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
+    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\r\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -94,7 +94,7 @@
     },
     "description": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the rule."
@@ -137,7 +137,7 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
       "properties": {
-        "description": "[coalesce(parameters('description'), '')]",
+        "description": "[parameters('description')]",
         "destination": "[parameters('destination')]",
         "nextHop": "[parameters('nextHop')]"
       }

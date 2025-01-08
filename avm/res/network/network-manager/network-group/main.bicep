@@ -12,7 +12,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the network group.')
-param description string?
+param description string = ''
 
 @allowed([
   'Subnet'
@@ -32,7 +32,7 @@ resource networkGroup 'Microsoft.Network/networkManagers/networkGroups@2024-05-0
   name: name
   parent: networkManager
   properties: {
-    description: description ?? ''
+    description: description
     memberType: memberType
   }
 }

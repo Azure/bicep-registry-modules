@@ -18,7 +18,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the rule.')
-param description string?
+param description string = ''
 
 @allowed([
   'Allow'
@@ -81,7 +81,7 @@ resource rule 'Microsoft.Network/networkManagers/securityAdminConfigurations/rul
   kind: 'Custom'
   properties: {
     access: access
-    description: description ?? ''
+    description: description
     destinationPortRanges: destinationPortRanges
     destinations: destinations
     direction: direction

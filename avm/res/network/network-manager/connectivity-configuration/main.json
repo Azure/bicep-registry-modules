@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12807816660171449397"
+      "templateHash": "16461686527041815345"
     },
     "name": "Network Manager Connectivity Configurations",
-    "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+    "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -98,7 +98,7 @@
     },
     "description": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the connectivity configuration."
@@ -156,7 +156,7 @@
         "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
         "connectivityTopology": "[parameters('connectivityTopology')]",
         "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
-        "description": "[coalesce(parameters('description'), '')]",
+        "description": "[parameters('description')]",
         "hubs": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('hubs'), createArray())]",
         "isGlobal": "[string(parameters('isGlobal'))]"
       }

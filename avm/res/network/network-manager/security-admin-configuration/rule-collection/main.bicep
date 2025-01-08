@@ -15,7 +15,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the admin rule collection.')
-param description string?
+param description string = ''
 
 @sys.description('Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group.')
 param appliesToGroups appliesToGroupsType
@@ -35,7 +35,7 @@ resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigur
   name: name
   parent: networkManager::securityAdminConfiguration
   properties: {
-    description: description ?? ''
+    description: description
     appliesToGroups: map(appliesToGroups, (group) => {
       networkGroupId: any(group.networkGroupResourceId)
     })
@@ -51,7 +51,7 @@ module ruleCollection_rules 'rule/main.bicep' = [
       ruleCollectionName: ruleCollection.name
       name: rule.name
       access: rule.access
-      description: rule.?description ?? ''
+      description: rule.?description
       destinationPortRanges: rule.?destinationPortRanges ?? []
       destinations: rule.?destinations ?? []
       direction: rule.direction

@@ -87,6 +87,7 @@ A description of the routing rule collection.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `disableBgpRoutePropagation`
 

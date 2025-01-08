@@ -12,7 +12,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the connectivity configuration.')
-param description string?
+param description string = ''
 
 @sys.description('Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.')
 param appliesToGroups appliesToGroupsType
@@ -49,7 +49,7 @@ resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivi
     })
     connectivityTopology: connectivityTopology
     deleteExistingPeering: connectivityTopology == 'HubAndSpoke' ? string(deleteExistingPeering) : 'false'
-    description: description ?? ''
+    description: description
     hubs: connectivityTopology == 'HubAndSpoke' ? hubs : []
     isGlobal: string(isGlobal)
   }

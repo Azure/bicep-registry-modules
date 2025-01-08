@@ -86,6 +86,7 @@ A description of the admin rule collection.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `rules`
 

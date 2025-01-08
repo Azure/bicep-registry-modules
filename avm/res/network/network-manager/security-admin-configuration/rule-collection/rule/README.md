@@ -143,6 +143,7 @@ A description of the rule.
 
 - Required: No
 - Type: string
+- Default: `''`
 - MinValue: 1
 - MaxValue: 4096
 

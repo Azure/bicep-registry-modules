@@ -58,6 +58,7 @@ A description of the network group.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `memberType`
 

@@ -151,6 +151,7 @@ A description of the rule.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ## Outputs
 

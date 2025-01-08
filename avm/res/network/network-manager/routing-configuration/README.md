@@ -58,6 +58,7 @@ A description of the routing configuration.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `ruleCollections`
 

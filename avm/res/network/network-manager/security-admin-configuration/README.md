@@ -75,6 +75,7 @@ A description of the security admin configuration.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `networkGroupAddressSpaceAggregationOption`
 

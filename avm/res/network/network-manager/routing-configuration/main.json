@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8639281905611546216"
+      "templateHash": "11438426137887406030"
     },
     "name": "Network Manager Routing Configurations",
-    "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.",
+    "description": "This module deploys an Network Manager Routing Configuration.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -189,7 +189,7 @@
     },
     "description": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the routing configuration."
@@ -214,7 +214,7 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
-        "description": "[coalesce(parameters('description'), '')]"
+        "description": "[parameters('description')]"
       }
     },
     "routingConfigurations_ruleCollections": {
@@ -241,13 +241,13 @@
             "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].name]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description')]"
           },
           "appliesTo": {
             "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].appliesTo]"
           },
           "disableBgpRoutePropagation": {
-            "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'disableBgpRoutePropagation'), true())]"
+            "value": "[tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'disableBgpRoutePropagation')]"
           },
           "rules": {
             "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'rules'), createArray())]"
@@ -261,10 +261,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12642071982345641146"
+              "templateHash": "12392053229903210262"
             },
             "name": "Network Manager Routing Configuration Rule Collections",
-            "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
+            "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -401,7 +401,7 @@
             },
             "description": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the routing rule collection."
@@ -445,7 +445,7 @@
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('name'))]",
               "properties": {
-                "description": "[coalesce(parameters('description'), '')]",
+                "description": "[parameters('description')]",
                 "appliesTo": "[map(parameters('appliesTo'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]",
                 "disableBgpRoutePropagation": "[string(parameters('disableBgpRoutePropagation'))]"
               }
@@ -477,7 +477,7 @@
                     "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
                   },
                   "description": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description'), '')]"
+                    "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description')]"
                   },
                   "destination": {
                     "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].destination]"
@@ -494,10 +494,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16716750923283805388"
+                      "templateHash": "16150172197183244404"
                     },
                     "name": "Network Manager Routing configuration Rule Collection Rules",
-                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
+                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\r\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
                     "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
@@ -582,7 +582,7 @@
                     },
                     "description": {
                       "type": "string",
-                      "nullable": true,
+                      "defaultValue": "",
                       "maxLength": 500,
                       "metadata": {
                         "description": "Optional. A description of the rule."
@@ -625,7 +625,7 @@
                       "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
                       "properties": {
-                        "description": "[coalesce(parameters('description'), '')]",
+                        "description": "[parameters('description')]",
                         "destination": "[parameters('destination')]",
                         "nextHop": "[parameters('nextHop')]"
                       }

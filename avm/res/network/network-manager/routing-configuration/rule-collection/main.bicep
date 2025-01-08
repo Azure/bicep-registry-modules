@@ -15,7 +15,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the routing rule collection.')
-param description string?
+param description string = ''
 
 @sys.description('Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group.')
 param appliesTo appliesToType
@@ -38,7 +38,7 @@ resource ruleCollection 'Microsoft.Network/networkManagers/routingConfigurations
   name: name
   parent: networkManager::routingConfiguration
   properties: {
-    description: description ?? ''
+    description: description
     appliesTo: map(appliesTo, (group) => {
       networkGroupId: any(group.networkGroupResourceId)
     })
@@ -54,7 +54,7 @@ module ruleCollection_rules 'rule/main.bicep' = [
       routingConfigurationName: routingConfigurationName
       ruleCollectionName: ruleCollection.name
       name: rule.name
-      description: rule.?description ?? ''
+      description: rule.?description
       destination: rule.destination
       nextHop: rule.nextHop
     }

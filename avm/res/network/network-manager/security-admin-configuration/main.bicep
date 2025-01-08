@@ -12,7 +12,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the security admin configuration.')
-param description string?
+param description string = ''
 
 @sys.description('Required. Enum list of network intent policy based services.')
 param applyOnNetworkIntentPolicyBasedServices applyOnNetworkIntentPolicyBasedServicesType
@@ -35,7 +35,7 @@ resource securityAdminConfigurations 'Microsoft.Network/networkManagers/security
   name: name
   parent: networkManager
   properties: {
-    description: description ?? ''
+    description: description
     applyOnNetworkIntentPolicyBasedServices: applyOnNetworkIntentPolicyBasedServices
     networkGroupAddressSpaceAggregationOption: networkGroupAddressSpaceAggregationOption
   }
@@ -48,7 +48,7 @@ module securityAdminConfigurations_ruleCollections 'rule-collection/main.bicep' 
       networkManagerName: networkManager.name
       securityAdminConfigurationName: securityAdminConfigurations.name
       name: ruleCollection.name
-      description: ruleCollection.?description ?? ''
+      description: ruleCollection.?description
       appliesToGroups: ruleCollection.appliesToGroups
       rules: ruleCollection.?rules ?? []
     }

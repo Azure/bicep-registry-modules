@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1504460440051474288"
+      "templateHash": "9673572396035328828"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -1071,7 +1071,7 @@
             "value": "[parameters('name')]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('networkGroups'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('networkGroups'), createArray())[copyIndex()], 'description')]"
           },
           "staticMembers": {
             "value": "[tryGet(coalesce(parameters('networkGroups'), createArray())[copyIndex()], 'staticMembers')]"
@@ -1088,10 +1088,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13579623804017149117"
+              "templateHash": "12405776367730933548"
             },
             "name": "Network Manager Network Groups",
-            "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
+            "description": "This module deploys a Network Manager Network Group.\r\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1136,7 +1136,7 @@
             },
             "description": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the network group."
@@ -1172,7 +1172,7 @@
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "description": "[coalesce(parameters('description'), '')]",
+                "description": "[parameters('description')]",
                 "memberType": "[parameters('memberType')]"
               }
             },
@@ -1210,10 +1210,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12783997347897331234"
+                      "templateHash": "10207263536223853430"
                     },
                     "name": "Network Manager Network Group Static Members",
-                    "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
+                    "description": "This module deploys a Network Manager Network Group Static Member.\r\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
                     "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
@@ -1332,7 +1332,7 @@
             "value": "[parameters('name')]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'description')]"
           },
           "appliesToGroups": {
             "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'appliesToGroups'), createArray())]"
@@ -1358,10 +1358,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12807816660171449397"
+              "templateHash": "16461686527041815345"
             },
             "name": "Network Manager Connectivity Configurations",
-            "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+            "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1450,7 +1450,7 @@
             },
             "description": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the connectivity configuration."
@@ -1508,7 +1508,7 @@
                 "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
                 "connectivityTopology": "[parameters('connectivityTopology')]",
                 "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
-                "description": "[coalesce(parameters('description'), '')]",
+                "description": "[parameters('description')]",
                 "hubs": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('hubs'), createArray())]",
                 "isGlobal": "[string(parameters('isGlobal'))]"
               }
@@ -1565,7 +1565,7 @@
             "value": "[parameters('name')]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('scopeConnections'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('scopeConnections'), createArray())[copyIndex()], 'description')]"
           },
           "resourceId": {
             "value": "[coalesce(parameters('scopeConnections'), createArray())[copyIndex()].resourceId]"
@@ -1576,16 +1576,15 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14643863748768762221"
+              "templateHash": "9741647790841164162"
             },
             "name": "Network Manager Scope Connections",
-            "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
+            "description": "This module deploys a Network Manager Scope Connection.\r\nCreate a cross-tenant connection to manage a resource from another tenant.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1604,7 +1603,7 @@
             },
             "description": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the scope connection."
@@ -1623,24 +1622,18 @@
               }
             }
           },
-          "resources": {
-            "networkManager": {
-              "existing": true,
-              "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2024-05-01",
-              "name": "[parameters('networkManagerName')]"
-            },
-            "scopeConnection": {
+          "resources": [
+            {
               "type": "Microsoft.Network/networkManagers/scopeConnections",
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "description": "[coalesce(parameters('description'), '')]",
+                "description": "[parameters('description')]",
                 "resourceId": "[parameters('resourceId')]",
                 "tenantId": "[parameters('tenantId')]"
               }
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",
@@ -1691,7 +1684,7 @@
             "value": "[parameters('name')]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('securityAdminConfigurations'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('securityAdminConfigurations'), createArray())[copyIndex()], 'description')]"
           },
           "applyOnNetworkIntentPolicyBasedServices": {
             "value": "[coalesce(parameters('securityAdminConfigurations'), createArray())[copyIndex()].applyOnNetworkIntentPolicyBasedServices]"
@@ -1708,10 +1701,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2606645191240920573"
+              "templateHash": "12859267430568475361"
             },
             "name": "Network Manager Security Admin Configurations",
-            "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+            "description": "This module deploys an Network Manager Security Admin Configuration.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1982,7 +1975,7 @@
             },
             "description": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the security admin configuration."
@@ -2024,7 +2017,7 @@
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "description": "[coalesce(parameters('description'), '')]",
+                "description": "[parameters('description')]",
                 "applyOnNetworkIntentPolicyBasedServices": "[parameters('applyOnNetworkIntentPolicyBasedServices')]",
                 "networkGroupAddressSpaceAggregationOption": "[parameters('networkGroupAddressSpaceAggregationOption')]"
               }
@@ -2053,7 +2046,7 @@
                     "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].name]"
                   },
                   "description": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description'), '')]"
+                    "value": "[tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description')]"
                   },
                   "appliesToGroups": {
                     "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].appliesToGroups]"
@@ -2070,10 +2063,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7611627113756715103"
+                      "templateHash": "11555299168771769835"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
-                    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
+                    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
                     "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
@@ -2297,7 +2290,7 @@
                     },
                     "description": {
                       "type": "string",
-                      "nullable": true,
+                      "defaultValue": "",
                       "maxLength": 500,
                       "metadata": {
                         "description": "Optional. A description of the admin rule collection."
@@ -2334,7 +2327,7 @@
                       "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
                       "properties": {
-                        "description": "[coalesce(parameters('description'), '')]",
+                        "description": "[parameters('description')]",
                         "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]"
                       }
                     },
@@ -2368,7 +2361,7 @@
                             "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].access]"
                           },
                           "description": {
-                            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description'), '')]"
+                            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description')]"
                           },
                           "destinationPortRanges": {
                             "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'destinationPortRanges'), createArray())]"
@@ -2400,10 +2393,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "15780279491759929080"
+                              "templateHash": "11831246248888143865"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
                             "owner": "Azure/module-maintainers"
                           },
                           "definitions": {
@@ -2512,7 +2505,7 @@
                             },
                             "description": {
                               "type": "string",
-                              "nullable": true,
+                              "defaultValue": "",
                               "maxLength": 500,
                               "metadata": {
                                 "description": "Optional. A description of the rule."
@@ -2620,7 +2613,7 @@
                               "kind": "Custom",
                               "properties": {
                                 "access": "[parameters('access')]",
-                                "description": "[coalesce(parameters('description'), '')]",
+                                "description": "[parameters('description')]",
                                 "destinationPortRanges": "[parameters('destinationPortRanges')]",
                                 "destinations": "[parameters('destinations')]",
                                 "direction": "[parameters('direction')]",
@@ -2742,7 +2735,7 @@
             "value": "[parameters('name')]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'description')]"
           },
           "ruleCollections": {
             "value": "[coalesce(tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'ruleCollections'), createArray())]"
@@ -2756,10 +2749,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8639281905611546216"
+              "templateHash": "11438426137887406030"
             },
             "name": "Network Manager Routing Configurations",
-            "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.",
+            "description": "This module deploys an Network Manager Routing Configuration.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -2939,7 +2932,7 @@
             },
             "description": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the routing configuration."
@@ -2964,7 +2957,7 @@
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "description": "[coalesce(parameters('description'), '')]"
+                "description": "[parameters('description')]"
               }
             },
             "routingConfigurations_ruleCollections": {
@@ -2991,13 +2984,13 @@
                     "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].name]"
                   },
                   "description": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description'), '')]"
+                    "value": "[tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description')]"
                   },
                   "appliesTo": {
                     "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].appliesTo]"
                   },
                   "disableBgpRoutePropagation": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'disableBgpRoutePropagation'), true())]"
+                    "value": "[tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'disableBgpRoutePropagation')]"
                   },
                   "rules": {
                     "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'rules'), createArray())]"
@@ -3011,10 +3004,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12642071982345641146"
+                      "templateHash": "12392053229903210262"
                     },
                     "name": "Network Manager Routing Configuration Rule Collections",
-                    "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
+                    "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
                     "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
@@ -3151,7 +3144,7 @@
                     },
                     "description": {
                       "type": "string",
-                      "nullable": true,
+                      "defaultValue": "",
                       "maxLength": 500,
                       "metadata": {
                         "description": "Optional. A description of the routing rule collection."
@@ -3195,7 +3188,7 @@
                       "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('name'))]",
                       "properties": {
-                        "description": "[coalesce(parameters('description'), '')]",
+                        "description": "[parameters('description')]",
                         "appliesTo": "[map(parameters('appliesTo'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]",
                         "disableBgpRoutePropagation": "[string(parameters('disableBgpRoutePropagation'))]"
                       }
@@ -3227,7 +3220,7 @@
                             "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
                           },
                           "description": {
-                            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description'), '')]"
+                            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description')]"
                           },
                           "destination": {
                             "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].destination]"
@@ -3244,10 +3237,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "16716750923283805388"
+                              "templateHash": "16150172197183244404"
                             },
                             "name": "Network Manager Routing configuration Rule Collection Rules",
-                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
+                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\r\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
                             "owner": "Azure/module-maintainers"
                           },
                           "definitions": {
@@ -3332,7 +3325,7 @@
                             },
                             "description": {
                               "type": "string",
-                              "nullable": true,
+                              "defaultValue": "",
                               "maxLength": 500,
                               "metadata": {
                                 "description": "Optional. A description of the rule."
@@ -3375,7 +3368,7 @@
                               "apiVersion": "2024-05-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
                               "properties": {
-                                "description": "[coalesce(parameters('description'), '')]",
+                                "description": "[parameters('description')]",
                                 "destination": "[parameters('destination')]",
                                 "nextHop": "[parameters('nextHop')]"
                               }

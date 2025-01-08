@@ -172,6 +172,7 @@ A description of the connectivity configuration.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `isGlobal`
 

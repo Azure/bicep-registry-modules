@@ -12,7 +12,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the routing configuration.')
-param description string?
+param description string = ''
 
 @sys.description('Optional. A routing configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more routing rules.')
 param ruleCollections routingConfigurationRuleCollectionType
@@ -25,7 +25,7 @@ resource routingConfigurations 'Microsoft.Network/networkManagers/routingConfigu
   name: name
   parent: networkManager
   properties: {
-    description: description ?? ''
+    description: description
   }
 }
 
@@ -36,9 +36,9 @@ module routingConfigurations_ruleCollections 'rule-collection/main.bicep' = [
       networkManagerName: networkManager.name
       routingConfigurationName: routingConfigurations.name
       name: ruleCollection.name
-      description: ruleCollection.?description ?? ''
+      description: ruleCollection.?description
       appliesTo: ruleCollection.appliesTo
-      disableBgpRoutePropagation: ruleCollection.?disableBgpRoutePropagation ?? true
+      disableBgpRoutePropagation: ruleCollection.?disableBgpRoutePropagation
       rules: ruleCollection.?rules ?? []
     }
   }

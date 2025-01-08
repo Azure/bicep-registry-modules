@@ -18,7 +18,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the rule.')
-param description string?
+param description string = ''
 
 @sys.description('Required. The destination can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure.')
 param destination destinationType
@@ -42,7 +42,7 @@ resource rule 'Microsoft.Network/networkManagers/routingConfigurations/ruleColle
   name: name
   parent: networkManager::routingConfiguration::ruleCollection
   properties: {
-    description: description ?? ''
+    description: description
     destination: destination
     nextHop: nextHop
   }
