@@ -1207,7 +1207,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
         }
 
-        It '[<moduleFolderName>] `CHANGELOG.md` must contain a `## unreleased` section an versions are orderd descending.' -TestCases $changelogFileTestCases {
+        It '[<moduleFolderName>] `CHANGELOG.md` must contain a `## unreleased` section and versions are ordered descending.' -TestCases $changelogFileTestCases {
 
             param(
                 [string] $templateFilePath,
@@ -1220,7 +1220,7 @@ Describe 'Module tests' -Tag 'Module' {
             $changelogSection = $sections | Where-Object { $_ -match '^##\s+unreleased' }
 
             $sections | ForEach-Object {
-                Write-Verbose 'The CHANGELOG.md file contains the following sections: $_'
+                Write-Verbose 'The CHANGELOG.md file contains the following sections: $_' -Verbose
             }
 
             # check for the presence of the `## unreleased` section
@@ -1234,6 +1234,19 @@ Describe 'Module tests' -Tag 'Module' {
 
             # check for the order of the versions
             ($changelogContent | Where-Object { $_ -match '^##' } | Sort-Object -Descending) | Should -BeExactly $sections 'The versions in the changelog should appear in descending order.'
+
+            # the unreleased section must contain certain content
+            $startIndex = $changelogContent.IndexOf($sections[0]) + 1 # skip the heading
+            $endIndex = $changelogContent.IndexOf($sections[1])
+            $contentBetweenSections = $changelogContent[$startIndex..($endIndex - 1)]
+            $contentBetweenSections | Should -Contain 'New Features' -Because 'The `## unreleased` section should contain the following headers: New Features, Changes, Bugfixes and Breaking Changes.'
+            $contentBetweenSections | Should -Contain 'Changes' -Because 'The `## unreleased` section should contain the following headers: New Features, Changes, Bugfixes and Breaking Changes.'
+            $contentBetweenSections | Should -Contain 'Bugfixes' -Because 'The `## unreleased` section should contain the following headers: New Features, Changes, Bugfixes and Breaking Changes.'
+            $contentBetweenSections | Should -Contain 'Breaking Changes' -Because 'The `## unreleased` section should contain the following headers: New Features, Changes, Bugfixes and Breaking Changes.'
+
+            # the unreleased section must contain content and not only the headings and empty lines
+            $nonEmptyContent = $contentBetweenSections | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(New Features|Changes|Bugfixes|Breaking Changes)$' }
+            $nonEmptyContent.Count | Should -BeGreaterThan 0 -Because 'The `## unreleased` section should contain actual content and not just headers or empty lines.'
         }
     }
 
