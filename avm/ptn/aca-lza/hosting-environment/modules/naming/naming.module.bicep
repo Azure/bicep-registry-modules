@@ -1,3 +1,5 @@
+targetScope = 'subscription'
+
 // ------------------
 //    PARAMETERS
 // ------------------
@@ -5,6 +7,9 @@
 @maxLength(10)
 @description('The name of the workloard that is being deployed. Up to 10 characters long.')
 param workloadName string
+
+@description('The name of the resource group where the resources will be deployed.')
+param spokeResourceGroupName string = ''
 
 @description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
 @maxLength(8)
@@ -38,6 +43,9 @@ var resourceTypeAbbreviations = naming.resourceTypeAbbreviations
 var keyVaultName = take(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault), 24)
 
 var resourceNames = {
+  resourceGroup: !empty(spokeResourceGroupName)
+    ? spokeResourceGroupName
+    : '${naming.resourceTypeAbbreviations.resourceGroup}-${workloadName}-spoke-${environment}-${naming.regionAbbreviations[toLower(location)]}'
   vnetSpoke: '${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)}-spoke'
   vnetHub: '${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)}-hub'
   applicationGateway: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)
@@ -111,6 +119,7 @@ var resourceNames = {
     resourceTypeToken,
     naming.resourceTypeAbbreviations.eventGridSubscription
   )
+  workloadCertificate: '${workloadName}-cert'
 }
 
 output resourcesNames object = resourceNames

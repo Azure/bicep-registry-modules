@@ -1,20 +1,14 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 // ------------------
 //    PARAMETERS
 // ------------------
 
-@description('The name of the workload that is being deployed. Up to 10 characters long.')
-@minLength(2)
-@maxLength(10)
-param workloadName string
-
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
-@maxLength(8)
-param environment string
+@description('Required. The resource names definition')
+param resourcesNames object
 
 @description('The location where the resources will be created. This needs to be the same region as the spoke.')
-param location string = resourceGroup().location
+param location string
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -42,31 +36,20 @@ param deployZoneRedundantResources bool = true
 // ------------------
 // RESOURCES
 // ------------------
-
-@description('User-configured naming rules')
-module naming '../naming/naming.module.bicep' = {
-  name: take('supportingServicesNamingDeployment-${deployment().name}', 64)
-  params: {
-    uniqueId: uniqueString(resourceGroup().id)
-    environment: environment
-    workloadName: workloadName
-    location: location
-  }
-}
-
 @description('Azure Container Registry, where all workload images should be pulled from.')
 module containerRegistry 'modules/container-registry.module.bicep' = {
-  name: 'containerRegistryModule-${uniqueString(resourceGroup().id)}'
+  name: 'containerRegistryModule-${uniqueString(resourcesNames.resourceGroup)}'
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
-    containerRegistryName: naming.outputs.resourcesNames.containerRegistry
+    containerRegistryName: resourcesNames.containerRegistry
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
     spokeVNetResourceId: spokeVNetResourceId
     hubVNetResourceId: hubVNetResourceId
     spokePrivateEndpointSubnetResourceId: spokePrivateEndpointSubnetResourceId
-    containerRegistryPrivateEndpointName: naming.outputs.resourcesNames.containerRegistryPep
-    containerRegistryUserAssignedIdentityName: naming.outputs.resourcesNames.containerRegistryUserAssignedIdentity
+    containerRegistryPrivateEndpointName: resourcesNames.containerRegistryPep
+    containerRegistryUserAssignedIdentityName: resourcesNames.containerRegistryUserAssignedIdentity
     diagnosticWorkspaceId: logAnalyticsWorkspaceId
     deployZoneRedundantResources: deployZoneRedundantResources
   }
@@ -74,25 +57,27 @@ module containerRegistry 'modules/container-registry.module.bicep' = {
 
 @description('Azure Key Vault used to hold items like TLS certs and application secrets that your workload will need.')
 module keyVault 'modules/key-vault.bicep' = {
-  name: 'keyVault-${uniqueString(resourceGroup().id)}'
+  name: 'keyVault-${uniqueString(resourcesNames.resourceGroup)}'
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
-    keyVaultName: naming.outputs.resourcesNames.keyVault
+    keyVaultName: resourcesNames.keyVault
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
     spokeVNetResourceId: spokeVNetResourceId
     hubVNetResourceId: hubVNetResourceId
     spokePrivateEndpointSubnetResourceId: spokePrivateEndpointSubnetResourceId
-    keyVaultPrivateEndpointName: naming.outputs.resourcesNames.keyVaultPep
+    keyVaultPrivateEndpointName: resourcesNames.keyVaultPep
     diagnosticWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 
 module storage 'modules/storage.bicep' = {
-  name: 'storage-${uniqueString(resourceGroup().id)}'
+  name: 'storage-${uniqueString(resourcesNames.resourceGroup)}'
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     location: location
-    storageAccountName: naming.outputs.resourcesNames.storageAccount
+    storageAccountName: resourcesNames.storageAccount
     tags: tags
     enableTelemetry: enableTelemetry
     hubVNetResourceId: hubVNetResourceId

@@ -1,11 +1,13 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 // ------------------
 //    PARAMETERS
 // ------------------
+@description('Required. The resource names definition')
+param resourcesNames object
 
 @description('The location where the resources will be created. This needs to be the same region as the Azure Container Apps instances.')
-param location string = resourceGroup().location
+param location string
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -33,6 +35,7 @@ param workloadProfileName string
 
 module sampleApplication 'br/public:avm/res/app/container-app:0.4.0' = {
   name: helloWorldContainerAppName
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: helloWorldContainerAppName
     location: location

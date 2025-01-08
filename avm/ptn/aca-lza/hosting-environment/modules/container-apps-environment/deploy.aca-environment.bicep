@@ -1,19 +1,13 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 // ------------------
 //    PARAMETERS
 // ------------------
-@description('The name of the workload that is being deployed. Up to 10 characters long.')
-@minLength(2)
-@maxLength(10)
-param workloadName string
-
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
-@maxLength(8)
-param environment string
+@description('Required. The resource names definition')
+param resourcesNames object
 
 @description('The location where the resources will be created. This needs to be the same region as the spoke.')
-param location string = resourceGroup().location
+param location string
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -93,7 +87,7 @@ var storages = concat(
 @description('The existing spoke virtual network.')
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
   name: spokeVNetName
-
+  scope: resourceGroup(resourcesNames.resourceGroup)
   resource infraSubnet 'subnets' existing = {
     name: spokeInfraSubnetName
   }
@@ -103,22 +97,12 @@ resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
 // RESOURCES
 // ------------------
 
-@description('User-configured naming rules')
-module naming '../naming/naming.module.bicep' = {
-  name: take('acaNamingDeployment-${deployment().name}', 64)
-  params: {
-    uniqueId: uniqueString(resourceGroup().id)
-    environment: environment
-    workloadName: workloadName
-    location: location
-  }
-}
-
 @description('Azure Application Insights, the workload\' log & metric sink and APM tool')
 module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = if (enableApplicationInsights) {
-  name: take('applicationInsights-${uniqueString(resourceGroup().id)}', 64)
+  name: take('applicationInsights-${uniqueString(resourcesNames.resourceGroup)}', 64)
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
-    name: naming.outputs.resourcesNames.applicationInsights
+    name: resourcesNames.applicationInsights
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -128,10 +112,11 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = if (en
 
 @description('The Azure Container Apps (ACA) cluster.')
 module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.8.1' = {
-  name: take('acaenv-${uniqueString(resourceGroup().id)}', 64)
+  name: take('acaenv-${uniqueString(resourcesNames.resourceGroup)}', 64)
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceId
-    name: naming.outputs.resourcesNames.containerAppsEnvironment
+    name: resourcesNames.containerAppsEnvironment
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -160,7 +145,8 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.8.1
 
 @description('The Private DNS zone containing the ACA load balancer IP')
 module containerAppsEnvironmentPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
-  name: 'acaDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
+  name: 'acaDnsZoneDeployment-${uniqueString(resourcesNames.resourceGroup)}'
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: containerAppsEnvironment.outputs.defaultDomain
     location: 'global'

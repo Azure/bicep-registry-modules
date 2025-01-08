@@ -123,20 +123,16 @@ param enableDdosProtection bool = false
 // ------------------
 // VARIABLES
 // ------------------
-var namingRules = json(loadTextContent('modules/naming/naming-rules.jsonc'))
-var rgSpokeName = !empty(spokeResourceGroupName)
-  ? spokeResourceGroupName
-  : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-spoke-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
 
 // ------------------
 // RESOURCES
 // ------------------
 @description('User-configured naming rules')
 module naming 'modules/naming/naming.module.bicep' = {
-  scope: resourceGroup(rgSpokeName)
   name: take('sharedNamingDeployment-${deployment().name}', 64)
   params: {
-    uniqueId: uniqueString(spoke.outputs.spokeResourceGroupName)
+    uniqueId: uniqueString(workloadName)
+    spokeResourceGroupName: spokeResourceGroupName
     environment: environment
     workloadName: workloadName
     location: location
@@ -147,13 +143,11 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
   name: take('spoke-${deployment().name}-deployment', 64)
   scope: subscription()
   params: {
-    spokeResourceGroupName: rgSpokeName
+    resourcesNames: naming.outputs.resourcesNames
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    environment: environment
     //subscriptionId: subscriptionId
-    workloadName: workloadName
     hubVNetId: hubVirtualNetworkResourceId
     bastionResourceId: bastionResourceId
     spokeApplicationGatewaySubnetAddressPrefix: spokeApplicationGatewaySubnetAddressPrefix
@@ -187,14 +181,12 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
 
 module supportingServices 'modules/supporting-services/deploy.supporting-services.bicep' = {
   name: take('supportingServices-${deployment().name}-deployment', 64)
-  scope: resourceGroup(rgSpokeName)
   params: {
+    resourcesNames: naming.outputs.resourcesNames
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
     spokePrivateEndpointSubnetResourceId: spoke.outputs.spokePrivateEndpointsSubnetResourceId
-    environment: environment
-    workloadName: workloadName
     spokeVNetResourceId: spoke.outputs.spokeVNetId
     hubVNetResourceId: hubVirtualNetworkResourceId
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
@@ -203,13 +195,11 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
 
 module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-environment.bicep' = {
   name: take('containerAppsEnvironment-${deployment().name}-deployment', 64)
-  scope: resourceGroup(rgSpokeName)
   params: {
+    resourcesNames: naming.outputs.resourcesNames
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    environment: environment
-    workloadName: workloadName
     hubVNetId: hubVirtualNetworkResourceId
     spokeVNetName: spoke.outputs.spokeVNetName
     spokeInfraSubnetName: spoke.outputs.spokeInfraSubnetName
@@ -223,8 +213,8 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
 
 module sampleApplication 'modules/sample-application/deploy.sample-application.bicep' = if (deploySampleApplication) {
   name: take('sampleApplication-${deployment().name}-deployment', 64)
-  scope: resourceGroup(rgSpokeName)
   params: {
+    resourcesNames: naming.outputs.resourcesNames
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -236,13 +226,11 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
 
 module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep' = if (exposeContainerAppsWith == 'applicationGateway') {
   name: take('applicationGateway-${deployment().name}-deployment', 64)
-  scope: resourceGroup(rgSpokeName)
   params: {
+    resourcesNames: naming.outputs.resourcesNames
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    environment: environment
-    workloadName: workloadName
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFqdn: applicationGatewayFqdn
     applicationGatewayPrimaryBackendEndFqdn: (deploySampleApplication)
@@ -256,21 +244,6 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
     deployZoneRedundantResources: deployZoneRedundantResources
     enableDdosProtection: enableDdosProtection
     applicationGatewayLogAnalyticsId: spoke.outputs.logAnalyticsWorkspaceId
-  }
-}
-
-module frontDoor 'modules/front-door/deploy.front-door.bicep' = if (exposeContainerAppsWith == 'frontDoor') {
-  name: take('frontDoor-${deployment().name}-deployment', 64)
-  scope: resourceGroup(rgSpokeName)
-  params: {
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-    environment: environment
-    workloadName: workloadName
-    containerAppsEnvironmentId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
-    frontDoorOriginHostName: (deploySampleApplication) ? sampleApplication.outputs.helloWorldAppFqdn : ''
-    privateLinkSubnetId: spoke.outputs.spokeInfraSubnetId
   }
 }
 

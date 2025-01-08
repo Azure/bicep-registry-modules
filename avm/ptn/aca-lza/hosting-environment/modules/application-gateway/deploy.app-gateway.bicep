@@ -1,19 +1,13 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 // ------------------
 //    PARAMETERS
 // ------------------
-@description('The name of the workload that is being deployed. Up to 10 characters long.')
-@minLength(2)
-@maxLength(10)
-param workloadName string
-
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
-@maxLength(8)
-param environment string
+@description('Required. The resource names definition')
+param resourcesNames object
 
 @description('The location where the resources will be created. This needs to be the same region as the spoke.')
-param location string = resourceGroup().location
+param location string
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -73,30 +67,17 @@ var keyVaultResourceGroupName = keyVaultIdTokens[4]
 @description('The name of the existing Key Vault.')
 var keyVaultName = keyVaultIdTokens[8]
 
-var certName = '${workloadName}-cert'
-
 // ------------------
 // RESOURCES
 // ------------------
 
-@description('User-configured naming rules')
-module naming '../naming/naming.module.bicep' = {
-  name: take('agwNamingDeployment-${deployment().name}', 64)
-  params: {
-    uniqueId: uniqueString(resourceGroup().id)
-    environment: environment
-    workloadName: workloadName
-    location: location
-  }
-}
-
 // TODO: Check if this is required if enableApplicationCertificate is false
 @description('A user-assigned managed identity that enables Application Gateway to access Key Vault for its TLS certs.')
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
-  name: take('appGwUserAssignedIdentity-Deployment-${uniqueString(resourceGroup().id)}', 64)
-
+  name: take('appGwUserAssignedIdentity-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
-    name: naming.outputs.resourcesNames.applicationGatewayUserAssignedIdentity
+    name: resourcesNames.applicationGatewayUserAssignedIdentity
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -111,7 +92,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 // @description('Adds the certificate into Azure Key Vault for consumption by Application Gateway.')
 module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
-  name: take('appGatewayAddCertificates-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  name: take('appGatewayAddCertificates-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
   params: {
     location: location
@@ -126,10 +107,11 @@ module appGatewayAddCertificates 'app-gateway-cert.bicep' = {
 }
 
 module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.4.1' = {
-  name: take('applicationGatewayPublicIp-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  name: take('applicationGatewayPublicIp-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     location: location
-    name: naming.outputs.resourcesNames.applicationGatewayPip
+    name: resourcesNames.applicationGatewayPip
     tags: tags
     enableTelemetry: enableTelemetry
     skuName: 'Standard'
@@ -162,10 +144,11 @@ module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0
 
 @description('The Application Gateway.')
 module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' = {
-  name: take('applicationGateway-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  name: take('applicationGateway-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     // Required parameters
-    name: naming.outputs.resourcesNames.applicationGateway
+    name: resourcesNames.applicationGateway
     enableTelemetry: enableTelemetry
     // Non-required parameters
     backendAddressPools: [
@@ -195,7 +178,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
             ? {
                 id: resourceId(
                   'Microsoft.Network/applicationGateways/probes',
-                  naming.outputs.resourcesNames.applicationGateway,
+                  resourcesNames.applicationGateway,
                   'webProbe'
                 )
               }
@@ -250,16 +233,16 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
         properties: {
           frontendIPConfiguration: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendIPConfigurations/appGwPublicFrontendIp'
+            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/frontendIPConfigurations/appGwPublicFrontendIp'
           }
           frontendPort: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendPorts/port_443'
+            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/frontendPorts/port_443'
           }
           protocol: 'Https'
           sslCertificate: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/sslCertificates/${certName}'
+            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/sslCertificates/${resourcesNames.workloadCertificate}'
           }
           hostnames: []
           requireServerNameIndication: false
@@ -302,15 +285,15 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
           priority: 100
           httpListener: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpsListener'
+            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/httpListeners/httpsListener'
           }
           backendAddressPool: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
+            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
           }
           backendHttpSettings: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendHttpSettingsCollection/https'
+            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/backendHttpSettingsCollection/https'
           }
         }
       }
@@ -318,7 +301,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
     sku: 'WAF_v2'
     sslCertificates: [
       {
-        name: certName
+        name: resourcesNames.workloadCertificate
         properties: {
           keyVaultSecretId: appGatewayAddCertificates.outputs.SecretUri
         }
@@ -337,9 +320,10 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
 }
 
 module appGwWafPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.1' = {
-  name: take('appGwWafPolicy-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  name: take('appGwWafPolicy-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
-    name: '${naming.outputs.resourcesNames.applicationGateway}Policy001'
+    name: '${resourcesNames.applicationGateway}Policy001'
     location: location
     enableTelemetry: enableTelemetry
     policySettings: {
