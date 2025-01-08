@@ -110,26 +110,12 @@ var defaultSubnets = [
     routeTableResourceId: (!empty(hubVNetId) && !empty(networkApplianceIpAddress))
       ? egressLockdownUdr.outputs.resourceId
       : null
-    delegations: [
-      {
-        name: 'envdelegation'
-        properties: {
-          serviceName: 'Microsoft.App/environments'
-        }
-      }
-    ]
+    delegation: 'Microsoft.App/environments'
   }
   {
     name: deploymentSubnetName
     addressPrefix: deploymentSubnetAddressPrefix
-    delegations: [
-      {
-        name: 'containerDelegation'
-        properties: {
-          serviceName: 'Microsoft.ContainerInstance/containerGroups'
-        }
-      }
-    ]
+    delegation: 'Microsoft.ContainerInstance/containerGroups'
   }
   {
     name: spokePrivateEndpointsSubnetName
