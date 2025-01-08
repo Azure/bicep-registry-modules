@@ -28,7 +28,7 @@ var certificateName = 'appgwcert'
 
 // ============ //
 // Dependencies //
-// ============ //
+// // ============ //
 module hubdeployment 'deploy.hub.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-hub-${serviceShort}'
   params: {
@@ -36,12 +36,6 @@ module hubdeployment 'deploy.hub.bicep' = {
     tags: {
       environment: 'test'
     }
-    enableTelemetry: true
-    vnetAddressPrefixes: ['10.0.0.0/24']
-    azureFirewallSubnetAddressPrefix: '10.0.0.64/26'
-    //azureFirewallSubnetManagementAddressPrefix: '10.0.0.128/26'
-    gatewaySubnetAddressPrefix: '10.0.0.0/27'
-    bastionSubnetAddressPrefix: '10.0.0.192/26'
     workloadName: serviceShort
   }
 }
@@ -53,8 +47,8 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     workloadName: serviceShort
-    hubVirtualNetworkResourceId: hubdeployment.outputs.hubVNetId
-    networkApplianceIpAddress: hubdeployment.outputs.networkApplianceIpAddress
+    hubVirtualNetworkResourceId: '' //hubdeployment.outputs.hubVNetId
+    networkApplianceIpAddress: '' //hubdeployment.outputs.networkApplianceIpAddress
     tags: {
       environment: 'test'
     }
