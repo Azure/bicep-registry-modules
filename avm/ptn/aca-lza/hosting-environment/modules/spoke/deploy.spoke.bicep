@@ -151,7 +151,7 @@ var spokeSubnets = vmJumpboxOSType != 'none'
 
 @description('The spoke virtual network in which the workload will run from. This virtual network would normally already be provisioned by your subscription vending process, and only the subnets would need to be configured.')
 module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.2' = {
-  name: take('vnetSpoke-${deployment().name}', 64)
+  name: take('deploy-vnetSpoke-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: resourcesNames.vnetSpoke
@@ -180,7 +180,7 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.2' = {
 
 @description('The log sink for Azure Diagnostics')
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.9.1' = {
-  name: take('logAnalyticsWs-${deployment().name}', 64)
+  name: take('deploy-logAnalyticsWs-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: resourcesNames.logAnalyticsWorkspace
@@ -192,7 +192,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 
 @description('Network security group rules for the Container Apps cluster.')
 module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-group:0.5.0' = {
-  name: take('nsgContainerAppsEnvironment-${deployment().name}', 64)
+  name: take('deploy-nsgContainerAppsEnvironment-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: resourcesNames.containerAppsEnvironmentNsg
@@ -315,7 +315,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
 
 @description('NSG Rules for the Application Gateway.')
 module nsgAppGw 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
-  name: take('nsgAppGw-${deployment().name}', 64)
+  name: take('deploy-nsgAppGw-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: resourcesNames.applicationGatewayNsg
@@ -404,7 +404,7 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.5.0' = if (!
 
 @description('NSG Rules for the private enpoint subnet.')
 module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
-  name: take('nsgPep-${deployment().name}', 64)
+  name: take('deploy-nsgPep-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: resourcesNames.pepNsg
@@ -440,7 +440,7 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
 
 @description('The Route Table deployment')
 module egressLockdownUdr 'br/public:avm/res/network/route-table:0.4.0' = if (!empty(hubVNetId) && !empty(networkApplianceIpAddress)) {
-  name: take('egressLockdownUdr-${deployment().name}', 64)
+  name: take('deploy-egressLockdownUdr-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: resourcesNames.routeTable
@@ -473,7 +473,7 @@ module egressLockdownUdr 'br/public:avm/res/network/route-table:0.4.0' = if (!em
 
 @description('An optional Linux virtual machine deployment to act as a jump box.')
 module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linux') {
-  name: take('vm-linux-${deployment().name}', 64)
+  name: take('deploy-vm-linux-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     location: location
@@ -498,7 +498,7 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linu
 
 @description('An optional Windows virtual machine deployment to act as a jump box.')
 module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == 'windows') {
-  name: take('vm-windows-${deployment().name}', 64)
+  name: take('deploy-vm-windows-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     location: location

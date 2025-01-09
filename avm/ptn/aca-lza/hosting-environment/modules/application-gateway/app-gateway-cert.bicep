@@ -50,7 +50,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 
 // Create a managed identity to write to KV a self signed cert if the appGatewayCertificateData is not provided
 resource selfSignedCertManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = if (empty(appGatewayCertificateData)) {
-  name: '${uniqueString(deployment().name, location)}-selfSignedCertManagedIdentity'
+  name: '${uniqueString(resourceGroup().name, location)}-selfSignedCertManagedIdentity'
   location: location
   tags: tags
 }
@@ -86,7 +86,7 @@ resource storageRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-
 // Create a deployment script to generate a self signed cert and write it to the KV
 // script needs to run from within the virtual network to be able to access the key vault
 resource selfSignedCertificateGeneration 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(appGatewayCertificateData)) {
-  name: '${take(uniqueString(deployment().name, 'self-signed-cert', location),4)}-certDeploymentScript'
+  name: '${take(uniqueString(resourceGroup().name, 'self-signed-cert', location),4)}-certDeploymentScript'
   location: location
   tags: tags
   kind: 'AzurePowerShell'

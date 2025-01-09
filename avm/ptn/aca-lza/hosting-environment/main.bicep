@@ -129,7 +129,7 @@ param enableDdosProtection bool = false
 // ------------------
 @description('User-configured naming rules')
 module naming 'modules/naming/naming.module.bicep' = {
-  name: take('sharedNamingDeployment-${deployment().name}', 64)
+  name: take('deploy-naming-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(guid(deployment().name))
     spokeResourceGroupName: spokeResourceGroupName
@@ -140,7 +140,7 @@ module naming 'modules/naming/naming.module.bicep' = {
 }
 
 module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
-  name: take('rg-${deployment().name}', 64)
+  name: take('deploy-rg-${deployment().name}', 64)
   params: {
     name: naming.outputs.resourcesNames.resourceGroup
     location: location
@@ -150,7 +150,7 @@ module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
 }
 
 module spoke 'modules/spoke/deploy.spoke.bicep' = {
-  name: take('spoke-${deployment().name}-deployment', 64)
+  name: take('deploy-spoke-${deployment().name}', 64)
   dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
@@ -179,7 +179,7 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
 }
 
 module supportingServices 'modules/supporting-services/deploy.supporting-services.bicep' = {
-  name: take('supportingServices-${deployment().name}-deployment', 64)
+  name: take('deploy-supportingServices-${deployment().name}', 64)
   dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
@@ -194,7 +194,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
 }
 
 module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-environment.bicep' = {
-  name: take('containerAppsEnvironment-${deployment().name}-deployment', 64)
+  name: take('deploy-containerAppsEnvironment-${deployment().name}', 64)
   dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
@@ -213,7 +213,7 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
 }
 
 module sampleApplication 'modules/sample-application/deploy.sample-application.bicep' = if (deploySampleApplication) {
-  name: take('sampleApplication-${deployment().name}-deployment', 64)
+  name: take('deploy-sampleApplication-${deployment().name}', 64)
   dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
@@ -227,7 +227,7 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
 }
 
 module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep' = if (exposeContainerAppsWith == 'applicationGateway') {
-  name: take('applicationGateway-${deployment().name}-deployment', 64)
+  name: take('deploy-applicationGateway-${deployment().name}', 64)
   dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames

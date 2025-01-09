@@ -42,13 +42,13 @@ param location string = resourceGroup().location
 // ------------------
 var managedIdentityName = 'sshKeyGenIdentity'
 var sshKeyName = 'sshKey'
-var sshDeploymentScriptName = '${take(uniqueString(deployment().name, location),4)}-sshDeploymentScript'
+var sshDeploymentScriptName = '${take(uniqueString(resourceGroup().name, location),4)}-sshDeploymentScript'
 // ------------------
 // RESOURCES
 // ------------------
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = if (empty(vmSshPublicKey)) {
-  name: '${uniqueString(deployment().name, location)}-${managedIdentityName}'
+  name: '${uniqueString(resourceGroup().name, location)}-${managedIdentityName}'
   tags: tags
   location: location
 }
@@ -89,7 +89,7 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' 
 }
 
 resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
-  name: '${take(uniqueString(deployment().name, location),4)}-${sshKeyName}'
+  name: '${take(uniqueString(resourceGroup().name, location),4)}-${sshKeyName}'
   location: location
   tags: tags
   properties: {
