@@ -82,6 +82,17 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.1' = {
       vnetSpokeAddressSpace
     ]
     subnets: subnets
+    peerings: !empty(hubVnetId)
+      ? [
+          {
+            remoteVirtualNetworkResourceId: hubVnetId
+            allowVirtualNetworkAccess: true
+            allowForwardedTraffic: false
+            allowGatewayTransit: false
+            useRemoteGateways: false
+          }
+        ]
+      : []
   }
 }
 
@@ -138,19 +149,6 @@ module nsgAse 'br/public:avm/res/network/network-security-group:0.5.0' = if (dep
         workspaceResourceId: logAnalyticsWorkspaceId
       }
     ]
-  }
-}
-
-resource vnetPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2021-08-01' = if (!empty(hubVnetId)) {
-  name: 'spoke/peerTo-hub'
-  properties: {
-    allowVirtualNetworkAccess: true
-    allowGatewayTransit: false
-    allowForwardedTraffic: false
-    useRemoteGateways: false
-    remoteVirtualNetwork: {
-      id: hubVnetId
-    }
   }
 }
 

@@ -37,6 +37,7 @@ param managedIdentityName string
 ])
 param sku string
 
+@description('Optional. Set to true if you want to deploy the App Service Plan in a zone redundant manner. Default is true.')
 param zoneRedundant bool = true
 
 @description('Optional. Location for all resources.')
@@ -52,7 +53,7 @@ param subnetPrivateEndpointId string = ''
 param virtualNetworkLinks array = []
 
 @description('Kind of server OS of the App Service Plan')
-@allowed(['Windows', 'Linux'])
+@allowed(['windows', 'linux'])
 param webAppBaseOs string
 
 @description('An existing Log Analytics WS Id for creating app Insights, diagnostics etc.')
@@ -66,9 +67,6 @@ param perSiteScaling bool = false
 
 @description('Optional, default is 20. Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.')
 param maximumElasticWorkerCount int = 20
-
-// @description('Optional, default is false. If true, then starts with minimum 3 instances')
-// param zoneRedundant bool = false
 
 @description('Optional. Scaling worker count.')
 param targetWorkerCount int = 0
@@ -100,10 +98,32 @@ param diagnosticMetricsToEnable array = [
   }
 ]
 
+@description('Optional. The site configuration for the web app.')
+param siteConfig object = {
+  alwaysOn: true
+  ftpsState: 'FtpsOnly'
+  minTlsVersion: '1.2'
+}
+
+@description('Optional. Kind of web app. Defaults to app.')
+@allowed([
+  'api'
+  'app'
+  'app,container,windows'
+  'app,linux'
+  'app,linux,container'
+  'functionapp'
+  'functionapp,linux'
+  'functionapp,linux,container'
+  'functionapp,linux,container,azurecontainerapps'
+  'functionapp,workflowapp'
+  'functionapp,workflowapp,linux'
+  'linux,api'
+])
+param kind string = 'app'
+
 var webAppDnsZoneName = 'privatelink.azurewebsites.net'
 var slotName = 'staging'
-
-// var sqlConnStr = !empty(sqlDbConnectionString) ? { sqlDefaultDbConnectionString: sqlDbConnectionString } : {}
 
 // ============ //
 // Dependencies //
@@ -141,19 +161,23 @@ var siteConfigConfigurationMap = {
     use32BitWorkerProcess: false
   }
   linuxJava17Se: {
-    linuxFxVersion: 'JAVA|17-java17'
+    linuxFxVersion: 'java|17-java17'
+    use32BitWorkerProcess: false
+  }
+  linuxNet8: {
+    linuxFxVersion: 'dotnetcore|8.0'
     use32BitWorkerProcess: false
   }
   linuxNet7: {
-    linuxFxVersion: 'DOTNETCORE|7.0'
+    linuxFxVersion: 'dotnetcore|7.0'
     use32BitWorkerProcess: false
   }
   linuxNet6: {
-    linuxFxVersion: 'DOTNETCORE|6.0'
+    linuxFxVersion: 'dotnetcore|6.0'
     use32BitWorkerProcess: false
   }
   linuxNode18: {
-    linuxFxVersion: 'NODE|18-lts'
+    linuxFxVersion: 'node|18-lts'
     use32BitWorkerProcess: false
   }
 }
@@ -172,7 +196,7 @@ module ase './ase.module.bicep' = if (deployAseV3) {
 }
 
 module appInsights 'br/public:avm/res/insights/component:0.4.1' = {
-  name: 'appInsights-Deployment'
+  name: '${uniqueString(deployment().name, location)}-appInsights-Deployment'
   params: {
     name: 'appi-${webAppName}'
     location: location
@@ -208,17 +232,18 @@ module plan 'br/public:avm/res/web/serverfarm:0.2.4' = {
 module webApp 'br/public:avm/res/web/site:0.9.0' = {
   name: take('${webAppName}-webApp-Deployment', 64)
   params: {
-    kind: (webAppBaseOs =~ 'linux') ? 'app,linux' : 'app'
+    kind: !empty(kind) ? 'app,linux' : 'app'
     name: webAppName
     location: location
     serverFarmResourceId: plan.outputs.resourceId
+    appInsightResourceId: appInsights.outputs.resourceId
+    siteConfig: siteConfig
     diagnosticSettings: [
       {
         workspaceResourceId: logAnalyticsWsId
       }
     ]
     virtualNetworkSubnetId: !(deployAseV3) ? subnetIdForVnetInjection : ''
-    siteConfig: siteConfigConfigurationMap[(webAppBaseOs =~ 'linux') ? 'linuxNet6' : 'windowsNet6']
     managedIdentities: {
       userAssignedResourceIds: ['${webAppUserAssignedManagedIdentity.outputs.resourceId}']
     }
@@ -258,7 +283,7 @@ module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' =
 }
 
 module webAppUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
-  name: 'appSvcUserAssignedManagedIdenity-Deployment'
+  name: '${uniqueString(deployment().name, location, 'webapp')}-deployment'
   params: {
     name: managedIdentityName
     location: location
@@ -298,7 +323,7 @@ output webAppName string = webApp.outputs.name
 output webAppHostName string = webApp.outputs.defaultHostname
 output webAppResourceId string = webApp.outputs.resourceId
 output webAppLocation string = webApp.outputs.location
-output webAppSystemAssignedPrincipalId string = webApp.outputs.systemAssignedMIPrincipalId
+output webAppSystemAssignedPrincipalId string = webAppUserAssignedManagedIdentity.outputs.principalId
 
 @description('The Internal ingress IP of the ASE.')
 output internalInboundIpAddress string = deployAseV3 ? ase.outputs.internalInboundIpAddress : ''

@@ -221,13 +221,14 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.7.0' = {
             weight: 1000
             enabledState: origin.enabledState ? 'Enabled' : 'Disabled'
             enforceCertificateNameCheck: true
-            privateLinkOrigin: empty(origin.privateLinkOrigin)
-              ? null
-              : {
-                  privateEndpointResourceId: origin.privateLinkOrigin.privateEndpointResourceId
-                  privateLinkResourceType: origin.privateLinkOrigin.privateLinkResourceType
-                  privateEndpointLocation: origin.privateLinkOrigin.privateEndpointLocation
-                }
+            sharedPrivateLinkResource: {
+              privateLink: {
+                id: origin.privateLinkOrigin.privateEndpointResourceId
+              }
+              privateLinkLocation: origin.privateLinkOrigin.privateEndpointLocation
+              requestMessage: 'frontdoor'
+              groupId: origin.privateLinkOrigin.privateLinkResourceType
+            }
           }
         ]
       }

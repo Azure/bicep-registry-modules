@@ -14,10 +14,15 @@ var contributorRoleDefinitionId = resourceId(
 )
 var deploymentScriptName = 'runAfdApproval'
 
+var uami = resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', idAfdPeAutoApproverName)
+
 @description('The User Assigned Managed Identity that will be given Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD.')
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: idAfdPeAutoApproverName
-  location: location
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+  name: '${idAfdPeAutoApproverName}-deployment'
+  params: {
+    name: idAfdPeAutoApproverName
+    location: location
+  }
 }
 
 @description('The role assignment that will be created to give the User Assigned Managed Identity Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD.')
@@ -26,7 +31,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
   scope: resourceGroup()
   properties: {
     roleDefinitionId: contributorRoleDefinitionId
-    principalId: userAssignedIdentity.properties.principalId
+    principalId: userAssignedIdentity.outputs.principalId
     principalType: 'ServicePrincipal'
   }
 }
@@ -34,12 +39,13 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
 @description('The deployment script that will be used to auto-approve the Private Endpoint Connection of the AFD.')
 resource runAfdApproval 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: deploymentScriptName
+
   location: location
   kind: 'AzureCLI'
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-      '${userAssignedIdentity.id}': {}
+      '${uami}': {}
     }
   }
   properties: {

@@ -9,24 +9,26 @@ param location string
 param resourceGroupName string
 
 module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
-  name: 'resourceGroupModule-Deployment1'
+  name: '${uniqueString(deployment().name, resourceGroupName)}-deployment'
   params: {
     name: resourceGroupName
     location: location
   }
 }
 
-module hubNetworking 'br/public:avm/ptn/network/hub-networking:0.2.0' = {
+module hubNetworking 'br/public:avm/res/network/virtual-network:0.5.2' = {
   scope: az.resourceGroup(resourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
   name: 'hubNetworkingDeployment'
   params: {
+    name: 'hub-network'
     location: location
-    hubVirtualNetworks: {
-      hub1: {
-        addressPrefixes: ['10.242.0.0/20']
-      }
-    }
+    addressPrefixes: [
+      '10.242.0.0/20'
+    ]
   }
 }
 
-output vnetHubResourceId string = hubNetworking.outputs.hubVirtualNetworks[0].id
+output vnetHubResourceId string = hubNetworking.outputs.resourceId

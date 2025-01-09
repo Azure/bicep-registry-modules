@@ -1,45 +1,49 @@
 targetScope = 'subscription'
 
+metadata name = 'App Service Landing Zone Accelerator'
+metadata description = 'This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework'
+metadata owner = 'Azure/module-maintainers'
+
 // ================ //
 // Parameters       //
 // ================ //
 
 @maxLength(10)
-@description('suffix (max 10 characters long) that will be used to name the resources in a pattern like <resourceAbbreviation>-<workloadName>')
+@description('Optional. suffix (max 10 characters long) that will be used to name the resources in a pattern like <resourceAbbreviation>-<workloadName>.')
 param workloadName string = 'appsvc${take( uniqueString( subscription().id), 4) }'
 
-@description('Azure region where the resources will be deployed in')
+@description('Optional. Azure region where the resources will be deployed in.')
 param location string = deployment().location
 
-@description('Required. The name of the environmentName (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.')
+@description('Optional. The name of the environmentName (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.')
 @maxLength(8)
 param environmentName string = 'test'
 
-@description('Optional, default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan.')
+@description('Optional. Default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan.')
 param deployAseV3 bool = false
 
-@description('CIDR of the SPOKE vnet i.e. 192.168.0.0/24')
+@description('Optional. CIDR of the SPOKE vnet i.e. 192.168.0.0/24.')
 param vnetSpokeAddressSpace string = '10.240.0.0/20'
 
-@description('CIDR of the subnet that will hold the app services plan. ATTENTION: ASEv3 needs a /24 network')
+@description('Optional. CIDR of the subnet that will hold the app services plan. ATTENTION: ASEv3 needs a /24 network.')
 param subnetSpokeAppSvcAddressSpace string = '10.240.0.0/26'
 
-@description('CIDR of the subnet that will hold devOps agents etc ')
+@description('Optional. CIDR of the subnet that will hold devOps agents etc.')
 param subnetSpokeDevOpsAddressSpace string = '10.240.10.128/26'
 
-@description('CIDR of the subnet that will hold the private endpoints of the supporting services')
+@description('Optional. CIDR of the subnet that will hold the private endpoints of the supporting services.')
 param subnetSpokePrivateEndpointAddressSpace string = '10.240.11.0/24'
 
-@description('Default is empty. If empty, then a new hub will be created. If given, no new hub will be created and we create the  peering between spoke and and existing hub vnet')
+@description('Optional. Default is empty. If given, peering between spoke and and existing hub vnet will be created.')
 param vnetHubResourceId string = ''
 
-@description('Internal IP of the Azure firewall deployed in Hub. Used for creating UDR to route all vnet egress traffic through Firewall. If empty no UDR')
+@description('Optional. Internal IP of the Azure firewall deployed in Hub. Used for creating UDR to route all vnet egress traffic through Firewall. If empty no UDR.')
 param firewallInternalIp string = ''
 
-@description('The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
-param vmSize string
+@description('Optional. The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
+param vmSize string = 'Standard_D2s_v4'
 
-@description('Defines the name, tier, size, family and capacity of the App Service Plan. Plans ending to _AZ, are deploying at least three instances in three Availability Zones. EP* is only for functions')
+@description('Optional. Defines the name, tier, size, family and capacity of the App Service Plan. EP* is only for functions.')
 @allowed([
   'S1'
   'S2'
@@ -56,24 +60,27 @@ param vmSize string
 ])
 param webAppPlanSku string = 'P1V3'
 
-@description('Kind of server OS of the App Service Plan')
-@allowed(['Windows', 'Linux'])
-param webAppBaseOs string = 'Windows'
+@description('Optional. Set to true if you want to deploy the App Service Plan in a zone redundant manner. Defult is true.')
+param zoneRedundant bool = true
 
-@description('mandatory, the username of the admin user of the jumpbox VM')
+@description('Optional. Kind of server OS of the App Service Plan. Default is "windows".')
+@allowed(['windows', 'linux'])
+param webAppBaseOs string = 'windows'
+
+@description('Conditional. Required if jumpbox deployed. The username of the admin user of the jumpbox VM.')
 param adminUsername string = 'azureuser'
 
-@description('mandatory, the password of the admin user of the jumpbox VM ')
+@description('Conditional. Required if jumpbox deployed and not using SSH key. The password of the admin user of the jumpbox VM.')
 @secure()
-param adminPassword string
+param adminPassword string = ''
 
-@description('set to true if you want to intercept all outbound traffic with azure firewall')
+@description('Optional. Set to true if you want to intercept all outbound traffic with azure firewall.')
 param enableEgressLockdown bool = false
 
-@description('set to true if you want to deploy a jumpbox/devops VM')
+@description('Optional. Set to true if you want to deploy a jumpbox/devops VM.')
 param deployJumpHost bool = true
 
-@description('Required. The SSH public key to use for the virtual machine.')
+@description('Optional. The SSH public key to use for the virtual machine.')
 @secure()
 param vmLinuxSshAuthorizedKey string = ''
 
@@ -87,18 +94,20 @@ param vmAuthenticationType string = 'password'
 @description('Optional. The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty.')
 param bastionResourceId string = ''
 
+@description('Optional. Tags to apply to all resources.')
 param tags object = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Set to true if you want to auto-approve the private endpoint connection to the Azure Front Door.')
 param autoApproveAfdPrivateEndpoint bool = true
 
 var resourceSuffix = '${workloadName}-${environmentName}-${location}'
 var resourceGroupName = 'rg-spoke-${resourceSuffix}'
 
 module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
-  name: 'resourceGroupModule-Deployment1'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-deployment'
   params: {
     name: resourceGroupName
     location: location
@@ -119,7 +128,7 @@ module naming './modules/naming/naming.module.bicep' = {
 }
 
 module spoke './modules/spoke/deploy.spoke.bicep' = {
-  name: 'spokeDeployment'
+  name: '${uniqueString(deployment().name, location)}-spokedeployment'
   params: {
     naming: naming.outputs.names
     enableTelemetry: enableTelemetry
@@ -133,6 +142,7 @@ module spoke './modules/spoke/deploy.spoke.bicep' = {
     firewallInternalIp: firewallInternalIp
     deployAseV3: deployAseV3
     webAppPlanSku: webAppPlanSku
+    zoneRedundant: zoneRedundant
     webAppBaseOs: webAppBaseOs
     adminUsername: adminUsername
     adminPassword: adminPassword
@@ -150,7 +160,7 @@ module spoke './modules/spoke/deploy.spoke.bicep' = {
 }
 
 module supportingServices './modules/supporting-services/deploy.supporting-services.bicep' = {
-  name: 'supportingServicesDeployment'
+  name: '${uniqueString(deployment().name, location)}-supportingServicesDeployment'
   scope: az.resourceGroup(resourceGroupName)
   params: {
     enableTelemetry: enableTelemetry
@@ -159,7 +169,50 @@ module supportingServices './modules/supporting-services/deploy.supporting-servi
     spokeVNetId: spoke.outputs.vnetSpokeId
     spokePrivateEndpointSubnetName: spoke.outputs.spokePrivateEndpointSubnetName
     appServiceManagedIdentityPrincipalId: spoke.outputs.appServiceManagedIdentityPrincipalId
+    logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
     hubVNetId: vnetHubResourceId
     tags: tags
   }
 }
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.appsvclza-hostingenvironment.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  location: location
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+// Spoke
+@description('The name of the Spoke resource group.')
+output spokeResourceGroupName string = resourceGroup.outputs.name
+
+@description('The  resource ID of the Spoke Virtual Network.')
+output spokeVNetResourceId string = spoke.outputs.vnetSpokeId
+
+@description('The name of the Spoke Virtual Network.')
+output spokeVnetName string = spoke.outputs.vnetSpokeName
+
+// Supporting Services
+
+@description('The resource ID of the key vault.')
+output keyVaultResourceId string = supportingServices.outputs.keyVaultResourceId
+
+@description('The name of the Azure key vault.')
+output keyVaultName string = supportingServices.outputs.keyVaultName
