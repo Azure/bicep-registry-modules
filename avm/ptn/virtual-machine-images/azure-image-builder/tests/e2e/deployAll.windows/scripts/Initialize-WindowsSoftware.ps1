@@ -622,6 +622,9 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 #######################
 LogInfo('Install-Choco start')
 $null = Install-Choco
+
+LogInfo("Enable Choco's global confirmation")
+choco feature enable -n allowGlobalConfirmation # Enable automatic confirmation for installations
 LogInfo('Install-Choco end')
 
 ##########################
