@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Azure Managed Redis (Preview) with Entra ID authentication'
+metadata description = 'This instance deploys an Azure Managed Redis (Preview) cache with Entra ID authentication.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-cache-redisenterprise-${serv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cremin'
+param serviceShort string = 'creaei'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -31,6 +31,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -43,6 +52,14 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      skuName: 'Balanced_B10'
+      accessKeysAuthentication: 'Disabled'
+      accessPolicyAssignments: [
+        {
+          accessPolicyName: 'default'
+          objectId: nestedDependencies.outputs.managedIdentityPrincipalId
+        }
+      ]
     }
   }
 ]
