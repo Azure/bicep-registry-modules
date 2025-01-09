@@ -113,6 +113,7 @@ module networkWatcher_connectionMonitors 'connection-monitor/main.bicep' = [
   for (connectionMonitor, index) in connectionMonitors: {
     name: '${uniqueString(deployment().name, location)}-NW-ConnectionMonitor-${index}'
     params: {
+      tags: tags
       endpoints: contains(connectionMonitor, 'endpoints') ? connectionMonitor.endpoints : []
       name: connectionMonitor.name
       location: location
@@ -130,6 +131,7 @@ module networkWatcher_flowLogs 'flow-log/main.bicep' = [
   for (flowLog, index) in flowLogs: {
     name: '${uniqueString(deployment().name, location)}-NW-FlowLog-${index}'
     params: {
+      tags: tags
       enabled: contains(flowLog, 'enabled') ? flowLog.enabled : true
       formatVersion: contains(flowLog, 'formatVersion') ? flowLog.formatVersion : 2
       location: contains(flowLog, 'location') ? flowLog.location : location
