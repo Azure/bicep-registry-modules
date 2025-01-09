@@ -800,6 +800,8 @@ The image build timeout in minutes. 0 means the default 240 minutes.
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `customizationSteps`
 
@@ -807,6 +809,8 @@ Customization steps to be run when building the VM image.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `enableTelemetry`
 
@@ -815,6 +819,8 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `location`
 
@@ -823,6 +829,8 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `lock`
 
@@ -830,6 +838,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 960
 
 **Optional parameters**
 
@@ -852,6 +862,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `lock.name`
 
@@ -859,6 +871,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `optimizeVmBoot`
 
@@ -873,6 +887,8 @@ The optimize property can be enabled while creating a VM image and allows VM opt
     'Enabled'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `osDiskSizeGB`
 
@@ -881,6 +897,8 @@ Specifies the size of OS disk.
 - Required: No
 - Type: int
 - Default: `128`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments`
 
@@ -888,6 +906,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -919,6 +939,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -926,6 +948,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.condition`
 
@@ -933,6 +957,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -946,6 +972,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -953,6 +981,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.description`
 
@@ -960,6 +990,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.name`
 
@@ -967,6 +999,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -984,6 +1018,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `stagingResourceGroupResourceId`
 
@@ -991,6 +1027,8 @@ Resource ID of the staging resource group in the same subscription and location 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `subnetResourceId`
 
@@ -998,6 +1036,8 @@ Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `tags`
 
@@ -1005,6 +1045,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess`
 
@@ -1012,6 +1054,8 @@ Configuration options and list of validations to be performed on the resulting i
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 960
 
 **Optional parameters**
 
@@ -1027,6 +1071,8 @@ If validation fails and this field is set to false, output image(s) will not be 
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations`
 
@@ -1034,6 +1080,8 @@ A list of validators that will be performed on the image. Azure Image Builder su
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 
 **Required parameters**
 
@@ -1069,6 +1117,8 @@ The type of validation.
     'Shell'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.destination`
 
@@ -1076,6 +1126,8 @@ Destination of the file.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.inline`
 
@@ -1083,6 +1135,8 @@ Array of commands to be run, separated by commas.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.name`
 
@@ -1090,6 +1144,8 @@ Friendly Name to provide context on what this validation step does.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.runAsSystem`
 
@@ -1097,6 +1153,8 @@ If specified, the PowerShell script will be run with elevated privileges using t
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.runElevated`
 
@@ -1104,6 +1162,8 @@ If specified, the PowerShell script will be run with elevated privileges.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.scriptUri`
 
@@ -1111,6 +1171,8 @@ URI of the PowerShell script to be run for validation. It can be a github link, 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.sha256Checksum`
 
@@ -1118,6 +1180,8 @@ Value of sha256 checksum of the file, you generate this locally, and then Image 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.sourceUri`
 
@@ -1125,6 +1189,8 @@ The source URI of the file.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.validExitCodes`
 
@@ -1132,6 +1198,8 @@ Valid codes that can be returned from the script/inline command, this avoids rep
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.sourceValidationOnly`
 
@@ -1139,6 +1207,8 @@ If this field is set to true, the image specified in the 'source' section will d
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `vmSize`
 
@@ -1147,6 +1217,8 @@ Specifies the size for the VM.
 - Required: No
 - Type: string
 - Default: `'Standard_D2s_v3'`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `vmUserAssignedIdentities`
 
@@ -1155,6 +1227,8 @@ List of User-Assigned Identities associated to the Build VM for accessing Azure 
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `baseTime`
 
@@ -1163,6 +1237,8 @@ Do not provide a value! This date is used to generate a unique image template na
 - Required: No
 - Type: string
 - Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
+- MinValue: 0
+- MaxValue: 960
 
 ## Outputs
 
