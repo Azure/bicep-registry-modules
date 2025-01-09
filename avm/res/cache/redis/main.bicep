@@ -117,6 +117,9 @@ param accessPolicies accessPolicyType[] = []
 @description('Optional. Array of access policy assignments.')
 param accessPolicyAssignments accessPolicyAssignmentType[] = []
 
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
+
 var availabilityZones = skuName == 'Premium'
   ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
   : []
@@ -357,6 +360,52 @@ module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicat
   dependsOn: redis_privateEndpoints
 }
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'primaryAccessKeyName')
+        ? [
+            {
+              name: secretsExportConfiguration!.primaryAccessKeyName
+              value: redis.listKeys().primaryKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'primaryConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.primaryConnectionStringName
+              value: 'rediss://:${redis.listKeys().primaryKey}@${redis.properties.hostName}:6380'
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryAccessKeyName')
+        ? [
+            {
+              name: secretsExportConfiguration!.secondaryAccessKeyName
+              value: redis.listKeys().secondaryKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.secondaryConnectionStringName
+              value: 'rediss://:${redis.listKeys().secondaryKey}@${redis.properties.hostName}:6380'
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The name of the Redis Cache.')
 output name string = redis.name
 
@@ -391,6 +440,12 @@ output privateEndpoints array = [
     networkInterfaceIds: redis_privateEndpoints[i].outputs.networkInterfaceIds
   }
 ]
+
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 // =============== //
 //   Definitions   //
@@ -583,4 +638,22 @@ type accessPolicyAssignmentType = {
   objectIdAlias: string
   @description('Required. Name of the access policy to be assigned.')
   accessPolicyName: string
+}
+
+@export()
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
+  keyVaultResourceId: string
+
+  @description('Optional. The primaryAccessKey secret name to create.')
+  primaryAccessKeyName: string?
+
+  @description('Optional. The primaryConnectionString secret name to create.')
+  primaryConnectionStringName: string?
+
+  @description('Optional. The secondaryAccessKey secret name to create.')
+  secondaryAccessKeyName: string?
+
+  @description('Optional. The secondaryConnectionString secret name to create.')
+  secondaryConnectionStringName: string?
 }
