@@ -143,179 +143,20 @@ module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0
 }
 
 @description('The Application Gateway.')
-module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' = {
+module applicationGateway 'app-gateway.module.bicep' = {
   name: take('applicationGateway-Deployment-${uniqueString(resourcesNames.resourceGroup)}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
-    // Required parameters
-    name: resourcesNames.applicationGateway
-    enableTelemetry: enableTelemetry
-    // Non-required parameters
-    backendAddressPools: [
-      {
-        name: 'acaServiceBackend'
-        properties: {
-          backendAddresses: (!empty(applicationGatewayPrimaryBackendEndFqdn))
-            ? [
-                {
-                  fqdn: applicationGatewayPrimaryBackendEndFqdn
-                }
-              ]
-            : null
-        }
-      }
-    ]
-    backendHttpSettingsCollection: [
-      {
-        name: 'https'
-        properties: {
-          port: 443
-          protocol: 'Https'
-          cookieBasedAffinity: 'Disabled'
-          pickHostNameFromBackendAddress: true
-          requestTimeout: 20
-          probe: (!empty(applicationGatewayPrimaryBackendEndFqdn))
-            ? {
-                id: resourceId(
-                  'Microsoft.Network/applicationGateways/probes',
-                  resourcesNames.applicationGateway,
-                  'webProbe'
-                )
-              }
-            : null
-        }
-      }
-    ]
-    diagnosticSettings: [
-      {
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        workspaceResourceId: applicationGatewayLogAnalyticsId
-      }
-    ]
-    enableHttp2: true
-    frontendIPConfigurations: [
-      {
-        name: 'appGwPublicFrontendIp'
-        properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: {
-            id: applicationGatewayPublicIp.outputs.resourceId
-          }
-        }
-      }
-    ]
-    frontendPorts: [
-      {
-        name: 'port_443'
-        properties: {
-          port: 443
-        }
-      }
-    ]
-    gatewayIPConfigurations: [
-      {
-        name: 'appGatewayIpConfig'
-        properties: {
-          subnet: {
-            id: applicationGatewaySubnetId
-          }
-        }
-      }
-    ]
-    httpListeners: [
-      {
-        name: 'httpsListener'
-        properties: {
-          frontendIPConfiguration: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/frontendIPConfigurations/appGwPublicFrontendIp'
-          }
-          frontendPort: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/frontendPorts/port_443'
-          }
-          protocol: 'Https'
-          sslCertificate: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/sslCertificates/${resourcesNames.workloadCertificate}'
-          }
-          hostnames: []
-          requireServerNameIndication: false
-        }
-      }
-    ]
     location: location
-    managedIdentities: {
-      userAssignedResourceIds: [
-        userAssignedIdentity.outputs.resourceId
-      ]
-    }
-    probes: (!empty(applicationGatewayPrimaryBackendEndFqdn))
-      ? [
-          {
-            name: 'webProbe'
-            properties: {
-              protocol: 'Https'
-              host: applicationGatewayPrimaryBackendEndFqdn
-              path: appGatewayBackendHealthProbePath
-              interval: 30
-              timeout: 30
-              unhealthyThreshold: 3
-              pickHostNameFromBackendHttpSettings: false
-              minServers: 0
-              match: {
-                statusCodes: [
-                  '200-499'
-                ]
-              }
-            }
-          }
-        ]
-      : null
-    requestRoutingRules: [
-      {
-        name: 'routingRules'
-        properties: {
-          ruleType: 'Basic'
-          priority: 100
-          httpListener: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/httpListeners/httpsListener'
-          }
-          backendAddressPool: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
-          }
-          backendHttpSettings: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', resourcesNames.applicationGateway)}/backendHttpSettingsCollection/https'
-          }
-        }
-      }
-    ]
-    sku: 'WAF_v2'
-    sslCertificates: [
-      {
-        name: resourcesNames.workloadCertificate
-        properties: {
-          keyVaultSecretId: appGatewayAddCertificates.outputs.SecretUri
-        }
-      }
-    ]
     tags: tags
+    resourcesNames: resourcesNames
+    userAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    applicationGatewayPublicIpResourceId: applicationGatewayPublicIp.outputs.resourceId
+    applicationGatewaySubnetId: applicationGatewaySubnetId
     firewallPolicyResourceId: appGwWafPolicy.outputs.resourceId
-    sslPolicyType: 'Predefined'
-    sslPolicyName: 'AppGwSslPolicy20220101'
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
+    keyVaultCertUri: appGatewayAddCertificates.outputs.SecretUri
+    appGatewayBackendHealthProbePath: appGatewayBackendHealthProbePath
+    applicationGatewayPrimaryBackendEndFqdn: applicationGatewayPrimaryBackendEndFqdn
   }
 }
 
@@ -353,7 +194,7 @@ module appGwWafPolicy 'br/public:avm/res/network/application-gateway-web-applica
 // ------------------
 
 @description('The resource ID of the Azure Application Gateway.')
-output applicationGatewayResourceId string = applicationGateway.outputs.resourceId
+output applicationGatewayResourceId string = applicationGateway.outputs.applicationGatewayResourceId
 
 @description('The FQDN of the Azure Application Gateway.')
 output applicationGatewayFqdn string = applicationGatewayFqdn
