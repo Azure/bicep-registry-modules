@@ -12,18 +12,6 @@ Closes #123
 Closes #456
 -->
 
-## Changelog
-
-<!-- Please add a changelog here, that will be added to the Readme for this new version. Use a list with the keywords [New, Modified, Breaking].
-
-Example:
-- New: the RoleAssignment parameter uses the UDT from the common AVM modules
-- Modified: the name is now auto-generated, if not passed
-- Modified: by default, the resource deploys an xyz
-- Breaking: the minCPU parameter is of type int and not string
-- Bugfix: the minCPU parameter was not applied
--->
-
 ## Pipeline Reference
 
 <!-- Insert your Pipeline Status Badge below -->
