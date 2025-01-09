@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8012742198030814245"
+      "templateHash": "2068693634864756250"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -49220,7 +49220,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15393354476999915961"
+              "templateHash": "2114902130644055590"
             }
           },
           "parameters": {
@@ -50792,7 +50792,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "15584934993984243114"
+                      "templateHash": "4193655968987192463"
                     }
                   },
                   "parameters": {
@@ -50886,6 +50886,14 @@
                         "enableHttp2": true,
                         "firewallPolicy": {
                           "id": "[parameters('firewallPolicyResourceId')]"
+                        },
+                        "sslPolicy": {
+                          "minProtocolVersion": "TLSv1_2",
+                          "policyType": "Custom",
+                          "cipherSuites": [
+                            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+                            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+                          ]
                         },
                         "forceFirewallPolicyAssociation": true,
                         "gatewayIPConfigurations": [
