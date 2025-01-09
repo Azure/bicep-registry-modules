@@ -49,7 +49,7 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-07-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-07-31-preview/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
-| `Microsoft.Network/applicationGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/applicationGateways) |
+| `Microsoft.Network/applicationGateways` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/applicationGateways) |
 | `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/ApplicationGatewayWebApplicationFirewallPolicies) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
@@ -932,7 +932,6 @@ The name of the workload that is being deployed. Up to 10 characters long.
 | `spokeInfraSubnetName` | string | The name of the Spoke Infrastructure Subnet. |
 | `spokeInfraSubnetResourceId` | string | The resource ID of the Spoke Infrastructure Subnet. |
 | `spokePrivateEndpointsSubnetName` | string | The name of the Spoke Private Endpoints Subnet. |
-| `spokeResourceGroupName` | string | The name of the Spoke resource group. |
 | `spokeVnetName` | string | The name of the Spoke Virtual Network. |
 | `spokeVNetResourceId` | string | The  resource ID of the Spoke Virtual Network. |
 | `vmJumpBoxName` | string | The name of the jump box virtual machine. |
@@ -951,7 +950,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/key-vault/vault:0.11.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.2.0` | Remote reference |
-| `br/public:avm/res/network/application-gateway:0.5.1` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.0` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.7.1` | Remote reference |
