@@ -75,7 +75,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource networkWatcher 'Microsoft.Network/networkWatchers@2023-04-01' = {
+resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' = {
   name: name
   location: location
   tags: tags
