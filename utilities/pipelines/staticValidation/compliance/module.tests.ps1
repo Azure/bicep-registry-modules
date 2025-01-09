@@ -1219,30 +1219,43 @@ Describe 'Module tests' -Tag 'Module' {
             $sections = $changelogContent | Where-Object { $_ -match '^##' }
             $changelogSection = $sections | Where-Object { $_ -match '^##\s+unreleased' }
 
+            # the changelog should start with '# Changelog'
+            $changelogContent.Length | Should -BeGreaterThan 0 -Because 'The changelog should not be empty'
+            $changelogContent[0] | Should -Be '# Changelog' -Because 'The changelog should start with `# Changelog`'
+            $changelogContent[1] | Should -Be '' -Because 'The changelog should start with `# Changelog`, followed by an empty line'
+
             # check for the presence of the `## unreleased` section
             $changelogSection | Should -BeIn $sections -Because 'The `## unreleased` section should be in the changelog'
 
             # only one unrealeased section should be present
-            $changelogSection.Count | Should -BeExactly 1 -Because 'The `## unreleased` section should be in the changelog only once.'
+            $changelogSection.Count | Should -BeExactly 1 -Because 'The `## unreleased` section should be in the changelog only once'
 
-            # check for unrealeased being the first section
-            $sections[0] | Should -Be $changelogSection -Because 'The `## unreleased` section should be the first section in the changelog.'
+            # check for unrealeased being the first section. Ignore, if there is only one section
+            if ($sections -is [array]) {
+                $sections[0] | Should -Be $changelogSection -Because 'The `## unreleased` section should be the first section in the changelog'
+            }
 
             # check for the order of the versions
-            ($changelogContent | Where-Object { $_ -match '^##' } | Sort-Object -Descending) | Should -BeExactly $sections 'The versions in the changelog should appear in descending order.'
+            ($changelogContent | Where-Object { $_ -match '^##' } | Sort-Object -Descending) | Should -BeExactly $sections 'The versions in the changelog should appear in descending order'
 
             # the unreleased section must contain certain content
-            $startIndex = $changelogContent.IndexOf($sections[0]) + 1 # skip the heading
-            $endIndex = $changelogContent.IndexOf($sections[1])
-            $contentBetweenSections = $changelogContent[$startIndex..($endIndex - 1)]
-            $contentBetweenSections | Should -Contain 'New Features' -Because 'The `## unreleased` section should contain the following headers: New Features, Changes, Bugfixes and Breaking Changes.'
-            $contentBetweenSections | Should -Contain 'Changes' -Because 'The `## unreleased` section should contain the following headers: New Features, Changes, Bugfixes and Breaking Changes.'
-            $contentBetweenSections | Should -Contain 'Bugfixes' -Because 'The `## unreleased` section should contain the following headers: New Features, Changes, Bugfixes and Breaking Changes.'
-            $contentBetweenSections | Should -Contain 'Breaking Changes' -Because 'The `## unreleased` section should contain the following headers: New Features, Changes, Bugfixes and Breaking Changes.'
+            if ($sections -is [array]) {
+                $startIndex = $changelogContent.IndexOf($sections[0]) + 1 # skip the heading
+                $endIndex = $changelogContent.IndexOf($sections[1])
+                $changelogSectionContent = $changelogContent[$startIndex..($endIndex - 1)]
+            } else {
+                # special treatment, if there is only one section
+                $changelogSectionContent = $changelogContent
+            }
+            # $changelogSectionContent | Should -Contain 'New Features' -Because 'The `## unreleased` section should contain "New Features" surrounded by empty lines'
+            $changelogSectionContent -join "`n" | Should -MatchExactly '\nNew Features\n\n' -Because 'The `## unreleased` section should contain "New Features" surrounded by empty lines'
+            $changelogSectionContent -join "`n" | Should -MatchExactly '\nChanges\n\n' -Because 'The `## unreleased` section should contain "Changes" surrounded by empty lines'
+            $changelogSectionContent -join "`n" | Should -MatchExactly '\nBugfixes\n\n' -Because 'The `## unreleased` section should contain "Bugfixes" surrounded by empty lines'
+            $changelogSectionContent -join "`n" | Should -MatchExactly '\nBreaking Changes\n\n' -Because 'The `## unreleased` section should "Breaking Changes" surrounded by empty lines'
 
             # the unreleased section must contain content and not only the headings and empty lines
-            $nonEmptyContent = $contentBetweenSections | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(New Features|Changes|Bugfixes|Breaking Changes)$' }
-            $nonEmptyContent.Count | Should -BeGreaterThan 0 -Because 'The `## unreleased` section should contain actual content and not just headers or empty lines.'
+            $nonEmptyContent = $changelogSectionContent | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(New Features|Changes|Bugfixes|Breaking Changes)$' }
+            $nonEmptyContent.Count | Should -BeGreaterThan 0 -Because 'The `## unreleased` section should contain actual content and not just headers or empty lines'
         }
     }
 
