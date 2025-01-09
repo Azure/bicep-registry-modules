@@ -80,8 +80,8 @@ param storageAccountResourceId string?
 @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
 param storageAccountUseIdentityAuthentication bool = false
 
-@description('Optional. The web settings api management configuration.')
-param apiManagementConfiguration object?
+@description('Optional. The Site Config, Web settings to deploy.')
+param webConfiguration object?
 
 @description('Optional. The extension MSDeployment configuration.')
 param msDeployConfiguration object?
@@ -179,6 +179,9 @@ param hybridConnectionRelays array?
 ])
 param publicNetworkAccess string?
 
+@description('Optional. End to End Encryption Setting.')
+param e2eEncryptionEnabled bool?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -250,7 +253,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource app 'Microsoft.Web/sites@2023-12-01' = {
+resource app 'Microsoft.Web/sites@2024-04-01' = {
   name: name
   location: location
   kind: kind
@@ -288,6 +291,7 @@ resource app 'Microsoft.Web/sites@2023-12-01' = {
     vnetImagePullEnabled: vnetImagePullEnabled
     vnetRouteAllEnabled: vnetRouteAllEnabled
     scmSiteAlsoStopped: scmSiteAlsoStopped
+    endToEndEncryptionEnabled: e2eEncryptionEnabled
   }
 }
 
@@ -324,11 +328,11 @@ module app_logssettings 'config--logs/main.bicep' = if (!empty(logsConfiguration
   ]
 }
 
-module app_websettings 'config--web/main.bicep' = if (!empty(apiManagementConfiguration ?? {})) {
+module app_websettings 'config--web/main.bicep' = if (!empty(webConfiguration ?? {})) {
   name: '${uniqueString(deployment().name, location)}-Site-Config-Web'
   params: {
     appName: app.name
-    apiManagementConfiguration: apiManagementConfiguration
+    webConfiguration: webConfiguration
   }
 }
 
@@ -571,6 +575,8 @@ output privateEndpoints array = [
 @description('The private endpoints of the slots.')
 output slotPrivateEndpoints array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.privateEndpoints]
 
+@description('The outbound IP addresses of the app.')
+output outboundIpAddresses string = app.properties.outboundIpAddresses
 // =============== //
 //   Definitions   //
 // =============== //
