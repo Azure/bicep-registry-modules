@@ -1207,7 +1207,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
         }
 
-        It '[<moduleFolderName>] `CHANGELOG.md` must contain a `## unreleased` section and versions are ordered descending.' -TestCases $changelogFileTestCases {
+        It '[<moduleFolderName>] `CHANGELOG.md` must contain a `## unreleased` section with content and versions are ordered descending.' -TestCases $changelogFileTestCases {
 
             param(
                 [string] $templateFilePath,
@@ -1219,12 +1219,8 @@ Describe 'Module tests' -Tag 'Module' {
             $sections = $changelogContent | Where-Object { $_ -match '^##' }
             $changelogSection = $sections | Where-Object { $_ -match '^##\s+unreleased' }
 
-            $sections | ForEach-Object {
-                Write-Verbose 'The CHANGELOG.md file contains the following sections: $_' -Verbose
-            }
-
             # check for the presence of the `## unreleased` section
-            $changelogSection | Should -BeIn $sections -Because 'The `## unreleased` section should be in the changelog.'
+            $changelogSection | Should -BeIn $sections -Because 'The `## unreleased` section should be in the changelog'
 
             # only one unrealeased section should be present
             $changelogSection.Count | Should -BeExactly 1 -Because 'The `## unreleased` section should be in the changelog only once.'
