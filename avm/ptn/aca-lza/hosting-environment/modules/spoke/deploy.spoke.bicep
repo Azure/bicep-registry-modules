@@ -149,16 +149,6 @@ var spokeSubnets = vmJumpboxOSType != 'none'
 // RESOURCES
 // ------------------
 
-module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
-  name: take('rg-${deployment().name}', 64)
-  params: {
-    name: resourcesNames.resourceGroup
-    location: location
-    enableTelemetry: enableTelemetry
-    tags: tags
-  }
-}
-
 @description('The spoke virtual network in which the workload will run from. This virtual network would normally already be provisioned by your subscription vending process, and only the subnets would need to be configured.')
 module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.2' = {
   name: take('vnetSpoke-${deployment().name}', 64)
@@ -553,9 +543,6 @@ resource vnetSpokeCreated 'Microsoft.Network/virtualNetworks@2024-05-01' existin
     name: deploymentSubnetName
   }
 }
-
-@description('The name of the spoke resource group.')
-output spokeResourceGroupName string = spokeResourceGroup.name
 
 @description('The resource ID of the spoke virtual network.')
 output spokeVNetId string = vnetSpokeCreated.id

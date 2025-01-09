@@ -47,8 +47,8 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     workloadName: serviceShort
-    hubVirtualNetworkResourceId: '' //hubdeployment.outputs.hubVNetId
-    networkApplianceIpAddress: '' //hubdeployment.outputs.networkApplianceIpAddress
+    hubVirtualNetworkResourceId: hubdeployment.outputs.hubVNetId
+    networkApplianceIpAddress: hubdeployment.outputs.networkApplianceIpAddress
     tags: {
       environment: 'test'
     }

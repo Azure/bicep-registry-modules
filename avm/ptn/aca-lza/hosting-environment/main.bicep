@@ -139,9 +139,19 @@ module naming 'modules/naming/naming.module.bicep' = {
   }
 }
 
+module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
+  name: take('rg-${deployment().name}', 64)
+  params: {
+    name: naming.outputs.resourcesNames.resourceGroup
+    location: location
+    enableTelemetry: enableTelemetry
+    tags: tags
+  }
+}
+
 module spoke 'modules/spoke/deploy.spoke.bicep' = {
   name: take('spoke-${deployment().name}-deployment', 64)
-  scope: subscription()
+  dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
@@ -168,19 +178,9 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
   }
 }
 
-// Policy assignement requires a management group scope
-// @description('Assign built-in and custom (container-apps related) policies to the spoke subscription.')
-// module policiesDeployment 'modules/policy/policies-assignement.bicep' = if (deployAzurePolicies) {
-//   name: take('policyAssignments-${deployment().name}', 64)
-//   params: {
-//     location: location
-//     spokeResourceGroupName: spoke.outputs.spokeResourceGroupName
-//     containerRegistryName: naming.outputs.resourcesNames.containerRegistry
-//   }
-// }
-
 module supportingServices 'modules/supporting-services/deploy.supporting-services.bicep' = {
   name: take('supportingServices-${deployment().name}-deployment', 64)
+  dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
@@ -195,6 +195,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
 
 module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-environment.bicep' = {
   name: take('containerAppsEnvironment-${deployment().name}-deployment', 64)
+  dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
@@ -213,6 +214,7 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
 
 module sampleApplication 'modules/sample-application/deploy.sample-application.bicep' = if (deploySampleApplication) {
   name: take('sampleApplication-${deployment().name}-deployment', 64)
+  dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
@@ -226,6 +228,7 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
 
 module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep' = if (exposeContainerAppsWith == 'applicationGateway') {
   name: take('applicationGateway-${deployment().name}-deployment', 64)
+  dependsOn: [spokeResourceGroup]
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
@@ -270,11 +273,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
 // ------------------
 // OUTPUTS
 // ------------------
-
-// Spoke
-@description('The name of the Spoke resource group.')
-output spokeResourceGroupName string = spoke.outputs.spokeResourceGroupName
-
 @description('The  resource ID of the Spoke Virtual Network.')
 output spokeVNetResourceId string = spoke.outputs.spokeVNetId
 
