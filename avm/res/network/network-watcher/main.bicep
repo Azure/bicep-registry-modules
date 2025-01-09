@@ -114,15 +114,13 @@ module networkWatcher_connectionMonitors 'connection-monitor/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-NW-ConnectionMonitor-${index}'
     params: {
       tags: tags
-      endpoints: contains(connectionMonitor, 'endpoints') ? connectionMonitor.endpoints : []
+      endpoints: connectionMonitor.?endpoints ?? []
       name: connectionMonitor.name
       location: location
       networkWatcherName: networkWatcher.name
-      testConfigurations: contains(connectionMonitor, 'testConfigurations') ? connectionMonitor.testConfigurations : []
-      testGroups: contains(connectionMonitor, 'testGroups') ? connectionMonitor.testGroups : []
-      workspaceResourceId: contains(connectionMonitor, 'workspaceResourceId')
-        ? connectionMonitor.workspaceResourceId
-        : ''
+      testConfigurations: connectionMonitor.?testConfigurations ?? []
+      testGroups: connectionMonitor.?testGroups ?? []
+      workspaceResourceId: connectionMonitor.?workspaceResourceId ?? ''
     }
   }
 ]
@@ -132,18 +130,16 @@ module networkWatcher_flowLogs 'flow-log/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-NW-FlowLog-${index}'
     params: {
       tags: tags
-      enabled: contains(flowLog, 'enabled') ? flowLog.enabled : true
-      formatVersion: contains(flowLog, 'formatVersion') ? flowLog.formatVersion : 2
-      location: contains(flowLog, 'location') ? flowLog.location : location
-      name: contains(flowLog, 'name')
-        ? flowLog.name
-        : '${last(split(flowLog.targetResourceId, '/'))}-${split(flowLog.targetResourceId, '/')[4]}-flowlog'
+      enabled: flowLog.?enabled ?? true
+      formatVersion: flowLog.?formatVersion ?? 2
+      location: flowLog.?location ?? location
+      name: flowLog.?name ?? '${last(split(flowLog.targetResourceId, '/'))}-${split(flowLog.targetResourceId, '/')[4]}-flowlog'
       networkWatcherName: networkWatcher.name
-      retentionInDays: contains(flowLog, 'retentionInDays') ? flowLog.retentionInDays : 365
+      retentionInDays: flowLog.?retentionInDays ?? 365
       storageId: flowLog.storageId
       targetResourceId: flowLog.targetResourceId
-      trafficAnalyticsInterval: contains(flowLog, 'trafficAnalyticsInterval') ? flowLog.trafficAnalyticsInterval : 60
-      workspaceResourceId: contains(flowLog, 'workspaceResourceId') ? flowLog.workspaceResourceId : ''
+      trafficAnalyticsInterval: flowLog.?trafficAnalyticsInterval ?? 60
+      workspaceResourceId: flowLog.?workspaceResourceId ?? ''
     }
   }
 ]
