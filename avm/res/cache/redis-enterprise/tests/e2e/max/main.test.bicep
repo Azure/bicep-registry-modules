@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-cache-redisenterprise-${serv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'crewaf'
+param serviceShort string = 'cremax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -66,6 +67,12 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      capacity: 4
+      clientProtocol: 'Plaintext'
+      clusteringPolicy: 'EnterpriseCluster'
+      deferUpgrade: 'Deferred'
+      enableTelemetry: true
+      evictionPolicy: 'NoEviction'
       diagnosticSettingsCluster: [
         {
           name: 'customSettingCluster'
@@ -99,9 +106,17 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       minimumTlsVersion: '1.2'
+      modules: [
+        {
+          name: 'RedisBloom'
+        }
+        {
+          name: 'RediSearch'
+        }
+      ]
       persistence: {
-        type: 'rdb'
-        frequency: '1h'
+        type: 'aof'
+        frequency: '1s'
       }
       privateEndpoints: [
         {
