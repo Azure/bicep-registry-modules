@@ -30,9 +30,6 @@ param originGroupName string
 @description('Origin List')
 param origins array
 
-@description('Optional, default value false. Set true if you need to cache content at the AFD level')
-param enableCaching bool = false
-
 @description('Name of the WAF policy to create.')
 @maxLength(128)
 param wafPolicyName string
@@ -42,7 +39,7 @@ param wafPolicyName string
   'Log'
   'Redirect'
 ])
-param wafRuleSetAction string = 'Log'
+param wafRuleSetAction string = 'Block'
 
 @description('optional, default value Enabled. ')
 @allowed([
@@ -58,6 +55,9 @@ param wafPolicyState string = 'Enabled'
 ])
 param wafPolicyMode string = 'Prevention'
 
+@description('Required. The resource ID of the Log Analytics workspace to send logs to.')
+param logAnalyticsWorkspaceId string
+
 // Create an Array of all Endpoint which includes customDomain Id and afdEndpoint Id
 // This array is needed to be attached to Microsoft.Cdn/profiles/securitypolicies
 // var customDomainIds = [for (domain, index) in customDomains: {id: custom_domains[index].id}]
@@ -65,50 +65,50 @@ param wafPolicyMode string = 'Prevention'
 // var endPointIdsForWaf = union(customDomainIds, afdEndpointIds)
 //var endPointIdsForWaf = [{ id: endpoint.id }]
 
-@description('Default Content to compress')
-var contentTypeCompressionList = [
-  'application/eot'
-  'application/font'
-  'application/font-sfnt'
-  'application/javascript'
-  'application/json'
-  'application/opentype'
-  'application/otf'
-  'application/pkcs7-mime'
-  'application/truetype'
-  'application/ttf'
-  'application/vnd.ms-fontobject'
-  'application/xhtml+xml'
-  'application/xml'
-  'application/xml+rss'
-  'application/x-font-opentype'
-  'application/x-font-truetype'
-  'application/x-font-ttf'
-  'application/x-httpd-cgi'
-  'application/x-javascript'
-  'application/x-mpegurl'
-  'application/x-opentype'
-  'application/x-otf'
-  'application/x-perl'
-  'application/x-ttf'
-  'font/eot'
-  'font/ttf'
-  'font/otf'
-  'font/opentype'
-  'image/svg+xml'
-  'text/css'
-  'text/csv'
-  'text/html'
-  'text/javascript'
-  'text/js'
-  'text/plain'
-  'text/richtext'
-  'text/tab-separated-values'
-  'text/xml'
-  'text/x-script'
-  'text/x-component'
-  'text/x-java-source'
-]
+// @description('Default Content to compress')
+// var contentTypeCompressionList = [
+//   'application/eot'
+//   'application/font'
+//   'application/font-sfnt'
+//   'application/javascript'
+//   'application/json'
+//   'application/opentype'
+//   'application/otf'
+//   'application/pkcs7-mime'
+//   'application/truetype'
+//   'application/ttf'
+//   'application/vnd.ms-fontobject'
+//   'application/xhtml+xml'
+//   'application/xml'
+//   'application/xml+rss'
+//   'application/x-font-opentype'
+//   'application/x-font-truetype'
+//   'application/x-font-ttf'
+//   'application/x-httpd-cgi'
+//   'application/x-javascript'
+//   'application/x-mpegurl'
+//   'application/x-opentype'
+//   'application/x-otf'
+//   'application/x-perl'
+//   'application/x-ttf'
+//   'font/eot'
+//   'font/ttf'
+//   'font/otf'
+//   'font/opentype'
+//   'image/svg+xml'
+//   'text/css'
+//   'text/csv'
+//   'text/html'
+//   'text/javascript'
+//   'text/js'
+//   'text/plain'
+//   'text/richtext'
+//   'text/tab-separated-values'
+//   'text/xml'
+//   'text/x-script'
+//   'text/x-component'
+//   'text/x-java-source'
+// ]
 
 module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.0' = {
   name: wafPolicyName
@@ -154,31 +154,46 @@ module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy
           ruleSetAction: wafRuleSetAction
           ruleGroupOverrides: []
         }
+        {
+          ruleSetType: 'Microsoft_BotManagerRuleSet'
+          ruleSetVersion: '1.0'
+          ruleSetAction: wafRuleSetAction
+          ruleGroupOverrides: []
+        }
       ]
     }
   }
 }
 
-module frontDoor 'br/public:avm/res/cdn/profile:0.7.0' = {
+module frontDoor 'br/public:avm/res/cdn/profile:0.11.0' = {
   name: afdName
   params: {
     name: afdName
     sku: skuName
     location: 'global'
     originResponseTimeoutSeconds: 120
+    managedIdentities: {
+      systemAssigned: true
+    }
+    diagnosticSettings: [
+      {
+        name: 'FrontdoorAccessLog'
+        workspaceResourceId: logAnalyticsWorkspaceId
+        logCategoriesAndGroups: [
+          {
+            category: 'FrontdoorAccessLog'
+          }
+          {
+            category: 'FrontdoorWebApplicationFirewallLog'
+          }
+        ]
+      }
+    ]
     afdEndpoints: [
       {
         name: endpointName
         enabledState: endpointEnabled
-        cacheConfiguration: !enableCaching
-          ? null
-          : {
-              dynamicCompression: 'Enabled'
-              queryStringsCachingBehavior: 'IgnoreQueryString'
-              dynamicCompressionLevel: 'Normal'
-              queryStringCachingBehavior: 'UseQueryString'
-              contentTypesToCompress: contentTypeCompressionList
-            }
+
         routes: [
           {
             name: '${originGroupName}-route'
@@ -258,6 +273,8 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.7.0' = {
         ]
       }
     ]
+
+    tags: tags
   }
 }
 

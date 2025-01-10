@@ -208,6 +208,7 @@ module afd '../front-door/front-door.module.bicep' = {
     ]
     skuName: 'Premium_AzureFrontDoor'
     wafPolicyName: resourceNames.frontDoorWaf
+    logAnalyticsWorkspaceId: logAnalyticsWs.outputs.resourceId
   }
 }
 

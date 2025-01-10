@@ -103,6 +103,8 @@ param siteConfig object = {
   alwaysOn: true
   ftpsState: 'FtpsOnly'
   minTlsVersion: '1.2'
+  healthCheckPath: '/healthz'
+  http20Enabled: true
 }
 
 @description('Optional. Kind of web app. Defaults to app.')
@@ -238,6 +240,7 @@ module webApp 'br/public:avm/res/web/site:0.9.0' = {
     serverFarmResourceId: plan.outputs.resourceId
     appInsightResourceId: appInsights.outputs.resourceId
     siteConfig: siteConfig
+    clientAffinityEnabled: false
     diagnosticSettings: [
       {
         workspaceResourceId: logAnalyticsWsId
@@ -269,6 +272,7 @@ module webApp 'br/public:avm/res/web/site:0.9.0' = {
           }
         ]
       : []
+    tags: tags
   }
 }
 

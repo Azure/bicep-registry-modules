@@ -798,7 +798,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/cdn/profile:0.7.0` | Remote reference |
+| `br/public:avm/res/cdn/profile:0.11.0` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.5.1` | Remote reference |
 | `br/public:avm/res/insights/component:0.4.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.1` | Remote reference |

@@ -41,6 +41,7 @@ resource runAfdApproval 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: deploymentScriptName
 
   location: location
+  tags: {}
   kind: 'AzureCLI'
   identity: {
     type: 'UserAssigned'
