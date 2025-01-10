@@ -29,6 +29,9 @@ module firewall 'deploy.hub.bicep' = {
   params: {
     location: resourceLocation
     resourceGroupName: 'rg-firewall-${serviceShort}-${resourceLocation}'
+    tags: {
+      environment: 'test'
+    }
   }
 }
 

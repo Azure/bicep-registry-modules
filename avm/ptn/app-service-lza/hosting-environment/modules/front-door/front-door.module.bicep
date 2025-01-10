@@ -115,6 +115,7 @@ module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy
   params: {
     name: 'waffrontdoor'
     location: 'Global'
+    tags: tags
     sku: skuName
     policySettings: {
       enabledState: wafPolicyState

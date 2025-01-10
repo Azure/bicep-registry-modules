@@ -33,6 +33,9 @@ module hubDeployment 'deploy.hub.bicep' = {
   params: {
     location: resourceLocation
     resourceGroupName: 'rg-hub-${workloadName}-${environment}-${resourceLocation}'
+    tags: {
+      environment: environment
+    }
   }
 }
 

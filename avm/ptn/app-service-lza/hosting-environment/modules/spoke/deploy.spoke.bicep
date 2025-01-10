@@ -113,6 +113,7 @@ var resourceNames = {
   vnetSpoke: take('${naming.virtualNetwork.name}-spoke', 80)
   pepNsg: take('${naming.networkSecurityGroup.name}-pep', 80)
   aseNsg: take('${naming.networkSecurityGroup.name}-ase', 80)
+  jumpboxNsg: take('${naming.networkSecurityGroup.name}-jumpbox', 80)
   appSvcUserAssignedManagedIdentity: take('${naming.managedIdentity.name}-appSvc', 128)
   vmJumpHostUserAssignedManagedIdentity: take('${naming.managedIdentity.name}-vmJumpHost', 128)
   keyvault: naming.keyVault.nameUnique
@@ -209,6 +210,7 @@ module afd '../front-door/front-door.module.bicep' = {
     skuName: 'Premium_AzureFrontDoor'
     wafPolicyName: resourceNames.frontDoorWaf
     logAnalyticsWorkspaceId: logAnalyticsWs.outputs.resourceId
+    tags: tags
   }
 }
 
@@ -218,6 +220,7 @@ module autoApproveAfdPe '../front-door/approve-afd-pe.module.bicep' = if (autoAp
   params: {
     location: location
     idAfdPeAutoApproverName: resourceNames.idAfdApprovePeAutoApprover
+    tags: tags
   }
   dependsOn: [
     afd
@@ -268,7 +271,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (deployJumpHost && vm
     vmSubnetName: vmSubnetName
     vmSubnetAddressPrefix: subnetSpokeDevOpsAddressSpace
     vmNetworkInterfaceName: naming.networkInterface.name
-    vmNetworkSecurityGroupName: naming.networkSecurityGroup.name
+    vmNetworkSecurityGroupName: resourceNames.jumpboxNsg
     logAnalyticsWorkspaceResourceId: logAnalyticsWs.outputs.resourceId
   }
 }

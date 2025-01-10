@@ -7,6 +7,9 @@ param utcValue string = utcNow()
 @description('Optional. The name of the user-assigned identity to be used to auto-approve the private endpoint connection of the AFD. Changing this forces a new resource to be created.')
 param idAfdPeAutoApproverName string = guid(resourceGroup().id, 'userAssignedIdentity')
 
+@description('Optional. The tags to be assigned to the created resources.')
+param tags object = {}
+
 var roleAssignmentName = guid(resourceGroup().id, 'contributor')
 var contributorRoleDefinitionId = resourceId(
   'Microsoft.Authorization/roleDefinitions',
@@ -41,7 +44,7 @@ resource runAfdApproval 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: deploymentScriptName
 
   location: location
-  tags: {}
+  tags: tags
   kind: 'AzureCLI'
   identity: {
     type: 'UserAssigned'

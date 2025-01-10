@@ -6,7 +6,7 @@ targetScope = 'resourceGroup'
 
 param vmName string
 param vmSize string
-param storageAccountType string = 'Standard_LRS'
+param storageAccountType string = 'Premium_LRS'
 param vmWindowsOSVersion string = '2016-Datacenter'
 param vmZone int = 0
 param vmVnetName string

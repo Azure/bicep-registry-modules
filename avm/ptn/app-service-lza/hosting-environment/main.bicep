@@ -107,6 +107,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
   params: {
     name: resourceGroupName
     location: location
+    tags: tags
   }
 }
 

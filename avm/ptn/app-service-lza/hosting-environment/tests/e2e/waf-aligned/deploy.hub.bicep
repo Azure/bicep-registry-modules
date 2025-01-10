@@ -8,6 +8,8 @@ param location string
 
 param resourceGroupName string
 
+param tags object = {}
+
 module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
   name: '${uniqueString(deployment().name, resourceGroupName)}-deployment'
   params: {
@@ -46,6 +48,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:0.3.2' = {
     azureSkuTier: 'Standard'
     location: location
     virtualNetworkResourceId: hubNetworking.outputs.resourceId
+    tags: tags
   }
 }
 
