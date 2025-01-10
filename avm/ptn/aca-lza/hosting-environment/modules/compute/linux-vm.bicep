@@ -48,13 +48,13 @@ var sshDeploymentScriptName = '${take(uniqueString(resourceGroup().name, locatio
 // ------------------
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = if (empty(vmSshPublicKey)) {
-  name: '${uniqueString(resourceGroup().name, location)}-${managedIdentityName}'
+  name: '${uniqueString(resourceGroup().id, location)}-${managedIdentityName}'
   tags: tags
   location: location
 }
 
 resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, 'ssh-Contributor', managedIdentity.id)
+  name: uniqueString(resourceGroup().id, 'ssh-Contributor', managedIdentity.id)
   scope: resourceGroup()
   properties: {
     principalId: managedIdentity.properties.principalId
