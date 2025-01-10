@@ -15,6 +15,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
   params: {
     name: resourceGroupName
     location: location
+    tags: tags
   }
 }
 
@@ -36,6 +37,7 @@ module hubNetworking 'br/public:avm/res/network/virtual-network:0.5.2' = {
         addressPrefix: '10.242.0.0/26'
       }
     ]
+    tags: tags
   }
 }
 

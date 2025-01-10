@@ -60,6 +60,21 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
               direction: 'Inbound'
             }
           }
+          {
+            name: 'deny-hop-outbound'
+            properties: {
+              priority: 200
+              access: 'Deny'
+              protocol: 'Tcp'
+              direction: 'Outbound'
+              sourceAddressPrefix: 'VirtualNetwork'
+              destinationAddressPrefix: '*'
+              destinationPortRanges: [
+                '3389'
+                '22'
+              ]
+            }
+          }
         ]
       : []
   }

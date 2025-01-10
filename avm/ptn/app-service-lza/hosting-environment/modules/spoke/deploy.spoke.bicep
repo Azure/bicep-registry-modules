@@ -43,8 +43,8 @@ param vmSize string
 @description('Optional. The zone to create the jump box in. Defaults to 0.')
 param vmZone int = 0
 
-@description('Optional. The storage account type to use for the jump box. Defaults to Standard_LRS.')
-param storageAccountType string = 'Standard_LRS'
+@description('Optional. The storage account type to use for the jump box. Defaults to Premium_LRS.')
+param storageAccountType string = 'Premium_LRS'
 
 @description('Conditional. The username to use for the jump box.')
 param vmAdminUsername string

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4145585551332369159"
+      "templateHash": "4106424069433855008"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16300292047967269247"
+              "templateHash": "9864940678050384091"
             }
           },
           "definitions": {
@@ -3523,9 +3523,9 @@
             },
             "storageAccountType": {
               "type": "string",
-              "defaultValue": "Standard_LRS",
+              "defaultValue": "Premium_LRS",
               "metadata": {
-                "description": "Optional. The storage account type to use for the jump box. Defaults to Standard_LRS."
+                "description": "Optional. The storage account type to use for the jump box. Defaults to Premium_LRS."
               }
             },
             "vmAdminUsername": {
@@ -29468,7 +29468,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13266988883418559799"
+                      "templateHash": "18329992088702442963"
                     }
                   },
                   "parameters": {
@@ -29572,6 +29572,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           }
                         },
                         "template": {
@@ -37022,7 +37025,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "17868624021037047876"
+                      "templateHash": "7848848677768929436"
                     }
                   },
                   "parameters": {
@@ -37154,7 +37157,7 @@
                           "enableTelemetry": {
                             "value": "[parameters('enableTelemetry')]"
                           },
-                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')))), createObject('value', createArray()))]"
+                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray()))]"
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
