@@ -54,7 +54,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
 }
 
 resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: uniqueString(resourceGroup().id, 'ssh-Contributor', managedIdentity.id)
+  name: guid(resourceGroup().id, 'ssh-Contributor', managedIdentity.id)
   scope: resourceGroup()
   properties: {
     principalId: managedIdentity.properties.principalId

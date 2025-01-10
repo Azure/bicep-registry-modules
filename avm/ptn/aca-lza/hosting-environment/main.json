@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "18090416573008992694"
+      "templateHash": "12311422039470730786"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -973,7 +973,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10203246865257385977"
+              "templateHash": "12840913516429389632"
             }
           },
           "parameters": {
@@ -8297,7 +8297,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18170469809557801379"
+                      "templateHash": "9447750732919489087"
                     }
                   },
                   "parameters": {
@@ -8390,7 +8390,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "name": "[uniqueString(resourceGroup().id, 'ssh-Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))))]",
+                      "name": "[guid(resourceGroup().id, 'ssh-Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))))]",
                       "properties": {
                         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))), '2023-07-31-preview').principalId]",
                         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -8422,7 +8422,7 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName')))]",
-                        "[resourceId('Microsoft.Authorization/roleAssignments', uniqueString(resourceGroup().id, 'ssh-Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName')))))]"
+                        "[resourceId('Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, 'ssh-Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName')))))]"
                       ]
                     },
                     {
@@ -49221,7 +49221,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12086633534889416935"
+              "templateHash": "8781626590153006652"
             }
           },
           "parameters": {
@@ -49851,7 +49851,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "15632864150995000393"
+                      "templateHash": "18055972328556033625"
                     }
                   },
                   "parameters": {
@@ -49925,7 +49925,7 @@
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
-                      "name": "[uniqueString(resourceGroup().id, parameters('keyVaultName'), 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))))]",
+                      "name": "[guid(resourceGroup().id, parameters('keyVaultName'), 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))))]",
                       "properties": {
                         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))), '2023-07-31-preview').principalId]",
                         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
@@ -49939,7 +49939,7 @@
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
-                      "name": "[uniqueString(resourceGroup().id, parameters('storageAccountName'), 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))))]",
+                      "name": "[guid(resourceGroup().id, parameters('storageAccountName'), 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))))]",
                       "properties": {
                         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))), '2023-07-31-preview').principalId]",
                         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69566ab7-960f-475b-8e7c-b3118f30c6bd')]",
@@ -49980,7 +49980,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), 'Microsoft.Authorization/roleAssignments', uniqueString(subscription().id, resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('appGatewayUserAssignedIdentityPrincipalId'), 'KeyVaultSecretUser'))]",
+                        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), 'Microsoft.Authorization/roleAssignments', guid(subscription().id, resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('appGatewayUserAssignedIdentityPrincipalId'), 'KeyVaultSecretUser'))]",
                         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location'))))]"
                       ]
                     },
@@ -50002,7 +50002,7 @@
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'))]",
-                      "name": "[uniqueString(subscription().id, resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('appGatewayUserAssignedIdentityPrincipalId'), 'KeyVaultSecretUser')]",
+                      "name": "[guid(subscription().id, resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('appGatewayUserAssignedIdentityPrincipalId'), 'KeyVaultSecretUser')]",
                       "properties": {
                         "principalId": "[parameters('appGatewayUserAssignedIdentityPrincipalId')]",
                         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('keyVaultSecretUserRoleGuid'))]",

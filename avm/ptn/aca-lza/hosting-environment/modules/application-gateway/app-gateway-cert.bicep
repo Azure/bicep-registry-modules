@@ -57,7 +57,7 @@ resource selfSignedCertManagedIdentity 'Microsoft.ManagedIdentity/userAssignedId
 
 // Assign the managed identity the contributor role on the KV to write the self signed cert
 resource selfSignedCertManagedIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (empty(appGatewayCertificateData)) {
-  name: uniqueString(resourceGroup().id, keyVault.name, 'Contributor', selfSignedCertManagedIdentity.id)
+  name: guid(resourceGroup().id, keyVault.name, 'Contributor', selfSignedCertManagedIdentity.id)
   scope: keyVault
   properties: {
     principalId: selfSignedCertManagedIdentity.properties.principalId
@@ -71,7 +71,7 @@ resource selfSignedCertManagedIdentityRoleAssignment 'Microsoft.Authorization/ro
 
 //Assign the managed identity the role to write to the storage account where the deployment script will be stored
 resource storageRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: uniqueString(resourceGroup().id, storage.name, 'Contributor', selfSignedCertManagedIdentity.id)
+  name: guid(resourceGroup().id, storage.name, 'Contributor', selfSignedCertManagedIdentity.id)
   scope: storage
   properties: {
     principalId: selfSignedCertManagedIdentity.properties.principalId
@@ -133,7 +133,7 @@ resource sslCertSecret 'Microsoft.KeyVault/vaults/secrets@2024-04-01-preview' = 
 
 // Assign the App Gateway user assigned identity the role to read the secret
 resource keyvaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: uniqueString(subscription().id, keyVault.id, appGatewayUserAssignedIdentityPrincipalId, 'KeyVaultSecretUser')
+  name: guid(subscription().id, keyVault.id, appGatewayUserAssignedIdentityPrincipalId, 'KeyVaultSecretUser')
   scope: sslCertSecret
   properties: {
     principalId: appGatewayUserAssignedIdentityPrincipalId
