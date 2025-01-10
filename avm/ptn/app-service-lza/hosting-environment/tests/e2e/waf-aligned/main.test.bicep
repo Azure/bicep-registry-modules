@@ -16,6 +16,10 @@ param serviceShort string = 'appwaf'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -40,7 +44,7 @@ module testDeployment '../../../main.bicep' = {
     deployJumpHost: true
     vmSize: 'Standard_D2s_v4'
     adminUsername: 'azureuser'
-    vmLinuxSshAuthorizedKey: 'SHA256:DLsfb1e9jADok4VTUbcHcmrtd/Kxu1nvtbu0XttEbQg northamerica\\ibersano@DESKTOP-N95745E'
+    adminPassword: password
     vmAuthenticationType: 'sshPublicKey'
     enableEgressLockdown: true
     firewallInternalIp: firewall.outputs.firewallInternalIp

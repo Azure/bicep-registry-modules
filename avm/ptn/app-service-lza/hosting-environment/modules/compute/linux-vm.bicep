@@ -20,8 +20,8 @@ param vmAdminUsername string
 @secure()
 param vmAdminPassword string
 
-@secure()
-param vmSshPublicKey string
+@description('Optional. Name of the SSH key for the jumpbox.')
+param sshKeyName string = 'jumpboxSshKey'
 
 @description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
 @allowed([
@@ -38,6 +38,16 @@ param enableTelemetry bool
 
 param location string = resourceGroup().location
 
+@description('Optional. The name of the user-assigned identity to be used to generate SSH key for Linux VM. Changing this forces a new resource to be created.')
+param sshKeyGenName string = guid(resourceGroup().id, 'userAssignedIdentity')
+
+var roleAssignmentName = guid(resourceGroup().id, 'contributor')
+var contributorRoleDefinitionId = resourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'b24988ac-6180-42a0-ab88-20f7382dd24c'
+)
+
+var uami = resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', sshKeyGenName)
 // ------------------
 // VARIABLES
 // ------------------
@@ -111,6 +121,55 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
   }
 }
 
+@description('The User Assigned Managed Identity that will be given Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD.')
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+  name: '${sshKeyGenName}-deployment'
+  params: {
+    name: sshKeyGenName
+    location: location
+  }
+}
+
+@description('The role assignment that will be created to give the User Assigned Managed Identity Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD.')
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: roleAssignmentName
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: contributorRoleDefinitionId
+    principalId: userAssignedIdentity.outputs.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  name: 'sshDeploymentScriptName'
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${uami}': {}
+    }
+  }
+  properties: {
+    azPowerShellVersion: '9.0'
+    retentionInterval: 'P1D'
+    arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
+    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
+  }
+  dependsOn: [
+    roleAssignment
+  ]
+}
+
+resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
+  name: sshKeyName
+  location: location
+  properties: {
+    publicKey: sshDeploymentScript.properties.outputs.publicKey
+  }
+}
+
 module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
   name: 'vmDeployment'
   params: {
@@ -122,7 +181,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
     computerName: vmName
     adminUsername: vmAdminUsername
     adminPassword: ((vmAuthenticationType == 'password') ? vmAdminPassword : null)
-    disablePasswordAuthentication: ((vmAuthenticationType == 'password') ? false : true)
+    disablePasswordAuthentication: ((vmAuthenticationType == 'sshPublicKey') ? true : false)
     encryptionAtHost: false
     enableAutomaticUpdates: true
     patchMode: 'AutomaticByPlatform'
@@ -131,7 +190,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
     publicKeys: ((vmAuthenticationType == 'sshPublicKey')
       ? [
           {
-            keyData: vmSshPublicKey
+            keyData: sshKey.properties.publicKey
             path: '/home/${vmAdminUsername}/.ssh/authorized_keys'
           }
         ]

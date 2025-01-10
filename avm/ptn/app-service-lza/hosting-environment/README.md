@@ -31,6 +31,7 @@ This Azure App Service pattern module represents an Azure App Service deployment
 | `Microsoft.Cdn/profiles/ruleSets/rules` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets/rules) |
 | `Microsoft.Cdn/profiles/secrets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/secrets) |
 | `Microsoft.Cdn/profiles/securityPolicies` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2024-02-01/profiles/securityPolicies) |
+| `Microsoft.Compute/sshPublicKeys` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-01/sshPublicKeys) |
 | `Microsoft.Compute/virtualMachines` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
@@ -62,14 +63,13 @@ This Azure App Service pattern module represents an Azure App Service deployment
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
 | `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
@@ -82,6 +82,7 @@ This Azure App Service pattern module represents an Azure App Service deployment
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
+| `Microsoft.Resources/deploymentScripts` | [2020-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2020-10-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
 | `Microsoft.Web/hostingEnvironments` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/hostingEnvironments) |
 | `Microsoft.Web/hostingEnvironments/configurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/hostingEnvironments/configurations) |
@@ -137,7 +138,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     }
     vmSize: 'Standard_D2s_v4'
     vnetSpokeAddressSpace: '10.240.0.0/20'
-    webAppBaseOs: 'Linux'
+    webAppBaseOs: 'linux'
     webAppPlanSku: 'P1V3'
     workloadName: '<workloadName>'
   }
@@ -198,7 +199,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": "10.240.0.0/20"
     },
     "webAppBaseOs": {
-      "value": "Linux"
+      "value": "linux"
     },
     "webAppPlanSku": {
       "value": "P1V3"
@@ -235,7 +236,7 @@ param tags = {
 }
 param vmSize = 'Standard_D2s_v4'
 param vnetSpokeAddressSpace = '10.240.0.0/20'
-param webAppBaseOs = 'Linux'
+param webAppBaseOs = 'linux'
 param webAppPlanSku = 'P1V3'
 param workloadName = '<workloadName>'
 ```
@@ -272,7 +273,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     vmSize: 'Standard_D2s_v4'
     vnetHubResourceId: '<vnetHubResourceId>'
     vnetSpokeAddressSpace: '10.240.0.0/20'
-    webAppBaseOs: 'Linux'
+    webAppBaseOs: 'linux'
     webAppPlanSku: 'P1V3'
     workloadName: '<workloadName>'
   }
@@ -336,7 +337,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": "10.240.0.0/20"
     },
     "webAppBaseOs": {
-      "value": "Linux"
+      "value": "linux"
     },
     "webAppPlanSku": {
       "value": "P1V3"
@@ -374,7 +375,7 @@ param tags = {
 param vmSize = 'Standard_D2s_v4'
 param vnetHubResourceId = '<vnetHubResourceId>'
 param vnetSpokeAddressSpace = '10.240.0.0/20'
-param webAppBaseOs = 'Linux'
+param webAppBaseOs = 'linux'
 param webAppPlanSku = 'P1V3'
 param workloadName = '<workloadName>'
 ```
@@ -400,7 +401,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     autoApproveAfdPrivateEndpoint: true
     deployAseV3: false
     deployJumpHost: true
-    enableEgressLockdown: false
+    enableEgressLockdown: true
+    firewallInternalIp: '<firewallInternalIp>'
     location: '<location>'
     subnetSpokeAppSvcAddressSpace: '10.240.0.0/26'
     subnetSpokeDevOpsAddressSpace: '10.240.10.128/26'
@@ -408,11 +410,13 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     tags: {
       environment: 'test'
     }
+    vmAuthenticationType: 'sshPublicKey'
     vmSize: 'Standard_D2s_v4'
     vnetSpokeAddressSpace: '10.240.0.0/20'
-    webAppBaseOs: 'Linux'
+    webAppBaseOs: 'linux'
     webAppPlanSku: 'P1V3'
     workloadName: '<workloadName>'
+    zoneRedundant: true
   }
 }
 ```
@@ -445,7 +449,10 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": true
     },
     "enableEgressLockdown": {
-      "value": false
+      "value": true
+    },
+    "firewallInternalIp": {
+      "value": "<firewallInternalIp>"
     },
     "location": {
       "value": "<location>"
@@ -464,6 +471,9 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
         "environment": "test"
       }
     },
+    "vmAuthenticationType": {
+      "value": "sshPublicKey"
+    },
     "vmSize": {
       "value": "Standard_D2s_v4"
     },
@@ -471,13 +481,16 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": "10.240.0.0/20"
     },
     "webAppBaseOs": {
-      "value": "Linux"
+      "value": "linux"
     },
     "webAppPlanSku": {
       "value": "P1V3"
     },
     "workloadName": {
       "value": "<workloadName>"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -498,7 +511,8 @@ param adminUsername = 'azureuser'
 param autoApproveAfdPrivateEndpoint = true
 deployAseV3: false
 param deployJumpHost = true
-param enableEgressLockdown = false
+param enableEgressLockdown = true
+param firewallInternalIp = '<firewallInternalIp>'
 param location = '<location>'
 param subnetSpokeAppSvcAddressSpace = '10.240.0.0/26'
 param subnetSpokeDevOpsAddressSpace = '10.240.10.128/26'
@@ -506,11 +520,13 @@ param subnetSpokePrivateEndpointAddressSpace = '10.240.11.0/24'
 param tags = {
   environment: 'test'
 }
+param vmAuthenticationType = 'sshPublicKey'
 param vmSize = 'Standard_D2s_v4'
 param vnetSpokeAddressSpace = '10.240.0.0/20'
-param webAppBaseOs = 'Linux'
+param webAppBaseOs = 'linux'
 param webAppPlanSku = 'P1V3'
 param workloadName = '<workloadName>'
+param zoneRedundant = true
 ```
 
 </details>
@@ -522,7 +538,7 @@ param workloadName = '<workloadName>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`adminPassword`](#parameter-adminpassword) | securestring | Required if jumpbox deployed. The password of the admin user of the jumpbox VM. |
+| [`adminPassword`](#parameter-adminpassword) | securestring | Required if jumpbox deployed and not using SSH key. The password of the admin user of the jumpbox VM. |
 | [`adminUsername`](#parameter-adminusername) | string | Required if jumpbox deployed. The username of the admin user of the jumpbox VM. |
 
 **Optional parameters**
@@ -543,17 +559,17 @@ param workloadName = '<workloadName>'
 | [`subnetSpokePrivateEndpointAddressSpace`](#parameter-subnetspokeprivateendpointaddressspace) | string | CIDR of the subnet that will hold the private endpoints of the supporting services. |
 | [`tags`](#parameter-tags) | object | Tags to apply to all resources. |
 | [`vmAuthenticationType`](#parameter-vmauthenticationtype) | string | Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password". |
-| [`vmLinuxSshAuthorizedKey`](#parameter-vmlinuxsshauthorizedkey) | securestring | The SSH public key to use for the virtual machine. |
 | [`vmSize`](#parameter-vmsize) | string | The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information. |
 | [`vnetHubResourceId`](#parameter-vnethubresourceid) | string | Default is empty. If given, peering between spoke and and existing hub vnet will be created. |
 | [`vnetSpokeAddressSpace`](#parameter-vnetspokeaddressspace) | string | CIDR of the SPOKE vnet i.e. 192.168.0.0/24. |
-| [`webAppBaseOs`](#parameter-webappbaseos) | string | Kind of server OS of the App Service Plan. |
-| [`webAppPlanSku`](#parameter-webappplansku) | string | Defines the name, tier, size, family and capacity of the App Service Plan. Plans ending to _AZ, are deploying at least three instances in three Availability Zones. EP* is only for functions. |
+| [`webAppBaseOs`](#parameter-webappbaseos) | string | Kind of server OS of the App Service Plan. Default is "windows". |
+| [`webAppPlanSku`](#parameter-webappplansku) | string | Defines the name, tier, size, family and capacity of the App Service Plan. EP* is only for functions. |
 | [`workloadName`](#parameter-workloadname) | string | suffix (max 10 characters long) that will be used to name the resources in a pattern like <resourceAbbreviation>-<workloadName>. |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Set to true if you want to deploy the App Service Plan in a zone redundant manner. Defult is true. |
 
 ### Parameter: `adminPassword`
 
-Required if jumpbox deployed. The password of the admin user of the jumpbox VM.
+Required if jumpbox deployed and not using SSH key. The password of the admin user of the jumpbox VM.
 
 - Required: No
 - Type: securestring
@@ -686,14 +702,6 @@ Type of authentication to use on the Virtual Machine. SSH key is recommended. De
   ]
   ```
 
-### Parameter: `vmLinuxSshAuthorizedKey`
-
-The SSH public key to use for the virtual machine.
-
-- Required: No
-- Type: securestring
-- Default: `''`
-
 ### Parameter: `vmSize`
 
 The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.
@@ -720,22 +728,22 @@ CIDR of the SPOKE vnet i.e. 192.168.0.0/24.
 
 ### Parameter: `webAppBaseOs`
 
-Kind of server OS of the App Service Plan.
+Kind of server OS of the App Service Plan. Default is "windows".
 
 - Required: No
 - Type: string
-- Default: `'Windows'`
+- Default: `'windows'`
 - Allowed:
   ```Bicep
   [
-    'Linux'
-    'Windows'
+    'linux'
+    'windows'
   ]
   ```
 
 ### Parameter: `webAppPlanSku`
 
-Defines the name, tier, size, family and capacity of the App Service Plan. Plans ending to _AZ, are deploying at least three instances in three Availability Zones. EP* is only for functions.
+Defines the name, tier, size, family and capacity of the App Service Plan. EP* is only for functions.
 
 - Required: No
 - Type: string
@@ -766,9 +774,23 @@ suffix (max 10 characters long) that will be used to name the resources in a pat
 - Type: string
 - Default: `[format('appsvc{0}', take(uniqueString(subscription().id), 4))]`
 
+### Parameter: `zoneRedundant`
+
+Set to true if you want to deploy the App Service Plan in a zone redundant manner. Defult is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `keyVaultName` | string | The name of the Azure key vault. |
+| `keyVaultResourceId` | string | The resource ID of the key vault. |
+| `spokeResourceGroupName` | string | The name of the Spoke resource group. |
+| `spokeVnetName` | string | The name of the Spoke Virtual Network. |
+| `spokeVNetResourceId` | string | The  resource ID of the Spoke Virtual Network. |
 
 ## Cross-referenced modules
 

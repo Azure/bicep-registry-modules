@@ -53,10 +53,6 @@ param vmAdminUsername string
 @secure()
 param vmAdminPassword string
 
-@description('Conditional. The SSH public key to use for the jump box. Only relevant for Linux.')
-@secure()
-param vmLinuxSshAuthorizedKey string = ''
-
 @description('Optional. Default is windows. The OS of the jump box virtual machine to create.')
 @allowed(['linux', 'windows', 'none'])
 param vmJumpboxOSType string = 'windows'
@@ -239,7 +235,6 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (deployJumpHost && vmJump
     bastionResourceId: bastionResourceId
     vmAdminUsername: adminUsername
     vmAdminPassword: adminPassword
-    vmSshPublicKey: vmLinuxSshAuthorizedKey
     vmSize: vmSize
     vmZone: vmZone
     storageAccountType: storageAccountType

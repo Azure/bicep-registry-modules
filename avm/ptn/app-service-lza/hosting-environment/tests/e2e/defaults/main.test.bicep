@@ -36,7 +36,7 @@ module testDeployment '../../../main.bicep' = {
     deployJumpHost: true
     vmSize: 'Standard_D2s_v4'
     adminUsername: 'azureuser'
-    adminPassword: 'Admin123'
+    adminPassword: password
     enableEgressLockdown: false
     autoApproveAfdPrivateEndpoint: true
     vnetSpokeAddressSpace: '10.240.0.0/20'

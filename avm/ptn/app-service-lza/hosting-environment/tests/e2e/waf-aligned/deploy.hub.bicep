@@ -31,7 +31,7 @@ module hubNetworking 'br/public:avm/res/network/virtual-network:0.5.2' = {
     subnets: [
       {
         name: 'AzureFirewallSubnet'
-        addressPrefix: '10.0.0.64/26'
+        addressPrefix: '10.242.0.0/26'
       }
     ]
   }

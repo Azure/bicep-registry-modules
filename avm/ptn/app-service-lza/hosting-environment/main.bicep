@@ -80,10 +80,6 @@ param enableEgressLockdown bool = false
 @description('Optional. Set to true if you want to deploy a jumpbox/devops VM.')
 param deployJumpHost bool = true
 
-@description('Optional. The SSH public key to use for the virtual machine.')
-@secure()
-param vmLinuxSshAuthorizedKey string = ''
-
 @description('Optional. Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password".')
 @allowed([
   'sshPublicKey'
@@ -153,7 +149,6 @@ module spoke './modules/spoke/deploy.spoke.bicep' = {
     vmAdminPassword: adminPassword
     vmSize: vmSize
     bastionResourceId: bastionResourceId
-    vmLinuxSshAuthorizedKey: vmLinuxSshAuthorizedKey
     vmAuthenticationType: vmAuthenticationType
     tags: tags
   }

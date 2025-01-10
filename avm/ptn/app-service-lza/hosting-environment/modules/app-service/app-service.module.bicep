@@ -129,58 +129,58 @@ var slotName = 'staging'
 // Dependencies //
 // ============ //
 
-var siteConfigConfigurationMap = {
-  windowsNet6: {
-    metadata: [
-      {
-        name: 'CURRENT_STACK'
-        value: 'dotnet'
-      }
-    ]
-    netFrameworkVersion: 'v6.0'
-    use32BitWorkerProcess: false
-  }
-  windowsNet7: {
-    metadata: [
-      {
-        name: 'CURRENT_STACK'
-        value: 'dotnet'
-      }
-    ]
-    netFrameworkVersion: 'v7.0'
-    use32BitWorkerProcess: false
-  }
-  windowsAspNet486: {
-    metadata: [
-      {
-        name: 'CURRENT_STACK'
-        value: 'dotnet'
-      }
-    ]
-    netFrameworkVersion: 'v4.0'
-    use32BitWorkerProcess: false
-  }
-  linuxJava17Se: {
-    linuxFxVersion: 'java|17-java17'
-    use32BitWorkerProcess: false
-  }
-  linuxNet8: {
-    linuxFxVersion: 'dotnetcore|8.0'
-    use32BitWorkerProcess: false
-  }
-  linuxNet7: {
-    linuxFxVersion: 'dotnetcore|7.0'
-    use32BitWorkerProcess: false
-  }
-  linuxNet6: {
-    linuxFxVersion: 'dotnetcore|6.0'
-    use32BitWorkerProcess: false
-  }
-  linuxNode18: {
-    linuxFxVersion: 'node|18-lts'
-    use32BitWorkerProcess: false
-  }
-}
+// var siteConfigConfigurationMap = {
+//   windowsNet6: {
+//     metadata: [
+//       {
+//         name: 'CURRENT_STACK'
+//         value: 'dotnet'
+//       }
+//     ]
+//     netFrameworkVersion: 'v6.0'
+//     use32BitWorkerProcess: false
+//   }
+//   windowsNet7: {
+//     metadata: [
+//       {
+//         name: 'CURRENT_STACK'
+//         value: 'dotnet'
+//       }
+//     ]
+//     netFrameworkVersion: 'v7.0'
+//     use32BitWorkerProcess: false
+//   }
+//   windowsAspNet486: {
+//     metadata: [
+//       {
+//         name: 'CURRENT_STACK'
+//         value: 'dotnet'
+//       }
+//     ]
+//     netFrameworkVersion: 'v4.0'
+//     use32BitWorkerProcess: false
+//   }
+//   linuxJava17Se: {
+//     linuxFxVersion: 'java|17-java17'
+//     use32BitWorkerProcess: false
+//   }
+//   linuxNet8: {
+//     linuxFxVersion: 'dotnetcore|8.0'
+//     use32BitWorkerProcess: false
+//   }
+//   linuxNet7: {
+//     linuxFxVersion: 'dotnetcore|7.0'
+//     use32BitWorkerProcess: false
+//   }
+//   linuxNet6: {
+//     linuxFxVersion: 'dotnetcore|6.0'
+//     use32BitWorkerProcess: false
+//   }
+//   linuxNode18: {
+//     linuxFxVersion: 'node|18-lts'
+//     use32BitWorkerProcess: false
+//   }
+// }
 
 module ase './ase.module.bicep' = if (deployAseV3) {
   name: take('${aseName}-ASEv3-Deployment', 64)
