@@ -42,58 +42,78 @@ jobs:
           sudo mv ./bicep /usr/local/bin/bicep
           bicep --version
 
-      - name: "Publish tagged module to public bicep registry"
-        id: publish_tag
+      - name: Update Changelog with tag and date
         uses: azure/powershell@v2
         with:
           azPSVersion: "latest"
           inlineScript: |
             # Grouping task logs
-            Write-Output '::group::Publish tagged module to public bicep registry'
+            Write-Output '::group::Update Changelog'
 
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Publish-ModuleFromTagToPBR.ps1')
-
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleChangelog.ps1')
             $functionInput = @{
-              ModuleReleaseTagName = '${{ github.event.inputs.tag }}'
-              PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
-              RepoRoot             = $env:GITHUB_WORKSPACE
+              RepoRoot = $env:GITHUB_WORKSPACE
             }
 
             Write-Verbose 'Invoke function with' -Verbose
             Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-            if($publishOutputs = Publish-ModuleFromTagToPBR @functionInput -Verbose) {
-              $publishOutputs.Keys | Foreach-Object {
-                Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
-                Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
-              }
-            }
+            $newChangelogContent = Set-ModuleChangelog @functionInput -Verbose
 
             Write-Output '::endgroup::'
 
-      - name: "Validate publish"
-        uses: azure/powershell@v2
-        if: ${{ steps.publish_tag.outputs.version != '' && steps.publish_tag.outputs.publishedModuleName != '' }}
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            # Grouping task logs
-            Write-Output '::group::Validate publish'
+      # - name: "Publish tagged module to public bicep registry"
+      #   id: publish_tag
+      #   uses: azure/powershell@v2
+      #   with:
+      #     azPSVersion: "latest"
+      #     inlineScript: |
+      #       # Grouping task logs
+      #       Write-Output '::group::Publish tagged module to public bicep registry'
 
-            # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+      #       # Load used functions
+      #       . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Publish-ModuleFromTagToPBR.ps1')
 
-            $functionInput = @{
-              Version             = "${{ steps.publish_tag.outputs.version }}"
-              PublishedModuleName = "${{ steps.publish_tag.outputs.publishedModuleName }}"
-              GitTagName          = "${{ steps.publish_tag.outputs.gitTagName }}"
+      #       $functionInput = @{
+      #         ModuleReleaseTagName = '${{ github.event.inputs.tag }}'
+      #         PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+      #         RepoRoot             = $env:GITHUB_WORKSPACE
+      #       }
 
-            }
+      #       Write-Verbose 'Invoke function with' -Verbose
+      #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-            Write-Verbose "Invoke function with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+      #       if($publishOutputs = Publish-ModuleFromTagToPBR @functionInput -Verbose) {
+      #         $publishOutputs.Keys | Foreach-Object {
+      #           Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
+      #           Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
+      #         }
+      #       }
 
-            Confirm-ModuleIsPublished @functionInput
+      #       Write-Output '::endgroup::'
 
-            Write-Output '::endgroup::'
+      # - name: "Validate publish"
+      #   uses: azure/powershell@v2
+      #   if: ${{ steps.publish_tag.outputs.version != '' && steps.publish_tag.outputs.publishedModuleName != '' }}
+      #   with:
+      #     azPSVersion: "latest"
+      #     inlineScript: |
+      #       # Grouping task logs
+      #       Write-Output '::group::Validate publish'
+
+      #       # Load used functions
+      #       . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+
+      #       $functionInput = @{
+      #         Version             = "${{ steps.publish_tag.outputs.version }}"
+      #         PublishedModuleName = "${{ steps.publish_tag.outputs.publishedModuleName }}"
+      #         GitTagName          = "${{ steps.publish_tag.outputs.gitTagName }}"
+
+      #       }
+
+      #       Write-Verbose "Invoke function with" -Verbose
+      #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+      #       Confirm-ModuleIsPublished @functionInput
+
+      #       Write-Output '::endgroup::'
