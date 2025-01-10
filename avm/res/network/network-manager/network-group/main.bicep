@@ -12,20 +12,28 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the network group.')
-param description string?
+param description string = ''
+
+@allowed([
+  'Subnet'
+  'VirtualNetwork'
+])
+@sys.description('Optional. The type of the group member. Subnet member type is used for routing configurations.')
+param memberType string = 'VirtualNetwork'
 
 @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
 param staticMembers staticMembersType
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 }
 
-resource networkGroup 'Microsoft.Network/networkManagers/networkGroups@2023-11-01' = {
+resource networkGroup 'Microsoft.Network/networkManagers/networkGroups@2024-05-01' = {
   name: name
   parent: networkManager
   properties: {
-    description: description ?? ''
+    description: description
+    memberType: memberType
   }
 }
 
@@ -54,6 +62,7 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
+@export()
 type staticMembersType = {
   @sys.description('Required. The name of the static member.')
   name: string
