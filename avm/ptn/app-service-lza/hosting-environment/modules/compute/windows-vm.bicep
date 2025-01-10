@@ -156,6 +156,17 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
         storageAccountType: storageAccountType
       }
     }
+    dataDisks: [
+      {
+        caching: 'None'
+        createOption: 'Empty'
+        diskSizeGB: 128
+        lun: 0
+        managedDisk: {
+          storageAccountType: storageAccountType
+        }
+      }
+    ]
     zone: vmZone
     vmSize: vmSize
     imageReference: {

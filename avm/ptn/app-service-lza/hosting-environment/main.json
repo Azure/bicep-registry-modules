@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4106424069433855008"
+      "templateHash": "2966814446225305385"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9864940678050384091"
+              "templateHash": "17886714830551488375"
             }
           },
           "definitions": {
@@ -30112,7 +30112,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1251050856214115195"
+                      "templateHash": "11160063585548137424"
                     }
                   },
                   "parameters": {
@@ -31537,6 +31537,19 @@
                                 "storageAccountType": "[parameters('storageAccountType')]"
                               }
                             }
+                          },
+                          "dataDisks": {
+                            "value": [
+                              {
+                                "caching": "None",
+                                "createOption": "Empty",
+                                "diskSizeGB": 128,
+                                "lun": 0,
+                                "managedDisk": {
+                                  "storageAccountType": "[parameters('storageAccountType')]"
+                                }
+                              }
+                            ]
                           },
                           "zone": {
                             "value": "[parameters('vmZone')]"
@@ -37025,7 +37038,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7848848677768929436"
+                      "templateHash": "5362516925548679236"
                     }
                   },
                   "parameters": {
@@ -37908,6 +37921,19 @@
                                 "storageAccountType": "[parameters('storageAccountType')]"
                               }
                             }
+                          },
+                          "dataDisks": {
+                            "value": [
+                              {
+                                "caching": "None",
+                                "createOption": "Empty",
+                                "diskSizeGB": 128,
+                                "lun": 0,
+                                "managedDisk": {
+                                  "storageAccountType": "[parameters('storageAccountType')]"
+                                }
+                              }
+                            ]
                           },
                           "zone": {
                             "value": "[parameters('vmZone')]"
