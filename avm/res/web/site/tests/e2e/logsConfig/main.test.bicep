@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Web App'
+metadata name = 'Web App, with Logs Configuration'
 metadata description = 'This instance deploys the module as Web App with the set of logs configuration.'
 
 // ========== //

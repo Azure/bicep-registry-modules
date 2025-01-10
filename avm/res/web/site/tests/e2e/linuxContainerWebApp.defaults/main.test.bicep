@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Web App, using only defaults'
-metadata description = 'This instance deploys the module as a Linux Web App with the minimum set of required parameters.'
+metadata name = 'Linux Container Web App, using only defaults'
+metadata description = 'This instance deploys the module as Linux Container Web App with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -55,6 +55,8 @@ module testDeployment '../../../main.bicep' = [
       kind: 'app,linux,container'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       siteConfig: {
+        minTlsVersion: '1.2'
+        ftpsState: 'FtpsOnly'
         appSettings: [
           {
             name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'

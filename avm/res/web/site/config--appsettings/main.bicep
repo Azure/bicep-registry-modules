@@ -44,7 +44,9 @@ var azureWebJobsValues = !empty(storageAccountResourceId) && !(storageAccountUse
   : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication
       ? union(
           { AzureWebJobsStorage__accountName: storageAccount.name },
-          { AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob }
+          { AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob },
+          { AzureWebJobsStorage__queueServiceUri: storageAccount.properties.primaryEndpoints.queue },
+          { AzureWebJobsStorage__tableServiceUri: storageAccount.properties.primaryEndpoints.table }
         )
       : {}
 
@@ -78,7 +80,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing 
   )
 }
 
-resource appSettings 'Microsoft.Web/sites/config@2023-12-01' = {
+resource appSettings 'Microsoft.Web/sites/config@2024-04-01' = {
   name: 'appsettings'
   kind: kind
   parent: app

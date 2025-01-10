@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "18359033509174375913"
+      "version": "0.32.4.45862",
+      "templateHash": "14999467792384745276"
     },
     "name": "Default interface types for AVM modules",
-    "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces).\n",
+    "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -608,6 +608,13 @@
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
           }
         },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
+          }
+        },
         "privateDnsZoneGroup": {
           "$ref": "#/definitions/privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
@@ -745,6 +752,13 @@
           "type": "string",
           "metadata": {
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
           }
         },
         "privateDnsZoneGroup": {
@@ -904,14 +918,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationDisabled' setting."
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
           }
         },
-        "autoRotationDisabled": {
+        "autoRotationEnabled": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. If configured, instead of auto-rotating to the latest key version, the latest key version at the time of the deployment is used."
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
           }
         },
         "userAssignedIdentityResourceId": {

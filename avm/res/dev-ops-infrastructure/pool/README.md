@@ -8,6 +8,7 @@ This module deploys the Managed DevOps Pool resource.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -728,6 +729,8 @@ Defines how many resources can there be created at any given time.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `devCenterProjectResourceId`
 
@@ -735,6 +738,8 @@ The resource id of the DevCenter Project the pool belongs to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `fabricProfileSkuName`
 
@@ -742,6 +747,8 @@ The Azure SKU name of the machines in the pool.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `images`
 
@@ -749,6 +756,8 @@ The VM images of the machines in the pool.
 
 - Required: Yes
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 **Conditional parameters**
 
@@ -770,6 +779,8 @@ The specific resource id of the marketplace or compute gallery image. Required i
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `images.wellKnownImageName`
 
@@ -777,6 +788,8 @@ The image to use from a well-known set of images made available to customers. Re
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `images.aliases`
 
@@ -784,6 +797,8 @@ List of aliases to reference the image by.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `images.buffer`
 
@@ -791,6 +806,8 @@ The percentage of the buffer to be allocated to this image.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `name`
 
@@ -798,6 +815,8 @@ Name of the pool. It needs to be globally unique.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `organizationProfile`
 
@@ -805,6 +824,8 @@ Defines the organization in which the pool will be used.
 
 - Required: Yes
 - Type: object
+- MinValue: 1
+- MaxValue: 10000
 
 **Required parameters**
 
@@ -831,6 +852,8 @@ Azure DevOps organization profile.
     'AzureDevOps'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `organizationProfile.organizations`
 
@@ -838,6 +861,8 @@ The list of Azure DevOps organizations the pool should be present in..
 
 - Required: Yes
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 **Required parameters**
 
@@ -858,6 +883,8 @@ The Azure DevOps organization URL in which the pool should be created.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `organizationProfile.organizations.parallelism`
 
@@ -865,6 +892,8 @@ How many machines can be created at maximum in this organization out of the maxi
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `organizationProfile.organizations.projects`
 
@@ -872,6 +901,8 @@ List of projects in which the pool should be created.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `organizationProfile.permissionProfile`
 
@@ -879,6 +910,8 @@ The type of permission which determines which accounts are admins on the Azure D
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 10000
 
 **Required parameters**
 
@@ -907,6 +940,8 @@ Determines who has admin permissions to the Azure DevOps pool.
     'SpecificAccounts'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `organizationProfile.permissionProfile.groups`
 
@@ -914,6 +949,8 @@ Group email addresses.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `organizationProfile.permissionProfile.users`
 
@@ -921,6 +958,8 @@ User email addresses.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings`
 
@@ -928,6 +967,8 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 **Optional parameters**
 
@@ -939,7 +980,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -949,6 +990,8 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -956,6 +999,8 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -970,6 +1015,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -977,6 +1024,8 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 **Optional parameters**
 
@@ -992,6 +1041,8 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -999,6 +1050,8 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1006,6 +1059,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1013,6 +1068,8 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1020,6 +1077,8 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 **Required parameters**
 
@@ -1039,6 +1098,8 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1046,13 +1107,17 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1060,6 +1125,8 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1067,6 +1134,8 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `enableTelemetry`
 
@@ -1075,6 +1144,8 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `location`
 
@@ -1083,6 +1154,8 @@ The geo-location where the resource lives.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `lock`
 
@@ -1090,6 +1163,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 10000
 
 **Optional parameters**
 
@@ -1112,6 +1187,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `lock.name`
 
@@ -1119,6 +1196,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `managedIdentities`
 
@@ -1126,6 +1205,8 @@ The managed service identities assigned to this resource.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 10000
 - Example:
   ```Bicep
   {
@@ -1144,7 +1225,7 @@ The managed service identities assigned to this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1152,13 +1233,17 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `osProfile`
 
@@ -1176,6 +1261,8 @@ The OS profile of the agents in the pool.
       }
   }
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 **Required parameters**
 
@@ -1202,6 +1289,8 @@ The logon type of the machine.
     'Service'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `osProfile.secretsManagementSettings`
 
@@ -1209,6 +1298,8 @@ The secret management settings of the machines in the pool.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 10000
 
 **Required parameters**
 
@@ -1229,6 +1320,8 @@ The secret management settings of the machines in the pool.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `osProfile.secretsManagementSettings.observedCertificates`
 
@@ -1236,6 +1329,8 @@ The list of certificates to install on all machines in the pool.
 
 - Required: Yes
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `osProfile.secretsManagementSettings.certificateStoreLocation`
 
@@ -1243,6 +1338,8 @@ Where to store certificates on the machine.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `roleAssignments`
 
@@ -1250,6 +1347,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1281,6 +1380,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1288,6 +1389,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1295,6 +1398,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1308,6 +1413,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1315,6 +1422,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `roleAssignments.description`
 
@@ -1322,6 +1431,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `roleAssignments.name`
 
@@ -1329,6 +1440,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1346,6 +1459,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `storageProfile`
 
@@ -1353,6 +1468,8 @@ The storage profile of the machines in the pool.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 10000
 
 **Optional parameters**
 
@@ -1367,6 +1484,8 @@ A list of empty data disks to attach.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10000
 
 **Optional parameters**
 
@@ -1391,6 +1510,8 @@ The type of caching to be enabled for the data disks. The default value for cach
     'ReadWrite'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `storageProfile.dataDisks.diskSizeGiB`
 
@@ -1398,6 +1519,8 @@ The initial disk size in gigabytes.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `storageProfile.dataDisks.driveLetter`
 
@@ -1405,6 +1528,8 @@ The drive letter for the empty data disk. If not specified, it will be the first
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `storageProfile.dataDisks.storageAccountType`
 
@@ -1422,6 +1547,8 @@ The storage Account type to be used for the data disk. If omitted, the default i
     'StandardSSD_ZRS'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `storageProfile.osDiskStorageAccountType`
 
@@ -1437,6 +1564,8 @@ The Azure SKU name of the machines in the pool.
     'StandardSSD'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `subnetResourceId`
 
@@ -1444,6 +1573,8 @@ The subnet id on which to put all machines created in the pool.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10000
 
 ### Parameter: `tags`
 
@@ -1451,6 +1582,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 10000
 
 ## Outputs
 
@@ -1461,6 +1594,14 @@ Tags of the resource.
 | `resourceGroupName` | string | The name of the resource group the Managed DevOps Pool resource was deployed into. |
 | `resourceId` | string | The resource ID of the Managed DevOps Pool. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
 
 ## Notes
 

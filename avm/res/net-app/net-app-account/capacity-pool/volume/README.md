@@ -29,7 +29,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`backupLabel`](#parameter-backuplabel) | string | The label of the backup. |
 | [`backupName`](#parameter-backupname) | string | The name of the backup. |
 | [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The backup policy location. |
-| [`backupVaultId`](#parameter-backupvaultid) | string | The Id of the Backup Vault. |
+| [`backupVaultResourceId`](#parameter-backupvaultresourceid) | string | The Id of the Backup Vault. |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
@@ -90,9 +90,12 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`policyEnforced`](#parameter-policyenforced) | bool | If Backup policy is enforced. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
-| [`replicationEnabled`](#parameter-replicationenabled) | bool | Boolean to enable replication. |
+| [`replicationEnabled`](#parameter-replicationenabled) | bool | Enables replication. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
+| [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
+| [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
 | [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
@@ -117,7 +120,7 @@ The backup policy location.
 - Required: Yes
 - Type: string
 
-### Parameter: `backupVaultId`
+### Parameter: `backupVaultResourceId`
 
 The Id of the Backup Vault.
 
@@ -496,7 +499,7 @@ Set of protocol types.
 
 ### Parameter: `replicationEnabled`
 
-Boolean to enable replication.
+Enables replication.
 
 - Required: No
 - Type: bool
@@ -622,6 +625,37 @@ The pool service level. Must match the one of the parent capacity pool.
   ]
   ```
 
+### Parameter: `smbContinuouslyAvailable`
+
+Enables continuously available share property for SMB volume. Only applicable for SMB volume.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `smbEncryption`
+
+Enables SMB encryption. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `smbNonBrowsable`
+
+Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `snapEnabled`
 
 Indicates whether the snapshot policy is enabled.
@@ -658,5 +692,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `res/net-app/net-app-account/backup-policies` | Local reference |
-| `res/net-app/net-app-account/snapshot-policies` | Local reference |
+| `avm/res/net-app/net-app-account/backup-policies` | Local reference |
+| `avm/res/net-app/net-app-account/snapshot-policies` | Local reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |

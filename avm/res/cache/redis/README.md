@@ -18,8 +18,10 @@ This module deploys a Redis Cache.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Cache/redis` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis) |
-| `Microsoft.Cache/redis/linkedServers` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/linkedServers) |
+| `Microsoft.Cache/redis` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-03-01/redis) |
+| `Microsoft.Cache/redis/accessPolicies` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-04-01-preview/redis/accessPolicies) |
+| `Microsoft.Cache/redis/accessPolicyAssignments` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-04-01-preview/redis/accessPolicyAssignments) |
+| `Microsoft.Cache/redis/linkedServers` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-03-01/redis/linkedServers) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -118,6 +120,19 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crentrid001'
     // Non-required parameters
+    accessPolicies: [
+      {
+        name: 'Prefixed Contributor'
+        permissions: '+@read +set ~Az*'
+      }
+    ]
+    accessPolicyAssignments: [
+      {
+        accessPolicyName: 'Data Contributor'
+        objectId: '<objectId>'
+        objectIdAlias: '<objectIdAlias>'
+      }
+    ]
     location: '<location>'
     redisConfiguration: {
       'aad-enabled': 'true'
@@ -143,6 +158,23 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crentrid001"
     },
     // Non-required parameters
+    "accessPolicies": {
+      "value": [
+        {
+          "name": "Prefixed Contributor",
+          "permissions": "+@read +set ~Az*"
+        }
+      ]
+    },
+    "accessPolicyAssignments": {
+      "value": [
+        {
+          "accessPolicyName": "Data Contributor",
+          "objectId": "<objectId>",
+          "objectIdAlias": "<objectIdAlias>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -168,6 +200,19 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crentrid001'
 // Non-required parameters
+param accessPolicies = [
+  {
+    name: 'Prefixed Contributor'
+    permissions: '+@read +set ~Az*'
+  }
+]
+param accessPolicyAssignments = [
+  {
+    accessPolicyName: 'Data Contributor'
+    objectId: '<objectId>'
+    objectIdAlias: '<objectIdAlias>'
+  }
+]
 param location = '<location>'
 param redisConfiguration = {
   'aad-enabled': 'true'
@@ -749,7 +794,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableNonSslPort: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -830,9 +874,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableNonSslPort": {
-      "value": true
     },
     "location": {
       "value": "<location>"
@@ -933,7 +974,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param enableNonSslPort = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -992,6 +1032,8 @@ param zones = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`accessPolicies`](#parameter-accesspolicies) | array | Array of access policies to create. |
+| [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Array of access policy assignments. |
 | [`capacity`](#parameter-capacity) | int | The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableAccessKeyAuthentication`](#parameter-disableaccesskeyauthentication) | bool | Disable authentication via access keys. |
@@ -1021,6 +1063,72 @@ param zones = [
 ### Parameter: `name`
 
 The name of the Redis cache resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `accessPolicies`
+
+Array of access policies to create.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-accesspoliciesname) | string | Name of the access policy. |
+| [`permissions`](#parameter-accesspoliciespermissions) | string | Permissions associated with the access policy. |
+
+### Parameter: `accessPolicies.name`
+
+Name of the access policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `accessPolicies.permissions`
+
+Permissions associated with the access policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `accessPolicyAssignments`
+
+Array of access policy assignments.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessPolicyName`](#parameter-accesspolicyassignmentsaccesspolicyname) | string | Name of the access policy to be assigned. |
+| [`objectId`](#parameter-accesspolicyassignmentsobjectid) | string | Object id to which the access policy will be assigned. |
+| [`objectIdAlias`](#parameter-accesspolicyassignmentsobjectidalias) | string | Alias for the target object id. |
+
+### Parameter: `accessPolicyAssignments.accessPolicyName`
+
+Name of the access policy to be assigned.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `accessPolicyAssignments.objectId`
+
+Object id to which the access policy will be assigned.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `accessPolicyAssignments.objectIdAlias`
+
+Alias for the target object id.
 
 - Required: Yes
 - Type: string
@@ -1768,6 +1876,7 @@ The number of replicas to be created per primary.
 - Required: No
 - Type: int
 - Default: `3`
+- MinValue: 1
 
 ### Parameter: `replicasPerPrimary`
 
@@ -1776,6 +1885,7 @@ The number of replicas to be created per primary. Needs to be the same as replic
 - Required: No
 - Type: int
 - Default: `3`
+- MinValue: 1
 
 ### Parameter: `roleAssignments`
 
@@ -1783,6 +1893,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1815,6 +1926,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1822,6 +1934,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1829,6 +1942,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1842,6 +1956,7 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 1
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1849,6 +1964,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.description`
 
@@ -1856,6 +1972,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.name`
 
@@ -1863,6 +1980,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1880,6 +1998,7 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
 
 ### Parameter: `shardCount`
 
@@ -1888,6 +2007,7 @@ The number of shards to be created on a Premium Cluster Cache.
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
 
 ### Parameter: `skuName`
 
@@ -1904,6 +2024,7 @@ The type of Redis cache to deploy.
     'Standard'
   ]
   ```
+- MinValue: 1
 
 ### Parameter: `staticIP`
 
@@ -1912,6 +2033,7 @@ Static IP address. Optionally, may be specified when deploying a Redis cache ins
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
 
 ### Parameter: `subnetResourceId`
 
@@ -1920,6 +2042,7 @@ The full resource ID of a subnet in a virtual network to deploy the Redis cache 
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
 
 ### Parameter: `tags`
 
@@ -1927,6 +2050,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 1
 
 ### Parameter: `tenantSettings`
 
@@ -1935,6 +2059,7 @@ A dictionary of tenant settings.
 - Required: No
 - Type: object
 - Default: `{}`
+- MinValue: 1
 
 ### Parameter: `zoneRedundant`
 
@@ -1943,6 +2068,7 @@ When true, replicas will be provisioned in availability zones specified in the z
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
 
 ### Parameter: `zones`
 
@@ -1958,6 +2084,7 @@ If the zoneRedundant parameter is true, replicas will be provisioned in the avai
     3
   ]
   ```
+- MinValue: 1
 
 ## Outputs
 

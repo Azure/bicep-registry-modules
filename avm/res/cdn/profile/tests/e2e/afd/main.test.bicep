@@ -54,6 +54,11 @@ module testDeployment '../../../main.bicep' = [
           hostName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
           certificateType: 'ManagedCertificate'
         }
+        {
+          name: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain'
+          hostName: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain.azurewebsites.net'
+          certificateType: 'ManagedCertificate'
+        }
       ]
       originGroups: [
         {
@@ -114,3 +119,6 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+output dnsValidationRecords array = testDeployment[0].outputs.dnsValidation
+output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostNames

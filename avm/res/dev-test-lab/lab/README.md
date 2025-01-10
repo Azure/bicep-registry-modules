@@ -8,6 +8,7 @@ This module deploys a DevTest Lab.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -62,7 +63,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -79,6 +80,22 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-test-lab/lab:<version>'
+
+// Required parameters
+param name = 'dtllmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -369,7 +386,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -698,6 +715,281 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-test-lab/lab:<version>'
+
+// Required parameters
+param name = 'dtllmax001'
+// Non-required parameters
+param announcement = {
+  enabled: 'Enabled'
+  expirationDate: '2028-12-30T13:00:00Z'
+  markdown: 'DevTest Lab announcement text. <br> New line. It also supports Markdown'
+  title: 'DevTest announcement title'
+}
+param artifactsources = [
+  {
+    displayName: 'Public Artifact Repo'
+    folderPath: '/Artifacts'
+    name: 'Public Repo'
+    sourceType: 'GitHub'
+    status: 'Enabled'
+    uri: 'https://github.com/Azure/azure-devtestlab.git'
+  }
+  {
+    armTemplateFolderPath: '/Environments'
+    branchRef: 'master'
+    displayName: 'Public Environment Repo'
+    name: 'Public Environment Repo'
+    sourceType: 'GitHub'
+    status: 'Disabled'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      labName: 'dtllmax001'
+      resourceType: 'DevTest Lab'
+    }
+    uri: 'https://github.com/Azure/azure-devtestlab.git'
+  }
+  {
+    armTemplateFolderPath: '/ArmTemplates'
+    branchRef: 'main'
+    displayName: 'Private Artifact Repo'
+    folderPath: '/Artifacts'
+    name: 'Private Repo'
+    securityToken: '<securityToken>'
+    status: 'Disabled'
+    uri: 'https://github.com/Azure/azure-devtestlab.git'
+  }
+]
+param artifactsStorageAccount = '<artifactsStorageAccount>'
+param browserConnect = 'Enabled'
+param costs = {
+  currencyCode: 'AUD'
+  cycleType: 'CalendarMonth'
+  status: 'Enabled'
+  target: 450
+  thresholdValue100DisplayOnChart: 'Enabled'
+  thresholdValue100SendNotificationWhenExceeded: 'Enabled'
+  thresholdValue125DisplayOnChart: 'Disabled'
+  thresholdValue75DisplayOnChart: 'Enabled'
+}
+param disableAutoUpgradeCseMinorVersion = true
+param encryptionDiskEncryptionSetId = '<encryptionDiskEncryptionSetId>'
+param encryptionType = 'EncryptionAtRestWithCustomerKey'
+param environmentPermission = 'Contributor'
+param extendedProperties = {
+  RdpConnectionType: '7'
+}
+param isolateLabResources = 'Enabled'
+param labStorageType = 'Premium'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managementIdentitiesResourceIds = [
+  '<managedIdentityResourceId>'
+]
+param notificationchannels = [
+  {
+    description: 'Integration configured for auto-shutdown'
+    emailRecipient: 'mail@contosodtlmail.com'
+    events: [
+      'AutoShutdown'
+    ]
+    name: 'autoShutdown'
+    notificationLocale: 'en'
+    webHookUrl: 'https://webhook.contosotest.com'
+  }
+  {
+    events: [
+      'Cost'
+    ]
+    name: 'costThreshold'
+    webHookUrl: 'https://webhook.contosotest.com'
+  }
+]
+param policies = [
+  {
+    evaluatorType: 'MaxValuePolicy'
+    factData: '<factData>'
+    factName: 'UserOwnedLabVmCountInSubnet'
+    name: '<name>'
+    threshold: '1'
+  }
+  {
+    evaluatorType: 'MaxValuePolicy'
+    factName: 'UserOwnedLabVmCount'
+    name: 'MaxVmsAllowedPerUser'
+    threshold: '2'
+  }
+  {
+    evaluatorType: 'MaxValuePolicy'
+    factName: 'UserOwnedLabPremiumVmCount'
+    name: 'MaxPremiumVmsAllowedPerUser'
+    status: 'Disabled'
+    threshold: '1'
+  }
+  {
+    evaluatorType: 'MaxValuePolicy'
+    factName: 'LabVmCount'
+    name: 'MaxVmsAllowedPerLab'
+    threshold: '3'
+  }
+  {
+    evaluatorType: 'MaxValuePolicy'
+    factName: 'LabPremiumVmCount'
+    name: 'MaxPremiumVmsAllowedPerLab'
+    threshold: '2'
+  }
+  {
+    evaluatorType: 'AllowedValuesPolicy'
+    factData: ''
+    factName: 'LabVmSize'
+    name: 'AllowedVmSizesInLab'
+    status: 'Enabled'
+    threshold: '<threshold>'
+  }
+  {
+    evaluatorType: 'AllowedValuesPolicy'
+    factName: 'ScheduleEditPermission'
+    name: 'ScheduleEditPermission'
+    threshold: '<threshold>'
+  }
+  {
+    evaluatorType: 'AllowedValuesPolicy'
+    factName: 'GalleryImage'
+    name: 'GalleryImage'
+    threshold: '<threshold>'
+  }
+  {
+    description: 'Public Environment Policy'
+    evaluatorType: 'AllowedValuesPolicy'
+    factName: 'EnvironmentTemplate'
+    name: 'EnvironmentTemplate'
+    threshold: '<threshold>'
+  }
+]
+param premiumDataDisks = 'Enabled'
+param roleAssignments = [
+  {
+    name: 'b08c589c-2c79-41bd-8195-d5e62ad12f67'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param schedules = [
+  {
+    dailyRecurrence: {
+      time: '0000'
+    }
+    name: 'LabVmsShutdown'
+    notificationSettings: {
+      status: 'Enabled'
+      timeInMinutes: 30
+    }
+    status: 'Enabled'
+    taskType: 'LabVmsShutdownTask'
+    timeZoneId: 'AUS Eastern Standard Time'
+  }
+  {
+    name: 'LabVmAutoStart'
+    status: 'Enabled'
+    taskType: 'LabVmsStartupTask'
+    timeZoneId: 'AUS Eastern Standard Time'
+    weeklyRecurrence: {
+      time: '0700'
+      weekdays: [
+        'Friday'
+        'Monday'
+        'Thursday'
+        'Tuesday'
+        'Wednesday'
+      ]
+    }
+  }
+]
+param support = {
+  enabled: 'Enabled'
+  markdown: 'DevTest Lab support text. <br> New line. It also supports Markdown'
+}
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  labName: 'dtllmax001'
+  resourceType: 'DevTest Lab'
+}
+param virtualnetworks = [
+  {
+    allowedSubnets: [
+      {
+        allowPublicIp: 'Allow'
+        labSubnetName: '<labSubnetName>'
+        resourceId: '<resourceId>'
+      }
+      {
+        allowPublicIp: 'Deny'
+        labSubnetName: '<labSubnetName>'
+        resourceId: '<resourceId>'
+      }
+    ]
+    description: 'lab virtual network description'
+    externalProviderResourceId: '<externalProviderResourceId>'
+    name: '<name>'
+    subnetOverrides: [
+      {
+        labSubnetName: '<labSubnetName>'
+        resourceId: '<resourceId>'
+        sharedPublicIpAddressConfiguration: {
+          allowedPorts: [
+            {
+              backendPort: 3389
+              transportProtocol: 'Tcp'
+            }
+            {
+              backendPort: 22
+              transportProtocol: 'Tcp'
+            }
+          ]
+        }
+        useInVmCreationPermission: 'Allow'
+        usePublicIpAddressPermission: 'Allow'
+      }
+      {
+        labSubnetName: '<labSubnetName>'
+        resourceId: '<resourceId>'
+        useInVmCreationPermission: 'Deny'
+        usePublicIpAddressPermission: 'Deny'
+      }
+    ]
+  }
+]
+param vmCreationResourceGroupId = '<vmCreationResourceGroupId>'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -729,7 +1021,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -752,6 +1044,27 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-test-lab/lab:<version>'
+
+// Required parameters
+param name = 'dtllwaf001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  labName: 'dtllwaf001'
+  resourceType: 'DevTest Lab'
 }
 ```
 
@@ -797,7 +1110,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 | [`mandatoryArtifactsResourceIdsWindows`](#parameter-mandatoryartifactsresourceidswindows) | array | The ordered list of artifact resource IDs that should be applied on all Windows VM creations by default, prior to the artifacts specified by the user. |
 | [`policies`](#parameter-policies) | array | Policies to create for the lab. |
 | [`premiumDataDisks`](#parameter-premiumdatadisks) | string | The setting to enable usage of premium data disks. When its value is "Enabled", creation of standard or premium data disks is allowed. When its value is "Disabled", only creation of standard data disks is allowed. Default is "Disabled". |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`schedules`](#parameter-schedules) | array | Schedules to create for the lab. |
 | [`support`](#parameter-support) | object | The properties of any lab support message associated with this lab. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1434,13 +1747,13 @@ The managed identity definition for this resource. For new labs created after 8/
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `managementIdentitiesResourceIds`
@@ -1586,7 +1899,7 @@ The setting to enable usage of premium data disks. When its value is "Enabled", 
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 
 - Required: No
 - Type: array
@@ -2167,6 +2480,14 @@ Resource Group allocation for virtual machines. If left empty, virtual machines 
 | `resourceId` | string | The resource ID of the lab. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `uniqueIdentifier` | string | The unique identifier for the lab. Used to track tags that the lab applies to each resource that it creates. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
 

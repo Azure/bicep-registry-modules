@@ -22,18 +22,19 @@ This module deploys an Azure SQL Server.
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers) |
-| `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/auditingSettings) |
-| `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases) |
+| `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers) |
+| `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/auditingSettings) |
+| `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases) |
 | `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies) |
-| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/elasticPools) |
-| `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/encryptionProtector) |
-| `Microsoft.Sql/servers/firewallRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/firewallRules) |
-| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/keys) |
-| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/securityAlertPolicies) |
-| `Microsoft.Sql/servers/virtualNetworkRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/virtualNetworkRules) |
-| `Microsoft.Sql/servers/vulnerabilityAssessments` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/vulnerabilityAssessments) |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases/backupShortTermRetentionPolicies) |
+| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/elasticPools) |
+| `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/encryptionProtector) |
+| `Microsoft.Sql/servers/failoverGroups` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/servers/failoverGroups) |
+| `Microsoft.Sql/servers/firewallRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/firewallRules) |
+| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/keys) |
+| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/securityAlertPolicies) |
+| `Microsoft.Sql/servers/virtualNetworkRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/virtualNetworkRules) |
+| `Microsoft.Sql/servers/vulnerabilityAssessments` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/vulnerabilityAssessments) |
 
 ## Usage examples
 
@@ -47,11 +48,12 @@ The following section provides usage examples for the module, which were used to
 - [With audit settings](#example-2-with-audit-settings)
 - [Using only defaults](#example-3-using-only-defaults)
 - [Using elastic pool](#example-4-using-elastic-pool)
-- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [With a secondary database](#example-7-with-a-secondary-database)
-- [With vulnerability assessment](#example-8-with-vulnerability-assessment)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Using failover groups](#example-5-using-failover-groups)
+- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [With a secondary database](#example-8-with-a-secondary-database)
+- [With vulnerability assessment](#example-9-with-vulnerability-assessment)
+- [WAF-aligned](#example-10-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -334,6 +336,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     elasticPools: [
       {
         name: 'ssep-ep-001'
+        zoneRedundant: false
       }
       {
         name: 'ssep-ep-002'
@@ -346,6 +349,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           name: 'GP_Gen5'
           tier: 'GeneralPurpose'
         }
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -379,7 +383,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
-          "name": "ssep-ep-001"
+          "name": "ssep-ep-001",
+          "zoneRedundant": false
         },
         {
           "name": "ssep-ep-002",
@@ -391,7 +396,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "capacity": 4,
             "name": "GP_Gen5",
             "tier": "GeneralPurpose"
-          }
+          },
+          "zoneRedundant": false
         }
       ]
     },
@@ -420,6 +426,7 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 param elasticPools = [
   {
     name: 'ssep-ep-001'
+    zoneRedundant: false
   }
   {
     name: 'ssep-ep-002'
@@ -432,6 +439,7 @@ param elasticPools = [
       name: 'GP_Gen5'
       tier: 'GeneralPurpose'
     }
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
@@ -440,7 +448,313 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Deploying with a key vault reference to save secrets_
+### Example 5: _Using failover groups_
+
+This instance deploys the module with failover groups.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'ssfog001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    databases: [
+      {
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db1'
+        sku: {
+          name: 'S1'
+          tier: 'Standard'
+        }
+        zoneRedundant: false
+      }
+      {
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db2'
+        sku: {
+          capacity: 2
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
+        zoneRedundant: false
+      }
+      {
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db3'
+        sku: {
+          name: 'S1'
+          tier: 'Standard'
+        }
+        zoneRedundant: false
+      }
+    ]
+    failoverGroups: [
+      {
+        databases: [
+          'ssfog-db1'
+        ]
+        name: 'ssfog-fg-geo'
+        partnerServers: [
+          '<secondaryServerName>'
+        ]
+        readWriteEndpoint: {
+          failoverPolicy: 'Manual'
+        }
+        secondaryType: 'Geo'
+      }
+      {
+        databases: [
+          'ssfog-db2'
+        ]
+        name: 'ssfog-fg-standby'
+        partnerServers: [
+          '<secondaryServerName>'
+        ]
+        readWriteEndpoint: {
+          failoverPolicy: 'Automatic'
+          failoverWithDataLossGracePeriodMinutes: 60
+        }
+        secondaryType: 'Standby'
+      }
+      {
+        databases: [
+          'ssfog-db3'
+        ]
+        name: 'ssfog-fg-readonly'
+        partnerServers: [
+          '<secondaryServerName>'
+        ]
+        readOnlyEndpoint: {
+          failoverPolicy: 'Enabled'
+          targetServer: '<targetServer>'
+        }
+        readWriteEndpoint: {
+          failoverPolicy: 'Manual'
+        }
+        secondaryType: 'Geo'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssfog001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "databases": {
+      "value": [
+        {
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db1",
+          "sku": {
+            "name": "S1",
+            "tier": "Standard"
+          },
+          "zoneRedundant": false
+        },
+        {
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db2",
+          "sku": {
+            "capacity": 2,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          },
+          "zoneRedundant": false
+        },
+        {
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db3",
+          "sku": {
+            "name": "S1",
+            "tier": "Standard"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "failoverGroups": {
+      "value": [
+        {
+          "databases": [
+            "ssfog-db1"
+          ],
+          "name": "ssfog-fg-geo",
+          "partnerServers": [
+            "<secondaryServerName>"
+          ],
+          "readWriteEndpoint": {
+            "failoverPolicy": "Manual"
+          },
+          "secondaryType": "Geo"
+        },
+        {
+          "databases": [
+            "ssfog-db2"
+          ],
+          "name": "ssfog-fg-standby",
+          "partnerServers": [
+            "<secondaryServerName>"
+          ],
+          "readWriteEndpoint": {
+            "failoverPolicy": "Automatic",
+            "failoverWithDataLossGracePeriodMinutes": 60
+          },
+          "secondaryType": "Standby"
+        },
+        {
+          "databases": [
+            "ssfog-db3"
+          ],
+          "name": "ssfog-fg-readonly",
+          "partnerServers": [
+            "<secondaryServerName>"
+          ],
+          "readOnlyEndpoint": {
+            "failoverPolicy": "Enabled",
+            "targetServer": "<targetServer>"
+          },
+          "readWriteEndpoint": {
+            "failoverPolicy": "Manual"
+          },
+          "secondaryType": "Geo"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssfog001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db1'
+    sku: {
+      name: 'S1'
+      tier: 'Standard'
+    }
+    zoneRedundant: false
+  }
+  {
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db2'
+    sku: {
+      capacity: 2
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
+    zoneRedundant: false
+  }
+  {
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db3'
+    sku: {
+      name: 'S1'
+      tier: 'Standard'
+    }
+    zoneRedundant: false
+  }
+]
+param failoverGroups = [
+  {
+    databases: [
+      'ssfog-db1'
+    ]
+    name: 'ssfog-fg-geo'
+    partnerServers: [
+      '<secondaryServerName>'
+    ]
+    readWriteEndpoint: {
+      failoverPolicy: 'Manual'
+    }
+    secondaryType: 'Geo'
+  }
+  {
+    databases: [
+      'ssfog-db2'
+    ]
+    name: 'ssfog-fg-standby'
+    partnerServers: [
+      '<secondaryServerName>'
+    ]
+    readWriteEndpoint: {
+      failoverPolicy: 'Automatic'
+      failoverWithDataLossGracePeriodMinutes: 60
+    }
+    secondaryType: 'Standby'
+  }
+  {
+    databases: [
+      'ssfog-db3'
+    ]
+    name: 'ssfog-fg-readonly'
+    partnerServers: [
+      '<secondaryServerName>'
+    ]
+    readOnlyEndpoint: {
+      failoverPolicy: 'Enabled'
+      targetServer: '<targetServer>'
+    }
+    readWriteEndpoint: {
+      failoverPolicy: 'Manual'
+    }
+    secondaryType: 'Geo'
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 6: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -461,6 +775,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     databases: [
       {
         name: 'myDatabase'
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -499,7 +814,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
-          "name": "myDatabase"
+          "name": "myDatabase",
+          "zoneRedundant": false
         }
       ]
     },
@@ -535,6 +851,7 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
     name: 'myDatabase'
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
@@ -548,7 +865,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -702,13 +1019,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     ]
     vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
     }
   }
@@ -903,13 +1222,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "vulnerabilityAssessmentsObj": {
       "value": {
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>"
       }
     }
@@ -1068,13 +1389,15 @@ param virtualNetworkRules = [
   }
 ]
 param vulnerabilityAssessmentsObj = {
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
 }
 ```
@@ -1082,7 +1405,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 7: _With a secondary database_
+### Example 8: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -1110,6 +1433,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           tier: 'Basic'
         }
         sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+        zoneRedundant: false
       }
     ]
     location: '<location>'
@@ -1155,7 +1479,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "name": "Basic",
             "tier": "Basic"
           },
-          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>"
+          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>",
+          "zoneRedundant": false
         }
       ]
     },
@@ -1198,6 +1523,7 @@ param databases = [
       tier: 'Basic'
     }
     sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+    zoneRedundant: false
   }
 ]
 param location = '<location>'
@@ -1211,7 +1537,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _With vulnerability assessment_
+### Example 9: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -1251,13 +1577,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
     vulnerabilityAssessmentsObj: {
       createStorageRoleAssignment: true
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
       useStorageAccountAccessKey: false
     }
@@ -1321,13 +1649,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "vulnerabilityAssessmentsObj": {
       "value": {
         "createStorageRoleAssignment": true,
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>",
         "useStorageAccountAccessKey": false
       }
@@ -1373,13 +1703,15 @@ param tags = {
 }
 param vulnerabilityAssessmentsObj = {
   createStorageRoleAssignment: true
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
   useStorageAccountAccessKey: false
 }
@@ -1388,7 +1720,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1508,13 +1840,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     ]
     vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
       name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
       storageAccountResourceId: '<storageAccountResourceId>'
     }
   }
@@ -1667,13 +2001,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "vulnerabilityAssessmentsObj": {
       "value": {
-        "emailSubscriptionAdmins": true,
         "name": "default",
-        "recurringScansEmails": [
-          "test1@contoso.com",
-          "test2@contoso.com"
-        ],
-        "recurringScansIsEnabled": true,
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
         "storageAccountResourceId": "<storageAccountResourceId>"
       }
     }
@@ -1798,13 +2134,15 @@ param virtualNetworkRules = [
   }
 ]
 param vulnerabilityAssessmentsObj = {
-  emailSubscriptionAdmins: true
   name: 'default'
-  recurringScansEmails: [
-    'test1@contoso.com'
-    'test2@contoso.com'
-  ]
-  recurringScansIsEnabled: true
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
   storageAccountResourceId: '<storageAccountResourceId>'
 }
 ```
@@ -1833,11 +2171,12 @@ param vulnerabilityAssessmentsObj = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. |
+| [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
+| [`failoverGroups`](#parameter-failovergroups) | array | The failover groups configuration. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
 | [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
@@ -1969,11 +2308,16 @@ The resource ID of a user assigned identity to be used by default. Required if "
 
 ### Parameter: `auditSettings`
 
-The audit settings configuration.
+The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object.
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      state: 'Enabled'
+  }
+  ```
 
 **Optional parameters**
 
@@ -2996,7 +3340,181 @@ The encryption protection configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serverKeyName`](#parameter-encryptionprotectorobjserverkeyname) | string | The name of the server key. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-encryptionprotectorobjautorotationenabled) | bool | Key auto rotation opt-in flag. |
+| [`serverKeyType`](#parameter-encryptionprotectorobjserverkeytype) | string | The encryption protector type. |
+
+### Parameter: `encryptionProtectorObj.serverKeyName`
+
+The name of the server key.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `encryptionProtectorObj.autoRotationEnabled`
+
+Key auto rotation opt-in flag.
+
+- Required: No
+- Type: bool
+
+### Parameter: `encryptionProtectorObj.serverKeyType`
+
+The encryption protector type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureKeyVault'
+    'ServiceManaged'
+  ]
+  ```
+
+### Parameter: `failoverGroups`
+
+The failover groups configuration.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`databases`](#parameter-failovergroupsdatabases) | array | List of databases in the failover group. |
+| [`name`](#parameter-failovergroupsname) | string | The name of the failover group. |
+| [`partnerServers`](#parameter-failovergroupspartnerservers) | array | List of the partner servers for the failover group. |
+| [`readWriteEndpoint`](#parameter-failovergroupsreadwriteendpoint) | object | Read-write endpoint of the failover group instance. |
+| [`secondaryType`](#parameter-failovergroupssecondarytype) | string | Databases secondary type on partner server. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`readOnlyEndpoint`](#parameter-failovergroupsreadonlyendpoint) | object | Read-only endpoint of the failover group instance. |
+
+### Parameter: `failoverGroups.databases`
+
+List of databases in the failover group.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `failoverGroups.name`
+
+The name of the failover group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `failoverGroups.partnerServers`
+
+List of the partner servers for the failover group.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `failoverGroups.readWriteEndpoint`
+
+Read-write endpoint of the failover group instance.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverPolicy`](#parameter-failovergroupsreadwriteendpointfailoverpolicy) | string | Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverWithDataLossGracePeriodMinutes`](#parameter-failovergroupsreadwriteendpointfailoverwithdatalossgraceperiodminutes) | int | Grace period before failover with data loss is attempted for the read-write endpoint. |
+
+### Parameter: `failoverGroups.readWriteEndpoint.failoverPolicy`
+
+Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+    'Manual'
+  ]
+  ```
+
+### Parameter: `failoverGroups.readWriteEndpoint.failoverWithDataLossGracePeriodMinutes`
+
+Grace period before failover with data loss is attempted for the read-write endpoint.
+
+- Required: No
+- Type: int
+
+### Parameter: `failoverGroups.secondaryType`
+
+Databases secondary type on partner server.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Geo'
+    'Standby'
+  ]
+  ```
+
+### Parameter: `failoverGroups.readOnlyEndpoint`
+
+Read-only endpoint of the failover group instance.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverPolicy`](#parameter-failovergroupsreadonlyendpointfailoverpolicy) | string | Failover policy of the read-only endpoint for the failover group. |
+| [`targetServer`](#parameter-failovergroupsreadonlyendpointtargetserver) | string | The target partner server where the read-only endpoint points to. |
+
+### Parameter: `failoverGroups.readOnlyEndpoint.failoverPolicy`
+
+Failover policy of the read-only endpoint for the failover group.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `failoverGroups.readOnlyEndpoint.targetServer`
+
+The target partner server where the read-only endpoint points to.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `federatedClientId`
 
@@ -3012,6 +3530,40 @@ The firewall rules to create in the server.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-firewallrulesname) | string | The name of the firewall rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+| [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+
+### Parameter: `firewallRules.name`
+
+The name of the firewall rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.endIpAddress`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: No
+- Type: string
+
+### Parameter: `firewallRules.startIpAddress`
+
+The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: No
+- Type: string
 
 ### Parameter: `isIPv6Enabled`
 
@@ -3042,6 +3594,42 @@ The keys to configure.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-keysname) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
+| [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type. |
+| [`uri`](#parameter-keysuri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
+
+### Parameter: `keys.name`
+
+The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.serverKeyType`
+
+The server key type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureKeyVault'
+    'ServiceManaged'
+  ]
+  ```
+
+### Parameter: `keys.uri`
+
+The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -3735,6 +4323,98 @@ The security alert policies to create in the server.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-securityalertpoliciesname) | string | The name of the Security Alert Policy. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`disabledAlerts`](#parameter-securityalertpoliciesdisabledalerts) | array | Alerts to disable. |
+| [`emailAccountAdmins`](#parameter-securityalertpoliciesemailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
+| [`emailAddresses`](#parameter-securityalertpoliciesemailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
+| [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
+| [`state`](#parameter-securityalertpoliciesstate) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
+| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | string | Specifies the identifier key of the Threat Detection audit storage account. |
+| [`storageEndpoint`](#parameter-securityalertpoliciesstorageendpoint) | string | Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs. |
+
+### Parameter: `securityAlertPolicies.name`
+
+The name of the Security Alert Policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAlertPolicies.disabledAlerts`
+
+Alerts to disable.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Access_Anomaly'
+    'Brute_Force'
+    'Data_Exfiltration'
+    'Sql_Injection'
+    'Sql_Injection_Vulnerability'
+    'Unsafe_Action'
+  ]
+  ```
+
+### Parameter: `securityAlertPolicies.emailAccountAdmins`
+
+Specifies that the alert is sent to the account administrators.
+
+- Required: No
+- Type: bool
+
+### Parameter: `securityAlertPolicies.emailAddresses`
+
+Specifies an array of email addresses to which the alert is sent.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityAlertPolicies.retentionDays`
+
+Specifies the number of days to keep in the Threat Detection audit logs.
+
+- Required: No
+- Type: int
+
+### Parameter: `securityAlertPolicies.state`
+
+Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `securityAlertPolicies.storageAccountAccessKey`
+
+Specifies the identifier key of the Threat Detection audit storage account.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityAlertPolicies.storageEndpoint`
+
+Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -3750,19 +4430,137 @@ The virtual network rules to create in the server.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworkrulesname) | string | The name of the Server Virtual Network Rule. |
+| [`virtualNetworkSubnetId`](#parameter-virtualnetworkrulesvirtualnetworksubnetid) | string | The resource ID of the virtual network subnet. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-virtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Allow creating a firewall rule before the virtual network has vnet service endpoint enabled. |
+
+### Parameter: `virtualNetworkRules.name`
+
+The name of the Server Virtual Network Rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkRules.virtualNetworkSubnetId`
+
+The resource ID of the virtual network subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `vulnerabilityAssessmentsObj`
 
 The vulnerability assessment configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-vulnerabilityassessmentsobjname) | string | The name of the vulnerability assessment. |
+| [`storageAccountResourceId`](#parameter-vulnerabilityassessmentsobjstorageaccountresourceid) | string | The resource ID of the storage account to store the scan reports. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`createStorageRoleAssignment`](#parameter-vulnerabilityassessmentsobjcreatestorageroleassignment) | bool | Specifies whether to create a role assignment for the storage account. |
+| [`recurringScans`](#parameter-vulnerabilityassessmentsobjrecurringscans) | object | The recurring scans settings. |
+| [`useStorageAccountAccessKey`](#parameter-vulnerabilityassessmentsobjusestorageaccountaccesskey) | bool | Specifies whether to use the storage account access key to access the storage account. |
+
+### Parameter: `vulnerabilityAssessmentsObj.name`
+
+The name of the vulnerability assessment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vulnerabilityAssessmentsObj.storageAccountResourceId`
+
+The resource ID of the storage account to store the scan reports.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vulnerabilityAssessmentsObj.createStorageRoleAssignment`
+
+Specifies whether to create a role assignment for the storage account.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans`
+
+The recurring scans settings.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emails`](#parameter-vulnerabilityassessmentsobjrecurringscansemails) | array | Specifies an array of e-mail addresses to which the scan notification is sent. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emailSubscriptionAdmins`](#parameter-vulnerabilityassessmentsobjrecurringscansemailsubscriptionadmins) | bool | Specifies that the schedule scan notification will be sent to the subscription administrators. |
+| [`isEnabled`](#parameter-vulnerabilityassessmentsobjrecurringscansisenabled) | bool | Recurring scans state. |
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.emails`
+
+Specifies an array of e-mail addresses to which the scan notification is sent.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.emailSubscriptionAdmins`
+
+Specifies that the schedule scan notification will be sent to the subscription administrators.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.recurringScans.isEnabled`
+
+Recurring scans state.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.useStorageAccountAccessKey`
+
+Specifies whether to use the storage account access key to access the storage account.
+
+- Required: No
+- Type: bool
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
+| `fullyQualifiedDomainName` | string | The fully qualified domain name of the deployed SQL server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed SQL server. |
 | `privateEndpoints` | array | The private endpoints of the SQL server. |

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "2308330663598453138"
+      "version": "0.31.92.45157",
+      "templateHash": "2848933356458236613"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -305,9 +305,8 @@
     },
     "adminPassword": {
       "type": "securestring",
-      "defaultValue": "",
       "metadata": {
-        "description": "Optional. When specifying a Windows Virtual Machine, this value should be passed."
+        "description": "Required. When specifying a Windows Virtual Machine, this value should be passed."
       }
     },
     "customData": {
@@ -409,7 +408,8 @@
     "extensionMonitoringAgentConfig": {
       "type": "object",
       "defaultValue": {
-        "enabled": false
+        "enabled": false,
+        "autoUpgradeMinorVersion": true
       },
       "metadata": {
         "description": "Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
@@ -493,7 +493,14 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Storage account used to store boot diagnostic information. Boot diagnostics will be disabled if no value is provided."
+        "description": "Optional. The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account."
+      }
+    },
+    "bootDiagnosticEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable boot diagnostics to use default managed or secure storage. Defaults set to false."
       }
     },
     "diagnosticSettings": {
@@ -870,7 +877,7 @@
       "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
       "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
       "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
-      "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM')), null())]"
+      "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM').listeners), null())]"
     },
     "accountSasProperties": {
       "signedServices": "b",
@@ -925,7 +932,7 @@
     },
     "vmss": {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -950,7 +957,7 @@
           "osProfile": {
             "computerNamePrefix": "[parameters('vmNamePrefix')]",
             "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[if(not(empty(parameters('adminPassword'))), parameters('adminPassword'), null())]",
+            "adminPassword": "[parameters('adminPassword')]",
             "customData": "[if(not(empty(parameters('customData'))), base64(parameters('customData')), null())]",
             "windowsConfiguration": "[if(equals(parameters('osType'), 'Windows'), variables('windowsConfiguration'), null())]",
             "linuxConfiguration": "[if(equals(parameters('osType'), 'Linux'), variables('linuxConfiguration'), null())]",
@@ -971,7 +978,7 @@
                   "diskSizeGB": "[parameters('dataDisks')[copyIndex('dataDisks')].diskSizeGB]",
                   "createOption": "[parameters('dataDisks')[copyIndex('dataDisks')].createOption]",
                   "caching": "[parameters('dataDisks')[copyIndex('dataDisks')].caching]",
-                  "writeAcceleratorEnabled": "[if(contains(parameters('osDisk'), 'writeAcceleratorEnabled'), parameters('osDisk').writeAcceleratorEnabled, null())]",
+                  "writeAcceleratorEnabled": "[tryGet(parameters('osDisk'), 'writeAcceleratorEnabled')]",
                   "managedDisk": {
                     "storageAccountType": "[parameters('dataDisks')[copyIndex('dataDisks')].managedDisk.storageAccountType]",
                     "diskEncryptionSet": "[if(contains(parameters('dataDisks')[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSet'), createObject('id', parameters('dataDisks')[copyIndex('dataDisks')].managedDisk.diskEncryptionSet.id), null())]"
@@ -985,12 +992,12 @@
             "osDisk": {
               "createOption": "[parameters('osDisk').createOption]",
               "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
-              "caching": "[if(contains(parameters('osDisk'), 'caching'), parameters('osDisk').caching, null())]",
-              "writeAcceleratorEnabled": "[if(contains(parameters('osDisk'), 'writeAcceleratorEnabled'), parameters('osDisk').writeAcceleratorEnabled, null())]",
-              "diffDiskSettings": "[if(contains(parameters('osDisk'), 'diffDiskSettings'), parameters('osDisk').diffDiskSettings, null())]",
-              "osType": "[if(contains(parameters('osDisk'), 'osType'), parameters('osDisk').osType, null())]",
-              "image": "[if(contains(parameters('osDisk'), 'image'), parameters('osDisk').image, null())]",
-              "vhdContainers": "[if(contains(parameters('osDisk'), 'vhdContainers'), parameters('osDisk').vhdContainers, null())]",
+              "caching": "[tryGet(parameters('osDisk'), 'caching')]",
+              "writeAcceleratorEnabled": "[tryGet(parameters('osDisk'), 'writeAcceleratorEnabled')]",
+              "diffDiskSettings": "[tryGet(parameters('osDisk'), 'diffDiskSettings')]",
+              "osType": "[tryGet(parameters('osDisk'), 'osType')]",
+              "image": "[tryGet(parameters('osDisk'), 'image')]",
+              "vhdContainers": "[tryGet(parameters('osDisk'), 'vhdContainers')]",
               "managedDisk": {
                 "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
                 "diskEncryptionSet": "[if(contains(parameters('osDisk').managedDisk, 'diskEncryptionSet'), createObject('id', parameters('osDisk').managedDisk.diskEncryptionSet.id), null())]"
@@ -1006,7 +1013,7 @@
                   "name": "[format('{0}{1}configuration-{2}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')].nicSuffix, copyIndex('networkInterfaceConfigurations'))]",
                   "properties": {
                     "primary": "[if(equals(copyIndex('networkInterfaceConfigurations'), 0), true(), null())]",
-                    "enableAcceleratedNetworking": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')], 'enableAcceleratedNetworking'), parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')].enableAcceleratedNetworking, true())]",
+                    "enableAcceleratedNetworking": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')], 'enableAcceleratedNetworking'), true())]",
                     "networkSecurityGroup": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')], 'nsgId'), createObject('id', parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')].nsgId), null())]",
                     "ipConfigurations": "[parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')].ipConfigurations]"
                   }
@@ -1017,7 +1024,7 @@
           },
           "diagnosticsProfile": {
             "bootDiagnostics": {
-              "enabled": "[not(empty(parameters('bootDiagnosticStorageAccountName')))]",
+              "enabled": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), true(), parameters('bootDiagnosticEnabled'))]",
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
@@ -1144,9 +1151,15 @@
           "type": {
             "value": "JsonADDomainExtension"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDomainJoinConfig').typeHandlerVersion), createObject('value', '1.3'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDomainJoinConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDomainJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), '1.3')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
           "settings": {
             "value": "[parameters('extensionDomainJoinConfig').settings]"
           },
@@ -1162,8 +1175,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10358696382777462468"
+              "version": "0.31.92.45157",
+              "templateHash": "10486700103731235941"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1311,9 +1324,15 @@
           "type": {
             "value": "IaaSAntimalware"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAntiMalwareConfig').typeHandlerVersion), createObject('value', '1.3'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAntiMalwareConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAntiMalwareConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), '1.3')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
           "settings": {
             "value": "[parameters('extensionAntiMalwareConfig').settings]"
           }
@@ -1324,8 +1343,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10358696382777462468"
+              "version": "0.31.92.45157",
+              "templateHash": "10486700103731235941"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1472,9 +1491,13 @@
             "value": "Microsoft.Azure.Monitor"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureMonitorWindowsAgent'), createObject('value', 'AzureMonitorLinuxAgent'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.22'), createObject('value', '1.29')))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionMonitoringAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": "[if(not(equals(tryGet(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), null())), createObject('value', parameters('extensionMonitoringAgentConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.22'), createObject('value', '1.29')))]",
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(parameters('extensionMonitoringAgentConfig').autoUpgradeMinorVersion, true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
           "settings": {
             "value": {
               "workspaceId": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), reference('vmss_logAnalyticsWorkspace').customerId, '')]",
@@ -1493,8 +1516,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10358696382777462468"
+              "version": "0.31.92.45157",
+              "templateHash": "10486700103731235941"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1642,9 +1665,15 @@
             "value": "Microsoft.Azure.Monitoring.DependencyAgent"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'DependencyAgentWindows'), createObject('value', 'DependencyAgentLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.5'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDependencyAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]"
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), '9.5')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), true())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1652,8 +1681,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10358696382777462468"
+              "version": "0.31.92.45157",
+              "templateHash": "10486700103731235941"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1800,9 +1829,15 @@
             "value": "Microsoft.Azure.NetworkWatcher"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'NetworkWatcherAgentWindows'), createObject('value', 'NetworkWatcherAgentLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').typeHandlerVersion), createObject('value', '1.4'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]"
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), '1.4')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), false())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1810,8 +1845,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10358696382777462468"
+              "version": "0.31.92.45157",
+              "templateHash": "10486700103731235941"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1960,11 +1995,21 @@
           "type": {
             "value": "DSC"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionDSCConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDSCConfig').typeHandlerVersion), createObject('value', '2.77'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDSCConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDSCConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-          "settings": "[if(contains(parameters('extensionDSCConfig'), 'settings'), createObject('value', parameters('extensionDSCConfig').settings), createObject('value', createObject()))]",
-          "protectedSettings": "[if(contains(parameters('extensionDSCConfig'), 'protectedSettings'), createObject('value', parameters('extensionDSCConfig').protectedSettings), createObject('value', createObject()))]"
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'typeHandlerVersion'), '2.77')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "settings": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'settings'), createObject())]"
+          },
+          "protectedSettings": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'protectedSettings'), createObject())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1972,8 +2017,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10358696382777462468"
+              "version": "0.31.92.45157",
+              "templateHash": "10486700103731235941"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2118,9 +2163,15 @@
           },
           "publisher": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'Microsoft.Compute'), createObject('value', 'Microsoft.Azure.Extensions'))]",
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'CustomScriptExtension'), createObject('value', 'CustomScript'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionCustomScriptConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.10'), createObject('value', '2.1')))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionCustomScriptConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionCustomScriptConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '1.10', '2.1'))]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
           "settings": {
             "value": {
               "copy": [
@@ -2132,7 +2183,9 @@
               ]
             }
           },
-          "protectedSettings": "[if(contains(parameters('extensionCustomScriptConfig'), 'protectedSettings'), createObject('value', parameters('extensionCustomScriptConfig').protectedSettings), createObject('value', createObject()))]"
+          "protectedSettings": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), createObject())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2140,8 +2193,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10358696382777462468"
+              "version": "0.31.92.45157",
+              "templateHash": "10486700103731235941"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2288,10 +2341,18 @@
             "value": "Microsoft.Azure.Security"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureDiskEncryption'), createObject('value', 'AzureDiskEncryptionForLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '2.2'), createObject('value', '1.1')))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-          "forceUpdateTag": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').forceUpdateTag), createObject('value', '1.0'))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '2.2', '1.1'))]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "forceUpdateTag": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), '1.0')]"
+          },
           "settings": {
             "value": "[parameters('extensionAzureDiskEncryptionConfig').settings]"
           }
@@ -2302,8 +2363,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10358696382777462468"
+              "version": "0.31.92.45157",
+              "templateHash": "10486700103731235941"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2457,14 +2518,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2023-09-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2024-07-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vmss', '2023-09-01', 'full').location]"
+      "value": "[reference('vmss', '2024-07-01', 'full').location]"
     }
   }
 }

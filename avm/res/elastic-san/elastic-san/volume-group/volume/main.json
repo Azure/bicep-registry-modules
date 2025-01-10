@@ -1,0 +1,348 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "11533734899359138908"
+    },
+    "name": "Elastic SAN Volumes",
+    "description": "This module deploys an Elastic SAN Volume.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "volumeSnapshotType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63,
+          "metadata": {
+            "description": "Required. The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "volumeSnapshotOutputType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the deployed Elastic SAN Volume Snapshot."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the deployed Elastic SAN Volume Snapshot."
+          }
+        },
+        "location": {
+          "type": "string",
+          "metadata": {
+            "description": "The location of the deployed Elastic SAN Volume Snapshot."
+          }
+        },
+        "resourceGroupName": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource group of the deployed Elastic SAN Volume Snapshot."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "elasticSanName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Conditional. The name of the parent Elastic SAN. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character."
+      }
+    },
+    "volumeGroupName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Conditional. The name of the parent Elastic SAN Volume Group. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Required. The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "minLength": 1,
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "sizeGiB": {
+      "type": "int",
+      "minValue": 1,
+      "maxValue": 65536,
+      "metadata": {
+        "description": "Required. Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges from 1 Gibibyte (GiB) to 64 Tebibyte (TiB), equating to 65536 Gibibytes (GiB)."
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/volumeSnapshotType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume."
+      }
+    }
+  },
+  "resources": {
+    "elasticSan::volumeGroup": {
+      "existing": true,
+      "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]"
+    },
+    "elasticSan": {
+      "existing": true,
+      "type": "Microsoft.ElasticSan/elasticSans",
+      "apiVersion": "2023-01-01",
+      "name": "[parameters('elasticSanName')]"
+    },
+    "volume": {
+      "type": "Microsoft.ElasticSan/elasticSans/volumegroups/volumes",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
+      "properties": {
+        "sizeGiB": "[parameters('sizeGiB')]"
+      }
+    },
+    "volume_snapshots": {
+      "copy": {
+        "name": "volume_snapshots",
+        "count": "[length(coalesce(parameters('snapshots'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Volume-Snapshot-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "elasticSanName": {
+            "value": "[parameters('elasticSanName')]"
+          },
+          "volumeGroupName": {
+            "value": "[parameters('volumeGroupName')]"
+          },
+          "volumeName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('snapshots'), createArray())[copyIndex()].name]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "6447606357697817784"
+            },
+            "name": "Elastic SAN Volume Snapshots",
+            "description": "This module deploys an Elastic SAN Volume Snapshot.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "elasticSanName": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 24,
+              "metadata": {
+                "description": "Conditional. The name of the parent Elastic SAN. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character."
+              }
+            },
+            "volumeGroupName": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63,
+              "metadata": {
+                "description": "Conditional. The name of the parent Elastic SAN Volume Group. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character."
+              }
+            },
+            "volumeName": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63,
+              "metadata": {
+                "description": "Conditional. The name of the parent Elastic SAN Volume. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character."
+              }
+            },
+            "name": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63,
+              "metadata": {
+                "description": "Required. The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "minLength": 1,
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ElasticSan/elasticSans/volumegroups/snapshots",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
+              "properties": {
+                "creationData": {
+                  "sourceId": "[resourceId('Microsoft.ElasticSan/elasticSans/volumegroups/volumes', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('volumeName'))]"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed Elastic SAN Volume Snapshot."
+              },
+              "value": "[resourceId('Microsoft.ElasticSan/elasticSans/volumegroups/snapshots', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed Elastic SAN Volume Snapshot."
+              },
+              "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the deployed Elastic SAN Volume Snapshot."
+              },
+              "value": "[parameters('location')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed Elastic SAN Volume Snapshot."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "volume"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed Elastic SAN Volume."
+      },
+      "value": "[resourceId('Microsoft.ElasticSan/elasticSans/volumegroups/volumes', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed Elastic SAN Volume."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the deployed Elastic SAN Volume."
+      },
+      "value": "[parameters('location')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed Elastic SAN Volume."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "targetIqn": {
+      "type": "string",
+      "metadata": {
+        "description": "The iSCSI Target IQN (iSCSI Qualified Name) of the deployed Elastic SAN Volume."
+      },
+      "value": "[reference('volume').storageTarget.targetIqn]"
+    },
+    "targetPortalHostname": {
+      "type": "string",
+      "metadata": {
+        "description": "The iSCSI Target Portal Host Name of the deployed Elastic SAN Volume."
+      },
+      "value": "[reference('volume').storageTarget.targetPortalHostname]"
+    },
+    "targetPortalPort": {
+      "type": "int",
+      "metadata": {
+        "description": "The iSCSI Target Portal Port of the deployed Elastic SAN Volume."
+      },
+      "value": "[reference('volume').storageTarget.targetPortalPort]"
+    },
+    "volumeId": {
+      "type": "string",
+      "metadata": {
+        "description": "The volume Id of the deployed Elastic SAN Volume."
+      },
+      "value": "[reference('volume').volumeId]"
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/volumeSnapshotOutputType"
+      },
+      "metadata": {
+        "description": "Details on the deployed Elastic SAN Volume Snapshots."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('snapshots'), createArray()))]",
+        "input": {
+          "resourceId": "[reference(format('volume_snapshots[{0}]', copyIndex())).outputs.resourceId.value]",
+          "name": "[reference(format('volume_snapshots[{0}]', copyIndex())).outputs.name.value]",
+          "location": "[reference(format('volume_snapshots[{0}]', copyIndex())).outputs.location.value]",
+          "resourceGroupName": "[reference(format('volume_snapshots[{0}]', copyIndex())).outputs.resourceGroupName.value]"
+        }
+      }
+    }
+  }
+}

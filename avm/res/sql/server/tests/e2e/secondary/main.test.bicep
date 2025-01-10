@@ -66,6 +66,7 @@ module testDeployment '../../../main.bicep' = {
         maxSizeBytes: 2147483648
         createMode: 'Secondary'
         sourceDatabaseResourceId: nestedDependencies.outputs.databaseResourceId
+        zoneRedundant: false
       }
     ]
     tags: {

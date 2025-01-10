@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "7817764105789679714"
+      "version": "0.32.4.45862",
+      "templateHash": "17050721962929786080"
     },
     "name": "Public DNS Zone AAAA record",
     "description": "This module deploys a Public DNS Zone AAAA record.",
@@ -173,10 +173,7 @@
         "metadata": "[parameters('metadata')]",
         "TTL": "[parameters('ttl')]",
         "targetResource": "[if(not(empty(parameters('targetResourceId'))), createObject('id', parameters('targetResourceId')), null())]"
-      },
-      "dependsOn": [
-        "dnsZone"
-      ]
+      }
     },
     "AAAA_roleAssignments": {
       "copy": {

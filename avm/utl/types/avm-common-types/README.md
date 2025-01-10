@@ -2,7 +2,7 @@
 
 This module provides you with all common variants for AVM interfaces to be used in AVM modules.
 
-Details for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces).
+Details for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).
 
 
 ## Navigation
@@ -230,6 +230,7 @@ param privateEndpointMultiService privateEndpointMultiServiceType[] = [
       }
     ]
     subnetResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/defaultSubnet'
+    resourceGroupResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg'
     service: 'blob'
     applicationSecurityGroupResourceIds: [
       '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/applicationSecurityGroups/myAsg'
@@ -301,7 +302,7 @@ output customerManagedKeyDefaultsOutput customerManagedKeyType = customerManaged
 param customerManagedKeyWithAutoRotate customerManagedKeyWithAutoRotateType = {
   keyName: 'myKey'
   keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
-  autoRotationDisabled: true
+  autoRotationEnabled: false
   userAssignedIdentityResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
 }
 output customerManagedKeyWithAutoRotateOutput customerManagedKeyWithAutoRotateType = customerManagedKeyWithAutoRotate

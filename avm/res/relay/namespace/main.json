@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "14262477260882181529"
+      "version": "0.32.4.45862",
+      "templateHash": "7253019544623758305"
     },
     "name": "Relay Namespaces",
     "description": "This module deploys a Relay Namespace",
@@ -763,8 +763,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "9137586793857005081"
+              "version": "0.32.4.45862",
+              "templateHash": "7479847383920027864"
             },
             "name": "Relay Namespace Authorization Rules",
             "description": "This module deploys a Relay Namespace Authorization Rule.",
@@ -862,8 +862,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "9578854855013298380"
+              "version": "0.32.4.45862",
+              "templateHash": "14133310184627909384"
             },
             "name": "Relay Namespace Network Rules Sets",
             "description": "This module deploys a Relay Namespace Network Rule Set.",
@@ -923,10 +923,7 @@
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
                 "defaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), if(not(empty(parameters('ipRules'))), 'Deny', parameters('defaultAction')))]",
                 "ipRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), parameters('ipRules'))]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -991,8 +988,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "16821503954722419440"
+              "version": "0.32.4.45862",
+              "templateHash": "18308533065563728180"
             },
             "name": "Relay Namespace Hybrid Connections",
             "description": "This module deploys a Relay Namespace Hybrid Connection.",
@@ -1202,10 +1199,7 @@
               "properties": {
                 "requiresClientAuthorization": "[parameters('requiresClientAuthorization')]",
                 "userMetadata": "[parameters('userMetadata')]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             },
             "hybridConnection_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1276,8 +1270,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "4431168643851665214"
+                      "version": "0.32.4.45862",
+                      "templateHash": "16874474420330446057"
                     },
                     "name": "Hybrid Connection Authorization Rules",
                     "description": "This module deploys a Hybrid Connection Authorization Rule.",
@@ -1419,8 +1413,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10679723922873486376"
+              "version": "0.32.4.45862",
+              "templateHash": "16831624173156818466"
             },
             "name": "Relay Namespace WCF Relays",
             "description": "This module deploys a Relay Namespace WCF Relay.",
@@ -1650,10 +1644,7 @@
                 "requiresClientAuthorization": "[parameters('requiresClientAuthorization')]",
                 "requiresTransportSecurity": "[parameters('requiresTransportSecurity')]",
                 "userMetadata": "[parameters('userMetadata')]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             },
             "wcfRelay_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1724,8 +1715,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "15492272456787428584"
+                      "version": "0.32.4.45862",
+                      "templateHash": "8715780951052065579"
                     },
                     "name": "WCF Relay Authorization Rules",
                     "description": "This module deploys a WCF Relay Authorization Rule.",

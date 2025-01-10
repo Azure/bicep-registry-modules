@@ -77,7 +77,35 @@ Restore parameters.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endRestoreTime`](#parameter-restoredlogsendrestoretime) | string | The timestamp to end the restore by (UTC). |
+| [`sourceTable`](#parameter-restoredlogssourcetable) | string | The table to restore data from. |
+| [`startRestoreTime`](#parameter-restoredlogsstartrestoretime) | string | The timestamp to start the restore from (UTC). |
+
+### Parameter: `restoredLogs.endRestoreTime`
+
+The timestamp to end the restore by (UTC).
+
+- Required: No
+- Type: string
+
+### Parameter: `restoredLogs.sourceTable`
+
+The table to restore data from.
+
+- Required: No
+- Type: string
+
+### Parameter: `restoredLogs.startRestoreTime`
+
+The timestamp to start the restore from (UTC).
+
+- Required: No
+- Type: string
 
 ### Parameter: `retentionInDays`
 
@@ -86,6 +114,8 @@ The table retention in days, between 4 and 730. Setting this property to -1 will
 - Required: No
 - Type: int
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments`
 
@@ -93,6 +123,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: -1
+- MaxValue: 730
 - Roles configurable by name:
   - `'Contributor'`
   - `'Log Analytics Contributor'`
@@ -128,6 +160,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -135,6 +169,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.condition`
 
@@ -142,6 +178,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -155,6 +193,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -162,6 +202,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.description`
 
@@ -169,6 +211,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.name`
 
@@ -176,6 +220,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -193,6 +239,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema`
 
@@ -200,7 +248,140 @@ Table's schema.
 
 - Required: No
 - Type: object
-- Default: `{}`
+- MinValue: -1
+- MaxValue: 730
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`columns`](#parameter-schemacolumns) | array | A list of table custom columns. |
+| [`name`](#parameter-schemaname) | string | The table name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-schemadescription) | string | The table description. |
+| [`displayName`](#parameter-schemadisplayname) | string | The table display name. |
+
+### Parameter: `schema.columns`
+
+A list of table custom columns.
+
+- Required: Yes
+- Type: array
+- MinValue: -1
+- MaxValue: 730
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-schemacolumnsname) | string | The column name. |
+| [`type`](#parameter-schemacolumnstype) | string | The column type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataTypeHint`](#parameter-schemacolumnsdatatypehint) | string | The column data type logical hint. |
+| [`description`](#parameter-schemacolumnsdescription) | string | The column description. |
+| [`displayName`](#parameter-schemacolumnsdisplayname) | string | Column display name. |
+
+### Parameter: `schema.columns.name`
+
+The column name.
+
+- Required: Yes
+- Type: string
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `schema.columns.type`
+
+The column type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'boolean'
+    'dateTime'
+    'dynamic'
+    'guid'
+    'int'
+    'long'
+    'real'
+    'string'
+  ]
+  ```
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `schema.columns.dataTypeHint`
+
+The column data type logical hint.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'armPath'
+    'guid'
+    'ip'
+    'uri'
+  ]
+  ```
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `schema.columns.description`
+
+The column description.
+
+- Required: No
+- Type: string
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `schema.columns.displayName`
+
+Column display name.
+
+- Required: No
+- Type: string
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `schema.name`
+
+The table name.
+
+- Required: Yes
+- Type: string
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `schema.description`
+
+The table description.
+
+- Required: No
+- Type: string
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `schema.displayName`
+
+The table display name.
+
+- Required: No
+- Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults`
 
@@ -208,7 +389,68 @@ Parameters of the search job that initiated this table.
 
 - Required: No
 - Type: object
-- Default: `{}`
+- MinValue: -1
+- MaxValue: 730
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`query`](#parameter-searchresultsquery) | string | The search job query. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-searchresultsdescription) | string | The search description. |
+| [`endSearchTime`](#parameter-searchresultsendsearchtime) | string | The timestamp to end the search by (UTC). |
+| [`limit`](#parameter-searchresultslimit) | int | Limit the search job to return up to specified number of rows. |
+| [`startSearchTime`](#parameter-searchresultsstartsearchtime) | string | The timestamp to start the search from (UTC). |
+
+### Parameter: `searchResults.query`
+
+The search job query.
+
+- Required: Yes
+- Type: string
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `searchResults.description`
+
+The search description.
+
+- Required: No
+- Type: string
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `searchResults.endSearchTime`
+
+The timestamp to end the search by (UTC).
+
+- Required: No
+- Type: string
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `searchResults.limit`
+
+Limit the search job to return up to specified number of rows.
+
+- Required: No
+- Type: int
+- MinValue: -1
+- MaxValue: 730
+
+### Parameter: `searchResults.startSearchTime`
+
+The timestamp to start the search from (UTC).
+
+- Required: No
+- Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `totalRetentionInDays`
 
@@ -217,6 +459,8 @@ The table total retention in days, between 4 and 2555. Setting this property to 
 - Required: No
 - Type: int
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 2555
 
 ## Outputs
 

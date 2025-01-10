@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1861651489182627832"
+      "version": "0.32.4.45862",
+      "templateHash": "10145081983832317728"
     },
     "name": "Network Watchers",
     "description": "This module deploys a Network Watcher.",
@@ -209,7 +209,7 @@
     },
     "networkWatcher": {
       "type": "Microsoft.Network/networkWatchers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -265,7 +265,12 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "endpoints": "[if(contains(parameters('connectionMonitors')[copyIndex()], 'endpoints'), createObject('value', parameters('connectionMonitors')[copyIndex()].endpoints), createObject('value', createArray()))]",
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "endpoints": {
+            "value": "[coalesce(tryGet(parameters('connectionMonitors')[copyIndex()], 'endpoints'), createArray())]"
+          },
           "name": {
             "value": "[parameters('connectionMonitors')[copyIndex()].name]"
           },
@@ -275,9 +280,15 @@
           "networkWatcherName": {
             "value": "[parameters('name')]"
           },
-          "testConfigurations": "[if(contains(parameters('connectionMonitors')[copyIndex()], 'testConfigurations'), createObject('value', parameters('connectionMonitors')[copyIndex()].testConfigurations), createObject('value', createArray()))]",
-          "testGroups": "[if(contains(parameters('connectionMonitors')[copyIndex()], 'testGroups'), createObject('value', parameters('connectionMonitors')[copyIndex()].testGroups), createObject('value', createArray()))]",
-          "workspaceResourceId": "[if(contains(parameters('connectionMonitors')[copyIndex()], 'workspaceResourceId'), createObject('value', parameters('connectionMonitors')[copyIndex()].workspaceResourceId), createObject('value', ''))]"
+          "testConfigurations": {
+            "value": "[coalesce(tryGet(parameters('connectionMonitors')[copyIndex()], 'testConfigurations'), createArray())]"
+          },
+          "testGroups": {
+            "value": "[coalesce(tryGet(parameters('connectionMonitors')[copyIndex()], 'testGroups'), createArray())]"
+          },
+          "workspaceResourceId": {
+            "value": "[coalesce(tryGet(parameters('connectionMonitors')[copyIndex()], 'workspaceResourceId'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -286,8 +297,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1395789016631295523"
+              "version": "0.32.4.45862",
+              "templateHash": "9690855596549132604"
             },
             "name": "Network Watchers Connection Monitors",
             "description": "This module deploys a Network Watcher Connection Monitor.",
@@ -354,12 +365,12 @@
             "networkWatcher": {
               "existing": true,
               "type": "Microsoft.Network/networkWatchers",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('networkWatcherName')]"
             },
             "connectionMonitor": {
               "type": "Microsoft.Network/networkWatchers/connectionMonitors",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
@@ -368,10 +379,7 @@
                 "testConfigurations": "[parameters('testConfigurations')]",
                 "testGroups": "[parameters('testGroups')]",
                 "outputs": "[if(not(empty(parameters('workspaceResourceId'))), createArray(createObject('type', 'Workspace', 'workspaceSettings', createObject('workspaceResourceId', parameters('workspaceResourceId')))), null())]"
-              },
-              "dependsOn": [
-                "networkWatcher"
-              ]
+              }
             }
           },
           "outputs": {
@@ -401,7 +409,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('connectionMonitor', '2023-04-01', 'full').location]"
+              "value": "[reference('connectionMonitor', '2024-05-01', 'full').location]"
             }
           }
         }
@@ -424,22 +432,39 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "enabled": "[if(contains(parameters('flowLogs')[copyIndex()], 'enabled'), createObject('value', parameters('flowLogs')[copyIndex()].enabled), createObject('value', true()))]",
-          "formatVersion": "[if(contains(parameters('flowLogs')[copyIndex()], 'formatVersion'), createObject('value', parameters('flowLogs')[copyIndex()].formatVersion), createObject('value', 2))]",
-          "location": "[if(contains(parameters('flowLogs')[copyIndex()], 'location'), createObject('value', parameters('flowLogs')[copyIndex()].location), createObject('value', parameters('location')))]",
-          "name": "[if(contains(parameters('flowLogs')[copyIndex()], 'name'), createObject('value', parameters('flowLogs')[copyIndex()].name), createObject('value', format('{0}-{1}-flowlog', last(split(parameters('flowLogs')[copyIndex()].targetResourceId, '/')), split(parameters('flowLogs')[copyIndex()].targetResourceId, '/')[4])))]",
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enabled": {
+            "value": "[coalesce(tryGet(parameters('flowLogs')[copyIndex()], 'enabled'), true())]"
+          },
+          "formatVersion": {
+            "value": "[coalesce(tryGet(parameters('flowLogs')[copyIndex()], 'formatVersion'), 2)]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(parameters('flowLogs')[copyIndex()], 'location'), parameters('location'))]"
+          },
+          "name": {
+            "value": "[coalesce(tryGet(parameters('flowLogs')[copyIndex()], 'name'), format('{0}-{1}-flowlog', last(split(parameters('flowLogs')[copyIndex()].targetResourceId, '/')), split(parameters('flowLogs')[copyIndex()].targetResourceId, '/')[4]))]"
+          },
           "networkWatcherName": {
             "value": "[parameters('name')]"
           },
-          "retentionInDays": "[if(contains(parameters('flowLogs')[copyIndex()], 'retentionInDays'), createObject('value', parameters('flowLogs')[copyIndex()].retentionInDays), createObject('value', 365))]",
+          "retentionInDays": {
+            "value": "[coalesce(tryGet(parameters('flowLogs')[copyIndex()], 'retentionInDays'), 365)]"
+          },
           "storageId": {
             "value": "[parameters('flowLogs')[copyIndex()].storageId]"
           },
           "targetResourceId": {
             "value": "[parameters('flowLogs')[copyIndex()].targetResourceId]"
           },
-          "trafficAnalyticsInterval": "[if(contains(parameters('flowLogs')[copyIndex()], 'trafficAnalyticsInterval'), createObject('value', parameters('flowLogs')[copyIndex()].trafficAnalyticsInterval), createObject('value', 60))]",
-          "workspaceResourceId": "[if(contains(parameters('flowLogs')[copyIndex()], 'workspaceResourceId'), createObject('value', parameters('flowLogs')[copyIndex()].workspaceResourceId), createObject('value', ''))]"
+          "trafficAnalyticsInterval": {
+            "value": "[coalesce(tryGet(parameters('flowLogs')[copyIndex()], 'trafficAnalyticsInterval'), 60)]"
+          },
+          "workspaceResourceId": {
+            "value": "[coalesce(tryGet(parameters('flowLogs')[copyIndex()], 'workspaceResourceId'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -448,8 +473,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2231753294747447946"
+              "version": "0.32.4.45862",
+              "templateHash": "4346206104248688042"
             },
             "name": "NSG Flow Logs",
             "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**",
@@ -549,12 +574,12 @@
             "networkWatcher": {
               "existing": true,
               "type": "Microsoft.Network/networkWatchers",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('networkWatcherName')]"
             },
             "flowLog": {
               "type": "Microsoft.Network/networkWatchers/flowLogs",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
@@ -571,10 +596,7 @@
                   "version": "[parameters('formatVersion')]"
                 },
                 "flowAnalyticsConfiguration": "[variables('flowAnalyticsConfiguration')]"
-              },
-              "dependsOn": [
-                "networkWatcher"
-              ]
+              }
             }
           },
           "outputs": {
@@ -604,7 +626,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('flowLog', '2023-04-01', 'full').location]"
+              "value": "[reference('flowLog', '2024-05-01', 'full').location]"
             }
           }
         }
@@ -641,7 +663,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('networkWatcher', '2023-04-01', 'full').location]"
+      "value": "[reference('networkWatcher', '2024-05-01', 'full').location]"
     }
   }
 }
