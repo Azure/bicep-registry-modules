@@ -95,7 +95,23 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
             }
           }
         ]
-      : []
+      : [
+          {
+            name: 'deny-hop-outbound'
+            properties: {
+              priority: 200
+              access: 'Deny'
+              protocol: 'Tcp'
+              direction: 'Outbound'
+              sourceAddressPrefix: 'VirtualNetwork'
+              destinationAddressPrefix: '*'
+              destinationPortRanges: [
+                '3389'
+                '22'
+              ]
+            }
+          }
+        ]
   }
 }
 
@@ -234,7 +250,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
     }
     dataDisks: [
       {
-        caching: 'None'
+        caching: 'ReadWrite'
         createOption: 'Empty'
         diskSizeGB: 128
         lun: 0

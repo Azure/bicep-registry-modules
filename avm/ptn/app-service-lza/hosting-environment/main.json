@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2966814446225305385"
+      "templateHash": "13599289799413153196"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17886714830551488375"
+              "templateHash": "12519647591659630635"
             }
           },
           "definitions": {
@@ -30112,7 +30112,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "11160063585548137424"
+                      "templateHash": "3599966873711316007"
                     }
                   },
                   "parameters": {
@@ -30321,7 +30321,7 @@
                           "enableTelemetry": {
                             "value": "[parameters('enableTelemetry')]"
                           },
-                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray()))]"
+                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray(createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))))]"
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -31541,7 +31541,7 @@
                           "dataDisks": {
                             "value": [
                               {
-                                "caching": "None",
+                                "caching": "ReadWrite",
                                 "createOption": "Empty",
                                 "diskSizeGB": 128,
                                 "lun": 0,
@@ -37038,7 +37038,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5362516925548679236"
+                      "templateHash": "5550740089245163932"
                     }
                   },
                   "parameters": {
@@ -37170,7 +37170,7 @@
                           "enableTelemetry": {
                             "value": "[parameters('enableTelemetry')]"
                           },
-                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray()))]"
+                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray(createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))))]"
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -37925,7 +37925,7 @@
                           "dataDisks": {
                             "value": [
                               {
-                                "caching": "None",
+                                "caching": "ReadWrite",
                                 "createOption": "Empty",
                                 "diskSizeGB": 128,
                                 "lun": 0,
