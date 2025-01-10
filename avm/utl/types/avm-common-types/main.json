@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "16194187221754358819"
+      "version": "0.32.4.45862",
+      "templateHash": "1029853918123623169"
     },
     "name": "Default interface types for AVM modules",
     "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n",
@@ -608,6 +608,14 @@
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
           }
         },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "example": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg",
+            "description": "Optional. The Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the Subnet is being used."
+          }
+        },
         "privateDnsZoneGroup": {
           "$ref": "#/definitions/privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
@@ -745,6 +753,14 @@
           "type": "string",
           "metadata": {
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "example": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg",
+            "description": "Optional. The Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the Subnet is being used."
           }
         },
         "privateDnsZoneGroup": {
