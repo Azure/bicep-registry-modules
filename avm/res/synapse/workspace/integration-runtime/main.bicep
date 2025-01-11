@@ -25,18 +25,19 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
 resource integrationRuntime 'Microsoft.Synapse/workspaces/integrationRuntimes@2021-06-01' = {
   name: name
   parent: workspace
-  properties: type == 'Managed'
-    ? {
-        type: type
-        managedVirtualNetwork: {
-          referenceName: 'default'
-          type: 'ManagedVirtualNetworkReference'
+  properties: {
+    #disable-next-line BCP225 // Error message that type cannot be determined at compile time is redundant as its a property (and may just be misinterpreted by Bicep)
+    type: type
+    ...(type == 'Managed'
+      ? {
+          managedVirtualNetwork: {
+            referenceName: 'default'
+            type: 'ManagedVirtualNetworkReference'
+          }
+          typeProperties: typeProperties
         }
-        typeProperties: typeProperties
-      }
-    : {
-        type: type
-      }
+      : {})
+  }
 }
 
 @description('The name of the Resource Group the Integration Runtime was created in.')
