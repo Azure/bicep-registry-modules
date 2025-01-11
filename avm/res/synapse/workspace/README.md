@@ -66,8 +66,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
     name: 'swmin001'
     sqlAdministratorLogin: 'synwsadmin'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -96,10 +94,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -120,8 +114,6 @@ param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountR
 param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
 param name = 'swmin001'
 param sqlAdministratorLogin = 'synwsadmin'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -151,7 +143,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
     }
     encryptionActivateWorkspace: true
-    location: '<location>'
   }
 }
 ```
@@ -190,9 +181,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "encryptionActivateWorkspace": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -219,7 +207,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
 }
 param encryptionActivateWorkspace = true
-param location = '<location>'
 ```
 
 </details>
@@ -249,7 +236,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
   }
 }
 ```
@@ -286,9 +272,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -315,7 +298,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 ```
 
 </details>
@@ -352,7 +334,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         startIpAddress: '87.14.134.21'
       }
     ]
-    location: '<location>'
   }
 }
 ```
@@ -396,9 +377,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "startIpAddress": "87.14.134.21"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -432,7 +410,6 @@ param firewallRules = [
     startIpAddress: '87.14.134.21'
   }
 ]
-param location = '<location>'
 ```
 
 </details>
@@ -460,7 +437,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     allowedAadTenantIdsForLinking: [
       '<tenantId>'
     ]
-    location: '<location>'
     managedVirtualNetwork: true
     preventDataExfiltration: true
   }
@@ -498,9 +474,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         "<tenantId>"
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedVirtualNetwork": {
       "value": true
     },
@@ -530,7 +503,6 @@ param sqlAdministratorLogin = 'synwsadmin'
 param allowedAadTenantIdsForLinking = [
   '<tenantId>'
 ]
-param location = '<location>'
 param managedVirtualNetwork = true
 param preventDataExfiltration = true
 ```
@@ -1020,7 +992,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         type: 'SelfHosted'
       }
     ]
-    location: '<location>'
     managedVirtualNetwork: true
     privateEndpoints: [
       {
@@ -1102,9 +1073,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedVirtualNetwork": {
       "value": true
     },
@@ -1178,7 +1146,6 @@ param integrationRuntimes = [
     type: 'SelfHosted'
   }
 ]
-param location = '<location>'
 param managedVirtualNetwork = true
 param privateEndpoints = [
   {
@@ -1996,7 +1963,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2262,9 +2229,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.9.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 
