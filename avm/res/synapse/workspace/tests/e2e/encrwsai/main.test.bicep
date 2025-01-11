@@ -34,6 +34,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: resourceLocation
 }
 
+resource resourceGroupTemp 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+  name: '${resourceGroupName}-temp'
+  location: resourceLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -42,6 +47,15 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     location: resourceLocation
+  }
+}
+
+module deployKvlt 'temp.bicep' = {
+  scope: resourceGroupTemp
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    keyVaultName: 'dep-${namePrefix}-als-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }
 }
 
@@ -60,8 +74,8 @@ module testDeployment '../../../main.bicep' = [
       defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
       sqlAdministratorLogin: 'synwsadmin'
       customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        keyName: deployKvlt.outputs.keyVaultEncryptionKeyName
+        keyVaultResourceId: deployKvlt.outputs.keyVaultResourceId
       }
       encryptionActivateWorkspace: true
     }
