@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      diagnosticSettingsCluster: [
+      diagnosticSettings: [
         {
           name: 'customSettingCluster'
           metricCategories: [
@@ -80,28 +80,25 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      diagnosticSettingsDatabase: [
-        {
-          name: 'customSettingDatabase'
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      database: {
+        diagnosticSettings: [
+          {
+            name: 'customSettingDatabase'
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          }
+        ]
+        persistence: {
+          type: 'rdb'
+          frequency: '1h'
         }
-      ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
-      minimumTlsVersion: '1.2'
-      persistence: {
-        type: 'rdb'
-        frequency: '1h'
       }
       privateEndpoints: [
         {

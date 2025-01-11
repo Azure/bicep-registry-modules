@@ -20,19 +20,6 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. The name of the geo-replication group.')
 param geoReplicationGroupName string = 'geo-replication-group'
 
-@description('Optional. The zones to deploy resources to.')
-param zones array = [
-  1
-  2
-  3
-]
-
-// ============ //
-// Variables    //
-// ============ //
-var redisName1 = '${namePrefix}${serviceShort}001'
-var redisName2 = '${namePrefix}${serviceShort}002'
-
 // Not all regions support zone-redundancy, so hardcoding 2 zone-enabled locations here
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'northeurope'
@@ -50,24 +37,12 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies1 'dependencies1.bicep' = {
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies1'
-  params: {
-    location: enforcedLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-  }
-}
-
-module nestedDependencies2 'dependencies2.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies2'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     location: enforcedLocation
     geoReplicationGroupName: geoReplicationGroupName
-    redisName: redisName1
-    zones: zones
   }
 }
 
@@ -83,18 +58,19 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}002'
       location: enforcedPairedLocation
-      geoReplication: {
-        groupNickname: geoReplicationGroupName
-        linkedDatabases: [
-          {
-            id: nestedDependencies2.outputs.redisDbResourceId
-          }
-          {
-            id: '${resourceGroup.id}/providers/Microsoft.Cache/redisEnterprise/${redisName2}/databases/default'
-          }
-        ]
+      database: {
+        geoReplication: {
+          groupNickname: geoReplicationGroupName
+          linkedDatabases: [
+            {
+              id: nestedDependencies.outputs.redisDbResourceId
+            }
+            {
+              id: '${resourceGroup.id}/providers/Microsoft.Cache/redisEnterprise/${namePrefix}${serviceShort}002/databases/default'
+            }
+          ]
+        }
       }
-      zones: zones
     }
   }
 ]

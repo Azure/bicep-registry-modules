@@ -17,5 +17,5 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
   }
 }
 
-@description('The name of the Key Vault created.')
+@description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id

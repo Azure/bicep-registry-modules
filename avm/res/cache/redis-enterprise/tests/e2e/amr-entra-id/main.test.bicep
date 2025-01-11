@@ -53,13 +53,15 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       skuName: 'Balanced_B10'
-      accessKeysAuthentication: 'Disabled'
-      accessPolicyAssignments: [
-        {
-          accessPolicyName: 'default'
-          objectId: nestedDependencies.outputs.managedIdentityPrincipalId
-        }
-      ]
+      database: {
+        accessKeysAuthentication: 'Disabled'
+        accessPolicyAssignments: [
+          {
+            name: 'assign1'
+            objectId: nestedDependencies.outputs.managedIdentityPrincipalId
+          }
+        ]
+      }
     }
   }
 ]

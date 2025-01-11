@@ -49,7 +49,7 @@ param minimumTlsVersion string = '1.2'
   9
   10
 ])
-@description('Optional. Determines the size of the cluster, used only with Enterprise and EnterpriseFlash SKUs. Valid values are (2, 4, 6, 8, 10) for Enterprise SKUs and (3, 9) for EnterpriseFlash SKUs. [Learn more](https://learn.microsoft.com/azure/azure-cache-for-redis/cache-best-practices-enterprise-tiers#sharding-and-cpu-utilization).')
+@description('Optional. The size of the cluster. Only supported on Redis Enterprise SKUs: Enterprise, EnterpriseFlash. Valid values are (2, 4, 6, 8, 10) for Enterprise SKUs and (3, 9) for EnterpriseFlash SKUs. [Learn more](https://learn.microsoft.com/azure/azure-cache-for-redis/cache-best-practices-enterprise-tiers#sharding-and-cpu-utilization).')
 param capacity int = 2
 
 @allowed([
@@ -109,7 +109,7 @@ param capacity int = 2
   'MemoryOptimized_M1500'
   'MemoryOptimized_M2000'
 ])
-@description('Optional. The type of cluster to deploy. Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-overview#tiers-and-skus-at-a-glance) FOR CLARIFICATION.')
+@description('Optional. The type of cluster to deploy. Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-overview#tiers-and-skus-at-a-glance) FOR CLARIFICATION.')
 param skuName string = 'Enterprise_E5'
 
 @allowed([
@@ -127,79 +127,20 @@ param zones int[] = [
 // ================ //
 // Database params  //
 // ================ //
-
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-@description('Optional. Allow authentication via access keys. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION.')
-param accessKeysAuthentication string = 'Enabled'
-
-@allowed([
-  'Encrypted'
-  'Plaintext'
-])
-@description('Optional. Specifies whether Redis clients can connect using TLS-encrypted or plaintext Redis protocols.')
-param clientProtocol string = 'Encrypted'
-
-@allowed([
-  'EnterpriseCluster'
-  'OSSCluster'
-])
-@description('Optional. Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering).')
-param clusteringPolicy string = 'OSSCluster'
-
-@allowed([
-  'Deferred'
-  'NotDeferred'
-])
-@description('Optional. Specifies whether to defer future Redis major version upgrades by up to 90 days. [Learn more](https://aka.ms/redisversionupgrade#defer-upgrades).')
-param deferUpgrade string = 'NotDeferred'
-
-@allowed([
-  'AllKeysLFU'
-  'AllKeysLRU'
-  'AllKeysRandom'
-  'NoEviction'
-  'VolatileLFU'
-  'VolatileLRU'
-  'VolatileRandom'
-  'VolatileTTL'
-])
-@description('Optional. Specifies the eviction policy for the Redis resource.')
-param evictionPolicy string = 'NoEviction'
-
-@description('Optional. The active geo-replication settings of the service. All caches within a geo-replication group must have the same configuration.')
-param geoReplication geoReplicationType?
-
-@description('Optional. Redis modules to enable. Restrictions may apply based on SKU and configuration. [Learn more](https://aka.ms/redis/enterprise/modules).')
-param modules moduleType[] = []
-
-@description('Optional. The persistence settings of the service.')
-param persistence persistenceType = {
-  type: 'disabled'
-}
+@description('Optional. Database configuration.')
+param database databaseType?
 
 // ============ //
 // Other params //
 // ============ //
 
-@description('Optional. Array of access policy assignments. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION.')
-param accessPolicyAssignments accessPolicyAssignmentType[] = []
-
-@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
-param secretsExportConfiguration secretsExportConfigurationType?
-
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { diagnosticSettingLogsOnlyType, diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The cluster-level diagnostic settings of the service.')
-param diagnosticSettingsCluster diagnosticSettingMetricsOnlyType[]?
-
-@description('Optional. The database-level diagnostic settings of the service.')
-param diagnosticSettingsDatabase diagnosticSettingLogsOnlyType[]?
+param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -328,41 +269,25 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
   zones: !empty(availabilityZones) ? availabilityZones : null
 }
 
-resource redisDatabase 'Microsoft.Cache/redisEnterprise/databases@2024-09-01-preview' = {
-  parent: redisCluster
-  name: 'default'
-  properties: {
-    accessKeysAuthentication: isAmr ? accessKeysAuthentication : null
-    clientProtocol: clientProtocol
-    clusteringPolicy: clusteringPolicy
-    deferUpgrade: deferUpgrade
-    evictionPolicy: evictionPolicy
-    geoReplication: !empty(geoReplication) ? geoReplication : null
-    modules: modules
-    port: 10000
-    persistence: persistence.type != 'disabled'
-      ? {
-          aofEnabled: persistence.type == 'aof'
-          rdbEnabled: persistence.type == 'rdb'
-          aofFrequency: persistence.type == 'aof' ? persistence.frequency : null
-          rdbFrequency: persistence.type == 'rdb' ? persistence.frequency : null
-        }
-      : null
+module redisCluster_database 'database/main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-redis-database'
+  params: {
+    name: database.?name
+    redisClusterName: redisCluster.name
+    accessKeysAuthentication: isAmr ? database.?accessKeysAuthentication : null
+    accessPolicyAssignments: isAmr ? database.?accessPolicyAssignments : null
+    clientProtocol: database.?clientProtocol
+    clusteringPolicy: database.?clusteringPolicy
+    deferUpgrade: database.?deferUpgrade
+    evictionPolicy: database.?evictionPolicy
+    geoReplication: database.?geoReplication
+    modules: database.?modules
+    port: database.?port
+    persistence: database.?persistence
+    secretsExportConfiguration: database.?secretsExportConfiguration
+    diagnosticSettings: database.?diagnosticSettings
   }
 }
-
-resource redisDatabase_accessPolicyAssignments 'Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments@2024-09-01-preview' = [
-  for assignment in (isAmr ? accessPolicyAssignments : []): {
-    name: assignment.objectId
-    parent: redisDatabase
-    properties: {
-      user: {
-        objectId: assignment.objectId
-      }
-      accessPolicyName: assignment.accessPolicyName
-    }
-  }
-]
 
 resource redisCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -376,7 +301,7 @@ resource redisCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
 }
 
 resource redisCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
-  for (diagnosticSetting, index) in (diagnosticSettingsCluster ?? []): {
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
     properties: {
       storageAccountId: diagnosticSetting.?storageAccountResourceId
@@ -394,28 +319,6 @@ resource redisCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
     scope: redisCluster
-  }
-]
-
-resource redisDatabase_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
-  for (diagnosticSetting, index) in (diagnosticSettingsDatabase ?? []): {
-    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-    properties: {
-      storageAccountId: diagnosticSetting.?storageAccountResourceId
-      workspaceId: diagnosticSetting.?workspaceResourceId
-      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-      eventHubName: diagnosticSetting.?eventHubName
-      logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
-          categoryGroup: group.?categoryGroup
-          category: group.?category
-          enabled: group.?enabled ?? true
-        }
-      ]
-      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-    }
-    scope: redisDatabase
   }
 ]
 
@@ -487,52 +390,6 @@ module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpo
   }
 ]
 
-module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
-  name: '${uniqueString(deployment().name, location)}-secrets-kv'
-  scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
-  )
-  params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
-    secretsToSet: union(
-      [],
-      contains(secretsExportConfiguration!, 'primaryAccessKeyName')
-        ? [
-            {
-              name: secretsExportConfiguration!.primaryAccessKeyName
-              value: redisDatabase.listKeys().primaryKey
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'primaryConnectionStringName')
-        ? [
-            {
-              name: secretsExportConfiguration!.primaryConnectionStringName
-              value: '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://' }:${redisDatabase.listKeys().primaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryAccessKeyName')
-        ? [
-            {
-              name: secretsExportConfiguration!.secondaryAccessKeyName
-              value: redisDatabase.listKeys().secondaryKey
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryConnectionStringName')
-        ? [
-            {
-              name: secretsExportConfiguration!.secondaryConnectionStringName
-              value: '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://' }:${redisDatabase.listKeys().secondaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
-            }
-          ]
-        : []
-    )
-  }
-}
-
 // ============ //
 // Outputs      //
 // ============ //
@@ -544,16 +401,16 @@ output name string = redisCluster.name
 output resourceId string = redisCluster.id
 
 @description('The name of the Redis database.')
-output dbName string = redisDatabase.name
+output databaseName string = redisCluster_database.outputs.name
 
 @description('The resource ID of the database.')
-output dbResourceId string = redisDatabase.id
+output databaseResourceId string = redisCluster_database.outputs.resourceId
 
 @description('The name of the resource group the Redis resource was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The Redis endpoint.')
-output endpoint string = '${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+output endpoint string = redisCluster_database.outputs.endpoint
 
 @description('The location the resource was deployed into.')
 output location string = redisCluster.location
@@ -571,79 +428,63 @@ output privateEndpoints array = [
 
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
-output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
-  : {}
+output exportedSecrets secretsOutputType = redisCluster_database.outputs.exportedSecrets
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-type disabledPersistenceType = {
-  type: 'disabled'
-}
-
-type aofPersistenceType = {
-  type: 'aof'
-  frequency: '1s' | 'always'
-}
-
-type rdbPersistenceType = {
-  type: 'rdb'
-  frequency: '1h' | '6h' | '12h'
-}
-
-@discriminator('type')
-type persistenceType = disabledPersistenceType | aofPersistenceType | rdbPersistenceType
-
-type moduleType = {
-  @description('Required. The name of the module.')
-  name: ('RedisBloom' | 'RedisTimeSeries' | 'RedisJSON' | 'RediSearch')
-
-  @description('Optional. Additional module arguments.')
-  args: string?
-}
-
-type geoReplicationType = {
-  @description('Required. The name of the geo-replication group.')
-  groupNickname: string
-  @description('Required. List of database resources to link with this database, including itself.')
-  linkedDatabases: linkedDatabaseType[]
-}
-
-type linkedDatabaseType = {
-  @description('Required. Resource ID of linked database. Should be in the form: `/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{redisName}/databases/default`.')
-  id: string
-}
-
-type accessPolicyType = {
-  @description('Required. Name of the access policy.')
-  name: string
-  @description('Required. Permissions associated with the access policy.')
-  permissions: string
-}
-
-type accessPolicyAssignmentType = {
-  @description('Required. Object id to which the access policy will be assigned.')
-  objectId: string
-  @description('Required. Name of the access policy to be assigned. The current only allowed name is \'default\'.')
-  accessPolicyName: ('default')
-}
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { geoReplicationType, moduleType, persistenceType, accessPolicyAssignmentType, secretsExportConfigurationType } from 'database/main.bicep'
 
 @export()
-type secretsExportConfigurationType = {
-  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
-  keyVaultResourceId: string
+type databaseType = {
+  @description('Optional. Name of the database.')
+  name: ('default')?
 
-  @description('Optional. The primaryAccessKey secret name to create.')
-  primaryAccessKeyName: string?
+  @description('Optional. Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION.')
+  accessKeysAuthentication: ('Disabled' | 'Enabled')?
 
-  @description('Optional. The primaryConnectionString secret name to create.')
-  primaryConnectionStringName: string?
+  @description('Optional. Specifies whether Redis clients can connect using TLS-encrypted or plaintext Redis protocols.')
+  clientProtocol: ('Encrypted' | 'Plaintext')?
 
-  @description('Optional. The secondaryAccessKey secret name to create.')
-  secondaryAccessKeyName: string?
+  @description('Optional. Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering).')
+  clusteringPolicy: ('EnterpriseCluster' | 'OSSCluster')?
 
-  @description('Optional. The secondaryConnectionString secret name to create.')
-  secondaryConnectionStringName: string?
+  @description('Optional. Specifies whether to defer future Redis major version upgrades by up to 90 days. [Learn more](https://aka.ms/redisversionupgrade#defer-upgrades).')
+  deferUpgrade: ('Deferred' | 'NotDeferred')?
+
+  @description('Optional. Specifies the eviction policy for the Redis resource.')
+  evictionPolicy: (
+    | 'AllKeysLFU'
+    | 'AllKeysLRU'
+    | 'AllKeysRandom'
+    | 'NoEviction'
+    | 'VolatileLFU'
+    | 'VolatileLRU'
+    | 'VolatileRandom'
+    | 'VolatileTTL')?
+
+  @description('Optional. The active geo-replication settings of the service. All caches within a geo-replication group must have the same configuration.')
+  geoReplication: geoReplicationType?
+
+  @description('Optional. Redis modules to enable. Restrictions may apply based on SKU and configuration. [Learn more](https://aka.ms/redis/enterprise/modules).')
+  modules: moduleType[]?
+
+  @description('Optional. TCP port of the database endpoint.')
+  @minValue(10000)
+  @maxValue(10000)
+  port: int?
+
+  @description('Optional. The persistence settings of the service.')
+  persistence: persistenceType?
+
+  @description('Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION.')
+  accessPolicyAssignments: accessPolicyAssignmentType[]?
+
+  @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+  secretsExportConfiguration: secretsExportConfigurationType?
+
+  @description('Optional. The database-level diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingLogsOnlyType[]?
 }

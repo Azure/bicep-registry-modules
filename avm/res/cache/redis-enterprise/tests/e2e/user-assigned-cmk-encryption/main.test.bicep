@@ -67,7 +67,9 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      persistence: { type: 'rdb', frequency: '6h' }
+      database: {
+        persistence: { type: 'rdb', frequency: '6h' }
+      }
     }
   }
 ]

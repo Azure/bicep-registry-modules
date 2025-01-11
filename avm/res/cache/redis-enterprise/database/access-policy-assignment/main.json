@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "16440587870830187039"
+    },
+    "name": "Azure Managed Redis (Preview) Database Access Policy Assignment",
+    "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Name of the access policy assignment."
+      }
+    },
+    "objectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Object ID to which the access policy will be assigned."
+      }
+    },
+    "clusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the grandparent Azure Managed Redis (Preview) cluster. Required if the template is used in a standalone deployment."
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Managed Redis (Preview) database. Required if the template is used in a standalone deployment."
+      }
+    },
+    "accessPolicyName": {
+      "type": "string",
+      "defaultValue": "default",
+      "allowedValues": [
+        "default"
+      ],
+      "metadata": {
+        "description": "Optional. Name of the access policy to be assigned."
+      }
+    }
+  },
+  "resources": {
+    "redisCluster::database": {
+      "existing": true,
+      "type": "Microsoft.Cache/redisEnterprise/databases",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[format('{0}/{1}', parameters('clusterName'), parameters('databaseName'))]"
+    },
+    "redisCluster": {
+      "existing": true,
+      "type": "Microsoft.Cache/redisEnterprise",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[parameters('clusterName')]"
+    },
+    "accessPolicyAssignment": {
+      "type": "Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments",
+      "apiVersion": "2024-09-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('objectId')))]",
+      "properties": {
+        "accessPolicyName": "[parameters('accessPolicyName')]",
+        "user": {
+          "objectId": "[parameters('objectId')]"
+        }
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the access policy assignment."
+      },
+      "value": "[coalesce(parameters('name'), parameters('objectId'))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the access policy assignment."
+      },
+      "value": "[resourceId('Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('objectId')))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the access policy assignment was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "userObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "The object ID of the user associated with the access policy."
+      },
+      "value": "[reference('accessPolicyAssignment').user.objectId]"
+    }
+  }
+}
