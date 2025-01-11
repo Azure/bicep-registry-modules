@@ -275,7 +275,7 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
       ? cMKKeyVault.properties.enableRbacAuthorization
       : true
   }
-  scope: encryptionActivateWorkspace
+  scope: !empty(customerManagedKey.?keyVaultResourceId)
     ? resourceGroup(
         split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
         split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
