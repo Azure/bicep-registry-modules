@@ -270,17 +270,15 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
   name: '${workspace.name}-cmk-rbac'
   params: {
     workspaceIndentityPrincipalId: workspace.identity.principalId
-    keyvaultName: !empty(customerManagedKey.?keyVaultResourceId) ? cMKKeyVault.name : ''
-    usesRbacAuthorization: !empty(customerManagedKey.?keyVaultResourceId)
+    keyvaultName: !empty(customerManagedKey!.keyVaultResourceId) ? cMKKeyVault.name : ''
+    usesRbacAuthorization: !empty(customerManagedKey!.keyVaultResourceId)
       ? cMKKeyVault.properties.enableRbacAuthorization
       : true
   }
-  scope: !empty(customerManagedKey.?keyVaultResourceId)
-    ? resourceGroup(
-        split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-        split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-      )
-    : resourceGroup()
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 }
 
 // - Workspace encryption - Activate Workspace
