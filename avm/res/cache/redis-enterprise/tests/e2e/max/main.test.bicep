@@ -68,12 +68,40 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       capacity: 4
-      clientProtocol: 'Plaintext'
-      clusteringPolicy: 'EnterpriseCluster'
-      deferUpgrade: 'Deferred'
+      database: {
+        clientProtocol: 'Plaintext'
+        clusteringPolicy: 'EnterpriseCluster'
+        deferUpgrade: 'Deferred'
+        evictionPolicy: 'NoEviction'
+        modules: [
+          {
+            name: 'RedisBloom'
+          }
+          {
+            name: 'RediSearch'
+          }
+        ]
+        persistence: {
+          type: 'aof'
+          frequency: '1s'
+        }
+        diagnosticSettings: [
+          {
+            name: 'customSettingDatabase'
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          }
+        ]
+      }
       enableTelemetry: true
-      evictionPolicy: 'NoEviction'
-      diagnosticSettingsCluster: [
+      diagnosticSettings: [
         {
           name: 'customSettingCluster'
           metricCategories: [
@@ -87,37 +115,11 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      diagnosticSettingsDatabase: [
-        {
-          name: 'customSettingDatabase'
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
       minimumTlsVersion: '1.2'
-      modules: [
-        {
-          name: 'RedisBloom'
-        }
-        {
-          name: 'RediSearch'
-        }
-      ]
-      persistence: {
-        type: 'aof'
-        frequency: '1s'
-      }
       privateEndpoints: [
         {
           privateDnsZoneGroup: {

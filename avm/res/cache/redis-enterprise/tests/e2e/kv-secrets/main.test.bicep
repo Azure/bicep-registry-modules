@@ -47,12 +47,14 @@ module testDeployment '../../../main.bicep' = {
   params: {
     location: resourceLocation
     name: '${namePrefix}kvref'
-    secretsExportConfiguration: {
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      primaryAccessKeyName: 'custom-primaryAccessKey-name'
-      primaryConnectionStringName: 'custom-primaryConnectionString-name'
-      secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
-      secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+    database: {
+      secretsExportConfiguration: {
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        primaryAccessKeyName: 'custom-primaryAccessKey-name'
+        primaryConnectionStringName: 'custom-primaryConnectionString-name'
+        secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
+        secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+      }
     }
   }
 }
