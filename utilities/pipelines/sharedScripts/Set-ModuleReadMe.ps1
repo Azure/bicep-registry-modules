@@ -578,7 +578,7 @@ function Set-DefinitionSection {
                             ''
                         )
 
-                        $variantTableSectionContent += ('| [`{0}`]({1}) | {2} | ' -f $typeVariantName, $variantIdentifierLink, $variantDescription)
+                        $variantTableSectionContent += ('| [`{0}`]({1}) | {2} |' -f $typeVariantName, $variantIdentifierLink, $variantDescription)
 
                         $definitionSectionInputObject = @{
                             TemplateFileContent = $TemplateFileContent
