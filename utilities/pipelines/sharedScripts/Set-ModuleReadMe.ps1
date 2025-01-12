@@ -195,7 +195,22 @@ function Set-ParametersSection {
     return $updatedFileContent
 }
 
-function Get-MarkdownHeaderFormattedString {
+<#
+.SYNOPSIS
+Reformat a given string to a markdown-compatible header reference
+
+.DESCRIPTION
+This function removes characters that are not part of a markdown header and adds a header reference to the front
+
+.PARAMETER StringToFormat
+Mandatory. The string to format
+
+.EXAMPLE
+Get-MarkdownHeaderReferenceFormattedString 'Parameter: dataCollectionRuleProperties.kind-AgentSettings.description'
+
+The given string is reformatted to: '#parameter-datacollectionrulepropertieskind-agentsettingsdescription'.
+#>
+function Get-MarkdownHeaderReferenceFormattedString {
 
     [CmdletBinding()]
     param (
@@ -324,7 +339,7 @@ function Set-DefinitionSection {
 
             $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
             $paramHeader = '### Parameter: `{0}`' -f $paramIdentifier
-            $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() : (Get-MarkdownHeaderFormattedString $paramHeader)
+            $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() : (Get-MarkdownHeaderReferenceFormattedString $paramHeader)
 
             # definition type (if any)
             if ($parameter.Keys -contains '$ref') {
@@ -559,11 +574,13 @@ function Set-DefinitionSection {
 
                         $variantIdentifier = '{0}.{1}-{2}' -f $paramIdentifier, $definition.discriminator.propertyName, $typeVariantName
                         $variantIdentifierHeader = "### Variant: ``$variantIdentifier``"
-                        $variantIdentifierLink = Get-MarkdownHeaderFormattedString $variantIdentifierHeader
+                        $variantIdentifierLink = Get-MarkdownHeaderReferenceFormattedString $variantIdentifierHeader
 
                         $variantContent += @(
                             $variantIdentifierHeader,
-                            ('To use this variant, choose the value `{0}` for the property `{1}`.' -f $typeVariantName, $definition.discriminator.propertyName),
+                            $variantDescription,
+                            '',
+                            ('To use this variant, set the property `{0}` to `{1}`.' -f $definition.discriminator.propertyName, $typeVariantName),
                             ''
                         )
 

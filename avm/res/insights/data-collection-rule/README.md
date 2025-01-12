@@ -2826,7 +2826,9 @@ The kind of data collection rule.
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) |  | 
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
-To use this variant, choose the value `Linux` for the property `kind`.
+Type for a Linux DSR collection rule.
+
+To use this variant, set the property `kind` to `Linux`.
 
 **Required parameters**
 
@@ -2901,7 +2903,9 @@ Declaration of custom streams used in this rule.
 - Type: object
 
 ### Variant: `dataCollectionRuleProperties.kind-Windows`
-To use this variant, choose the value `Windows` for the property `kind`.
+
+
+To use this variant, set the property `kind` to `Windows`.
 
 **Required parameters**
 
@@ -2976,7 +2980,9 @@ Declaration of custom streams used in this rule.
 - Type: object
 
 ### Variant: `dataCollectionRuleProperties.kind-All`
-To use this variant, choose the value `All` for the property `kind`.
+
+
+To use this variant, set the property `kind` to `All`.
 
 **Required parameters**
 
@@ -3051,7 +3057,9 @@ Declaration of custom streams used in this rule.
 - Type: object
 
 ### Variant: `dataCollectionRuleProperties.kind-AgentSettings`
-To use this variant, choose the value `AgentSettings` for the property `kind`.
+
+
+To use this variant, set the property `kind` to `AgentSettings`.
 
 **Required parameters**
 
