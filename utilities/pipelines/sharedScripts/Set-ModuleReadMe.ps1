@@ -237,9 +237,6 @@ Optional. Hashtable of the user defined properties
 .PARAMETER ParentName
 Optional. Name of the parameter, that has the user defined types
 
-.PARAMETER ParentIdentifierLink
-Optional. Link of the parameter, that has the user defined types
-
 .PARAMETER ColumnsInOrder
 Optional. The order of parameter categories to show in the readme parameters section.
 
@@ -249,7 +246,7 @@ Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -ColumnsInOr
 Top-level invocation. Will start from the TemplateFile's parameters object and recursively crawl through all children. Tables will be ordered by 'Required' first and 'Optional' after.
 
 .EXAMPLE
-Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings' -ParentIdentifierLink '#parameter-diagnosticsettings'
+Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings'
 
 Child-level invocation during recursion.
 
@@ -266,9 +263,6 @@ function Set-DefinitionSection {
 
         [Parameter(Mandatory = $false)]
         [string] $ParentName,
-
-        [Parameter(Mandatory = $false)]
-        [string] $ParentIdentifierLink,
 
         [Parameter(Mandatory = $false)]
         [string[]] $ColumnsInOrder = @('Required', 'Conditional', 'Optional', 'Generated')
@@ -339,7 +333,7 @@ function Set-DefinitionSection {
 
             $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
             $paramHeader = '### Parameter: `{0}`' -f $paramIdentifier
-            $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() : (Get-MarkdownHeaderReferenceFormattedString $paramHeader)
+            $paramIdentifierLink = Get-MarkdownHeaderReferenceFormattedString $paramHeader
 
             # definition type (if any)
             if ($parameter.Keys -contains '$ref') {
@@ -530,25 +524,25 @@ function Set-DefinitionSection {
                 if ($definition.Keys -contains 'items' -and ($definition.items.properties.Keys -or $definition.items.additionalProperties.Keys)) {
                     if ($definition.items.properties.Keys) {
                         $childProperties = $definition.items.properties
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
                     if ($definition.items.additionalProperties.Keys) {
                         $childProperties = $definition.items.additionalProperties
                         $formattedProperties = @{ '>Any_other_property<' = $childProperties }
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
                 } elseif ($definition.type -eq 'object' -and ($definition.properties.Keys -or $definition.additionalProperties.Keys)) {
                     if ($definition.properties.Keys) {
                         $childProperties = $definition.properties
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
                     if ($definition.additionalProperties.Keys) {
                         $childProperties = $definition.additionalProperties
                         $formattedProperties = @{ '>Any_other_property<' = $childProperties }
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
                 } elseif ($definition.type -eq 'object' -and $definition.keys -contains 'discriminator') {
@@ -587,11 +581,10 @@ function Set-DefinitionSection {
                         $variantTableSectionContent += ('| [`{0}`]({1}) | {2} | ' -f $typeVariantName, $variantIdentifierLink, $variantDescription)
 
                         $definitionSectionInputObject = @{
-                            TemplateFileContent  = $TemplateFileContent
-                            Properties           = $resolvedTypeVariant.properties
-                            ParentName           = $variantIdentifier
-                            ParentIdentifierLink = $null
-                            ColumnsInOrder       = $ColumnsInOrder
+                            TemplateFileContent = $TemplateFileContent
+                            Properties          = $resolvedTypeVariant.properties
+                            ParentName          = $variantIdentifier
+                            ColumnsInOrder      = $ColumnsInOrder
                         }
                         $sectionContent = Set-DefinitionSection @definitionSectionInputObject
                         $variantContent += $sectionContent
