@@ -195,6 +195,17 @@ function Set-ParametersSection {
     return $updatedFileContent
 }
 
+function Get-MarkdownHeaderFormattedString {
+
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [string] $StringToFormat
+    )
+
+    return ('#{0}' -f ($StringToFormat -replace '^#+ ', '' -replace '\s', '-' -replace '`|\:|\.', '').ToLower())
+}
+
 <#
 .SYNOPSIS
 Update parts of the 'parameters' section of the given readme file, if user defined types are used
@@ -313,7 +324,7 @@ function Set-DefinitionSection {
 
             $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
             $paramHeader = '### Parameter: `{0}`' -f $paramIdentifier
-            $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() :  ('#{0}' -f $paramHeader.TrimStart('#').Trim().ToLower()) -replace '[:|`]' -replace ' ', '-'
+            $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() : (Get-MarkdownHeaderFormattedString $paramHeader)
 
             # definition type (if any)
             if ($parameter.Keys -contains '$ref') {
@@ -548,7 +559,7 @@ function Set-DefinitionSection {
 
                         $variantIdentifier = '{0}.{1}-{2}' -f $paramIdentifier, $definition.discriminator.propertyName, $typeVariantName
                         $variantIdentifierHeader = "### Variant: ``$variantIdentifier``"
-                        $variantIdentifierLink = '#{0}' -f ($variantIdentifierHeader -replace '^#+ ', '' -replace '\s', '-' -replace '`|\:|\.', '').ToLower()
+                        $variantIdentifierLink = Get-MarkdownHeaderFormattedString $variantIdentifierHeader
 
                         $variantContent += @(
                             $variantIdentifierHeader,
