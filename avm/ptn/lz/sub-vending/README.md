@@ -1102,10 +1102,10 @@ The type of template for the role assignment condition.
 
 | Variant | Description |
 | :-- | :-- |
-| [`excludeRoles`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderoles) |  |
-| [`constrainRoles`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainroles) |  |
-| [`constrainRolesAndPrincipalTypes`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypes) |  |
-| [`constrainRolesAndPrincipals`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipals) |  |
+| [`excludeRoles`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderoles) |  | 
+| [`constrainRoles`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainroles) |  | 
+| [`constrainRolesAndPrincipalTypes`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypes) |  | 
+| [`constrainRolesAndPrincipals`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipals) |  | 
 
 ### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles`
 

@@ -1334,8 +1334,8 @@ The networking configuration.
 
 | Variant | Description |
 | :-- | :-- |
-| [`createNew`](#variant-networkingconfigurationnetworktype-createnew) |  |
-| [`useExisting`](#variant-networkingconfigurationnetworktype-useexisting) |  |
+| [`createNew`](#variant-networkingconfigurationnetworktype-createnew) |  | 
+| [`useExisting`](#variant-networkingconfigurationnetworktype-useexisting) |  | 
 
 ### Variant: `networkingConfiguration.networkType-createNew`
 
@@ -1514,14 +1514,14 @@ The compute type networking type.
 
 - Required: Yes
 - Type: object
-- Type deciding property: computeNetworkType
+- Type-deciding property: computeNetworkType
 
 <h4>The available variants are:</h4>
 
 | Variant | Description |
 | :-- | :-- |
-| [`azureContainerApp`](#variant-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerapp) |  |
-| [`azureContainerInstance`](#variant-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerinstance) |  |
+| [`azureContainerApp`](#variant-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerapp) |  | 
+| [`azureContainerInstance`](#variant-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerinstance) |  | 
 
 ### Variant: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp`
 
@@ -1670,21 +1670,21 @@ The self-hosted runner configuration. This can be either GitHub or Azure DevOps.
 
 - Required: Yes
 - Type: object
-- Type deciding property: selfHostedType
+- Type-deciding property: selfHostedType
 
 <h4>The available variants are:</h4>
 
 | Variant | Description |
 | :-- | :-- |
-| [`createNew`](#variant-networkingconfigurationnetworktype-createnew) |  |
-| [`useExisting`](#variant-networkingconfigurationnetworktype-useexisting) |  |
+| [`createNew`](#variant-networkingconfigurationnetworktype-createnew) |  | 
+| [`useExisting`](#variant-networkingconfigurationnetworktype-useexisting) |  | 
 
 <h4>The available variants are:</h4>
 
 | Variant | Description |
 | :-- | :-- |
-| [`github`](#variant-selfhostedconfigselfhostedtype-github) |  |
-| [`azuredevops`](#variant-selfhostedconfigselfhostedtype-azuredevops) |  |
+| [`github`](#variant-selfhostedconfigselfhostedtype-github) |  | 
+| [`azuredevops`](#variant-selfhostedconfigselfhostedtype-azuredevops) |  | 
 
 ### Variant: `selfHostedConfig.selfHostedType-github`
 
