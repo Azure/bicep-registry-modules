@@ -1614,9 +1614,9 @@ The outbound rule. The name of the rule is the object key.
 
 | Variant | Description |
 | :-- | :-- |
-| [`FQDN`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-fqdn) | The type for a FQDN outbound rule. | 
-| [`PrivateEndpoint`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpoint) | The type for a private endpoint outbound rule. | 
-| [`ServiceTag`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetag) | The type for an service tag outbound rule. | 
+| [`FQDN`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-fqdn) | The type for a FQDN outbound rule. |
+| [`PrivateEndpoint`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpoint) | The type for a private endpoint outbound rule. |
+| [`ServiceTag`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetag) | The type for an service tag outbound rule. |
 
 ### Variant: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-FQDN`
 The type for a FQDN outbound rule.

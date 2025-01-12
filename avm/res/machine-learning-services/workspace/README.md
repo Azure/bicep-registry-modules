@@ -1677,17 +1677,17 @@ The properties of the connection, specific to the auth type.
 
 | Variant | Description |
 | :-- | :-- |
-| [`AAD`](#variant-connectionsconnectionpropertiesauthtype-aad) |  | 
-| [`AccessKey`](#variant-connectionsconnectionpropertiesauthtype-accesskey) |  | 
-| [`ApiKey`](#variant-connectionsconnectionpropertiesauthtype-apikey) |  | 
-| [`CustomKeys`](#variant-connectionsconnectionpropertiesauthtype-customkeys) |  | 
-| [`ManagedIdentity`](#variant-connectionsconnectionpropertiesauthtype-managedidentity) |  | 
-| [`None`](#variant-connectionsconnectionpropertiesauthtype-none) |  | 
-| [`OAuth2`](#variant-connectionsconnectionpropertiesauthtype-oauth2) |  | 
-| [`PAT`](#variant-connectionsconnectionpropertiesauthtype-pat) |  | 
-| [`SAS`](#variant-connectionsconnectionpropertiesauthtype-sas) |  | 
-| [`ServicePrincipal`](#variant-connectionsconnectionpropertiesauthtype-serviceprincipal) |  | 
-| [`UsernamePassword`](#variant-connectionsconnectionpropertiesauthtype-usernamepassword) |  | 
+| [`AAD`](#variant-connectionsconnectionpropertiesauthtype-aad) |  |
+| [`AccessKey`](#variant-connectionsconnectionpropertiesauthtype-accesskey) |  |
+| [`ApiKey`](#variant-connectionsconnectionpropertiesauthtype-apikey) |  |
+| [`CustomKeys`](#variant-connectionsconnectionpropertiesauthtype-customkeys) |  |
+| [`ManagedIdentity`](#variant-connectionsconnectionpropertiesauthtype-managedidentity) |  |
+| [`None`](#variant-connectionsconnectionpropertiesauthtype-none) |  |
+| [`OAuth2`](#variant-connectionsconnectionpropertiesauthtype-oauth2) |  |
+| [`PAT`](#variant-connectionsconnectionpropertiesauthtype-pat) |  |
+| [`SAS`](#variant-connectionsconnectionpropertiesauthtype-sas) |  |
+| [`ServicePrincipal`](#variant-connectionsconnectionpropertiesauthtype-serviceprincipal) |  |
+| [`UsernamePassword`](#variant-connectionsconnectionpropertiesauthtype-usernamepassword) |  |
 
 ### Variant: `connections.connectionProperties.authType-AAD`
 
@@ -2717,9 +2717,9 @@ The outbound rule. The name of the rule is the object key.
 
 | Variant | Description |
 | :-- | :-- |
-| [`FQDN`](#variant-managednetworksettingsoutboundrules>any_other_property<type-fqdn) |  | 
-| [`PrivateEndpoint`](#variant-managednetworksettingsoutboundrules>any_other_property<type-privateendpoint) |  | 
-| [`ServiceTag`](#variant-managednetworksettingsoutboundrules>any_other_property<type-servicetag) |  | 
+| [`FQDN`](#variant-managednetworksettingsoutboundrules>any_other_property<type-fqdn) |  |
+| [`PrivateEndpoint`](#variant-managednetworksettingsoutboundrules>any_other_property<type-privateendpoint) |  |
+| [`ServiceTag`](#variant-managednetworksettingsoutboundrules>any_other_property<type-servicetag) |  |
 
 ### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN`
 

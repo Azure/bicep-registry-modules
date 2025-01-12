@@ -162,17 +162,17 @@ The properties of the connection, specific to the auth type.
 
 | Variant | Description |
 | :-- | :-- |
-| [`AAD`](#variant-connectionpropertiesauthtype-aad) |  | 
-| [`AccessKey`](#variant-connectionpropertiesauthtype-accesskey) |  | 
-| [`ApiKey`](#variant-connectionpropertiesauthtype-apikey) |  | 
-| [`CustomKeys`](#variant-connectionpropertiesauthtype-customkeys) |  | 
-| [`ManagedIdentity`](#variant-connectionpropertiesauthtype-managedidentity) |  | 
-| [`None`](#variant-connectionpropertiesauthtype-none) |  | 
-| [`OAuth2`](#variant-connectionpropertiesauthtype-oauth2) |  | 
-| [`PAT`](#variant-connectionpropertiesauthtype-pat) |  | 
-| [`SAS`](#variant-connectionpropertiesauthtype-sas) |  | 
-| [`ServicePrincipal`](#variant-connectionpropertiesauthtype-serviceprincipal) |  | 
-| [`UsernamePassword`](#variant-connectionpropertiesauthtype-usernamepassword) |  | 
+| [`AAD`](#variant-connectionpropertiesauthtype-aad) |  |
+| [`AccessKey`](#variant-connectionpropertiesauthtype-accesskey) |  |
+| [`ApiKey`](#variant-connectionpropertiesauthtype-apikey) |  |
+| [`CustomKeys`](#variant-connectionpropertiesauthtype-customkeys) |  |
+| [`ManagedIdentity`](#variant-connectionpropertiesauthtype-managedidentity) |  |
+| [`None`](#variant-connectionpropertiesauthtype-none) |  |
+| [`OAuth2`](#variant-connectionpropertiesauthtype-oauth2) |  |
+| [`PAT`](#variant-connectionpropertiesauthtype-pat) |  |
+| [`SAS`](#variant-connectionpropertiesauthtype-sas) |  |
+| [`ServicePrincipal`](#variant-connectionpropertiesauthtype-serviceprincipal) |  |
+| [`UsernamePassword`](#variant-connectionpropertiesauthtype-usernamepassword) |  |
 
 ### Variant: `connectionProperties.authType-AAD`
 
