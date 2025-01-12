@@ -2821,13 +2821,13 @@ The kind of data collection rule.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Linux`](#variant-datacollectionrulepropertieskind-linux) | Type for a Linux DSR collection rule. | 
+| [`Linux`](#variant-datacollectionrulepropertieskind-linux) |  | 
 | [`Windows`](#variant-datacollectionrulepropertieskind-windows) |  | 
 | [`All`](#variant-datacollectionrulepropertieskind-all) |  | 
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) |  | 
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
-Type for a Linux DSR collection rule.
+
 
 To use this variant, set the property `kind` to `Linux`.
 

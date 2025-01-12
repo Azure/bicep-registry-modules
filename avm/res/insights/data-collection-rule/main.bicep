@@ -170,7 +170,6 @@ type dataCollectionRulePropertiesType =
   | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
 
-@description('Type for a Linux DSR collection rule.')
 type linuxDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Linux'
