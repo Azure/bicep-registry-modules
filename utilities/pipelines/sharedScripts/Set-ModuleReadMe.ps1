@@ -548,7 +548,7 @@ function Set-DefinitionSection {
 
                         $variantIdentifier = '{0}.{1}-{2}' -f $paramIdentifier, $definition.discriminator.propertyName, $typeVariantName
                         $variantIdentifierHeader = "### Variant: ``$variantIdentifier``"
-                        $variantIdentifierLink = '#{0}' -f ($variantIdentifierHeader -replace '^#+ ', '' -replace '\s', '-' -replace '`|\:', '').ToLower()
+                        $variantIdentifierLink = '#{0}' -f ($variantIdentifierHeader -replace '^#+ ', '' -replace '\s', '-' -replace '`|\:|\.', '').ToLower()
 
                         $variantContent += @(
                             $variantIdentifierHeader,
