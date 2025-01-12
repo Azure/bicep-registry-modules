@@ -764,9 +764,9 @@ The distribution targets where the image output needs to go to.
 
 | Variant | Description |
 | :-- | :-- |
-| [`SharedImage`](#variant-distributionstype-sharedimage) |  | 
-| [`ManagedImage`](#variant-distributionstype-managedimage) |  | 
-| [`VHD`](#variant-distributionstype-vhd) |  | 
+| [`SharedImage`](#variant-distributionstype-sharedimage) |  |
+| [`ManagedImage`](#variant-distributionstype-managedimage) |  |
+| [`VHD`](#variant-distributionstype-vhd) |  |
 
 ### Variant: `distributions.type-SharedImage`
 

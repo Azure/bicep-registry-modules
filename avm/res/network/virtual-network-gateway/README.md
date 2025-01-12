@@ -2492,10 +2492,10 @@ Specifies one of the following four configurations: Active-Active with (clusterM
 
 | Variant | Description |
 | :-- | :-- |
-| [`activeActiveNoBgp`](#variant-clustersettingsclustermode-activeactivenobgp) |  | 
-| [`activeActiveBgp`](#variant-clustersettingsclustermode-activeactivebgp) |  | 
-| [`activePassiveBgp`](#variant-clustersettingsclustermode-activepassivebgp) |  | 
-| [`activePassiveNoBgp`](#variant-clustersettingsclustermode-activepassivenobgp) |  | 
+| [`activeActiveNoBgp`](#variant-clustersettingsclustermode-activeactivenobgp) |  |
+| [`activeActiveBgp`](#variant-clustersettingsclustermode-activeactivebgp) |  |
+| [`activePassiveBgp`](#variant-clustersettingsclustermode-activepassivebgp) |  |
+| [`activePassiveNoBgp`](#variant-clustersettingsclustermode-activepassivenobgp) |  |
 
 ### Variant: `clusterSettings.clusterMode-activeActiveNoBgp`
 

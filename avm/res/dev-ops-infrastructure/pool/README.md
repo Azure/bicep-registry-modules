@@ -728,8 +728,8 @@ Defines how the machine will be handled once it executed a job.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Stateful`](#variant-agentprofilekind-stateful) |  | 
-| [`Stateless`](#variant-agentprofilekind-stateless) |  | 
+| [`Stateful`](#variant-agentprofilekind-stateful) |  |
+| [`Stateless`](#variant-agentprofilekind-stateless) |  |
 
 ### Variant: `agentProfile.kind-Stateful`
 
@@ -1143,8 +1143,8 @@ Determines how the stand-by scheme should be provided.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Automatic`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-automatic) |  | 
-| [`Manual`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-manual) |  | 
+| [`Automatic`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-automatic) |  |
+| [`Manual`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-manual) |  |
 
 ### Variant: `agentProfile.kind-Stateful.resourcePredictionsProfile.kind-Automatic`
 
@@ -1608,8 +1608,8 @@ Determines how the stand-by scheme should be provided.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Automatic`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-automatic) |  | 
-| [`Manual`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-manual) |  | 
+| [`Automatic`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-automatic) |  |
+| [`Manual`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-manual) |  |
 
 ### Variant: `agentProfile.kind-Stateless.resourcePredictionsProfile.kind-Automatic`
 

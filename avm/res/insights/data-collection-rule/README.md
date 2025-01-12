@@ -2821,10 +2821,10 @@ The kind of data collection rule.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Linux`](#variant-datacollectionrulepropertieskind-linux) |  | 
-| [`Windows`](#variant-datacollectionrulepropertieskind-windows) |  | 
-| [`All`](#variant-datacollectionrulepropertieskind-all) |  | 
-| [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) |  | 
+| [`Linux`](#variant-datacollectionrulepropertieskind-linux) |  |
+| [`Windows`](#variant-datacollectionrulepropertieskind-windows) |  |
+| [`All`](#variant-datacollectionrulepropertieskind-all) |  |
+| [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) |  |
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
 
