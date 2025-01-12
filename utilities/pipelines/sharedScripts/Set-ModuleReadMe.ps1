@@ -533,7 +533,7 @@ function Set-DefinitionSection {
                         $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
-                } elseif ($definition.type -eq 'object' -and ($definition.properties.Keys -or $definition.additionalProperties.Keys)) {
+                } elseif ($definition.type -in @('object', 'secureObject') -and ($definition.properties.Keys -or $definition.additionalProperties.Keys)) {
                     if ($definition.properties.Keys) {
                         $childProperties = $definition.properties
                         $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
@@ -545,7 +545,7 @@ function Set-DefinitionSection {
                         $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
-                } elseif ($definition.type -eq 'object' -and $definition.keys -contains 'discriminator') {
+                } elseif ($definition.type -in @('object', 'secureObject') -and $definition.keys -contains 'discriminator') {
                     <#
                     Discriminator type. E.g.,
 
