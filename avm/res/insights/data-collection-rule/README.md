@@ -8,7 +8,6 @@ This module deploys a Data Collection Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -2815,6 +2814,323 @@ The kind of data collection rule.
 
 - Required: Yes
 - Type: object
+- Type deciding property: kind
+
+| Variant | Description |
+| :-- | :-- |
+| [`Linux`](#variant-datacollectionruleproperties-linux) | Type for a Linux DSR collection rule. |
+| [`Windows`](#variant-datacollectionruleproperties-windows) |  |
+| [`All`](#variant-datacollectionruleproperties-all) |  |
+| [`AgentSettings`](#variant-datacollectionruleproperties-agentsettings) |  |
+
+### Variant: `dataCollectionRuleProperties-Linux`
+To use this variant, choose the value `Linux` for the property `kind`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#variant-datacollectionruleproperties-linuxdataflows) | array | The specification of data flows. |
+| [`dataSources`](#variant-datacollectionruleproperties-linuxdatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#variant-datacollectionruleproperties-linuxdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#variant-datacollectionruleproperties-linuxkind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties-linuxdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#variant-datacollectionruleproperties-linuxdescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#variant-datacollectionruleproperties-linuxstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+
+### Parameter: `dataCollectionRuleProperties-Linux.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties-Linux.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties-Linux.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties-Linux.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties-Linux.dataCollectionEndpointResourceId`
+
+The resource ID of the data collection endpoint that this rule can be used with.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties-Linux.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties-Linux.streamDeclarations`
+
+Declaration of custom streams used in this rule.
+
+- Required: No
+- Type: object
+
+### Variant: `dataCollectionRuleProperties-Windows`
+To use this variant, choose the value `Windows` for the property `kind`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#variant-datacollectionruleproperties-windowsdataflows) | array | The specification of data flows. |
+| [`dataSources`](#variant-datacollectionruleproperties-windowsdatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#variant-datacollectionruleproperties-windowsdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#variant-datacollectionruleproperties-windowskind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties-windowsdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#variant-datacollectionruleproperties-windowsdescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#variant-datacollectionruleproperties-windowsstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+
+### Parameter: `dataCollectionRuleProperties-Windows.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties-Windows.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties-Windows.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties-Windows.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Windows'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties-Windows.dataCollectionEndpointResourceId`
+
+The resource ID of the data collection endpoint that this rule can be used with.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties-Windows.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties-Windows.streamDeclarations`
+
+Declaration of custom streams used in this rule.
+
+- Required: No
+- Type: object
+
+### Variant: `dataCollectionRuleProperties-All`
+To use this variant, choose the value `All` for the property `kind`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#variant-datacollectionruleproperties-alldataflows) | array | The specification of data flows. |
+| [`dataSources`](#variant-datacollectionruleproperties-alldatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#variant-datacollectionruleproperties-alldestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#variant-datacollectionruleproperties-allkind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties-alldatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#variant-datacollectionruleproperties-alldescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#variant-datacollectionruleproperties-allstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+
+### Parameter: `dataCollectionRuleProperties-All.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties-All.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties-All.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties-All.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'All'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties-All.dataCollectionEndpointResourceId`
+
+The resource ID of the data collection endpoint that this rule can be used with.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties-All.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties-All.streamDeclarations`
+
+Declaration of custom streams used in this rule.
+
+- Required: No
+- Type: object
+
+### Variant: `dataCollectionRuleProperties-AgentSettings`
+To use this variant, choose the value `AgentSettings` for the property `kind`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentSettings`](#variant-datacollectionruleproperties-agentsettingsagentsettings) | object | Agent settings used to modify agent behavior on a given host. |
+| [`kind`](#variant-datacollectionruleproperties-agentsettingskind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#variant-datacollectionruleproperties-agentsettingsdescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties-AgentSettings.agentSettings`
+
+Agent settings used to modify agent behavior on a given host.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logs`](#variant-datacollectionruleproperties-agentsettingsagentsettingslogs) | array | All the settings that are applicable to the logs agent (AMA). |
+
+### Parameter: `dataCollectionRuleProperties-AgentSettings.agentSettings.logs`
+
+All the settings that are applicable to the logs agent (AMA).
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#variant-datacollectionruleproperties-agentsettingsagentsettingslogsname) | string | The name of the agent setting. |
+| [`value`](#variant-datacollectionruleproperties-agentsettingsagentsettingslogsvalue) | string | The value of the agent setting. |
+
+### Parameter: `dataCollectionRuleProperties-AgentSettings.agentSettings.logs.name`
+
+The name of the agent setting.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'MaxDiskQuotaInMB'
+    'UseTimeReceivedForForwardedEvents'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties-AgentSettings.agentSettings.logs.value`
+
+The value of the agent setting.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties-AgentSettings.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AgentSettings'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties-AgentSettings.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
 
 ### Parameter: `name`
 
@@ -3022,14 +3338,6 @@ Resource tags.
 | `resourceGroupName` | string | The name of the resource group the dataCollectionRule was created in. |
 | `resourceId` | string | The resource ID of the dataCollectionRule. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
 
 ## Data Collection
 

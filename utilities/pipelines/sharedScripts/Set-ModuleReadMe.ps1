@@ -493,6 +493,7 @@ function Set-DefinitionSection {
             ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
             ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
+            (($definition.discriminator.propertyName) ? ('- Type deciding property: {0}' -f $definition.discriminator.propertyName) : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
@@ -524,6 +525,51 @@ function Set-DefinitionSection {
                         $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
+                } elseif ($definition.type -eq 'object' -and $definition.keys -contains 'discriminator') {
+                    <#
+                    Discriminator type. E.g.,
+
+                    @discriminator('kind')
+                    type mainType = subTypeA | subTypeB | subTypeC
+                    #>
+
+                    $variantTableSectionContent += @(
+                        '| Variant | Description |',
+                        '| :-- | :-- |'
+                    )
+
+                    $variantContent = @()
+                    foreach ($typeVariantName in $definition.discriminator.mapping.Keys) {
+                        $typeVariant = $definition.discriminator.mapping[$typeVariantName]
+                        $resolvedTypeVariant = $TemplateFileContent.definitions[(Split-Path $typeVariant.'$ref' -Leaf)]
+                        $variantDescription = ($resolvedTypeVariant.metadata.description ?? '').Replace("`r`n", '<p>').Replace("`n", '<p>')
+
+                        $variantIdentifier = '{0}-{1}' -f $paramIdentifier, $typeVariantName
+                        $variantIdentifierHeader = "### Variant: ``$variantIdentifier``"
+                        $variantIdentifierLink = '#{0}' -f ($variantIdentifierHeader -replace '^#+ ', '' -replace '\s', '-' -replace '`|\:', '').ToLower()
+
+                        $variantContent += @(
+                            $variantIdentifierHeader,
+                            ('To use this variant, choose the value `{0}` for the property `{1}`.' -f $typeVariantName, $definition.discriminator.propertyName)
+                            ''
+                        )
+
+                        $variantTableSectionContent += ('| [`{0}`]({1}) | {2} |' -f $typeVariantName, $variantIdentifierLink, $variantDescription)
+
+                        $definitionSectionInputObject = @{
+                            TemplateFileContent  = $TemplateFileContent
+                            Properties           = $resolvedTypeVariant.properties
+                            ParentName           = $variantIdentifier
+                            ParentIdentifierLink = $variantIdentifierLink
+                            ColumnsInOrder       = $ColumnsInOrder
+                        }
+                        $sectionContent = Set-DefinitionSection @definitionSectionInputObject
+                        $variantContent += $sectionContent
+                    }
+
+                    $variantTableSectionContent += ''
+                    $listSectionContent += $variantTableSectionContent
+                    $listSectionContent += $variantContent
                 }
             }
         }
