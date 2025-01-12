@@ -562,7 +562,7 @@ function Set-DefinitionSection {
                             TemplateFileContent  = $TemplateFileContent
                             Properties           = $resolvedTypeVariant.properties
                             ParentName           = $variantIdentifier
-                            ParentIdentifierLink = $variantIdentifierLink
+                            ParentIdentifierLink = $null
                             ColumnsInOrder       = $ColumnsInOrder
                         }
                         $sectionContent = Set-DefinitionSection @definitionSectionInputObject
