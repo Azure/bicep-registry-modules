@@ -533,6 +533,30 @@ Maps to the 'odata.type' field. Specifies the type of the alert criteria.
 
 - Required: Yes
 - Type: object
+- Type-deciding property: odata.type
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria`](#variant-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteria) |  | 
+| [`Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria`](#variant-criteriaodatatype-microsoftazuremonitorsingleresourcemultiplemetriccriteria) |  | 
+| [`Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria`](#variant-criteriaodatatype-microsoftazuremonitormultipleresourcemultiplemetriccriteria) |  | 
+
+### Variant: `criteria.odata.type-Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria`
+
+
+To use this variant, set the property `odata.type` to `Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria`.
+
+### Variant: `criteria.odata.type-Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria`
+
+
+To use this variant, set the property `odata.type` to `Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria`.
+
+### Variant: `criteria.odata.type-Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria`
+
+
+To use this variant, set the property `odata.type` to `Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria`.
 
 ### Parameter: `name`
 

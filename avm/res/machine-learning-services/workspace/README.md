@@ -1671,6 +1671,7 @@ The properties of the connection, specific to the auth type.
 
 - Required: Yes
 - Type: secureObject
+- Type-deciding property: authType
 
 ### Parameter: `connections.name`
 
@@ -2114,6 +2115,249 @@ The outbound rule. The name of the rule is the object key.
 
 - Required: Yes
 - Type: object
+- Type-deciding property: type
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`FQDN`](#variant-managednetworksettingsoutboundrules>any_other_property<type-fqdn) |  | 
+| [`PrivateEndpoint`](#variant-managednetworksettingsoutboundrules>any_other_property<type-privateendpoint) |  | 
+| [`ServiceTag`](#variant-managednetworksettingsoutboundrules>any_other_property<type-servicetag) |  | 
+
+### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN`
+
+
+To use this variant, set the property `type` to `FQDN`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-fqdndestination) | string | Fully Qualified Domain Name to allow for outbound traffic. |
+| [`type`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-fqdntype) | string | Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-fqdncategory) | string | Category of a managed network Outbound Rule of a machine learning workspace. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN.destination`
+
+Fully Qualified Domain Name to allow for outbound traffic.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN.type`
+
+Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'FQDN'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN.category`
+
+Category of a managed network Outbound Rule of a machine learning workspace.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
+
+### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint`
+
+
+To use this variant, set the property `type` to `PrivateEndpoint`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointdestination) | object | Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace. |
+| [`type`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointtype) | string | Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound' or 'AllowInternetOutbound'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointcategory) | string | Category of a managed network Outbound Rule of a machine learning workspace. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.destination`
+
+Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serviceResourceId`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointdestinationserviceresourceid) | string | The resource ID of the target resource for the private endpoint. |
+| [`subresourceTarget`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointdestinationsubresourcetarget) | string | The sub resource to connect for the private endpoint. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sparkEnabled`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointdestinationsparkenabled) | bool | Whether the private endpoint can be used by jobs running on Spark. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.destination.serviceResourceId`
+
+The resource ID of the target resource for the private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.destination.subresourceTarget`
+
+The sub resource to connect for the private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.destination.sparkEnabled`
+
+Whether the private endpoint can be used by jobs running on Spark.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.type`
+
+Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound' or 'AllowInternetOutbound'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PrivateEndpoint'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.category`
+
+Category of a managed network Outbound Rule of a machine learning workspace.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
+
+### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag`
+
+
+To use this variant, set the property `type` to `ServiceTag`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagdestination) | object | Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace. |
+| [`type`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagtype) | string | Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagcategory) | string | Category of a managed network Outbound Rule of a machine learning workspace. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.destination`
+
+Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRanges`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagdestinationportranges) | string | The name of the service tag to allow. |
+| [`protocol`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagdestinationprotocol) | string | The protocol to allow. Provide an asterisk(*) to allow any protocol. |
+| [`serviceTag`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagdestinationservicetag) | string | Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.destination.portRanges`
+
+The name of the service tag to allow.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.destination.protocol`
+
+The protocol to allow. Provide an asterisk(*) to allow any protocol.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'ICMP'
+    'TCP'
+    'UDP'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.destination.serviceTag`
+
+Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.type`
+
+Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ServiceTag'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.category`
+
+Category of a managed network Outbound Rule of a machine learning workspace.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 

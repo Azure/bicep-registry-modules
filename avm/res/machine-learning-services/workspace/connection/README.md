@@ -156,6 +156,7 @@ The properties of the connection, specific to the auth type.
 
 - Required: Yes
 - Type: secureObject
+- Type-deciding property: authType
 
 ### Parameter: `machineLearningWorkspaceName`
 

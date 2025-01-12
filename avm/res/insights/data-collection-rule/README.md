@@ -8,6 +8,7 @@ This module deploys a Data Collection Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -2814,7 +2815,7 @@ The kind of data collection rule.
 
 - Required: Yes
 - Type: object
-- Type deciding property: kind
+- Type-deciding property: kind
 
 <h4>The available variants are:</h4>
 
@@ -3348,6 +3349,14 @@ Resource tags.
 | `resourceGroupName` | string | The name of the resource group the dataCollectionRule was created in. |
 | `resourceId` | string | The resource ID of the dataCollectionRule. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
 
 ## Data Collection
 

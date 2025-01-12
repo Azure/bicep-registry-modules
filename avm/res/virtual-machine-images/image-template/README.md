@@ -758,6 +758,244 @@ The distribution targets where the image output needs to go to.
 
 - Required: Yes
 - Type: array
+- Type-deciding property: type
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`SharedImage`](#variant-distributionstype-sharedimage) |  | 
+| [`ManagedImage`](#variant-distributionstype-managedimage) |  | 
+| [`VHD`](#variant-distributionstype-vhd) |  | 
+
+### Variant: `distributions.type-SharedImage`
+
+
+To use this variant, set the property `type` to `SharedImage`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-distributionstype-sharedimagetype) | string | The type of distribution. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sharedImageGalleryImageDefinitionResourceId`](#parameter-distributionstype-sharedimagesharedimagegalleryimagedefinitionresourceid) | string | Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`artifactTags`](#parameter-distributionstype-sharedimageartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
+| [`excludeFromLatest`](#parameter-distributionstype-sharedimageexcludefromlatest) | bool | The exclude from latest flag of the image. Defaults to [false]. |
+| [`replicationRegions`](#parameter-distributionstype-sharedimagereplicationregions) | array | The replication regions of the image. Defaults to the value of the 'location' parameter. |
+| [`runOutputName`](#parameter-distributionstype-sharedimagerunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
+| [`sharedImageGalleryImageDefinitionTargetVersion`](#parameter-distributionstype-sharedimagesharedimagegalleryimagedefinitiontargetversion) | string | Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2'). If not provided, a version will be calculated. |
+| [`storageAccountType`](#parameter-distributionstype-sharedimagestorageaccounttype) | string | The storage account type of the image. Defaults to [Standard_LRS]. |
+
+### Parameter: `distributions.type-SharedImage.type`
+
+The type of distribution.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SharedImage'
+  ]
+  ```
+
+### Parameter: `distributions.type-SharedImage.sharedImageGalleryImageDefinitionResourceId`
+
+Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `distributions.type-SharedImage.artifactTags`
+
+Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.
+
+- Required: No
+- Type: object
+
+### Parameter: `distributions.type-SharedImage.excludeFromLatest`
+
+The exclude from latest flag of the image. Defaults to [false].
+
+- Required: No
+- Type: bool
+
+### Parameter: `distributions.type-SharedImage.replicationRegions`
+
+The replication regions of the image. Defaults to the value of the 'location' parameter.
+
+- Required: No
+- Type: array
+
+### Parameter: `distributions.type-SharedImage.runOutputName`
+
+The name to be used for the associated RunOutput. If not provided, a name will be calculated.
+
+- Required: No
+- Type: string
+
+### Parameter: `distributions.type-SharedImage.sharedImageGalleryImageDefinitionTargetVersion`
+
+Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2'). If not provided, a version will be calculated.
+
+- Required: No
+- Type: string
+
+### Parameter: `distributions.type-SharedImage.storageAccountType`
+
+The storage account type of the image. Defaults to [Standard_LRS].
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Standard_LRS'
+    'Standard_ZRS'
+  ]
+  ```
+
+### Variant: `distributions.type-ManagedImage`
+
+
+To use this variant, set the property `type` to `ManagedImage`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`imageResourceId`](#parameter-distributionstype-managedimageimageresourceid) | string | The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group. |
+| [`type`](#parameter-distributionstype-managedimagetype) | string | The type of distribution. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`imageName`](#parameter-distributionstype-managedimageimagename) | string | Name of the managed or unmanaged image that will be created. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`artifactTags`](#parameter-distributionstype-managedimageartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
+| [`location`](#parameter-distributionstype-managedimagelocation) | string | Azure location for the image, should match if image already exists. Defaults to the value of the 'location' parameter. |
+| [`runOutputName`](#parameter-distributionstype-managedimagerunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
+
+### Parameter: `distributions.type-ManagedImage.imageResourceId`
+
+The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group.
+
+- Required: No
+- Type: string
+
+### Parameter: `distributions.type-ManagedImage.type`
+
+The type of distribution.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ManagedImage'
+  ]
+  ```
+
+### Parameter: `distributions.type-ManagedImage.imageName`
+
+Name of the managed or unmanaged image that will be created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `distributions.type-ManagedImage.artifactTags`
+
+Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.
+
+- Required: No
+- Type: object
+
+### Parameter: `distributions.type-ManagedImage.location`
+
+Azure location for the image, should match if image already exists. Defaults to the value of the 'location' parameter.
+
+- Required: No
+- Type: string
+
+### Parameter: `distributions.type-ManagedImage.runOutputName`
+
+The name to be used for the associated RunOutput. If not provided, a name will be calculated.
+
+- Required: No
+- Type: string
+
+### Variant: `distributions.type-VHD`
+
+
+To use this variant, set the property `type` to `VHD`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-distributionstype-vhdtype) | string | The type of distribution. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`imageName`](#parameter-distributionstype-vhdimagename) | string | Name of the managed or unmanaged image that will be created. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`artifactTags`](#parameter-distributionstype-vhdartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
+| [`runOutputName`](#parameter-distributionstype-vhdrunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
+
+### Parameter: `distributions.type-VHD.type`
+
+The type of distribution.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'VHD'
+  ]
+  ```
+
+### Parameter: `distributions.type-VHD.imageName`
+
+Name of the managed or unmanaged image that will be created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `distributions.type-VHD.artifactTags`
+
+Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.
+
+- Required: No
+- Type: object
+
+### Parameter: `distributions.type-VHD.runOutputName`
+
+The name to be used for the associated RunOutput. If not provided, a name will be calculated.
+
+- Required: No
+- Type: string
 
 ### Parameter: `imageSource`
 

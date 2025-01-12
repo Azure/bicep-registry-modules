@@ -2486,6 +2486,137 @@ Specifies one of the following four configurations: Active-Active with (clusterM
 
 - Required: Yes
 - Type: object
+- Type-deciding property: clusterMode
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`activeActiveNoBgp`](#variant-clustersettingsclustermode-activeactivenobgp) |  | 
+| [`activeActiveBgp`](#variant-clustersettingsclustermode-activeactivebgp) |  | 
+| [`activePassiveBgp`](#variant-clustersettingsclustermode-activepassivebgp) |  | 
+| [`activePassiveNoBgp`](#variant-clustersettingsclustermode-activepassivenobgp) |  | 
+
+### Variant: `clusterSettings.clusterMode-activeActiveNoBgp`
+
+
+To use this variant, set the property `clusterMode` to `activeActiveNoBgp`.
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`existingSecondPipResourceId`](#parameter-clustersettingsclustermode-activeactivenobgpexistingsecondpipresourceid) | string | The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
+| [`secondPipName`](#parameter-clustersettingsclustermode-activeactivenobgpsecondpipname) | string | Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix. |
+
+### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.existingSecondPipResourceId`
+
+The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.secondPipName`
+
+Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix.
+
+- Required: No
+- Type: string
+
+### Variant: `clusterSettings.clusterMode-activeActiveBgp`
+
+
+To use this variant, set the property `clusterMode` to `activeActiveBgp`.
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`asn`](#parameter-clustersettingsclustermode-activeactivebgpasn) | int | The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN. |
+| [`customBgpIpAddresses`](#parameter-clustersettingsclustermode-activeactivebgpcustombgpipaddresses) | array | The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
+| [`existingSecondPipResourceId`](#parameter-clustersettingsclustermode-activeactivebgpexistingsecondpipresourceid) | string | The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
+| [`secondCustomBgpIpAddresses`](#parameter-clustersettingsclustermode-activeactivebgpsecondcustombgpipaddresses) | array | The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
+| [`secondPipName`](#parameter-clustersettingsclustermode-activeactivebgpsecondpipname) | string | Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix. |
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.asn`
+
+The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.customBgpIpAddresses`
+
+The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.
+
+- Required: No
+- Type: array
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.existingSecondPipResourceId`
+
+The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.secondCustomBgpIpAddresses`
+
+The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.
+
+- Required: No
+- Type: array
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.secondPipName`
+
+Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Variant: `clusterSettings.clusterMode-activePassiveBgp`
+
+
+To use this variant, set the property `clusterMode` to `activePassiveBgp`.
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`asn`](#parameter-clustersettingsclustermode-activepassivebgpasn) | int | The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN. |
+| [`customBgpIpAddresses`](#parameter-clustersettingsclustermode-activepassivebgpcustombgpipaddresses) | array | The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
+
+### Parameter: `clusterSettings.clusterMode-activePassiveBgp.asn`
+
+The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `clusterSettings.clusterMode-activePassiveBgp.customBgpIpAddresses`
+
+The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.
+
+- Required: No
+- Type: array
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Variant: `clusterSettings.clusterMode-activePassiveNoBgp`
+
+
+To use this variant, set the property `clusterMode` to `activePassiveNoBgp`.
 
 ### Parameter: `gatewayType`
 
