@@ -625,7 +625,7 @@ Optional. The identifier of the 'outputs' section. Defaults to '## Outputs'
 Set-OutputsSection -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
 
 Update the given readme file's 'Outputs' section based on the given template file content
-                #>
+#>
 function Set-OutputsSection {
 
     [CmdletBinding(SupportsShouldProcess)]
