@@ -487,6 +487,7 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
       location: virtualNetworkLocation
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
+      principalType: assignment.principalType
       subscriptionId: subscriptionId
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
@@ -521,6 +522,7 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
       location: virtualNetworkLocation
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
+      principalType: assignment.principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
@@ -553,6 +555,7 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
       location: virtualNetworkLocation
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
+      principalType: assignment.principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
@@ -808,6 +811,9 @@ type roleAssignmentType = {
 
   @description('Optional. The condition for the role assignment.')
   roleAssignmentCondition: roleAssignmentConditionType?
+
+  @description('Required. The principal type of the user, group, or service principal.')
+  principalType: 'User' | 'Group' | 'ServicePrincipal'
 }[]
 
 // "Constrain Roles" - Condition template
