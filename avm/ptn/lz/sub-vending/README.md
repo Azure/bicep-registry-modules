@@ -1096,6 +1096,168 @@ The type of template for the role assignment condition.
 
 - Required: No
 - Type: object
+- Type-deciding property: templateName
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`excludeRoles`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderoles) |  |
+| [`constrainRoles`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainroles) |  |
+| [`constrainRolesAndPrincipalTypes`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypes) |  |
+| [`constrainRolesAndPrincipals`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipals) |  |
+
+### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles`
+
+
+To use this variant, set the property `templateName` to `excludeRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ExludededRoles`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexludededroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.ExludededRoles`
+
+The list of roles that are not allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'excludeRoles'
+  ]
+  ```
+
+### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles`
+
+
+To use this variant, set the property `templateName` to `constrainRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rolesToAssign`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRoles'
+  ]
+  ```
+
+### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipalTypes`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principleTypesToAssign`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesprincipletypestoassign) | array | The list of principle types that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.principleTypesToAssign`
+
+The list of principle types that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipalTypes'
+  ]
+  ```
+
+### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipals`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalsToAssignTo`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsprincipalstoassignto) | array | The list of principals that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalstemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.principalsToAssignTo`
+
+The list of principals that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipals'
+  ]
+  ```
 
 ### Parameter: `subscriptionAliasEnabled`
 
