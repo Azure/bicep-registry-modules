@@ -2816,55 +2816,57 @@ The kind of data collection rule.
 - Type: object
 - Type deciding property: kind
 
+<h4>The available variants are:</h4>
+
 | Variant | Description |
 | :-- | :-- |
-| [`Linux`](#variant-datacollectionruleproperties-linux) | Type for a Linux DSR collection rule. |
-| [`Windows`](#variant-datacollectionruleproperties-windows) |  |
-| [`All`](#variant-datacollectionruleproperties-all) |  |
-| [`AgentSettings`](#variant-datacollectionruleproperties-agentsettings) |  |
+| [`Linux`](#variant-datacollectionruleproperties.kind-linux) | Type for a Linux DSR collection rule. | 
+| [`Windows`](#variant-datacollectionruleproperties.kind-windows) |  | 
+| [`All`](#variant-datacollectionruleproperties.kind-all) |  | 
+| [`AgentSettings`](#variant-datacollectionruleproperties.kind-agentsettings) |  | 
 
-### Variant: `dataCollectionRuleProperties-Linux`
+### Variant: `dataCollectionRuleProperties.kind-Linux`
 To use this variant, choose the value `Linux` for the property `kind`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataFlows`](#variant-datacollectionruleproperties-linuxdataflows) | array | The specification of data flows. |
-| [`dataSources`](#variant-datacollectionruleproperties-linuxdatasources) | object | Specification of data sources that will be collected. |
-| [`destinations`](#variant-datacollectionruleproperties-linuxdestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#variant-datacollectionruleproperties-linuxkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`dataFlows`](#variant-datacollectionruleproperties.kind-linuxdataflows) | array | The specification of data flows. |
+| [`dataSources`](#variant-datacollectionruleproperties.kind-linuxdatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#variant-datacollectionruleproperties.kind-linuxdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#variant-datacollectionruleproperties.kind-linuxkind) | string | The platform type specifies the type of resources this rule can apply to. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties-linuxdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
-| [`description`](#variant-datacollectionruleproperties-linuxdescription) | string | Description of the data collection rule. |
-| [`streamDeclarations`](#variant-datacollectionruleproperties-linuxstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties.kind-linuxdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#variant-datacollectionruleproperties.kind-linuxdescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#variant-datacollectionruleproperties.kind-linuxstreamdeclarations) | object | Declaration of custom streams used in this rule. |
 
-### Parameter: `dataCollectionRuleProperties-Linux.dataFlows`
+### Parameter: `dataCollectionRuleProperties.kind-Linux.dataFlows`
 
 The specification of data flows.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `dataCollectionRuleProperties-Linux.dataSources`
+### Parameter: `dataCollectionRuleProperties.kind-Linux.dataSources`
 
 Specification of data sources that will be collected.
 
 - Required: Yes
 - Type: object
 
-### Parameter: `dataCollectionRuleProperties-Linux.destinations`
+### Parameter: `dataCollectionRuleProperties.kind-Linux.destinations`
 
 Specification of destinations that can be used in data flows.
 
 - Required: Yes
 - Type: object
 
-### Parameter: `dataCollectionRuleProperties-Linux.kind`
+### Parameter: `dataCollectionRuleProperties.kind-Linux.kind`
 
 The platform type specifies the type of resources this rule can apply to.
 
@@ -2877,69 +2879,69 @@ The platform type specifies the type of resources this rule can apply to.
   ]
   ```
 
-### Parameter: `dataCollectionRuleProperties-Linux.dataCollectionEndpointResourceId`
+### Parameter: `dataCollectionRuleProperties.kind-Linux.dataCollectionEndpointResourceId`
 
 The resource ID of the data collection endpoint that this rule can be used with.
 
 - Required: No
 - Type: string
 
-### Parameter: `dataCollectionRuleProperties-Linux.description`
+### Parameter: `dataCollectionRuleProperties.kind-Linux.description`
 
 Description of the data collection rule.
 
 - Required: No
 - Type: string
 
-### Parameter: `dataCollectionRuleProperties-Linux.streamDeclarations`
+### Parameter: `dataCollectionRuleProperties.kind-Linux.streamDeclarations`
 
 Declaration of custom streams used in this rule.
 
 - Required: No
 - Type: object
 
-### Variant: `dataCollectionRuleProperties-Windows`
+### Variant: `dataCollectionRuleProperties.kind-Windows`
 To use this variant, choose the value `Windows` for the property `kind`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataFlows`](#variant-datacollectionruleproperties-windowsdataflows) | array | The specification of data flows. |
-| [`dataSources`](#variant-datacollectionruleproperties-windowsdatasources) | object | Specification of data sources that will be collected. |
-| [`destinations`](#variant-datacollectionruleproperties-windowsdestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#variant-datacollectionruleproperties-windowskind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`dataFlows`](#variant-datacollectionruleproperties.kind-windowsdataflows) | array | The specification of data flows. |
+| [`dataSources`](#variant-datacollectionruleproperties.kind-windowsdatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#variant-datacollectionruleproperties.kind-windowsdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#variant-datacollectionruleproperties.kind-windowskind) | string | The platform type specifies the type of resources this rule can apply to. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties-windowsdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
-| [`description`](#variant-datacollectionruleproperties-windowsdescription) | string | Description of the data collection rule. |
-| [`streamDeclarations`](#variant-datacollectionruleproperties-windowsstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties.kind-windowsdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#variant-datacollectionruleproperties.kind-windowsdescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#variant-datacollectionruleproperties.kind-windowsstreamdeclarations) | object | Declaration of custom streams used in this rule. |
 
-### Parameter: `dataCollectionRuleProperties-Windows.dataFlows`
+### Parameter: `dataCollectionRuleProperties.kind-Windows.dataFlows`
 
 The specification of data flows.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `dataCollectionRuleProperties-Windows.dataSources`
+### Parameter: `dataCollectionRuleProperties.kind-Windows.dataSources`
 
 Specification of data sources that will be collected.
 
 - Required: Yes
 - Type: object
 
-### Parameter: `dataCollectionRuleProperties-Windows.destinations`
+### Parameter: `dataCollectionRuleProperties.kind-Windows.destinations`
 
 Specification of destinations that can be used in data flows.
 
 - Required: Yes
 - Type: object
 
-### Parameter: `dataCollectionRuleProperties-Windows.kind`
+### Parameter: `dataCollectionRuleProperties.kind-Windows.kind`
 
 The platform type specifies the type of resources this rule can apply to.
 
@@ -2952,69 +2954,69 @@ The platform type specifies the type of resources this rule can apply to.
   ]
   ```
 
-### Parameter: `dataCollectionRuleProperties-Windows.dataCollectionEndpointResourceId`
+### Parameter: `dataCollectionRuleProperties.kind-Windows.dataCollectionEndpointResourceId`
 
 The resource ID of the data collection endpoint that this rule can be used with.
 
 - Required: No
 - Type: string
 
-### Parameter: `dataCollectionRuleProperties-Windows.description`
+### Parameter: `dataCollectionRuleProperties.kind-Windows.description`
 
 Description of the data collection rule.
 
 - Required: No
 - Type: string
 
-### Parameter: `dataCollectionRuleProperties-Windows.streamDeclarations`
+### Parameter: `dataCollectionRuleProperties.kind-Windows.streamDeclarations`
 
 Declaration of custom streams used in this rule.
 
 - Required: No
 - Type: object
 
-### Variant: `dataCollectionRuleProperties-All`
+### Variant: `dataCollectionRuleProperties.kind-All`
 To use this variant, choose the value `All` for the property `kind`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataFlows`](#variant-datacollectionruleproperties-alldataflows) | array | The specification of data flows. |
-| [`dataSources`](#variant-datacollectionruleproperties-alldatasources) | object | Specification of data sources that will be collected. |
-| [`destinations`](#variant-datacollectionruleproperties-alldestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#variant-datacollectionruleproperties-allkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`dataFlows`](#variant-datacollectionruleproperties.kind-alldataflows) | array | The specification of data flows. |
+| [`dataSources`](#variant-datacollectionruleproperties.kind-alldatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#variant-datacollectionruleproperties.kind-alldestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#variant-datacollectionruleproperties.kind-allkind) | string | The platform type specifies the type of resources this rule can apply to. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties-alldatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
-| [`description`](#variant-datacollectionruleproperties-alldescription) | string | Description of the data collection rule. |
-| [`streamDeclarations`](#variant-datacollectionruleproperties-allstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+| [`dataCollectionEndpointResourceId`](#variant-datacollectionruleproperties.kind-alldatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#variant-datacollectionruleproperties.kind-alldescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#variant-datacollectionruleproperties.kind-allstreamdeclarations) | object | Declaration of custom streams used in this rule. |
 
-### Parameter: `dataCollectionRuleProperties-All.dataFlows`
+### Parameter: `dataCollectionRuleProperties.kind-All.dataFlows`
 
 The specification of data flows.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `dataCollectionRuleProperties-All.dataSources`
+### Parameter: `dataCollectionRuleProperties.kind-All.dataSources`
 
 Specification of data sources that will be collected.
 
 - Required: Yes
 - Type: object
 
-### Parameter: `dataCollectionRuleProperties-All.destinations`
+### Parameter: `dataCollectionRuleProperties.kind-All.destinations`
 
 Specification of destinations that can be used in data flows.
 
 - Required: Yes
 - Type: object
 
-### Parameter: `dataCollectionRuleProperties-All.kind`
+### Parameter: `dataCollectionRuleProperties.kind-All.kind`
 
 The platform type specifies the type of resources this rule can apply to.
 
@@ -3027,44 +3029,44 @@ The platform type specifies the type of resources this rule can apply to.
   ]
   ```
 
-### Parameter: `dataCollectionRuleProperties-All.dataCollectionEndpointResourceId`
+### Parameter: `dataCollectionRuleProperties.kind-All.dataCollectionEndpointResourceId`
 
 The resource ID of the data collection endpoint that this rule can be used with.
 
 - Required: No
 - Type: string
 
-### Parameter: `dataCollectionRuleProperties-All.description`
+### Parameter: `dataCollectionRuleProperties.kind-All.description`
 
 Description of the data collection rule.
 
 - Required: No
 - Type: string
 
-### Parameter: `dataCollectionRuleProperties-All.streamDeclarations`
+### Parameter: `dataCollectionRuleProperties.kind-All.streamDeclarations`
 
 Declaration of custom streams used in this rule.
 
 - Required: No
 - Type: object
 
-### Variant: `dataCollectionRuleProperties-AgentSettings`
+### Variant: `dataCollectionRuleProperties.kind-AgentSettings`
 To use this variant, choose the value `AgentSettings` for the property `kind`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`agentSettings`](#variant-datacollectionruleproperties-agentsettingsagentsettings) | object | Agent settings used to modify agent behavior on a given host. |
-| [`kind`](#variant-datacollectionruleproperties-agentsettingskind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`agentSettings`](#variant-datacollectionruleproperties.kind-agentsettingsagentsettings) | object | Agent settings used to modify agent behavior on a given host. |
+| [`kind`](#variant-datacollectionruleproperties.kind-agentsettingskind) | string | The platform type specifies the type of resources this rule can apply to. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#variant-datacollectionruleproperties-agentsettingsdescription) | string | Description of the data collection rule. |
+| [`description`](#variant-datacollectionruleproperties.kind-agentsettingsdescription) | string | Description of the data collection rule. |
 
-### Parameter: `dataCollectionRuleProperties-AgentSettings.agentSettings`
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.agentSettings`
 
 Agent settings used to modify agent behavior on a given host.
 
@@ -3075,9 +3077,9 @@ Agent settings used to modify agent behavior on a given host.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logs`](#variant-datacollectionruleproperties-agentsettingsagentsettingslogs) | array | All the settings that are applicable to the logs agent (AMA). |
+| [`logs`](#variant-datacollectionruleproperties.kind-agentsettingsagentsettingslogs) | array | All the settings that are applicable to the logs agent (AMA). |
 
-### Parameter: `dataCollectionRuleProperties-AgentSettings.agentSettings.logs`
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.agentSettings.logs`
 
 All the settings that are applicable to the logs agent (AMA).
 
@@ -3088,10 +3090,10 @@ All the settings that are applicable to the logs agent (AMA).
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#variant-datacollectionruleproperties-agentsettingsagentsettingslogsname) | string | The name of the agent setting. |
-| [`value`](#variant-datacollectionruleproperties-agentsettingsagentsettingslogsvalue) | string | The value of the agent setting. |
+| [`name`](#variant-datacollectionruleproperties.kind-agentsettingsagentsettingslogsname) | string | The name of the agent setting. |
+| [`value`](#variant-datacollectionruleproperties.kind-agentsettingsagentsettingslogsvalue) | string | The value of the agent setting. |
 
-### Parameter: `dataCollectionRuleProperties-AgentSettings.agentSettings.logs.name`
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.agentSettings.logs.name`
 
 The name of the agent setting.
 
@@ -3105,14 +3107,14 @@ The name of the agent setting.
   ]
   ```
 
-### Parameter: `dataCollectionRuleProperties-AgentSettings.agentSettings.logs.value`
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.agentSettings.logs.value`
 
 The value of the agent setting.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `dataCollectionRuleProperties-AgentSettings.kind`
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.kind`
 
 The platform type specifies the type of resources this rule can apply to.
 
@@ -3125,7 +3127,7 @@ The platform type specifies the type of resources this rule can apply to.
   ]
   ```
 
-### Parameter: `dataCollectionRuleProperties-AgentSettings.description`
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.description`
 
 Description of the data collection rule.
 

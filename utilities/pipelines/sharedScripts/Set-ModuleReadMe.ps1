@@ -534,6 +534,8 @@ function Set-DefinitionSection {
                     #>
 
                     $variantTableSectionContent += @(
+                        '<h4>The available variants are:</h4>',
+                        ''
                         '| Variant | Description |',
                         '| :-- | :-- |'
                     )
@@ -544,17 +546,17 @@ function Set-DefinitionSection {
                         $resolvedTypeVariant = $TemplateFileContent.definitions[(Split-Path $typeVariant.'$ref' -Leaf)]
                         $variantDescription = ($resolvedTypeVariant.metadata.description ?? '').Replace("`r`n", '<p>').Replace("`n", '<p>')
 
-                        $variantIdentifier = '{0}-{1}' -f $paramIdentifier, $typeVariantName
+                        $variantIdentifier = '{0}.{1}-{2}' -f $paramIdentifier, $definition.discriminator.propertyName, $typeVariantName
                         $variantIdentifierHeader = "### Variant: ``$variantIdentifier``"
                         $variantIdentifierLink = '#{0}' -f ($variantIdentifierHeader -replace '^#+ ', '' -replace '\s', '-' -replace '`|\:', '').ToLower()
 
                         $variantContent += @(
                             $variantIdentifierHeader,
-                            ('To use this variant, choose the value `{0}` for the property `{1}`.' -f $typeVariantName, $definition.discriminator.propertyName)
+                            ('To use this variant, choose the value `{0}` for the property `{1}`.' -f $typeVariantName, $definition.discriminator.propertyName),
                             ''
                         )
 
-                        $variantTableSectionContent += ('| [`{0}`]({1}) | {2} |' -f $typeVariantName, $variantIdentifierLink, $variantDescription)
+                        $variantTableSectionContent += ('| [`{0}`]({1}) | {2} | ' -f $typeVariantName, $variantIdentifierLink, $variantDescription)
 
                         $definitionSectionInputObject = @{
                             TemplateFileContent  = $TemplateFileContent
@@ -602,7 +604,7 @@ Optional. The identifier of the 'outputs' section. Defaults to '## Outputs'
 Set-OutputsSection -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
 
 Update the given readme file's 'Outputs' section based on the given template file content
-#>
+                #>
 function Set-OutputsSection {
 
     [CmdletBinding(SupportsShouldProcess)]
