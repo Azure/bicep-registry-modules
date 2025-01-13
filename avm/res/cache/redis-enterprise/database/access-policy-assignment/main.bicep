@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param name string?
 
 @description('Required. Object ID to which the access policy will be assigned.')
-param objectId string
+param userObjectId string
 
 @description('Conditional. The name of the grandparent Azure Managed Redis (Preview) cluster. Required if the template is used in a standalone deployment.')
 param clusterName string
@@ -29,12 +29,12 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2023-08-01-preview' exist
 }
 
 resource accessPolicyAssignment 'Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments@2024-09-01-preview' = {
-  name: name ?? objectId
+  name: name ?? userObjectId
   parent: redisCluster::database
   properties: {
     accessPolicyName: accessPolicyName
     user: {
-      objectId: objectId
+      objectId: userObjectId
     }
   }
 }

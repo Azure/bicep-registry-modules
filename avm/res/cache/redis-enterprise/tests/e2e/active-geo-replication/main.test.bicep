@@ -17,9 +17,6 @@ param serviceShort string = 'creagr'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The name of the geo-replication group.')
-param geoReplicationGroupName string = 'geo-replication-group'
-
 // Not all regions support zone-redundancy, so hardcoding 2 zone-enabled locations here
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'northeurope'
@@ -41,8 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
+    redisClusterName: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
-    geoReplicationGroupName: geoReplicationGroupName
   }
 }
 
@@ -60,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedPairedLocation
       database: {
         geoReplication: {
-          groupNickname: geoReplicationGroupName
+          groupNickname: nestedDependencies.outputs.geoReplicationGroupName
           linkedDatabases: [
             {
               id: nestedDependencies.outputs.redisDbResourceId

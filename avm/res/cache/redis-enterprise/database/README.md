@@ -77,7 +77,7 @@ Access policy assignments for Microsoft Entra authentication. Only supported on 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`objectId`](#parameter-accesspolicyassignmentsobjectid) | string | Object ID to which the access policy will be assigned. |
+| [`userObjectId`](#parameter-accesspolicyassignmentsuserobjectid) | string | Object ID to which the access policy will be assigned. |
 
 **Optional parameters**
 
@@ -86,7 +86,7 @@ Access policy assignments for Microsoft Entra authentication. Only supported on 
 | [`accessPolicyName`](#parameter-accesspolicyassignmentsaccesspolicyname) | string | Name of the access policy to be assigned. The current only allowed name is 'default'. |
 | [`name`](#parameter-accesspolicyassignmentsname) | string | Name of the access policy assignment. |
 
-### Parameter: `accessPolicyAssignments.objectId`
+### Parameter: `accessPolicyAssignments.userObjectId`
 
 Object ID to which the access policy will be assigned.
 

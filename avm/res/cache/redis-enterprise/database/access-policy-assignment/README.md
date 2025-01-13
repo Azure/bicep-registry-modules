@@ -20,7 +20,7 @@ This module deploys an access policy assignment for an Azure Managed Redis (Prev
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`objectId`](#parameter-objectid) | string | Object ID to which the access policy will be assigned. |
+| [`userObjectId`](#parameter-userobjectid) | string | Object ID to which the access policy will be assigned. |
 
 **Conditional parameters**
 
@@ -36,7 +36,7 @@ This module deploys an access policy assignment for an Azure Managed Redis (Prev
 | [`accessPolicyName`](#parameter-accesspolicyname) | string | Name of the access policy to be assigned. |
 | [`name`](#parameter-name) | string | Name of the access policy assignment. |
 
-### Parameter: `objectId`
+### Parameter: `userObjectId`
 
 Object ID to which the access policy will be assigned.
 
