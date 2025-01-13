@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16440587870830187039"
+      "templateHash": "5187111908272415656"
     },
     "name": "Azure Managed Redis (Preview) Database Access Policy Assignment",
     "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database.",
@@ -20,7 +20,7 @@
         "description": "Optional. Name of the access policy assignment."
       }
     },
-    "objectId": {
+    "userObjectId": {
       "type": "string",
       "metadata": {
         "description": "Required. Object ID to which the access policy will be assigned."
@@ -65,11 +65,11 @@
     "accessPolicyAssignment": {
       "type": "Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments",
       "apiVersion": "2024-09-01-preview",
-      "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('objectId')))]",
+      "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('userObjectId')))]",
       "properties": {
         "accessPolicyName": "[parameters('accessPolicyName')]",
         "user": {
-          "objectId": "[parameters('objectId')]"
+          "objectId": "[parameters('userObjectId')]"
         }
       }
     }
@@ -80,14 +80,14 @@
       "metadata": {
         "description": "The name of the access policy assignment."
       },
-      "value": "[coalesce(parameters('name'), parameters('objectId'))]"
+      "value": "[coalesce(parameters('name'), parameters('userObjectId'))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the access policy assignment."
       },
-      "value": "[resourceId('Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('objectId')))]"
+      "value": "[resourceId('Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('userObjectId')))]"
     },
     "resourceGroupName": {
       "type": "string",

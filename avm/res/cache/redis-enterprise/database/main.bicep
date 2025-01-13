@@ -123,7 +123,7 @@ module database_accessPolicyAssignments 'access-policy-assignment/main.bicep' = 
       clusterName: redisCluster.name
       databaseName: redisDatabase.name
       accessPolicyName: assignment.?accessPolicyName
-      objectId: assignment.objectId
+      userObjectId: assignment.userObjectId
     }
   }
 ]
@@ -301,7 +301,7 @@ type accessPolicyAssignmentType = {
   name: string?
 
   @description('Required. Object ID to which the access policy will be assigned.')
-  objectId: string
+  userObjectId: string
 
   @description('Optional. Name of the access policy to be assigned. The current only allowed name is \'default\'.')
   accessPolicyName: ('default')?

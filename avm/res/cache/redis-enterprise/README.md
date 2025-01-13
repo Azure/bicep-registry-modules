@@ -168,7 +168,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       accessPolicyAssignments: [
         {
           name: 'assign1'
-          objectId: '<objectId>'
+          userObjectId: '<userObjectId>'
         }
       ]
     }
@@ -201,7 +201,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         "accessPolicyAssignments": [
           {
             "name": "assign1",
-            "objectId": "<objectId>"
+            "userObjectId": "<userObjectId>"
           }
         ]
       }
@@ -234,7 +234,7 @@ param database = {
   accessPolicyAssignments: [
     {
       name: 'assign1'
-      objectId: '<objectId>'
+      userObjectId: '<userObjectId>'
     }
   ]
 }
@@ -1357,7 +1357,7 @@ Access policy assignments for Microsoft Entra authentication. Only supported on 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`objectId`](#parameter-databaseaccesspolicyassignmentsobjectid) | string | Object ID to which the access policy will be assigned. |
+| [`userObjectId`](#parameter-databaseaccesspolicyassignmentsuserobjectid) | string | Object ID to which the access policy will be assigned. |
 
 **Optional parameters**
 
@@ -1366,7 +1366,7 @@ Access policy assignments for Microsoft Entra authentication. Only supported on 
 | [`accessPolicyName`](#parameter-databaseaccesspolicyassignmentsaccesspolicyname) | string | Name of the access policy to be assigned. The current only allowed name is 'default'. |
 | [`name`](#parameter-databaseaccesspolicyassignmentsname) | string | Name of the access policy assignment. |
 
-### Parameter: `database.accessPolicyAssignments.objectId`
+### Parameter: `database.accessPolicyAssignments.userObjectId`
 
 Object ID to which the access policy will be assigned.
 

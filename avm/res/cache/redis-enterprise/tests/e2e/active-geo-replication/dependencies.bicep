@@ -1,17 +1,14 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the geo-replication group.')
-param geoReplicationGroupName string
+@description('Required. The name of the Redis Enterprise cluster.')
+param redisClusterName string
 
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'creagr'
-
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+@description('Optional. The name of the geo-replication group.')
+param geoReplicationGroupName string = 'geo-replication-group'
 
 resource redisCluster 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
-  name: '${namePrefix}${serviceShort}001'
+  name: redisClusterName
   location: location
   sku: {
     capacity: 2
@@ -42,3 +39,6 @@ output redisLocation string = redisCluster.location
 
 @description('The name of the created Redis Cache')
 output redisClusterName string = redisCluster.name
+
+@description('The name of the geo-replication group')
+output geoReplicationGroupName string = redisCluster::redisDatabase.properties.geoReplication.groupNickname

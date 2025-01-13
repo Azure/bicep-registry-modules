@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
         accessPolicyAssignments: [
           {
             name: 'assign1'
-            objectId: nestedDependencies.outputs.managedIdentityPrincipalId
+            userObjectId: nestedDependencies.outputs.managedIdentityPrincipalId
           }
         ]
       }
