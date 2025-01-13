@@ -128,6 +128,9 @@ param snapshotName string
 @description('Required. The resource ID of the volume.')
 param volumeResourceId string
 
+@description('To create a new backup vault')
+param useExistingBackupVault bool
+
 @description('Required. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string
 
@@ -268,12 +271,11 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
                   replicationSchedule: replicationSchedule
                 }
               : {}
-
             backup: backupEnabled
               ? {
                   backupPolicyId: backupPolicies.outputs.resourceId
                   policyEnforced: policyEnforced
-                  backupVaultId: backupVaultResourceId
+                  backupVaultId: !useExistingBackupVault ? backupVaults.id : existingBackupVault.id
                 }
               : {}
             snapshot: snapEnabled
@@ -283,7 +285,22 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
               : {}
           }
         }
-      : {})
+      : {
+          dataProtection: {
+            backup: backupEnabled
+              ? {
+                  backupPolicyId: backupPolicies.outputs.resourceId
+                  policyEnforced: policyEnforced
+                  backupVaultId: !useExistingBackupVault ? backupVaults.id : existingBackupVault.id
+                }
+              : {}
+            snapshot: snapEnabled
+              ? {
+                  snapshotPolicyId: snapshotPolicies.outputs.resourceId
+                }
+              : {}
+          }
+        })
     networkFeatures: networkFeatures
     serviceLevel: serviceLevel
     creationToken: creationToken
@@ -340,27 +357,27 @@ module snapshotPolicies '../../snapshot-policies/main.bicep' = if (snapEnabled) 
   }
 }
 
-resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' = if (backupEnabled) {
+resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' = if (backupEnabled && !useExistingBackupVault) {
   name: backupVaultName
   parent: netAppAccount
   location: backupVaultLocation
   properties: {}
 }
+resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' existing = if (backupEnabled && useExistingBackupVault) {
+  parent: netAppAccount
+  name: backupVaultName
+}
 
 resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01' = if (backupEnabled) {
   name: backupName
   parent: backupVaults
-  dependsOn: [
-    volume
-  ]
-  properties: backupEnabled
-    ? {
-        label: backupLabel
-        snapshotName: snapshotName
-        useExistingSnapshot: useExistingSnapshot
-        volumeResourceId: volumeResourceId
-      }
-    : {}
+  dependsOn: []
+  properties: {
+    label: backupLabel
+    snapshotName: snapshotName
+    useExistingSnapshot: useExistingSnapshot
+    volumeResourceId: volumeResourceId == '' ? volume.id : volumeResourceId
+  }
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
