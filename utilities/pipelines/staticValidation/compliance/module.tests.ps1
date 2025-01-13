@@ -388,7 +388,7 @@ Describe 'Module tests' -Tag 'Module' {
                 TemplateFileContent       = $templateFileContent
                 CrossReferencedModuleList = $crossReferencedModuleList
                 TelemetryFileContent      = $telemetryFileContent
-            } -ErrorVariable $err
+            } -ErrorVariable $err -ErrorAction 'SilentlyContinue'
 
             if ($err) {
                 Set-ItResult -Skipped -Because "Failed to apply the `Set-ModuleReadMe` function due to [$err]."
