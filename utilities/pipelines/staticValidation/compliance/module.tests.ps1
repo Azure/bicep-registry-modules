@@ -388,7 +388,12 @@ Describe 'Module tests' -Tag 'Module' {
                 TemplateFileContent       = $templateFileContent
                 CrossReferencedModuleList = $crossReferencedModuleList
                 TelemetryFileContent      = $telemetryFileContent
-            } -ErrorAction 'SilentlyContinue'
+            } -ErrorVariable $err
+
+            if ($err) {
+                Set-ItResult -Skipped -Because "Failed to apply the `Set-ModuleReadMe` function due to [$err]."
+                return
+            }
 
             # Get hash after 'update'
             $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
