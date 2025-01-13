@@ -384,15 +384,17 @@ Describe 'Module tests' -Tag 'Module' {
             . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
             # Apply update with already compiled template content
-            Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
-                TemplateFileContent       = $templateFileContent
-                CrossReferencedModuleList = $crossReferencedModuleList
-                TelemetryFileContent      = $telemetryFileContent
-            } -ErrorVariable $err -ErrorAction 'SilentlyContinue'
-
-            if ($err) {
-                Set-ItResult -Skipped -Because "Failed to apply the `Set-ModuleReadMe` function due to [$err]."
-                return
+            try {
+                Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
+                    TemplateFileContent       = $templateFileContent
+                    CrossReferencedModuleList = $crossReferencedModuleList
+                    TelemetryFileContent      = $telemetryFileContent
+                } -ErrorVariable $err -ErrorAction 'Stop'
+            } catch {
+                if ($err) {
+                    Set-ItResult -Skipped -Because "Failed to apply the `Set-ModuleReadMe` function due to [$err]."
+                    return
+                }
             }
 
             # Get hash after 'update'
