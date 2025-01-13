@@ -2,7 +2,7 @@ metadata name = 'Default interface types for AVM modules'
 metadata description = '''
 This module provides you with all common variants for AVM interfaces to be used in AVM modules.
 
-Details for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces).
+Details for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).
 '''
 metadata owner = 'Azure/module-maintainers'
 
@@ -263,6 +263,9 @@ type privateEndpointSingleServiceType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
+  @description('Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.')
+  resourceGroupResourceId: string?
+
   @description('Optional. The private DNS Zone Group to configure for the Private Endpoint.')
   privateDnsZoneGroup: privateEndpointPrivateDnsZoneGroupType?
 
@@ -318,6 +321,9 @@ type privateEndpointMultiServiceType = {
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
+
+  @description('Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.')
+  resourceGroupResourceId: string?
 
   @description('Optional. The private DNS zone group to configure for the private endpoint.')
   privateDnsZoneGroup: privateEndpointPrivateDnsZoneGroupType?

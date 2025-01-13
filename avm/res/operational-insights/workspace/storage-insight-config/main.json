@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "156138954055342275"
+      "version": "0.32.4.45862",
+      "templateHash": "2068175338477699308"
     },
     "name": "Log Analytics Workspace Storage Insight Configs",
     "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -85,11 +85,7 @@
           "id": "[parameters('storageAccountResourceId')]",
           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2022-09-01').keys[0].value]"
         }
-      },
-      "dependsOn": [
-        "storageAccount",
-        "workspace"
-      ]
+      }
     }
   },
   "outputs": {
