@@ -283,6 +283,7 @@ function Set-DefinitionSection {
         if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
             $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
             Write-Error ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+            return
         }
     } else {
         $descriptions = $Properties.Values.metadata.description
@@ -293,6 +294,7 @@ function Set-DefinitionSection {
         if ($paramsWithoutCategory = $Properties.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
             $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
             Write-Error ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+            return
         }
     }
 
