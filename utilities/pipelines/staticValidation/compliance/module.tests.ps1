@@ -389,10 +389,9 @@ Describe 'Module tests' -Tag 'Module' {
                     TemplateFileContent       = $templateFileContent
                     CrossReferencedModuleList = $crossReferencedModuleList
                     TelemetryFileContent      = $telemetryFileContent
-                } -ErrorAction 'Stop'
+                } -ErrorAction 'Stop' -ErrorVariable 'InvocationError'
             } catch {
-                Set-ItResult -Skipped -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution."
-                return
+                $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution."
             }
 
             # Get hash after 'update'
