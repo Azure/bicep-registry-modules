@@ -12,7 +12,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/managedClusters/agentPools) |
+| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-08-01/managedClusters/agentPools) |
 
 ## Parameters
 
