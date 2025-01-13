@@ -388,7 +388,7 @@ Describe 'Module tests' -Tag 'Module' {
                 TemplateFileContent       = $templateFileContent
                 CrossReferencedModuleList = $crossReferencedModuleList
                 TelemetryFileContent      = $telemetryFileContent
-            }
+            } -ErrorAction 'SilentlyContinue'
 
             # Get hash after 'update'
             $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
