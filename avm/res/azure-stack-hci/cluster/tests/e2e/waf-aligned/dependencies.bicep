@@ -1,6 +1,3 @@
-@minLength(4)
-@maxLength(8)
-param deploymentPrefix string
 @secure()
 param deploymentUserPassword string
 @secure()
@@ -18,7 +15,6 @@ param softDeleteRetentionDays int = 30
 @minValue(0)
 @maxValue(365)
 param logsRetentionInDays int = 30
-param serviceShort string
 param clusterWitnessStorageAccountName string
 param keyVaultDiagnosticStorageAccountName string
 param keyVaultName string
@@ -27,7 +23,6 @@ param customLocationName string
 @secure()
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
-param namePrefix string
 param clusterName string
 
 var deploymentUsername = 'deployUser'
@@ -131,8 +126,8 @@ var arcNodeResourceIds = [
 
 var tenantId = subscription().tenantId
 
-module hciHostDeployment '../../_template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy-${location}-${serviceShort}${namePrefix}'
+module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     hciHostAssignPublicIp: hciHostAssignPublicIp
     domainOUPath: domainOUPath
@@ -143,7 +138,6 @@ module hciHostDeployment '../../_template-assets/azureStackHCIHost/hciHostDeploy
     localAdminPassword: localAdminPassword
     location: location
     switchlessStorageConfig: false
-    namingPrefix: 'dep-${serviceShort}${namePrefix}'
   }
 }
 
@@ -157,11 +151,8 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
 }
 
-module hciClusterPreqs '../../_template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
-  dependsOn: [
-    hciHostDeployment
-  ]
-  name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs-${serviceShort}${namePrefix}'
+module hciClusterPreqs '../../e2e-template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs'
   params: {
     location: location
     arbDeploymentAppId: arbDeploymentAppId
@@ -179,7 +170,7 @@ module hciClusterPreqs '../../_template-assets/azureStackHCIClusterPreqs/ashciPr
     logsRetentionInDays: logsRetentionInDays
     softDeleteRetentionDays: softDeleteRetentionDays
     tenantId: tenantId
-    vnetSubnetId: hciHostDeployment.outputs.vnetSubnetId
+    vnetSubnetResourceId: hciHostDeployment.outputs.vnetSubnetResourceId
     clusterName: clusterName
     cloudId: cluster.properties.cloudId
   }

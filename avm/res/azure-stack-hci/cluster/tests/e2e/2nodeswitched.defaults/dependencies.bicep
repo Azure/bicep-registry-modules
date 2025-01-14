@@ -1,6 +1,3 @@
-@minLength(4)
-@maxLength(8)
-param deploymentPrefix string
 @secure()
 param deploymentUserPassword string
 @secure()
@@ -18,7 +15,6 @@ param softDeleteRetentionDays int = 30
 @minValue(0)
 @maxValue(365)
 param logsRetentionInDays int = 30
-param serviceShort string
 param clusterWitnessStorageAccountName string
 param keyVaultDiagnosticStorageAccountName string
 param keyVaultName string
@@ -27,8 +23,40 @@ param customLocationName string
 @secure()
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
-param namePrefix string
 param clusterName string
+
+@description('Required. The name of the VM-managed user identity to create, used for HCI Arc onboarding.')
+param userAssignedIdentityName string
+
+@description('Conditional. The name of the VNET for the HCI host Azure VM. Required if \'vnetSubnetResourceId\' is empty.')
+param virtualNetworkName string
+
+@description('Required. The name of the maintenance configuration for the Azure Stack HCI Host VM and proxy server.')
+param maintenanceConfigurationName string
+
+@description('Conditional. The name of the Public IP Address for the HCI host. Required if \'hciHostAssignPublicIp\' is true.')
+param HCIHostPublicIpName string
+
+@description('Conditional. The name of the Network Security Group for the HCI host. Required if \'hciHostAssignPublicIp\' is true.')
+param HCIHostNetworkInterfaceGroupName string
+
+@description('Required. The name of the Azure VM scale set for the HCI host.')
+param HCIHostVirtualMachineScaleSetName string
+
+@description('Required. The name of the Network Interface Card to create.')
+param networkInterfaceName string
+
+@description('Required. The name prefix for the Disks to create.')
+param diskNamePrefix string
+
+@description('Required. The name of the Azure VM to create.')
+param virtualMachineName string
+
+@description('Required. The name of the Maintenance Configuration Assignment for the proxy server.')
+param maintenanceConfigurationAssignmentName string
+
+@description('Required. The name prefix for the \'wait\' deployment scripts to create.')
+param waitDeploymentScriptPrefixName string
 
 var deploymentUsername = 'deployUser'
 var localAdminUsername = 'admin-hci'
@@ -131,8 +159,8 @@ var arcNodeResourceIds = [
 
 var tenantId = subscription().tenantId
 
-module hciHostDeployment '../../_template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy-${location}-${serviceShort}${namePrefix}'
+module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     hciHostAssignPublicIp: hciHostAssignPublicIp
     domainOUPath: domainOUPath
@@ -143,7 +171,18 @@ module hciHostDeployment '../../_template-assets/azureStackHCIHost/hciHostDeploy
     localAdminPassword: localAdminPassword
     location: location
     switchlessStorageConfig: false
-    namingPrefix: 'dep-${serviceShort}${namePrefix}'
+
+    diskNamePrefix: diskNamePrefix
+    HCIHostVirtualMachineScaleSetName: HCIHostVirtualMachineScaleSetName
+    HCIHostNetworkInterfaceGroupName: HCIHostNetworkInterfaceGroupName
+    HCIHostPublicIpName: HCIHostPublicIpName
+    maintenanceConfigurationAssignmentName: maintenanceConfigurationAssignmentName
+    maintenanceConfigurationName: maintenanceConfigurationName
+    networkInterfaceName: networkInterfaceName
+    userAssignedIdentityName: userAssignedIdentityName
+    virtualMachineName: virtualMachineName
+    waitDeploymentScriptPrefixName: waitDeploymentScriptPrefixName
+    virtualNetworkName: virtualNetworkName
   }
 }
 
@@ -157,11 +196,8 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
 }
 
-module hciClusterPreqs '../../_template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
-  dependsOn: [
-    hciHostDeployment
-  ]
-  name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs-${serviceShort}${namePrefix}'
+module hciClusterPreqs '../../e2e-template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs'
   params: {
     location: location
     arbDeploymentAppId: arbDeploymentAppId
@@ -179,14 +215,14 @@ module hciClusterPreqs '../../_template-assets/azureStackHCIClusterPreqs/ashciPr
     logsRetentionInDays: logsRetentionInDays
     softDeleteRetentionDays: softDeleteRetentionDays
     tenantId: tenantId
-    vnetSubnetId: hciHostDeployment.outputs.vnetSubnetId
+    vnetSubnetResourceId: hciHostDeployment.outputs.vnetSubnetResourceId
     clusterName: clusterName
     cloudId: cluster.properties.cloudId
   }
 }
 
 output cluster object = cluster
-output clusterName string = clusterName
+output clusterName string = cluster.name
 output clusterNodeNames array = clusterNodeNames
 output clusterWitnessStorageAccountName string = clusterWitnessStorageAccountName
 output customLocationName string = customLocationName

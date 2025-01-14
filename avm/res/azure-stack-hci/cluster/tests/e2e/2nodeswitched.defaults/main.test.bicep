@@ -3,9 +3,6 @@ targetScope = 'subscription'
 metadata name = 'Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration'
 metadata description = 'This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster.'
 
-@description('Optional. Location for all resources.')
-param location string = deployment().location
-
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-azure-stack-hci.cluster-${serviceShort}-rg'
@@ -40,7 +37,6 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
-var name = 'hcicluster'
 var deploymentPrefix = 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
@@ -51,25 +47,33 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: enforcedLocation
 }
 
-module hciDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-hcidependencies-${serviceShort}'
+module nestedDependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
+    clusterName: '${namePrefix}${serviceShort}001'
+    clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
+    customLocationName: 'dep-${namePrefix}${serviceShort}-location'
+    keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}${serviceShort}kv'
+    userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
+    maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
+    HCIHostPublicIpName: 'dep-${namePrefix}-hpip-${serviceShort}'
+    HCIHostNetworkInterfaceGroupName: 'dep-${namePrefix}-hnic-${serviceShort}'
+    HCIHostVirtualMachineScaleSetName: 'dep-${namePrefix}-hvmss-${serviceShort}'
+    networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
+    diskNamePrefix: 'dep-${namePrefix}-disk-${serviceShort}'
+    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
-    clusterName: name
-    clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
-    customLocationName: 'dep-${namePrefix}${serviceShort}-location'
-    deploymentPrefix: deploymentPrefix
     deploymentUserPassword: localAdminAndDeploymentUserPass
     hciResourceProviderObjectId: hciResourceProviderObjectId
-    keyVaultDiagnosticStorageAccountName: 'dep${take('${deploymentPrefix}${serviceShort}${take(uniqueString(resourceGroup.name,resourceGroup.location),6)}',17)}kvd'
-    keyVaultName: 'dep-${namePrefix}${serviceShort}kv'
     localAdminPassword: localAdminAndDeploymentUserPass
     location: enforcedLocation
-    namePrefix: namePrefix
-    serviceShort: serviceShort
   }
 }
 
@@ -77,22 +81,22 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
-    name: name
-    customLocationName: hciDependencies.outputs.customLocationName
-    clusterNodeNames: hciDependencies.outputs.clusterNodeNames
-    clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
-    defaultGateway: hciDependencies.outputs.defaultGateway
+    name: nestedDependencies.outputs.clusterName
+    customLocationName: nestedDependencies.outputs.customLocationName
+    clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
+    clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
+    defaultGateway: nestedDependencies.outputs.defaultGateway
     deploymentPrefix: deploymentPrefix
-    dnsServers: hciDependencies.outputs.dnsServers
-    domainFqdn: hciDependencies.outputs.domainFqdn
-    domainOUPath: hciDependencies.outputs.domainOUPath
-    endingIPAddress: hciDependencies.outputs.endingIPAddress
-    enableStorageAutoIp: hciDependencies.outputs.enableStorageAutoIp
-    keyVaultName: hciDependencies.outputs.keyVaultName
-    networkIntents: hciDependencies.outputs.networkIntents
-    startingIPAddress: hciDependencies.outputs.startingIPAddress
+    dnsServers: nestedDependencies.outputs.dnsServers
+    domainFqdn: nestedDependencies.outputs.domainFqdn
+    domainOUPath: nestedDependencies.outputs.domainOUPath
+    endingIPAddress: nestedDependencies.outputs.endingIPAddress
+    enableStorageAutoIp: nestedDependencies.outputs.enableStorageAutoIp
+    keyVaultName: nestedDependencies.outputs.keyVaultName
+    networkIntents: nestedDependencies.outputs.networkIntents
+    startingIPAddress: nestedDependencies.outputs.startingIPAddress
     storageConnectivitySwitchless: false
-    storageNetworks: hciDependencies.outputs.storageNetworks
-    subnetMask: hciDependencies.outputs.subnetMask
+    storageNetworks: nestedDependencies.outputs.storageNetworks
+    subnetMask: nestedDependencies.outputs.subnetMask
   }
 }

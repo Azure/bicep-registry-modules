@@ -1,13 +1,19 @@
 param location string
 
+@description('Required. The name of the storage account to create as a cluster witness.')
 param clusterWitnessStorageAccountName string
+
+@description('Required. The name of the storage account to be created to collect Key Vault diagnostic logs.')
 param keyVaultDiagnosticStorageAccountName string
+
+@description('Required. The name of the Azure Key Vault to create.')
 param keyVaultName string
+
 param softDeleteRetentionDays int = 30
 param logsRetentionInDays int = 30
 param tenantId string
 @secure()
-param hciResourceProviderObjectId string?
+param hciResourceProviderObjectId string
 param arcNodeResourceIds array
 param deploymentUsername string = 'deployUser'
 @secure()
@@ -21,7 +27,7 @@ param arbDeploymentAppId string
 param arbDeploymentSPObjectId string
 @secure()
 param arbDeploymentServicePrincipalSecret string
-param vnetSubnetId string?
+param vnetSubnetResourceId string?
 param allowIPtoStorageAndKeyVault string?
 param usingArcGW bool = false
 param clusterName string?
@@ -62,15 +68,15 @@ var keyVaultSecretUserRoleID = subscriptionResourceId(
 )
 
 module ARBDeploymentSPNSubscriptionRoleAssignmnent 'ashciARBSPRoleAssignment.bicep' = {
-  scope: subscription()
   name: '${uniqueString(deployment().name, location)}-test-arbroleassignment'
+  scope: subscription()
   params: {
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
   }
 }
 
 resource diagnosticStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: toLower(keyVaultDiagnosticStorageAccountName)
+  name: keyVaultDiagnosticStorageAccountName
   location: location
   sku: {
     name: storageAccountType
@@ -119,14 +125,14 @@ resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = 
       ipRules: (allowIPtoStorageAndKeyVault != null)
         ? [
             {
-              value: allowIPtoStorageAndKeyVault
+              value: allowIPtoStorageAndKeyVault!
             }
           ]
         : []
-      virtualNetworkRules: (vnetSubnetId != null)
+      virtualNetworkRules: (vnetSubnetResourceId != null)
         ? [
             {
-              id: vnetSubnetId
+              id: vnetSubnetResourceId!
             }
           ]
         : []
@@ -170,14 +176,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       ipRules: (allowIPtoStorageAndKeyVault != null)
         ? [
             {
-              value: allowIPtoStorageAndKeyVault
+              value: allowIPtoStorageAndKeyVault!
             }
           ]
         : []
-      virtualNetworkRules: (vnetSubnetId != null)
+      virtualNetworkRules: (vnetSubnetResourceId != null)
         ? [
             {
-              id: vnetSubnetId
+              id: vnetSubnetResourceId!
             }
           ]
         : []
@@ -186,6 +192,50 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   dependsOn: [
     diagnosticStorageAccount
   ]
+
+  resource keyVaultName_domainAdminSecret 'secrets@2023-07-01' = {
+    name: domainAdminSecretName
+    properties: {
+      contentType: 'Secret'
+      value: deploymentUserSecretValue
+      attributes: {
+        enabled: true
+      }
+    }
+  }
+
+  resource keyVaultName_localAdminSecret 'secrets@2023-07-01' = {
+    name: localAdminSecretName
+    properties: {
+      contentType: 'Secret'
+      value: localAdminSecretValue
+      attributes: {
+        enabled: true
+      }
+    }
+  }
+
+  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2023-07-01' = {
+    name: arbDeploymentServicePrincipalName
+    properties: {
+      contentType: 'Secret'
+      value: arbDeploymentServicePrincipalValue
+      attributes: {
+        enabled: true
+      }
+    }
+  }
+
+  resource keyVaultName_storageWitness 'secrets@2023-07-01' = {
+    name: storageWitnessName
+    properties: {
+      contentType: 'Secret'
+      value: base64(witnessStorageAccount.listKeys().keys[0].value)
+      attributes: {
+        enabled: true
+      }
+    }
+  }
 }
 
 resource keyVaultName_Microsoft_Insights_service 'microsoft.insights/diagnosticSettings@2016-09-01' = {
@@ -208,7 +258,12 @@ resource keyVaultName_Microsoft_Insights_service 'microsoft.insights/diagnosticS
 }
 
 resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('ConnectedMachineResourceManagerRolePermissions', resourceGroup().id, hciResourceProviderObjectId)
+  name: guid(
+    subscription().subscriptionId,
+    hciResourceProviderObjectId,
+    'ConnectedMachineResourceManagerRolePermissions',
+    resourceGroup().id
+  )
   scope: resourceGroup()
   properties: {
     roleDefinitionId: azureConnectedMachineResourceManagerRoleID
@@ -220,7 +275,13 @@ resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorizati
 
 resource NodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for hciNode in arcNodeResourceIds: {
-    name: guid(resourceGroup().id, hciNode, azureConnectedMachineResourceManagerRoleID)
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId,
+      'azureConnectedMachineResourceManager',
+      hciNode,
+      resourceGroup().id
+    )
     properties: {
       roleDefinitionId: azureConnectedMachineResourceManagerRoleID
       principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
@@ -229,9 +290,16 @@ resource NodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Auth
     }
   }
 ]
+
 resource NodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for hciNode in arcNodeResourceIds: {
-    name: guid(resourceGroup().id, hciNode, azureStackHCIDeviceManagementRole)
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId,
+      'azureStackHCIDeviceManagementRole',
+      hciNode,
+      resourceGroup().id
+    )
     properties: {
       roleDefinitionId: azureStackHCIDeviceManagementRole
       principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
@@ -243,7 +311,7 @@ resource NodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssi
 
 resource NodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for hciNode in arcNodeResourceIds: {
-    name: guid(resourceGroup().id, hciNode, readerRoleID)
+    name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', hciNode, resourceGroup().id)
     properties: {
       roleDefinitionId: readerRoleID
       principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
@@ -255,7 +323,13 @@ resource NodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@20
 
 resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for hciNode in arcNodeResourceIds: {
-    name: guid(keyVault.id, hciNode, keyVaultSecretUserRoleID)
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId,
+      'keyVaultSecretUser',
+      hciNode,
+      resourceGroup().id
+    )
     scope: keyVault
     properties: {
       roleDefinitionId: keyVaultSecretUserRoleID
@@ -265,51 +339,3 @@ resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments
     }
   }
 ]
-
-resource keyVaultName_domainAdminSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: keyVault
-  name: domainAdminSecretName
-  properties: {
-    contentType: 'Secret'
-    value: deploymentUserSecretValue
-    attributes: {
-      enabled: true
-    }
-  }
-}
-
-resource keyVaultName_localAdminSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: keyVault
-  name: localAdminSecretName
-  properties: {
-    contentType: 'Secret'
-    value: localAdminSecretValue
-    attributes: {
-      enabled: true
-    }
-  }
-}
-
-resource keyVaultName_arbDeploymentServicePrincipal 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: keyVault
-  name: arbDeploymentServicePrincipalName
-  properties: {
-    contentType: 'Secret'
-    value: arbDeploymentServicePrincipalValue
-    attributes: {
-      enabled: true
-    }
-  }
-}
-
-resource keyVaultName_storageWitness 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: keyVault
-  name: storageWitnessName
-  properties: {
-    contentType: 'Secret'
-    value: base64(witnessStorageAccount.listKeys().keys[0].value)
-    attributes: {
-      enabled: true
-    }
-  }
-}
