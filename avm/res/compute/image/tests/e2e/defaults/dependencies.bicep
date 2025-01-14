@@ -45,12 +45,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-module roleAssignment 'dependencies_rbac.bicep' = {
-  name: '${deployment().name}-MSI-roleAssignment'
-  scope: subscription()
-  params: {
-    managedIdentityPrincipalId: managedIdentity.properties.principalId
-    managedIdentityResourceId: managedIdentity.id
+resource resourceGroupContributorRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().subscriptionId, 'Contributor', managedIdentity.id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -114,7 +118,7 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
     forceUpdateTag: baseTime
   }
   dependsOn: [
-    roleAssignment
+    resourceGroupContributorRole
   ]
 }
 
