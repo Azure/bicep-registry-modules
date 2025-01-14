@@ -188,10 +188,10 @@ runs:
           # Check if the deployment test should be bypassed
           $passCiFilePath = Join-Path $moduleTestFolderPath '.e2eignore'
           if (Test-Path $passCiFilePath) {
-            Write-Output "File '.e2eignore' exists in the folder: $moduleTestFolderPath" -Verbose
+            Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFolderPath"
             $excludeReason = Get-Content $passCiFilePath
             if ($excludeReason -ne $null) {
-              Write-Output "Reason for exclusion: $excludeReason"
+              Write-Warning -Message "Reason for exclusion: $excludeReason"
             }
             Write-Output "skip_deployment_ci=true" >> $env:GITHUB_ENV
           } else {
