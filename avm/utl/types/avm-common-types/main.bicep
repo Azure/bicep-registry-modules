@@ -262,6 +262,9 @@ type privateEndpointSingleServiceType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
+  @description('Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.')
+  resourceGroupResourceId: string?
+
   @description('Optional. The private DNS Zone Group to configure for the Private Endpoint.')
   privateDnsZoneGroup: privateEndpointPrivateDnsZoneGroupType?
 
@@ -317,6 +320,9 @@ type privateEndpointMultiServiceType = {
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
+
+  @description('Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.')
+  resourceGroupResourceId: string?
 
   @description('Optional. The private DNS zone group to configure for the private endpoint.')
   privateDnsZoneGroup: privateEndpointPrivateDnsZoneGroupType?
