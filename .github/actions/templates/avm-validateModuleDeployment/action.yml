@@ -61,6 +61,7 @@ runs:
   steps:
     - name: Azure Login
       uses: azure/login@v2
+      environment: avm-validation
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
