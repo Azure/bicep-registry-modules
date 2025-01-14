@@ -212,8 +212,18 @@ function Test-ModuleLocally {
             # -------------------------
             if ((Get-Item -Path $ModuleTestFilePath) -is [System.IO.DirectoryInfo]) {
                 $moduleTestFiles = (Get-ChildItem -Path $ModuleTestFilePath -File).FullName
+                $moduleTestFolderPath = $ModuleTestFilePath
             } else {
                 $moduleTestFiles = @($ModuleTestFilePath)
+                $moduleTestFolderPath = Split-Path $ModuleTestFilePath
+            }
+
+            # Check if the deployment test should be bypassed
+            $passCiFilePath = Join-Path $moduleTestFolderPath '.e2eignore'
+            if (Test-Path $passCiFilePath) {
+                Write-Output "File '.e2eignore' exists in the folder: $moduleTestFolderPath"
+                # end here, as the test should be bypassed
+                return
             }
 
             # Construct Token Configuration Input

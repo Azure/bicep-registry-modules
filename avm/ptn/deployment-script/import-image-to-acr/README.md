@@ -31,7 +31,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Very large Deployment test](#example-3-very-large-deployment-test)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -235,7 +236,86 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Very large Deployment test_
+
+This instance deploys the module for skipping deployment in the CI.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>' = {
+  name: 'importImageToAcrDeployment'
+  params: {
+    // Required parameters
+    acrName: '<acrName>'
+    image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+    name: 'dsiitaskp001'
+    // Non-required parameters
+    location: '<location>'
+    overwriteExistingImage: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "acrName": {
+      "value": "<acrName>"
+    },
+    "image": {
+      "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
+    },
+    "name": {
+      "value": "dsiitaskp001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "overwriteExistingImage": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitaskp001'
+// Non-required parameters
+param location = '<location>'
+param overwriteExistingImage = true
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -550,7 +630,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/resources/deployment-script:0.5.0` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
