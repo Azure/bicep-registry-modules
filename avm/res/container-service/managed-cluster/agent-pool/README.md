@@ -12,7 +12,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/agentPools` | [2023-07-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-07-02-preview/managedClusters/agentPools) |
+| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-08-01/managedClusters/agentPools) |
 
 ## Parameters
 
@@ -52,7 +52,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`orchestratorVersion`](#parameter-orchestratorversion) | string | As a best practice, you should upgrade all node pools in an AKS cluster to the same Kubernetes version. The node pool version must have the same major version as the control plane. The node pool minor version must be within two minor versions of the control plane version. The node pool version cannot be greater than the control plane version. For more information see upgrading a node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#upgrade-a-node-pool). |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | OS Disk Size in GB to be used to specify the disk size for every machine in the master/agent pool. If you specify 0, it will apply the default osDisk size according to the vmSize specified. |
 | [`osDiskType`](#parameter-osdisktype) | string | The default is "Ephemeral" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to "Managed". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os). |
-| [`osSku`](#parameter-ossku) | string | Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows. |
+| [`osSKU`](#parameter-ossku) | string | Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows. |
 | [`osType`](#parameter-ostype) | string | The operating system type. The default is Linux. |
 | [`podSubnetResourceId`](#parameter-podsubnetresourceid) | string | Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | The ID for the Proximity Placement Group. |
@@ -290,7 +290,7 @@ The default is "Ephemeral" if the VM supports it and has a cache disk larger tha
 - MinValue: 0
 - MaxValue: 1000
 
-### Parameter: `osSku`
+### Parameter: `osSKU`
 
 Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows.
 
