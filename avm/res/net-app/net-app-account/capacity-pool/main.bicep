@@ -154,7 +154,6 @@ module capacityPool_volumes 'volume/main.bicep' = [
       useExistingSnapshot: volume.?useExistingSnapshot ?? false
       volumeResourceId: volume.?volumeResourceId ?? ''
       volumeType: volume.?volumeType ?? ''
-      backupVaultResourceId: volume.?backupVaultResourceId ?? ''
       replicationEnabled: volume.?replicationEnabled ?? false
       useExistingBackupVault: volume.?useExistingBackupVault ?? false
     }

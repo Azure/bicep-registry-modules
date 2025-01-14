@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "14328317888842072540"
+      "version": "0.30.3.12046",
+      "templateHash": "8988715823823186955"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -348,6 +348,12 @@
         "description": "Required. The resource ID of the volume."
       }
     },
+    "useExistingBackupVault": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required.To create a new backup vault"
+      }
+    },
     "volumeType": {
       "type": "string",
       "metadata": {
@@ -464,12 +470,6 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "backupVaultResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The Id of the Backup Vault."
-      }
-    },
     "replicationEnabled": {
       "type": "bool",
       "defaultValue": true,
@@ -540,17 +540,18 @@
       "apiVersion": "2024-03-01",
       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
       "location": "[parameters('location')]",
-      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', parameters('backupVaultResourceId')), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject()))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'))))]",
+      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', if(not(parameters('useExistingBackupVault')), resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), parameters('backupVaultName')), resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), parameters('backupVaultName')))), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject()))), createObject('volumeType', 'Standard', 'dataProtection', createObject('backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', if(not(parameters('useExistingBackupVault')), resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), parameters('backupVaultName')), resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), parameters('backupVaultName')))), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject())))), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'))))]",
       "zones": "[parameters('zones')]",
       "dependsOn": [
         "backupPolicies",
         "backupVaults",
         "netAppAccount::capacityPool",
+        "existingBackupVault",
         "snapshotPolicies"
       ]
     },
     "backupVaults": {
-      "condition": "[parameters('backupEnabled')]",
+      "condition": "[and(parameters('backupEnabled'), not(parameters('useExistingBackupVault')))]",
       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
       "apiVersion": "2024-03-01",
       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
@@ -560,12 +561,27 @@
         "netAppAccount"
       ]
     },
+    "existingBackupVault": {
+      "condition": "[and(parameters('backupEnabled'), parameters('useExistingBackupVault'))]",
+      "existing": true,
+      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
+      "dependsOn": [
+        "netAppAccount"
+      ]
+    },
     "backups": {
       "condition": "[parameters('backupEnabled')]",
       "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
       "apiVersion": "2024-03-01",
       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('backupName'))]",
-      "properties": "[if(parameters('backupEnabled'), createObject('label', parameters('backupLabel'), 'snapshotName', parameters('snapshotName'), 'useExistingSnapshot', parameters('useExistingSnapshot'), 'volumeResourceId', parameters('volumeResourceId')), createObject())]",
+      "properties": {
+        "label": "[parameters('backupLabel')]",
+        "snapshotName": "[parameters('snapshotName')]",
+        "useExistingSnapshot": "[parameters('useExistingSnapshot')]",
+        "volumeResourceId": "[if(equals(parameters('volumeResourceId'), ''), resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name')), parameters('volumeResourceId'))]"
+      },
       "dependsOn": [
         "backupVaults",
         "volume"
@@ -629,8 +645,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "15255260076655189132"
+              "version": "0.30.3.12046",
+              "templateHash": "14013471622070171544"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File.",
@@ -800,8 +816,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "17696312984702506132"
+              "version": "0.30.3.12046",
+              "templateHash": "6090786209249496025"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",

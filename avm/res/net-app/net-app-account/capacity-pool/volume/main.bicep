@@ -128,7 +128,7 @@ param snapshotName string
 @description('Required. The resource ID of the volume.')
 param volumeResourceId string
 
-@description('To create a new backup vault')
+@description('Required.To create a new backup vault')
 param useExistingBackupVault bool
 
 @description('Required. The type of the volume. DataProtection volumes are used for replication.')
@@ -189,9 +189,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Required. The Id of the Backup Vault.')
-param backupVaultResourceId string
-
 @description('Optional. Enables replication.')
 param replicationEnabled bool = true
 
@@ -245,10 +242,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
   name: name
   parent: netAppAccount::capacityPool
   location: location
-  dependsOn: [
-    backupVaults
-    backupPolicies
-  ]
+  dependsOn: []
   properties: {
     coolAccess: coolAccess
     coolAccessRetrievalPolicy: coolAccessRetrievalPolicy
@@ -286,6 +280,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           }
         }
       : {
+          volumeType: 'Standard'
           dataProtection: {
             backup: backupEnabled
               ? {
@@ -363,7 +358,7 @@ resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' 
   location: backupVaultLocation
   properties: {}
 }
-resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' existing = if (backupEnabled && useExistingBackupVault) {
+resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' existing = if (backupEnabled && useExistingBackupVault) {
   parent: netAppAccount
   name: backupVaultName
 }
