@@ -3204,7 +3204,7 @@ The SKU of the Gateway.
 
 - Required: No
 - Type: string
-- Default: `[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]`
+- Default: `[if(equals(parameters('gatewayType'), 'Vpn'), 'VpnGw1AZ', 'ErGw1AZ')]`
 - Allowed:
   ```Bicep
   [
