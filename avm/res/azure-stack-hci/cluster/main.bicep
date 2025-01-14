@@ -115,6 +115,9 @@ param keyVaultName string
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
+@description('Optional. Specify whether to use the shared key vault for the HCI cluster.')
+param useSharedKeyVault bool = true
+
 // ============= //
 //   Variables   //
 // ============= //
@@ -199,7 +202,7 @@ module deploymentSetting 'deployment-settings/main.bicep' = [
   for deploymentOperation in sortedDeploymentOperations: {
     name: 'deploymentSettings-${deploymentOperation}'
     params: {
-      cloudId: cluster.properties.cloudId
+      cloudId: useSharedKeyVault ? cluster.properties.cloudId : null
       clusterName: name
       clusterNodeNames: clusterNodeNames
       clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
