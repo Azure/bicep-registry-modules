@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -126,7 +126,7 @@ param vmssZonalUpgradeMode string = 'Hierarchical'
 @description('Optional. Boolean to pause automatic runtime version upgrades to the cluster.')
 param waveUpgradePaused bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
