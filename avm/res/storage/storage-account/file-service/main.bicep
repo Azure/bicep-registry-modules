@@ -18,7 +18,11 @@ param shareDeleteRetentionPolicy object = {
   days: 7
 }
 
+@description('Optional. Specifies CORS rules for the File service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the File service.')
+param corsRules array = []
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -35,6 +39,9 @@ resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01
   name: name
   parent: storageAccount
   properties: {
+    cors: {
+      corsRules: corsRules
+    }
     protocolSettings: protocolSettings
     shareDeleteRetentionPolicy: shareDeleteRetentionPolicy
   }
