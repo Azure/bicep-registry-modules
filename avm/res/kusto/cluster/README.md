@@ -18,7 +18,8 @@ This module deploys a Kusto Cluster.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Kusto/clusters` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters) |
+| `Microsoft.Kusto/clusters` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters) |
+| `Microsoft.Kusto/clusters/databases` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases) |
 | `Microsoft.Kusto/clusters/principalAssignments` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/principalAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -55,7 +56,13 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     name: 'kcmin0001'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
+    enableDiskEncryption: true
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
   }
 }
 ```
@@ -80,8 +87,18 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
+    "enableDiskEncryption": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -101,7 +118,13 @@ using 'br/public:avm/res/kusto/cluster:<version>'
 param name = 'kcmin0001'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
+param enableDiskEncryption = true
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 ```
 
 </details>
@@ -138,6 +161,16 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     autoScaleMax: 6
     autoScaleMin: 3
     capacity: 3
+    databases: [
+      {
+        kind: 'ReadWrite'
+        name: 'myReadWriteDatabase'
+        readWriteProperties: {
+          hotCachePeriod: 'P1D'
+          softDeletePeriod: 'P7D'
+        }
+      }
+    ]
     enableAutoScale: true
     enableAutoStop: true
     enableDiskEncryption: true
@@ -234,6 +267,18 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     },
     "capacity": {
       "value": 3
+    },
+    "databases": {
+      "value": [
+        {
+          "kind": "ReadWrite",
+          "name": "myReadWriteDatabase",
+          "readWriteProperties": {
+            "hotCachePeriod": "P1D",
+            "softDeletePeriod": "P7D"
+          }
+        }
+      ]
     },
     "enableAutoScale": {
       "value": true
@@ -346,6 +391,16 @@ param allowedIpRangeList = [
 param autoScaleMax = 6
 param autoScaleMin = 3
 param capacity = 3
+param databases = [
+  {
+    kind: 'ReadWrite'
+    name: 'myReadWriteDatabase'
+    readWriteProperties: {
+      hotCachePeriod: 'P1D'
+      softDeletePeriod: 'P7D'
+    }
+  }
+]
 param enableAutoScale = true
 param enableAutoStop = true
 param enableDiskEncryption = true
@@ -925,6 +980,7 @@ param tier = 'Standard'
 | [`autoScaleMin`](#parameter-autoscalemin) | int | When auto-scale is enabled, the minimum number of instances in the Kusto Cluster. |
 | [`capacity`](#parameter-capacity) | int | The number of instances of the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`databases`](#parameter-databases) | array | The Kusto Cluster databases. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableAutoScale`](#parameter-enableautoscale) | bool | Enable/disable auto-scale. |
 | [`enableAutoStop`](#parameter-enableautostop) | bool | Enable/disable auto-stop. |
@@ -1085,6 +1141,142 @@ The version of the customer managed key to reference for encryption. If not prov
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
 User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases`
+
+The Kusto Cluster databases.
+
+- Required: No
+- Type: array
+- MinValue: 2
+- MaxValue: 999
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-databaseskind) | string | The object type of the databse. |
+| [`name`](#parameter-databasesname) | string | The name of the Kusto Cluster database. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`readWriteProperties`](#parameter-databasesreadwriteproperties) | object | Required if the database kind is ReadWrite. Contains the properties of the database. |
+
+### Parameter: `databases.kind`
+
+The object type of the databse.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ReadOnlyFollowing'
+    'ReadWrite'
+  ]
+  ```
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.name`
+
+The name of the Kusto Cluster database.
+
+- Required: Yes
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.readWriteProperties`
+
+Required if the database kind is ReadWrite. Contains the properties of the database.
+
+- Required: No
+- Type: object
+- MinValue: 2
+- MaxValue: 999
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hotCachePeriod`](#parameter-databasesreadwritepropertieshotcacheperiod) | string | Te time the data should be kept in cache for fast queries in TimeSpan. |
+| [`keyVaultProperties`](#parameter-databasesreadwritepropertieskeyvaultproperties) | object | The properties of the key vault. |
+| [`softDeletePeriod`](#parameter-databasesreadwritepropertiessoftdeleteperiod) | string | The time the data should be kept before it stops being accessible to queries in TimeSpan. |
+
+### Parameter: `databases.readWriteProperties.hotCachePeriod`
+
+Te time the data should be kept in cache for fast queries in TimeSpan.
+
+- Required: No
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties`
+
+The properties of the key vault.
+
+- Required: No
+- Type: object
+- MinValue: 2
+- MaxValue: 999
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-databasesreadwritepropertieskeyvaultpropertieskeyname) | string | The name of the key. |
+| [`keyVaultUri`](#parameter-databasesreadwritepropertieskeyvaultpropertieskeyvaulturi) | string | The Uri of the key vault. |
+| [`keyVersion`](#parameter-databasesreadwritepropertieskeyvaultpropertieskeyversion) | string | The version of the key. |
+| [`userIdentity`](#parameter-databasesreadwritepropertieskeyvaultpropertiesuseridentity) | string | The user identity. |
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties.keyName`
+
+The name of the key.
+
+- Required: No
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties.keyVaultUri`
+
+The Uri of the key vault.
+
+- Required: No
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties.keyVersion`
+
+The version of the key.
+
+- Required: No
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.readWriteProperties.keyVaultProperties.userIdentity`
+
+The user identity.
+
+- Required: No
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.readWriteProperties.softDeletePeriod`
+
+The time the data should be kept before it stops being accessible to queries in TimeSpan.
 
 - Required: No
 - Type: string
@@ -2340,6 +2532,7 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `databases` | array | The databases of the kusto cluster. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the kusto cluster. |
 | `privateEndpoints` | array | The private endpoints of the kusto cluster. |
