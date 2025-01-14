@@ -172,8 +172,8 @@ var arcNodeResourceIds = [
 
 var tenantId = subscription().tenantId
 
-module hciHostDeployment '../../_template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy-${location}-${serviceShort}${namePrefix}'
+module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     hciHostAssignPublicIp: hciHostAssignPublicIp
     domainOUPath: domainOUPath
@@ -184,7 +184,6 @@ module hciHostDeployment '../../_template-assets/azureStackHCIHost/hciHostDeploy
     localAdminPassword: localAdminPassword
     location: location
     switchlessStorageConfig: true
-    namingPrefix: 'dep-${serviceShort}${namePrefix}'
   }
 }
 
@@ -198,10 +197,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
 }
 
-module hciClusterPreqs '../../_template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
-  dependsOn: [
-    hciHostDeployment
-  ]
+module hciClusterPreqs '../../e2e-template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs-${serviceShort}${namePrefix}'
   params: {
     location: location
@@ -220,7 +216,7 @@ module hciClusterPreqs '../../_template-assets/azureStackHCIClusterPreqs/ashciPr
     logsRetentionInDays: logsRetentionInDays
     softDeleteRetentionDays: softDeleteRetentionDays
     tenantId: tenantId
-    vnetSubnetId: hciHostDeployment.outputs.vnetSubnetId
+    vnetSubnetResourceId: hciHostDeployment.outputs.vnetSubnetResourceId
     clusterName: clusterName
     cloudId: cluster.properties.cloudId
   }
