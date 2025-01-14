@@ -6,230 +6,76 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1701161903666745494"
+      "templateHash": "17536710159061514896"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "lockType": {
+    "natRuleType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the name of lock."
+            "description": "Required. The name of the NAT rule."
           }
         },
-        "kind": {
+        "externalMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mappingType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
+          }
+        },
+        "internalMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mappingType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
+          }
+        },
+        "ipConfigurationResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances."
+          }
+        },
+        "mode": {
           "type": "string",
           "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
+            "EgressSnat",
+            "IngressSnat"
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the type of lock."
+            "description": "Optional. The type of NAT rule for Virtual Network NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub's site-to-site Virtual Network gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub's Site-to-site Virtual Network gateway."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Dynamic",
+            "Static"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of NAT rule for Virtual Network NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability."
           }
         }
       },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
-        }
-      },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a NAT rule."
+      }
     },
     "activePassiveNoBgpType": {
       "type": "object",
@@ -238,8 +84,14 @@
           "type": "string",
           "allowedValues": [
             "activePassiveNoBgp"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The cluster mode deciding the configuration."
+          }
         }
+      },
+      "metadata": {
+        "description": "The type for an active-passive no BGP configuration."
       }
     },
     "activeActiveNoBgpType": {
@@ -249,7 +101,10 @@
           "type": "string",
           "allowedValues": [
             "activeActiveNoBgp"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The cluster mode deciding the configuration."
+          }
         },
         "existingSecondPipResourceId": {
           "type": "string",
@@ -265,6 +120,9 @@
             "description": "Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for an active-active no BGP configuration."
       }
     },
     "activePassiveBgpType": {
@@ -274,7 +132,10 @@
           "type": "string",
           "allowedValues": [
             "activePassiveBgp"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The cluster mode deciding the configuration."
+          }
         },
         "asn": {
           "type": "int",
@@ -295,6 +156,9 @@
             "description": "Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for an active-passive BGP configuration."
       }
     },
     "activeActiveBgpType": {
@@ -304,7 +168,10 @@
           "type": "string",
           "allowedValues": [
             "activeActiveBgp"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The cluster mode deciding the configuration."
+          }
         },
         "existingSecondPipResourceId": {
           "type": "string",
@@ -349,6 +216,9 @@
             "description": "Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for an active-active BGP configuration."
       }
     },
     "clusterSettingType": {
@@ -368,6 +238,260 @@
           "activePassiveNoBgp": {
             "$ref": "#/definitions/activePassiveNoBgpType"
           }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "mappingType": {
+      "type": "object",
+      "properties": {
+        "addressSpace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address space for Vpn NatRule mapping."
+          }
+        },
+        "portRange": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Port range for Vpn NatRule mapping."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a mapping.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "nat-rule/main.bicep"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -470,7 +594,7 @@
         "ErGw3AZ"
       ],
       "metadata": {
-        "description": "Required. The SKU of the Gateway."
+        "description": "Optional. The SKU of the Gateway."
       }
     },
     "vpnType": {
@@ -574,25 +698,38 @@
       }
     },
     "publicIpDiagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the Public IP."
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -1461,33 +1598,58 @@
             "value": "[parameters('name')]"
           },
           "externalMappings": {
-            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'externalMappings'), createArray())]"
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'externalMappings')]"
           },
           "internalMappings": {
-            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'internalMappings'), createArray())]"
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'internalMappings')]"
           },
-          "ipConfigurationId": {
-            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'ipConfigurationId'), '')]"
+          "ipConfigurationResourceId": {
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'ipConfigurationResourceId')]"
           },
           "mode": {
-            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'mode'), '')]"
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'mode')]"
           },
           "type": {
-            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'type'), '')]"
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'type')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2235037112727909278"
+              "templateHash": "18080488621270812680"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "mappingType": {
+              "type": "object",
+              "properties": {
+                "addressSpace": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Address space for Vpn NatRule mapping."
+                  }
+                },
+                "portRange": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Port range for Vpn NatRule mapping."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a mapping."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -1504,30 +1666,35 @@
             },
             "externalMappings": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/mappingType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
               }
             },
             "internalMappings": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/mappingType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
               }
             },
-            "ipConfigurationId": {
+            "ipConfigurationResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances."
               }
             },
             "mode": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
-                "",
                 "EgressSnat",
                 "IngressSnat"
               ],
@@ -1537,9 +1704,8 @@
             },
             "type": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
-                "",
                 "Dynamic",
                 "Static"
               ],
@@ -1548,20 +1714,26 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "virtualNetworkGateway": {
+              "existing": true,
+              "type": "Microsoft.Network/virtualNetworkGateways",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('virtualNetworkGatewayName')]"
+            },
+            "natRule": {
               "type": "Microsoft.Network/virtualNetworkGateways/natRules",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('virtualNetworkGatewayName'), parameters('name'))]",
               "properties": {
                 "externalMappings": "[parameters('externalMappings')]",
                 "internalMappings": "[parameters('internalMappings')]",
-                "ipConfigurationId": "[if(not(empty(parameters('ipConfigurationId'))), parameters('ipConfigurationId'), null())]",
-                "mode": "[if(not(empty(parameters('mode'))), parameters('mode'), null())]",
-                "type": "[if(not(empty(parameters('type'))), parameters('type'), null())]"
+                "ipConfigurationId": "[parameters('ipConfigurationResourceId')]",
+                "mode": "[parameters('mode')]",
+                "type": "[parameters('type')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",

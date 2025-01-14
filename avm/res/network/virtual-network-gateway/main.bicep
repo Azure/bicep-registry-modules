@@ -42,7 +42,7 @@ param gatewayType string
 ])
 param vpnGatewayGeneration string = 'None'
 
-@description('Required. The SKU of the Gateway.')
+@description('Optional. The SKU of the Gateway.')
 @allowed([
   'Basic'
   'VpnGw1'
@@ -110,17 +110,20 @@ param clientRootCertData string = ''
 @description('Optional. Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet.')
 param clientRevokedCertThumbprint string = ''
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the Public IP.')
-param publicIpDiagnosticSettings diagnosticSettingType
+param publicIpDiagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -152,18 +155,10 @@ var secondPipNameVar = isActiveActive ? (clusterSettings.?secondPipName ?? '${na
 
 var arrayPipNameVar = isActiveActive
   ? concat(
-      !empty(existingFirstPipResourceId)
-        ? []
-        : [firstPipName],
-      !empty(existingSecondPipResourceIdVar)
-        ? []
-        : [secondPipNameVar]
+      !empty(existingFirstPipResourceId) ? [] : [firstPipName],
+      !empty(existingSecondPipResourceIdVar) ? [] : [secondPipNameVar]
     )
-  : concat(
-      !empty(existingFirstPipResourceId)
-        ? []
-        : [firstPipName]
-    )
+  : concat(!empty(existingFirstPipResourceId) ? [] : [firstPipName])
 
 // Potential BGP configurations (Active-Active vs Active-Passive)
 var bgpSettingsVar = isActiveActive
@@ -216,12 +211,12 @@ var ipConfiguration = isActiveActive
           }
           publicIPAddress: {
             id: isActiveActive
-            ? !empty(existingSecondPipResourceIdVar)
-            ? existingSecondPipResourceIdVar
-            : az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
-          : !empty(existingFirstPipResourceId)
-            ? existingFirstPipResourceId
-            : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+              ? !empty(existingSecondPipResourceIdVar)
+                  ? existingSecondPipResourceIdVar
+                  : az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
+              : !empty(existingFirstPipResourceId)
+                  ? existingFirstPipResourceId
+                  : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig2'
@@ -407,11 +402,11 @@ module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [
     params: {
       name: natRule.name
       virtualNetworkGatewayName: virtualNetworkGateway.name
-      externalMappings: natRule.?externalMappings ?? []
-      internalMappings: natRule.?internalMappings ?? []
-      ipConfigurationId: natRule.?ipConfigurationId ?? ''
-      mode: natRule.?mode ?? ''
-      type: natRule.?type ?? ''
+      externalMappings: natRule.?externalMappings
+      internalMappings: natRule.?internalMappings
+      ipConfigurationResourceId: natRule.?ipConfigurationResourceId
+      mode: natRule.?mode
+      type: natRule.?type
     }
   }
 ]
@@ -498,104 +493,50 @@ output location string = virtualNetworkGateway.location
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+import { mappingType } from 'nat-rule/main.bicep'
+@export()
+@description('The type for a NAT rule.')
+type natRuleType = {
+  @description('Required. The name of the NAT rule.')
+  name: string
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range.')
+  externalMappings: mappingType[]?
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+  @description('Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range.')
+  internalMappings: mappingType[]?
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Optional. A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances.')
+  ipConfigurationResourceId: string?
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('Optional. The type of NAT rule for Virtual Network NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub\'s site-to-site Virtual Network gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub\'s Site-to-site Virtual Network gateway.')
+  mode: ('EgressSnat' | 'IngressSnat')?
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type activePassiveNoBgpType = {
-  
-  clusterMode: 'activePassiveNoBgp'
-
+  @description('Optional. The type of NAT rule for Virtual Network NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability.')
+  type: ('Dynamic' | 'Static')?
 }
 
+@description('The type for an active-passive no BGP configuration.')
+type activePassiveNoBgpType = {
+  @description('Required. The cluster mode deciding the configuration.')
+  clusterMode: 'activePassiveNoBgp'
+}
+
+@description('The type for an active-active no BGP configuration.')
 type activeActiveNoBgpType = {
-  
+  @description('Required. The cluster mode deciding the configuration.')
   clusterMode: 'activeActiveNoBgp'
 
   @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
   existingSecondPipResourceId: string?
-  
+
   @description('Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway\'s name with the \'-pip2\' suffix.')
   secondPipName: string?
-
 }
 
+@description('The type for an active-passive BGP configuration.')
 type activePassiveBgpType = {
-  
+  @description('Required. The cluster mode deciding the configuration.')
   clusterMode: 'activePassiveBgp'
 
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
@@ -607,16 +548,17 @@ type activePassiveBgpType = {
   customBgpIpAddresses: string[]?
 }
 
+@description('The type for an active-active BGP configuration.')
 type activeActiveBgpType = {
-  
+  @description('Required. The cluster mode deciding the configuration.')
   clusterMode: 'activeActiveBgp'
 
   @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
   existingSecondPipResourceId: string?
-  
+
   @description('Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway\'s name with the \'-pip2\' suffix.')
   secondPipName: string?
-  
+
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
   @minValue(0)
   @maxValue(4294967295)
@@ -624,9 +566,11 @@ type activeActiveBgpType = {
 
   @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
+
   @description('Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   secondCustomBgpIpAddresses: string[]?
 }
 
+@export()
 @discriminator('clusterMode')
 type clusterSettingType = activeActiveNoBgpType | activeActiveBgpType | activePassiveBgpType | activePassiveNoBgpType

@@ -172,9 +172,5 @@ module testDeployment '../../../main.bicep' = [
       ]
       enableBgpRouteTranslationForNat: true
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
