@@ -573,6 +573,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       osDiskSizeGB: profile.?osDiskSizeGB
       osDiskType: profile.?osDiskType
       osType: profile.?osType ?? 'Linux'
+      osSKU: profile.?osSKU
       #disable-next-line use-resource-id-functions // Not possible to reference as nested
       podSubnetID: profile.?podSubnetResourceId
       #disable-next-line use-resource-id-functions // Not possible to reference as nested
@@ -893,7 +894,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       orchestratorVersion: agentPool.?orchestratorVersion ?? kubernetesVersion
       osDiskSizeGB: agentPool.?osDiskSizeGB
       osDiskType: agentPool.?osDiskType
-      osSku: agentPool.?osSku
+      osSKU: agentPool.?osSKU
       osType: agentPool.?osType
       podSubnetResourceId: agentPool.?podSubnetResourceId
       proximityPlacementGroupResourceId: agentPool.?proximityPlacementGroupResourceId
@@ -1129,7 +1130,7 @@ type agentPoolType = {
   osDiskType: string?
 
   @description('Optional. The OS SKU of the agent pool.')
-  osSku: string?
+  osSKU: string?
 
   @description('Optional. The OS type of the agent pool.')
   osType: ('Linux' | 'Windows')?
