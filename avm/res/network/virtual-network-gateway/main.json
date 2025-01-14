@@ -573,7 +573,7 @@
     },
     "skuName": {
       "type": "string",
-      "defaultValue": "[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]",
+      "defaultValue": "[if(equals(parameters('gatewayType'), 'Vpn'), 'VpnGw1AZ', 'ErGw1AZ')]",
       "allowedValues": [
         "Basic",
         "VpnGw1",
