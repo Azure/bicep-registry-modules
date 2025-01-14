@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "5493266151487858395"
+      "version": "0.32.4.45862",
+      "templateHash": "2210396703029626013"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value.",
