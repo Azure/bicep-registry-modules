@@ -149,7 +149,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource machine 'Microsoft.HybridCompute/machines@2024-03-31-preview' = {
+resource machine 'Microsoft.HybridCompute/machines@2024-07-10' = {
   name: name
   location: location
   identity: {
