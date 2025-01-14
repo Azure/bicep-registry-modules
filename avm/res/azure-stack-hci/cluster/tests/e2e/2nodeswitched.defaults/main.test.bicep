@@ -52,10 +52,10 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     clusterName: '${namePrefix}${serviceShort}001'
-    clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
+    clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
     customLocationName: 'dep-${namePrefix}${serviceShort}-location'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}${serviceShort}kv'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
