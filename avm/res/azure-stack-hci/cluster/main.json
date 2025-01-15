@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13032908289444461706"
+      "templateHash": "2551045617270308419"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.",
@@ -810,7 +810,7 @@
             "value": "[tryGet(parameters('deploymentSettings'), 'hvciProtection')]"
           },
           "isEuropeanUnionLocation": {
-            "value": "[tryGet(parameters('deploymentSettings'), 'isEuropeanUnionLocation')]"
+            "value": "[tryGet(parameters('deploymentSettings'), 'isRFEuropeanUnionLocation')]"
           },
           "sideChannelMitigationEnforced": {
             "value": "[tryGet(parameters('deploymentSettings'), 'sideChannelMitigationEnforced')]"
@@ -838,8 +838,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "81167251359967856"
+              "version": "0.32.4.45862",
+              "templateHash": "14982383608768909585"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
@@ -946,7 +946,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. When set to true, all the side channel mitigations are enabled"
+                "description": "Optional. When set to true, all the side channel mitigations are enabled."
               }
             },
             "bitlockerBootVolume": {

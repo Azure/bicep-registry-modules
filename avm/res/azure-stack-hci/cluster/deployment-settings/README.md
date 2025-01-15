@@ -58,7 +58,7 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`hvciProtection`](#parameter-hvciprotection) | bool | The Hypervisor-protected Code Integrity setting. |
 | [`isEuropeanUnionLocation`](#parameter-iseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
 | [`name`](#parameter-name) | string | The name of the deployment settings. |
-| [`sideChannelMitigationEnforced`](#parameter-sidechannelmitigationenforced) | bool | When set to true, all the side channel mitigations are enabled |
+| [`sideChannelMitigationEnforced`](#parameter-sidechannelmitigationenforced) | bool | When set to true, all the side channel mitigations are enabled. |
 | [`smbClusterEncryption`](#parameter-smbclusterencryption) | bool | When set to true, cluster east-west traffic is encrypted. |
 | [`smbSigningEnforced`](#parameter-smbsigningenforced) | bool | When set to true, the SMB default instance requires sign in for the client and server services. |
 | [`storageConfigurationMode`](#parameter-storageconfigurationmode) | string | The storage volume configuration mode. See documentation for details. |
@@ -286,7 +286,7 @@ The name of the deployment settings.
 
 ### Parameter: `sideChannelMitigationEnforced`
 
-When set to true, all the side channel mitigations are enabled
+When set to true, all the side channel mitigations are enabled.
 
 - Required: No
 - Type: bool
