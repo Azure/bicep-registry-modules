@@ -7,17 +7,10 @@ metadata owner = 'Azure/module-maintainers'
 @minLength(4)
 param clusterName string
 
-@description('Optional. Location for all resources.')
-param location string = resourceGroup().location
-
-@sys.description('Optional. Tags of the resource.')
-param tags object?
-
 @description('Required. First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry.')
 @allowed([
   'Validate'
   'Deploy'
-  'None'
 ])
 param deploymentMode string
 
@@ -133,7 +126,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' existing = {
   name: clusterName
 }
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-04-01' = if (deploymentMode != 'None') {
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-04-01' = {
   name: 'default'
   parent: cluster
   properties: {
