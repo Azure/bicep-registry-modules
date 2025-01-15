@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2551045617270308419"
+      "templateHash": "11282319130102657861"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.",
@@ -353,7 +353,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. When set to true, all the side channel mitigations are enabled"
+            "description": "Optional. When set to true, all the side channel mitigations are enabled."
           }
         },
         "bitlockerBootVolume": {
