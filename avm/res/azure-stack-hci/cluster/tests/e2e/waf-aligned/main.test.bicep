@@ -79,97 +79,99 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: nestedDependencies.outputs.clusterName
-    customLocationName: '${namePrefix}${serviceShort}-location'
-    clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
-    clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-    defaultGateway: '172.20.0.1'
-    deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-    dnsServers: ['172.20.0.1']
-    domainFqdn: 'hci.local'
-    domainOUPath: nestedDependencies.outputs.domainOUPath
-    startingIPAddress: '172.20.0.2'
-    endingIPAddress: '172.20.0.7'
-    enableStorageAutoIp: true
-    keyVaultName: nestedDependencies.outputs.keyVaultName
-    networkIntents: [
-      {
-        adapter: ['mgmt']
-        name: 'management'
-        overrideAdapterProperty: true
-        adapterPropertyOverrides: {
-          jumboPacket: '9014'
-          networkDirect: 'Disabled'
-          networkDirectTechnology: 'iWARP'
+    deploymentSettings: {
+      customLocationName: '${namePrefix}${serviceShort}-location'
+      clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
+      clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
+      defaultGateway: '172.20.0.1'
+      deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
+      dnsServers: ['172.20.0.1']
+      domainFqdn: 'hci.local'
+      domainOUPath: nestedDependencies.outputs.domainOUPath
+      startingIPAddress: '172.20.0.2'
+      endingIPAddress: '172.20.0.7'
+      enableStorageAutoIp: true
+      keyVaultName: nestedDependencies.outputs.keyVaultName
+      networkIntents: [
+        {
+          adapter: ['mgmt']
+          name: 'management'
+          overrideAdapterProperty: true
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          overrideQosPolicy: false
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          overrideVirtualSwitchConfiguration: false
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+          trafficType: ['Management']
         }
-        overrideQosPolicy: false
-        qosPolicyOverrides: {
-          bandwidthPercentage_SMB: '50'
-          priorityValue8021Action_Cluster: '7'
-          priorityValue8021Action_SMB: '3'
+        {
+          adapter: ['comp0', 'comp1']
+          name: 'compute'
+          overrideAdapterProperty: true
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          overrideQosPolicy: false
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          overrideVirtualSwitchConfiguration: false
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+          trafficType: ['Compute']
         }
-        overrideVirtualSwitchConfiguration: false
-        virtualSwitchConfigurationOverrides: {
-          enableIov: 'true'
-          loadBalancingAlgorithm: 'Dynamic'
+        {
+          adapter: ['smb0', 'smb1']
+          name: 'storage'
+          overrideAdapterProperty: true
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          overrideQosPolicy: true
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          overrideVirtualSwitchConfiguration: false
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+          trafficType: ['Storage']
         }
-        trafficType: ['Management']
-      }
-      {
-        adapter: ['comp0', 'comp1']
-        name: 'compute'
-        overrideAdapterProperty: true
-        adapterPropertyOverrides: {
-          jumboPacket: '9014'
-          networkDirect: 'Disabled'
-          networkDirectTechnology: 'iWARP'
+      ]
+      storageConnectivitySwitchless: false
+      storageNetworks: [
+        {
+          adapterName: 'smb0'
+          vlan: '711'
         }
-        overrideQosPolicy: false
-        qosPolicyOverrides: {
-          bandwidthPercentage_SMB: '50'
-          priorityValue8021Action_Cluster: '7'
-          priorityValue8021Action_SMB: '3'
+        {
+          adapterName: 'smb1'
+          vlan: '712'
         }
-        overrideVirtualSwitchConfiguration: false
-        virtualSwitchConfigurationOverrides: {
-          enableIov: 'true'
-          loadBalancingAlgorithm: 'Dynamic'
-        }
-        trafficType: ['Compute']
-      }
-      {
-        adapter: ['smb0', 'smb1']
-        name: 'storage'
-        overrideAdapterProperty: true
-        adapterPropertyOverrides: {
-          jumboPacket: '9014'
-          networkDirect: 'Disabled'
-          networkDirectTechnology: 'iWARP'
-        }
-        overrideQosPolicy: true
-        qosPolicyOverrides: {
-          bandwidthPercentage_SMB: '50'
-          priorityValue8021Action_Cluster: '7'
-          priorityValue8021Action_SMB: '3'
-        }
-        overrideVirtualSwitchConfiguration: false
-        virtualSwitchConfigurationOverrides: {
-          enableIov: 'true'
-          loadBalancingAlgorithm: 'Dynamic'
-        }
-        trafficType: ['Storage']
-      }
-    ]
-    storageConnectivitySwitchless: false
-    storageNetworks: [
-      {
-        adapterName: 'smb0'
-        vlan: '711'
-      }
-      {
-        adapterName: 'smb1'
-        vlan: '712'
-      }
-    ]
-    subnetMask: '255.255.255.0'
+      ]
+      subnetMask: '255.255.255.0'
+    }
   }
 }
