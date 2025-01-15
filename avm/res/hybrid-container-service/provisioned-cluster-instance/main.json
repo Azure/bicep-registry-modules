@@ -1,0 +1,567 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "11950215805266079428"
+    },
+    "name": "Hybrid Container Service Provisioned Cluster Instance",
+    "description": "Deploy a provisioned cluster instance.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the provisioned cluster instance."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "sshPrivateKeyPemSecretName": {
+      "type": "string",
+      "defaultValue": "AksArcAgentSshPrivateKeyPem",
+      "metadata": {
+        "description": "Optional. The name of the secret in the key vault that contains the SSH private key PEM."
+      }
+    },
+    "sshPublicKeySecretName": {
+      "type": "string",
+      "defaultValue": "AksArcAgentSshPublicKey",
+      "metadata": {
+        "description": "Optional. The name of the secret in the key vault that contains the SSH public key."
+      }
+    },
+    "keyVaultName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. The key vault name."
+      }
+    },
+    "sshPublicKey": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated."
+      }
+    },
+    "extendedLocationName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The extended location name."
+      }
+    },
+    "customLocationId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The id of the Custom location that used to create hybrid aks."
+      }
+    },
+    "isExported": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether the resource is exported."
+      }
+    },
+    "kubernetesVersion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The Kubernetes version for the cluster."
+      }
+    },
+    "agentPoolProfiles": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "name": "[format('{0}-nodepool1', parameters('name'))]",
+          "count": 1,
+          "enableAutoScaling": false,
+          "maxCount": 5,
+          "minCount": 1,
+          "maxPods": 110,
+          "nodeLabels": {},
+          "nodeTaints": [],
+          "osSKU": "CBLMariner",
+          "osType": "Linux",
+          "vmSize": "Standard_A4_v2"
+        }
+      ],
+      "metadata": {
+        "description": "Optional. Agent pool configuration."
+      }
+    },
+    "logicalNetworkId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The id of the logical network that the AKS nodes will be connected to."
+      }
+    },
+    "controlPlaneCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The number of control plane nodes."
+      }
+    },
+    "controlPlaneVmSize": {
+      "type": "string",
+      "defaultValue": "Standard_A4_v2",
+      "metadata": {
+        "description": "Optional. The VM size for control plane nodes."
+      }
+    },
+    "controlPlaneIP": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The host IP for control plane endpoint."
+      }
+    },
+    "podCidr": {
+      "type": "string",
+      "defaultValue": "10.244.0.0/16",
+      "metadata": {
+        "description": "Optional. The CIDR range for the pods in the kubernetes cluster."
+      }
+    },
+    "azureHybridBenefit": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Azure Hybrid Benefit configuration."
+      }
+    },
+    "nfsCsiDriverEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable or disable NFS CSI driver"
+      }
+    },
+    "smbCsiDriverEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable or disable SMB CSI driver"
+      }
+    },
+    "identityType": {
+      "type": "string",
+      "defaultValue": "SystemAssigned",
+      "allowedValues": [
+        "SystemAssigned",
+        "None"
+      ],
+      "metadata": {
+        "description": "Optional. The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\""
+      }
+    },
+    "connectClustersTags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags for the cluster resource"
+      }
+    },
+    "aadTenantId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The Azure AD tenant ID"
+      }
+    },
+    "aadAdminGroupObjectIds": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The Azure AD admin group object IDs"
+      }
+    },
+    "enableAzureRBAC": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable Azure RBAC"
+      }
+    },
+    "agentAutoUpgrade": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable automatic agent upgrades"
+      }
+    },
+    "oidcIssuerEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable OIDC issuer"
+      }
+    },
+    "workloadIdentityEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable workload identity"
+      }
+    }
+  },
+  "variables": {
+    "$fxv#0": "param (\n    [string] $customLocationResourceId,\n    [string] $kubernetesVersion = \"\",\n    [string] $osSku\n)\n\n$ErrorActionPreference = \"Stop\"\n\nwhile ($true) {\n    if ($env:ACTIONS_ID_TOKEN_REQUEST_TOKEN) {\n        $resp = Invoke-WebRequest -Uri \"$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange\" -Headers @{\"Authorization\" = \"bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN\"}\n        $token = (echo $resp.Content | ConvertFrom-Json).value\n\n        az login --federated-token $token --tenant $env:ARM_TENANT_ID -u $env:ARM_CLIENT_ID --service-principal\n        az account set --subscription $env:ARM_SUBSCRIPTION_ID\n    }\n    # delete the default version to avoid unsynchronized state between ARM and on-prem\n    $accessToken = $(az account get-access-token --query accessToken)\n    $url = \"https://management.azure.com${customLocationResourceId}/providers/Microsoft.HybridContainerService/kubernetesVersions/default?api-version=2024-01-01\"\n    echo \"Deleting default version to keep sync: $url\"\n    az rest --headers \"Authorization=Bearer $accessToken\" \"Content-Type=application/json;charset=utf-8\" --uri $url --method DELETE\n    while ($true) {\n        $state = az rest --headers \"Authorization=Bearer $accessToken\" \"Content-Type=application/json;charset=utf-8\" --uri $url --method GET\n        if (-not $state) {\n            break\n        }\n        sleep 5\n    }\n\n    Write-Host \"After deleting, puting...\"\n    $requestBody = '{\\\"extendedLocation\\\":{\\\"type\\\":\\\"CustomLocation\\\",\\\"name\\\":\\\"$customLocationResourceId\\\"}}'.Replace('$customLocationResourceId', $customLocationResourceId)\n    az rest --headers \"Authorization=Bearer $accessToken\" \"Content-Type=application/json;charset=utf-8\" `\n      --uri $url `\n      --method PUT `\n      --body $requestBody\n\n    sleep 60\n    echo \"Getting versions\"\n    $state = az rest --headers \"Authorization=Bearer $accessToken\" \"Content-Type=application/json;charset=utf-8\" --uri $url --method GET\n    $state = \"$state\".Replace(\"`n\", \"\").Replace(\"`r\", \"\").Replace(\"`t\", \"\").Replace(\" \", \"\")\n    echo $state\n\n    $pos = $state.IndexOf(\"{\")\n    $state = $state.Substring($pos)\n    $quotePos = $state.IndexOf('\"')\n\n    # Workaround for warning messages in the CLI\n    if ($quotePos -gt 1) {\n        echo \"workaround for warning messages in the CLI\"\n        $state = $state.Substring($quotePos)\n        $state = \"{$state\"\n    }\n    $ready = $false\n\n    # Default to the latest version\n    if ($kubernetesVersion -eq \"[PLACEHOLDER]\")\n    {\n        $json = $state | ConvertFrom-Json\n        $latestPatchVersion = $json.properties.values |\n        ForEach-Object {\n            $_.patchVersions.PSObject.Properties |\n                ForEach-Object {\n                [PSCustomObject]@{\n                    Version = [version]$_.Name\n                    Patch   = $_.Name\n                }\n            }\n        }  |   Sort-Object Version -Descending | Select-Object -First 1\n\n        Write-Verbose \"Using kubernetes version = $($latestPatchVersion.Patch)\" -Verbose\n        $kubernetesVersion = $latestPatchVersion.Patch\n    }\n\n    foreach ($version in (echo $state  | ConvertFrom-Json).properties.values) {\n        if (!$kubernetesVersion.StartsWith($version.version)) {\n            continue\n        }\n\n        if ($version.patchVersions.PSobject.Properties.name -notcontains $kubernetesVersion) {\n            break\n        }\n\n        foreach ($readiness in $version.patchVersions.$kubernetesVersion.readiness) {\n            if ($readiness.osSku -eq $osSku) {\n                $ready = $readiness.ready\n            }\n        }\n    }\n\n    if ($ready) {\n        echo \"Kubernetes version $kubernetesVersion is ready for osSku $osSku.\"\n        break\n    }\n\n    echo \"Kubernetes version $kubernetesVersion is not ready yet for osSku $osSku. Retrying in 10 seconds.\"\n    sleep 10\n}\n"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[empty(parameters('sshPublicKey'))]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "generateSSHKey",
+      "location": "[parameters('location')]",
+      "kind": "AzurePowerShell",
+      "identity": {
+        "type": "UserAssigned"
+      },
+      "properties": {
+        "azPowerShellVersion": "8.0",
+        "retentionInterval": "P1D",
+        "scriptContent": "      $key = [System.Security.Cryptography.RSA]::Create(4096)\n\n      $privateKeyBytes = $key.ExportRSAPrivateKey()\n      $privateKeyPem = \"-----BEGIN RSA PRIVATE KEY-----`n\"\n      $privateKeyPem += [Convert]::ToBase64String($privateKeyBytes, [System.Base64FormattingOptions]::InsertLineBreaks)\n      $privateKeyPem += \"`n-----END RSA PRIVATE KEY-----\"\n\n      $publicKeyBytes = $key.ExportRSAPublicKey()\n      $publicKeyPem = \"-----BEGIN PUBLIC KEY-----`n\"\n      $publicKeyPem += [Convert]::ToBase64String($publicKeyBytes, [System.Base64FormattingOptions]::InsertLineBreaks)\n      $publicKeyPem += \"`n-----END PUBLIC KEY-----\"\n\n      $DeploymentScriptOutputs = @{}\n      $DeploymentScriptOutputs['publicKey'] = $publicKeyPem\n      $DeploymentScriptOutputs['privateKey'] = $privateKeyPem\n    "
+      }
+    },
+    {
+      "condition": "[empty(parameters('sshPublicKey'))]",
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2023-07-01",
+      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPublicKeySecretName'))]",
+      "properties": {
+        "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'generateSSHKey'), '2020-10-01').outputs.publicKey]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deploymentScripts', 'generateSSHKey')]"
+      ]
+    },
+    {
+      "condition": "[empty(parameters('sshPublicKey'))]",
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2023-07-01",
+      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPrivateKeyPemSecretName'))]",
+      "properties": {
+        "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'generateSSHKey'), '2020-10-01').outputs.privateKey]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deploymentScripts', 'generateSSHKey')]"
+      ]
+    },
+    {
+      "condition": "[not(parameters('isExported'))]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "waitAksVhdReady",
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "properties": {
+        "azPowerShellVersion": "7.0",
+        "scriptContent": "[variables('$fxv#0')]",
+        "arguments": "[format('-customLocationResourceId {0} -kubernetesVersion {1} -osSku {2}', parameters('customLocationId'), if(empty(parameters('kubernetesVersion')), '[PLACEHOLDER]', parameters('kubernetesVersion')), parameters('agentPoolProfiles')[0].osSKU)]",
+        "timeout": "PT1H",
+        "cleanupPreference": "OnSuccess",
+        "retentionInterval": "P1D",
+        "forceUpdateTag": "[resourceGroup().name]"
+      }
+    },
+    {
+      "type": "Microsoft.HybridContainerService/provisionedClusterInstances",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('name')]",
+      "extendedLocation": {
+        "name": "[parameters('extendedLocationName')]",
+        "type": "CustomLocation"
+      },
+      "properties": {
+        "agentPoolProfiles": "[parameters('agentPoolProfiles')]",
+        "cloudProviderProfile": {
+          "infraNetworkProfile": {
+            "vnetSubnetIds": [
+              "[parameters('logicalNetworkId')]"
+            ]
+          }
+        },
+        "clusterVMAccessProfile": {},
+        "controlPlane": {
+          "count": "[parameters('controlPlaneCount')]",
+          "vmSize": "[parameters('controlPlaneVmSize')]",
+          "controlPlaneEndpoint": {
+            "hostIP": "[parameters('controlPlaneIP')]"
+          }
+        },
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "licenseProfile": {
+          "azureHybridBenefit": "[parameters('azureHybridBenefit')]"
+        },
+        "linuxProfile": {
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "[if(empty(parameters('sshPublicKey')), reference(resourceId('Microsoft.Resources/deploymentScripts', 'generateSSHKey'), '2020-10-01').outputs.publicKey, parameters('sshPublicKey'))]"
+              }
+            ]
+          }
+        },
+        "networkProfile": {
+          "podCidr": "[parameters('podCidr')]",
+          "networkPolicy": "calico",
+          "loadBalancerProfile": {
+            "count": 0
+          }
+        },
+        "storageProfile": {
+          "nfsCsiDriver": {
+            "enabled": "[parameters('nfsCsiDriverEnabled')]"
+          },
+          "smbCsiDriver": {
+            "enabled": "[parameters('smbCsiDriverEnabled')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deploymentScripts', 'generateSSHKey')]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', 'waitAksVhdReady')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "connectedCluster",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "identityType": {
+            "value": "[parameters('identityType')]"
+          },
+          "tags": {
+            "value": "[parameters('connectClustersTags')]"
+          },
+          "aadTenantId": {
+            "value": "[parameters('aadTenantId')]"
+          },
+          "aadAdminGroupObjectIds": {
+            "value": "[parameters('aadAdminGroupObjectIds')]"
+          },
+          "enableAzureRBAC": {
+            "value": "[parameters('enableAzureRBAC')]"
+          },
+          "agentAutoUpgrade": {
+            "value": "[parameters('agentAutoUpgrade')]"
+          },
+          "oidcIssuerEnabled": {
+            "value": "[parameters('oidcIssuerEnabled')]"
+          },
+          "workloadIdentityEnabled": {
+            "value": "[parameters('workloadIdentityEnabled')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "9582055474511917289"
+            },
+            "name": "Kubernetes Connected Clusters",
+            "description": "Deploy an Azure Arc connected cluster.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Azure Arc connected cluster."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "identityType": {
+              "type": "string",
+              "defaultValue": "SystemAssigned",
+              "allowedValues": [
+                "SystemAssigned",
+                "None"
+              ],
+              "metadata": {
+                "description": "The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\""
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Tags for the cluster resource"
+              }
+            },
+            "aadTenantId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The Azure AD tenant ID"
+              }
+            },
+            "aadAdminGroupObjectIds": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The Azure AD admin group object IDs"
+              }
+            },
+            "enableAzureRBAC": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable Azure RBAC"
+              }
+            },
+            "agentAutoUpgrade": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Enable automatic agent upgrades"
+              }
+            },
+            "oidcIssuerEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable OIDC issuer"
+              }
+            },
+            "workloadIdentityEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable workload identity"
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Kubernetes/connectedClusters",
+              "apiVersion": "2024-12-01-preview",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "[parameters('identityType')]"
+              },
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "aadProfile": "[if(not(empty(parameters('aadTenantId'))), createObject('tenantID', parameters('aadTenantId'), 'adminGroupObjectIDs', parameters('aadAdminGroupObjectIds'), 'enableAzureRBAC', parameters('enableAzureRBAC')), null())]",
+                "agentPublicKeyCertificate": "",
+                "arcAgentProfile": {
+                  "agentAutoUpgrade": "[parameters('agentAutoUpgrade')]"
+                },
+                "distribution": null,
+                "infrastructure": null,
+                "oidcIssuerProfile": {
+                  "enabled": "[parameters('oidcIssuerEnabled')]"
+                },
+                "securityProfile": {
+                  "workloadIdentity": {
+                    "enabled": "[parameters('workloadIdentityEnabled')]"
+                  }
+                },
+                "azureHybridBenefit": null
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
