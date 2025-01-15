@@ -24,15 +24,17 @@ on:
         required: false
   push:
     branches:
-      - main
+      # - main
+      - users/alsehr/mbrat2005_mtb-azure-stack-hci-cluster_rebase
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.azure-stack-hci.cluster.yml"
-      - "avm/res/azure-stack-hci/cluster/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
-      - "!*/**/README.md"
+      # - ".github/actions/templates/avm-**"
+      # - ".github/workflows/avm.template.module.yml"
+      # - ".github/workflows/avm.res.azure-stack-hci.cluster.yml"
+      # - "avm/res/azure-stack-hci/cluster/**"
+      # - "avm/utilities/pipelines/**"
+      # - "!avm/utilities/pipelines/platform/**"
+      # - "!*/**/README.md"
+      - "avm/res/azure-stack-hci/cluster/version.json"
 
 env:
   modulePath: "avm/res/azure-stack-hci/cluster"
