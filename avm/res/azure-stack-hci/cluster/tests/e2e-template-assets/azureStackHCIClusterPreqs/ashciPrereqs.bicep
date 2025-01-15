@@ -10,7 +10,12 @@ param keyVaultDiagnosticStorageAccountName string
 param keyVaultName string
 
 param softDeleteRetentionDays int = 30
+
+@description('Optional. The number of days for the retention in days. A value of 0 will retain the events indefinitely.')
+@minValue(0)
+@maxValue(365)
 param logsRetentionInDays int = 30
+
 param tenantId string
 @secure()
 param hciResourceProviderObjectId string

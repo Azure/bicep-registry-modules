@@ -54,10 +54,16 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     clusterName: '${namePrefix}${serviceShort}001'
     clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
-    customLocationName: 'dep-${namePrefix}${serviceShort}-location'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-
+    userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
+    maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
+    HCIHostVirtualMachineScaleSetName: 'dep-${namePrefix}-hvmss-${serviceShort}'
+    networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
+    diskNamePrefix: 'dep-${namePrefix}-disk-${serviceShort}'
+    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
@@ -73,7 +79,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: nestedDependencies.outputs.clusterName
-    customLocationName: nestedDependencies.outputs.customLocationName
+    customLocationName: '${namePrefix}${serviceShort}-location'
     clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
     clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
     defaultGateway: '172.20.0.1'
