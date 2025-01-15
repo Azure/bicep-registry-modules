@@ -21,7 +21,6 @@ param tags object?
 @allowed([
   'Deploy'
   'Validate'
-  'None'
 ])
 param deploymentOperations string[] = ['Validate', 'Deploy']
 
@@ -154,9 +153,7 @@ var formattedRoleAssignments = [
 ]
 
 // if deployment operations requested, validation must be performed first so we reverse sort the array
-var sortedDeploymentOperations = (!contains(deploymentOperations, 'None'))
-  ? sort(deploymentOperations, (a, b) => a > b)
-  : []
+var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymentOperations, (a, b) => a > b) : []
 
 // ============= //
 //   Resources   //
@@ -196,16 +193,16 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
 
 @batchSize(1)
 module deploymentSetting 'deployment-settings/main.bicep' = [
-  for deploymentOperation in sortedDeploymentOperations: {
+  for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation)) {
     name: 'deploymentSettings-${deploymentOperation}'
     params: {
       cloudId: cluster.properties.cloudId
       clusterName: name
       clusterNodeNames: clusterNodeNames
+      deploymentMode: deploymentOperation
       clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
       customLocationName: customLocationName
       defaultGateway: defaultGateway
-      deploymentMode: deploymentOperation
       deploymentPrefix: deploymentPrefix
       dnsServers: dnsServers
       domainFqdn: domainFqdn
