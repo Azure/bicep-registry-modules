@@ -1,6 +1,3 @@
-@minLength(4)
-@maxLength(8)
-param deploymentPrefix string
 @secure()
 param deploymentUserPassword string
 @secure()
@@ -30,141 +27,8 @@ param hciResourceProviderObjectId string = ''
 param namePrefix string
 param clusterName string
 
-var deploymentUsername = 'deployUser'
-var localAdminUsername = 'admin-hci'
 var clusterNodeNames = ['hcinode1', 'hcinode2', 'hcinode3']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
-var hciHostAssignPublicIp = false
-var domainFqdn = 'hci.local'
-var subnetMask = '255.255.255.0'
-var defaultGateway = '172.20.0.1'
-var startingIPAddress = '172.20.0.2'
-var endingIPAddress = '172.20.0.7'
-var dnsServers = ['172.20.0.1']
-var enableStorageAutoIp = false
-
-var hciISODownloadURL = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
-
-var networkIntents = [
-  {
-    adapter: ['mgmt']
-    name: 'management'
-    overrideAdapterProperty: true
-    adapterPropertyOverrides: {
-      jumboPacket: '9014'
-      networkDirect: 'Disabled'
-      networkDirectTechnology: 'iWARP'
-    }
-    overrideQosPolicy: false
-    qosPolicyOverrides: {
-      bandwidthPercentage_SMB: '50'
-      priorityValue8021Action_Cluster: '7'
-      priorityValue8021Action_SMB: '3'
-    }
-    overrideVirtualSwitchConfiguration: false
-    virtualSwitchConfigurationOverrides: {
-      enableIov: 'true'
-      loadBalancingAlgorithm: 'Dynamic'
-    }
-    trafficType: ['Management']
-  }
-  {
-    adapter: ['comp0', 'comp1']
-    name: 'compute'
-    overrideAdapterProperty: true
-    adapterPropertyOverrides: {
-      jumboPacket: '9014'
-      networkDirect: 'Disabled'
-      networkDirectTechnology: 'iWARP'
-    }
-    overrideQosPolicy: false
-    qosPolicyOverrides: {
-      bandwidthPercentage_SMB: '50'
-      priorityValue8021Action_Cluster: '7'
-      priorityValue8021Action_SMB: '3'
-    }
-    overrideVirtualSwitchConfiguration: false
-    virtualSwitchConfigurationOverrides: {
-      enableIov: 'true'
-      loadBalancingAlgorithm: 'Dynamic'
-    }
-    trafficType: ['Compute']
-  }
-  {
-    adapter: ['smb0', 'smb1']
-    name: 'storage'
-    overrideAdapterProperty: true
-    adapterPropertyOverrides: {
-      jumboPacket: '9014'
-      networkDirect: 'Disabled'
-      networkDirectTechnology: 'iWARP'
-    }
-    overrideQosPolicy: true
-    qosPolicyOverrides: {
-      bandwidthPercentage_SMB: '50'
-      priorityValue8021Action_Cluster: '7'
-      priorityValue8021Action_SMB: '3'
-    }
-    overrideVirtualSwitchConfiguration: false
-    virtualSwitchConfigurationOverrides: {
-      enableIov: 'true'
-      loadBalancingAlgorithm: 'Dynamic'
-    }
-    trafficType: ['Storage']
-  }
-]
-
-@description('Optional. The storage networks for the cluster.')
-var storageNetworks = [
-  {
-    adapterName: 'smb0'
-    vlan: '711'
-    storageAdapterIPInfo: [
-      {
-        //switch A
-        physicalNode: 'hcinode1'
-        ipv4Address: '10.71.1.1'
-        subnetMask: '255.255.255.0'
-      }
-      {
-        //switch A
-        physicalNode: 'hcinode2'
-        ipv4Address: '10.71.1.2'
-        subnetMask: '255.255.255.0'
-      }
-      {
-        // switch B
-        physicalNode: 'hcinode3'
-        ipv4Address: '10.71.2.3'
-        subnetMask: '255.255.255.0'
-      }
-    ]
-  }
-  {
-    adapterName: 'smb1'
-    vlan: '711'
-    storageAdapterIPInfo: [
-      {
-        // switch B
-        physicalNode: 'hcinode1'
-        ipv4Address: '10.71.2.1'
-        subnetMask: '255.255.255.0'
-      }
-      {
-        // switch C
-        physicalNode: 'hcinode2'
-        ipv4Address: '10.71.3.2'
-        subnetMask: '255.255.255.0'
-      }
-      {
-        //switch C
-        physicalNode: 'hcinode3'
-        ipv4Address: '10.71.3.3'
-        subnetMask: '255.255.255.0'
-      }
-    ]
-  }
-]
 
 var arcNodeResourceIds = [
   for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
@@ -175,10 +39,10 @@ var tenantId = subscription().tenantId
 module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
-    hciHostAssignPublicIp: hciHostAssignPublicIp
+    hciHostAssignPublicIp: false
     domainOUPath: domainOUPath
     deployProxy: false
-    hciISODownloadURL: hciISODownloadURL
+    hciISODownloadURL: 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E16bds_v5'
     localAdminPassword: localAdminPassword
@@ -207,12 +71,12 @@ module hciClusterPreqs '../../e2e-template-assets/azureStackHCIClusterPreqs/ashc
     arcNodeResourceIds: arcNodeResourceIds
     clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
     keyVaultDiagnosticStorageAccountName: keyVaultDiagnosticStorageAccountName
-    deploymentUsername: deploymentUsername
+    deploymentUsername: 'deployUser'
     deploymentUserPassword: deploymentUserPassword
     hciResourceProviderObjectId: hciResourceProviderObjectId
     keyVaultName: keyVaultName
     localAdminPassword: localAdminPassword
-    localAdminUsername: localAdminUsername
+    localAdminUsername: 'admin-hci'
     logsRetentionInDays: logsRetentionInDays
     softDeleteRetentionDays: softDeleteRetentionDays
     tenantId: tenantId
@@ -222,20 +86,9 @@ module hciClusterPreqs '../../e2e-template-assets/azureStackHCIClusterPreqs/ashc
   }
 }
 
-output cluster object = cluster
 output clusterName string = clusterName
 output clusterNodeNames array = clusterNodeNames
 output clusterWitnessStorageAccountName string = clusterWitnessStorageAccountName
 output customLocationName string = customLocationName
-output defaultGateway string = defaultGateway
-output dnsServers array = dnsServers
-output domainFqdn string = domainFqdn
 output domainOUPath string = domainOUPath
-output enableStorageAutoIp bool = enableStorageAutoIp
-output endingIPAddress string = endingIPAddress
-output hciClusterPreqs object = hciClusterPreqs
 output keyVaultName string = keyVaultName
-output networkIntents array = networkIntents
-output startingIPAddress string = startingIPAddress
-output storageNetworks array = storageNetworks
-output subnetMask string = subnetMask

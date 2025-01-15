@@ -40,9 +40,6 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
-var name = 'hcicluster'
-var deploymentPrefix = 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
@@ -51,25 +48,23 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: enforcedLocation
 }
 
-module hciDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-hcidependencies-${serviceShort}'
+module nestedDependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
+    clusterName: '${namePrefix}${serviceShort}001'
+    clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
+    customLocationName: 'dep-${namePrefix}${serviceShort}-location'
+    keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
-    clusterName: name
-    clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
-    customLocationName: 'dep-${namePrefix}${serviceShort}-location'
-    deploymentPrefix: deploymentPrefix
     deploymentUserPassword: localAdminAndDeploymentUserPass
     hciResourceProviderObjectId: hciResourceProviderObjectId
-    keyVaultDiagnosticStorageAccountName: 'dep${take('${deploymentPrefix}${serviceShort}${take(uniqueString(resourceGroup.name,resourceGroup.location),6)}',17)}kvd'
-    keyVaultName: 'dep-${namePrefix}${serviceShort}kv'
     localAdminPassword: localAdminAndDeploymentUserPass
     location: enforcedLocation
-    namePrefix: namePrefix
-    serviceShort: serviceShort
   }
 }
 
@@ -77,22 +72,98 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
-    name: name
-    customLocationName: hciDependencies.outputs.customLocationName
-    clusterNodeNames: hciDependencies.outputs.clusterNodeNames
-    clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
-    defaultGateway: hciDependencies.outputs.defaultGateway
-    deploymentPrefix: deploymentPrefix
-    dnsServers: hciDependencies.outputs.dnsServers
-    domainFqdn: hciDependencies.outputs.domainFqdn
-    domainOUPath: hciDependencies.outputs.domainOUPath
-    endingIPAddress: hciDependencies.outputs.endingIPAddress
-    enableStorageAutoIp: hciDependencies.outputs.enableStorageAutoIp
-    keyVaultName: hciDependencies.outputs.keyVaultName
-    networkIntents: hciDependencies.outputs.networkIntents
-    startingIPAddress: hciDependencies.outputs.startingIPAddress
+    name: nestedDependencies.outputs.clusterName
+    customLocationName: nestedDependencies.outputs.customLocationName
+    clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
+    clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
+    defaultGateway: '172.20.0.1'
+    deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
+    dnsServers: ['172.20.0.1']
+    domainFqdn: 'hci.local'
+    domainOUPath: nestedDependencies.outputs.domainOUPath
+    startingIPAddress: '172.20.0.2'
+    endingIPAddress: '172.20.0.7'
+    enableStorageAutoIp: true
+    keyVaultName: nestedDependencies.outputs.keyVaultName
+    networkIntents: [
+      {
+        adapter: ['mgmt']
+        name: 'management'
+        overrideAdapterProperty: true
+        adapterPropertyOverrides: {
+          jumboPacket: '9014'
+          networkDirect: 'Disabled'
+          networkDirectTechnology: 'iWARP'
+        }
+        overrideQosPolicy: false
+        qosPolicyOverrides: {
+          bandwidthPercentage_SMB: '50'
+          priorityValue8021Action_Cluster: '7'
+          priorityValue8021Action_SMB: '3'
+        }
+        overrideVirtualSwitchConfiguration: false
+        virtualSwitchConfigurationOverrides: {
+          enableIov: 'true'
+          loadBalancingAlgorithm: 'Dynamic'
+        }
+        trafficType: ['Management']
+      }
+      {
+        adapter: ['comp0', 'comp1']
+        name: 'compute'
+        overrideAdapterProperty: true
+        adapterPropertyOverrides: {
+          jumboPacket: '9014'
+          networkDirect: 'Disabled'
+          networkDirectTechnology: 'iWARP'
+        }
+        overrideQosPolicy: false
+        qosPolicyOverrides: {
+          bandwidthPercentage_SMB: '50'
+          priorityValue8021Action_Cluster: '7'
+          priorityValue8021Action_SMB: '3'
+        }
+        overrideVirtualSwitchConfiguration: false
+        virtualSwitchConfigurationOverrides: {
+          enableIov: 'true'
+          loadBalancingAlgorithm: 'Dynamic'
+        }
+        trafficType: ['Compute']
+      }
+      {
+        adapter: ['smb0', 'smb1']
+        name: 'storage'
+        overrideAdapterProperty: true
+        adapterPropertyOverrides: {
+          jumboPacket: '9014'
+          networkDirect: 'Disabled'
+          networkDirectTechnology: 'iWARP'
+        }
+        overrideQosPolicy: true
+        qosPolicyOverrides: {
+          bandwidthPercentage_SMB: '50'
+          priorityValue8021Action_Cluster: '7'
+          priorityValue8021Action_SMB: '3'
+        }
+        overrideVirtualSwitchConfiguration: false
+        virtualSwitchConfigurationOverrides: {
+          enableIov: 'true'
+          loadBalancingAlgorithm: 'Dynamic'
+        }
+        trafficType: ['Storage']
+      }
+    ]
     storageConnectivitySwitchless: false
-    storageNetworks: hciDependencies.outputs.storageNetworks
-    subnetMask: hciDependencies.outputs.subnetMask
+    storageNetworks: [
+      {
+        adapterName: 'smb0'
+        vlan: '711'
+      }
+      {
+        adapterName: 'smb1'
+        vlan: '712'
+      }
+    ]
+    subnetMask: '255.255.255.0'
   }
 }
