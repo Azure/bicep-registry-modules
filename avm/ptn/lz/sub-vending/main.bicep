@@ -12,6 +12,8 @@ targetScope = 'managementGroup'
 //Imports
 import { roleAssignmentType } from 'modules/subResourceWrapper.bicep'
 import { subnetType } from 'modules/subResourceWrapper.bicep'
+import { natGatewayType } from 'modules/subResourceWrapper.bicep'
+import { bastionType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -155,6 +157,21 @@ param virtualNetworkPeeringEnabled bool = false
 
 @description('''Optional. Whether to deploy a NAT gateway to the created virtual network.''')
 param virtualNetworkDeployNatGateway bool = false
+
+@description('The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway.')
+param virtualNetworkNatGatewayConfiguration natGatewayType /*={
+  name: 'nat-gw-${virtualNetworkName}-gw'
+  zones: 0
+  publicIPAddressProperties: [
+    {
+      name: 'nat-gw-${virtualNetworkName}-pip'
+      zones: [1, 2, 3]
+    }
+  ]
+}*/
+
+@description('The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
+param virtualNetworkBastionConfiguration bastionType /*= {}*/
 
 @description('''Optional. The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.
 ''')
@@ -420,6 +437,9 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
     virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
     deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
+    virtualNetworkDeployNatGateway: virtualNetworkDeployNatGateway
+    virtualNetworkNatGatewayConfiguration: virtualNetworkNatGatewayConfiguration
+    virtualNetworkBastionConfiguration: virtualNetworkBastionConfiguration
     enableTelemetry: enableTelemetry
   }
 }

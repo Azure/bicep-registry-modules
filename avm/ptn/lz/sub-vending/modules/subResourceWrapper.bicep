@@ -67,17 +67,11 @@ param virtualNetworkPeeringEnabled bool = false
 @sys.description('Whether to deploy a NAT gateway to the created virtual network.')
 param virtualNetworkDeployNatGateway bool = false
 
-@sys.description('The NAT Gateway configuration object.')
-param natGatewayConfiguration natGatewayType = {
-  name: 'nat-gw-${virtualNetworkName}-gw'
-  zones: 0
-  publicIPAddressProperties: [
-    {
-      name: 'nat-gw-${virtualNetworkName}-pip'
-      zones: [1, 2, 3]
-    }
-  ]
-}
+@sys.description('The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway.')
+param virtualNetworkNatGatewayConfiguration natGatewayType
+
+@sys.description('The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
+param virtualNetworkBastionConfiguration bastionType
 
 @sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection.')
 param hubNetworkResourceId string = ''
@@ -236,6 +230,14 @@ var deploymentNames = {
   )
   createLzVirtualWanConnection: take(
     'lz-vend-vhc-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, virtualHubResourceIdChecked, deployment().name)}',
+    64
+  )
+  createLzNsg: take(
+    'lz-vend-nsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
+    64
+  )
+  createBastionNsg: take(
+    'lz-vend-bastion-nsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
     64
   )
   createLzRoleAssignmentsSub: take('lz-vend-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}', 64)
@@ -440,13 +442,186 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
       : null
     subnets: [
       for subnet in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
-        ? {
-            name: subnet.name
-            addressPrefix: subnet.addressPrefix
-            natGatewayResourceId: !empty(natGatewayConfiguration) ? createNatGateway.outputs.resourceId : null
-          }
+        ? union(
+            {
+              name: subnet.name
+              addressPrefix: subnet.addressPrefix
+              networkSecurityGroupResourceId: createLzNsg.outputs.resourceId
+              natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
+                ? createNatGateway.outputs.resourceId
+                : null
+            },
+            !empty(virtualNetworkBastionConfiguration)
+              ? {
+                  name: 'AzureBastionSubnet'
+                  addressPrefix: virtualNetworkBastionConfiguration.?bastionSubnetIpAddressRange
+                  networkSecurityGroupResourceId: createBastionNsg.outputs.resourceId
+                }
+              : {},
+            {}
+          )
         : {}
     ]
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(virtualNetworkBastionConfiguration) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+  scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+  name: deploymentNames.createBastionNsg
+  params: {
+    name: 'nsg-bastion'
+    location: virtualNetworkLocation
+    securityRules: [
+      // Inbound Rules
+      {
+        name: 'AllowHttpsInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 120
+          sourceAddressPrefix: 'Internet'
+          destinationAddressPrefix: '*'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowGatewayManagerInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 130
+          sourceAddressPrefix: 'GatewayManager'
+          destinationAddressPrefix: '*'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowAzureLoadBalancerInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 140
+          sourceAddressPrefix: 'AzureLoadBalancer'
+          destinationAddressPrefix: '*'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowBastionHostCommunication'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 150
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'VirtualNetwork'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '8080'
+            '5701'
+          ]
+        }
+      }
+      {
+        name: 'DenyAllInbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Inbound'
+          priority: 4096
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '*'
+        }
+      }
+      // Outbound Rules
+      {
+        name: 'AllowSshRdpOutbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 100
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'VirtualNetwork'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: ['22', '3389']
+        }
+      }
+      {
+        name: 'AllowAzureCloudOutbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 110
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'AzureCloud'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowBastionCommunication'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 120
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'VirtualNetwork'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '8080'
+            '5701'
+          ]
+        }
+      }
+      {
+        name: 'AllowGetSessionInformation'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 130
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'Internet'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '80'
+        }
+      }
+      {
+        name: 'DenyAllOutbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Outbound'
+          priority: 4096
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '*'
+        }
+      }
+    ]
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(virtualNetworkSubnets)) {
+  scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+  name: deploymentNames.createLzNsg
+  params: {
+    name: 'nsg-${virtualNetworkName}'
+    location: virtualNetworkLocation
     enableTelemetry: enableTelemetry
   }
 }
@@ -717,28 +892,27 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
   }
 }
 
-module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virtualNetworkDeployNatGateway && virtualNetworkEnabled) {
+module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virtualNetworkDeployNatGateway && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+  dependsOn: [
+    createResourceGroupForLzNetworking
+  ]
   name: deploymentNames.createNatGateway
   params: {
     name: 'nat-gw-${virtualNetworkName}'
-    zone: natGatewayConfiguration.?zones ?? 0
+    zone: virtualNetworkNatGatewayConfiguration.?zones ?? 0
     location: virtualNetworkLocation
     enableTelemetry: enableTelemetry
-    lock: virtualNetworkResourceGroupLockEnabled
-      ? {
-          kind: 'CanNotDelete'
-          name: 'CanNotDelete'
-        }
-      : null
     tags: virtualNetworkTags
     publicIPAddressObjects: [
-      for publicIp in natGatewayConfiguration.?publicIPAddressProperties ?? []: {
-        name: publicIp.?name ?? '${natGatewayConfiguration.?name}-pip'
+      for publicIp in virtualNetworkNatGatewayConfiguration.?publicIPAddressProperties ?? []: {
+        name: publicIp.?name ?? '${virtualNetworkNatGatewayConfiguration.?name}-pip'
         publicIPAddressSku: 'Standard'
         publicIPAddressVersion: 'IPv4'
         publicIPAllocationMethod: 'Static'
-        zones: publicIp.zones ?? (natGatewayConfiguration.?zones != 0 ? [natGatewayConfiguration.?zones] : null)
+        zones: publicIp.zones ?? (virtualNetworkNatGatewayConfiguration.?zones != 0
+          ? [virtualNetworkNatGatewayConfiguration.?zones]
+          : null)
         skuTier: 'Regional'
         ddosSettings: !empty(virtualNetworkDdosPlanResourceId)
           ? {
@@ -753,21 +927,30 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virt
       }
     ]
     publicIPPrefixObjects: [
-      for publicIpPrefix in natGatewayConfiguration.?publicIPAddressPrefixesProperties ?? []: {
-        name: publicIpPrefix.?name ?? '${natGatewayConfiguration.?name}-prefix'
+      for publicIpPrefix in virtualNetworkNatGatewayConfiguration.?publicIPAddressPrefixesProperties ?? []: {
+        name: publicIpPrefix.?name ?? '${virtualNetworkNatGatewayConfiguration.?name}-prefix'
         location: virtualNetworkLocation
-        lock: virtualNetworkResourceGroupLockEnabled
-          ? {
-              kind: 'CanNotDelete'
-              name: 'CanNotDelete'
-            }
-          : null
         prefixLength: publicIpPrefix.?prefixLength
         customIPPrefix: publicIpPrefix.?customIPPrefix
         tags: virtualNetworkTags
         enableTelemetry: enableTelemetry
       }
     ]
+  }
+}
+
+module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (!empty(virtualNetworkBastionConfiguration) && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+  name: 'bastion-${virtualNetworkName}'
+  scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+  dependsOn: [
+    createResourceGroupForLzNetworking
+  ]
+  params: {
+    name: virtualNetworkBastionConfiguration.?name ?? 'bastion-${virtualNetworkName}'
+    virtualNetworkResourceId: createLzVnet.outputs.resourceId
+    location: virtualNetworkLocation
+    skuName: virtualNetworkBastionConfiguration.?bastionSku ?? 'Standard'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -792,11 +975,30 @@ type natGatewayType = {
   zones: int?
 
   @description('The Public IP address(es) properties to be attached to the NAT gateway.')
-  publicIPAddressProperties: array?
+  publicIPAddressProperties: natGatewayPublicIpAddressPropertiesType?
 
   @description('The Public IP address(es) prefixes properties to be attached to the NAT gateway.')
-  publicIPAddressPrefixesProperties: array?
-}
+  publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType?
+}?
+
+type natGatewayPublicIpAddressPropertiesType = {
+  @description('The name of the Public IP address.')
+  name: string?
+
+  @description('The SKU of the Public IP address.')
+  zones: (1 | 2 | 3)[]?
+}[]?
+
+type publicIPAddressPrefixesPropertiesType = {
+  @description('The name of the Public IP address prefix.')
+  name: string?
+
+  @description('The prefix length of the public IP address prefix..')
+  prefixLength: int?
+
+  @description('The custom IP prefix of the public IP address prefix.')
+  customIPPrefix: string?
+}[]?
 
 @export()
 type roleAssignmentType = {
@@ -934,6 +1136,9 @@ type subnetType = {
   @description('Optional. The resource ID of the NAT Gateway to use for the subnet.')
   natGatewayResourceId: string?
 
+  @description('Optional. Option to assosciate with NAT gatway.')
+  associateWithNatGateway: bool?
+
   @description('Optional. The resource ID of the network security group to assign to the subnet.')
   networkSecurityGroupResourceId: string?
 
@@ -958,3 +1163,15 @@ type subnetType = {
   @description('Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.')
   sharingScope: ('DelegatedServices' | 'Tenant')?
 }
+
+@export()
+type bastionType = {
+  @description('Required. The name of the bastion host.')
+  name: string?
+
+  @description('Required. The SKU of the bastion host.')
+  bastionSku: 'Basic' | 'Standard' | 'Premium'?
+
+  @description('Required. The Ip address range of the bastion subnet.')
+  bastionSubnetIpAddressRange: string
+}?
