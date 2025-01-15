@@ -280,7 +280,6 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           }
         }
       : {
-          volumeType: 'Standard'
           dataProtection: {
             backup: backupEnabled
               ? {
