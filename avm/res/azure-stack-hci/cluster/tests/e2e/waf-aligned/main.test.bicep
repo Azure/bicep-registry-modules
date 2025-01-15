@@ -20,17 +20,17 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param localAdminAndDeploymentUserPass string = newGuid()
 
-@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
 #disable-next-line secure-parameter-default
 param arbDeploymentAppId string = ''
 
-@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
 #disable-next-line secure-parameter-default
 param arbDeploymentSPObjectId string = ''
 
-@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
