@@ -52,7 +52,7 @@ param smbSigningEnforced bool = true
 @description('Optional. When set to true, cluster east-west traffic is encrypted.')
 param smbClusterEncryption bool = true
 
-@description('Optional. When set to true, all the side channel mitigations are enabled')
+@description('Optional. When set to true, all the side channel mitigations are enabled.')
 param sideChannelMitigationEnforced bool = true
 
 @description('Optional. When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent.')

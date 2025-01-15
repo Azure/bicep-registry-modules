@@ -81,7 +81,6 @@ module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDep
     localAdminPassword: localAdminPassword
     location: location
     switchlessStorageConfig: true
-
     diskNamePrefix: diskNamePrefix
     HCIHostVirtualMachineScaleSetName: HCIHostVirtualMachineScaleSetName
     maintenanceConfigurationAssignmentName: maintenanceConfigurationAssignmentName

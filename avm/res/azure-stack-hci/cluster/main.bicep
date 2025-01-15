@@ -141,7 +141,7 @@ module deploymentSetting 'deployment-settings/main.bicep' = [
       enableStorageAutoIp: deploymentSettings!.?enableStorageAutoIp
       episodicDataUpload: deploymentSettings!.?episodicDataUpload
       hvciProtection: deploymentSettings!.?hvciProtection
-      isEuropeanUnionLocation: deploymentSettings!.?isEuropeanUnionLocation
+      isEuropeanUnionLocation: deploymentSettings!.?isRFEuropeanUnionLocation
       sideChannelMitigationEnforced: deploymentSettings!.?sideChannelMitigationEnforced
       smbClusterEncryption: deploymentSettings!.?smbClusterEncryption
       smbSigningEnforced: deploymentSettings!.?smbSigningEnforced
