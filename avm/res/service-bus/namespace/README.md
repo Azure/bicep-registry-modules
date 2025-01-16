@@ -3748,6 +3748,7 @@ Enabled by default in order to align with resiliency best practices, thus requir
 | `privateEndpoints` | array | The private endpoints of the service bus namespace. |
 | `resourceGroupName` | string | The resource group of the deployed service bus namespace. |
 | `resourceId` | string | The resource ID of the deployed service bus namespace. |
+| `serviceBusEndpoint` | string | The endpoint of the deployed service bus namespace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
