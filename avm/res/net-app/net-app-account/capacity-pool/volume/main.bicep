@@ -253,48 +253,30 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
           keyVaultPrivateEndpointResourceId: keyVaultPrivateEndpointResourceId
         }
       : {})
-    ...(volumeType != ''
-      ? {
-          volumeType: volumeType
-          dataProtection: {
-            replication: replicationEnabled
-              ? {
-                  endpointType: endpointType
-                  remoteVolumeRegion: remoteVolumeRegion
-                  remoteVolumeResourceId: remoteVolumeResourceId
-                  replicationSchedule: replicationSchedule
-                }
-              : {}
-            backup: backupEnabled
-              ? {
-                  backupPolicyId: backupPolicies.outputs.resourceId
-                  policyEnforced: policyEnforced
-                  backupVaultId: !useExistingBackupVault ? backupVaults.id : existingBackupVault.id
-                }
-              : {}
-            snapshot: snapEnabled
-              ? {
-                  snapshotPolicyId: snapshotPolicies.outputs.resourceId
-                }
-              : {}
+
+    volumeType: volumeType
+    dataProtection: {
+      replication: replicationEnabled
+        ? {
+            endpointType: endpointType
+            remoteVolumeRegion: remoteVolumeRegion
+            remoteVolumeResourceId: remoteVolumeResourceId
+            replicationSchedule: replicationSchedule
           }
-        }
-      : {
-          dataProtection: {
-            backup: backupEnabled
-              ? {
-                  backupPolicyId: backupPolicies.outputs.resourceId
-                  policyEnforced: policyEnforced
-                  backupVaultId: !useExistingBackupVault ? backupVaults.id : existingBackupVault.id
-                }
-              : {}
-            snapshot: snapEnabled
-              ? {
-                  snapshotPolicyId: snapshotPolicies.outputs.resourceId
-                }
-              : {}
+        : {}
+      backup: backupEnabled
+        ? {
+            backupPolicyId: backupPolicies.outputs.resourceId
+            policyEnforced: policyEnforced
+            backupVaultId: !useExistingBackupVault ? backupVaults.id : existingBackupVault.id
           }
-        })
+        : {}
+      snapshot: snapEnabled
+        ? {
+            snapshotPolicyId: snapshotPolicies.outputs.resourceId
+          }
+        : {}
+    }
     networkFeatures: networkFeatures
     serviceLevel: serviceLevel
     creationToken: creationToken
