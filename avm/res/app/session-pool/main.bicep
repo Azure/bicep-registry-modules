@@ -210,14 +210,19 @@ output systemAssignedMIPrincipalId string = sessionPool.?identity.?principalId ?
 type sessionContainerType = {
   @description('Optional. Container start command arguments')
   args: string[]?
+
   @description('Optional. Container start command')
   command: string[]?
+
   @description('Optional. Container environment variables')
   env: environmentVarType?
+
   @description('Required. Container image tag')
   image: string
+
   @description('Required. Custom container name')
   name: string
+
   @description('Required. Container resource requirements')
   resources: sessionContainerResourcesType
 }[]?
@@ -226,8 +231,10 @@ type sessionContainerType = {
 type environmentVarType = {
   @description('Required. Environment variable name.')
   name: string
+
   @description('Optional. Required if value is not set. Name of the Container App secret from which to pull the environment variable value.')
   secretRef: string?
+
   @description('Optional. Required if secretRef is not set. Non-secret environment variable value.')
   value: string?
 }[]?
@@ -236,6 +243,7 @@ type environmentVarType = {
 type sessionContainerResourcesType = {
   @description('Required. Required CPU in cores, e.g. 0.5')
   cpu: string
+
   @description('Required. Required memory, e.g. "1.25Gi"')
   memory: string
 }
@@ -244,10 +252,13 @@ type sessionContainerResourcesType = {
 type sessionRegistryCredentialsType = {
   @description('Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system"')
   identity: string?
+
   @description('Optional. The name of the secret that contains the registry login password. Not used if identity is specified.')
   passwordSecretRef: string?
+
   @description('Required. Container registry server')
   server: string
+
   @description('Required. Container registry username')
   username: string
 }
@@ -256,6 +267,7 @@ type sessionRegistryCredentialsType = {
 type managedIdentitySettingType = {
   @description('Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or "system" for system-assigned identity.')
   identity: string
+
   @description('Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None')
   lifecycle: string
 }[]?
