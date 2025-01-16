@@ -1,5 +1,10 @@
 # ExpressRoute Ports `[Microsoft.Network/ExpressRoutePorts]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Express Route Port resource used by Express Route Direct.
 
 ## Navigation
@@ -27,9 +32,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/express-route-port:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Defaults](#example-2-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -105,67 +109,9 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Defaults_
+### Example 2: _Using large parameter set_
 
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>' = {
-  name: 'expressRoutePortDeployment'
-  params: {
-    // Required parameters
-    name: 'nerpdef001'
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nerpdef001"
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/network/express-route-port:<version>'
-
-// Required parameters
-param name = 'nerpdef001'
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 3: _Using large parameter set_
-
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -325,9 +271,9 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 3: _WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -504,7 +450,7 @@ Properties of the ExpressRouteLink.
 
 The name of the link to be created.
 
-- Required: No
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
@@ -530,7 +476,7 @@ Resource Id of the existing Link.
 
 Properties of the Link.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
@@ -543,7 +489,7 @@ Properties of the Link.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`macSecConfig`](#parameter-linkspropertiesmacsecconfig) | object | MacSec Configuration of the link |
+| [`macSecConfig`](#parameter-linkspropertiesmacsecconfig) | object | MacSec Configuration of the link. |
 
 ### Parameter: `links.properties.adminState`
 
@@ -560,7 +506,7 @@ Administrative state of the physical port.
 
 ### Parameter: `links.properties.macSecConfig`
 
-MacSec Configuration of the link
+MacSec Configuration of the link.
 
 - Required: No
 - Type: object
@@ -570,7 +516,7 @@ MacSec Configuration of the link
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cakSecretIdentifier`](#parameter-linkspropertiesmacsecconfigcaksecretidentifier) | string | Keyvault Secret Identifier URL containing Mac security CAK key. |
-| [`cipher`](#parameter-linkspropertiesmacsecconfigcipher) | string | Mac security cipher |
+| [`cipher`](#parameter-linkspropertiesmacsecconfigcipher) | string | Mac security cipher. |
 | [`cknSecretIdentifier`](#parameter-linkspropertiesmacsecconfigcknsecretidentifier) | string | Keyvault Secret Identifier URL containing Mac security CKN key. |
 | [`sciState`](#parameter-linkspropertiesmacsecconfigscistate) | string | Sci mode. |
 
@@ -589,7 +535,7 @@ Keyvault Secret Identifier URL containing Mac security CAK key.
 
 ### Parameter: `links.properties.macSecConfig.cipher`
 
-Mac security cipher
+Mac security cipher.
 
 - Required: Yes
 - Type: string
@@ -780,7 +726,12 @@ The principal type of the assigned principal ID.
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `location` | string | The location the resource was deployed into. |
+| `name` | string | The name of the ExpressRoute Gateway. |
+| `resourceGroupName` | string | The resource group of the ExpressRoute Gateway was deployed into. |
+| `resourceId` | string | The resource ID of the ExpressRoute Gateway. |
 
 ## Data Collection
 

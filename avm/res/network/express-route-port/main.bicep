@@ -126,6 +126,18 @@ resource expressRouteCircuit_roleAssignments 'Microsoft.Authorization/roleAssign
   }
 ]
 
+@description('The resource ID of the ExpressRoute Gateway.')
+output resourceId string = expressRoutePort.id
+
+@description('The resource group of the ExpressRoute Gateway was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The name of the ExpressRoute Gateway.')
+output name string = expressRoutePort.name
+
+@description('The location the resource was deployed into.')
+output location string = expressRoutePort.location
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -169,19 +181,19 @@ type linkType = {
   id: 'string'?
 
   @description('Required. The name of the link to be created.')
-  name: 'string'?
+  name: 'string'
 
   @description('Optional. Properties of the Link.')
   properties: {
     @description('Required. Administrative state of the physical port.')
     adminState: 'string'
 
-    @description('Optional. MacSec Configuration of the link')
+    @description('Optional. MacSec Configuration of the link.')
     macSecConfig: {
       @description('Required. Keyvault Secret Identifier URL containing Mac security CAK key.')
       cakSecretIdentifier: 'string'
 
-      @description('Required. Mac security cipher')
+      @description('Required. Mac security cipher.')
       cipher: ('GcmAes128' | 'GcmAes256' | 'GcmAesXpn128' | 'GcmAesXpn256')
 
       @description('Required. Keyvault Secret Identifier URL containing Mac security CKN key.')
@@ -190,5 +202,5 @@ type linkType = {
       @description('Required. Sci mode.')
       sciState: ('Enabled' | 'Disabled')
     }?
-  }
+  }?
 }[]?
