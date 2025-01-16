@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "12612133195694080002"
+      "templateHash": "9698394884306898303"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool.",
@@ -559,12 +559,26 @@
       },
       "value": "[resourceId('Microsoft.App/sessionPools', parameters('name'))]"
     },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group in which the session pool was created."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "managementEndpoint": {
       "type": "string",
       "metadata": {
         "description": "The management endpoint of the session pool."
       },
       "value": "[reference('sessionPool').poolManagementEndpoint]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('sessionPool', '2024-10-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }
