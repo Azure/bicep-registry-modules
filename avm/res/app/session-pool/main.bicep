@@ -208,22 +208,22 @@ output systemAssignedMIPrincipalId string = sessionPool.?identity.?principalId ?
 
 @description('Optional. Custom container definition.')
 type sessionContainerType = {
-  @description('Optional. Container start command arguments')
+  @description('Optional. Container start command arguments.')
   args: string[]?
 
-  @description('Optional. Container start command')
+  @description('Optional. Container start command.')
   command: string[]?
 
-  @description('Optional. Container environment variables')
+  @description('Optional. Container environment variables.')
   env: environmentVarType?
 
-  @description('Required. Container image tag')
+  @description('Required. Container image tag.')
   image: string
 
-  @description('Required. Custom container name')
+  @description('Required. Custom container name.')
   name: string
 
-  @description('Required. Container resource requirements')
+  @description('Required. Container resource requirements.')
   resources: sessionContainerResourcesType
 }[]?
 
@@ -241,25 +241,25 @@ type environmentVarType = {
 
 @description('Optional. Container resource requirements. Only used with custom containers.')
 type sessionContainerResourcesType = {
-  @description('Required. Required CPU in cores, e.g. 0.5')
+  @description('Required. Required CPU in cores, e.g. 0.5.')
   cpu: string
 
-  @description('Required. Required memory, e.g. "1.25Gi"')
+  @description('Required. Required memory, e.g. "1.25Gi".')
   memory: string
 }
 
 @description('Optional. Container registry credentials. Only used with custom containers.')
 type sessionRegistryCredentialsType = {
-  @description('Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system"')
+  @description('Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system".')
   identity: string?
 
   @description('Optional. The name of the secret that contains the registry login password. Not used if identity is specified.')
   passwordSecretRef: string?
 
-  @description('Required. Container registry server')
+  @description('Required. Container registry server.')
   server: string
 
-  @description('Required. Container registry username')
+  @description('Required. Container registry username.')
   username: string
 }
 
@@ -268,6 +268,6 @@ type managedIdentitySettingType = {
   @description('Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or "system" for system-assigned identity.')
   identity: string
 
-  @description('Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None')
+  @description('Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None".')
   lifecycle: string
 }[]?

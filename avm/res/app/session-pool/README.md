@@ -539,35 +539,35 @@ Custom container definitions. Only required if containerType is CustomContainer.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`image`](#parameter-containersimage) | string | Container image tag |
-| [`name`](#parameter-containersname) | string | Custom container name |
-| [`resources`](#parameter-containersresources) | object | Container resource requirements |
+| [`image`](#parameter-containersimage) | string | Container image tag. |
+| [`name`](#parameter-containersname) | string | Custom container name. |
+| [`resources`](#parameter-containersresources) | object | Container resource requirements. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`args`](#parameter-containersargs) | array | Container start command arguments |
-| [`command`](#parameter-containerscommand) | array | Container start command |
-| [`env`](#parameter-containersenv) | array | Container environment variables |
+| [`args`](#parameter-containersargs) | array | Container start command arguments. |
+| [`command`](#parameter-containerscommand) | array | Container start command. |
+| [`env`](#parameter-containersenv) | array | Container environment variables. |
 
 ### Parameter: `containers.image`
 
-Container image tag
+Container image tag.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `containers.name`
 
-Custom container name
+Custom container name.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `containers.resources`
 
-Container resource requirements
+Container resource requirements.
 
 - Required: Yes
 - Type: object
@@ -576,40 +576,40 @@ Container resource requirements
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cpu`](#parameter-containersresourcescpu) | string | Required CPU in cores, e.g. 0.5 |
-| [`memory`](#parameter-containersresourcesmemory) | string | Required memory, e.g. "1.25Gi" |
+| [`cpu`](#parameter-containersresourcescpu) | string | Required CPU in cores, e.g. 0.5. |
+| [`memory`](#parameter-containersresourcesmemory) | string | Required memory, e.g. "1.25Gi". |
 
 ### Parameter: `containers.resources.cpu`
 
-Required CPU in cores, e.g. 0.5
+Required CPU in cores, e.g. 0.5.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `containers.resources.memory`
 
-Required memory, e.g. "1.25Gi"
+Required memory, e.g. "1.25Gi".
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `containers.args`
 
-Container start command arguments
+Container start command arguments.
 
 - Required: No
 - Type: array
 
 ### Parameter: `containers.command`
 
-Container start command
+Container start command.
 
 - Required: No
 - Type: array
 
 ### Parameter: `containers.env`
 
-Container environment variables
+Container environment variables.
 
 - Required: No
 - Type: array
@@ -755,7 +755,7 @@ Settings for a Managed Identity that is assigned to the Session pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`identity`](#parameter-managedidentitysettingsidentity) | string | The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or "system" for system-assigned identity. |
-| [`lifecycle`](#parameter-managedidentitysettingslifecycle) | string | Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None |
+| [`lifecycle`](#parameter-managedidentitysettingslifecycle) | string | Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None". |
 
 ### Parameter: `managedIdentitySettings.identity`
 
@@ -766,7 +766,7 @@ The resource ID of a user-assigned managed identity that is assigned to the Sess
 
 ### Parameter: `managedIdentitySettings.lifecycle`
 
-Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None
+Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None".
 
 - Required: Yes
 - Type: string
@@ -812,33 +812,33 @@ Container registry credentials. Only required if containerType is CustomContaine
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`server`](#parameter-registrycredentialsserver) | string | Container registry server |
-| [`username`](#parameter-registrycredentialsusername) | string | Container registry username |
+| [`server`](#parameter-registrycredentialsserver) | string | Container registry server. |
+| [`username`](#parameter-registrycredentialsusername) | string | Container registry username. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`identity`](#parameter-registrycredentialsidentity) | string | A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system" |
+| [`identity`](#parameter-registrycredentialsidentity) | string | A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system". |
 | [`passwordSecretRef`](#parameter-registrycredentialspasswordsecretref) | string | The name of the secret that contains the registry login password. Not used if identity is specified. |
 
 ### Parameter: `registryCredentials.server`
 
-Container registry server
+Container registry server.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `registryCredentials.username`
 
-Container registry username
+Container registry username.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `registryCredentials.identity`
 
-A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system"
+A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system".
 
 - Required: No
 - Type: string
