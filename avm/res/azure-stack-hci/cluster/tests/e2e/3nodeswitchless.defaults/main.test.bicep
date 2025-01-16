@@ -57,6 +57,8 @@ module nestedDependencies 'dependencies.bicep' = {
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
     HCIHostVirtualMachineScaleSetName: 'dep-${namePrefix}-hvmss-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
     diskNamePrefix: 'dep-${namePrefix}-disk-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'

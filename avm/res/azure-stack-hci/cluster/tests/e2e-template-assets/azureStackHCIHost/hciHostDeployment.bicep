@@ -1,49 +1,26 @@
 param location string // all resource except HCI Arc Nodes + HCI resources
-param vnetSubnetResourceId string? // use to connect the HCI Azure Host VM to an existing VNET in the same region
-param useSpotVM bool = false // change to false to use regular priority VM
 param hostVMSize string = 'Standard_E32bds_v5' // Azure VM size for the HCI Host VM - must support nested virtualization and have sufficient capacity for the HCI node VMs!
 param hciNodeCount int = 2 // number of Azure Stack HCI nodes to deploy
 param switchlessStorageConfig bool = false // set to true to configure switchless storage
 // specify either a VHDX or ISO download URL; if both are specified, the VHDX download URL will be used
-param hciVHDXDownloadURL string = ''
 param hciISODownloadURL string = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
 param localAdminUsername string = 'admin-hci'
 @secure()
 param localAdminPassword string
 param domainOUPath string = 'OU=HCI,DC=HCI,DC=local'
 param deploymentUsername string = 'deployUser'
-param arcGatewayId string = '' // default to '' to support runCommand parameters requiring string values
-param deployProxy bool = false // set to true to deploy a proxy VM for hci internet access
-param proxyBypassString string? // bypass string for proxy server - deployProxy must be true
-param proxyServerEndpoint string? // endpoint for proxy server - deployProxy must be true
-param hciHostAssignPublicIp bool = false // set to true to deploy a public IP for the HCI Host VM
 
 @description('Required. The name of the VM-managed user identity to create, used for HCI Arc onboarding.')
 param userAssignedIdentityName string
 
-@description('Conditional. The name of the VNET for the HCI host Azure VM. Required if \'vnetSubnetResourceId\' is empty.')
-param virtualNetworkName string?
+@description('Required. The name of the VNET for the HCI host Azure VM.')
+param virtualNetworkName string
+
+@description('Required. The name of the NSG to create.')
+param networkSecurityGroupName string
 
 @description('Required. The name of the maintenance configuration for the Azure Stack HCI Host VM and proxy server.')
 param maintenanceConfigurationName string
-
-@description('Conditional. The name of the Azure VM scale set for the proxy server. Required if \'deployProxy\' is true.')
-param proxyVirtualMachineScaleSetName string?
-
-@description('Conditional. The name of the Network Interface Card for the proxy server. Required if \'deployProxy\' is true.')
-param proxyNetworkInterfaceName string?
-
-@description('Conditional. The name of the Azure VM for the proxy server. Required if \'deployProxy\' is true.')
-param proxyVirtualMachineName string?
-
-@description('Conditional. The name of the Maintenance Configuration Assignment for the proxy server. Required if \'deployProxy\' is true.')
-param proxyMaintenanceConfigurationAssignmentName string?
-
-@description('Conditional. The name of the Public IP Address for the HCI host. Required if \'hciHostAssignPublicIp\' is true.')
-param HCIHostPublicIpName string?
-
-@description('Conditional. The name of the Network Security Group for the HCI host. Required if \'hciHostAssignPublicIp\' is true.')
-param HCIHostNetworkInterfaceGroupName string?
 
 @description('Required. The name of the Azure VM scale set for the HCI host.')
 param HCIHostVirtualMachineScaleSetName string
@@ -94,8 +71,8 @@ module roleAssignment_subscriptionContributor 'modules/subscriptionRoleAssignmen
 }
 
 // optional VNET and subnet for the HCI host Azure VM
-resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = if (empty(vnetSubnetResourceId)) {
-  name: virtualNetworkName ?? ''
+resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
+  name: virtualNetworkName
   location: location
   properties: {
     addressSpace: {
@@ -146,110 +123,9 @@ resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023
   }
 }
 
-resource proxyVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = if (deployProxy) {
-  name: proxyVirtualMachineScaleSetName ?? ''
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
   location: location
-  zones: ['1', '2', '3']
-  properties: {
-    orchestrationMode: 'Flexible'
-    platformFaultDomainCount: 1
-  }
-}
-
-resource proxyNic 'Microsoft.Network/networkInterfaces@2023-11-01' = if (deployProxy) {
-  name: proxyNetworkInterfaceName ?? ''
-  location: location
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: vnetSubnetResourceId ?? vnet.properties.subnets[0].id
-          }
-        }
-      }
-    ]
-  }
-}
-
-resource proxyServer 'Microsoft.Compute/virtualMachines@2024-03-01' = if (deployProxy) {
-  name: proxyVirtualMachineName ?? ''
-  location: location
-  zones: ['1']
-  properties: {
-    virtualMachineScaleSet: {
-      id: proxyVMSSFlex.id
-    }
-    hardwareProfile: {
-      vmSize: 'Standard_D2s_v3'
-    }
-    storageProfile: {
-      imageReference: {
-        publisher: 'Canonical'
-        offer: '0001-com-ubuntu-server-jammy'
-        sku: '22_04-lts-gen2'
-        version: 'latest'
-      }
-      osDisk: {
-        createOption: 'FromImage'
-        managedDisk: {
-          storageAccountType: 'Premium_ZRS'
-        }
-      }
-    }
-    osProfile: {
-      computerName: 'proxyServer'
-      adminUsername: localAdminUsername
-      adminPassword: localAdminPassword
-      customData: (arcGatewayId == null || arcGatewayId == '')
-        ? base64(loadTextContent('./scripts/proxyConfig.sh'))
-        : base64(loadTextContent('./scripts/proxyConfigArcGW.sh'))
-      linuxConfiguration: {
-        disablePasswordAuthentication: false
-        patchSettings: {
-          patchMode: 'AutomaticByPlatform'
-          automaticByPlatformSettings: {
-            bypassPlatformSafetyChecksOnUserSchedule: true
-          }
-        }
-      }
-    }
-
-    networkProfile: {
-      networkInterfaces: [
-        {
-          id: proxyNic.id
-        }
-      ]
-    }
-  }
-}
-
-resource maintenanceAssignment_proxyServer 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (deployProxy) {
-  name: proxyMaintenanceConfigurationAssignmentName ?? ''
-  location: location
-  properties: {
-    maintenanceConfigurationId: maintenanceConfig.id
-  }
-  scope: proxyServer
-}
-
-resource publicIP_HCIHost 'Microsoft.Network/publicIPAddresses@2024-01-01' = if (hciHostAssignPublicIp) {
-  name: HCIHostPublicIpName ?? ''
-  location: location
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    publicIPAllocationMethod: 'Static'
-  }
-}
-
-resource networkSecurityGroup_HCIHost 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
-  location: location
-  name: HCIHostNetworkInterfaceGroupName ?? ''
+  name: networkSecurityGroupName
 }
 
 resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = {
@@ -267,21 +143,16 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   name: networkInterfaceName
   properties: {
     networkSecurityGroup: {
-      id: networkSecurityGroup_HCIHost.id
+      id: networkSecurityGroup.id
     }
     ipConfigurations: [
       {
         name: 'ipConfig01'
         properties: {
           subnet: {
-            id: vnetSubnetResourceId ?? vnet.properties.subnets[0].id
+            id: vnet.properties.subnets[0].id
           }
           privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: hciHostAssignPublicIp
-            ? {
-                id: publicIP_HCIHost.id
-              }
-            : null
         }
       }
     ]
@@ -325,13 +196,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
     hardwareProfile: {
       vmSize: hostVMSize
     }
-    priority: useSpotVM ? 'Spot' : 'Regular'
-    evictionPolicy: useSpotVM ? 'Deallocate' : null
-    billingProfile: useSpotVM
-      ? {
-          maxPrice: -1
-        }
-      : null
+    priority: 'Regular'
     networkProfile: {
       networkInterfaces: [
         {
@@ -462,7 +327,7 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     parameters: [
       {
         name: 'hciVHDXDownloadURL'
-        value: hciVHDXDownloadURL
+        value: ''
       }
       {
         name: 'hciISODownloadURL'
@@ -503,7 +368,6 @@ resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     retentionInterval: 'PT6H'
   }
   dependsOn: [
-    proxyServer
     runCommand4
   ]
 }
@@ -586,7 +450,7 @@ resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
       {
         name: 'arcGatewayId'
-        value: arcGatewayId
+        value: ''
       }
       {
         name: 'deploymentUsername'
@@ -598,13 +462,11 @@ resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
       {
         name: 'proxyBypassString'
-        value: proxyBypassString ?? (deployProxy ? 'GENERATE_PROXY_BYPASS_DYNAMICALLY' : '')
+        value: ''
       }
       {
         name: 'proxyServerEndpoint'
-        value: proxyServerEndpoint ?? (deployProxy
-          ? 'http://${proxyNic.properties.ipConfigurations[0].properties.privateIPAddress}:3128'
-          : '')
+        value: ''
       }
       {
         name: 'userAssignedManagedIdentityClientId'
@@ -654,4 +516,4 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
   dependsOn: [runCommand6]
 }
 
-output vnetSubnetResourceId string = vnetSubnetResourceId ?? vnet.properties.subnets[0].id
+output vnetSubnetResourceId string = vnet.properties.subnets[0].id
