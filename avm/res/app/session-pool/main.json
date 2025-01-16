@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "10899070740805655460"
+      "templateHash": "2783273684876442294"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool.",
@@ -25,7 +25,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. Container start command arguments"
+              "description": "Optional. Container start command arguments."
             }
           },
           "command": {
@@ -35,32 +35,32 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. Container start command"
+              "description": "Optional. Container start command."
             }
           },
           "env": {
             "$ref": "#/definitions/environmentVarType",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Container environment variables"
+              "description": "Optional. Container environment variables."
             }
           },
           "image": {
             "type": "string",
             "metadata": {
-              "description": "Required. Container image tag"
+              "description": "Required. Container image tag."
             }
           },
           "name": {
             "type": "string",
             "metadata": {
-              "description": "Required. Custom container name"
+              "description": "Required. Custom container name."
             }
           },
           "resources": {
             "$ref": "#/definitions/sessionContainerResourcesType",
             "metadata": {
-              "description": "Required. Container resource requirements"
+              "description": "Required. Container resource requirements."
             }
           }
         }
@@ -108,13 +108,13 @@
         "cpu": {
           "type": "string",
           "metadata": {
-            "description": "Required. Required CPU in cores, e.g. 0.5"
+            "description": "Required. Required CPU in cores, e.g. 0.5."
           }
         },
         "memory": {
           "type": "string",
           "metadata": {
-            "description": "Required. Required memory, e.g. \"1.25Gi\""
+            "description": "Required. Required memory, e.g. \"1.25Gi\"."
           }
         }
       },
@@ -129,7 +129,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use \"system\""
+            "description": "Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use \"system\"."
           }
         },
         "passwordSecretRef": {
@@ -142,13 +142,13 @@
         "server": {
           "type": "string",
           "metadata": {
-            "description": "Required. Container registry server"
+            "description": "Required. Container registry server."
           }
         },
         "username": {
           "type": "string",
           "metadata": {
-            "description": "Required. Container registry username"
+            "description": "Required. Container registry username."
           }
         }
       },
@@ -170,7 +170,7 @@
           "lifecycle": {
             "type": "string",
             "metadata": {
-              "description": "Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: \"All\", \"Init\", \"Main\", \"None"
+              "description": "Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: \"All\", \"Init\", \"Main\", \"None\"."
             }
           }
         }
