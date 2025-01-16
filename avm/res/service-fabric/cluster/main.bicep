@@ -151,8 +151,8 @@ var clientCertificateThumbprintsVar = [
 
 var fabricSettingsVar = [
   for fabricSetting in fabricSettings: {
-    name: contains(fabricSetting, 'name') ? fabricSetting.name : null
-    parameters: contains(fabricSetting, 'parameters') ? fabricSetting.parameters : null
+    name: fabricSetting.?name
+    parameters: fabricSetting.?parameters
   }
 ]
 
@@ -160,42 +160,36 @@ var fnodeTypesVar = [
   for nodeType in nodeTypes: {
     applicationPorts: contains(nodeType, 'applicationPorts')
       ? {
-          endPort: contains(nodeType.applicationPorts, 'endPort') ? nodeType.applicationPorts.endPort : null
-          startPort: contains(nodeType.applicationPorts, 'startPort') ? nodeType.applicationPorts.startPort : null
+          endPort: nodeType.applicationPorts.?endPort
+          startPort: nodeType.applicationPorts.?startPort
         }
       : null
-    capacities: contains(nodeType, 'capacities') ? nodeType.capacities : null
-    clientConnectionEndpointPort: contains(nodeType, 'clientConnectionEndpointPort')
-      ? nodeType.clientConnectionEndpointPort
-      : null
-    durabilityLevel: contains(nodeType, 'durabilityLevel') ? nodeType.durabilityLevel : null
+    capacities: nodeType.?capacities
+    clientConnectionEndpointPort: nodeType.?clientConnectionEndpointPort
+    durabilityLevel: nodeType.?durabilityLevel
     ephemeralPorts: contains(nodeType, 'ephemeralPorts')
       ? {
-          endPort: contains(nodeType.ephemeralPorts, 'endPort') ? nodeType.ephemeralPorts.endPort : null
-          startPort: contains(nodeType.ephemeralPorts, 'startPort') ? nodeType.ephemeralPorts.startPort : null
+          endPort: nodeType.ephemeralPorts.?endPort
+          startPort: nodeType.ephemeralPorts.?startPort
         }
       : null
-    httpGatewayEndpointPort: contains(nodeType, 'httpGatewayEndpointPort') ? nodeType.httpGatewayEndpointPort : null
-    isPrimary: contains(nodeType, 'isPrimary') ? nodeType.isPrimary : null
-    isStateless: contains(nodeType, 'isStateless') ? nodeType.isStateless : null
-    multipleAvailabilityZones: contains(nodeType, 'multipleAvailabilityZones')
-      ? nodeType.multipleAvailabilityZones
-      : null
-    name: contains(nodeType, 'name') ? nodeType.name : 'Node00'
-    placementProperties: contains(nodeType, 'placementProperties') ? nodeType.placementProperties : null
-    reverseProxyEndpointPort: contains(nodeType, 'reverseProxyEndpointPort') ? nodeType.reverseProxyEndpointPort : null
-    vmInstanceCount: contains(nodeType, 'vmInstanceCount') ? nodeType.vmInstanceCount : 1
+    httpGatewayEndpointPort: nodeType.?httpGatewayEndpointPort
+    isPrimary: nodeType.?isPrimary
+    isStateless: nodeType.?isStateless
+    multipleAvailabilityZones: nodeType.?multipleAvailabilityZones
+    name: nodeType.?name ?? 'Node00'
+    placementProperties: nodeType.?placementProperties
+    reverseProxyEndpointPort: nodeType.?reverseProxyEndpointPort
+    vmInstanceCount: nodeType.?vmInstanceCount ?? 1
   }
 ]
 
 var notificationsVar = [
   for notification in notifications: {
-    isEnabled: contains(notification, 'isEnabled') ? notification.isEnabled : false
-    notificationCategory: contains(notification, 'notificationCategory')
-      ? notification.notificationCategory
-      : 'WaveProgress'
-    notificationLevel: contains(notification, 'notificationLevel') ? notification.notificationLevel : 'All'
-    notificationTargets: contains(notification, 'notificationTargets') ? notification.notificationTargets : []
+    isEnabled: notification.?isEnabled ?? false
+    notificationCategory: notification.?notificationCategory ?? 'WaveProgress'
+    notificationLevel: notification.?notificationLevel ?? 'All'
+    notificationTargets: notification.?notificationTargets ?? []
   }
 ]
 
@@ -207,36 +201,20 @@ var upgradeDescriptionVar = union(
       maxPercentDeltaUnhealthyNodes: upgradeDescription.?maxPercentDeltaUnhealthyNodes ?? 0
       maxPercentUpgradeDomainDeltaUnhealthyNodes: upgradeDescription.?maxPercentUpgradeDomainDeltaUnhealthyNodes ?? 0
     }
-    forceRestart: contains(upgradeDescription, 'forceRestart') ? upgradeDescription.forceRestart : false
-    healthCheckRetryTimeout: contains(upgradeDescription, 'healthCheckRetryTimeout')
-      ? upgradeDescription.healthCheckRetryTimeout
-      : '00:45:00'
-    healthCheckStableDuration: contains(upgradeDescription, 'healthCheckStableDuration')
-      ? upgradeDescription.healthCheckStableDuration
-      : '00:01:00'
-    healthCheckWaitDuration: contains(upgradeDescription, 'healthCheckWaitDuration')
-      ? upgradeDescription.healthCheckWaitDuration
-      : '00:00:30'
-    upgradeDomainTimeout: contains(upgradeDescription, 'upgradeDomainTimeout')
-      ? upgradeDescription.upgradeDomainTimeout
-      : '02:00:00'
-    upgradeReplicaSetCheckTimeout: contains(upgradeDescription, 'upgradeReplicaSetCheckTimeout')
-      ? upgradeDescription.upgradeReplicaSetCheckTimeout
-      : '1.00:00:00'
-    upgradeTimeout: contains(upgradeDescription, 'upgradeTimeout') ? upgradeDescription.upgradeTimeout : '02:00:00'
+    forceRestart: upgradeDescription.?forceRestart ?? false
+    healthCheckRetryTimeout: upgradeDescription.?healthCheckRetryTimeout ?? '00:45:00'
+    healthCheckStableDuration: upgradeDescription.?healthCheckStableDuration ?? '00:01:00'
+    healthCheckWaitDuration: upgradeDescription.?healthCheckWaitDuration ?? '00:00:30'
+    upgradeDomainTimeout: upgradeDescription.?upgradeDomainTimeout ?? '02:00:00'
+    upgradeReplicaSetCheckTimeout: upgradeDescription.?upgradeReplicaSetCheckTimeout ?? '1.00:00:00'
+    upgradeTimeout: upgradeDescription.?upgradeTimeout ?? '02:00:00'
   },
   contains(upgradeDescription, 'healthPolicy')
     ? {
         healthPolicy: {
-          applicationHealthPolicies: contains(upgradeDescription.healthPolicy, 'applicationHealthPolicies')
-            ? upgradeDescription.healthPolicy.applicationHealthPolicies
-            : {}
-          maxPercentUnhealthyApplications: contains(upgradeDescription.healthPolicy, 'maxPercentUnhealthyApplications')
-            ? upgradeDescription.healthPolicy.maxPercentUnhealthyApplications
-            : 0
-          maxPercentUnhealthyNodes: contains(upgradeDescription.healthPolicy, 'maxPercentUnhealthyNodes')
-            ? upgradeDescription.healthPolicy.maxPercentUnhealthyNodes
-            : 0
+          applicationHealthPolicies: upgradeDescription.healthPolicy.?applicationHealthPolicies ?? {}
+          maxPercentUnhealthyApplications: upgradeDescription.healthPolicy.?maxPercentUnhealthyApplications ?? 0
+          maxPercentUnhealthyNodes: upgradeDescription.healthPolicy.?maxPercentUnhealthyNodes ?? 0
         }
       }
     : {}
@@ -298,26 +276,22 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     }
     azureActiveDirectory: !empty(azureActiveDirectory)
       ? {
-          clientApplication: contains(azureActiveDirectory, 'clientApplication')
-            ? azureActiveDirectory.clientApplication
-            : null
-          clusterApplication: contains(azureActiveDirectory, 'clusterApplication')
-            ? azureActiveDirectory.clusterApplication
-            : null
-          tenantId: contains(azureActiveDirectory, 'tenantId') ? azureActiveDirectory.tenantId : null
+          clientApplication: azureActiveDirectory.?clientApplication
+          clusterApplication: azureActiveDirectory.?clusterApplication
+          tenantId: azureActiveDirectory.?tenantId
         }
       : null
     certificate: !empty(certificate)
       ? {
           thumbprint: certificate.?thumbprint ?? ''
-          thumbprintSecondary: certificate.?thumbprintSecondary ?? null
-          x509StoreName: certificate.?x509StoreName ?? null
+          thumbprintSecondary: certificate.?thumbprintSecondary
+          x509StoreName: certificate.?x509StoreName
         }
       : null
     certificateCommonNames: !empty(certificateCommonNames)
       ? {
           commonNames: certificateCommonNames.?commonNames ?? []
-          x509StoreName: certificateCommonNames.?x509StoreName ?? null
+          x509StoreName: certificateCommonNames.?x509StoreName
         }
       : null
     clientCertificateCommonNames: clientCertificateCommonNamesVar
@@ -325,24 +299,12 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     clusterCodeVersion: clusterCodeVersion
     diagnosticsStorageAccountConfig: !empty(diagnosticsStorageAccountConfig)
       ? {
-          blobEndpoint: contains(diagnosticsStorageAccountConfig, 'blobEndpoint')
-            ? diagnosticsStorageAccountConfig.blobEndpoint
-            : null
-          protectedAccountKeyName: contains(diagnosticsStorageAccountConfig, 'protectedAccountKeyName')
-            ? diagnosticsStorageAccountConfig.protectedAccountKeyName
-            : null
-          protectedAccountKeyName2: contains(diagnosticsStorageAccountConfig, 'protectedAccountKeyName2')
-            ? diagnosticsStorageAccountConfig.protectedAccountKeyName2
-            : null
-          queueEndpoint: contains(diagnosticsStorageAccountConfig, 'queueEndpoint')
-            ? diagnosticsStorageAccountConfig.queueEndpoint
-            : null
-          storageAccountName: contains(diagnosticsStorageAccountConfig, 'storageAccountName')
-            ? diagnosticsStorageAccountConfig.storageAccountName
-            : null
-          tableEndpoint: contains(diagnosticsStorageAccountConfig, 'tableEndpoint')
-            ? diagnosticsStorageAccountConfig.tableEndpoint
-            : null
+          blobEndpoint: diagnosticsStorageAccountConfig.?blobEndpoint
+          protectedAccountKeyName: diagnosticsStorageAccountConfig.?protectedAccountKeyName
+          protectedAccountKeyName2: diagnosticsStorageAccountConfig.?protectedAccountKeyName2
+          queueEndpoint: diagnosticsStorageAccountConfig.?queueEndpoint
+          storageAccountName: diagnosticsStorageAccountConfig.?storageAccountName
+          tableEndpoint: diagnosticsStorageAccountConfig.?tableEndpoint
         }
       : null
     eventStoreServiceEnabled: eventStoreServiceEnabled
@@ -354,23 +316,15 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     reliabilityLevel: !empty(reliabilityLevel) ? reliabilityLevel : 'None'
     reverseProxyCertificate: !empty(reverseProxyCertificate)
       ? {
-          thumbprint: contains(reverseProxyCertificate, 'thumbprint') ? reverseProxyCertificate.thumbprint : null
-          thumbprintSecondary: contains(reverseProxyCertificate, 'thumbprintSecondary')
-            ? reverseProxyCertificate.thumbprintSecondary
-            : null
-          x509StoreName: contains(reverseProxyCertificate, 'x509StoreName')
-            ? reverseProxyCertificate.x509StoreName
-            : null
+          thumbprint: reverseProxyCertificate.?thumbprint
+          thumbprintSecondary: reverseProxyCertificate.?thumbprintSecondary
+          x509StoreName: reverseProxyCertificate.?x509StoreName
         }
       : null
     reverseProxyCertificateCommonNames: !empty(reverseProxyCertificateCommonNames)
       ? {
-          commonNames: contains(reverseProxyCertificateCommonNames, 'commonNames')
-            ? reverseProxyCertificateCommonNames.commonNames
-            : null
-          x509StoreName: contains(reverseProxyCertificateCommonNames, 'x509StoreName')
-            ? reverseProxyCertificateCommonNames.x509StoreName
-            : null
+          commonNames: reverseProxyCertificateCommonNames.?commonNames
+          x509StoreName: reverseProxyCertificateCommonNames.?x509StoreName
         }
       : null
     sfZonalUpgradeMode: !empty(sfZonalUpgradeMode) ? sfZonalUpgradeMode : null

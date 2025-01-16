@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1395789016631295523"
+      "version": "0.32.4.45862",
+      "templateHash": "9690855596549132604"
     },
     "name": "Network Watchers Connection Monitors",
     "description": "This module deploys a Network Watcher Connection Monitor.",
@@ -73,12 +73,12 @@
     "networkWatcher": {
       "existing": true,
       "type": "Microsoft.Network/networkWatchers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('networkWatcherName')]"
     },
     "connectionMonitor": {
       "type": "Microsoft.Network/networkWatchers/connectionMonitors",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -87,10 +87,7 @@
         "testConfigurations": "[parameters('testConfigurations')]",
         "testGroups": "[parameters('testGroups')]",
         "outputs": "[if(not(empty(parameters('workspaceResourceId'))), createArray(createObject('type', 'Workspace', 'workspaceSettings', createObject('workspaceResourceId', parameters('workspaceResourceId')))), null())]"
-      },
-      "dependsOn": [
-        "networkWatcher"
-      ]
+      }
     }
   },
   "outputs": {
@@ -120,7 +117,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('connectionMonitor', '2023-04-01', 'full').location]"
+      "value": "[reference('connectionMonitor', '2024-05-01', 'full').location]"
     }
   }
 }

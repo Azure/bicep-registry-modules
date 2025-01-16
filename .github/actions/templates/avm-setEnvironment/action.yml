@@ -41,7 +41,7 @@ runs:
         Write-Verbose "Caller job id: ${{ github.job }}" -Verbose
 
         # Load used functions
-        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
 
         # Define PS modules to install on the runner
         $modules = @(

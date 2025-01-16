@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "16761257324786961037"
+      "version": "0.32.4.45862",
+      "templateHash": "9917080858184002423"
     },
     "name": "Digital Twins Instance ServiceBus Endpoint",
     "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
@@ -132,10 +132,7 @@
         "primaryConnectionString": "[parameters('primaryConnectionString')]",
         "secondaryConnectionString": "[parameters('secondaryConnectionString')]",
         "identity": "[variables('identity')]"
-      },
-      "dependsOn": [
-        "digitalTwinsInstance"
-      ]
+      }
     }
   },
   "outputs": {

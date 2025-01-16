@@ -8,6 +8,7 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -140,6 +141,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         supportedOSType: 'Windows'
       }
     ]
+    description: 'This is a test deployment.'
     images: [
       {
         architecture: 'x64'
@@ -368,6 +370,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "supportedOSType": "Windows"
         }
       ]
+    },
+    "description": {
+      "value": "This is a test deployment."
     },
     "images": {
       "value": [
@@ -602,6 +607,7 @@ param applications = [
     supportedOSType: 'Windows'
   }
 ]
+param description = 'This is a test deployment.'
 param images = [
   {
     architecture: 'x64'
@@ -961,6 +967,300 @@ Applications to create.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-applicationsname) | string | Name of the application definition. |
+| [`supportedOSType`](#parameter-applicationssupportedostype) | string | The OS type of the application. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customActions`](#parameter-applicationscustomactions) | array | A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application. |
+| [`description`](#parameter-applicationsdescription) | string | The description of this gallery application definition resource. This property is updatable. |
+| [`endOfLifeDate`](#parameter-applicationsendoflifedate) | string | The end of life date of the gallery application definition. This property can be used for decommissioning purposes. This property is updatable. |
+| [`eula`](#parameter-applicationseula) | string | The Eula agreement for the gallery application definition. |
+| [`privacyStatementUri`](#parameter-applicationsprivacystatementuri) | string | The privacy statement uri. |
+| [`releaseNoteUri`](#parameter-applicationsreleasenoteuri) | string | The release note uri. Has to be a valid URL. |
+| [`roleAssignments`](#parameter-applicationsroleassignments) | array | Array of role assignments to create. |
+| [`tags`](#parameter-applicationstags) | object | Tags for all resources. |
+
+### Parameter: `applications.name`
+
+Name of the application definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.supportedOSType`
+
+The OS type of the application.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
+
+### Parameter: `applications.customActions`
+
+A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-applicationscustomactionsname) | string | The name of the custom action. Must be unique within the Gallery Application Version. |
+| [`script`](#parameter-applicationscustomactionsscript) | string | The script to run when executing this custom action. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-applicationscustomactionsdescription) | string | Description to help the users understand what this custom action does. |
+| [`parameters`](#parameter-applicationscustomactionsparameters) | array | The parameters that this custom action uses. |
+
+### Parameter: `applications.customActions.name`
+
+The name of the custom action. Must be unique within the Gallery Application Version.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.customActions.script`
+
+The script to run when executing this custom action.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.customActions.description`
+
+Description to help the users understand what this custom action does.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.customActions.parameters`
+
+The parameters that this custom action uses.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-applicationscustomactionsparametersname) | string | The name of the parameter. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultValue`](#parameter-applicationscustomactionsparametersdefaultvalue) | string | The default value of the parameter. Only applies to string types. |
+| [`description`](#parameter-applicationscustomactionsparametersdescription) | string | A description to help users understand what this parameter means. |
+| [`required`](#parameter-applicationscustomactionsparametersrequired) | bool | Indicates whether this parameter must be passed when running the custom action. |
+| [`type`](#parameter-applicationscustomactionsparameterstype) | string | Specifies the type of the custom action parameter. |
+
+### Parameter: `applications.customActions.parameters.name`
+
+The name of the parameter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.customActions.parameters.defaultValue`
+
+The default value of the parameter. Only applies to string types.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.customActions.parameters.description`
+
+A description to help users understand what this parameter means.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.customActions.parameters.required`
+
+Indicates whether this parameter must be passed when running the custom action.
+
+- Required: No
+- Type: bool
+
+### Parameter: `applications.customActions.parameters.type`
+
+Specifies the type of the custom action parameter.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ConfigurationDataBlob'
+    'LogOutputBlob'
+    'String'
+  ]
+  ```
+
+### Parameter: `applications.description`
+
+The description of this gallery application definition resource. This property is updatable.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.endOfLifeDate`
+
+The end of life date of the gallery application definition. This property can be used for decommissioning purposes. This property is updatable.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.eula`
+
+The Eula agreement for the gallery application definition.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.privacyStatementUri`
+
+The privacy statement uri.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.releaseNoteUri`
+
+The release note uri. Has to be a valid URL.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Compute Gallery Sharing Admin'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-applicationsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-applicationsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-applicationsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-applicationsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-applicationsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-applicationsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-applicationsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-applicationsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `applications.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `applications.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `applications.tags`
+
+Tags for all resources.
+
+- Required: No
+- Type: object
+
 ### Parameter: `description`
 
 Description of the Azure Shared Image Gallery.
@@ -1003,7 +1303,7 @@ Images to create.
 | [`excludedDiskTypes`](#parameter-imagesexcludeddisktypes) | array | Describes the disallowed disk types. |
 | [`hyperVGeneration`](#parameter-imageshypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
 | [`isAcceleratedNetworkSupported`](#parameter-imagesisacceleratednetworksupported) | bool | Specify if the image supports accelerated networking. Defaults to true. |
-| [`isHibernateSupported`](#parameter-imagesishibernatesupported) | bool | Specifiy if the image supports hibernation. |
+| [`isHibernateSupported`](#parameter-imagesishibernatesupported) | bool | Specify if the image supports hibernation. |
 | [`memory`](#parameter-imagesmemory) | object | Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16. |
 | [`privacyStatementUri`](#parameter-imagesprivacystatementuri) | string | The privacy statement uri. |
 | [`purchasePlan`](#parameter-imagespurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
@@ -1147,7 +1447,7 @@ Specify if the image supports accelerated networking. Defaults to true.
 
 ### Parameter: `images.isHibernateSupported`
 
-Specifiy if the image supports hibernation.
+Specify if the image supports hibernation.
 
 - Required: No
 - Type: bool
@@ -1179,6 +1479,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ### Parameter: `images.privacyStatementUri`
 
@@ -1275,6 +1576,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ### Parameter: `location`
 
@@ -1461,6 +1763,14 @@ Tags for all resources.
 | `name` | string | The name of the deployed image gallery. |
 | `resourceGroupName` | string | The resource group of the deployed image gallery. |
 | `resourceId` | string | The resource ID of the deployed image gallery. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
 
 ## Data Collection
 
