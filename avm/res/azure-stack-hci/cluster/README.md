@@ -476,6 +476,7 @@ param subnetMask = '<subnetMask>'
 | [`storageConfigurationMode`](#parameter-storageconfigurationmode) | string | The storage volume configuration mode. See documentation for details. |
 | [`streamingDataClient`](#parameter-streamingdataclient) | bool | The metrics data for deploying a HCI cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
 
 ### Parameter: `clusterNodeNames`
 
@@ -1148,6 +1149,14 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `useSharedKeyVault`
+
+Specify whether to use the shared key vault for the HCI cluster.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ## Outputs
 
