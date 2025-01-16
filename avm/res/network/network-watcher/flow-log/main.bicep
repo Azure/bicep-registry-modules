@@ -60,11 +60,11 @@ var flowAnalyticsConfiguration = !empty(workspaceResourceId) && enabled == true
       }
     }
 
-resource networkWatcher 'Microsoft.Network/networkWatchers@2023-04-01' existing = {
+resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' existing = {
   name: networkWatcherName
 }
 
-resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2023-04-01' = {
+resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2024-05-01' = {
   name: name
   parent: networkWatcher
   tags: tags

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "11162019331609283814"
+      "version": "0.32.4.45862",
+      "templateHash": "4306934588544765678"
     },
     "name": "Compute Galleries Applications",
     "description": "This module deploys an Azure Compute Gallery Application.",
@@ -299,10 +299,7 @@
         "privacyStatementUri": "[parameters('privacyStatementUri')]",
         "releaseNoteUri": "[parameters('releaseNoteUri')]",
         "supportedOSType": "[parameters('supportedOSType')]"
-      },
-      "dependsOn": [
-        "gallery"
-      ]
+      }
     },
     "application_roleAssignments": {
       "copy": {

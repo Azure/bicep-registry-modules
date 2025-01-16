@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17218572797495425587"
+      "version": "0.32.4.45862",
+      "templateHash": "11831246248888143865"
     },
     "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -18,7 +18,10 @@
       "items": {
         "type": "string"
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "destinationsType": {
       "type": "array",
@@ -43,14 +46,20 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "sourcePortRangesType": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "sourcesType": {
       "type": "array",
@@ -75,7 +84,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
@@ -106,7 +118,7 @@
     },
     "description": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the rule."
@@ -192,35 +204,29 @@
     "networkManager::securityAdminConfiguration::ruleCollection": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-      "apiVersion": "2023-11-01",
-      "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'))]",
-      "dependsOn": [
-        "networkManager::securityAdminConfiguration"
-      ]
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'))]"
     },
     "networkManager::securityAdminConfiguration": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-      "apiVersion": "2023-11-01",
-      "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]",
-      "dependsOn": [
-        "networkManager"
-      ]
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
     },
     "networkManager": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('networkManagerName')]"
     },
     "rule": {
       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
       "kind": "Custom",
       "properties": {
         "access": "[parameters('access')]",
-        "description": "[coalesce(parameters('description'), '')]",
+        "description": "[parameters('description')]",
         "destinationPortRanges": "[parameters('destinationPortRanges')]",
         "destinations": "[parameters('destinations')]",
         "direction": "[parameters('direction')]",
@@ -228,10 +234,7 @@
         "protocol": "[parameters('protocol')]",
         "sourcePortRanges": "[parameters('sourcePortRanges')]",
         "sources": "[parameters('sources')]"
-      },
-      "dependsOn": [
-        "networkManager::securityAdminConfiguration::ruleCollection"
-      ]
+      }
     }
   },
   "outputs": {
