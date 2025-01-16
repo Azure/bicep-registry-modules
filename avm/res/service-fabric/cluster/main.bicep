@@ -466,7 +466,7 @@ type clientCertificateCommonNameType = {
 }
 
 @export()
-@description('The type for a client certificate thumprint.')
+@description('The type for a client certificate thumbprint.')
 type clientCertificateThumbprintType = {
   @description('Required. The thumbprint of the client certificate.')
   certificateThumbprint: string
