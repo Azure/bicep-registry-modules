@@ -197,8 +197,14 @@ resource sessionPool_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 output name string = sessionPool.name
 @description('The resource ID of the deployed session pool.')
 output resourceId string = sessionPool.id
+
+@description('The name of the resource group in which the session pool was created.')
+output resourceGroupName string = resourceGroup().name
 @description('The management endpoint of the session pool.')
 output managementEndpoint string = sessionPool.properties.poolManagementEndpoint
+
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = sessionPool.?identity.?principalId ?? ''
 
 type sessionContainerType = {
   @description('Optional. Container start command arguments')

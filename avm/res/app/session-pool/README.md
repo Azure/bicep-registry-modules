@@ -116,7 +116,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
   params: {
     // Required parameters
     containerType: 'PythonLTS'
-    name: 'crmin001'
+    name: 'crmax001'
     // Non-required parameters
     cooldownPeriodInSeconds: 350
     location: '<location>'
@@ -165,7 +165,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
       "value": "PythonLTS"
     },
     "name": {
-      "value": "crmin001"
+      "value": "crmax001"
     },
     // Non-required parameters
     "cooldownPeriodInSeconds": {
@@ -230,7 +230,7 @@ using 'br/public:avm/res/app/session-pool:<version>'
 
 // Required parameters
 param containerType = 'PythonLTS'
-param name = 'crmin001'
+param name = 'crmax001'
 // Non-required parameters
 param cooldownPeriodInSeconds = 350
 param location = '<location>'
@@ -278,7 +278,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
   params: {
     // Required parameters
     containerType: 'PythonLTS'
-    name: 'crmin001'
+    name: 'crra001'
     // Non-required parameters
     location: '<location>'
     roleAssignments: [
@@ -309,7 +309,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
       "value": "PythonLTS"
     },
     "name": {
-      "value": "crmin001"
+      "value": "crra001"
     },
     // Non-required parameters
     "location": {
@@ -340,7 +340,7 @@ using 'br/public:avm/res/app/session-pool:<version>'
 
 // Required parameters
 param containerType = 'PythonLTS'
-param name = 'crmin001'
+param name = 'crra001'
 // Non-required parameters
 param location = '<location>'
 param roleAssignments = [
@@ -370,7 +370,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
   params: {
     // Required parameters
     containerType: 'PythonLTS'
-    name: 'crmin001'
+    name: 'crwaf001'
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -409,7 +409,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
       "value": "PythonLTS"
     },
     "name": {
-      "value": "crmin001"
+      "value": "crwaf001"
     },
     // Non-required parameters
     "location": {
@@ -454,7 +454,7 @@ using 'br/public:avm/res/app/session-pool:<version>'
 
 // Required parameters
 param containerType = 'PythonLTS'
-param name = 'crmin001'
+param name = 'crwaf001'
 // Non-required parameters
 param location = '<location>'
 param lock = {
@@ -991,7 +991,9 @@ Required if containerType == 'CustomContainer'. Target port in containers for tr
 | :-- | :-- | :-- |
 | `managementEndpoint` | string | The management endpoint of the session pool. |
 | `name` | string | The name of the session pool. |
+| `resourceGroupName` | string | The name of the resource group in which the session pool was created. |
 | `resourceId` | string | The resource ID of the deployed session pool. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
