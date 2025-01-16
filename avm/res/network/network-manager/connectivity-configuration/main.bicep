@@ -12,7 +12,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the connectivity configuration.')
-param description string?
+param description string = ''
 
 @sys.description('Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.')
 param appliesToGroups appliesToGroupsType
@@ -33,11 +33,11 @@ param deleteExistingPeering bool = false
 @sys.description('Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to "True", a global mesh enables connectivity across regions.')
 param isGlobal bool = false
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 }
 
-resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivityConfigurations@2023-11-01' = {
+resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivityConfigurations@2024-05-01' = {
   name: name
   parent: networkManager
   properties: {
@@ -49,7 +49,7 @@ resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivi
     })
     connectivityTopology: connectivityTopology
     deleteExistingPeering: connectivityTopology == 'HubAndSpoke' ? string(deleteExistingPeering) : 'false'
-    description: description ?? ''
+    description: description
     hubs: connectivityTopology == 'HubAndSpoke' ? hubs : []
     isGlobal: string(isGlobal)
   }
@@ -68,6 +68,7 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
+@export()
 type appliesToGroupsType = {
   @sys.description('Required. Group connectivity type.')
   groupConnectivity: ('DirectlyConnected' | 'None')
@@ -82,6 +83,7 @@ type appliesToGroupsType = {
   useHubGateway: bool?
 }[]
 
+@export()
 type hubsType = {
   @sys.description('Required. Resource Id of the hub.')
   resourceId: string

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12750364857938782710"
+      "version": "0.32.4.45862",
+      "templateHash": "15103885327105727578"
     },
     "name": "Eventgrid Namespace CA Certificates",
     "description": "This module deploys an Eventgrid Namespace CA Certificate.",
@@ -53,10 +53,7 @@
       "properties": {
         "description": "[parameters('description')]",
         "encodedCertificate": "[parameters('encodedCertificate')]"
-      },
-      "dependsOn": [
-        "namespace"
-      ]
+      }
     }
   },
   "outputs": {

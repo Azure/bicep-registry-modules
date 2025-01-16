@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the PostgreSQL flexible server.')
 param name string
 
-@description('Optional. The administrator login name for the server. Can only be specified when the PostgreSQL server is being created.')
+@description('Optional. The administrator login name of the server. Can only be specified when the PostgreSQL server is being created.')
 param administratorLogin string?
 
 @description('Optional. The administrator login password.')
@@ -69,6 +69,13 @@ param geoRedundantBackup string = 'Enabled' // Enabled by default for WAF-alignm
 param storageSizeGB int = 32
 
 @allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Flag to enable / disable Storage Auto grow for flexible server.')
+param autoGrow string?
+
+@allowed([
   '11'
   '12'
   '13'
@@ -98,11 +105,18 @@ param highAvailability string = 'ZoneRedundant'
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Conditional. The managed identity definition for this resource. Required if \'cMKKeyName\' is not empty.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.')
+param serverThreatProtection string = 'Enabled'
+
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -129,17 +143,27 @@ param privateDnsZoneArmResourceId string = ''
 @description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
 param firewallRules array = []
 
+@description('Optional. Determines whether or not public network access is enabled or not.')
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+param publicNetworkAccess string = 'Disabled'
+
 @description('Optional. The databases to create in the server.')
 param databases array = []
 
 @description('Optional. The configurations to create in the server.')
 param configurations array = []
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@description('Optional. The replication settings for the server. Can only be set on existing flexible servers.')
+param replica replicaType?
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -149,12 +173,12 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@description('Optional. Configuration details for private endpoints. Used when the desired connectivy mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+@description('Optional. Configuration details for private endpoints. Used when the desired connectivity mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 var formattedUserAssignedIdentities = reduce(
@@ -234,7 +258,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
   name: name
   location: location
   tags: tags
@@ -282,14 +306,17 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
       ? {
           delegatedSubnetResourceId: delegatedSubnetResourceId
           privateDnsZoneArmResourceId: privateDnsZoneArmResourceId
+          publicNetworkAccess: publicNetworkAccess
         }
       : null
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
+    replica: !empty(replica) ? replica : null
     sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica')
       ? sourceServerResourceId
       : null
     storage: {
       storageSizeGB: storageSizeGB
+      autoGrow: autoGrow
     }
     version: version
   }
@@ -380,6 +407,14 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
     ]
   }
 ]
+
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-PostgreSQL-Threat'
+  params: {
+    serverThreatProtection: serverThreatProtection
+    flexibleServerName: flexibleServer.name
+  }
+}
 
 resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -476,3 +511,16 @@ output location string = flexibleServer.location
 
 @description('The FQDN of the PostgreSQL Flexible server.')
 output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
+
+type replicaType = {
+  @description('''Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'
+'switchover'. Required if enabling replication.''')
+  promoteMode: ('standalone' | 'switchover')
+
+  @description('''Conditional. Sets the promote options for a replica server. This is a write only property.	'forced'
+'planned'. Required if enabling replication.''')
+  promoteOption: ('forced' | 'planned')
+
+  @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication.''')
+  role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
+}?

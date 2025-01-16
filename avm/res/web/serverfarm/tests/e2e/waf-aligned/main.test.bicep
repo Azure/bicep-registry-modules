@@ -31,7 +31,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
@@ -54,15 +54,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: enforcedLocation
       skuName: 'P1v3'
       skuCapacity: 3
       zoneRedundant: true
-      kind: 'App'
-      lock: {
-        name: 'lock'
-        kind: 'CanNotDelete'
-      }
+      kind: 'app'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
