@@ -12,7 +12,7 @@ param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'acawaf'
+param serviceShort string = 'cawaf'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
