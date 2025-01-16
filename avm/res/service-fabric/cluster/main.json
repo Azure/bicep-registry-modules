@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4175792040981984012"
+      "templateHash": "452582838691348740"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -151,7 +151,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for a client certificate thumprint."
+        "description": "The type for a client certificate thumbprint."
       }
     },
     "lockType": {
