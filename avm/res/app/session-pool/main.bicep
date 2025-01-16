@@ -206,6 +206,7 @@ output managementEndpoint string = sessionPool.properties.poolManagementEndpoint
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = sessionPool.?identity.?principalId ?? ''
 
+@description('Optional. Custom container definition.')
 type sessionContainerType = {
   @description('Optional. Container start command arguments')
   args: string[]?
@@ -221,6 +222,7 @@ type sessionContainerType = {
   resources: sessionContainerResourcesType
 }[]?
 
+@description('Optional. Environment variable definition for a container. Only used with custom containers.')
 type environmentVarType = {
   @description('Required. Environment variable name.')
   name: string
@@ -230,6 +232,7 @@ type environmentVarType = {
   value: string?
 }[]?
 
+@description('Optional. Container resource requirements. Only used with custom containers.')
 type sessionContainerResourcesType = {
   @description('Required. Required CPU in cores, e.g. 0.5')
   cpu: string
@@ -237,6 +240,7 @@ type sessionContainerResourcesType = {
   memory: string
 }
 
+@description('Optional. Container registry credentials. Only used with custom containers.')
 type sessionRegistryCredentialsType = {
   @description('Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system"')
   identity: string?
@@ -248,6 +252,7 @@ type sessionRegistryCredentialsType = {
   username: string
 }
 
+@description('Optional. Managed Identity settings for the session pool.')
 type managedIdentitySettingType = {
   @description('Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or "system" for system-assigned identity.')
   identity: string

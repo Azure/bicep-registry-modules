@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "9698394884306898303"
+      "templateHash": "10899070740805655460"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool.",
@@ -65,7 +65,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom container definition."
+      }
     },
     "environmentVarType": {
       "type": "array",
@@ -94,7 +97,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Environment variable definition for a container. Only used with custom containers."
+      }
     },
     "sessionContainerResourcesType": {
       "type": "object",
@@ -111,6 +117,9 @@
             "description": "Required. Required memory, e.g. \"1.25Gi\""
           }
         }
+      },
+      "metadata": {
+        "description": "Optional. Container resource requirements. Only used with custom containers."
       }
     },
     "sessionRegistryCredentialsType": {
@@ -142,6 +151,9 @@
             "description": "Required. Container registry username"
           }
         }
+      },
+      "metadata": {
+        "description": "Optional. Container registry credentials. Only used with custom containers."
       }
     },
     "managedIdentitySettingType": {
@@ -163,7 +175,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Managed Identity settings for the session pool."
+      }
     },
     "lockType": {
       "type": "object",
