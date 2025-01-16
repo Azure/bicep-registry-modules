@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "81167251359967856"
+      "version": "0.32.4.45862",
+      "templateHash": "4868156491616534189"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
@@ -328,10 +328,7 @@
             }
           ]
         }
-      },
-      "dependsOn": [
-        "cluster"
-      ]
+      }
     }
   },
   "outputs": {
