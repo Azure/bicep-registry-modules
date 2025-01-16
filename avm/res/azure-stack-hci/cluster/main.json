@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "14817075706750132167"
+      "version": "0.32.4.45862",
+      "templateHash": "8193182244490994178"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.",
@@ -569,6 +569,13 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
+    },
+    "useSharedKeyVault": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Specify whether to use the shared key vault for the HCI cluster."
+      }
     }
   },
   "variables": {
@@ -660,9 +667,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "cloudId": {
-            "value": "[reference('cluster').cloudId]"
-          },
+          "cloudId": "[if(parameters('useSharedKeyVault'), createObject('value', reference('cluster').cloudId), createObject('value', null()))]",
           "clusterName": {
             "value": "[parameters('name')]"
           },
@@ -740,8 +745,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "81167251359967856"
+              "version": "0.32.4.45862",
+              "templateHash": "4868156491616534189"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
@@ -1063,10 +1068,7 @@
                     }
                   ]
                 }
-              },
-              "dependsOn": [
-                "cluster"
-              ]
+              }
             }
           },
           "outputs": {
