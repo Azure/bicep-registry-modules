@@ -21,16 +21,15 @@ This module deploys a Web or Function App.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/sites` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites) |
-| `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/basicPublishingCredentialsPolicies) |
-| `Microsoft.Web/sites/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/config) |
-| `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/extensions) |
-| `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/hybridConnectionNamespaces/relays) |
-| `Microsoft.Web/sites/slots` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots) |
-| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots/basicPublishingCredentialsPolicies) |
-| `Microsoft.Web/sites/slots/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/slots/config) |
-| `Microsoft.Web/sites/slots/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots/config) |
-| `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots/hybridConnectionNamespaces/relays) |
+| `Microsoft.Web/sites` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites) |
+| `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/basicPublishingCredentialsPolicies) |
+| `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
+| `Microsoft.Web/sites/extensions` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/extensions) |
+| `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/hybridConnectionNamespaces/relays) |
+| `Microsoft.Web/sites/slots` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots) |
+| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/basicPublishingCredentialsPolicies) |
+| `Microsoft.Web/sites/slots/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config) |
+| `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/hybridConnectionNamespaces/relays) |
 
 ## Usage examples
 
@@ -42,15 +41,15 @@ The following section provides usage examples for the module, which were used to
 
 - [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
-- [Function App, using only defaults](#example-3-function-app-using-only-defaults)
-- [Web App, using only defaults](#example-4-web-app-using-only-defaults)
-- [Web App](#example-5-web-app)
+- [Function App, with App Settings Pairs](#example-3-function-app-with-app-settings-pairs)
+- [Linux Container Web App, using only defaults](#example-4-linux-container-web-app-using-only-defaults)
+- [Web App, with Logs Configuration](#example-5-web-app-with-logs-configuration)
 - [WAF-aligned](#example-6-waf-aligned)
 - [Web App, using only defaults](#example-7-web-app-using-only-defaults)
 - [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-9-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-10-web-app-using-large-parameter-set)
-- [Web App](#example-11-web-app)
+- [Linux Web App, using only defaults](#example-9-linux-web-app-using-only-defaults)
+- [Linux Web App, using large parameter set](#example-10-linux-web-app-using-large-parameter-set)
+- [Web App, with Web Configuration](#example-11-web-app-with-web-configuration)
 - [Windows Web App for Containers, using only defaults](#example-12-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
@@ -70,8 +69,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     kind: 'functionapp'
     name: 'wsfamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -97,10 +94,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -120,8 +113,6 @@ using 'br/public:avm/res/web/site:<version>'
 param kind = 'functionapp'
 param name = 'wsfamin001'
 param serverFarmResourceId = '<serverFarmResourceId>'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -715,9 +706,9 @@ param storageAccountUseIdentityAuthentication = true
 </details>
 <p>
 
-### Example 3: _Function App, using only defaults_
+### Example 3: _Function App, with App Settings Pairs_
 
-This instance deploys the module as Function App with the minimum set of required parameters.
+This instance deploys the module as Function App with sample app settings.
 
 
 <details>
@@ -738,7 +729,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       FUNCTIONS_EXTENSION_VERSION: '~4'
       FUNCTIONS_WORKER_RUNTIME: 'dotnet'
     }
-    location: '<location>'
   }
 }
 ```
@@ -772,9 +762,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "FUNCTIONS_EXTENSION_VERSION": "~4",
         "FUNCTIONS_WORKER_RUNTIME": "dotnet"
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -800,15 +787,14 @@ param appSettingsKeyValuePairs = {
   FUNCTIONS_EXTENSION_VERSION: '~4'
   FUNCTIONS_WORKER_RUNTIME: 'dotnet'
 }
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 4: _Web App, using only defaults_
+### Example 4: _Linux Container Web App, using only defaults_
 
-This instance deploys the module as a Linux Web App with the minimum set of required parameters.
+This instance deploys the module as Linux Container Web App with the minimum set of required parameters.
 
 
 <details>
@@ -824,7 +810,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     name: 'wslwamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
-    location: '<location>'
     siteConfig: {
       appSettings: [
         {
@@ -863,9 +848,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "<serverFarmResourceId>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "siteConfig": {
       "value": {
         "appSettings": [
@@ -898,7 +880,6 @@ param kind = 'app,linux,container'
 param name = 'wslwamin001'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
-param location = '<location>'
 param siteConfig = {
   appSettings: [
     {
@@ -915,7 +896,7 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 5: _Web App_
+### Example 5: _Web App, with Logs Configuration_
 
 This instance deploys the module as Web App with the set of logs configuration.
 
@@ -939,7 +920,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       JAVA_OPTS: '<JAVA_OPTS>'
       SCM_DO_BUILD_DURING_DEPLOYMENT: 'True'
     }
-    location: '<location>'
     logsConfiguration: {
       applicationLogs: {
         fileSystem: {
@@ -1004,9 +984,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "SCM_DO_BUILD_DURING_DEPLOYMENT": "True"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "logsConfiguration": {
       "value": {
         "applicationLogs": {
@@ -1065,7 +1042,6 @@ param appSettingsKeyValuePairs = {
   JAVA_OPTS: '<JAVA_OPTS>'
   SCM_DO_BUILD_DURING_DEPLOYMENT: 'True'
 }
-param location = '<location>'
 param logsConfiguration = {
   applicationLogs: {
     fileSystem: {
@@ -1135,7 +1111,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       }
     ]
     httpsOnly: true
-    location: '<location>'
     publicNetworkAccess: 'Disabled'
     scmSiteAlsoStopped: true
     siteConfig: {
@@ -1205,9 +1180,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "httpsOnly": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "publicNetworkAccess": {
       "value": "Disabled"
     },
@@ -1275,7 +1247,6 @@ param diagnosticSettings = [
   }
 ]
 param httpsOnly = true
-param location = '<location>'
 param publicNetworkAccess = 'Disabled'
 param scmSiteAlsoStopped = true
 param siteConfig = {
@@ -1315,8 +1286,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     kind: 'app'
     name: 'wswamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -1342,10 +1311,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -1365,8 +1330,6 @@ using 'br/public:avm/res/web/site:<version>'
 param kind = 'app'
 param name = 'wswamin001'
 param serverFarmResourceId = '<serverFarmResourceId>'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -2047,7 +2010,7 @@ param vnetRouteAllEnabled = true
 </details>
 <p>
 
-### Example 9: _Web App, using only defaults_
+### Example 9: _Linux Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -2064,8 +2027,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     kind: 'app,linux'
     name: 'wswalmin001'
     serverFarmResourceId: '<serverFarmResourceId>'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -2091,10 +2052,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -2114,14 +2071,12 @@ using 'br/public:avm/res/web/site:<version>'
 param kind = 'app,linux'
 param name = 'wswalmin001'
 param serverFarmResourceId = '<serverFarmResourceId>'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 10: _Web App, using large parameter set_
+### Example 10: _Linux Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -2787,9 +2742,9 @@ param vnetRouteAllEnabled = true
 </details>
 <p>
 
-### Example 11: _Web App_
+### Example 11: _Web App, with Web Configuration_
 
-This instance deploys the module as Web App with the set of api management configuration.
+This instance deploys the module as a Web App with web configuration to demonstrate its usage. Deploying a configuration containing API Management and Ip Security Restrictions.
 
 
 <details>
@@ -2805,21 +2760,32 @@ module site 'br/public:avm/res/web/site:<version>' = {
     name: 'wswc001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
-    apiManagementConfiguration: {
-      id: '<id>'
-    }
     appInsightResourceId: '<appInsightResourceId>'
     appSettingsKeyValuePairs: {
       ENABLE_ORYX_BUILD: 'True'
       SCM_DO_BUILD_DURING_DEPLOYMENT: 'False'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
     siteConfig: {
       alwaysOn: true
       appCommandLine: ''
+    }
+    webConfiguration: {
+      apiManagementConfig: {
+        id: '<id>'
+      }
+      ipSecurityRestrictions: [
+        {
+          action: 'Allow'
+          description: 'Test IP Restriction'
+          ipAddress: 'ApiManagement'
+          name: 'Test Restriction'
+          priority: 200
+          tag: 'ServiceTag'
+        }
+      ]
     }
   }
 }
@@ -2848,11 +2814,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "<serverFarmResourceId>"
     },
     // Non-required parameters
-    "apiManagementConfiguration": {
-      "value": {
-        "id": "<id>"
-      }
-    },
     "appInsightResourceId": {
       "value": "<appInsightResourceId>"
     },
@@ -2861,9 +2822,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "ENABLE_ORYX_BUILD": "True",
         "SCM_DO_BUILD_DURING_DEPLOYMENT": "False"
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -2874,6 +2832,23 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": {
         "alwaysOn": true,
         "appCommandLine": ""
+      }
+    },
+    "webConfiguration": {
+      "value": {
+        "apiManagementConfig": {
+          "id": "<id>"
+        },
+        "ipSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Test IP Restriction",
+            "ipAddress": "ApiManagement",
+            "name": "Test Restriction",
+            "priority": 200,
+            "tag": "ServiceTag"
+          }
+        ]
       }
     }
   }
@@ -2895,21 +2870,32 @@ param kind = 'app'
 param name = 'wswc001'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
-param apiManagementConfiguration = {
-  id: '<id>'
-}
 param appInsightResourceId = '<appInsightResourceId>'
 param appSettingsKeyValuePairs = {
   ENABLE_ORYX_BUILD: 'True'
   SCM_DO_BUILD_DURING_DEPLOYMENT: 'False'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
 param siteConfig = {
   alwaysOn: true
   appCommandLine: ''
+}
+param webConfiguration = {
+  apiManagementConfig: {
+    id: '<id>'
+  }
+  ipSecurityRestrictions: [
+    {
+      action: 'Allow'
+      description: 'Test IP Restriction'
+      ipAddress: 'ApiManagement'
+      name: 'Test Restriction'
+      priority: 200
+      tag: 'ServiceTag'
+    }
+  ]
 }
 ```
 
@@ -2934,7 +2920,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     name: 'wswcamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
-    location: '<location>'
     siteConfig: {
       appSettings: [
         {
@@ -2973,9 +2958,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "<serverFarmResourceId>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "siteConfig": {
       "value": {
         "appSettings": [
@@ -3008,7 +2990,6 @@ param kind = 'app,container,windows'
 param name = 'wswcamin001'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
-param location = '<location>'
 param siteConfig = {
   appSettings: [
     {
@@ -3039,7 +3020,6 @@ param siteConfig = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementConfiguration`](#parameter-apimanagementconfiguration) | object | The web settings api management configuration. |
 | [`appInsightResourceId`](#parameter-appinsightresourceid) | string | Resource ID of the app insight to leverage for this resource. |
 | [`appServiceEnvironmentResourceId`](#parameter-appserviceenvironmentresourceid) | string | The resource ID of the app service environment to use for this resource. |
 | [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. |
@@ -3053,6 +3033,7 @@ param siteConfig = {
 | [`containerSize`](#parameter-containersize) | int | Size of the function container. |
 | [`dailyMemoryTimeQuota`](#parameter-dailymemorytimequota) | int | Maximum allowed daily memory-time quota (applicable on dynamic apps only). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`e2eEncryptionEnabled`](#parameter-e2eencryptionenabled) | bool | End to End Encryption Setting. |
 | [`enabled`](#parameter-enabled) | bool | Setting this value to false disables the app (takes the app offline). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`functionAppConfig`](#parameter-functionappconfig) | object | The Function App configuration object. |
@@ -3082,6 +3063,7 @@ param siteConfig = {
 | [`vnetContentShareEnabled`](#parameter-vnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
 | [`vnetImagePullEnabled`](#parameter-vnetimagepullenabled) | bool | To enable pulling image over Virtual Network. |
 | [`vnetRouteAllEnabled`](#parameter-vnetrouteallenabled) | bool | Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied. |
+| [`webConfiguration`](#parameter-webconfiguration) | object | The Site Config, Web settings to deploy. |
 
 ### Parameter: `kind`
 
@@ -3120,13 +3102,6 @@ The resource ID of the app service plan to use for the site.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `apiManagementConfiguration`
-
-The web settings api management configuration.
-
-- Required: No
-- Type: object
 
 ### Parameter: `appInsightResourceId`
 
@@ -3240,7 +3215,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -3350,7 +3325,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -3368,6 +3343,13 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `e2eEncryptionEnabled`
+
+End to End Encryption Setting.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `enabled`
 
@@ -3499,7 +3481,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -3510,7 +3492,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -3539,22 +3521,22 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
+| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the Private Endpoint IP configuration is included. |
 | [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | array | Custom DNS configurations. |
-| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
+| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the Private Endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints. |
 | [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
-| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
+| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the Private Endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
-| [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
+| [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
-| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
+| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -3565,7 +3547,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
-Application security groups in which the private endpoint IP configuration is included.
+Application security groups in which the Private Endpoint IP configuration is included.
 
 - Required: No
 - Type: array
@@ -3605,7 +3587,7 @@ FQDN that resolves to private endpoint IP address.
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
-The custom name of the network interface attached to the private endpoint.
+The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
@@ -3619,7 +3601,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
-A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
+A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints.
 
 - Required: No
 - Type: array
@@ -3683,7 +3665,7 @@ If Manual Private Link Connection is required.
 
 ### Parameter: `privateEndpoints.location`
 
-The location to deploy the private endpoint to.
+The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
@@ -3733,14 +3715,14 @@ A message passed to the owner of the remote resource with the manual connection 
 
 ### Parameter: `privateEndpoints.name`
 
-The name of the private endpoint.
+The name of the Private Endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The private DNS zone group to configure for the private endpoint.
+The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
@@ -3749,7 +3731,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -3759,7 +3741,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -3774,7 +3756,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -3785,7 +3767,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -3804,9 +3786,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -3910,14 +3892,14 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
-Tags to be applied on all resources/resource groups in this deployment.
+Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
@@ -4151,6 +4133,13 @@ Virtual Network Route All enabled. This causes all outbound traffic to have Virt
 - Type: bool
 - Default: `False`
 
+### Parameter: `webConfiguration`
+
+The Site Config, Web settings to deploy.
+
+- Required: No
+- Type: object
+
 ## Outputs
 
 | Output | Type | Description |
@@ -4159,6 +4148,7 @@ Virtual Network Route All enabled. This causes all outbound traffic to have Virt
 | `defaultHostname` | string | Default hostname of the app. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
+| `outboundIpAddresses` | string | The outbound IP addresses of the app. |
 | `privateEndpoints` | array | The private endpoints of the site. |
 | `resourceGroupName` | string | The resource group the site was deployed into. |
 | `resourceId` | string | The resource ID of the site. |
@@ -4175,6 +4165,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 
