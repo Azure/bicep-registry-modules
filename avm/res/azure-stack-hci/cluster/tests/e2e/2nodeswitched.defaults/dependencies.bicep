@@ -46,11 +46,8 @@ param virtualNetworkName string
 @description('Required. The name of the maintenance configuration for the Azure Stack HCI Host VM and proxy server.')
 param maintenanceConfigurationName string
 
-@description('Conditional. The name of the Public IP Address for the HCI host. Required if \'hciHostAssignPublicIp\' is true.')
-param HCIHostPublicIpName string
-
-@description('Conditional. The name of the Network Security Group for the HCI host. Required if \'hciHostAssignPublicIp\' is true.')
-param HCIHostNetworkInterfaceGroupName string
+@description('Conditional. The name of the Network Security Group ro create.')
+param networkSecurityGroupName string
 
 @description('Required. The name of the Azure VM scale set for the HCI host.')
 param HCIHostVirtualMachineScaleSetName string
@@ -72,14 +69,11 @@ param waitDeploymentScriptPrefixName string
 
 var clusterNodeNames = ['hcinode1', 'hcinode2']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
-var hciHostAssignPublicIp = false
 
 module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
-    hciHostAssignPublicIp: hciHostAssignPublicIp
     domainOUPath: domainOUPath
-    deployProxy: false
     hciISODownloadURL: 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E16bds_v5'
@@ -88,8 +82,7 @@ module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDep
     switchlessStorageConfig: false
     diskNamePrefix: diskNamePrefix
     HCIHostVirtualMachineScaleSetName: HCIHostVirtualMachineScaleSetName
-    HCIHostNetworkInterfaceGroupName: HCIHostNetworkInterfaceGroupName
-    HCIHostPublicIpName: HCIHostPublicIpName
+    networkSecurityGroupName: networkSecurityGroupName
     maintenanceConfigurationAssignmentName: maintenanceConfigurationAssignmentName
     maintenanceConfigurationName: maintenanceConfigurationName
     networkInterfaceName: networkInterfaceName

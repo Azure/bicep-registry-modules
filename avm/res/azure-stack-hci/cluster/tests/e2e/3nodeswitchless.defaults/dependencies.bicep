@@ -24,11 +24,17 @@ param location string
 @description('Required. The name of the storage account to create as a cluster witness.')
 param clusterWitnessStorageAccountName string
 
+@description('Required. The name of the virtual network to create. Used to connect the HCI Azure Host VM to an existing VNET in the same region.')
+param virtualNetworkName string
+
 @description('Required. The name of the storage account to be created to collect Key Vault diagnostic logs.')
 param keyVaultDiagnosticStorageAccountName string
 
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
+
+@description('Conditional. The name of the Network Security Group ro create.')
+param networkSecurityGroupName string
 
 @secure()
 param hciResourceProviderObjectId string
@@ -72,9 +78,7 @@ var tenantId = subscription().tenantId
 module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
-    hciHostAssignPublicIp: false
     domainOUPath: domainOUPath
-    deployProxy: false
     hciISODownloadURL: 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E16bds_v5'
@@ -82,10 +86,12 @@ module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDep
     location: location
     switchlessStorageConfig: true
     diskNamePrefix: diskNamePrefix
+    virtualNetworkName: virtualNetworkName
     HCIHostVirtualMachineScaleSetName: HCIHostVirtualMachineScaleSetName
     maintenanceConfigurationAssignmentName: maintenanceConfigurationAssignmentName
     maintenanceConfigurationName: maintenanceConfigurationName
     networkInterfaceName: networkInterfaceName
+    networkSecurityGroupName: networkSecurityGroupName
     userAssignedIdentityName: userAssignedIdentityName
     virtualMachineName: virtualMachineName
     waitDeploymentScriptPrefixName: waitDeploymentScriptPrefixName

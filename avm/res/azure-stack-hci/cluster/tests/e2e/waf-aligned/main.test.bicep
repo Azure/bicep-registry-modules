@@ -3,9 +3,6 @@ targetScope = 'subscription'
 metadata name = 'Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned'
 metadata description = 'This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster WAF aligned.'
 
-@description('Optional. Location for all resources.')
-param location string = deployment().location
-
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-azure-stack-hci.cluster-${serviceShort}-rg'
@@ -60,6 +57,8 @@ module nestedDependencies 'dependencies.bicep' = {
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
     HCIHostVirtualMachineScaleSetName: 'dep-${namePrefix}-hvmss-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
     diskNamePrefix: 'dep-${namePrefix}-disk-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'

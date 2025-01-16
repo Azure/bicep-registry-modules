@@ -46,6 +46,12 @@ param maintenanceConfigurationName string
 @description('Required. The name of the Azure VM scale set for the HCI host.')
 param HCIHostVirtualMachineScaleSetName string
 
+@description('Conditional. The name of the Network Security Group ro create.')
+param networkSecurityGroupName string
+
+@description('Required. The name of the virtual network to create. Used to connect the HCI Azure Host VM to an existing VNET in the same region.')
+param virtualNetworkName string
+
 @description('Required. The name of the Network Interface Card to create.')
 param networkInterfaceName string
 
@@ -66,9 +72,7 @@ var domainOUPath = 'OU=HCI,DC=hci,DC=local'
 module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
-    hciHostAssignPublicIp: false
     domainOUPath: domainOUPath
-    deployProxy: false
     hciISODownloadURL: 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E16bds_v5'
@@ -80,6 +84,8 @@ module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDep
     maintenanceConfigurationAssignmentName: maintenanceConfigurationAssignmentName
     maintenanceConfigurationName: maintenanceConfigurationName
     networkInterfaceName: networkInterfaceName
+    networkSecurityGroupName: networkSecurityGroupName
+    virtualNetworkName: virtualNetworkName
     userAssignedIdentityName: userAssignedIdentityName
     virtualMachineName: virtualMachineName
     waitDeploymentScriptPrefixName: waitDeploymentScriptPrefixName
