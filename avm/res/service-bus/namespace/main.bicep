@@ -45,24 +45,24 @@ param authorizationRules authorizationRuleType[] = [
 ]
 
 @description('Optional. The migration configuration.')
-param migrationConfiguration migrationConfigurationsType?
+param migrationConfiguration migrationConfigurationType?
 
 @description('Optional. The disaster recovery configuration.')
 param disasterRecoveryConfig disasterRecoveryConfigType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -75,7 +75,7 @@ param roleAssignments roleAssignmentType[]?
 ])
 param publicNetworkAccess string = ''
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -97,7 +97,7 @@ param queues queueType[]?
 @description('Optional. The topics to create in the service bus namespace.')
 param topics topicType[]?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -259,7 +259,7 @@ module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main
   }
 }
 
-module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration ?? {})) {
+module serviceBusNamespace_migrationConfiguration 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration ?? {})) {
   name: '${uniqueString(deployment().name, location)}-MigrationConfigurations'
   params: {
     namespaceName: serviceBusNamespace.name
@@ -379,7 +379,15 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
 module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -474,11 +482,15 @@ output privateEndpoints array = [
   }
 ]
 
+@description('The endpoint of the deployed service bus namespace.')
+output serviceBusEndpoint string = serviceBusNamespace.properties.serviceBusEndpoint
+
 // =============== //
 //   Definitions   //
 // =============== //
 
 @export()
+@description('The type for a SKU.')
 type skuType = {
   @description('Required. Name of this SKU. - Basic, Standard, Premium.')
   name: ('Basic' | 'Standard' | 'Premium')
@@ -488,6 +500,7 @@ type skuType = {
 }
 
 @export()
+@description('The type for an authorization rule.')
 type authorizationRuleType = {
   @description('Required. The name of the authorization rule.')
   name: string
@@ -497,6 +510,7 @@ type authorizationRuleType = {
 }
 
 @export()
+@description('The type for a disaster recovery configuration.')
 type disasterRecoveryConfigType = {
   @description('Optional. The name of the disaster recovery config.')
   name: string?
@@ -509,7 +523,8 @@ type disasterRecoveryConfigType = {
 }
 
 @export()
-type migrationConfigurationsType = {
+@description('The type for a migration configuration')
+type migrationConfigurationType = {
   @description('Required. Name to access Standard Namespace after migration.')
   postMigrationName: string
 
@@ -518,6 +533,7 @@ type migrationConfigurationsType = {
 }
 
 @export()
+@description('The type for a network rule set.')
 type networkRuleSetType = {
   @description('Optional. This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied.')
   publicNetworkAccess: ('Disabled' | 'Enabled')?
@@ -548,6 +564,7 @@ type networkRuleSetType = {
 }
 
 @export()
+@description('The type for a queue.')
 type queueType = {
   @description('Required. The name of the queue.')
   name: string
@@ -621,6 +638,7 @@ type queueType = {
 
 import { subscriptionType } from 'topic/main.bicep'
 @export()
+@description('The type for a topic.')
 type topicType = {
   @description('Required. The name of the topic.')
   name: string
