@@ -1202,9 +1202,6 @@ Describe 'Module tests' -Tag 'Module' {
                     Write-Output @{
                         Warning = $warningMessage
                     }
-                    Set-ItResult -Skipped -Because $warningMessage
-                } else {
-                    $true | Should -Be $true
                 }
             }
 
@@ -1235,9 +1232,6 @@ Describe 'Module tests' -Tag 'Module' {
                     Write-Output @{
                         Warning = $warningMessage
                     }
-                    Set-ItResult -Skipped -Because $warningMessage
-                } else {
-                    $true | Should -Be $true
                 }
             }
 
@@ -1268,9 +1262,6 @@ Describe 'Module tests' -Tag 'Module' {
                     Write-Output @{
                         Warning = $warningMessage
                     }
-                    Set-ItResult -Skipped -Because $warningMessage
-                } else {
-                    $true | Should -Be $true
                 }
             }
         }
