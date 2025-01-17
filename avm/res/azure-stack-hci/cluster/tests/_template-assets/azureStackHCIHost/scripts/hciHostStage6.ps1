@@ -88,6 +88,12 @@ If (!(Test-Path -Path 'C:\temp\hciHostDeployAdminCred.xml')) {
     $adminCred | Export-Clixml -Path 'C:\temp\hciHostDeployAdminCred.xml'
 }
 
+If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
+If (!(Get-PackageProvider -Name Nuget -ListAvailable -ErrorAction SilentlyContinue)) { Install-PackageProvider -Name NuGet -Confirm:$false -Force }
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+
+Install-Module Az
+
 # get an access token for the VM MSI, which has been granted rights and will be used for the HCI Arc Initialization
 log "Logging in to Azure with user-assigned managed identity '$($userAssignedManagedIdentityClientId)'..."
 Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
@@ -99,9 +105,6 @@ $t = Get-AzAccessToken -ResourceUrl 'https://management.azure.com' | Select-Obje
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
 $deployUserCred = [pscredential]::new($deploymentUsername, (ConvertTo-SecureString -AsPlainText -Force $adminPw))
 
-If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-If (!(Get-PackageProvider -Name Nuget -ListAvailable -ErrorAction SilentlyContinue)) { Install-PackageProvider -Name NuGet -Confirm:$false -Force }
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 Install-Module AsHciADArtifactsPreCreationTool
 New-HciAdObjectsPreCreation -AzureStackLCMUserCredential $deployUserCred -AsHciOUName $domainOUPath
 
