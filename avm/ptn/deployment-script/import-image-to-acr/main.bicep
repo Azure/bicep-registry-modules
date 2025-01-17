@@ -160,7 +160,7 @@ resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssign
   }
 }
 
-module imageImport 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+module imageImport 'br/public:avm/res/resources/deployment-script:0.5.0' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
