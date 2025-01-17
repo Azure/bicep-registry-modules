@@ -21,7 +21,7 @@ param enableTelemetry bool = true
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.aksarc.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -80,12 +80,20 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
 }
 
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'hxtest'
+  location: location
+}
+
 resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(sshPublicKey)) {
   name: 'generateSSHKey'
   location: location
   kind: 'AzurePowerShell'
   identity: {
     type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
   }
   properties: {
     azPowerShellVersion: '8.0'
@@ -127,9 +135,6 @@ resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (e
 }
 
 var sshPublicKeyData = empty(sshPublicKey) ? generateSSHKey.properties.outputs.publicKey : sshPublicKey
-
-@description('Required. The extended location name.')
-param extendedLocationName string
 
 @description('Required. The id of the Custom location that used to create hybrid aks.')
 param customLocationId string
@@ -251,7 +256,7 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
     waitAksVhdReady
   ]
   extendedLocation: {
-    name: extendedLocationName
+    name: customLocationId
     type: 'CustomLocation'
   }
   properties: {

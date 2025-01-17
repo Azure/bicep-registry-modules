@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "name": {
+          "value": "logicalnetwork"
+      },
+      "customLocationId": {
+          "value": "subscriptions/de3c4d5e-af08-451a-a873-438d86ab6f4b/resourceGroups/hxbicep-rg/providers/Microsoft.ExtendedLocation/customLocations/hxbicep-customlocation"
+      },
+      "vmSwitchName": {
+          "value": "ConvergedSwitch(managementcompute)"
+      },
+      "addressPrefix": {
+          "value": null
+      },
+      "vlanId": {
+          "value": null
+      },
+      "startingAddress": {
+          "value": null
+      },
+      "endingAddress": {
+          "value": null
+      },
+      "routeName": {
+          "value": null
+      },
+      "defaultGateway": {
+          "value": null
+      }
+  }
+}

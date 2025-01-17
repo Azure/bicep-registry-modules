@@ -5,6 +5,8 @@
 )
 
 $ErrorActionPreference = "Stop"
+curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+az --version
 
 while ($true) {
     if ($env:ACTIONS_ID_TOKEN_REQUEST_TOKEN) {
