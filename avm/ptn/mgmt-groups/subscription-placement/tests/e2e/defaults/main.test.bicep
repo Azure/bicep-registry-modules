@@ -31,7 +31,7 @@ var subscriptionIds = [
 // ============== //
 
 module testDeployment '../../../main.bicep' = {
-  name: '${namePrefix}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, namePrefix)}-test-${serviceShort}'
   params: {
     parSubscriptionPlacement: [
       {
@@ -41,6 +41,7 @@ module testDeployment '../../../main.bicep' = {
     ]
   }
 }
+
 
 @description('This output retrieves the subscription placement summary from the test deployment outputs.')
 output subscriptionPlacementSummary string = testDeployment.outputs.subscriptionPlacementSummary
