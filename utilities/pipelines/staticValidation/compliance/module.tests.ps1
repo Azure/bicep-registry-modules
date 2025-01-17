@@ -1197,6 +1197,10 @@ Describe 'Module tests' -Tag 'Module' {
                 # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
                 $warningMessage = ('No user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
                 Write-Warning $warningMessage
+
+                Write-Output @{
+                    Warning = $warningMessage
+                }
                 Set-ItResult -Skipped -Because $warningMessage
             }
 
@@ -1222,6 +1226,10 @@ Describe 'Module tests' -Tag 'Module' {
                 # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
                 $warningMessage = ('No user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
                 Write-Warning $warningMessage
+
+                Write-Output @{
+                    Warning = $warningMessage
+                }
                 Set-ItResult -Skipped -Because $warningMessage
             }
 
@@ -1247,6 +1255,10 @@ Describe 'Module tests' -Tag 'Module' {
                 # $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
                 $warningMessage = ('Every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
                 Write-Warning $warningMessage
+
+                Write-Output @{
+                    Warning = $warningMessage
+                }
                 Set-ItResult -Skipped -Because $warningMessage
             }
         }
@@ -1622,8 +1634,12 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
         if ($approvedApiVersions -notcontains $TargetApi) {
             # Using a warning now instead of an error, as we don't want to block PRs for this.
-            Write-Warning ("The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f $approvedApiVersions -join ', ')
+            $warningMessage = "The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f ($approvedApiVersions -join ', ')
+            Write-Warning $warningMessage
 
+            Write-Output @{
+                Warning = $warningMessage
+            }
             # The original failed test was
             # $approvedApiVersions | Should -Contain $TargetApi
         } else {
@@ -1640,7 +1656,13 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
             if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
-                Write-Warning ("The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', '))
+
+                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', ')
+                Write-Warning $warningMessage
+
+                Write-Output @{
+                    Warning = $warningMessage
+                }
             }
         }
     }
