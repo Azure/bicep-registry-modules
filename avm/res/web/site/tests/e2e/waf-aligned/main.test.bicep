@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       diagnosticSettings: [
@@ -104,9 +103,5 @@ module testDeployment '../../../main.bicep' = [
       vnetRouteAllEnabled: true
       publicNetworkAccess: 'Disabled'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
