@@ -144,12 +144,12 @@ jobs:
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Deploy [${{ matrix.testCases.name}}]"
     runs-on: ubuntu-latest
-    if: |
-      !cancelled() &&
-      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' # &&
-      # needs.job_module_static_validation.result != 'failure' &&
-      # needs.job_psrule_test_waf_reliability.result != 'failure' &&
-      # needs.job_psrule_test_waf_security_cb.result != 'failure'
+    # if: |
+    #   !cancelled() &&
+    #   (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+    #   needs.job_module_static_validation.result != 'failure' &&
+    #   needs.job_psrule_test_waf_reliability.result != 'failure' &&
+    #   needs.job_psrule_test_waf_security_cb.result != 'failure'
     # needs:
     #   - job_module_static_validation
     #   - job_psrule_test_waf_reliability
