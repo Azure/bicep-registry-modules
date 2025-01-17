@@ -65,152 +65,6 @@ function Get-ErrorMessageForScope {
 
 <#
 .SYNOPSIS
-Monitors the state of a deployment through completion.
-
-.DESCRIPTION
-Monitors the state of a deployment through completion. This function works around transient issues with deployment monitoring using the native cmdlets.
-
-.PARAMETER DeploymentScope
-Mandatory. The scope to fetch the deployment from (e.g. resourcegroup, tenant,...)
-
-.PARAMETER DeploymentName
-Mandatory. The name of the deployment to search for (e.g. 'storageAccounts-20220105T0701282538Z')
-
-.PARAMETER ResourceGroupName
-Optional. The resource group to search the deployment in, if the scope is 'resourcegroup'
-
-.EXAMPLE
-Start-MonitorDeploymentForScope -DeploymentScope 'resourcegroup' -DeploymentName 'storageAccounts-20220105T0701282538Z' -ResourceGroupName 'validation-rg'
-
-Get the deployment for resource group 'validation-rg' that has the name 'storageAccounts-20220105T0701282538Z'
-
-.EXAMPLE
-Start-MonitorDeploymentForScope -DeploymentScope 'subscription' -DeploymentName 'resourcegroups-20220106T0401282538Z'
-
-Get the deployment for the current subscription that has the name 'storageAccounts-20220105T0701282538Z'
-#>
-
-function Start-MonitorDeploymentForScope {
-
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory)]
-        [string] $DeploymentScope,
-
-        [Parameter(Mandatory)]
-        [string] $DeploymentName,
-
-        [Parameter(Mandatory = $false)]
-        [string] $ResourceGroupName = ''
-    )
-
-    $maxRetryCheckDeployment = 5
-    $retryCheckDeploymentCount = 0
-    $unhealthyDeploymentStates = ('Canceled', 'Failed', 'Deleted', 'Deleting')
-    $healthyDeploymentStates = ('Creating', 'Created', 'Accepted', 'Running', 'Ready', 'Updating')
-    switch ($deploymentScope) {
-        'resourcegroup' {
-            do {
-                try {
-                    Write-Verbose ('Retrieving deployment status for [{0}] on resource group [{1}]' -f $deploymentName, $ResourceGroupName)
-                    $deployments = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName -ErrorAction Stop
-
-                    If ($?) { $retryCheckDeploymentCount = 0 }
-                } catch {
-                    Write-Verbose ('An error occurred while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
-                    If ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                        Write-Warning "The error 'An error occurred while sending the request' occurred while checking the state of the deployment. Retrying in 15 seconds.."
-                        $retryCheckDeploymentCount++
-                        Start-Sleep -Seconds 15
-                        $retryCheck = $true
-                    } ElseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                        Write-Warning "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. Retrying in 15 seconds.."
-                        $retryCheckDeploymentCount++
-                        Start-Sleep -Seconds 15
-                        $retryCheck = $true
-                    } ElseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
-                        Write-Error "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
-                        break
-                    }
-                    continue
-                }
-
-                Write-Verbose ("Deployment status for [{0}] and sub-operations on $deploymentScope are: provisioningStates: [{1}] statusCodes: [{2}]" -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
-                $runningDeployment = $false
-                foreach ($operation in $deployments) {
-                    if ($operation.ProvisioningState -in $unhealthyDeploymentStates) {
-                        Write-Warning "Deployment failed with provisioning state [$($operation.ProvisioningState -join ',')]. Error Message: [$($operation.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
-                        break
-                    } elseif ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -notin 'OK', 'Created') {
-                        Write-Debug "Deployment operation [$($operation.operationId)] is still running with provisioning state [$($operation.ProvisioningState)] and status code [$($operation.StatusCode)]"
-                        $runningDeployment = $true
-                    } else {
-                        Write-Debug "Deployment operation [$($operation.operationId)] has a provisioning state [$($operation.ProvisioningState)] and status code [$($operation.StatusCode)]"
-                    }
-                }
-
-                Start-Sleep -Seconds 15
-            } while ($retryCheck -or $runningDeployment)
-            break
-        }
-        'subscription' {
-            do {
-                try {
-                    Write-Verbose ('Retrieving deployment status for [{0}] on subscription' -f $deploymentName)
-                    $deployments = Get-AzDeploymentOperation -DeploymentName $deploymentName -ErrorAction Stop
-
-                    If ($?) { $retryCheckDeploymentCount = 0 }
-                } catch {
-                    Write-Verbose ('An error occurred while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
-                    If ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                        Write-Warning "The error 'An error occurred while sending the request' occurred while checking the state of the deployment. Retrying in 15 seconds.."
-                        $retryCheckDeploymentCount++
-                        Start-Sleep -Seconds 15
-                        $retryCheck = $true
-                    } ElseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                        Write-Warning "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. Retrying in 15 seconds.."
-                        $retryCheckDeploymentCount++
-                        Start-Sleep -Seconds 15
-                        $retryCheck = $true
-                    } ElseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
-                        Write-Error "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
-                        break
-                    }
-                    continue
-                }
-
-                Write-Verbose ("Deployment status for [{0}] and sub-operations on $deploymentScope are: provisioningStates: [{1}] statusCodes: [{2}]" -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
-                $runningDeployment = $false
-                foreach ($operation in $deployments) {
-                    if ($operation.ProvisioningState -in $unhealthyDeploymentStates) {
-                        Write-Warning "Deployment failed with provisioning state [$($operation.ProvisioningState -join ',')]. Error Message: [$($operation.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
-                        break
-                    } elseif ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -notin 'OK', 'Created') {
-                        Write-Debug "Deployment operation [$($operation.operationId)] is still running with provisioning state [$($operation.ProvisioningState)] and status code [$($operation.StatusCode)]"
-                        $runningDeployment = $true
-                    } else {
-                        Write-Debug "Deployment operation [$($operation.operationId)] has a provisioning state [$($operation.ProvisioningState)] and status code [$($operation.StatusCode)]"
-                    }
-                }
-
-                Start-Sleep -Seconds 15
-            } while ($retryCheck -or $runningDeployment)
-            break
-        }
-        'managementgroup' {
-            $deployments = Get-AzManagementGroupDeploymentOperation -DeploymentName $deploymentName
-            break
-        }
-        'tenant' {
-            $deployments = Get-AzTenantDeploymentOperation -DeploymentName $deploymentName
-            break
-        }
-    }
-    return $deployments
-}
-
-<#
-.SYNOPSIS
 Run a template deployment using a given parameter file
 
 .DESCRIPTION
@@ -394,13 +248,7 @@ function New-TemplateDeploymentInner {
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
                             Write-Verbose ('Creating deployment [{0}] on resource group [{1}]' -f $DeploymentInputs, $ResourceGroupName)
-                            $null = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName -AsJob
-
-                            # wait 15 seconds for the deployment to be created
-                            Start-Sleep -Seconds 15
-
-                            Write-Verbose ('Starting monitoring of deployment [{0}] on resource group [{1}]' -f $deploymentName, $ResourceGroupName)
-                            $res = Start-MonitorDeploymentForScope @DeploymentInputs -DeploymentScope $deploymentScope -ResourceGroupName $ResourceGroupName
+                            $null = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName
                         }
                         break
                     }
@@ -410,13 +258,7 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
-                            $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -AsJob
-
-                            # wait 15 seconds for the deployment to be created
-                            Start-Sleep -Seconds 15
-
-                            Write-Verbose ('Starting monitoring of deployment [{0}] on subscription [{1}]' -f $deploymentName, $SubscriptionId)
-                            $res = Start-MonitorDeploymentForScope -DeploymentName $deploymentName -DeploymentScope $deploymentScope
+                            $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
                     }
