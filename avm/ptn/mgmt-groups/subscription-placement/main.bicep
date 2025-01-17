@@ -39,7 +39,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 module customSubscriptionPlacement './modules/helper.bicep' = [
   for (subscriptionPlacement, index) in parSubscriptionPlacement: {
-    name: 'subPlacement${index}'
+    name: 'subPlacment-${uniqueString(subscriptionPlacement.managementGroupId)}${index}'
     params: {
       managementGroupId: subscriptionPlacement.managementGroupId
       subscriptionIds: subscriptionPlacement.subscriptionIds
