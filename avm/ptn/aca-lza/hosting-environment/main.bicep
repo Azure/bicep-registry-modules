@@ -131,7 +131,7 @@ param enableDdosProtection bool = false
 module naming 'modules/naming/naming.module.bicep' = {
   name: take('deploy-naming-${deployment().name}', 64)
   params: {
-    uniqueId: uniqueString(subscription().id)
+    uniqueId: uniqueString(subscription().id, location, environment, workloadName)
     spokeResourceGroupName: spokeResourceGroupName
     environment: environment
     workloadName: workloadName
