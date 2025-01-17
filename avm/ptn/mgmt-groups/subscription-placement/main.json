@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7669093066934147602"
+      "templateHash": "5376630188051666429"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups ",
@@ -88,7 +88,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('subPlacement{0}', copyIndex())]",
+      "name": "[format('subPlacment-{0}{1}', uniqueString(parameters('parSubscriptionPlacement')[copyIndex()].managementGroupId), copyIndex())]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
