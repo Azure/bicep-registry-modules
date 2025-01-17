@@ -1,0 +1,13 @@
+---
+# Synopsis: Suppress Rules for Resources that cannot activate firewalls
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: "SuppressNSParameters"
+spec:
+  rule:
+    - Azure.Storage.Firewall
+  if:
+    source: Template
+    withinPath:
+      - avm/ptn/virtual-machine-images/azure-image-builder/ # Storage Accounts the AIB is supposed to access may not have active firewalls. Ref: https://github.com/danielsollondon/azvmimagebuilder/issues/31

@@ -88,6 +88,7 @@ module testDeployment '../../../main.bicep' = [
       networkManagerScopeAccesses: [
         'Connectivity'
         'SecurityAdmin'
+        'Routing'
       ]
       networkManagerScopes: {
         managementGroups: [
@@ -99,6 +100,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'network-group-spokes-1'
           description: 'network-group-spokes description'
+          memberType: 'VirtualNetwork'
           staticMembers: [
             {
               name: 'virtualNetworkSpoke1'
@@ -112,15 +114,31 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'network-group-spokes-2'
+          memberType: 'VirtualNetwork'
           staticMembers: [
             {
-              name: 'virtualNetworkSpoke3'
+              name: 'default'
               resourceId: nestedDependencies.outputs.virtualNetworkSpoke3Id
             }
           ]
         }
         {
           name: 'network-group-spokes-3'
+          memberType: 'VirtualNetwork'
+        }
+        {
+          name: 'network-groups-subnets-1'
+          memberType: 'Subnet'
+          staticMembers: [
+            {
+              name: 'virtualNetworkSpoke1-defaultSubnet'
+              resourceId: nestedDependencies.outputs.virtualNetworkSpoke1SubnetId
+            }
+            {
+              name: 'virtualNetworkSpoke2-defaultSubnet'
+              resourceId: nestedDependencies.outputs.virtualNetworkSpoke2SubnetId
+            }
+          ]
         }
       ]
       connectivityConfigurations: [
@@ -288,14 +306,67 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
+      routingConfigurations: [
+        {
+          name: 'test-routing-config-1'
+          description: 'description of the routing config'
+        }
+        {
+          name: 'test-routing-config-2'
+          ruleCollections: [
+            {
+              name: 'test-routing-rule-collection-1-subnet'
+              appliesTo: [
+                {
+                  networkGroupResourceId: '${networkManagerExpecetedResourceID}/networkGroups/network-groups-subnets-1'
+                }
+              ]
+              disableBgpRoutePropagation: false
+              rules: [
+                {
+                  name: 'test-routing-rule-1'
+                  destination: {
+                    destinationAddress: 'AzureCloud'
+                    type: 'ServiceTag'
+                  }
+                  nextHop: {
+                    nextHopType: 'VnetLocal'
+                  }
+                }
+                {
+                  name: 'test-routing-rule-2'
+                  destination: {
+                    destinationAddress: '10.10.10.10/32'
+                    type: 'AddressPrefix'
+                  }
+                  nextHop: {
+                    nextHopType: 'VirtualAppliance'
+                    nextHopAddress: '192.168.1.1'
+                  }
+                }
+              ]
+            }
+          ]
+        }
+        {
+          name: 'test-routing-config-3'
+          ruleCollections: [
+            {
+              name: 'test-routing-rule-collection-2-virtual-network'
+              appliesTo: [
+                {
+                  networkGroupResourceId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-1'
+                }
+              ]
+            }
+          ]
+        }
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
