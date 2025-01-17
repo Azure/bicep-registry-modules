@@ -247,7 +247,6 @@ function New-TemplateDeploymentInner {
                             }
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
-                            Write-Verbose ('Creating deployment [{0}] on resource group [{1}]' -f $DeploymentInputs, $ResourceGroupName)
                             $res = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName
                         }
                         break
