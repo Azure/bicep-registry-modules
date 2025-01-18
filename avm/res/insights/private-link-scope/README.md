@@ -1122,7 +1122,7 @@ Specifies the access mode of ingestion or queries through associated private end
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -1134,7 +1134,7 @@ Specifies the access mode of ingestion or queries through associated private end
 
 List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.
 
-- Required: No
+- Required: Yes
 - Type: array
 
 **Required parameters**
@@ -1142,8 +1142,13 @@ List of exclusions that override the default access mode settings for specific p
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`ingestionAccessMode`](#parameter-accessmodesettingsexclusionsingestionaccessmode) | string | Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion. |
-| [`privateEndpointConnectionName`](#parameter-accessmodesettingsexclusionsprivateendpointconnectionname) | string | The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings. |
 | [`queryAccessMode`](#parameter-accessmodesettingsexclusionsqueryaccessmode) | string | Specifies the access mode of queries through the specified private endpoint connection in the exclusion. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateEndpointConnectionName`](#parameter-accessmodesettingsexclusionsprivateendpointconnectionname) | string | The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings. |
 
 ### Parameter: `accessModeSettings.exclusions.ingestionAccessMode`
 
@@ -1159,13 +1164,6 @@ Specifies the access mode of ingestion through the specified private endpoint co
   ]
   ```
 
-### Parameter: `accessModeSettings.exclusions.privateEndpointConnectionName`
-
-The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `accessModeSettings.exclusions.queryAccessMode`
 
 Specifies the access mode of queries through the specified private endpoint connection in the exclusion.
@@ -1180,11 +1178,18 @@ Specifies the access mode of queries through the specified private endpoint conn
   ]
   ```
 
+### Parameter: `accessModeSettings.exclusions.privateEndpointConnectionName`
+
+The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.
+
+- Required: No
+- Type: string
+
 ### Parameter: `accessModeSettings.ingestionAccessMode`
 
 Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
 
-- Required: No
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
@@ -1198,7 +1203,7 @@ Specifies the default access mode of ingestion through associated private endpoi
 
 Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
 
-- Required: No
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
@@ -1565,7 +1570,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1834,7 +1839,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.9.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 
