@@ -81,7 +81,7 @@ foreach ($module in @(
     if (-not (Get-Module -Name $module -ListAvailable)) {
         log "Installing module [$module]" -Verbose
         $null = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Confirm:$false
-        Import-Module $module -Force -Verbose
+        Import-Module $module -Force
         log ("Installed versions of [$module]: [{0}]" -f ((Get-Module -Name $module -ListAvailable).Version -join ', '))
     }
 }

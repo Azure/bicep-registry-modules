@@ -271,6 +271,19 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
 // Install Host Roles  //
 // ====================//
 
+// installs required modules
+resource runCommand0 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand0'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage0.ps1')
+    }
+    treatFailureAsDeploymentFailure: true
+  }
+}
+
 // installs roles and features required for Azure Stack HCI Host VM
 resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
