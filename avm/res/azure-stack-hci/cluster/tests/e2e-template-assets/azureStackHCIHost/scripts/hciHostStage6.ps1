@@ -59,8 +59,8 @@ Function log {
         [string]$logPath = 'C:\temp\hciHostDeploy-6.log'
     )
 
-    If (!(Test-Path -Path C:\temp)) {
-        New-Item -Path C:\temp -ItemType Directory
+    If (!(Test-Path -Path 'C:\temp')) {
+        New-Item -Path 'C:\temp' -ItemType Directory
     }
 
     Write-Host $message
