@@ -80,8 +80,8 @@ foreach ($module in @(
         'AzsHCI.ARCinstaller')) {
     if (-not (Get-Module -Name $module -ListAvailable)) {
         log "Installing module [$module]" -Verbose
-        $res = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Confirm:$false
-        log ("Installed module [$module] with version [{0}]" -f $res.Version)
+        $null = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Confirm:$false
+        log ("Installed versions of [$module]: [{0}]" -f ((Get-Module -Name $module -ListAvailable).Version -join ', '))
     }
 }
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Untrusted'
@@ -116,7 +116,7 @@ log "Logging in to Azure with user-assigned managed identity '$($userAssignedMan
 Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
 
 log 'Getting access token for Azure Stack HCI Arc initialization...'
-$t = Get-AzAccessToken -ResourceUrl 'https://management.azure.com' | Select-Object -ExpandProperty Token
+$t = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com' -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText
 
 # pre-create AD objects
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
