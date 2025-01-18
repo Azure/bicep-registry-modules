@@ -111,7 +111,11 @@ log "Logging in to Azure with user-assigned managed identity '$($userAssignedMan
 Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
 
 log 'Getting access token for Azure Stack HCI Arc initialization...'
-$t = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com' -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText
+# Must use the below code as RunCommand is running with PowerShell 5.1, not core, where -AsPlainText is not supported
+# $t = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com' -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText
+$accessToken = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com' -AsSecureString).Token
+$bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($accessToken)
+$t = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
 
 # pre-create AD objects
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
