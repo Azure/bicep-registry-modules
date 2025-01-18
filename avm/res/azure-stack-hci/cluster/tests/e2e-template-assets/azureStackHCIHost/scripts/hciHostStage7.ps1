@@ -38,7 +38,9 @@ for ($i = 1; $i -le $hciNodeCount; $i++) {
 }
 
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted'
-foreach ($module in $('Az.Accounts', 'Az.ConnectedMachine')) {
+foreach ($module in $(
+        'Az.Accounts',
+        'Az.ConnectedMachine')) {
     if (-not (Get-Module -Name $module -ListAvailable)) {
         log "Installing module [$module]" -Verbose
         $res = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Force
