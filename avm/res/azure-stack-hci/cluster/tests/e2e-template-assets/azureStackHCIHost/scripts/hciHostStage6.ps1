@@ -69,6 +69,23 @@ Function log {
 
 $ErrorActionPreference = 'Stop'
 
+If (!(Get-PackageProvider -Name 'NuGet' -ListAvailable -ErrorAction 'SilentlyContinue')) { Install-PackageProvider -Name NuGet -MinimumVersion '2.8.5.201' -Force }
+If (!(Get-PSRepository -Name 'PSGallery' -ErrorAction 'SilentlyContinue')) { Register-PSRepository -Default }
+Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted'
+foreach ($module in $(
+        'Az.Accounts',
+        'Az.Resources',
+        'WinInetProxy',
+        'AsHciADArtifactsPreCreationTool',
+        'AzsHCI.ARCinstaller')) {
+    if (-not (Get-Module -Name $module -ListAvailable)) {
+        log "Installing module [$module]" -Verbose
+        $res = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Force
+        log ("Installed module [$module] with version [{0}]" -f $res.Version)
+    }
+}
+Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Untrusted'
+
 # export or re-import local administrator credential
 # we do this to support re-run of the template. If deployed, the HCI node password will be set to the password provided in the template, but future re-runs will generate a new password.
 If (!(Test-Path -Path 'C:\temp\hciHostDeployAdminCred.xml')) {
@@ -89,17 +106,6 @@ If (!(Test-Path -Path 'C:\temp\hciHostDeployAdminCred.xml')) {
 }
 
 # get an access token for the VM MSI, which has been granted rights and will be used for the HCI Arc Initialization
-
-Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted'
-foreach ($module in $('Az.Accounts')) {
-    if (-not (Get-Module -Name $module -ListAvailable)) {
-        log "Installing module [$module]" -Verbose
-        $res = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Force
-        log ("Installed module [$module] with version [{0}]" -f $res.Version)
-    }
-}
-Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Untrusted'
-
 log "Logging in to Azure with user-assigned managed identity '$($userAssignedManagedIdentityClientId)'..."
 Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
 
@@ -110,10 +116,6 @@ $t = Get-AzAccessToken -ResourceUrl 'https://management.azure.com' | Select-Obje
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
 $deployUserCred = [pscredential]::new($deploymentUsername, (ConvertTo-SecureString -AsPlainText -Force $adminPw))
 
-If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-If (!(Get-PackageProvider -Name Nuget -ListAvailable -ErrorAction SilentlyContinue)) { Install-PackageProvider -Name NuGet -Confirm:$false -Force }
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-Install-Module AsHciADArtifactsPreCreationTool
 New-HciAdObjectsPreCreation -AzureStackLCMUserCredential $deployUserCred -AsHciOUName $domainOUPath
 
 ## set the LCM deployUser password to the adminPw value - this aligns the password with the KeyVault during re-runs
@@ -236,13 +238,6 @@ if (![string]::IsNullOrEmpty($proxyServerEndpoint) -and ![string]::IsNullOrEmpty
         $proxyServerEndpoint = $args[0]
         $proxyBypassString = $args[1]
 
-        ## install winInetProxy module
-        If (!(Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) { Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force }
-        If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-        If (!(Get-InstalledModule -Name WinInetProxy -ErrorAction SilentlyContinue)) { Install-Module WinInetProxy -Force }
-        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
-
         ## set WinInet proxy settings
         Set-WinInetProxy -ProxyServer $proxyServerEndpoint -ProxyBypass $proxyBypassString -ProxySettingsPerUser 0
 
@@ -316,13 +311,6 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
             'proxyBypass' = $proxyBypassString
         }
     }
-
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
-    If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    Install-Module Az.Resources
-    Install-Module -Name AzsHCI.ARCinstaller # -RequiredVersion '0.2.2690.99' # hardcode for 2408 testing
-    Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
     #wait for bootstrap service to be reachable
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
