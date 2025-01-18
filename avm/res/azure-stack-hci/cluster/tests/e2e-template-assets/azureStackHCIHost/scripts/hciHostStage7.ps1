@@ -43,7 +43,7 @@ foreach ($module in @(
         'Az.ConnectedMachine')) {
     if (-not (Get-Module -Name $module -ListAvailable)) {
         log "Installing module [$module]" -Verbose
-        $res = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Force
+        $res = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Force -Confirm:$false
         log ("Installed module [$module] with version [{0}]" -f $res.Version)
     }
 }
