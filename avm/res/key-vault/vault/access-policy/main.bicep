@@ -5,26 +5,24 @@ metadata description = 'This module deploys a Key Vault Access Policy.'
 param keyVaultName string
 
 @description('Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault\'s tenant ID.')
-param accessPolicies accessPoliciesType
-
-var formattedAccessPolicies = [
-  for accessPolicy in (accessPolicies ?? []): {
-    applicationId: accessPolicy.?applicationId ?? ''
-    objectId: accessPolicy.objectId
-    permissions: accessPolicy.permissions
-    tenantId: accessPolicy.?tenantId ?? tenant().tenantId
-  }
-]
+param accessPolicies accessPoliciesType[]?
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
-resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
+resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-01' = {
   name: 'add'
   parent: keyVault
   properties: {
-    accessPolicies: formattedAccessPolicies
+    accessPolicies: [
+      for accessPolicy in (accessPolicies ?? []): {
+        applicationId: accessPolicy.?applicationId ?? ''
+        objectId: accessPolicy.objectId
+        permissions: accessPolicy.permissions
+        tenantId: accessPolicy.?tenantId ?? tenant().tenantId
+      }
+    ]
   }
 }
 
@@ -40,6 +38,8 @@ output resourceId string = policies.id
 // ================ //
 // Definitions      //
 // ================ //
+@export()
+@description('The type for an access policy.')
 type accessPoliciesType = {
   @description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
   tenantId: string?
@@ -117,4 +117,4 @@ type accessPoliciesType = {
       | 'setsas'
       | 'update')[]?
   }
-}[]?
+}
