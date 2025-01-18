@@ -37,7 +37,6 @@ Optional. Additional parameters you can provide with the deployment. E.g. @{ res
 Optional. A hashtable parameter that contains custom tokens to be replaced in the paramter files for deployment
 
 .EXAMPLE
-
 $TestModuleLocallyInput = @{
     TemplateFilePath           = 'C:\network\route-table\main.bicep'
     ModuleTestFilePath         = 'C:\network\route-table\.test\common\main.test.bicep'
@@ -62,7 +61,16 @@ Test-ModuleLocally @TestModuleLocallyInput -Verbose
 Run a Test-Az*Deployment using a test file with the provided tokens
 
 .EXAMPLE
+$TestModuleLocallyInput = @{
+    TemplateFilePath           = 'C:\network\route-table\main.bicep'
+    PesterTest                 = $true
+    PesterTag                  = 'UDT'
+}
+Test-ModuleLocally @TestModuleLocallyInput -Verbose
 
+Run the Pester tests with Tag 'UDT' for the given template file
+
+.EXAMPLE
 $TestModuleLocallyInput = @{
     TemplateFilePath           = 'C:\network\route-table\main.bicep'
     PesterTest                 = $true
@@ -72,7 +80,6 @@ Test-ModuleLocally @TestModuleLocallyInput -Verbose
 Run all Pester tests for the given template file
 
 .EXAMPLE
-
 $TestModuleLocallyInput = @{
     TemplateFilePath           = 'C:\network\route-table\main.bicep'
     PesterTest                 = $true
