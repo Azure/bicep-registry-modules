@@ -13,9 +13,9 @@ param serviceShort string = 'ashc3nmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password of the LCM deployment user and local administrator accounts.')
-@secure()
-param localAdminAndDeploymentUserPass string = newGuid()
+// @description('Optional. The password of the LCM deployment user and local administrator accounts.')
+// @secure()
+// param localAdminAndDeploymentUserPass string = newGuid()
 
 @description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
@@ -66,9 +66,9 @@ module nestedDependencies 'dependencies.bicep' = {
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
-    deploymentUserPassword: localAdminAndDeploymentUserPass
+    deploymentUserPassword: arbDeploymentAppId // Using ID to be deterministic
     hciResourceProviderObjectId: hciResourceProviderObjectId
-    localAdminPassword: localAdminAndDeploymentUserPass
+    localAdminPassword: arbDeploymentAppId // Using ID to be deterministic
     location: enforcedLocation
   }
 }
