@@ -72,7 +72,7 @@ $ErrorActionPreference = 'Stop'
 If (!(Get-PackageProvider -Name 'NuGet' -ListAvailable -ErrorAction 'SilentlyContinue')) { Install-PackageProvider -Name NuGet -MinimumVersion '2.8.5.201' -Force }
 If (!(Get-PSRepository -Name 'PSGallery' -ErrorAction 'SilentlyContinue')) { Register-PSRepository -Default }
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted'
-foreach ($module in $(
+foreach ($module in @(
         'Az.Accounts',
         'Az.Resources',
         'WinInetProxy',
