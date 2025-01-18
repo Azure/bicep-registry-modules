@@ -20,7 +20,7 @@ param (
 Function log {
     Param (
         [string]$message,
-        [string]$logPath = 'C:\temp\hciHostDeploy.log'
+        [string]$logPath = 'C:\temp\hciHostDeploy-5.log'
     )
 
     If (!(Test-Path -Path C:\temp)) {
