@@ -482,6 +482,9 @@ output privateEndpoints array = [
   }
 ]
 
+@description('The endpoint of the deployed service bus namespace.')
+output serviceBusEndpoint string = serviceBusNamespace.properties.serviceBusEndpoint
+
 // =============== //
 //   Definitions   //
 // =============== //

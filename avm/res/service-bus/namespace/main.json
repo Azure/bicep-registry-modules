@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6393989272256335585"
+      "templateHash": "4238800223432554228"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -5133,6 +5133,13 @@
           "networkInterfaceIds": "[reference(format('serviceBusNamespace_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
+    },
+    "serviceBusEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint of the deployed service bus namespace."
+      },
+      "value": "[reference('serviceBusNamespace').serviceBusEndpoint]"
     }
   }
 }
