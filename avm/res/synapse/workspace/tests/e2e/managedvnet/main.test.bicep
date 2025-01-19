@@ -61,8 +61,5 @@ module testDeployment '../../../main.bicep' = [
         tenant().tenantId
       ]
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

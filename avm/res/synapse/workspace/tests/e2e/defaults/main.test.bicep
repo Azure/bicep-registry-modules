@@ -56,8 +56,5 @@ module testDeployment '../../../main.bicep' = [
       defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
       sqlAdministratorLogin: 'synwsadmin'
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
