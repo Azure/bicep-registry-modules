@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13058506360190057052"
+      "templateHash": "14906226121551659325"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -1167,7 +1167,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17605704197592474421"
+              "templateHash": "5168623611246542439"
             }
           },
           "parameters": {
@@ -1198,7 +1198,7 @@
             {
               "condition": "[not(parameters('usesRbacAuthorization'))]",
               "type": "Microsoft.KeyVault/vaults/accessPolicies",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('keyvaultName'), 'add')]",
               "properties": {
                 "accessPolicies": [
