@@ -1248,7 +1248,13 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $incorrectTypes = [System.Collections.ArrayList]@()
                 foreach ($typeName in $templateFileContent.definitions.Keys) {
-                    if ($typeName -cnotmatch '^.*Type$') {
+                    if ($typeName -cnotmatch '^(.+\.)?[a-z].*Type$') {
+                        # Passes
+                        # - testType
+                        # - _1.testType
+                        # NOT passes
+                        # - test
+                        # - _1.TestType
                         $incorrectTypes += $typeName
                     }
                 }
