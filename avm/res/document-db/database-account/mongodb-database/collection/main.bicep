@@ -11,7 +11,7 @@ param mongodbDatabaseName string
 @description('Required. Name of the collection.')
 param name string
 
-@description('Optional. Request Units per second.')
+@description('Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.')
 param throughput int = 400
 
 @description('Required. Indexes for the collection.')
