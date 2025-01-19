@@ -355,7 +355,15 @@ module workspace_firewallRules 'firewall-rules/main.bicep' = [
 module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true

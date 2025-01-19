@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14906226121551659325"
+      "templateHash": "14840747725893494448"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -1557,7 +1557,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-workspace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
