@@ -393,14 +393,7 @@ function New-TemplateDeploymentInner {
                             }
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
-                            Write-Verbose ('Creating deployment [{0}] on resource group [{1}]' -f $DeploymentInputs, $ResourceGroupName)
-                            $null = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName -AsJob
-
-                            # wait 15 seconds for the deployment to be created
-                            Start-Sleep -Seconds 15
-
-                            Write-Verbose ('Starting monitoring of deployment [{0}] on resource group [{1}]' -f $deploymentName, $ResourceGroupName)
-                            $res = Start-MonitorDeploymentForScope @DeploymentInputs -DeploymentScope $deploymentScope -ResourceGroupName $ResourceGroupName
+                            $res = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName
                         }
                         break
                     }
@@ -410,13 +403,7 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
-                            $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -AsJob
-
-                            # wait 15 seconds for the deployment to be created
-                            Start-Sleep -Seconds 15
-
-                            Write-Verbose ('Starting monitoring of deployment [{0}] on subscription [{1}]' -f $deploymentName, $SubscriptionId)
-                            $res = Start-MonitorDeploymentForScope -DeploymentName $deploymentName -DeploymentScope $deploymentScope
+                            $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
                     }
