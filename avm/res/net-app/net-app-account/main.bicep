@@ -40,6 +40,8 @@ param smbServerNamePrefix string = ''
 @description('Optional. Capacity pools to create.')
 param capacityPools array = []
 
+@description('Optional. Backup Vaults to create')
+param backupVaults array = []
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
@@ -220,9 +222,19 @@ resource netAppAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
+module netAppAccount_backupVaults 'backup-vaults/main.bicep' = [
+  for (backupVault, index) in backupVaults: {
+    name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVaults-${index}'
+    params: {
+      netAppAccountName: netAppAccount.name
+      backupVaultName: backupVault.name
+    }
+  }
+]
 module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
   for (capacityPool, index) in capacityPools: {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-CapPool-${index}'
+    dependsOn: netAppAccount_backupVaults
     params: {
       netAppAccountName: netAppAccount.name
       name: capacityPool.name
