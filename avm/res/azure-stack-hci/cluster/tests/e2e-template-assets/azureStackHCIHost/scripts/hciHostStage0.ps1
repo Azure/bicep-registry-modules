@@ -19,11 +19,13 @@ If (!(Get-PackageProvider -Name 'NuGet' -ListAvailable -ErrorAction 'SilentlyCon
 If (!(Get-PSRepository -Name 'PSGallery' -ErrorAction 'SilentlyContinue')) { Register-PSRepository -Default }
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted'
 foreach ($module in @(
-        'Az.Accounts',
-        'Az.Resources',
-        'WinInetProxy',
-        'AsHciADArtifactsPreCreationTool',
-        'AzsHCI.ARCinstaller')) {
+        'Az.Accounts', # Needed by Stage 6 & 7
+        'Az.Resources', # Needed by Stage 6
+        'WinInetProxy', # Needed by Stage 6
+        'AsHciADArtifactsPreCreationTool', # Needed by Stage 6
+        'AzsHCI.ARCinstaller', # Needed by Stage 6
+        'Az.ConnectedMachine'  # Needed by Stage 7
+    )) {
     if (-not (Get-Module -Name $module -ListAvailable)) {
         log "Installing module [$module]" -Verbose
         $null = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Confirm:$false
