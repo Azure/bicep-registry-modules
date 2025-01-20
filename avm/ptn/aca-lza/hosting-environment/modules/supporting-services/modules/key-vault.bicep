@@ -84,7 +84,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.11.1' = {
     }
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
-    enablePurgeProtection: null
+    enablePurgeProtection: false
     publicNetworkAccess: 'Disabled'
     enableRbacAuthorization: true
     enableVaultForDeployment: true

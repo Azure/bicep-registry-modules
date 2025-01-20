@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12311422039470730786"
+      "templateHash": "2541695628448359364"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -270,7 +270,7 @@
         "mode": "Incremental",
         "parameters": {
           "uniqueId": {
-            "value": "[uniqueString(parameters('workloadName'))]"
+            "value": "[uniqueString(subscription().id, parameters('location'), parameters('environment'), parameters('workloadName'))]"
           },
           "spokeResourceGroupName": {
             "value": "[parameters('spokeResourceGroupName')]"
@@ -21560,7 +21560,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "475523379519464096"
+              "templateHash": "3392565495195178374"
             }
           },
           "parameters": {
@@ -28072,7 +28072,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "871776826905490480"
+                      "templateHash": "10698940016173685847"
                     }
                   },
                   "parameters": {
@@ -31228,7 +31228,7 @@
                             "value": 7
                           },
                           "enablePurgeProtection": {
-                            "value": null
+                            "value": false
                           },
                           "publicNetworkAccess": {
                             "value": "Disabled"
