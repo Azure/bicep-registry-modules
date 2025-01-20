@@ -10,7 +10,7 @@ param storageAccountName string
 param tables array = []
 
 @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
-param corsRules corsRule[]?
+param corsRules corsRuleType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -90,7 +90,7 @@ output resourceGroupName string = resourceGroup().name
 
 @export()
 @description('The type for a cors rule.')
-type corsRule = {
+type corsRuleType = {
   @description('Required. A list of headers allowed to be part of the cross-origin request.')
   allowedHeaders: string[]
 

@@ -29,7 +29,7 @@ param containerDeleteRetentionPolicyDays int?
 param containerDeleteRetentionPolicyAllowPermanentDelete bool = false
 
 @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
-param corsRules corsRule[]?
+param corsRules corsRuleType[]?
 
 @description('Optional. Indicates the default version to use for requests to the Blob service if an incoming request\'s version is not specified. Possible values include version 2008-10-27 and all more recent versions.')
 param defaultServiceVersion string = ''
@@ -182,7 +182,7 @@ output resourceGroupName string = resourceGroup().name
 
 @export()
 @description('The type for a cors rule.')
-type corsRule = {
+type corsRuleType = {
   @description('Required. A list of headers allowed to be part of the cross-origin request.')
   allowedHeaders: string[]
 

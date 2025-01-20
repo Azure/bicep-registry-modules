@@ -6,14 +6,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6583754380159166860"
+      "templateHash": "3469519329529657459"
     },
     "name": "Storage Account Queue Services",
     "description": "This module deploys a Storage Account Queue Service.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "corsRule": {
+    "corsRuleType": {
       "type": "object",
       "properties": {
         "allowedHeaders": {
@@ -214,7 +214,7 @@
     "corsRules": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/corsRule"
+        "$ref": "#/definitions/corsRuleType"
       },
       "nullable": true,
       "metadata": {

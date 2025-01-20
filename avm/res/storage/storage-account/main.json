@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16011455588922520981"
+      "templateHash": "5764713369417236781"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -2623,14 +2623,14 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7252642994593643480"
+              "templateHash": "16945288904009561261"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
-            "corsRule": {
+            "corsRuleType": {
               "type": "object",
               "properties": {
                 "allowedHeaders": {
@@ -2870,7 +2870,7 @@
             "corsRules": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/corsRule"
+                "$ref": "#/definitions/corsRuleType"
               },
               "nullable": true,
               "metadata": {
@@ -4353,14 +4353,14 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6583754380159166860"
+              "templateHash": "3469519329529657459"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
-            "corsRule": {
+            "corsRuleType": {
               "type": "object",
               "properties": {
                 "allowedHeaders": {
@@ -4561,7 +4561,7 @@
             "corsRules": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/corsRule"
+                "$ref": "#/definitions/corsRuleType"
               },
               "nullable": true,
               "metadata": {
@@ -4944,14 +4944,14 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13926418529151806401"
+              "templateHash": "6416471281168447584"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
-            "corsRule": {
+            "corsRuleType": {
               "type": "object",
               "properties": {
                 "allowedHeaders": {
@@ -5152,7 +5152,7 @@
             "corsRules": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/corsRule"
+                "$ref": "#/definitions/corsRuleType"
               },
               "nullable": true,
               "metadata": {

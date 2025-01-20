@@ -6,14 +6,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7252642994593643480"
+      "templateHash": "16945288904009561261"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "corsRule": {
+    "corsRuleType": {
       "type": "object",
       "properties": {
         "allowedHeaders": {
@@ -253,7 +253,7 @@
     "corsRules": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/corsRule"
+        "$ref": "#/definitions/corsRuleType"
       },
       "nullable": true,
       "metadata": {
