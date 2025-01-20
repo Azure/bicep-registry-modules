@@ -97,8 +97,9 @@ param oidcIssuerEnabled bool = false
 param workloadIdentityEnabled bool = false
 
 // Resource definition
-resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-12-01-preview' = {
+resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-preview' = {
   name: name
+  kind: 'ProvisionedCluster'
   location: location
   identity: {
     type: identityType

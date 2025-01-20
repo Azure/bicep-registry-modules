@@ -99,21 +99,26 @@ resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if 
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
     scriptContent: '''
-      $key = [System.Security.Cryptography.RSA]::Create(4096)
+      # Create temp directory in a known location
+      $tempDir = "/tmp/sshkeys"
+      New-Item -ItemType Directory -Path $tempDir -Force
+      Set-Location $tempDir
 
-      $privateKeyBytes = $key.ExportRSAPrivateKey()
-      $privateKeyPem = "-----BEGIN RSA PRIVATE KEY-----`n"
-      $privateKeyPem += [Convert]::ToBase64String($privateKeyBytes, [System.Base64FormattingOptions]::InsertLineBreaks)
-      $privateKeyPem += "`n-----END RSA PRIVATE KEY-----"
+      # Generate SSH key pair using ssh-keygen
+      ssh-keygen -t rsa -b 4096 -f ./key -N '""' -q
 
-      $publicKeyBytes = $key.ExportRSAPublicKey()
-      $publicKeyPem = "-----BEGIN PUBLIC KEY-----`n"
-      $publicKeyPem += [Convert]::ToBase64String($publicKeyBytes, [System.Base64FormattingOptions]::InsertLineBreaks)
-      $publicKeyPem += "`n-----END PUBLIC KEY-----"
+      # Read the generated keys
+      $publicKey = Get-Content -Path "./key.pub" -Raw
+      $privateKey = Get-Content -Path "./key" -Raw
 
+      # Clean up temp files
+      Remove-Item -Path "./key*" -Force
+      Remove-Item -Path $tempDir -Force -Recurse
+
+      # Set output
       $DeploymentScriptOutputs = @{}
-      $DeploymentScriptOutputs['publicKey'] = $publicKeyPem
-      $DeploymentScriptOutputs['privateKey'] = $privateKeyPem
+      $DeploymentScriptOutputs['publicKey'] = $publicKey
+      $DeploymentScriptOutputs['privateKey'] = $privateKey
     '''
   }
 }
@@ -139,16 +144,13 @@ var sshPublicKeyData = empty(sshPublicKey) ? generateSSHKey.properties.outputs.p
 @description('Required. The id of the Custom location that used to create hybrid aks.')
 param customLocationId string
 
-@description('Optional. Indicates whether the resource is exported.')
-param isExported bool = false
-
 @description('Optional. The Kubernetes version for the cluster.')
 param kubernetesVersion string = ''
 
 @description('Optional. Agent pool configuration.')
 param agentPoolProfiles array = [
   {
-    name: '${name}-nodepool1'
+    name: 'nodepool1'
     count: 1
     enableAutoScaling: false
     maxCount: 5
@@ -235,25 +237,31 @@ module connectedCluster '../../kubernetes/connected-clusters/main.bicep' = {
   }
 }
 
-resource waitAksVhdReady 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (!isExported) {
-  name: 'waitAksVhdReady'
-  location: resourceGroup().location
-  kind: 'AzurePowerShell'
-  properties: {
-    azPowerShellVersion: '7.0'
-    scriptContent: loadTextContent('readiness.ps1')
-    arguments: '-customLocationResourceId ${customLocationId} -kubernetesVersion ${empty(kubernetesVersion) ? '[PLACEHOLDER]' : kubernetesVersion} -osSku ${agentPoolProfiles[0].osSKU}'
-    timeout: 'PT1H'
-    cleanupPreference: 'OnSuccess'
-    retentionInterval: 'P1D'
-    forceUpdateTag: resourceGroup().name
-  }
+// resource waitAksVhdReady 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (!isExported) {
+//   name: 'waitAksVhdReady'
+//   location: resourceGroup().location
+//   kind: 'AzurePowerShell'
+//   properties: {
+//     azPowerShellVersion: '7.0'
+//     scriptContent: loadTextContent('readiness.ps1')
+//     arguments: '-customLocationResourceId ${customLocationId} -kubernetesVersion ${empty(kubernetesVersion) ? '[PLACEHOLDER]' : kubernetesVersion} -osSku ${agentPoolProfiles[0].osSKU}'
+//     timeout: 'PT1H'
+//     cleanupPreference: 'OnSuccess'
+//     retentionInterval: 'P1D'
+//     forceUpdateTag: resourceGroup().name
+//   }
+// }
+
+resource existingCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-preview' existing = {
+  name: name
 }
 
 resource provisionedCluster 'Microsoft.HybridContainerService/provisionedClusterInstances@2024-01-01' = {
-  name: name
+  scope: existingCluster
+  name: 'default'
   dependsOn: [
-    waitAksVhdReady
+    connectedCluster
+    sshPublicKeyPem
   ]
   extendedLocation: {
     name: customLocationId
