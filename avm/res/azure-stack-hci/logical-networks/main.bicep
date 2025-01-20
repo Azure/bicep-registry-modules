@@ -139,7 +139,7 @@ resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2023-09-01-prev
   }
   properties: {
     dhcpOptions: {
-      dnsServers: ipAllocationMethod == 'Dynamic' ? null : flatten(dnsServers)
+      dnsServers: ipAllocationMethod == 'Dynamic' ? null : dnsServers
     }
     subnets: [
       {
