@@ -181,8 +181,6 @@ function Start-MonitorDeploymentForScope {
 
                 Write-Verbose ("Deployment status for [{0}] and sub-operations on $deploymentScope are: provisioningStates: [{1}] statusCodes: [{2}]" -f $deploymentName, ($deployments.ProvisioningState -join ','), ($deployments.StatusCode -join ','))
                 $runningDeployment = $false
-                Write-Verbose ("debug: previously Get-AzDeploymentOperation -DeploymentName $deploymentName -ErrorAction Stop")
-                Write-Verbose ("debug: deployments.Count = $($deployments.Count)")
                 foreach ($operation in $deployments) {
                     if ($operation.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Warning "Deployment failed with provisioning state [$($operation.ProvisioningState -join ',')]. Error Message: [$($operation.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
