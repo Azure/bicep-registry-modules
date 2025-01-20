@@ -660,7 +660,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.connectionString1
-              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
+              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
             }
           ]
         : [],
@@ -676,7 +676,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.connectionString2
-              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1].value};EndpointSuffix=core.windows.net'
+              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1].value};EndpointSuffix=${environment().suffixes.storage}'
             }
           ]
         : []
