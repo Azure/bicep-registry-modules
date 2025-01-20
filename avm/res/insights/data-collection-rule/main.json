@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "14881778773754127105"
+      "version": "0.32.4.45862",
+      "templateHash": "5749720752654125558"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule.",
@@ -533,8 +533,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "9020805060946792832"
+              "version": "0.32.4.45862",
+              "templateHash": "7374245221905320535"
             }
           },
           "definitions": {
@@ -709,10 +709,7 @@
                 "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-              },
-              "dependsOn": [
-                "dataCollectionRule"
-              ]
+              }
             },
             "dataCollectionRule_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -723,10 +720,7 @@
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
                 "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
-              },
-              "dependsOn": [
-                "dataCollectionRule"
-              ]
+              }
             }
           }
         }

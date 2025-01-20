@@ -94,7 +94,13 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Compute/virtualMachines',
             'Microsoft.ContainerInstance/containerGroups' # Must be removed before their MSI
             'Microsoft.ManagedIdentity/userAssignedIdentities',
-            'Microsoft.Databricks/workspaces'
+            'Microsoft.Databricks/workspaces',
+            'Microsoft.NetApp/netAppAccounts/capacityPools/volumes', # Must be deleted before netapp account capacity pool & attached policies because if any policies are linked to a volume their removal with fail
+            'Microsoft.NetApp/netAppAccounts/backupPolicies', # Must be deleted before netapp volume backup can be removed because the Resource Provider does not allow deleting the account as long as it has nested resources
+            'Microsoft.NetApp/netAppAccounts/backupVaults/backups', # Must be deleted before netapp account backup vault because you cannot delete a backup vault while it still contains backups
+            'Microsoft.NetApp/netAppAccounts/backupVaults', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
+            'Microsoft.NetApp/netAppAccounts/snapshotPolicies', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
+            'Microsoft.NetApp/netAppAccounts/capacityPools', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
             'Microsoft.Resources/resourceGroups'
         )
 

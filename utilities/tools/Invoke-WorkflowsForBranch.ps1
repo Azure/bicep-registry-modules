@@ -180,7 +180,7 @@ function Get-GitHubModuleWorkflowList {
         }
 
         if (-not $response.workflows) {
-            Write-Error "Request failed. Reponse: [$response]"
+            Write-Error "Request failed. Response: [$response]"
         }
 
         $allWorkflows += $response.workflows | Select-Object -Property @('id', 'name', 'path', 'badge_url', 'state') | Where-Object {

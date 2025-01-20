@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "5025100485259764817"
+      "version": "0.32.4.45862",
+      "templateHash": "4211052041110233359"
     },
     "name": "DNS Resolver Outbound Endpoint",
     "description": "This module deploys a DNS Resolver Outbound Endpoint.",
@@ -64,10 +64,7 @@
         "subnet": {
           "id": "[parameters('subnetResourceId')]"
         }
-      },
-      "dependsOn": [
-        "dnsResolver"
-      ]
+      }
     }
   },
   "outputs": {
