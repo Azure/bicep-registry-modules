@@ -238,7 +238,7 @@ module builtInPolicyAssignment 'br/public:avm/ptn/authorization/policy-assignmen
 //TODO: Needs to be updated when the AVM is implemented
 resource customPoliciesDefinition 'Microsoft.Authorization/policyDefinitions@2021-06-01' = [
   for policy in customPolicies: {
-    name: guid(policy.name)
+    name: uniqueString(policy.name)
     properties: {
       description: policy.definition.properties.description
       displayName: policy.definition.properties.displayName
