@@ -614,6 +614,7 @@ module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileSe
     protocolSettings: fileServices.?protocolSettings
     shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
     shares: fileServices.?shares
+    corsRules: queueServices.?corsRules
   }
 }
 
@@ -624,6 +625,7 @@ module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queu
     storageAccountName: storageAccount.name
     diagnosticSettings: queueServices.?diagnosticSettings
     queues: queueServices.?queues
+    corsRules: queueServices.?corsRules
   }
 }
 
@@ -634,6 +636,7 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
     storageAccountName: storageAccount.name
     diagnosticSettings: tableServices.?diagnosticSettings
     tables: tableServices.?tables
+    corsRules: tableServices.?corsRules
   }
 }
 
@@ -659,7 +662,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.connectionString1
-              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
+              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
             }
           ]
         : [],
@@ -675,7 +678,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.connectionString2
-              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1].value};EndpointSuffix=core.windows.net'
+              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1].value};EndpointSuffix=${environment().suffixes.storage}'
             }
           ]
         : []
