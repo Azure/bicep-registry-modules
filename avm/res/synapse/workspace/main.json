@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3605796573227346748"
+      "templateHash": "17791663197340635366"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -74,7 +74,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for a private endpoint output"
+        "description": "The type for a private endpoint output."
       }
     },
     "administratorType": {

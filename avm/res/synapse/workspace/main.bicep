@@ -465,8 +465,8 @@ output privateEndpoints privateEndpointOutputType[] = [
 //   Definitions   //
 // =============== //
 
-@description('The type for a private endpoint output')
 @export()
+@description('The type for a private endpoint output.')
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
   name: string
