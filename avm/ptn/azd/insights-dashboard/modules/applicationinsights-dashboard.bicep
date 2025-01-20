@@ -1,6 +1,5 @@
 metadata name = 'Azure Portal Dashboard'
 metadata description = 'Creates a dashboard for an Application Insights instance.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The portal dashboard name.')
 param name string

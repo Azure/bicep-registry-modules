@@ -1,6 +1,5 @@
 metadata name = 'Relay Namespace WCF Relays'
 metadata description = 'This module deploys a Relay Namespace WCF Relay.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Relay Namespace for the WCF Relay. Required if the template is used in a standalone deployment.')
 @minLength(6)

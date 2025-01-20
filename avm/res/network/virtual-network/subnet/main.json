@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16307553544578422105"
+      "templateHash": "6924527964815690853"
     },
     "name": "Virtual Network Subnets",
-    "description": "This module deploys a Virtual Network Subnet.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Network Subnet."
   },
   "definitions": {
     "roleAssignmentType": {

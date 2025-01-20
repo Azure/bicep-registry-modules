@@ -1,6 +1,5 @@
 metadata name = 'Site logs Config'
 metadata description = 'This module deploys a Site logs Configuration.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent site resource.')
 param appName string

@@ -1,6 +1,5 @@
 metadata name = 'SQL Server Database Long Term Backup Retention Policies'
 metadata description = 'This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent SQL Server.')
 param serverName string

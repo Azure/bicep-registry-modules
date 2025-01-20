@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "426613275958311158"
+      "version": "0.32.4.45862",
+      "templateHash": "7213729546976713833"
     },
     "name": "Data Collection Endpoints",
-    "description": "This module deploys a Data Collection Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Collection Endpoint."
   },
   "definitions": {
     "lockType": {

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "783447731005535223"
+      "version": "0.32.4.45862",
+      "templateHash": "14433401838200894183"
     },
     "name": "Analysis Services Servers",
-    "description": "This module deploys an Analysis Services Server.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Analysis Services Server."
   },
   "definitions": {
     "diagnosticSettingFullType": {

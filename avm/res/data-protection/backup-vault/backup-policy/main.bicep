@@ -1,6 +1,5 @@
 metadata name = 'Data Protection Backup Vault Backup Policies'
 metadata description = 'This module deploys a Data Protection Backup Vault Backup Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the backup vault.')
 param backupVaultName string

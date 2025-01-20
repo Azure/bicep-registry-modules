@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3182244710211975967"
+      "templateHash": "15715688844696636869"
     },
     "name": "Eventgrid Namespace Topics",
-    "description": "This module deploys an Eventgrid Namespace Topic.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Eventgrid Namespace Topic."
   },
   "definitions": {
     "lockType": {
@@ -289,11 +288,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8865122447833049009"
+              "templateHash": "3328924279528017223"
             },
             "name": "Event Subscriptions",
-            "description": "This module deploys an Event Subscription.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Subscription."
           },
           "definitions": {
             "roleAssignmentType": {

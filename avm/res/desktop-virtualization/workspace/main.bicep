@@ -1,6 +1,5 @@
 metadata name = 'Workspace'
 metadata description = 'This module deploys an Azure Virtual Desktop Workspace.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the workspace.')
 param name string

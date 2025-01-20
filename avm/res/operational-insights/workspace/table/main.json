@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16645325284402756922"
+      "templateHash": "8047367069034259642"
     },
     "name": "Log Analytics Workspace Tables",
-    "description": "This module deploys a Log Analytics Workspace Table.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Table."
   },
   "definitions": {
     "restoredLogsType": {

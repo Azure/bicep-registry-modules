@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7938168042291038223"
+      "templateHash": "5650097555924346793"
     },
     "name": "Machine Learning Services Workspaces",
-    "description": "This module deploys a Machine Learning Services Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Machine Learning Services Workspace."
   },
   "definitions": {
     "featureStoreSettingType": {
@@ -2070,11 +2069,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "81380678032212878"
+              "templateHash": "7148981579356222264"
             },
             "name": "Machine Learning Services Workspaces Computes",
-            "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
           },
           "definitions": {
             "managedIdentityAllType": {
@@ -2336,11 +2334,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13769328885723173591"
+              "templateHash": "15890143708231344465"
             },
             "name": "Machine Learning Services Workspaces Connections",
-            "description": "This module creates a connection in a Machine Learning Services workspace.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module creates a connection in a Machine Learning Services workspace."
           },
           "definitions": {
             "metadataType": {

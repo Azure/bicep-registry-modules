@@ -1,6 +1,5 @@
 metadata name = 'IP Groups'
 metadata description = 'This module deploys an IP Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the IP Group.')
 @minLength(1)

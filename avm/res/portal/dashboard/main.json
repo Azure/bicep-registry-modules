@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "417422598154649479"
+      "version": "0.32.4.45862",
+      "templateHash": "9079804815412233513"
     },
     "name": "Portal Dashboards",
-    "description": "This module deploys a Portal Dashboard.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Portal Dashboard."
   },
   "definitions": {
     "roleAssignmentType": {

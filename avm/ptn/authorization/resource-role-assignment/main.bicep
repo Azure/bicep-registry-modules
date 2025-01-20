@@ -1,6 +1,5 @@
 metadata name = 'Resource-scoped role assignment'
 metadata description = 'This module deploys a Role Assignment for a specific resource.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. The scope for the role assignment, fully qualified resourceId.')
 param resourceId string

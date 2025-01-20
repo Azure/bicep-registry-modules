@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10161610446497418516"
+      "templateHash": "4682535625969189521"
     },
     "name": "Storage Account Table",
-    "description": "This module deploys a Storage Account Table.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Table."
   },
   "definitions": {
     "roleAssignmentType": {

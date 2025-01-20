@@ -9,8 +9,7 @@
       "templateHash": "5900566328584197217"
     },
     "name": "Key Vaults",
-    "description": "This module deploys a Key Vault.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Key Vault."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -1390,8 +1389,7 @@
               "templateHash": "6744070574147884656"
             },
             "name": "Key Vault Access Policies",
-            "description": "This module deploys a Key Vault Access Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Access Policy."
           },
           "definitions": {
             "accessPoliciesType": {
@@ -1657,8 +1655,7 @@
               "templateHash": "6967022677055315423"
             },
             "name": "Key Vault Secrets",
-            "description": "This module deploys a Key Vault Secret.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Secret."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1972,8 +1969,7 @@
               "templateHash": "15884853996194439605"
             },
             "name": "Key Vault Keys",
-            "description": "This module deploys a Key Vault Key.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Key."
           },
           "definitions": {
             "roleAssignmentType": {

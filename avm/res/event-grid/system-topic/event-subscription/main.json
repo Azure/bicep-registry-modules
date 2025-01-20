@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17003151222134625001"
+      "version": "0.32.4.45862",
+      "templateHash": "7839282934142393443"
     },
     "name": "Event Grid System Topic Event Subscriptions",
-    "description": "This module deploys an Event Grid System Topic Event Subscription.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Grid System Topic Event Subscription."
   },
   "parameters": {
     "name": {

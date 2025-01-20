@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "15595731517219272130"
+      "version": "0.32.4.45862",
+      "templateHash": "9186378967323499549"
     },
     "name": "API Connections",
-    "description": "This module deploys an Azure API Connection.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure API Connection."
   },
   "definitions": {
     "lockType": {

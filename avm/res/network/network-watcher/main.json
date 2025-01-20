@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10145081983832317728"
+      "templateHash": "7475359439448984364"
     },
     "name": "Network Watchers",
-    "description": "This module deploys a Network Watcher.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network Watcher."
   },
   "definitions": {
     "lockType": {
@@ -298,11 +297,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9690855596549132604"
+              "templateHash": "708993782418157673"
             },
             "name": "Network Watchers Connection Monitors",
-            "description": "This module deploys a Network Watcher Connection Monitor.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Network Watcher Connection Monitor."
           },
           "parameters": {
             "networkWatcherName": {
@@ -474,11 +472,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4346206104248688042"
+              "templateHash": "18017322852547669945"
             },
             "name": "NSG Flow Logs",
-            "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**",
-            "owner": "Azure/module-maintainers"
+            "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**"
           },
           "parameters": {
             "networkWatcherName": {

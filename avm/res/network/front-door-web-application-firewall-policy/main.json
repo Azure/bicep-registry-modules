@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "13657670923843039959"
+      "version": "0.32.4.45862",
+      "templateHash": "6443033391235327476"
     },
     "name": "Front Door Web Application Firewall (WAF) Policies",
-    "description": "This module deploys a Front Door Web Application Firewall (WAF) Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Front Door Web Application Firewall (WAF) Policy."
   },
   "definitions": {
     "lockType": {

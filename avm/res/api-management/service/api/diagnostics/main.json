@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12634911878831297857"
+      "templateHash": "12163322755329801860"
     },
     "name": "API Management Service APIs Diagnostics.",
-    "description": "This module deploys an API Management Service API Diagnostics.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service API Diagnostics."
   },
   "parameters": {
     "apiManagementServiceName": {

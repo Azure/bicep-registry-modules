@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1347665769167765200"
+      "templateHash": "12516312162606079362"
     },
     "name": "Container App Jobs",
-    "description": "This module deploys a Container App Job.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Container App Job."
   },
   "definitions": {
     "registryType": {

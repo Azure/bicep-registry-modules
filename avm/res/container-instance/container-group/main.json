@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10455329917126813819"
+      "templateHash": "6168692312234137213"
     },
     "name": "Container Instances Container Groups",
-    "description": "This module deploys a Container Instance Container Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Container Instance Container Group."
   },
   "definitions": {
     "containerType": {

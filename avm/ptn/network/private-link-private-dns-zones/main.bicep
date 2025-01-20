@@ -1,6 +1,5 @@
 metadata name = 'avm/ptn/network/private-link-private-dns-zones'
 metadata description = 'Private Link Private DNS Zones'
-metadata owner = 'jtracey93'
 
 @description('Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified.')
 param location string = resourceGroup().location

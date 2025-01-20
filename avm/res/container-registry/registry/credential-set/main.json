@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13759527494082170327"
+      "templateHash": "898472573600471940"
     },
     "name": "Container Registries Credential Sets",
-    "description": "This module deploys an ACR Credential Set.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an ACR Credential Set."
   },
   "definitions": {
     "managedIdentitiesType": {

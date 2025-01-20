@@ -1,6 +1,5 @@
 metadata name = 'Azure Monitor Private Link Scopes'
 metadata description = 'This module deploys an Azure Monitor Private Link Scope.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the private link scope.')
 @minLength(1)

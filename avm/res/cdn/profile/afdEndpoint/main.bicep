@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles AFD Endpoints'
 metadata description = 'This module deploys a CDN Profile AFD Endpoint.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the AFD Endpoint.')
 param name string
@@ -87,7 +86,6 @@ output routes array = routes ?? []
 
 @description('The host name of the AFD endpoint.')
 output frontDoorEndpointHostName string = afdEndpoint.properties.hostName
-
 
 // =============== //
 //   Definitions   //

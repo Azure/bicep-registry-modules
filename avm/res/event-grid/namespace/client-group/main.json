@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11660537828961696327"
+      "templateHash": "12442980068595434063"
     },
     "name": "Eventgrid Namespace Client Groups",
-    "description": "This module deploys an Eventgrid Namespace Client Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Eventgrid Namespace Client Group."
   },
   "parameters": {
     "namespaceName": {

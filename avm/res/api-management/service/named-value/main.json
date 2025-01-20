@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2210396703029626013"
+      "templateHash": "5767723932557197412"
     },
     "name": "API Management Service Named Values",
-    "description": "This module deploys an API Management Service Named Value.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Named Value."
   },
   "parameters": {
     "apiManagementServiceName": {

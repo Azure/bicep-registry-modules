@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4927933480188968739"
+      "templateHash": "2622393872040722258"
     },
     "name": "Service Bus Namespace Topic Subscription Rule",
-    "description": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
   },
   "parameters": {
     "name": {

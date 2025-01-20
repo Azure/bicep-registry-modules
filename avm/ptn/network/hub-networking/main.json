@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2451390268367753375"
+      "templateHash": "17389954898374222994"
     },
     "name": "Hub Networking",
-    "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
   },
   "definitions": {
     "lockType": {
@@ -2342,11 +2341,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4177030311595855308"
+              "templateHash": "13800865708253602673"
             },
             "name": "Virtual Networks",
-            "description": "This module deploys a Virtual Network.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Network."
           },
           "parameters": {
             "name": {
@@ -6470,11 +6468,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1933725775015836334"
+              "templateHash": "17332298613317998164"
             },
             "name": "Existing Virtual Network Subnets",
-            "description": "This module retrieves an existing Virtual Network Subnet.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module retrieves an existing Virtual Network Subnet."
           },
           "parameters": {
             "subnetName": {
@@ -6553,11 +6550,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8143181163953716366"
+              "templateHash": "13712864569972623739"
             },
             "name": "Virtual Network Subnets",
-            "description": "This module deploys a Virtual Network Subnet.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Network Subnet."
           },
           "definitions": {
             "roleAssignmentType": {

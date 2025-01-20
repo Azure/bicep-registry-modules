@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2209176819138807055"
+      "templateHash": "9522605010720847776"
     },
     "name": "Resource Graph Queries",
-    "description": "This module deploys a Resource Graph Query.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Resource Graph Query."
   },
   "definitions": {
     "lockType": {

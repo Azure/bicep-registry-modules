@@ -1,6 +1,5 @@
 metadata name = 'API Management Service APIs Diagnostics.'
 metadata description = 'This module deploys an API Management Service API Diagnostics.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent API Management service.')
 param apiManagementServiceName string

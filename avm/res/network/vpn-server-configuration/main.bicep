@@ -1,6 +1,5 @@
 metadata name = 'VPN Server Configuration'
 metadata description = 'This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the user VPN configuration.')
 param name string
@@ -148,7 +147,7 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' 
     vpnClientRevokedCertificates: [
       for cert in (vpnClientRevokedCertificates) ?? []: {
         name: cert.name
-        thumbprint:cert.thumbprint
+        thumbprint: cert.thumbprint
       }
     ]
     vpnClientRootCertificates: [

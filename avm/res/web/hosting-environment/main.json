@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12212980490432933697"
+      "templateHash": "13152809186012758460"
     },
     "name": "App Service Environments",
-    "description": "This module deploys an App Service Environment.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an App Service Environment."
   },
   "definitions": {
     "diagnosticSettingLogsOnlyType": {
@@ -578,11 +577,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16336480892159448762"
+              "templateHash": "5515486685166015139"
             },
             "name": "Hosting Environment Custom DNS Suffix Configuration",
-            "description": "This module deploys a Hosting Environment Custom DNS Suffix Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Hosting Environment Custom DNS Suffix Configuration."
           },
           "parameters": {
             "hostingEnvironmentName": {

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13769328885723173591"
+      "templateHash": "15890143708231344465"
     },
     "name": "Machine Learning Services Workspaces Connections",
-    "description": "This module creates a connection in a Machine Learning Services workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module creates a connection in a Machine Learning Services workspace."
   },
   "definitions": {
     "metadataType": {

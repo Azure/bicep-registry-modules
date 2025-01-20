@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "1273376840607599272"
+      "version": "0.32.4.45862",
+      "templateHash": "4032958951426322911"
     },
     "name": "Bastion Hosts",
-    "description": "This module deploys a Bastion Host.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Bastion Host."
   },
   "definitions": {
     "lockType": {

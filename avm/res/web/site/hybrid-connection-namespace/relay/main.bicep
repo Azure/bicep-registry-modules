@@ -1,6 +1,5 @@
 metadata name = 'Web/Function Apps Hybrid Connection Relay'
 metadata description = 'This module deploys a Site Hybrid Connection Namespace Relay.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The resource ID of the relay namespace hybrid connection.')
 param hybridConnectionResourceId string

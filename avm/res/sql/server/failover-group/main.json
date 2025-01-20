@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9895671062189651492"
+      "templateHash": "15941259123124748032"
     },
     "name": "Azure SQL Server failover group",
-    "description": "This module deploys Azure SQL Server failover group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys Azure SQL Server failover group."
   },
   "definitions": {
     "failoverGroupReadOnlyEndpointType": {

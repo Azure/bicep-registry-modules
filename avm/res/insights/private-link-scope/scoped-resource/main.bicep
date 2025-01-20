@@ -1,6 +1,5 @@
 metadata name = 'Private Link Scope Scoped Resources'
 metadata description = 'This module deploys a Private Link Scope Scoped Resource.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the private link scoped resource.')
 @minLength(1)

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4698417116112222192"
+      "templateHash": "13498060084797132903"
     },
     "name": "avm/ptn/authorization/role-definition",
-    "description": "This module deploys a custom role definition to a Management Group.",
-    "owner": "@jtracey93"
+    "description": "This module deploys a custom role definition to a Management Group."
   },
   "parameters": {
     "enableTelemetry": {

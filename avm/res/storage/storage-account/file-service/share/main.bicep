@@ -1,6 +1,5 @@
 metadata name = 'Storage Account File Shares'
 metadata description = 'This module deploys a Storage Account File Share.'
-metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4494036193762528649"
+      "templateHash": "2212050801048635140"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
-    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
   },
   "definitions": {
     "agentPoolType": {
@@ -1972,11 +1971,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14523573481456452623"
+              "templateHash": "4391405610412889755"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
-            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
           },
           "parameters": {
             "maintenanceWindow": {
@@ -2169,11 +2167,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17631357088187843838"
+              "templateHash": "17003976301716291586"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
-            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
           },
           "parameters": {
             "managedClusterName": {

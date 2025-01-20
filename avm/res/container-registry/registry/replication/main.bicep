@@ -1,6 +1,5 @@
 metadata name = 'Azure Container Registry (ACR) Replications'
 metadata description = 'This module deploys an Azure Container Registry (ACR) Replication.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string

@@ -1,6 +1,5 @@
 metadata name = 'Digital Twins Instance ServiceBus Endpoint'
 metadata description = 'This module deploys a Digital Twins Instance ServiceBus Endpoint.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. The name of the Digital Twin Endpoint.')
 param name string = 'ServiceBusEndpoint'

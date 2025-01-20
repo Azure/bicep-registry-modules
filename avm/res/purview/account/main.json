@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "18280782395141983115"
+      "version": "0.32.4.45862",
+      "templateHash": "5690262690202652451"
     },
     "name": "Purview Accounts",
-    "description": "This module deploys a Purview Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Purview Account."
   },
   "definitions": {
     "lockType": {
