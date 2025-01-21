@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10628592770359469796"
+      "templateHash": "13912510699386919896"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct."
@@ -361,9 +361,9 @@
         "peeringLocation": "[parameters('peeringLocation')]"
       }
     },
-    "expressRouteCircuit_roleAssignments": {
+    "expressRoutePort_roleAssignments": {
       "copy": {
-        "name": "expressRouteCircuit_roleAssignments",
+        "name": "expressRoutePort_roleAssignments",
         "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",

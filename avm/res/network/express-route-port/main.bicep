@@ -112,7 +112,7 @@ resource expressRoutePort 'Microsoft.Network/ExpressRoutePorts@2024-05-01' = {
   }
 }
 
-resource expressRouteCircuit_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource expressRoutePort_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(expressRoutePort.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
