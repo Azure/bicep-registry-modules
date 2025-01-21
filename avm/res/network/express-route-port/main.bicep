@@ -23,7 +23,7 @@ param billingType string = 'MeteredData'
 param encapsulation string = 'Dot1Q'
 
 @description('Optional. Properties of the ExpressRouteLink.')
-param links linkType
+param links linkType[]?
 
 @description('Required. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call.')
 param peeringLocation string
@@ -106,7 +106,7 @@ resource expressRoutePort 'Microsoft.Network/ExpressRoutePorts@2024-05-01' = {
     bandwidthInGbps: bandwidthInGbps
     billingType: billingType
     encapsulation: encapsulation
-    links: !empty(links) ? links : []
+    links: links ?? []
     peeringLocation: peeringLocation
   }
 }
@@ -177,6 +177,8 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
+@export()
+@description('The type for a link.')
 type linkType = {
   @description('Optional. Resource Id of the existing Link.')
   id: 'string'?
@@ -204,4 +206,4 @@ type linkType = {
       sciState: ('Enabled' | 'Disabled')
     }?
   }?
-}[]?
+}

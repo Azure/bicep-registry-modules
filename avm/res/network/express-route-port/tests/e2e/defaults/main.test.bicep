@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       peeringLocation: 'Airtel-Chennai2-CLS'
-      location: resourceLocation
       bandwidthInGbps: 10
     }
   }
