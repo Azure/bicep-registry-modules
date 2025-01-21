@@ -1,6 +1,5 @@
 metadata name = 'Virtual Hub Routing Intent'
 metadata description = 'This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Hub firewall Resource ID.')
 param azureFirewallResourceId string
@@ -20,41 +19,46 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' existing = {
 
 resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2023-11-01' = {
   name: 'defaultRouteTable'
-  parent : virtualHub
+  parent: virtualHub
   properties: {
-    routingPolicies: (internetToFirewall == true && privateToFirewall == true) ? [
-      {
-        name: '_policy_PublicTraffic'
-        destinations: [
-          'Internet'
+    routingPolicies: (internetToFirewall == true && privateToFirewall == true)
+      ? [
+          {
+            name: '_policy_PublicTraffic'
+            destinations: [
+              'Internet'
+            ]
+            nextHop: azureFirewallResourceId
+          }
+          {
+            name: '_policy_PrivateTraffic'
+            destinations: [
+              'PrivateTraffic'
+            ]
+            nextHop: azureFirewallResourceId
+          }
         ]
-        nextHop: azureFirewallResourceId
-      }
-      {
-        name: '_policy_PrivateTraffic'
-        destinations: [
-          'PrivateTraffic'
-        ]
-        nextHop: azureFirewallResourceId
-      }
-    ] : (internetToFirewall == true && privateToFirewall == false) ? [
-      {
-        name: '_policy_PublicTraffic'
-        destinations: [
-          'Internet'
-        ]
-        nextHop: azureFirewallResourceId
-      }
-    ] : (internetToFirewall == false && privateToFirewall == true) ? [
-      {
-        name: '_policy_PrivateTraffic'
-        destinations: [
-          'PrivateTraffic'
-        ]
-        nextHop: azureFirewallResourceId
-      }
-    ]
-  : null
+      : (internetToFirewall == true && privateToFirewall == false)
+          ? [
+              {
+                name: '_policy_PublicTraffic'
+                destinations: [
+                  'Internet'
+                ]
+                nextHop: azureFirewallResourceId
+              }
+            ]
+          : (internetToFirewall == false && privateToFirewall == true)
+              ? [
+                  {
+                    name: '_policy_PrivateTraffic'
+                    destinations: [
+                      'PrivateTraffic'
+                    ]
+                    nextHop: azureFirewallResourceId
+                  }
+                ]
+              : null
   }
 }
 

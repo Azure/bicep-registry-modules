@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4064950797693018837"
+      "templateHash": "9421241657819525275"
     },
     "name": "Public DNS Zones",
-    "description": "This module deploys a Public DNS zone.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS zone."
   },
   "definitions": {
     "lockType": {
@@ -970,11 +969,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2326491541446487905"
+              "templateHash": "15608891845705409701"
             },
             "name": "Public DNS Zone A record",
-            "description": "This module deploys a Public DNS Zone A record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone A record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1235,11 +1233,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17050721962929786080"
+              "templateHash": "3985689670692711318"
             },
             "name": "Public DNS Zone AAAA record",
-            "description": "This module deploys a Public DNS Zone AAAA record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone AAAA record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1500,11 +1497,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7801716337979819896"
+              "templateHash": "12621931033265041406"
             },
             "name": "Public DNS Zone CNAME record",
-            "description": "This module deploys a Public DNS Zone CNAME record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone CNAME record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1762,11 +1758,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9019647418715778214"
+              "templateHash": "11491148399190061858"
             },
             "name": "Public DNS Zone CAA record",
-            "description": "This module deploys a Public DNS Zone CAA record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone CAA record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2016,11 +2011,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6127933726132900344"
+              "templateHash": "1922326996634877482"
             },
             "name": "Public DNS Zone MX record",
-            "description": "This module deploys a Public DNS Zone MX record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone MX record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2270,11 +2264,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5272805845421818843"
+              "templateHash": "13132579465005423306"
             },
             "name": "Public DNS Zone NS record",
-            "description": "This module deploys a Public DNS Zone NS record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone NS record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2524,11 +2517,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7174722682201993647"
+              "templateHash": "3784464033988272421"
             },
             "name": "Public DNS Zone PTR record",
-            "description": "This module deploys a Public DNS Zone PTR record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone PTR record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2778,11 +2770,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8699513060398264509"
+              "templateHash": "13888523145142266910"
             },
             "name": "Public DNS Zone SOA record",
-            "description": "This module deploys a Public DNS Zone SOA record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone SOA record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -3032,11 +3023,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "9201580860688784326"
+              "templateHash": "3361201996898116870"
             },
             "name": "Public DNS Zone SRV record",
-            "description": "This module deploys a Public DNS Zone SRV record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone SRV record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -3286,11 +3276,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12041383892639375688"
+              "templateHash": "6318820825027351839"
             },
             "name": "Public DNS Zone TXT record",
-            "description": "This module deploys a Public DNS Zone TXT record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public DNS Zone TXT record."
           },
           "definitions": {
             "roleAssignmentType": {

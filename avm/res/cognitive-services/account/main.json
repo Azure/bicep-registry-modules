@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6178999505072908993"
+      "templateHash": "30090795733018099"
     },
     "name": "Cognitive Services",
-    "description": "This module deploys a Cognitive Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Cognitive Service."
   },
   "definitions": {
     "deploymentsType": {
