@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12912200857967286939"
+      "templateHash": "17394804773765276039"
     },
     "name": "Virtual Machine Extensions",
-    "description": "This module deploys a Virtual Machine Extension.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Machine Extension."
   },
   "parameters": {
     "virtualMachineName": {

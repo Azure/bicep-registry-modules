@@ -1,6 +1,5 @@
 metadata name = 'Action Groups'
 metadata description = 'This module deploys an Action Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the action group.')
 param name string

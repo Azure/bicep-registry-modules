@@ -1,6 +1,5 @@
 metadata name = 'Finops-hub'
 metadata description = 'This module deploys a Finops hub from the Finops toolkit.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Name of the hub. Used to ensure unique resource names. Default: "finops-hub".')
 param hubName string

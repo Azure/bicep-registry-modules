@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7127238095638349132"
+      "templateHash": "12745095220727956738"
     },
     "name": "Azure Container Registries (ACR)",
-    "description": "This module deploys an Azure Container Registry (ACR).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Container Registry (ACR)."
   },
   "definitions": {
     "scopeMapsType": {
@@ -1101,11 +1100,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6478760541409131297"
+              "templateHash": "12313465250221246597"
             },
             "name": "Container Registries scopeMaps",
-            "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
           },
           "parameters": {
             "registryName": {
@@ -1225,11 +1223,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15524157492175197471"
+              "templateHash": "43238165429335678"
             },
             "name": "Azure Container Registry (ACR) Replications",
-            "description": "This module deploys an Azure Container Registry (ACR) Replication.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Container Registry (ACR) Replication."
           },
           "parameters": {
             "registryName": {
@@ -1370,11 +1367,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13759527494082170327"
+              "templateHash": "898472573600471940"
             },
             "name": "Container Registries Credential Sets",
-            "description": "This module deploys an ACR Credential Set.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an ACR Credential Set."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1542,11 +1538,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14613404195108533908"
+              "templateHash": "10741185719400519703"
             },
             "name": "Container Registries Cache",
-            "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
-            "owner": "Azure/module-maintainers"
+            "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
           },
           "parameters": {
             "registryName": {
@@ -1674,11 +1669,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7106022181114238286"
+              "templateHash": "2046020077786059291"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
-            "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Container Registry (ACR) Webhook."
           },
           "parameters": {
             "registryName": {

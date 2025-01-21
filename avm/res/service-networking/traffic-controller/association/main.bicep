@@ -1,6 +1,5 @@
 metadata name = 'Application Gateway for Containers Association'
 metadata description = 'This module deploys an Application Gateway for Containers Association'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the association to create.')
 param name string

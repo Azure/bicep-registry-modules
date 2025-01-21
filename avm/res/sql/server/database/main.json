@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8657415553449823149"
+      "templateHash": "1475818485840642586"
     },
     "name": "SQL Server Database",
-    "description": "This module deploys an Azure SQL Server Database.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Database."
   },
   "definitions": {
     "databaseSkuType": {
@@ -719,11 +718,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2726045612900421237"
+              "templateHash": "8347007377955822668"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
-            "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
           },
           "parameters": {
             "serverName": {
@@ -837,11 +835,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1446282995445489550"
+              "templateHash": "13013838179261859853"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
-            "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
           },
           "parameters": {
             "serverName": {

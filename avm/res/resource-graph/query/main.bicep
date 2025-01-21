@@ -1,6 +1,5 @@
 metadata name = 'Resource Graph Queries'
 metadata description = 'This module deploys a Resource Graph Query.'
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //

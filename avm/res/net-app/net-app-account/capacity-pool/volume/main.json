@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11702372667065216843"
+      "templateHash": "14496423696546216527"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
-    "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
   },
   "definitions": {
     "dataProtectionType": {

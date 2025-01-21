@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "3908904397017008201"
+      "version": "0.32.4.45862",
+      "templateHash": "377631781593293723"
     },
     "name": "SignalR Web PubSub Services",
-    "description": "This module deploys a SignalR Web PubSub Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SignalR Web PubSub Service."
   },
   "definitions": {
     "_1.privateEndpointCustomDnsConfigType": {
