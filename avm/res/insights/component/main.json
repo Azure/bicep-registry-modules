@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11008241416755587197"
+      "templateHash": "12781151233757602426"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",
@@ -286,18 +286,6 @@
         "description": "Optional. Force users to create their own storage account for profiler and debugger."
       }
     },
-    "ingestionMode": {
-      "type": "string",
-      "defaultValue": "ApplicationInsights",
-      "allowedValues": [
-        "ApplicationInsights",
-        "ApplicationInsightsWithDiagnosticSettings",
-        "LogAnalytics"
-      ],
-      "metadata": {
-        "description": "Optional. Indicates the flow of the ingestion."
-      }
-    },
     "linkedStorageAccountResourceId": {
       "type": "string",
       "nullable": true,
@@ -467,8 +455,7 @@
         "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
         "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
         "RetentionInDays": "[parameters('retentionInDays')]",
-        "SamplingPercentage": "[parameters('samplingPercentage')]",
-        "IngestionMode": "[parameters('ingestionMode')]"
+        "SamplingPercentage": "[parameters('samplingPercentage')]"
       }
     },
     "appInsights_roleAssignments": {

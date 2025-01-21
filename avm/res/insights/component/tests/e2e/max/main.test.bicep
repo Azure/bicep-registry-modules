@@ -84,7 +84,6 @@ module testDeployment '../../../main.bicep' = {
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    ingestionMode: 'LogAnalytics'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

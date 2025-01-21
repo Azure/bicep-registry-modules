@@ -136,7 +136,6 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     disableIpMasking: false
     disableLocalAuth: true
     forceCustomerStorageForProfiler: true
-    ingestionMode: 'LogAnalytics'
     linkedStorageAccountResourceId: '<linkedStorageAccountResourceId>'
     location: '<location>'
     lock: {
@@ -216,9 +215,6 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     "forceCustomerStorageForProfiler": {
       "value": true
     },
-    "ingestionMode": {
-      "value": "LogAnalytics"
-    },
     "linkedStorageAccountResourceId": {
       "value": "<linkedStorageAccountResourceId>"
     },
@@ -294,7 +290,6 @@ param diagnosticSettings = [
 param disableIpMasking = false
 param disableLocalAuth = true
 param forceCustomerStorageForProfiler = true
-param ingestionMode = 'LogAnalytics'
 param linkedStorageAccountResourceId = '<linkedStorageAccountResourceId>'
 param location = '<location>'
 param lock = {
@@ -479,7 +474,6 @@ param tags = {
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable Non-AAD based Auth. Default value is set to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`forceCustomerStorageForProfiler`](#parameter-forcecustomerstorageforprofiler) | bool | Force users to create their own storage account for profiler and debugger. |
-| [`ingestionMode`](#parameter-ingestionmode) | string | Indicates the flow of the ingestion. |
 | [`kind`](#parameter-kind) | string | The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone. |
 | [`linkedStorageAccountResourceId`](#parameter-linkedstorageaccountresourceid) | string | Linked storage account resource ID. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -697,22 +691,6 @@ Force users to create their own storage account for profiler and debugger.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `ingestionMode`
-
-Indicates the flow of the ingestion.
-
-- Required: No
-- Type: string
-- Default: `'ApplicationInsights'`
-- Allowed:
-  ```Bicep
-  [
-    'ApplicationInsights'
-    'ApplicationInsightsWithDiagnosticSettings'
-    'LogAnalytics'
-  ]
-  ```
 
 ### Parameter: `kind`
 

@@ -24,14 +24,6 @@ param disableLocalAuth bool = false
 @description('Optional. Force users to create their own storage account for profiler and debugger.')
 param forceCustomerStorageForProfiler bool = false
 
-@description('Optional. Indicates the flow of the ingestion.')
-@allowed([
-  'ApplicationInsights'
-  'ApplicationInsightsWithDiagnosticSettings'
-  'LogAnalytics'
-])
-param ingestionMode string = 'ApplicationInsights'
-
 @description('Optional. Linked storage account resource ID.')
 param linkedStorageAccountResourceId string?
 
@@ -167,7 +159,6 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     RetentionInDays: retentionInDays
     SamplingPercentage: samplingPercentage
-    IngestionMode: ingestionMode
   }
 }
 
