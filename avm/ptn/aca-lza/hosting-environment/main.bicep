@@ -273,6 +273,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
 // ------------------
 // OUTPUTS
 // ------------------
+
+@description('The name of the created resource group.')
+output resourceGroupName string = spokeResourceGroup.outputs.name
+
 @description('The  resource ID of the Spoke Virtual Network.')
 output spokeVNetResourceId string = spoke.outputs.spokeVNetId
 
