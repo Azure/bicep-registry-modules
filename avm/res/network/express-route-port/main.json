@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8131834421888698878"
+      "templateHash": "5027549226414445415"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct.",
@@ -337,6 +337,7 @@
       "type": "Microsoft.Network/ExpressRoutePorts",
       "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
       "properties": {
         "bandwidthInGbps": "[parameters('bandwidthInGbps')]",
         "billingType": "[parameters('billingType')]",
