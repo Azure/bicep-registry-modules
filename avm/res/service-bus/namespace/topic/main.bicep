@@ -181,20 +181,21 @@ module topic_subscription 'subscription/main.bicep' = [
       name: subscription.name
       namespaceName: namespace.name
       topicName: topic.name
-      autoDeleteOnIdle: subscription.?autoDeleteOnIdle ?? 'PT1H'
+      autoDeleteOnIdle: subscription.?autoDeleteOnIdle
       defaultMessageTimeToLive: subscription.?defaultMessageTimeToLive ?? 'P14D'
-      duplicateDetectionHistoryTimeWindow: subscription.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
-      enableBatchedOperations: subscription.?enableBatchedOperations ?? true
-      clientAffineProperties: subscription.?clientAffineProperties ?? {}
+      duplicateDetectionHistoryTimeWindow: subscription.?duplicateDetectionHistoryTimeWindow
+      enableBatchedOperations: subscription.?enableBatchedOperations
+      clientAffineProperties: subscription.?clientAffineProperties
       deadLetteringOnFilterEvaluationExceptions: subscription.?deadLetteringOnFilterEvaluationExceptions ?? true
-      deadLetteringOnMessageExpiration: subscription.?deadLetteringOnMessageExpiration ?? false
+      deadLetteringOnMessageExpiration: subscription.?deadLetteringOnMessageExpiration
       forwardDeadLetteredMessagesTo: subscription.?forwardDeadLetteredMessagesTo
       forwardTo: subscription.?forwardTo
-      isClientAffine: subscription.?isClientAffine ?? false
-      lockDuration: subscription.?lockDuration ?? 'PT1M'
-      maxDeliveryCount: subscription.?maxDeliveryCount ?? 10
-      requiresSession: subscription.?requiresSession ?? false
-      status: subscription.?status ?? 'Active'
+      isClientAffine: subscription.?isClientAffine
+      lockDuration: subscription.?lockDuration
+      maxDeliveryCount: subscription.?maxDeliveryCount
+      requiresSession: subscription.?requiresSession
+      rules: subscription.?rules
+      status: subscription.?status
     }
   }
 ]
@@ -212,7 +213,9 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
+import { ruleType } from 'subscription/main.bicep'
 @export()
+@description('The type for a subscription.')
 type subscriptionType = {
   @description('Required. The name of the service bus namespace topic subscription.')
   name: string
@@ -265,7 +268,10 @@ type subscriptionType = {
   @description('Optional. A value that indicates whether the subscription supports the concept of session.')
   requiresSession: bool?
 
-  @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
+  @description('Optional. The subscription rules.')
+  rules: ruleType[]?
+
+  @description('Optional. Enumerates the possible values for the status of a messaging entity.')
   status: (
     | 'Active'
     | 'Disabled'
