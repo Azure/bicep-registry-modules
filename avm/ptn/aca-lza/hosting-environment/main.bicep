@@ -343,6 +343,9 @@ output applicationGatewayPublicIp string = (exposeContainerAppsWith == 'applicat
 @description('The resource ID of the container apps environment.')
 output containerAppsEnvironmentResourceId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId
 
+@description('The available workload profile names of the container apps environment.')
+output containerAppsEnvironmentWorkloadProfileNames string[] = containerAppsEnvironment.outputs.workloadProfileNames
+
 @description('The name of the container apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName
 
