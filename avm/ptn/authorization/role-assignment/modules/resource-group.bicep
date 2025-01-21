@@ -1,6 +1,5 @@
 metadata name = 'Role Assignments (Resource Group scope)'
 metadata description = 'This module deploys a Role Assignment at a Resource Group scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'resourceGroup'
 

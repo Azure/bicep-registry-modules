@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11493718103931106421"
+      "templateHash": "2982768208893141924"
     },
     "name": "Deployment Scripts",
-    "description": "This module deploys Deployment Scripts.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys Deployment Scripts."
   },
   "definitions": {
     "environmentVariableType": {

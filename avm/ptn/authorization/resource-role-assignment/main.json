@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "17607291889971078318"
+      "version": "0.32.4.45862",
+      "templateHash": "12809426710118192869"
     },
     "name": "Resource-scoped role assignment",
-    "description": "This module deploys a Role Assignment for a specific resource.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Role Assignment for a specific resource."
   },
   "parameters": {
     "resourceId": {

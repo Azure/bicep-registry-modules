@@ -1,6 +1,5 @@
 metadata name = 'Key Vault Access Policies'
 metadata description = 'This module deploys a Key Vault Access Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment.')
 param keyVaultName string
@@ -8,12 +7,14 @@ param keyVaultName string
 @description('Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault\'s tenant ID.')
 param accessPolicies accessPoliciesType
 
-var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
-  applicationId: accessPolicy.?applicationId ?? ''
-  objectId: accessPolicy.objectId
-  permissions: accessPolicy.permissions
-  tenantId: accessPolicy.?tenantId ?? tenant().tenantId
-}]
+var formattedAccessPolicies = [
+  for accessPolicy in (accessPolicies ?? []): {
+    applicationId: accessPolicy.?applicationId ?? ''
+    objectId: accessPolicy.objectId
+    permissions: accessPolicy.permissions
+    tenantId: accessPolicy.?tenantId ?? tenant().tenantId
+  }
+]
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
@@ -51,15 +52,68 @@ type accessPoliciesType = {
 
   permissions: {
     @description('Optional. Permissions to keys.')
-    keys: ('all' | 'backup' | 'create' | 'decrypt' | 'delete' | 'encrypt' | 'get' | 'getrotationpolicy' | 'import' | 'list' | 'purge' | 'recover' | 'release' | 'restore' | 'rotate' | 'setrotationpolicy' | 'sign' | 'unwrapKey' | 'update' | 'verify' | 'wrapKey')[]?
+    keys: (
+      | 'all'
+      | 'backup'
+      | 'create'
+      | 'decrypt'
+      | 'delete'
+      | 'encrypt'
+      | 'get'
+      | 'getrotationpolicy'
+      | 'import'
+      | 'list'
+      | 'purge'
+      | 'recover'
+      | 'release'
+      | 'restore'
+      | 'rotate'
+      | 'setrotationpolicy'
+      | 'sign'
+      | 'unwrapKey'
+      | 'update'
+      | 'verify'
+      | 'wrapKey')[]?
 
     @description('Optional. Permissions to secrets.')
     secrets: ('all' | 'backup' | 'delete' | 'get' | 'list' | 'purge' | 'recover' | 'restore' | 'set')[]?
 
     @description('Optional. Permissions to certificates.')
-    certificates: ('all' | 'backup' | 'create' | 'delete' | 'deleteissuers' | 'get' | 'getissuers' | 'import' | 'list' | 'listissuers' | 'managecontacts' | 'manageissuers' | 'purge' | 'recover' | 'restore' | 'setissuers' | 'update')[]?
+    certificates: (
+      | 'all'
+      | 'backup'
+      | 'create'
+      | 'delete'
+      | 'deleteissuers'
+      | 'get'
+      | 'getissuers'
+      | 'import'
+      | 'list'
+      | 'listissuers'
+      | 'managecontacts'
+      | 'manageissuers'
+      | 'purge'
+      | 'recover'
+      | 'restore'
+      | 'setissuers'
+      | 'update')[]?
 
     @description('Optional. Permissions to storage accounts.')
-    storage: ('all' | 'backup' | 'delete' | 'deletesas' | 'get' | 'getsas' | 'list' | 'listsas' | 'purge' | 'recover' | 'regeneratekey' | 'restore' | 'set' | 'setsas' | 'update')[]?
+    storage: (
+      | 'all'
+      | 'backup'
+      | 'delete'
+      | 'deletesas'
+      | 'get'
+      | 'getsas'
+      | 'list'
+      | 'listsas'
+      | 'purge'
+      | 'recover'
+      | 'regeneratekey'
+      | 'restore'
+      | 'set'
+      | 'setsas'
+      | 'update')[]?
   }
 }[]?

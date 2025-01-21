@@ -1,6 +1,5 @@
 metadata name = 'SQL Managed Instance Keys'
 metadata description = 'This module deploys a SQL Managed Instance Key.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
 param name string

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11233659924871585320"
+      "templateHash": "14731142764965944373"
     },
     "name": "CDN Profiles AFD Endpoint Route",
-    "description": "This module deploys a CDN Profile AFD Endpoint route.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile AFD Endpoint route."
   },
   "definitions": {
     "routeType": {

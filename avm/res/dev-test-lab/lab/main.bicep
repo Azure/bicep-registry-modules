@@ -1,6 +1,5 @@
 metadata name = 'DevTest Labs'
 metadata description = 'This module deploys a DevTest Lab.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the lab.')
 param name string

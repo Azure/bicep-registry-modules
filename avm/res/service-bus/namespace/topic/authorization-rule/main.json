@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14898317070826327530"
+      "templateHash": "9054915416075794466"
     },
     "name": "Service Bus Namespace Topic Authorization Rules",
-    "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
   },
   "parameters": {
     "name": {

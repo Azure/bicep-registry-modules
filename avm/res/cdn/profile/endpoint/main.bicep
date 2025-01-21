@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Endpoints'
 metadata description = 'This module deploys a CDN Profile Endpoint.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent CDN profile. Required if the template is used in a standalone deployment.')
 param profileName string
