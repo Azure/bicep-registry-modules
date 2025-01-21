@@ -1,6 +1,5 @@
 metadata name = 'Email Services'
 metadata description = 'This module deploys an Email Service'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(1)
 @maxLength(63)

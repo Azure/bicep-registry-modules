@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "424696651537600433"
+      "templateHash": "2653851241415133906"
     },
     "name": "Azure Cosmos DB account tables",
-    "description": "This module deploys a table within an Azure Cosmos DB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a table within an Azure Cosmos DB Account."
   },
   "parameters": {
     "name": {

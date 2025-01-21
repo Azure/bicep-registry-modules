@@ -1,6 +1,5 @@
 metadata name = 'VPN Gateway VPN Connections'
 metadata description = 'This module deploys a VPN Gateway VPN Connection.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the VPN connection.')
 param name string

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "4865728079341128058"
+      "version": "0.32.4.45862",
+      "templateHash": "2768080787285261323"
     },
     "name": "Private Link Services",
-    "description": "This module deploys a Private Link Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Private Link Service."
   },
   "definitions": {
     "lockType": {

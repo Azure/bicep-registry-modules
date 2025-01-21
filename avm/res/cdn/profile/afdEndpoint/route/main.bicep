@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles AFD Endpoint Route'
 metadata description = 'This module deploys a CDN Profile AFD Endpoint route.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the route.')
 param name string

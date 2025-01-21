@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16694039693135179642"
+      "templateHash": "3357602174596763976"
     },
     "name": "Public IP Addresses",
-    "description": "This module deploys a Public IP Address.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public IP Address."
   },
   "definitions": {
     "dnsSettingsType": {

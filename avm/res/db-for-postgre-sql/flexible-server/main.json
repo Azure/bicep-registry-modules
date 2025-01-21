@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5719472801495750466"
+      "templateHash": "16443625993502327801"
     },
     "name": "DBforPostgreSQL Flexible Servers",
-    "description": "This module deploys a DBforPostgreSQL Flexible Server.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforPostgreSQL Flexible Server."
   },
   "definitions": {
     "replicaType": {
@@ -1131,11 +1130,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6268235914904773219"
+              "templateHash": "15358721384580155368"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
-            "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
           },
           "parameters": {
             "name": {
@@ -1245,11 +1243,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12221906194129831148"
+              "templateHash": "1547810610444554016"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
-            "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
           },
           "parameters": {
             "name": {
@@ -1355,11 +1352,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4946690157452229101"
+              "templateHash": "17791142604055425268"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
-            "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
           },
           "parameters": {
             "name": {
@@ -1473,11 +1469,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "18332216191723325884"
+              "templateHash": "16643531997327278217"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
-            "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
           },
           "parameters": {
             "flexibleServerName": {
@@ -1584,11 +1579,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16472244225874840702"
+              "templateHash": "6141187485193116497"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
-            "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
           },
           "parameters": {
             "flexibleServerName": {
