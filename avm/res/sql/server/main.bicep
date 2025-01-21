@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Servers'
 metadata description = 'This module deploys an Azure SQL Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
 param administratorLogin string = ''

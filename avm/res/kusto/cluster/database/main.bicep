@@ -1,6 +1,5 @@
 metadata name = 'Kusto Cluster Databases'
 metadata description = 'This module deploys a Kusto Cluster Database.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Kusto Cluster database.')
 param name string

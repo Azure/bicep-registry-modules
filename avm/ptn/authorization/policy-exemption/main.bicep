@@ -1,6 +1,5 @@
 metadata name = 'Policy Exemptions (All scopes)'
 metadata description = 'This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'managementGroup'
 

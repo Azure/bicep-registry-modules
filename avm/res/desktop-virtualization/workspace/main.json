@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "4950797341752129951"
+      "version": "0.32.4.45862",
+      "templateHash": "15242596555785609463"
     },
     "name": "Workspace",
-    "description": "This module deploys an Azure Virtual Desktop Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Virtual Desktop Workspace."
   },
   "definitions": {
     "diagnosticSettingType": {

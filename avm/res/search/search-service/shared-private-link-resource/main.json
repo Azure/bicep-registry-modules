@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15700504938596502383"
+      "templateHash": "10412795355958046746"
     },
     "name": "Search Services Private Link Resources",
-    "description": "This module deploys a Search Service Private Link Resource.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Search Service Private Link Resource."
   },
   "parameters": {
     "searchServiceName": {

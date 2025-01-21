@@ -1,6 +1,5 @@
 metadata name = 'Virtual Machine Scale Set Extensions'
 metadata description = 'This module deploys a Virtual Machine Scale Set Extension.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment.')
 param virtualMachineScaleSetName string

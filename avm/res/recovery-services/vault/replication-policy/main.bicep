@@ -2,7 +2,6 @@ metadata name = 'Recovery Services Vault Replication Policies'
 metadata description = '''This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.
 
 > **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment.')
 param recoveryVaultName string

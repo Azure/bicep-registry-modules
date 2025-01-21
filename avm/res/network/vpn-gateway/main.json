@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8473230975051576034"
+      "templateHash": "8342635055821923062"
     },
     "name": "VPN Gateways",
-    "description": "This module deploys a VPN Gateway.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a VPN Gateway."
   },
   "definitions": {
     "lockType": {
@@ -236,11 +235,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15612745804641436550"
+              "templateHash": "1228645763554247410"
             },
             "name": "VPN Gateway NAT Rules",
-            "description": "This module deploys a VPN Gateway NAT Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a VPN Gateway NAT Rule."
           },
           "parameters": {
             "name": {
@@ -418,11 +416,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7898038972076024212"
+              "templateHash": "5835591601144574416"
             },
             "name": "VPN Gateway VPN Connections",
-            "description": "This module deploys a VPN Gateway VPN Connection.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a VPN Gateway VPN Connection."
           },
           "parameters": {
             "name": {

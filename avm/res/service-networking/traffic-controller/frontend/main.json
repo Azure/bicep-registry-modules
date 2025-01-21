@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "12126990142824202083"
+      "version": "0.32.4.45862",
+      "templateHash": "17816381791659571023"
     },
     "name": "Application Gateway for Containers Frontend",
-    "description": "This module deploys an Application Gateway for Containers Frontend",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Application Gateway for Containers Frontend"
   },
   "parameters": {
     "name": {

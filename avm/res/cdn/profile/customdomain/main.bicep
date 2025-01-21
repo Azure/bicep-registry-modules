@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Custom Domains'
 metadata description = 'This module deploys a CDN Profile Custom Domains.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the custom domain.')
 param name string
