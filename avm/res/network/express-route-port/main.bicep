@@ -101,6 +101,7 @@ resource expressRoutePort_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
 
 resource expressRoutePort 'Microsoft.Network/ExpressRoutePorts@2024-05-01' = {
   name: name
+  location: location
   properties: {
     bandwidthInGbps: bandwidthInGbps
     billingType: billingType
