@@ -1,6 +1,5 @@
 metadata name = 'Redis Cache Linked Servers'
 metadata description = 'This module connects a primary and secondary Redis Cache together for geo-replication.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Primary Redis cache name.')
 param redisCacheName string

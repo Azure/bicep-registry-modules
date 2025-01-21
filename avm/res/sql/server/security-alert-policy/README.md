@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Security Alert Policy.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/securityAlertPolicies) |
+| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/securityAlertPolicies) |
 
 ## Parameters
 
@@ -32,12 +32,12 @@ This module deploys an Azure SQL Server Security Alert Policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`disabledAlerts`](#parameter-disabledalerts) | array | Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force. |
+| [`disabledAlerts`](#parameter-disabledalerts) | array | Alerts to disable. |
 | [`emailAccountAdmins`](#parameter-emailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
 | [`emailAddresses`](#parameter-emailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
 | [`retentionDays`](#parameter-retentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
 | [`state`](#parameter-state) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
-| [`storageAccountAccessKey`](#parameter-storageaccountaccesskey) | securestring | Specifies the identifier key of the Threat Detection audit storage account.. |
+| [`storageAccountAccessKey`](#parameter-storageaccountaccesskey) | securestring | Specifies the identifier key of the Threat Detection audit storage account. |
 | [`storageEndpoint`](#parameter-storageendpoint) | string | Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs. |
 
 ### Parameter: `name`
@@ -56,11 +56,22 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 ### Parameter: `disabledAlerts`
 
-Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.
+Alerts to disable.
 
 - Required: No
 - Type: array
 - Default: `[]`
+- Allowed:
+  ```Bicep
+  [
+    'Access_Anomaly'
+    'Brute_Force'
+    'Data_Exfiltration'
+    'Sql_Injection'
+    'Sql_Injection_Vulnerability'
+    'Unsafe_Action'
+  ]
+  ```
 
 ### Parameter: `emailAccountAdmins`
 
@@ -103,11 +114,10 @@ Specifies the state of the policy, whether it is enabled or disabled or a policy
 
 ### Parameter: `storageAccountAccessKey`
 
-Specifies the identifier key of the Threat Detection audit storage account..
+Specifies the identifier key of the Threat Detection audit storage account.
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `storageEndpoint`
 
@@ -115,7 +125,6 @@ Specifies the blob storage endpoint. This blob storage will hold all Threat Dete
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

@@ -1,6 +1,5 @@
 metadata name = 'Virtual Machine Scale Sets'
 metadata description = 'This module deploys a Virtual Machine Scale Set.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the VMSS.')
 param name string
@@ -486,7 +485,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
+resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
   name: name
   location: location
   tags: tags

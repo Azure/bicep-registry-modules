@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "4753233857701337613"
+      "version": "0.32.4.45862",
+      "templateHash": "16187656524256202445"
     },
     "name": "CDN Profiles Rule Sets",
-    "description": "This module deploys a CDN Profile rule set.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile rule set."
   },
   "definitions": {
     "ruleSetType": {
@@ -164,12 +163,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "11756620080021514486"
+              "version": "0.32.4.45862",
+              "templateHash": "5126669469544382460"
             },
             "name": "CDN Profiles Rules",
-            "description": "This module deploys a CDN Profile rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile rule."
           },
           "definitions": {
             "ruleType": {

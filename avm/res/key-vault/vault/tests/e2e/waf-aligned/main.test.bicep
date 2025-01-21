@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -66,7 +66,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      location: resourceLocation
       diagnosticSettings: [
         {
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -112,10 +111,6 @@ module testDeployment '../../../main.bicep' = [
           keySize: 4096
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       networkAcls: {
         bypass: 'AzureServices'
         defaultAction: 'Deny'
@@ -152,9 +147,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

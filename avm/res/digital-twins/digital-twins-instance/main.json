@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "11503001274179673847"
+      "version": "0.32.4.45862",
+      "templateHash": "16439802383293887009"
     },
     "name": "Digital Twins Instances",
-    "description": "This module deploys an Azure Digital Twins Instance.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Digital Twins Instance."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -695,12 +694,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "16914787878954195877"
+              "version": "0.32.4.45862",
+              "templateHash": "11377864419942663747"
             },
             "name": "Digital Twins Instance EventHub Endpoint",
-            "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Digital Twins Instance EventHub Endpoint."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -822,10 +820,7 @@
                 "endpointUri": "[parameters('endpointUri')]",
                 "entityPath": "[parameters('entityPath')]",
                 "identity": "[variables('identity')]"
-              },
-              "dependsOn": [
-                "digitalTwinsInstance"
-              ]
+              }
             }
           },
           "outputs": {
@@ -893,12 +888,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "17261842587165157796"
+              "version": "0.32.4.45862",
+              "templateHash": "18416577662181981626"
             },
             "name": "Digital Twins Instance Event Grid Endpoints",
-            "description": "This module deploys a Digital Twins Instance Event Grid Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Digital Twins Instance Event Grid Endpoint."
           },
           "parameters": {
             "name": {
@@ -1020,12 +1014,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "843606537345038481"
+              "version": "0.32.4.45862",
+              "templateHash": "16120220150647094812"
             },
             "name": "Digital Twins Instance ServiceBus Endpoint",
-            "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1147,10 +1140,7 @@
                 "primaryConnectionString": "[parameters('primaryConnectionString')]",
                 "secondaryConnectionString": "[parameters('secondaryConnectionString')]",
                 "identity": "[variables('identity')]"
-              },
-              "dependsOn": [
-                "digitalTwinsInstance"
-              ]
+              }
             }
           },
           "outputs": {

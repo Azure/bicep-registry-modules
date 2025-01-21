@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14277084174605049439"
+      "version": "0.32.4.45862",
+      "templateHash": "16749070301001806245"
     },
     "name": "Azure Virtual Desktop Application Group",
-    "description": "This module deploys an Azure Virtual Desktop Application Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Virtual Desktop Application Group."
   },
   "definitions": {
     "lockType": {
@@ -363,10 +362,7 @@
         "friendlyName": "[parameters('friendlyName')]",
         "description": "[parameters('description')]",
         "applicationGroupType": "[parameters('applicationGroupType')]"
-      },
-      "dependsOn": [
-        "appGroup_hostpool"
-      ]
+      }
     },
     "appGroup_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -473,12 +469,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10838639279177354544"
+              "version": "0.32.4.45862",
+              "templateHash": "13090481719462571506"
             },
             "name": "Azure Virtual Desktop Application Group Application",
-            "description": "This module deploys an Azure Virtual Desktop Application Group Application.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Virtual Desktop Application Group Application."
           },
           "parameters": {
             "applicationGroupName": {

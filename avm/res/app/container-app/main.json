@@ -5,136 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "9460964061339169930"
+      "version": "0.32.4.45862",
+      "templateHash": "16393853788129161391"
     },
     "name": "Container Apps",
-    "description": "This module deploys a Container App.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Container App."
   },
   "definitions": {
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "container": {
+    "containerType": {
       "type": "object",
       "properties": {
         "args": {
@@ -160,7 +38,7 @@
         "env": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/environmentVar"
+            "$ref": "#/definitions/environmentVarType"
           },
           "nullable": true,
           "metadata": {
@@ -183,7 +61,7 @@
         "probes": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/containerAppProbe"
+            "$ref": "#/definitions/containerAppProbeType"
           },
           "nullable": true,
           "metadata": {
@@ -199,16 +77,20 @@
         "volumeMounts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/volumeMount"
+            "$ref": "#/definitions/volumeMountType"
           },
           "nullable": true,
           "metadata": {
             "description": "Optional. Container volume mounts."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a container."
       }
     },
-    "ingressPortMapping": {
+    "ingressPortMappingType": {
       "type": "object",
       "properties": {
         "exposedPort": {
@@ -230,9 +112,13 @@
             "description": "Required. Specifies the port the container listens on."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an ingress port mapping."
       }
     },
-    "serviceBind": {
+    "serviceBindingType": {
       "type": "object",
       "properties": {
         "name": {
@@ -247,9 +133,12 @@
             "description": "Required. The service ID."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a service binding."
       }
     },
-    "environmentVar": {
+    "environmentVarType": {
       "type": "object",
       "properties": {
         "name": {
@@ -272,9 +161,13 @@
             "description": "Optional. Non-secret environment variable value."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an environment variable."
       }
     },
-    "containerAppProbe": {
+    "containerAppProbeType": {
       "type": "object",
       "properties": {
         "failureThreshold": {
@@ -287,7 +180,7 @@
           }
         },
         "httpGet": {
-          "$ref": "#/definitions/containerAppProbeHttpGet",
+          "$ref": "#/definitions/containerAppProbeHttpGetType",
           "nullable": true,
           "metadata": {
             "description": "Optional. HTTPGet specifies the http request to perform."
@@ -321,10 +214,10 @@
           }
         },
         "tcpSocket": {
-          "$ref": "#/definitions/containerAppProbeTcpSocket",
+          "$ref": "#/definitions/containerAppProbeTcpSocketType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported."
+            "description": "Optional. The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported."
           }
         },
         "terminationGracePeriodSeconds": {
@@ -355,6 +248,9 @@
             "description": "Optional. The type of probe."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a container app probe."
       }
     },
     "corsPolicyType": {
@@ -415,9 +311,12 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a CORS policy."
+      }
     },
-    "containerAppProbeHttpGet": {
+    "containerAppProbeHttpGetType": {
       "type": "object",
       "properties": {
         "host": {
@@ -430,7 +329,7 @@
         "httpHeaders": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/containerAppProbeHttpGetHeadersItem"
+            "$ref": "#/definitions/containerAppProbeHttpGetHeadersItemType"
           },
           "nullable": true,
           "metadata": {
@@ -460,9 +359,12 @@
             "description": "Optional. Scheme to use for connecting to the host. Defaults to HTTP."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a container app probe HTTP GET."
       }
     },
-    "containerAppProbeHttpGetHeadersItem": {
+    "containerAppProbeHttpGetHeadersItemType": {
       "type": "object",
       "properties": {
         "name": {
@@ -477,9 +379,12 @@
             "description": "Required. Value of the header."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a container app probe HTTP GET header."
       }
     },
-    "containerAppProbeTcpSocket": {
+    "containerAppProbeTcpSocketType": {
       "type": "object",
       "properties": {
         "host": {
@@ -497,9 +402,12 @@
             "description": "Required. Number of the port to access on the container. Name must be an IANA_SVC_NAME."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a container app probe TCP socket."
       }
     },
-    "volumeMount": {
+    "volumeMountType": {
       "type": "object",
       "properties": {
         "mountPath": {
@@ -520,6 +428,220 @@
           "metadata": {
             "description": "Required. This must match the Name of a Volume."
           }
+        }
+      },
+      "metadata": {
+        "description": "The type for a volume mount."
+      }
+    },
+    "runtimeType": {
+      "type": "object",
+      "properties": {
+        "dotnet": {
+          "type": "object",
+          "properties": {
+            "autoConfigureDataProtection": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Enable to auto configure the ASP.NET Core Data Protection feature."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Runtime configuration for ASP.NET Core."
+          }
+        },
+        "java": {
+          "type": "object",
+          "properties": {
+            "enableMetrics": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Enable JMX core metrics for the Java app."
+              }
+            },
+            "enableJavaAgent": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Enable Java agent injection for the Java app."
+              }
+            },
+            "loggerSettings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "logger": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the logger."
+                    }
+                  },
+                  "level": {
+                    "type": "string",
+                    "allowedValues": [
+                      "debug",
+                      "error",
+                      "info",
+                      "off",
+                      "trace",
+                      "warn"
+                    ],
+                    "metadata": {
+                      "description": "Required. Java agent logging level."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Java agent logging configuration."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Runtime configuration for Java."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. App runtime configuration for the Container App."
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
         }
       }
     }
@@ -566,6 +688,7 @@
     },
     "corsPolicy": {
       "$ref": "#/definitions/corsPolicyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Object userd to configure CORS policy."
       }
@@ -611,7 +734,7 @@
     "additionalPortMappings": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/ingressPortMapping"
+        "$ref": "#/definitions/ingressPortMappingType"
       },
       "nullable": true,
       "metadata": {
@@ -656,7 +779,7 @@
     "serviceBinds": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/serviceBind"
+        "$ref": "#/definitions/serviceBindingType"
       },
       "nullable": true,
       "metadata": {
@@ -682,6 +805,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -701,13 +825,18 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -782,10 +911,16 @@
         "description": "Optional. Max inactive revisions a Container App can have."
       }
     },
+    "runtime": {
+      "$ref": "#/definitions/runtimeType",
+      "metadata": {
+        "description": "Optional. Runtime configuration for the Container App."
+      }
+    },
     "containers": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/container"
+        "$ref": "#/definitions/containerType"
       },
       "metadata": {
         "description": "Required. List of container definitions for the Container App."
@@ -870,7 +1005,7 @@
     },
     "containerApp": {
       "type": "Microsoft.App/containerApps",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-10-02-preview",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -884,7 +1019,11 @@
           "service": "[if(and(parameters('includeAddOns'), not(empty(parameters('service')))), parameters('service'), null())]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
-          "secrets": "[variables('secretList')]"
+          "secrets": "[variables('secretList')]",
+          "runtime": {
+            "dotnet": "[if(not(empty(tryGet(parameters('runtime'), 'dotnet'))), createObject('autoConfigureDataProtection', tryGet(parameters('runtime'), 'dotnet', 'autoConfigureDataProtection')), null())]",
+            "java": "[if(not(empty(tryGet(parameters('runtime'), 'java'))), createObject('enableMetrics', tryGet(parameters('runtime'), 'java', 'enableMetrics'), 'javaAgent', createObject('enabled', tryGet(parameters('runtime'), 'java', 'enableJavaAgent'), 'logging', createObject('loggerSettings', tryGet(tryGet(parameters('runtime'), 'java'), 'loggerSettings')))), null())]"
+          }
         },
         "template": {
           "containers": "[parameters('containers')]",
@@ -972,14 +1111,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('containerApp', '2024-03-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('containerApp', '2024-10-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('containerApp', '2024-03-01', 'full').location]"
+      "value": "[reference('containerApp', '2024-10-02-preview', 'full').location]"
     }
   }
 }

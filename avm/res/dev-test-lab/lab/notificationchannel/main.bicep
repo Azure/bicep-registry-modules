@@ -2,7 +2,6 @@ metadata name = 'DevTest Lab Notification Channels'
 metadata description = '''This module deploys a DevTest Lab Notification Channel.
 
 Notification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent lab. Required if the template is used in a standalone deployment.')
 param labName string
@@ -21,7 +20,7 @@ param tags object?
 param description string = ''
 
 @sys.description('Required. The list of event for which this notification is enabled.')
-param events array = []
+param events array
 
 @sys.description('Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.')
 param emailRecipient string?

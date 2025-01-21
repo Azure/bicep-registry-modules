@@ -1,6 +1,5 @@
 metadata name = 'Operations Management Solutions'
 metadata description = 'This module deploys an Operations Management Solution.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('''Required. Name of the solution.
 For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.

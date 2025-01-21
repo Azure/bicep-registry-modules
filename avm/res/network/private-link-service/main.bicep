@@ -1,6 +1,5 @@
 metadata name = 'Private Link Services'
 metadata description = 'This module deploys a Private Link Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the private link service to create.')
 param name string
