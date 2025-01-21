@@ -1,6 +1,5 @@
 metadata name = 'Virtual Network Gateways'
 metadata description = 'This module deploys a Virtual Network Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Specifies the Virtual Network Gateway name.')
 param name string

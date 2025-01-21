@@ -8,6 +8,7 @@ This module deploys a Service Fabric Cluster.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -82,7 +83,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         isAdmin: true
       }
     ]
-    location: '<location>'
   }
 }
 ```
@@ -147,9 +147,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
           "isAdmin": true
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -202,7 +199,6 @@ param clientCertificateThumbprints = [
     isAdmin: true
   }
 ]
-param location = '<location>'
 ```
 
 </details>
@@ -246,7 +242,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     certificate: {
       thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
     }
-    location: '<location>'
   }
 }
 ```
@@ -297,9 +292,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       "value": {
         "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -340,7 +332,6 @@ param reliabilityLevel = 'None'
 param certificate = {
   thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
 }
-param location = '<location>'
 ```
 
 </details>
@@ -1060,7 +1051,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         ]
       }
     ]
-    location: '<location>'
     maxUnusedVersionsToKeep: 2
     notifications: [
       {
@@ -1241,9 +1231,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "maxUnusedVersionsToKeep": {
       "value": 2
     },
@@ -1410,7 +1397,6 @@ param fabricSettings = [
     ]
   }
 ]
-param location = '<location>'
 param maxUnusedVersionsToKeep = 2
 param notifications = [
   {
@@ -2103,6 +2089,14 @@ Boolean to pause automatic runtime version upgrades to the cluster.
 | `name` | string | The Service Fabric Cluster name. |
 | `resourceGroupName` | string | The Service Fabric Cluster resource group. |
 | `resourceId` | string | The Service Fabric Cluster resource ID. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

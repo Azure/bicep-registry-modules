@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15524157492175197471"
+      "templateHash": "43238165429335678"
     },
     "name": "Azure Container Registry (ACR) Replications",
-    "description": "This module deploys an Azure Container Registry (ACR) Replication.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Container Registry (ACR) Replication."
   },
   "parameters": {
     "registryName": {

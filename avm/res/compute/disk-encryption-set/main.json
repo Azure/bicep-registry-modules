@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8601235787008524496"
+      "templateHash": "14190486431770759654"
     },
     "name": "Disk Encryption Sets",
-    "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -386,7 +385,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12513975041606321751"
+              "templateHash": "11047892892596308247"
             }
           },
           "parameters": {
@@ -474,11 +473,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1955756120806412580"
+                      "templateHash": "2291023010330106734"
                     },
                     "name": "Key Vault Access Policies",
-                    "description": "This module deploys a Key Vault Access Policy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Key Vault Access Policy."
                   },
                   "definitions": {
                     "accessPoliciesType": {

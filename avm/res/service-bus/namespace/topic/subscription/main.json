@@ -1,15 +1,184 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8883045388912253995"
+      "templateHash": "3178099276922515439"
     },
     "name": "Service Bus Namespace Topic Subscription",
-    "description": "This module deploys a Service Bus Namespace Topic Subscription.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace Topic Subscription."
+  },
+  "definitions": {
+    "ruleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the service bus namespace topic subscription rule."
+          }
+        },
+        "action": {
+          "type": "object",
+          "properties": {
+            "compatibilityLevel": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+              }
+            },
+            "requiresPreprocessing": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+              }
+            },
+            "sqlExpression": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
+          }
+        },
+        "correlationFilter": {
+          "type": "object",
+          "properties": {
+            "contentType": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Content type of the message."
+              }
+            },
+            "correlationId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Identifier of the correlation."
+              }
+            },
+            "label": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Application specific label."
+              }
+            },
+            "messageId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Identifier of the message."
+              }
+            },
+            "properties": {
+              "type": "array",
+              "allowedValues": [
+                {}
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. dictionary object for custom filters."
+              }
+            },
+            "replyTo": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Address of the queue to reply to."
+              }
+            },
+            "replyToSessionId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Session identifier to reply to."
+              }
+            },
+            "requiresPreprocessing": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+              }
+            },
+            "sessionId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Session identifier."
+              }
+            },
+            "to": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Address to send to."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Properties of correlationFilter."
+          }
+        },
+        "filterType": {
+          "type": "string",
+          "allowedValues": [
+            "CorrelationFilter",
+            "SqlFilter"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+          }
+        },
+        "sqlFilter": {
+          "type": "object",
+          "properties": {
+            "compatibilityLevel": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+              }
+            },
+            "requiresPreprocessing": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+              }
+            },
+            "sqlExpression": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Properties of sqlFilter."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. The type for rules."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -121,6 +290,16 @@
         "description": "Optional. A value that indicates whether the subscription supports the concept of session."
       }
     },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ruleType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The subscription rules."
+      }
+    },
     "status": {
       "type": "string",
       "defaultValue": "Active",
@@ -140,8 +319,20 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "namespace::topic": {
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
+    },
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "subscription": {
       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
       "apiVersion": "2021-11-01",
       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
@@ -161,8 +352,178 @@
         "requiresSession": "[parameters('requiresSession')]",
         "status": "[parameters('status')]"
       }
+    },
+    "subscription_rule": {
+      "copy": {
+        "name": "subscription_rule",
+        "count": "[length(coalesce(parameters('rules'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-rule-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
+          },
+          "subscriptionName": {
+            "value": "[parameters('name')]"
+          },
+          "namespaceName": {
+            "value": "[parameters('namespaceName')]"
+          },
+          "topicName": {
+            "value": "[parameters('topicName')]"
+          },
+          "action": {
+            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'action')]"
+          },
+          "correlationFilter": {
+            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'correlationFilter')]"
+          },
+          "filterType": {
+            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'filterType')]"
+          },
+          "sqlFilter": {
+            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'sqlFilter')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "2622393872040722258"
+            },
+            "name": "Service Bus Namespace Topic Subscription Rule",
+            "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the service bus namespace topic subscription rule."
+              }
+            },
+            "namespaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "topicName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment."
+              }
+            },
+            "subscriptionName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "action": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
+              }
+            },
+            "correlationFilter": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Opional. Properties of a correlation filter."
+              }
+            },
+            "filterType": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "CorrelationFilter",
+                "SqlFilter"
+              ],
+              "metadata": {
+                "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+              }
+            },
+            "sqlFilter": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Opional. The properties of an SQL filter."
+              }
+            }
+          },
+          "resources": {
+            "namespace::topic::subscription": {
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'))]"
+            },
+            "namespace::topic": {
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces/topics",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
+            },
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "rule": {
+              "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}/{2}/{3}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]",
+              "properties": {
+                "action": "[parameters('action')]",
+                "correlationFilter": "[parameters('correlationFilter')]",
+                "filterType": "[parameters('filterType')]",
+                "sqlFilter": "[parameters('sqlFilter')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The Resource ID of the rule."
+              },
+              "value": "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions/rules', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the rule was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "subscription"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

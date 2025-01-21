@@ -1,6 +1,5 @@
 metadata name = 'Load Balancer Inbound NAT Rules'
 metadata description = 'This module deploys a Load Balancer Inbound NAT Rules.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent load balancer. Required if the template is used in a standalone deployment.')
 param loadBalancerName string

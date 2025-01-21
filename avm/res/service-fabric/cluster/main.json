@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5756653663103242994"
+      "templateHash": "3884249691379598615"
     },
     "name": "Service Fabric Clusters",
-    "description": "This module deploys a Service Fabric Cluster.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Fabric Cluster."
   },
   "definitions": {
     "certificateType": {
@@ -47,13 +46,19 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a certificate."
+      }
     },
     "certificateCommonNameType": {
       "type": "object",
       "properties": {
         "commonNames": {
-          "$ref": "#/definitions/serverCertificateCommonNameType",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/serverCertificateCommonNameType"
+          },
           "metadata": {
             "description": "Required. The list of server certificates referenced by common name that are used to secure the cluster."
           }
@@ -76,75 +81,77 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a certificate common name."
+      }
     },
     "serverCertificateCommonNameType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "certificateCommonName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The common name of the server certificate."
-            }
-          },
-          "certificateIssuerThumbprint": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The issuer thumbprint of the server certificate."
-            }
+      "type": "object",
+      "properties": {
+        "certificateCommonName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The common name of the server certificate."
+          }
+        },
+        "certificateIssuerThumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The issuer thumbprint of the server certificate."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a server certificate common name."
       }
     },
     "clientCertificateCommonNameType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "certificateCommonName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The common name of the client certificate."
-            }
-          },
-          "certificateIssuerThumbprint": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The issuer thumbprint of the client certificate."
-            }
-          },
-          "isAdmin": {
-            "type": "bool",
-            "metadata": {
-              "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
-            }
+      "type": "object",
+      "properties": {
+        "certificateCommonName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The common name of the client certificate."
+          }
+        },
+        "certificateIssuerThumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The issuer thumbprint of the client certificate."
+          }
+        },
+        "isAdmin": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "The type for a client certificate common name."
+      }
     },
     "clientCertificateThumbprintType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "certificateThumbprint": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The thumbprint of the client certificate."
-            }
-          },
-          "isAdmin": {
-            "type": "bool",
-            "metadata": {
-              "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
-            }
+      "type": "object",
+      "properties": {
+        "certificateThumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The thumbprint of the client certificate."
+          }
+        },
+        "isAdmin": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a client certificate thumbprint."
+      }
     },
     "lockType": {
       "type": "object",
@@ -169,80 +176,87 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -268,6 +282,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -301,24 +316,34 @@
     },
     "certificate": {
       "$ref": "#/definitions/certificateType",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used."
       }
     },
     "certificateCommonNames": {
       "$ref": "#/definitions/certificateCommonNameType",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used."
       }
     },
     "clientCertificateCommonNames": {
-      "$ref": "#/definitions/clientCertificateCommonNameType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/clientCertificateCommonNameType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used."
       }
     },
     "clientCertificateThumbprints": {
-      "$ref": "#/definitions/clientCertificateThumbprintType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/clientCertificateThumbprintType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used."
       }
@@ -485,7 +510,11 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -703,11 +732,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4770865885039578272"
+              "templateHash": "4295209679863031973"
             },
             "name": "Service Fabric Cluster Application Types",
-            "description": "This module deploys a Service Fabric Cluster Application Type.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Fabric Cluster Application Type."
           },
           "parameters": {
             "serviceFabricClusterName": {

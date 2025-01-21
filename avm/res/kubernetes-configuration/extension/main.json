@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4983644790291723565"
+      "templateHash": "15390859648845394603"
     },
     "name": "Kubernetes Configuration Extensions",
-    "description": "This module deploys a Kubernetes Configuration Extension.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Kubernetes Configuration Extension."
   },
   "parameters": {
     "name": {

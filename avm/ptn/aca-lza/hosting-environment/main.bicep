@@ -2,7 +2,6 @@ targetScope = 'subscription'
 
 metadata name = 'Container Apps Landing Zone Accelerator'
 metadata description = 'This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework'
-metadata owner = 'Azure/avm-ptn-acalza-hostingenvironment-module-contributors-bicep'
 
 // ------------------
 //    PARAMETERS
@@ -131,7 +130,7 @@ param enableDdosProtection bool = false
 module naming 'modules/naming/naming.module.bicep' = {
   name: take('deploy-naming-${deployment().name}', 64)
   params: {
-    uniqueId: uniqueString(workloadName)
+    uniqueId: uniqueString(subscription().id, location, environment, workloadName)
     spokeResourceGroupName: spokeResourceGroupName
     environment: environment
     workloadName: workloadName

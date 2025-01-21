@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "4050250114148213748"
+      "version": "0.32.4.45862",
+      "templateHash": "16756380866487676641"
     },
     "name": "Fabric Capacities",
-    "description": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric."
   },
   "definitions": {
     "lockType": {

@@ -1,6 +1,5 @@
 metadata name = 'Log Analytics Workspaces'
 metadata description = 'This module deploys a Log Analytics Workspace.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Log Analytics workspace.')
 param name string

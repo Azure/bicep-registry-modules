@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14595063605642768334"
+      "templateHash": "12764194787789521059"
     },
     "name": "DocumentDB Database Account SQL Role Assignments.",
-    "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
   },
   "parameters": {
     "databaseAccountName": {

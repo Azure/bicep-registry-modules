@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7050591888814861236"
+      "templateHash": "14895863223298395283"
     },
     "name": "Arc Machine Extensions",
-    "description": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource."
   },
   "parameters": {
     "arcMachineName": {
@@ -95,12 +94,12 @@
     "machine": {
       "existing": true,
       "type": "Microsoft.HybridCompute/machines",
-      "apiVersion": "2024-03-31-preview",
+      "apiVersion": "2024-07-10",
       "name": "[parameters('arcMachineName')]"
     },
     "extension": {
       "type": "Microsoft.HybridCompute/machines/extensions",
-      "apiVersion": "2024-03-31-preview",
+      "apiVersion": "2024-07-10",
       "name": "[format('{0}/{1}', parameters('arcMachineName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -143,7 +142,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('extension', '2024-03-31-preview', 'full').location]"
+      "value": "[reference('extension', '2024-07-10', 'full').location]"
     }
   }
 }

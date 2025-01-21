@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15613133519974526575"
+      "templateHash": "15884853996194439605"
     },
     "name": "Key Vault Keys",
-    "description": "This module deploys a Key Vault Key.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Key Vault Key."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -84,7 +83,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
