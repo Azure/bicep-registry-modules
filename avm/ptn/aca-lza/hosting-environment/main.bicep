@@ -314,6 +314,9 @@ output containerRegistryName string = supportingServices.outputs.containerRegist
 @description('The name of the container registry login server.')
 output containerRegistryLoginServer string = supportingServices.outputs.containerRegistryLoginServer
 
+@description('The name of the internal agent pool for the container registry.')
+output containerRegistryAgentPoolName string = supportingServices.outputs.containerRegistryAgentPoolName
+
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityResourceId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
 
