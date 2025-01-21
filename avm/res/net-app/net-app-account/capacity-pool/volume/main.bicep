@@ -236,10 +236,10 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
   name: netAppAccountName
 
-  resource capacityPool 'capacityPools@2024-03-01' existing = {
+  resource capacityPool 'capacityPools@2024-07-01' existing = {
     name: capacityPoolName
   }
 }
@@ -362,12 +362,12 @@ module snapshotPolicies '../../snapshot-policies/main.bicep' = if (snapEnabled) 
   }
 }
 
-resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' existing = if (backupEnabled && useExistingBackupVault) {
+resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' existing = if (backupEnabled && useExistingBackupVault) {
   parent: netAppAccount
   name: backupVaultName
 }
 
-resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01' = if (backupEnabled) {
+resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-07-01' = if (backupEnabled) {
   name: backupName
   parent: existingBackupVault
   dependsOn: []

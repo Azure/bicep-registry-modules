@@ -7,11 +7,11 @@ param backupVaultName string
 @description('Optional. The location of the backup vault.')
 param backupVaultLocation string = resourceGroup().location
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
   name: netAppAccountName
 }
 
-resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' = {
+resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' = {
   name: backupVaultName
   parent: netAppAccount
   location: backupVaultLocation
