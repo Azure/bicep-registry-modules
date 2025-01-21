@@ -1,6 +1,5 @@
 metadata name = 'Firewall Policies'
 metadata description = 'This module deploys a Firewall Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Firewall Policy.')
 param name string

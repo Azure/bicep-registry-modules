@@ -1,6 +1,5 @@
 metadata name = 'Policy Insights Remediations (Subscription scope)'
 metadata description = 'This module deploys a Policy Insights Remediation on a Subscription scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 

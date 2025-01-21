@@ -1,6 +1,5 @@
 metadata name = 'CI CD Agents and Runners'
 metadata description = 'This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.'
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //

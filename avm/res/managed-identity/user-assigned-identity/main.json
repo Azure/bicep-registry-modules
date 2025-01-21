@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "7772402327207512602"
+      "version": "0.32.4.45862",
+      "templateHash": "3367002951676335937"
     },
     "name": "User Assigned Identities",
-    "description": "This module deploys a User Assigned Identity.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a User Assigned Identity."
   },
   "definitions": {
     "lockType": {
@@ -315,12 +314,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3716898257490923786"
+              "version": "0.32.4.45862",
+              "templateHash": "16526104427295478987"
             },
             "name": "User Assigned Identity Federated Identity Credential",
-            "description": "This module deploys a User Assigned Identity Federated Identity Credential.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a User Assigned Identity Federated Identity Credential."
           },
           "parameters": {
             "userAssignedIdentityName": {

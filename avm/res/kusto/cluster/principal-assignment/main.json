@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13618100155303497836"
+      "templateHash": "12417822146116787074"
     },
     "name": "Kusto Cluster Principal Assignments",
-    "description": "This module deploys a Kusto Cluster Principal Assignment.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Kusto Cluster Principal Assignment."
   },
   "parameters": {
     "kustoClusterName": {

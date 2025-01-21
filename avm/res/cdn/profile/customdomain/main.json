@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12647886167890211057"
+      "templateHash": "10872254821030072983"
     },
     "name": "CDN Profiles Custom Domains",
-    "description": "This module deploys a CDN Profile Custom Domains.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Custom Domains."
   },
   "definitions": {
     "customDomainType": {

@@ -1,6 +1,5 @@
 metadata name = 'Email Services Domains'
 metadata description = 'This module deploys an Email Service Domain'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent email service. Required if the template is used in a standalone deployment.')
 param emailServiceName string

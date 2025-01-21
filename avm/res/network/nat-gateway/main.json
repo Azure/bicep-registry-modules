@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "16462612640291787003"
+      "version": "0.32.4.45862",
+      "templateHash": "6945935143037087267"
     },
     "name": "NAT Gateways",
-    "description": "This module deploys a NAT Gateway.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a NAT Gateway."
   },
   "definitions": {
     "lockType": {
@@ -1006,8 +1005,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "9121047532434826411"
+              "version": "0.32.4.45862",
+              "templateHash": "1685955788035758459"
             }
           },
           "parameters": {
@@ -1420,8 +1419,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "9121047532434826411"
+              "version": "0.32.4.45862",
+              "templateHash": "1685955788035758459"
             }
           },
           "parameters": {

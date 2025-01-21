@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4127974464346115024"
+      "templateHash": "12146093503424179836"
     },
     "name": "Kubernetes Configuration Flux Configurations",
-    "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Kubernetes Configuration Flux Configuration."
   },
   "parameters": {
     "name": {

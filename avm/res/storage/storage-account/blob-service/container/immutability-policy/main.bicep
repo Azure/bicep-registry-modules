@@ -1,6 +1,5 @@
 metadata name = 'Storage Account Blob Container Immutability Policies'
 metadata description = 'This module deploys a Storage Account Blob Container Immutability Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
