@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7174722682201993647"
+      "templateHash": "3784464033988272421"
     },
     "name": "Public DNS Zone PTR record",
-    "description": "This module deploys a Public DNS Zone PTR record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone PTR record."
   },
   "definitions": {
     "roleAssignmentType": {

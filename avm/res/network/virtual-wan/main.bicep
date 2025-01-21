@@ -1,6 +1,5 @@
 metadata name = 'Virtual WANs'
 metadata description = 'This module deploys a Virtual WAN.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Location where all resources will be created.')
 param location string = resourceGroup().location

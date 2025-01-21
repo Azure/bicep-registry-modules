@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8294501714202659478"
+      "templateHash": "15541609729265841595"
     },
     "name": "Storage Account Blob Containers",
-    "description": "This module deploys a Storage Account Blob Container.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Blob Container."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -296,11 +295,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13544771409253577128"
+              "templateHash": "12930903258566593173"
             },
             "name": "Storage Account Blob Container Immutability Policies",
-            "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Blob Container Immutability Policy."
           },
           "parameters": {
             "storageAccountName": {

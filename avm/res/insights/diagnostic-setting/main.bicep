@@ -1,6 +1,5 @@
 metadata name = 'Diagnostic Settings (Activity Logs) for Azure Subscriptions'
 metadata description = 'This module deploys a Subscription wide export of the Activity Log.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 

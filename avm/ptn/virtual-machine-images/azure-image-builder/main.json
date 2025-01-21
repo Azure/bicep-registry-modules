@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3475803906530867459"
+      "templateHash": "7944054550680645095"
     },
     "name": "Custom Images using Azure Image Builder",
-    "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
-    "owner": "AlexanderSehr"
+    "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
   },
   "definitions": {
     "storageAccountFilesToUploadType": {

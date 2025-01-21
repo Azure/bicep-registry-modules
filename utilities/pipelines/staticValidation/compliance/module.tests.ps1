@@ -575,15 +575,6 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $templateFileContent.metadata.description | Should -Not -BeNullOrEmpty
             }
-
-            It '[<moduleFolderName>] template file should have a module owner specified.' -TestCases $moduleFolderTestCases {
-
-                param(
-                    [hashtable] $templateFileContent
-                )
-
-                $templateFileContent.metadata.owner | Should -Not -BeNullOrEmpty
-            }
         }
 
         Context 'Parameters' {

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13846745009559493983"
+      "templateHash": "11785514765749998247"
     },
     "name": "CDN Profiles Security Policy",
-    "description": "This module deploys a CDN Profile Security Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Security Policy."
   },
   "definitions": {
     "associationsType": {

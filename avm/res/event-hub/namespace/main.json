@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2804785196723632019"
+      "templateHash": "12342291664283369519"
     },
     "name": "Event Hub Namespaces",
-    "description": "This module deploys an Event Hub Namespace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Hub Namespace."
   },
   "definitions": {
     "disasterRecoveryConfigType": {
@@ -998,11 +997,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10870241183446190975"
+              "templateHash": "12932983739098297779"
             },
             "name": "Event Hub Namespace Authorization Rule",
-            "description": "This module deploys an Event Hub Namespace Authorization Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Hub Namespace Authorization Rule."
           },
           "parameters": {
             "namespaceName": {
@@ -1097,11 +1095,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2513291802697135803"
+              "templateHash": "7157026557302056743"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
-            "description": "This module deploys an Event Hub Namespace Disaster Recovery Config.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
           },
           "parameters": {
             "namespaceName": {
@@ -1249,11 +1246,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17504773495438271921"
+              "templateHash": "18152317202239360615"
             },
             "name": "Event Hub Namespace Event Hubs",
-            "description": "This module deploys an Event Hub Namespace Event Hub.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Hub Namespace Event Hub."
           },
           "definitions": {
             "lockType": {
@@ -1685,11 +1681,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7140787813388812663"
+                      "templateHash": "15726313856377224651"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
-                    "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
                   },
                   "parameters": {
                     "namespaceName": {
@@ -1791,11 +1786,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14846437278716777277"
+                      "templateHash": "15938058071622087714"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
-                    "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
                   },
                   "parameters": {
                     "namespaceName": {
@@ -1935,11 +1929,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6437192538669884795"
+              "templateHash": "18355940501932134026"
             },
             "name": "Event Hub Namespace Network Rule Sets",
-            "description": "This module deploys an Event Hub Namespace Network Rule Set.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Hub Namespace Network Rule Set."
           },
           "parameters": {
             "namespaceName": {
