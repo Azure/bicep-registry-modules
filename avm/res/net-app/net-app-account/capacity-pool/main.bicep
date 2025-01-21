@@ -75,11 +75,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-03-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-07-01' = {
   name: name
   parent: netAppAccount
   location: location
@@ -147,15 +147,17 @@ module capacityPool_volumes 'volume/main.bicep' = [
       monthlyBackupsToKeep: volume.?monthlyBackupsToKeep ?? 0
       weeklyBackupsToKeep: volume.?weeklyBackupsToKeep ?? 0
       backupVaultName: volume.?backupVaultName ?? 'vault'
-      backupVaultLocation: volume.?backupVaultLocation ?? ''
       backupName: volume.?backupName ?? 'backup'
       backupLabel: volume.?backupLabel ?? ''
       snapshotName: volume.?snapshotName ?? 'snapshot'
       useExistingSnapshot: volume.?useExistingSnapshot ?? false
       volumeResourceId: volume.?volumeResourceId ?? ''
       volumeType: volume.?volumeType ?? ''
-      backupVaultResourceId: volume.?backupVaultResourceId ?? ''
       replicationEnabled: volume.?replicationEnabled ?? false
+      useExistingBackupVault: volume.?useExistingBackupVault ?? false
+      externalHostName: volume.?externalHostName ?? ''
+      serverName: volume.?serverName ?? ''
+      volumeName: volume.?volumeName ?? ''
     }
   }
 ]

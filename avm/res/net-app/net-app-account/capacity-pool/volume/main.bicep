@@ -110,9 +110,6 @@ param weeklyBackupsToKeep int
 @description('Optional. The name of the backup vault.')
 param backupVaultName string = 'vault'
 
-@description('Optional. The location of the backup vault.')
-param backupVaultLocation string = resourceGroup().location
-
 @description('Required. The name of the backup.')
 param backupName string
 
@@ -127,6 +124,9 @@ param snapshotName string
 
 @description('Required. The resource ID of the volume.')
 param volumeResourceId string
+
+@description('Required.To create a new backup vault')
+param useExistingBackupVault bool
 
 @description('Required. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string
@@ -186,11 +186,17 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Required. The Id of the Backup Vault.')
-param backupVaultResourceId string
-
 @description('Optional. Enables replication.')
 param replicationEnabled bool = true
+
+@description('Required.The name of a volume on the server')
+param volumeName string
+
+@description('Required.The name of a server on the ONTAP Host')
+param serverName string
+
+@description('Required.The Path to a ONTAP Host')
+param externalHostName string
 
 @description('Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume.')
 param smbEncryption bool = false
@@ -238,14 +244,11 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location
-  dependsOn: [
-    backupVaults
-    backupPolicies
-  ]
+  dependsOn: []
   properties: {
     coolAccess: coolAccess
     coolAccessRetrievalPolicy: coolAccessRetrievalPolicy
@@ -266,14 +269,18 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
                   remoteVolumeRegion: remoteVolumeRegion
                   remoteVolumeResourceId: remoteVolumeResourceId
                   replicationSchedule: replicationSchedule
+                  remotePath: {
+                    externalHostName: externalHostName
+                    serverName: serverName
+                    volumeName: volumeName
+                  }
                 }
               : {}
-
             backup: backupEnabled
               ? {
                   backupPolicyId: backupPolicies.outputs.resourceId
                   policyEnforced: policyEnforced
-                  backupVaultId: backupVaultResourceId
+                  backupVaultId: existingBackupVault.id
                 }
               : {}
             snapshot: snapEnabled
@@ -283,7 +290,22 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
               : {}
           }
         }
-      : {})
+      : {
+          dataProtection: {
+            backup: backupEnabled
+              ? {
+                  backupPolicyId: backupPolicies.outputs.resourceId
+                  policyEnforced: policyEnforced
+                  backupVaultId: existingBackupVault.id
+                }
+              : {}
+            snapshot: snapEnabled
+              ? {
+                  snapshotPolicyId: snapshotPolicies.outputs.resourceId
+                }
+              : {}
+          }
+        })
     networkFeatures: networkFeatures
     serviceLevel: serviceLevel
     creationToken: creationToken
@@ -340,27 +362,21 @@ module snapshotPolicies '../../snapshot-policies/main.bicep' = if (snapEnabled) 
   }
 }
 
-resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' = if (backupEnabled) {
-  name: backupVaultName
+resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' existing = if (backupEnabled && useExistingBackupVault) {
   parent: netAppAccount
-  location: backupVaultLocation
-  properties: {}
+  name: backupVaultName
 }
 
 resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01' = if (backupEnabled) {
   name: backupName
-  parent: backupVaults
-  dependsOn: [
-    volume
-  ]
-  properties: backupEnabled
-    ? {
-        label: backupLabel
-        snapshotName: snapshotName
-        useExistingSnapshot: useExistingSnapshot
-        volumeResourceId: volumeResourceId
-      }
-    : {}
+  parent: existingBackupVault
+  dependsOn: []
+  properties: {
+    label: backupLabel
+    snapshotName: snapshotName
+    useExistingSnapshot: useExistingSnapshot
+    volumeResourceId: volumeResourceId == '' ? volume.id : volumeResourceId
+  }
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
