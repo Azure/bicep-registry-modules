@@ -270,17 +270,15 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
   name: '${workspace.name}-cmk-rbac'
   params: {
     workspaceIndentityPrincipalId: workspace.identity.principalId
-    keyvaultName: !empty(customerManagedKey.?keyVaultResourceId) ? cMKKeyVault.name : ''
-    usesRbacAuthorization: !empty(customerManagedKey.?keyVaultResourceId)
+    keyvaultName: !empty(customerManagedKey!.keyVaultResourceId) ? cMKKeyVault.name : ''
+    usesRbacAuthorization: !empty(customerManagedKey!.keyVaultResourceId)
       ? cMKKeyVault.properties.enableRbacAuthorization
       : true
   }
-  scope: encryptionActivateWorkspace
-    ? resourceGroup(
-        split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-        split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-      )
-    : resourceGroup()
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 }
 
 // - Workspace encryption - Activate Workspace
@@ -352,7 +350,7 @@ module workspace_firewallRules 'firewall-rules/main.bicep' = [
 ]
 
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: !empty(privateEndpoint.?resourceGroupResourceId)

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14840747725893494448"
+      "templateHash": "17791663197340635366"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -1069,7 +1069,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15698775390725353911"
+              "templateHash": "3774061564667811229"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -1111,7 +1111,7 @@
               "type": "Microsoft.Synapse/workspaces/integrationRuntimes",
               "apiVersion": "2021-06-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
-              "properties": "[if(equals(parameters('type'), 'Managed'), createObject('type', parameters('type'), 'managedVirtualNetwork', createObject('referenceName', 'default', 'type', 'ManagedVirtualNetworkReference'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
+              "properties": "[shallowMerge(createArray(createObject('type', parameters('type')), if(equals(parameters('type'), 'Managed'), createObject('managedVirtualNetwork', createObject('referenceName', 'default', 'type', 'ManagedVirtualNetworkReference'), 'typeProperties', parameters('typeProperties')), createObject())))]"
             }
           ],
           "outputs": {
@@ -1148,6 +1148,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-cmk-rbac', parameters('name'))]",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1157,8 +1159,8 @@
           "workspaceIndentityPrincipalId": {
             "value": "[reference('workspace', '2021-06-01', 'full').identity.principalId]"
           },
-          "keyvaultName": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), createObject('value', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))), createObject('value', ''))]",
-          "usesRbacAuthorization": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), createObject('value', reference('cMKKeyVault').enableRbacAuthorization), createObject('value', true()))]"
+          "keyvaultName": "[if(not(empty(parameters('customerManagedKey').keyVaultResourceId)), createObject('value', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))), createObject('value', ''))]",
+          "usesRbacAuthorization": "[if(not(empty(parameters('customerManagedKey').keyVaultResourceId)), createObject('value', reference('cMKKeyVault').enableRbacAuthorization), createObject('value', true()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1609,8 +1611,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6724714132049298262"
+              "version": "0.32.4.45862",
+              "templateHash": "15164027369246485309"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2064,7 +2066,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2170,8 +2172,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "12329174801198479603"
+                      "version": "0.32.4.45862",
+                      "templateHash": "14591244586837935522"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2253,10 +2255,7 @@
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
-                      },
-                      "dependsOn": [
-                        "privateEndpoint"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
