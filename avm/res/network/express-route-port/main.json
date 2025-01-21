@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10352362278775075199"
+      "templateHash": "8131834421888698878"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct.",
@@ -131,7 +131,6 @@
             "allowedValues": [
               "string"
             ],
-            "nullable": true,
             "metadata": {
               "description": "Required. The name of the link to be created."
             }
@@ -169,7 +168,7 @@
                       "GcmAesXpn256"
                     ],
                     "metadata": {
-                      "description": "Required. Mac security cipher"
+                      "description": "Required. Mac security cipher."
                     }
                   },
                   "cknSecretIdentifier": {
@@ -194,10 +193,11 @@
                 },
                 "nullable": true,
                 "metadata": {
-                  "description": "Optional. MacSec Configuration of the link"
+                  "description": "Optional. MacSec Configuration of the link."
                 }
               }
             },
+            "nullable": true,
             "metadata": {
               "description": "Optional. Properties of the Link."
             }
@@ -303,7 +303,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.servicebus-namespace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.network-expressourteport.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -366,6 +366,36 @@
       "dependsOn": [
         "expressRoutePort"
       ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the ExpressRoute Gateway."
+      },
+      "value": "[resourceId('Microsoft.Network/ExpressRoutePorts', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the ExpressRoute Gateway was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the ExpressRoute Gateway."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('expressRoutePort', '2024-05-01', 'full').location]"
     }
   }
 }
