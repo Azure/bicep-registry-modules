@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5027549226414445415"
+      "templateHash": "5634194061896462006"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct.",
@@ -112,99 +112,99 @@
       "nullable": true
     },
     "linkType": {
-      "type": "array",
-      "items": {
-        "type": "object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "allowedValues": [
+            "string"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource Id of the existing Link."
+          }
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "string"
+          ],
+          "metadata": {
+            "description": "Required. The name of the link to be created."
+          }
+        },
         "properties": {
-          "id": {
-            "type": "string",
-            "allowedValues": [
-              "string"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource Id of the existing Link."
-            }
-          },
-          "name": {
-            "type": "string",
-            "allowedValues": [
-              "string"
-            ],
-            "metadata": {
-              "description": "Required. The name of the link to be created."
-            }
-          },
+          "type": "object",
           "properties": {
-            "type": "object",
-            "properties": {
-              "adminState": {
-                "type": "string",
-                "allowedValues": [
-                  "string"
-                ],
-                "metadata": {
-                  "description": "Required. Administrative state of the physical port."
-                }
-              },
-              "macSecConfig": {
-                "type": "object",
-                "properties": {
-                  "cakSecretIdentifier": {
-                    "type": "string",
-                    "allowedValues": [
-                      "string"
-                    ],
-                    "metadata": {
-                      "description": "Required. Keyvault Secret Identifier URL containing Mac security CAK key."
-                    }
-                  },
-                  "cipher": {
-                    "type": "string",
-                    "allowedValues": [
-                      "GcmAes128",
-                      "GcmAes256",
-                      "GcmAesXpn128",
-                      "GcmAesXpn256"
-                    ],
-                    "metadata": {
-                      "description": "Required. Mac security cipher."
-                    }
-                  },
-                  "cknSecretIdentifier": {
-                    "type": "string",
-                    "allowedValues": [
-                      "string"
-                    ],
-                    "metadata": {
-                      "description": "Required. Keyvault Secret Identifier URL containing Mac security CKN key."
-                    }
-                  },
-                  "sciState": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Disabled",
-                      "Enabled"
-                    ],
-                    "metadata": {
-                      "description": "Required. Sci mode."
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. MacSec Configuration of the link."
-                }
+            "adminState": {
+              "type": "string",
+              "allowedValues": [
+                "string"
+              ],
+              "metadata": {
+                "description": "Required. Administrative state of the physical port."
               }
             },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Properties of the Link."
+            "macSecConfig": {
+              "type": "object",
+              "properties": {
+                "cakSecretIdentifier": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ],
+                  "metadata": {
+                    "description": "Required. Keyvault Secret Identifier URL containing Mac security CAK key."
+                  }
+                },
+                "cipher": {
+                  "type": "string",
+                  "allowedValues": [
+                    "GcmAes128",
+                    "GcmAes256",
+                    "GcmAesXpn128",
+                    "GcmAesXpn256"
+                  ],
+                  "metadata": {
+                    "description": "Required. Mac security cipher."
+                  }
+                },
+                "cknSecretIdentifier": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ],
+                  "metadata": {
+                    "description": "Required. Keyvault Secret Identifier URL containing Mac security CKN key."
+                  }
+                },
+                "sciState": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Disabled",
+                    "Enabled"
+                  ],
+                  "metadata": {
+                    "description": "Required. Sci mode."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. MacSec Configuration of the link."
+              }
             }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Properties of the Link."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a link."
+      }
     }
   },
   "parameters": {
@@ -243,7 +243,11 @@
       }
     },
     "links": {
-      "$ref": "#/definitions/linkType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/linkType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Properties of the ExpressRouteLink."
       }
@@ -342,7 +346,7 @@
         "bandwidthInGbps": "[parameters('bandwidthInGbps')]",
         "billingType": "[parameters('billingType')]",
         "encapsulation": "[parameters('encapsulation')]",
-        "links": "[if(not(empty(parameters('links'))), parameters('links'), createArray())]",
+        "links": "[coalesce(parameters('links'), createArray())]",
         "peeringLocation": "[parameters('peeringLocation')]"
       }
     },

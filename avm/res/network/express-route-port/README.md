@@ -47,8 +47,6 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     bandwidthInGbps: 10
     name: 'nerpmin001'
     peeringLocation: 'Airtel-Chennai2-CLS'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -74,10 +72,6 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     },
     "peeringLocation": {
       "value": "Airtel-Chennai2-CLS"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -97,8 +91,6 @@ using 'br/public:avm/res/network/express-route-port:<version>'
 param bandwidthInGbps = 10
 param name = 'nerpmin001'
 param peeringLocation = 'Airtel-Chennai2-CLS'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -283,8 +275,6 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     bandwidthInGbps: 10
     name: 'nerpwaf001'
     peeringLocation: 'Airtel-Chennai2-CLS'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -310,10 +300,6 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     },
     "peeringLocation": {
       "value": "Airtel-Chennai2-CLS"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -333,8 +319,6 @@ using 'br/public:avm/res/network/express-route-port:<version>'
 param bandwidthInGbps = 10
 param name = 'nerpwaf001'
 param peeringLocation = 'Airtel-Chennai2-CLS'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
