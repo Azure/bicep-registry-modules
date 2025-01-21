@@ -507,6 +507,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           publicAccess: 'None'
         }
       ]
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       deleteRetentionPolicyDays: 9
       deleteRetentionPolicyEnabled: true
       diagnosticSettings: [
@@ -543,6 +566,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     enableNfsV3: true
     enableSftp: true
     fileServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -757,6 +803,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       }
     ]
     queueServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -825,6 +894,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tableServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -949,6 +1041,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "publicAccess": "None"
           }
         ],
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "deleteRetentionPolicyDays": 9,
         "deleteRetentionPolicyEnabled": true,
         "diagnosticSettings": [
@@ -995,6 +1110,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "fileServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1227,6 +1365,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "queueServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1305,6 +1466,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "tableServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1425,6 +1609,29 @@ param blobServices = {
       publicAccess: 'None'
     }
   ]
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   deleteRetentionPolicyDays: 9
   deleteRetentionPolicyEnabled: true
   diagnosticSettings: [
@@ -1461,6 +1668,29 @@ param enableHierarchicalNamespace = true
 enableNfsV3: true
 param enableSftp = true
 param fileServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1675,6 +1905,29 @@ param privateEndpoints = [
   }
 ]
 param queueServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1743,6 +1996,29 @@ param roleAssignments = [
 param sasExpirationPeriod = '180.00:00:00'
 param skuName = 'Standard_LRS'
 param tableServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
