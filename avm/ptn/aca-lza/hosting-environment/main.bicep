@@ -323,6 +323,9 @@ output keyVaultResourceId string = supportingServices.outputs.keyVaultResourceId
 @description('The name of the Azure key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName
 
+@description('The keyvault URI endpoint.')
+output keyVaultUri string = '${supportingServices.outputs.keyVaultName}.${az.environment().suffixes.keyvaultDns}'
+
 // Application Gateway
 @description('The resource ID of the Azure Application Gateway.')
 output applicationGatewayResourceId string = (exposeContainerAppsWith == 'applicationGateway')
