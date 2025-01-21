@@ -256,7 +256,8 @@ runs:
           # Add custom parameters as needed
           if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
             $functionInput.AdditionalParameters += @{
-              resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
+              # resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
+              resourceLocation = 'eastus'
             }
           }
           if($moduleTemplatePossibleParameters -contains 'baseTime') {
@@ -335,7 +336,8 @@ runs:
 
           if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
             $functionInput.AdditionalParameters += @{
-              resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
+              # resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
+              resourceLocation = 'eastus'
             }
           }
           if($moduleTemplatePossibleParameters -contains 'baseTime') {
