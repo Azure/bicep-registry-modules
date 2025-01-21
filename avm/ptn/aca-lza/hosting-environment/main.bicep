@@ -97,6 +97,9 @@ param base64Certificate string = ''
 @description('Required. The name of the certificate key to use for Application Gateway certificate.')
 param applicationGatewayCertificateKeyName string
 
+@description('Optional. The FQDN of the backend to use for the Application Gateway. Default is empty.')
+param applicationGatewayBackendFqdn string = ''
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -123,6 +126,9 @@ param enableDdosProtection bool = false
 // ------------------
 // VARIABLES
 // ------------------
+var agwBackendFqdn = (empty(applicationGatewayBackendFqdn))
+  ? (deploySampleApplication) ? sampleApplication.outputs.helloWorldAppFqdn : ''
+  : applicationGatewayBackendFqdn
 
 // ------------------
 // RESOURCES
@@ -236,9 +242,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
     enableTelemetry: enableTelemetry
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFqdn: applicationGatewayFqdn
-    applicationGatewayPrimaryBackendEndFqdn: (deploySampleApplication)
-      ? sampleApplication.outputs.helloWorldAppFqdn
-      : ''
+    applicationGatewayPrimaryBackendEndFqdn: agwBackendFqdn
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     base64Certificate: base64Certificate
     keyVaultId: supportingServices.outputs.keyVaultResourceId
