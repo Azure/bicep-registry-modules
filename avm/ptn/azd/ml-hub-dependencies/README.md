@@ -21,12 +21,12 @@ Creates all the dependencies required for a Machine Learning Service.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
 | `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
 | `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -527,6 +527,8 @@ Number of days data will be retained for.
 - Required: No
 - Type: int
 - Default: `30`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `disableLocalAuth`
 
@@ -535,6 +537,8 @@ When set to true, calls to the search service will not be permitted to utilize A
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `dnsEndpointType`
 
@@ -551,6 +555,8 @@ Allows you to specify the type of endpoint in the storage account. Set this to A
     'Standard'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `enablePurgeProtection`
 
@@ -559,6 +565,8 @@ Provide 'true' to enable Key Vault's purge protection feature.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `enableRbacAuthorization`
 
@@ -567,6 +575,8 @@ Property that controls how data actions are authorized. When true, the key vault
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `enableTelemetry`
 
@@ -575,6 +585,8 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `enableVaultForDeployment`
 
@@ -583,6 +595,8 @@ Specifies if the vault is enabled for deployment by script or compute.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `enableVaultForTemplateDeployment`
 
@@ -591,6 +605,8 @@ Specifies if the vault is enabled for a template deployment.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `fileServices`
 
@@ -604,6 +620,8 @@ File service and shares to deploy.
       name: 'default'
   }
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `hostingMode`
 
@@ -619,6 +637,8 @@ Applicable only for the standard3 SKU. You can set this property to enable up to
     'highDensity'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `keyVaultSku`
 
@@ -634,6 +654,8 @@ Specifies the SKU for the vault.
     'standard'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `location`
 
@@ -642,6 +664,8 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `logAnalyticsName`
 
@@ -650,6 +674,8 @@ The resource operational insights workspaces name.
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `logAnalyticsSkuName`
 
@@ -671,6 +697,8 @@ The name of the SKU.
     'Standard'
   ]
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `networkAcls`
 
@@ -685,6 +713,8 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
       defaultAction: 'Allow'
   }
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `networkRuleSet`
 
@@ -699,6 +729,8 @@ Network specific rules that determine how the Azure Cognitive Search service may
       ipRules: []
   }
   ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `partitionCount`
 
@@ -707,6 +739,8 @@ The number of partitions in the search service; if specified, it can be 1, 2, 3,
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `publicNetworkAccess`
 
@@ -723,6 +757,8 @@ Whether or not public network access is allowed for the storage account. For sec
     'Enabled'
   ]
   ```
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `queueServices`
 
@@ -736,6 +772,8 @@ Queue service and queues to create.
       name: 'default'
   }
   ```
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `registryAcrSku`
 
@@ -752,6 +790,8 @@ Tier of your Azure container registry.
     'Standard'
   ]
   ```
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `registryPublicNetworkAccess`
 
@@ -760,6 +800,8 @@ Public network access setting.
 - Required: No
 - Type: string
 - Default: `'Enabled'`
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `replicaCount`
 
@@ -768,6 +810,8 @@ The number of replicas in the search service. If specified, it must be a value b
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `searchServiceName`
 
@@ -776,6 +820,8 @@ Name of the Azure Cognitive Search service.
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `searchServicePublicNetworkAccess`
 
@@ -791,6 +837,8 @@ This value can be set to 'Enabled' to avoid breaking changes on existing custome
     'Enabled'
   ]
   ```
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `searchServiceSku`
 
@@ -811,6 +859,8 @@ Defines the SKU of an Azure Cognitive Search Service, which determines price tie
     'storage_optimized_l2'
   ]
   ```
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `semanticSearch`
 
@@ -827,6 +877,8 @@ Sets options that control the availability of semantic search. This configuratio
     'standard'
   ]
   ```
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `tableServices`
 
@@ -840,6 +892,8 @@ Table service and tables to create.
       name: 'default'
   }
   ```
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `tags`
 
@@ -847,6 +901,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 12
 - Example:
   ```Bicep
   {

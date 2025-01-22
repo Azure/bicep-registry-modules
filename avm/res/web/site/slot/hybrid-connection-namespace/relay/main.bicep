@@ -1,6 +1,5 @@
 metadata name = 'Web/Function Apps Slot Hybrid Connection Relay'
 metadata description = 'This module deploys a Site Slot Hybrid Connection Namespace Relay.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The resource ID of the relay namespace hybrid connection.')
 param hybridConnectionResourceId string
@@ -27,7 +26,7 @@ resource namespace 'Microsoft.Relay/namespaces@2021-11-01' existing = {
   }
 }
 
-resource hybridConnectionRelay 'Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays@2023-12-01' = {
+resource hybridConnectionRelay 'Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays@2024-04-01' = {
   name: '${appName}/${slotName}/${namespace.name}/${namespace::hybridConnection.name}'
   properties: {
     serviceBusNamespace: namespace.name

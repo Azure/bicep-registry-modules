@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "10928449924272756679"
+      "version": "0.32.4.45862",
+      "templateHash": "10186845181379684291"
     },
     "name": "Private DNS Zone MX record",
-    "description": "This module deploys a Private DNS Zone MX record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Private DNS Zone MX record."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -161,10 +160,7 @@
         "metadata": "[parameters('metadata')]",
         "mxRecords": "[parameters('mxRecords')]",
         "ttl": "[parameters('ttl')]"
-      },
-      "dependsOn": [
-        "privateDnsZone"
-      ]
+      }
     },
     "MX_roleAssignments": {
       "copy": {

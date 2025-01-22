@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "13412075546334276790"
+      "version": "0.32.4.45862",
+      "templateHash": "936984304688301643"
     },
     "name": "Eventgrid Namespace Topic Spaces",
-    "description": "This module deploys an Eventgrid Namespace Topic Space.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Eventgrid Namespace Topic Space."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -159,10 +158,7 @@
       "properties": {
         "description": "[parameters('description')]",
         "topicTemplates": "[parameters('topicTemplates')]"
-      },
-      "dependsOn": [
-        "namespace"
-      ]
+      }
     },
     "topicSpace_roleAssignments": {
       "copy": {

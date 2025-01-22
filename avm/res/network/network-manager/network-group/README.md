@@ -13,8 +13,8 @@ A network group is a collection of same-type network resources that you can asso
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkManagers/networkGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/networkGroups) |
-| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/networkGroups/staticMembers) |
+| `Microsoft.Network/networkManagers/networkGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups) |
+| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups/staticMembers) |
 
 ## Parameters
 
@@ -35,6 +35,7 @@ A network group is a collection of same-type network resources that you can asso
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | A description of the network group. |
+| [`memberType`](#parameter-membertype) | string | The type of the group member. Subnet member type is used for routing configurations. |
 | [`staticMembers`](#parameter-staticmembers) | array | Static Members to create for the network group. Contains virtual networks to add to the network group. |
 
 ### Parameter: `name`
@@ -57,6 +58,22 @@ A description of the network group.
 
 - Required: No
 - Type: string
+- Default: `''`
+
+### Parameter: `memberType`
+
+The type of the group member. Subnet member type is used for routing configurations.
+
+- Required: No
+- Type: string
+- Default: `'VirtualNetwork'`
+- Allowed:
+  ```Bicep
+  [
+    'Subnet'
+    'VirtualNetwork'
+  ]
+  ```
 
 ### Parameter: `staticMembers`
 

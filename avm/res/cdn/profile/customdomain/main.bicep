@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Custom Domains'
 metadata description = 'This module deploys a CDN Profile Custom Domains.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the custom domain.')
 param name string
@@ -83,9 +82,17 @@ output resourceId string = customDomain.id
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The DNS validation records.')
+output dnsValidation dnsValidationType = {
+  dnsTxtRecordName: '_dnsauth.${customDomain.properties.hostName}'
+  dnsTxtRecordValue: customDomain.properties.validationProperties.validationToken
+  dnsTxtRecordExpiry: customDomain.properties.validationProperties.expirationDate
+}
+
 // =============== //
 //   Definitions   //
 // =============== //
+
 @export()
 type customDomainType = {
   @description('Required. The name of the custom domain.')
@@ -111,4 +118,16 @@ type customDomainType = {
 
   @description('Optional. Extended properties.')
   extendedProperties: object?
+}
+
+@export()
+type dnsValidationType = {
+  @description('Required. The DNS record name.')
+  dnsTxtRecordName: string
+
+  @description('Required. The DNS record value.')
+  dnsTxtRecordValue: string
+
+  @description('Required. The expiry date of the DNS record.')
+  dnsTxtRecordExpiry: string
 }

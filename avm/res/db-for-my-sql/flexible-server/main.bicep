@@ -1,12 +1,12 @@
 metadata name = 'DBforMySQL Flexible Servers'
 metadata description = 'This module deploys a DBforMySQL Flexible Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the MySQL flexible server.')
 param name string
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -15,11 +15,11 @@ param location string = resourceGroup().location
 param tags object?
 
 @description('Optional. The administrator login name of a server. Can only be specified when the MySQL server is being created.')
-param administratorLogin string = ''
+param administratorLogin string?
 
 @description('Optional. The administrator login password.')
 @secure()
-param administratorLoginPassword string = ''
+param administratorLoginPassword string?
 
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
 param administrators array = []
@@ -68,14 +68,16 @@ param geoRedundantBackup string = 'Enabled'
 @description('Optional. The mode to create a new MySQL server.')
 param createMode string = 'Default'
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Conditional. The managed identity definition for this resource. Required if \'customerManagedKey\' is not empty.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityOnlyUserAssignedType?
 
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition to use for the managed service.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
 @description('Optional. The customer managed key definition to use when geoRedundantBackup is "Enabled".')
-param customerManagedKeyGeo customerManagedKeyType
+param customerManagedKeyGeo customerManagedKeyType?
 
 @allowed([
   'Disabled'
@@ -89,10 +91,17 @@ param highAvailability string = 'ZoneRedundant'
 param maintenanceWindow object = {}
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29.')
-param delegatedSubnetResourceId string = ''
+param delegatedSubnetResourceId string?
 
 @description('Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access". Required if "delegatedSubnetResourceId" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server.')
-param privateDnsZoneResourceId string = ''
+param privateDnsZoneResourceId string?
+
+@description('Optional. Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string = 'Disabled'
 
 @description('Conditional. Restore point creation time (ISO8601 format), specifying the time to restore from. Required if "createMode" is set to "PointInTimeRestore".')
 param restorePointInTime string = ''
@@ -106,7 +115,7 @@ param restorePointInTime string = ''
 param replicationRole string = 'None'
 
 @description('Conditional. The source MySQL server ID. Required if "createMode" is set to "PointInTimeRestore".')
-param sourceServerResourceId string = ''
+param sourceServerResourceId string?
 
 @allowed([
   'Disabled'
@@ -156,11 +165,20 @@ param databases array = []
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
 
-@description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+@description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param advancedThreatProtection string = 'Enabled'
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -284,8 +302,8 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
   }
   identity: identity
   properties: {
-    administratorLogin: !empty(administratorLogin) ? administratorLogin : null
-    administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
     availabilityZone: availabilityZone
     backup: {
       backupRetentionDays: backupRetentionDays
@@ -319,15 +337,14 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
           startMinute: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startMinute : 0
         }
       : null
-    network: !empty(delegatedSubnetResourceId) && empty(firewallRules)
-      ? {
-          delegatedSubnetResourceId: delegatedSubnetResourceId
-          privateDnsZoneResourceId: privateDnsZoneResourceId
-        }
-      : null
+    network: {
+      delegatedSubnetResourceId: delegatedSubnetResourceId
+      privateDnsZoneResourceId: privateDnsZoneResourceId
+      publicNetworkAccess: publicNetworkAccess
+    }
     replicationRole: replicationRole
     restorePointInTime: restorePointInTime
-    sourceServerResourceId: !empty(sourceServerResourceId) ? sourceServerResourceId : null
+    sourceServerResourceId: sourceServerResourceId
     storage: {
       autoGrow: storageAutoGrow
       autoIoScaling: storageAutoIoScaling
@@ -402,6 +419,14 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
   }
 ]
 
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
+  params: {
+    flexibleServerName: flexibleServer.name
+    advancedThreatProtection: advancedThreatProtection
+  }
+}
+
 resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -445,104 +470,3 @@ output location string = flexibleServer.location
 
 @description('The FQDN of the MySQL Flexible server.')
 output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Required. User assigned identity to use when fetching the customer managed key.')
-  userAssignedIdentityResourceId: string
-}?

@@ -2,7 +2,6 @@ metadata name = 'Public SSH Keys'
 metadata description = '''This module deploys a Public SSH Key.
 
 > Note: The resource does not auto-generate the key for you.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the SSH public Key that is being created.')
 param name string

@@ -1,6 +1,5 @@
 metadata name = 'Virtual Machines'
 metadata description = 'This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
@@ -160,9 +159,11 @@ param extensionAadJoinConfig object = {
 }
 
 @description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionAntiMalwareConfig object = {
-  enabled: false
-}
+param extensionAntiMalwareConfig object = osType == 'Windows'
+  ? {
+      enabled: true
+    }
+  : { enabled: false }
 
 @description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionMonitoringAgentConfig object = {
@@ -742,7 +743,17 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     typeHandlerVersion: extensionAntiMalwareConfig.?typeHandlerVersion ?? '1.3'
     autoUpgradeMinorVersion: extensionAntiMalwareConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAntiMalwareConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAntiMalwareConfig.settings
+    settings: extensionAntiMalwareConfig.?settings ?? {
+      AntimalwareEnabled: 'true'
+      Exclusions: {}
+      RealtimeProtectionEnabled: 'true'
+      ScheduledScanSettings: {
+        day: '7'
+        isEnabled: 'true'
+        scanType: 'Quick'
+        time: '120'
+      }
+    }
     supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }

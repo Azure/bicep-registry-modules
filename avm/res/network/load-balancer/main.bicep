@@ -1,6 +1,5 @@
 metadata name = 'Load Balancers'
 metadata description = 'This module deploys a Load Balancer.'
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //
