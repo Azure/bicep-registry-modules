@@ -9,8 +9,7 @@
       "templateHash": "13062669952394444770"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
-    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
   },
   "definitions": {
     "agentPoolType": {
@@ -186,7 +185,7 @@
             "description": "Optional. The OS disk type of the agent pool."
           }
         },
-        "osSku": {
+        "osSKU": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -1986,11 +1985,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14523573481456452623"
+              "templateHash": "4391405610412889755"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
-            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
           },
           "parameters": {
             "maintenanceWindow": {
@@ -2132,8 +2130,8 @@
           "osDiskType": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osDiskType')]"
           },
-          "osSku": {
-            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osSku')]"
+          "osSKU": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osSKU')]"
           },
           "osType": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osType')]"
@@ -2186,8 +2184,7 @@
               "templateHash": "12690284816030202723"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
-            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
           },
           "parameters": {
             "managedClusterName": {
@@ -2362,7 +2359,7 @@
                 "description": "Optional. The default is \"Ephemeral\" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to \"Managed\". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os)."
               }
             },
-            "osSku": {
+            "osSKU": {
               "type": "string",
               "nullable": true,
               "allowedValues": [
@@ -2530,7 +2527,7 @@
                 "orchestratorVersion": "[parameters('orchestratorVersion')]",
                 "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
                 "osDiskType": "[parameters('osDiskType')]",
-                "osSKU": "[parameters('osSku')]",
+                "osSKU": "[parameters('osSKU')]",
                 "osType": "[parameters('osType')]",
                 "podSubnetID": "[parameters('podSubnetResourceId')]",
                 "proximityPlacementGroupID": "[parameters('proximityPlacementGroupResourceId')]",

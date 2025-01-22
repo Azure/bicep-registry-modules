@@ -4,7 +4,6 @@ This module provides you with all common variants for AVM interfaces to be used 
 
 Details for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).
 '''
-metadata owner = 'Azure/module-maintainers'
 
 //  ====================== //
 //   Diagnostic Settings   //
@@ -299,9 +298,6 @@ type privateEndpointSingleServiceType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.')
-  resourceGroupName: string?
 }
 
 @export()
@@ -358,9 +354,6 @@ type privateEndpointMultiServiceType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
 }
 
 // ======================== //

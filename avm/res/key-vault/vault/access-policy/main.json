@@ -6,147 +6,146 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3969955574908853094"
+      "templateHash": "6744070574147884656"
     },
     "name": "Key Vault Access Policies",
-    "description": "This module deploys a Key Vault Access Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Key Vault Access Policy."
   },
   "definitions": {
     "accessPoliciesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "tenantId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
-            }
-          },
-          "objectId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
-            }
-          },
-          "applicationId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Application ID of the client making request on behalf of a principal."
-            }
-          },
-          "permissions": {
-            "type": "object",
-            "properties": {
-              "keys": {
-                "type": "array",
-                "allowedValues": [
-                  "all",
-                  "backup",
-                  "create",
-                  "decrypt",
-                  "delete",
-                  "encrypt",
-                  "get",
-                  "getrotationpolicy",
-                  "import",
-                  "list",
-                  "purge",
-                  "recover",
-                  "release",
-                  "restore",
-                  "rotate",
-                  "setrotationpolicy",
-                  "sign",
-                  "unwrapKey",
-                  "update",
-                  "verify",
-                  "wrapKey"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Permissions to keys."
-                }
-              },
-              "secrets": {
-                "type": "array",
-                "allowedValues": [
-                  "all",
-                  "backup",
-                  "delete",
-                  "get",
-                  "list",
-                  "purge",
-                  "recover",
-                  "restore",
-                  "set"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Permissions to secrets."
-                }
-              },
-              "certificates": {
-                "type": "array",
-                "allowedValues": [
-                  "all",
-                  "backup",
-                  "create",
-                  "delete",
-                  "deleteissuers",
-                  "get",
-                  "getissuers",
-                  "import",
-                  "list",
-                  "listissuers",
-                  "managecontacts",
-                  "manageissuers",
-                  "purge",
-                  "recover",
-                  "restore",
-                  "setissuers",
-                  "update"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Permissions to certificates."
-                }
-              },
-              "storage": {
-                "type": "array",
-                "allowedValues": [
-                  "all",
-                  "backup",
-                  "delete",
-                  "deletesas",
-                  "get",
-                  "getsas",
-                  "list",
-                  "listsas",
-                  "purge",
-                  "recover",
-                  "regeneratekey",
-                  "restore",
-                  "set",
-                  "setsas",
-                  "update"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Permissions to storage accounts."
-                }
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
+          }
+        },
+        "objectId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
+          }
+        },
+        "applicationId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application ID of the client making request on behalf of a principal."
+          }
+        },
+        "permissions": {
+          "type": "object",
+          "properties": {
+            "keys": {
+              "type": "array",
+              "allowedValues": [
+                "all",
+                "backup",
+                "create",
+                "decrypt",
+                "delete",
+                "encrypt",
+                "get",
+                "getrotationpolicy",
+                "import",
+                "list",
+                "purge",
+                "recover",
+                "release",
+                "restore",
+                "rotate",
+                "setrotationpolicy",
+                "sign",
+                "unwrapKey",
+                "update",
+                "verify",
+                "wrapKey"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Permissions to keys."
               }
             },
-            "metadata": {
-              "description": "Required. Permissions the identity has for keys, secrets and certificates."
+            "secrets": {
+              "type": "array",
+              "allowedValues": [
+                "all",
+                "backup",
+                "delete",
+                "get",
+                "list",
+                "purge",
+                "recover",
+                "restore",
+                "set"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Permissions to secrets."
+              }
+            },
+            "certificates": {
+              "type": "array",
+              "allowedValues": [
+                "all",
+                "backup",
+                "create",
+                "delete",
+                "deleteissuers",
+                "get",
+                "getissuers",
+                "import",
+                "list",
+                "listissuers",
+                "managecontacts",
+                "manageissuers",
+                "purge",
+                "recover",
+                "restore",
+                "setissuers",
+                "update"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Permissions to certificates."
+              }
+            },
+            "storage": {
+              "type": "array",
+              "allowedValues": [
+                "all",
+                "backup",
+                "delete",
+                "deletesas",
+                "get",
+                "getsas",
+                "list",
+                "listsas",
+                "purge",
+                "recover",
+                "regeneratekey",
+                "restore",
+                "set",
+                "setsas",
+                "update"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Permissions to storage accounts."
+              }
             }
+          },
+          "metadata": {
+            "description": "Required. Permissions the identity has for keys, secrets and certificates."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an access policy."
+      }
     }
   },
   "parameters": {
@@ -157,25 +156,15 @@
       }
     },
     "accessPolicies": {
-      "$ref": "#/definitions/accessPoliciesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/accessPoliciesType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
       }
     }
-  },
-  "variables": {
-    "copy": [
-      {
-        "name": "formattedAccessPolicies",
-        "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
-        "input": {
-          "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
-          "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId]",
-          "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
-          "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
-        }
-      }
-    ]
   },
   "resources": {
     "keyVault": {
@@ -186,10 +175,21 @@
     },
     "policies": {
       "type": "Microsoft.KeyVault/vaults/accessPolicies",
-      "apiVersion": "2022-07-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
       "properties": {
-        "accessPolicies": "[variables('formattedAccessPolicies')]"
+        "copy": [
+          {
+            "name": "accessPolicies",
+            "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
+            "input": {
+              "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')], 'applicationId'), '')]",
+              "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')].objectId]",
+              "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')].permissions]",
+              "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')], 'tenantId'), tenant().tenantId)]"
+            }
+          }
+        ]
       }
     }
   },

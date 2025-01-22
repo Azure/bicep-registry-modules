@@ -1,6 +1,5 @@
 metadata name = 'Policy Assignments (Subscription scope)'
 metadata description = 'This module deploys a Policy Assignment at a Subscription scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 
@@ -63,14 +62,18 @@ param resourceSelectors array = []
 @sys.description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment.')
 param subscriptionId string = subscription().subscriptionId
 
-var identityVar = identity == 'SystemAssigned' ? {
-  type: identity
-} : identity == 'UserAssigned' ? {
-  type: identity
-  userAssignedIdentities: {
-    '${userAssignedIdentityId}': {}
-  }
-} : null
+var identityVar = identity == 'SystemAssigned'
+  ? {
+      type: identity
+    }
+  : identity == 'UserAssigned'
+      ? {
+          type: identity
+          userAssignedIdentities: {
+            '${userAssignedIdentityId}': {}
+          }
+        }
+      : null
 
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: name
@@ -90,14 +93,16 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01'
   identity: identityVar
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
-  name: guid(subscriptionId, roleDefinitionId, location, name)
-  properties: {
-    roleDefinitionId: roleDefinitionId
-    principalId: policyAssignment.identity.principalId
-    principalType: 'ServicePrincipal'
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
+    name: guid(subscriptionId, roleDefinitionId, location, name)
+    properties: {
+      roleDefinitionId: roleDefinitionId
+      principalId: policyAssignment.identity.principalId
+      principalType: 'ServicePrincipal'
+    }
   }
-}]
+]
 
 @sys.description('Policy Assignment Name.')
 output name string = policyAssignment.name

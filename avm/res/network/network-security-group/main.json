@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "637344524661932746"
+      "version": "0.32.4.45862",
+      "templateHash": "16084722191408836988"
     },
     "name": "Network Security Groups",
-    "description": "This module deploys a Network security Group (NSG).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network security Group (NSG)."
   },
   "definitions": {
     "lockType": {

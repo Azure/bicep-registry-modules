@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14999467792384745276"
+      "templateHash": "4367990689166386037"
     },
     "name": "Default interface types for AVM modules",
-    "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n",
-    "owner": "Azure/module-maintainers"
+    "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n"
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -704,13 +703,6 @@
           "metadata": {
             "description": "Optional. Enable/Disable usage telemetry for module."
           }
-        },
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource."
-          }
         }
       },
       "metadata": {
@@ -849,13 +841,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Enable/Disable usage telemetry for module."
-          }
-        },
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
           }
         }
       },

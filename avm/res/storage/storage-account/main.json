@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7321024759975852947"
+      "templateHash": "1112832047183445982"
     },
     "name": "Storage Accounts",
-    "description": "This module deploys a Storage Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -2274,11 +2273,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13043152240974749163"
+              "templateHash": "4014848332192190169"
             },
             "name": "Storage Account Management Policies",
-            "description": "This module deploys a Storage Account Management Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Management Policy."
           },
           "parameters": {
             "storageAccountName": {
@@ -2384,11 +2382,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10324618530995904011"
+              "templateHash": "16427795222629898111"
             },
             "name": "Storage Account Local Users",
-            "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
           },
           "definitions": {
             "sshAuthorizedKeyType": {
@@ -2623,13 +2620,72 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17622492193190468017"
+              "templateHash": "13530138849873868007"
             },
             "name": "Storage Account blob Services",
-            "description": "This module deploys a Storage Account Blob Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Blob Service."
           },
           "definitions": {
+            "corsRuleType": {
+              "type": "object",
+              "properties": {
+                "allowedHeaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of headers allowed to be part of the cross-origin request."
+                  }
+                },
+                "allowedMethods": {
+                  "type": "array",
+                  "allowedValues": [
+                    "CONNECT",
+                    "DELETE",
+                    "GET",
+                    "HEAD",
+                    "MERGE",
+                    "OPTIONS",
+                    "PATCH",
+                    "POST",
+                    "PUT",
+                    "TRACE"
+                  ],
+                  "metadata": {
+                    "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+                  }
+                },
+                "allowedOrigins": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+                  }
+                },
+                "exposedHeaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of response headers to expose to CORS clients."
+                  }
+                },
+                "maxAgeInSeconds": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a cors rule."
+              }
+            },
             "diagnosticSettingFullType": {
               "type": "object",
               "properties": {
@@ -2809,9 +2865,12 @@
             },
             "corsRules": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/corsRuleType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service."
+                "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
               }
             },
             "defaultServiceVersion": {
@@ -2913,9 +2972,7 @@
                   "days": "[parameters('containerDeleteRetentionPolicyDays')]",
                   "allowPermanentDelete": "[if(equals(parameters('containerDeleteRetentionPolicyEnabled'), true()), parameters('containerDeleteRetentionPolicyAllowPermanentDelete'), null())]"
                 },
-                "cors": {
-                  "corsRules": "[parameters('corsRules')]"
-                },
+                "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]",
                 "defaultServiceVersion": "[if(not(empty(parameters('defaultServiceVersion'))), parameters('defaultServiceVersion'), null())]",
                 "deleteRetentionPolicy": {
                   "enabled": "[parameters('deleteRetentionPolicyEnabled')]",
@@ -3030,11 +3087,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "8294501714202659478"
+                      "templateHash": "15541609729265841595"
                     },
                     "name": "Storage Account Blob Containers",
-                    "description": "This module deploys a Storage Account Blob Container.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Storage Account Blob Container."
                   },
                   "definitions": {
                     "roleAssignmentType": {
@@ -3320,11 +3376,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "13544771409253577128"
+                              "templateHash": "12930903258566593173"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
-                            "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
-                            "owner": "Azure/module-maintainers"
+                            "description": "This module deploys a Storage Account Blob Container Immutability Policy."
                           },
                           "parameters": {
                             "storageAccountName": {
@@ -3488,6 +3543,9 @@
           },
           "shares": {
             "value": "[tryGet(parameters('fileServices'), 'shares')]"
+          },
+          "corsRules": {
+            "value": "[tryGet(parameters('queueServices'), 'corsRules')]"
           }
         },
         "template": {
@@ -3498,13 +3556,72 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "16770140342047484752"
+              "templateHash": "13765117726601027533"
             },
             "name": "Storage Account File Share Services",
-            "description": "This module deploys a Storage Account File Share Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account File Share Service."
           },
           "definitions": {
+            "corsRuleType": {
+              "type": "object",
+              "properties": {
+                "allowedHeaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of headers allowed to be part of the cross-origin request."
+                  }
+                },
+                "allowedMethods": {
+                  "type": "array",
+                  "allowedValues": [
+                    "CONNECT",
+                    "DELETE",
+                    "GET",
+                    "HEAD",
+                    "MERGE",
+                    "OPTIONS",
+                    "PATCH",
+                    "POST",
+                    "PUT",
+                    "TRACE"
+                  ],
+                  "metadata": {
+                    "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+                  }
+                },
+                "allowedOrigins": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+                  }
+                },
+                "exposedHeaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of response headers to expose to CORS clients."
+                  }
+                },
+                "maxAgeInSeconds": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a cors rule."
+              }
+            },
             "diagnosticSettingFullType": {
               "type": "object",
               "properties": {
@@ -3660,6 +3777,16 @@
                 "description": "Optional. The service properties for soft delete."
               }
             },
+            "corsRules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/corsRuleType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+              }
+            },
             "diagnosticSettings": {
               "type": "array",
               "items": {
@@ -3690,6 +3817,7 @@
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
               "properties": {
+                "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]",
                 "protocolSettings": "[parameters('protocolSettings')]",
                 "shareDeleteRetentionPolicy": "[parameters('shareDeleteRetentionPolicy')]"
               }
@@ -3782,11 +3910,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "14754019327939013287"
+                      "templateHash": "8819757347313320008"
                     },
                     "name": "Storage Account File Shares",
-                    "description": "This module deploys a Storage Account File Share.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Storage Account File Share."
                   },
                   "definitions": {
                     "roleAssignmentType": {
@@ -3940,6 +4067,29 @@
                       }
                     }
                   },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Storage Account Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                      "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+                      "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                      "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
+                      "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
+                      "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
                   "resources": {
                     "storageAccount::fileService": {
                       "existing": true,
@@ -3965,207 +4115,134 @@
                       }
                     },
                     "fileShare_roleAssignments": {
-                      "condition": "[not(empty(parameters('roleAssignments')))]",
+                      "copy": {
+                        "name": "fileShare_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-Share-Rbac', uniqueString(deployment().name))]",
+                      "name": "[format('{0}-Share-Rbac-{1}', uniqueString(deployment().name), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "fileShareResourceId": {
-                            "value": "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', parameters('storageAccountName'), parameters('fileServicesName'), parameters('name'))]"
+                          "scope": {
+                            "value": "[replace(resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', parameters('storageAccountName'), parameters('fileServicesName'), parameters('name')), '/shares/', '/fileshares/')]"
                           },
-                          "roleAssignments": {
-                            "value": "[parameters('roleAssignments')]"
+                          "name": {
+                            "value": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', parameters('storageAccountName'), parameters('fileServicesName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]"
+                          },
+                          "roleDefinitionId": {
+                            "value": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
+                          },
+                          "principalId": {
+                            "value": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]"
+                          },
+                          "principalType": {
+                            "value": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]"
+                          },
+                          "condition": {
+                            "value": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]"
+                          },
+                          "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), createObject('value', coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0')), createObject('value', null()))]",
+                          "delegatedManagedIdentityResourceId": {
+                            "value": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                          },
+                          "description": {
+                            "value": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]"
                           }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "15649989472241817249"
-                            }
-                          },
                           "parameters": {
-                            "roleAssignments": {
-                              "type": "array",
-                              "metadata": {
-                                "description": "Optional. Array of role assignments to create."
-                              }
-                            },
-                            "fileShareResourceId": {
+                            "scope": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. The resource id of the file share to assign the roles to."
+                                "description": "Required. The scope to deploy the role assignment to."
                               }
-                            }
-                          },
-                          "variables": {
-                            "copy": [
-                              {
-                                "name": "formattedRoleAssignments",
-                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
-                                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
-                              }
-                            ],
-                            "$fxv#0": {
-                              "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                              "contentVersion": "1.0.0.0",
-                              "parameters": {
-                                "scope": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. The scope to deploy the role assignment to."
-                                  }
-                                },
-                                "name": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. The name of the role assignment."
-                                  }
-                                },
-                                "roleDefinitionId": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. The role definition Id to assign."
-                                  }
-                                },
-                                "principalId": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                                  }
-                                },
-                                "principalType": {
-                                  "type": "string",
-                                  "allowedValues": [
-                                    "Device",
-                                    "ForeignGroup",
-                                    "Group",
-                                    "ServicePrincipal",
-                                    "User",
-                                    ""
-                                  ],
-                                  "defaultValue": "",
-                                  "metadata": {
-                                    "description": "Optional. The principal type of the assigned principal ID."
-                                  }
-                                },
-                                "description": {
-                                  "type": "string",
-                                  "defaultValue": "",
-                                  "metadata": {
-                                    "description": "Optional. The description of the role assignment."
-                                  }
-                                },
-                                "condition": {
-                                  "type": "string",
-                                  "defaultValue": "",
-                                  "metadata": {
-                                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
-                                  }
-                                },
-                                "conditionVersion": {
-                                  "type": "string",
-                                  "allowedValues": [
-                                    "2.0"
-                                  ],
-                                  "defaultValue": "2.0",
-                                  "metadata": {
-                                    "description": "Optional. Version of the condition."
-                                  }
-                                },
-                                "delegatedManagedIdentityResourceId": {
-                                  "type": "string",
-                                  "defaultValue": "",
-                                  "metadata": {
-                                    "description": "Optional. The Resource Id of the delegated managed identity resource."
-                                  }
-                                }
-                              },
-                              "resources": [
-                                {
-                                  "type": "Microsoft.Authorization/roleAssignments",
-                                  "apiVersion": "2022-04-01",
-                                  "scope": "[[parameters('scope')]",
-                                  "name": "[[parameters('name')]",
-                                  "properties": {
-                                    "roleDefinitionId": "[[parameters('roleDefinitionId')]",
-                                    "principalId": "[[parameters('principalId')]",
-                                    "description": "[[parameters('description')]",
-                                    "principalType": "[[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                                    "condition": "[[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
-                                    "conditionVersion": "[[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                                    "delegatedManagedIdentityResourceId": "[[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
-                                  }
-                                }
-                              ]
                             },
-                            "builtInRoleNames": {
-                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                              "Storage Account Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
-                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
-                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
-                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
-                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of the role assignment."
+                              }
+                            },
+                            "roleDefinitionId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The role definition Id to assign."
+                              }
+                            },
+                            "principalId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                              }
+                            },
+                            "principalType": {
+                              "type": "string",
+                              "allowedValues": [
+                                "Device",
+                                "ForeignGroup",
+                                "Group",
+                                "ServicePrincipal",
+                                "User",
+                                ""
+                              ],
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The principal type of the assigned principal ID."
+                              }
+                            },
+                            "description": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The description of the role assignment."
+                              }
+                            },
+                            "condition": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              }
+                            },
+                            "conditionVersion": {
+                              "type": "string",
+                              "allowedValues": [
+                                "2.0"
+                              ],
+                              "defaultValue": "2.0",
+                              "metadata": {
+                                "description": "Optional. Version of the condition."
+                              }
+                            },
+                            "delegatedManagedIdentityResourceId": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The Resource Id of the delegated managed identity resource."
+                              }
                             }
                           },
                           "resources": [
                             {
-                              "copy": {
-                                "name": "fileShare_roleAssignments",
-                                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
-                              },
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2021-04-01",
-                              "name": "[format('{0}-Share-Rbac-{1}', uniqueString(deployment().name), copyIndex())]",
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "scope": "[parameters('scope')]",
+                              "name": "[parameters('name')]",
                               "properties": {
-                                "mode": "Incremental",
-                                "expressionEvaluationOptions": {
-                                  "scope": "Outer"
-                                },
-                                "template": "[variables('$fxv#0')]",
-                                "parameters": {
-                                  "scope": {
-                                    "value": "[replace(parameters('fileShareResourceId'), '/shares/', '/fileShares/')]"
-                                  },
-                                  "name": {
-                                    "value": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(parameters('fileShareResourceId'), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, 'tyfa'))]"
-                                  },
-                                  "roleDefinitionId": {
-                                    "value": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
-                                  },
-                                  "principalId": {
-                                    "value": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]"
-                                  },
-                                  "principalType": {
-                                    "value": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]"
-                                  },
-                                  "description": {
-                                    "value": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]"
-                                  },
-                                  "condition": {
-                                    "value": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]"
-                                  },
-                                  "conditionVersion": {
-                                    "value": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]"
-                                  },
-                                  "delegatedManagedIdentityResourceId": {
-                                    "value": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-                                  }
-                                }
+                                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                                "principalId": "[parameters('principalId')]",
+                                "description": "[parameters('description')]",
+                                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
+                                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
+                                "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
+                                "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
                               }
                             }
                           ]
@@ -4255,6 +4332,9 @@
           },
           "queues": {
             "value": "[tryGet(parameters('queueServices'), 'queues')]"
+          },
+          "corsRules": {
+            "value": "[tryGet(parameters('queueServices'), 'corsRules')]"
           }
         },
         "template": {
@@ -4265,13 +4345,72 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15558678445347429038"
+              "templateHash": "6244570081358702158"
             },
             "name": "Storage Account Queue Services",
-            "description": "This module deploys a Storage Account Queue Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Queue Service."
           },
           "definitions": {
+            "corsRuleType": {
+              "type": "object",
+              "properties": {
+                "allowedHeaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of headers allowed to be part of the cross-origin request."
+                  }
+                },
+                "allowedMethods": {
+                  "type": "array",
+                  "allowedValues": [
+                    "CONNECT",
+                    "DELETE",
+                    "GET",
+                    "HEAD",
+                    "MERGE",
+                    "OPTIONS",
+                    "PATCH",
+                    "POST",
+                    "PUT",
+                    "TRACE"
+                  ],
+                  "metadata": {
+                    "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+                  }
+                },
+                "allowedOrigins": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+                  }
+                },
+                "exposedHeaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of response headers to expose to CORS clients."
+                  }
+                },
+                "maxAgeInSeconds": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a cors rule."
+              }
+            },
             "diagnosticSettingFullType": {
               "type": "object",
               "properties": {
@@ -4410,6 +4549,16 @@
                 "description": "Optional. Queues to create."
               }
             },
+            "corsRules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/corsRuleType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+              }
+            },
             "diagnosticSettings": {
               "type": "array",
               "items": {
@@ -4435,7 +4584,9 @@
               "type": "Microsoft.Storage/storageAccounts/queueServices",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
-              "properties": {}
+              "properties": {
+                "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
+              }
             },
             "queueServices_diagnosticSettings": {
               "copy": {
@@ -4513,11 +4664,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "11255566639202978270"
+                      "templateHash": "11769628477701423736"
                     },
                     "name": "Storage Account Queues",
-                    "description": "This module deploys a Storage Account Queue.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Storage Account Queue."
                   },
                   "definitions": {
                     "roleAssignmentType": {
@@ -4771,6 +4921,9 @@
           },
           "tables": {
             "value": "[tryGet(parameters('tableServices'), 'tables')]"
+          },
+          "corsRules": {
+            "value": "[tryGet(parameters('tableServices'), 'corsRules')]"
           }
         },
         "template": {
@@ -4781,13 +4934,72 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3329223749131374550"
+              "templateHash": "3290124615605583694"
             },
             "name": "Storage Account Table Services",
-            "description": "This module deploys a Storage Account Table Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Table Service."
           },
           "definitions": {
+            "corsRuleType": {
+              "type": "object",
+              "properties": {
+                "allowedHeaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of headers allowed to be part of the cross-origin request."
+                  }
+                },
+                "allowedMethods": {
+                  "type": "array",
+                  "allowedValues": [
+                    "CONNECT",
+                    "DELETE",
+                    "GET",
+                    "HEAD",
+                    "MERGE",
+                    "OPTIONS",
+                    "PATCH",
+                    "POST",
+                    "PUT",
+                    "TRACE"
+                  ],
+                  "metadata": {
+                    "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+                  }
+                },
+                "allowedOrigins": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+                  }
+                },
+                "exposedHeaders": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of response headers to expose to CORS clients."
+                  }
+                },
+                "maxAgeInSeconds": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a cors rule."
+              }
+            },
             "diagnosticSettingFullType": {
               "type": "object",
               "properties": {
@@ -4926,6 +5138,16 @@
                 "description": "Optional. tables to create."
               }
             },
+            "corsRules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/corsRuleType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+              }
+            },
             "diagnosticSettings": {
               "type": "array",
               "items": {
@@ -4951,7 +5173,9 @@
               "type": "Microsoft.Storage/storageAccounts/tableServices",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
-              "properties": {}
+              "properties": {
+                "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
+              }
             },
             "tableServices_diagnosticSettings": {
               "copy": {
@@ -5026,11 +5250,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "10161610446497418516"
+                      "templateHash": "4682535625969189521"
                     },
                     "name": "Storage Account Table",
-                    "description": "This module deploys a Storage Account Table.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Storage Account Table."
                   },
                   "definitions": {
                     "roleAssignmentType": {
@@ -5270,7 +5493,7 @@
             "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey1, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString1, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey2, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString2, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey1, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString1, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value, environment().suffixes.storage))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey2, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString2, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value, environment().suffixes.storage))), createArray()))]"
           }
         },
         "template": {

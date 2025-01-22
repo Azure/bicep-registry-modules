@@ -17,13 +17,13 @@ param tags object = {}
 param enableTelemetry bool
 
 @description('Optional. The resource ID of the Hub Virtual Network.')
-param hubVNetId string = ''
+param hubVNetResourceId string = ''
 
 @description('The resource ID of the VNet to which the private endpoint will be connected.')
-param spokeVNetId string
+param spokeVNetResourceId string
 
-@description('The name of the subnet in the VNet to which the private endpoint will be connected.')
-param spokePrivateEndpointSubnetName string
+@description('The resource id of the subnet in the VNet to which the private endpoint will be connected.')
+param spokePrivateEndpointSubnetResourceId string
 
 @description('Optional. The name of the private endpoint to be created for Azure Container Registry. If left empty, it defaults to "<resourceName>-pep')
 param containerRegistryPrivateEndpointName string = 'acr-pep'
@@ -42,22 +42,18 @@ param deployZoneRedundantResources bool = true
 // ------------------
 
 var acrDnsZoneName = 'privatelink.azurecr.io'
-var spokeVNetIdTokens = split(spokeVNetId, '/')
-var spokeSubscriptionId = spokeVNetIdTokens[2]
-var spokeResourceGroupName = spokeVNetIdTokens[4]
-var spokeVNetName = spokeVNetIdTokens[8]
 var containerRegistryPullRoleGuid = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var virtualNetworkLinks = concat(
   [
     {
-      virtualNetworkResourceId: spokeVNetId
+      virtualNetworkResourceId: spokeVNetResourceId
       registrationEnabled: false
     }
   ],
-  (!empty(hubVNetId))
+  (!empty(hubVNetResourceId))
     ? [
         {
-          virtualNetworkResourceId: hubVNetId
+          virtualNetworkResourceId: hubVNetResourceId
           registrationEnabled: false
         }
       ]
@@ -66,17 +62,7 @@ var virtualNetworkLinks = concat(
 // ------------------
 // RESOURCES
 // ------------------
-resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
-  scope: resourceGroup(spokeSubscriptionId, spokeResourceGroupName)
-  name: spokeVNetName
-}
-
-resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  parent: vnetSpoke
-  name: spokePrivateEndpointSubnetName
-}
-
-module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: containerRegistryUserAssignedIdentityName
   params: {
     name: containerRegistryUserAssignedIdentityName
@@ -86,7 +72,7 @@ module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned
   }
 }
 
-module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
+module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: 'acrDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: acrDnsZoneName
@@ -97,7 +83,7 @@ module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
   }
 }
 
-module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
   name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerRegistryName
@@ -129,10 +115,14 @@ module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
     privateEndpoints: [
       {
         name: containerRegistryPrivateEndpointName
-        privateDnsZoneResourceIds: [
-          acrdnszone.outputs.resourceId
-        ]
-        subnetResourceId: spokePrivateEndpointSubnet.id
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: acrdnszone.outputs.resourceId
+            }
+          ]
+        }
+        subnetResourceId: spokePrivateEndpointSubnetResourceId
       }
     ]
     quarantinePolicyStatus: 'enabled'
@@ -148,6 +138,18 @@ module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
   }
 }
 
+resource agentPool 'Microsoft.ContainerRegistry/registries/agentPools@2019-06-01-preview' = {
+  name: '${containerRegistryName}/agentpool'
+  location: location
+  properties: {
+    count: 2
+    virtualNetworkSubnetResourceId: spokePrivateEndpointSubnetResourceId
+    os: 'Linux'
+    tier: 'S2'
+  }
+  dependsOn: [acr]
+}
+
 // ------------------
 // OUTPUTS
 // ------------------
@@ -160,6 +162,9 @@ output containerRegistryName string = acr.outputs.name
 
 @description('The name of the container registry login server.')
 output containerRegistryLoginServer string = acr.outputs.loginServer
+
+@description('The name of the internal agent pool for the container registry.')
+output containerRegistryAgentPoolName string = agentPool.name
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = acrUserAssignedIdentity.outputs.resourceId

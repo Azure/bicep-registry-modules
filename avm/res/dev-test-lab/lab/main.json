@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11609548636042160381"
+      "templateHash": "11496927656698208589"
     },
     "name": "DevTest Labs",
-    "description": "This module deploys a DevTest Lab.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DevTest Lab."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -1309,11 +1308,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6588565032345183133"
+              "templateHash": "10192397482038957377"
             },
             "name": "DevTest Lab Virtual Networks",
-            "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines."
           },
           "definitions": {
             "allowedSubnetType": {
@@ -1585,11 +1583,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14772587239006370946"
+              "templateHash": "2880525563281627917"
             },
             "name": "DevTest Lab Policy Sets Policies",
-            "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings."
           },
           "parameters": {
             "labName": {
@@ -1764,11 +1761,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13638649976661412429"
+              "templateHash": "13579745508079509440"
             },
             "name": "DevTest Lab Schedules",
-            "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."
           },
           "definitions": {
             "dailyRecurrenceType": {
@@ -2058,11 +2054,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1242120487437062161"
+              "templateHash": "1708021683631496569"
             },
             "name": "DevTest Lab Notification Channels",
-            "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks."
           },
           "parameters": {
             "labName": {
@@ -2237,11 +2232,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15987847567505288979"
+              "templateHash": "10475367346737056910"
             },
             "name": "DevTest Lab Artifact Sources",
-            "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services."
           },
           "parameters": {
             "labName": {
@@ -2455,11 +2449,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5097530253256865964"
+              "templateHash": "11242252695144325202"
             },
             "name": "DevTest Lab Costs",
-            "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold."
           },
           "parameters": {
             "labName": {

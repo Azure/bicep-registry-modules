@@ -225,7 +225,6 @@ param privateEndpointMultiService privateEndpointMultiServiceType[] = [
       ]
     }
     privateLinkServiceConnectionName: 'myConnection'
-    resourceGroupName: 'myResourceGroup'
     tags: {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'

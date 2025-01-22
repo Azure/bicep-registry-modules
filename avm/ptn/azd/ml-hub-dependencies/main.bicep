@@ -2,7 +2,6 @@ metadata name = 'Azd Azure Machine Learning Dependencies'
 metadata description = '''Creates all the dependencies required for a Machine Learning Service.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. The resource portal dashboards name.')
 param applicationInsightsDashboardName string = ''
@@ -60,7 +59,7 @@ param networkAcls object = {
 }
 
 @description('Optional. Blob service and containers to deploy.')
-param blobServices object =  {
+param blobServices object = {
   containers: [
     {
       name: 'default'
@@ -431,10 +430,14 @@ output containerRegistryName string = !empty(containerRegistryName) ? containerR
 output containerRegistryEndpoint string = !empty(containerRegistryName) ? containerRegistry.outputs.loginServer : ''
 
 @description('The resource ID of the application insights.')
-output applicationInsightsResourceId string = !empty(applicationInsightsName) ? applicationInsights.outputs.applicationInsightsResourceId : ''
+output applicationInsightsResourceId string = !empty(applicationInsightsName)
+  ? applicationInsights.outputs.applicationInsightsResourceId
+  : ''
 
 @description('The name of the application insights.')
-output applicationInsightsName string = !empty(applicationInsightsName) ? applicationInsights.outputs.applicationInsightsName : ''
+output applicationInsightsName string = !empty(applicationInsightsName)
+  ? applicationInsights.outputs.applicationInsightsName
+  : ''
 
 @description('The resource ID of the loganalytics workspace.')
 output logAnalyticsWorkspaceResourceId string = !empty(logAnalyticsName) ? logAnalytics.outputs.resourceId : ''
@@ -458,16 +461,24 @@ output searchServiceResourceId string = !empty(searchServiceName) ? searchServic
 output searchServiceName string = !empty(searchServiceName) ? searchService.outputs.name : ''
 
 @description('The endpoint of the search service.')
-output searchServiceEndpoint string = !empty(searchServiceName) ? 'https://${searchService.outputs.name}.search.windows.net/' : ''
+output searchServiceEndpoint string = !empty(searchServiceName)
+  ? 'https://${searchService.outputs.name}.search.windows.net/'
+  : ''
 
 @description('The connection string of the application insights.')
-output applicationInsightsConnectionString string = !empty(applicationInsightsName) ? applicationInsights.outputs.applicationInsightsConnectionString : ''
+output applicationInsightsConnectionString string = !empty(applicationInsightsName)
+  ? applicationInsights.outputs.applicationInsightsConnectionString
+  : ''
 
 @description('The instrumentation key of the application insights.')
-output applicationInsightsInstrumentationKey string = !empty(applicationInsightsName) ? applicationInsights.outputs.applicationInsightsInstrumentationKey : ''
+output applicationInsightsInstrumentationKey string = !empty(applicationInsightsName)
+  ? applicationInsights.outputs.applicationInsightsInstrumentationKey
+  : ''
 
 @description('The system assigned mi principal Id key of the search service.')
-output systemAssignedMiPrincipalId string = !empty(searchServiceName) ? searchService.outputs.systemAssignedMIPrincipalId : ''
+output systemAssignedMiPrincipalId string = !empty(searchServiceName)
+  ? searchService.outputs.systemAssignedMIPrincipalId
+  : ''
 
 // ================ //
 // Definitions      //

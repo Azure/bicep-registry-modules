@@ -13,6 +13,7 @@ This module deploys a Storage Account File Share Service.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
@@ -29,6 +30,7 @@ This module deploys a Storage Account File Share Service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`corsRules`](#parameter-corsrules) | array | The List of CORS rules. You can include up to five CorsRule elements in the request. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`name`](#parameter-name) | string | The name of the file service. |
 | [`protocolSettings`](#parameter-protocolsettings) | object | Protocol settings for file service. |
@@ -41,6 +43,73 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+
+### Parameter: `corsRules`
+
+The List of CORS rules. You can include up to five CorsRule elements in the request.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedHeaders`](#parameter-corsrulesallowedheaders) | array | A list of headers allowed to be part of the cross-origin request. |
+| [`allowedMethods`](#parameter-corsrulesallowedmethods) | array | A list of HTTP methods that are allowed to be executed by the origin. |
+| [`allowedOrigins`](#parameter-corsrulesallowedorigins) | array | A list of origin domains that will be allowed via CORS, or "*" to allow all domains. |
+| [`exposedHeaders`](#parameter-corsrulesexposedheaders) | array | A list of response headers to expose to CORS clients. |
+| [`maxAgeInSeconds`](#parameter-corsrulesmaxageinseconds) | int | The number of seconds that the client/browser should cache a preflight response. |
+
+### Parameter: `corsRules.allowedHeaders`
+
+A list of headers allowed to be part of the cross-origin request.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `corsRules.allowedMethods`
+
+A list of HTTP methods that are allowed to be executed by the origin.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CONNECT'
+    'DELETE'
+    'GET'
+    'HEAD'
+    'MERGE'
+    'OPTIONS'
+    'PATCH'
+    'POST'
+    'PUT'
+    'TRACE'
+  ]
+  ```
+
+### Parameter: `corsRules.allowedOrigins`
+
+A list of origin domains that will be allowed via CORS, or "*" to allow all domains.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `corsRules.exposedHeaders`
+
+A list of response headers to expose to CORS clients.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `corsRules.maxAgeInSeconds`
+
+The number of seconds that the client/browser should cache a preflight response.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `diagnosticSettings`
 

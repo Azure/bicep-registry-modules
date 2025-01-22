@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "15067669928476640283"
+      "version": "0.32.4.45862",
+      "templateHash": "10438437813296683405"
     },
     "name": "Application Insights Components",
-    "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
-    "owner": "Azure/module-maintainers"
+    "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "parameters": {
     "name": {
@@ -773,12 +772,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10844955132300564569"
+              "version": "0.32.4.45862",
+              "templateHash": "947470645489012293"
             },
             "name": "Azure Portal Dashboard",
-            "description": "Creates a dashboard for an Application Insights instance.",
-            "owner": "Azure/module-maintainers"
+            "description": "Creates a dashboard for an Application Insights instance."
           },
           "parameters": {
             "name": {
