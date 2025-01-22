@@ -65,7 +65,10 @@ function Install-CustomModule {
                 # Get latest in case of multiple
                 $alreadyInstalled = ($alreadyInstalled | Sort-Object -Culture 'en-US' -Property 'Version' -Descending)[0]
             }
-            Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
+            if ($alreadyInstalled) {
+                Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
+                continue
+            }
             continue
         }
 
@@ -178,7 +181,7 @@ function Set-EnvironmentOnAgent {
 
     Write-Verbose ('Install latest Bicep CLI') -Verbose
     # Fetch the latest Bicep CLI binary
-    curl -Lo bicep 'https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64'
+    Invoke-WebRequest -Lo bicep 'https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64'
     # Mark it as executable
     chmod +x ./bicep
     # Add Bicep to your PATH (requires admin)
@@ -276,7 +279,7 @@ if ($InstallLatestPwshVersion) {
     # Install pre-requisite packages.
     sudo apt-get install -y wget apt-transport-https software-properties-common
     # Download the Microsoft repository GPG keys
-    curl -q "https://packages.microsoft.com/config/ubuntu/`$(lsb_release -rs)/packages-microsoft-prod.deb"
+    Invoke-WebRequest -q "https://packages.microsoft.com/config/ubuntu/`$(lsb_release -rs)/packages-microsoft-prod.deb"
     # Register the Microsoft repository GPG keys
     sudo dpkg -i packages-microsoft-prod.deb
     # Update the list of packages after we added packages.microsoft.com
