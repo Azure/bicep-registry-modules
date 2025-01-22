@@ -583,6 +583,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       securityProfile: {
         enableSecureBoot: profile.?enableSecureBoot ?? false
         enableVTPM: profile.?enableVTPM ?? false
+        sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
       }
       spotMaxPrice: profile.?spotMaxPrice
       tags: profile.?tags
