@@ -75,8 +75,8 @@ runs:
         Set-EnvironmentOnAgent -PSModules $modules
 
         # Import needed PowerShell modules
-        if (('${{ github.job}}' -eq 'job_module_deploy_validation') -and ('${{ inputs.removeDeployment}}' -eq 'true')) {
-        Import-Module Az.Subscription
+        if(Get-Module -Name 'Az.Subscription' -ListAvailable) {
+          Import-Module 'Az.Subscription'
         }
 
         Write-Output '::endgroup::'
