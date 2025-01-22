@@ -65,8 +65,10 @@ function Install-CustomModule {
                 # Get latest in case of multiple
                 $alreadyInstalled = ($alreadyInstalled | Sort-Object -Culture 'en-US' -Property 'Version' -Descending)[0]
             }
-            Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
-            continue
+            if ($alreadyInstalled) {
+                Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
+                continue
+            }
         }
 
         # Check if not to be excluded
