@@ -698,7 +698,7 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
   params: {
     name: deploymentScriptName
     kind: 'AzurePowerShell'
-    azPowerShellVersion: '13.1.0'
+    azPowerShellVersion: '12.3'
     cleanupPreference: 'Always'
     enableTelemetry: enableTelemetry
     location: deploymentScriptLocation
