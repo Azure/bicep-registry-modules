@@ -76,7 +76,8 @@ runs:
 
         # Import needed PowerShell modules
         if(Get-Module -Name 'Az.Subscription' -ListAvailable) {
-          Import-Module 'Az.Subscription'
+          Write-Verbose "Importing module 'Az.Subscription'" -Verbose
+          Import-Module Az.Subscription
         }
 
         Write-Output '::endgroup::'
