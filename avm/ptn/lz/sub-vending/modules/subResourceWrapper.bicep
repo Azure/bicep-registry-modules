@@ -692,7 +692,7 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.5.2' = if (!emp
     enableTelemetry: enableTelemetry
   }
 }
-module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.3.1' = if (!empty(resourceProviders)) {
+module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.registerResourceProviders
   params: {

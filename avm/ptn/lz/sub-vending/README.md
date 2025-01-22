@@ -1360,7 +1360,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.5.2` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.3.1` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.15.0` | Remote reference |
 
