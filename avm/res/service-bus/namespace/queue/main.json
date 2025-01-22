@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9350216516948360717"
+      "templateHash": "2963369845110660460"
     },
     "name": "Service Bus Namespace Queue",
-    "description": "This module deploys a Service Bus Namespace Queue.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace Queue."
   },
   "definitions": {
     "lockType": {
@@ -39,7 +38,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -114,7 +113,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -406,11 +405,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "295229783279934486"
+              "templateHash": "4106322932640263973"
             },
             "name": "Service Bus Namespace Queue Authorization Rules",
-            "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
           },
           "parameters": {
             "name": {

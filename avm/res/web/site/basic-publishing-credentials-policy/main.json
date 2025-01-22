@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17238693910097535438"
+      "templateHash": "7686713695944836722"
     },
     "name": "Web Site Basic Publishing Credentials Policies",
-    "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
   },
   "parameters": {
     "name": {
@@ -46,7 +45,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
-      "apiVersion": "2023-12-01",
+      "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('webAppName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
@@ -81,7 +80,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference(resourceId('Microsoft.Web/sites/basicPublishingCredentialsPolicies', parameters('webAppName'), parameters('name')), '2023-12-01', 'full').location]"
+      "value": "[reference(resourceId('Microsoft.Web/sites/basicPublishingCredentialsPolicies', parameters('webAppName'), parameters('name')), '2024-04-01', 'full').location]"
     }
   }
 }

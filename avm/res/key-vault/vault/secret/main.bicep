@@ -1,6 +1,5 @@
 metadata name = 'Key Vault Secrets'
 metadata description = 'This module deploys a Key Vault Secret.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment.')
 param keyVaultName string
@@ -28,7 +27,7 @@ param contentType string?
 @secure()
 param value string
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 

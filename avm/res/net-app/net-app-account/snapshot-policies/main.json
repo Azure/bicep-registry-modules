@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "17696312984702506132"
+      "version": "0.32.4.45862",
+      "templateHash": "17538391796648994915"
     },
     "name": "Azure NetApp Files Snapshot Policy",
-    "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
   },
   "parameters": {
     "netAppAccountName": {

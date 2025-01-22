@@ -9,8 +9,7 @@
       "templateHash": "3113734842268106241"
     },
     "name": "Redis Cache Linked Servers",
-    "description": "This module connects a primary and secondary Redis Cache together for geo-replication.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
   },
   "parameters": {
     "redisCacheName": {

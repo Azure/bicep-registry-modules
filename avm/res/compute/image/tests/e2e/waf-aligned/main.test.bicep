@@ -47,6 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
     imageTemplateNamePrefix: 'dep-${namePrefix}-imgt-${serviceShort}'
     triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForPropagation'
   }
 }
 
@@ -60,7 +61,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       osAccountType: 'Premium_LRS'
       osDiskBlobUri: nestedDependencies.outputs.vhdUri
       osDiskCaching: 'ReadWrite'

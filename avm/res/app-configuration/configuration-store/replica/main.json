@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5469955128467975062"
+      "templateHash": "4070298136487551153"
     },
     "name": "App Configuration Replicas",
-    "description": "This module deploys an App Configuration Replica.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an App Configuration Replica."
   },
   "parameters": {
     "name": {

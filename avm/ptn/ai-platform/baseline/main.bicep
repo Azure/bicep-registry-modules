@@ -2,7 +2,6 @@ metadata name = 'AI Platform Baseline'
 metadata description = '''This module provides a secure and scalable environment for deploying AI applications on Azure.
 The module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.
 By integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Alphanumberic suffix to use for resource naming.')
 @minLength(3)
@@ -618,12 +617,14 @@ output virtualMachineName string = createVirtualMachine ? virtualMachine.outputs
 // ================ //
 
 @export()
+@description('The type for a log analytics configuration.')
 type logAnalyticsConfigurationType = {
   @description('Optional. The name of the Log Analytics workspace.')
   name: string?
 }
 
 @export()
+@description('The type for a key vault configuration.')
 type keyVaultConfigurationType = {
   @description('Optional. The name of the key vault.')
   name: string?
@@ -633,6 +634,7 @@ type keyVaultConfigurationType = {
 }
 
 @export()
+@description('The type for a storage account configuration.')
 type storageAccountConfigurationType = {
   @description('Optional. The name of the storage account.')
   name: string?
@@ -653,6 +655,7 @@ type storageAccountConfigurationType = {
 }
 
 @export()
+@description('The type for a container registry configuration.')
 type containerRegistryConfigurationType = {
   @description('Optional. The name of the container registry.')
   name: string?
@@ -662,12 +665,14 @@ type containerRegistryConfigurationType = {
 }
 
 @export()
+@description('The type for an application insights configuration.')
 type applicationInsightsConfigurationType = {
   @description('Optional. The name of the Application Insights resource.')
   name: string?
 }
 
 @export()
+@description('The type for a workspace configuration.')
 type workspaceConfigurationType = {
   @description('Optional. The name of the AI Studio workspace hub.')
   name: string?
@@ -685,6 +690,7 @@ type workspaceConfigurationType = {
   networkOutboundRules: networkOutboundRuleType?
 }
 
+@description('The type for a virtual network subnet configuration.')
 type virtualNetworkSubnetConfigurationType = {
   @description('Optional. The name of the subnet to create.')
   name: string?
@@ -697,6 +703,7 @@ type virtualNetworkSubnetConfigurationType = {
 }
 
 @export()
+@description('The type for a virtual network configuration.')
 type virtualNetworkConfigurationType = {
   @description('Optional. Whether to create an associated virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -712,6 +719,7 @@ type virtualNetworkConfigurationType = {
 }
 
 @export()
+@description('The type for a bastion configuration.')
 type bastionConfigurationType = {
   @description('Optional. Whether to create a Bastion host in the virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -747,7 +755,8 @@ type bastionConfigurationType = {
   scaleUnits: int?
 }
 
-type nicConfigurationConfigurationType = {
+@description('The type for a NIC configuration.')
+type nicConfigurationType = {
   @description('Optional. The name of the network interface.')
   name: string?
 
@@ -761,6 +770,7 @@ type nicConfigurationConfigurationType = {
   networkSecurityGroupResourceId: string?
 }
 
+@description('The type for an OS disk.')
 type osDiskType = {
   @description('Optional. The disk name.')
   name: string?
@@ -795,6 +805,7 @@ type osDiskType = {
 }
 
 @export()
+@description('The type for a virtual machine configuration.')
 type virtualMachineConfigurationType = {
   @description('Optional. Whether to create a virtual machine in the associated virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -817,7 +828,7 @@ type virtualMachineConfigurationType = {
   adminPassword: string?
 
   @description('Optional. Configuration for the virtual machine network interface.')
-  nicConfigurationConfiguration: nicConfigurationConfigurationType?
+  nicConfigurationConfiguration: nicConfigurationType?
 
   @description('Optional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
   imageReference: object?
@@ -841,62 +852,66 @@ type virtualMachineConfigurationType = {
   maintenanceConfigurationResourceId: string?
 }
 
+@description('The type for an outbound rule.')
 @discriminator('type')
-type OutboundRuleType = FqdnOutboundRuleType | PrivateEndpointOutboundRule | ServiceTagOutboundRule
+type outboundRuleType = fqdnOutboundRuleType | privateEndpointOutboundRuleType | serviceTagOutboundRuleType
 
-type FqdnOutboundRuleType = {
-  @sys.description('Required. Type of a managed network Outbound Rule of the  workspace hub. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
+@description('The type for a FQDN outbound rule.')
+type fqdnOutboundRuleType = {
+  @description('Required. Type of a managed network Outbound Rule of the  workspace hub. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
   type: 'FQDN'
 
-  @sys.description('Required. Fully Qualified Domain Name to allow for outbound traffic.')
+  @description('Required. Fully Qualified Domain Name to allow for outbound traffic.')
   destination: string
 
-  @sys.description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
+  @description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
-type PrivateEndpointOutboundRule = {
-  @sys.description('Required. Type of a managed network Outbound Rule of the workspace hub.')
+@description('The type for a private endpoint outbound rule.')
+type privateEndpointOutboundRuleType = {
+  @description('Required. Type of a managed network Outbound Rule of the workspace hub.')
   type: 'PrivateEndpoint'
 
-  @sys.description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of the workspace hub.')
+  @description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of the workspace hub.')
   destination: {
-    @sys.description('Required. The resource ID of the target resource for the private endpoint.')
+    @description('Required. The resource ID of the target resource for the private endpoint.')
     serviceResourceId: string
 
-    @sys.description('Optional. Whether the private endpoint can be used by jobs running on Spark.')
+    @description('Optional. Whether the private endpoint can be used by jobs running on Spark.')
     sparkEnabled: bool?
 
-    @sys.description('Required. The sub resource to connect for the private endpoint.')
+    @description('Required. The sub resource to connect for the private endpoint.')
     subresourceTarget: string
   }
 
-  @sys.description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
+  @description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
-type ServiceTagOutboundRule = {
-  @sys.description('Required. Type of a managed network Outbound Rule of the workspace hub. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
+@description('The type for an service tag outbound rule.')
+type serviceTagOutboundRuleType = {
+  @description('Required. Type of a managed network Outbound Rule of the workspace hub. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
   type: 'ServiceTag'
 
-  @sys.description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of the workspace hub.')
+  @description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of the workspace hub.')
   destination: {
-    @sys.description('Required. The name of the service tag to allow.')
+    @description('Required. The name of the service tag to allow.')
     portRanges: string
 
-    @sys.description('Required. The protocol to allow. Provide an asterisk(*) to allow any protocol.')
+    @description('Required. The protocol to allow. Provide an asterisk(*) to allow any protocol.')
     protocol: 'TCP' | 'UDP' | 'ICMP' | '*'
 
-    @sys.description('Required. Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port.')
+    @description('Required. Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port.')
     serviceTag: string
   }
 
-  @sys.description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
+  @description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
-@sys.description('Optional. Outbound rules for the managed network of the workspace hub.')
+@description('The type for outbound rules for the managed network of the workspace hub.')
 type networkOutboundRuleType = {
-  @sys.description('Required. The outbound rule. The name of the rule is the object key.')
-  *: OutboundRuleType
+  @description('Required. The outbound rule. The name of the rule is the object key.')
+  *: outboundRuleType
 }

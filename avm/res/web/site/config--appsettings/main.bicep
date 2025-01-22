@@ -1,6 +1,5 @@
 metadata name = 'Site App Settings'
 metadata description = 'This module deploys a Site App Setting.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment.')
 param appName string
@@ -80,7 +79,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing 
   )
 }
 
-resource appSettings 'Microsoft.Web/sites/config@2023-12-01' = {
+resource appSettings 'Microsoft.Web/sites/config@2024-04-01' = {
   name: 'appsettings'
   kind: kind
   parent: app

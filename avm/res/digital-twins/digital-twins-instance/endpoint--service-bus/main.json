@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9917080858184002423"
+      "templateHash": "16120220150647094812"
     },
     "name": "Digital Twins Instance ServiceBus Endpoint",
-    "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint."
   },
   "definitions": {
     "managedIdentitiesType": {

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12898926018221194533"
+      "templateHash": "17229460238192107968"
     },
-    "name": "Site Api Management Config",
-    "description": "This module deploys a Site Api Management Configuration.",
-    "owner": "Azure/module-maintainers"
+    "name": "Site Web Config",
+    "description": "This module deploys web settings configuration available under sites/config name: web."
   },
   "parameters": {
     "appName": {
@@ -19,11 +18,11 @@
         "description": "Required. The name of the parent site resource."
       }
     },
-    "apiManagementConfiguration": {
+    "webConfiguration": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The web settings api management configuration."
+        "description": "Optional. The Site Config, Web settings to deploy."
       }
     }
   },
@@ -31,15 +30,15 @@
     "app": {
       "existing": true,
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2023-12-01",
+      "apiVersion": "2024-04-01",
       "name": "[parameters('appName')]"
     },
     "webSettings": {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2023-12-01",
+      "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('appName'), 'web')]",
       "kind": "string",
-      "properties": "[parameters('apiManagementConfiguration')]"
+      "properties": "[parameters('webConfiguration')]"
     }
   },
   "outputs": {
