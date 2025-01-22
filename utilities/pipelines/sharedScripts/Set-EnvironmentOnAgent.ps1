@@ -69,7 +69,6 @@ function Install-CustomModule {
                 Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
                 continue
             }
-            continue
         }
 
         # Check if not to be excluded
