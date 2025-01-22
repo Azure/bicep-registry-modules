@@ -112,10 +112,14 @@ Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssigned
 
 log 'Getting access token for Azure Stack HCI Arc initialization...'
 # Must use the below code as RunCommand is running with PowerShell 5.1, not core, where -AsPlainText is not supported
+# Var 1
 # $t = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com' -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText
-$accessToken = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com' -AsSecureString).Token
-$bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($accessToken)
-$t = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+# Var 2
+# $accessToken = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com' -AsSecureString).Token
+# $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($accessToken)
+# $t = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+# Var 3
+$t = Get-AzAccessToken -ResourceUrl 'https://management.azure.com' | Select-Object -ExpandProperty Token
 
 # pre-create AD objects
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
