@@ -84,7 +84,6 @@ function Install-CustomModule {
                 Write-Error ('Installation of module [{0}] failed' -f $foundModule.Name)
             }
         }
-        Import-Module Az.Subscription
     }
 }
 #endregion
