@@ -269,7 +269,6 @@ function Invoke-ResourceRemoval {
             if ($subscriptionState -eq 'Enabled') {
                 Write-Verbose ('[*] Disabling resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
                 if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
-                    Import-Module Az.Subscription
                     $null = Disable-AzSubscription -SubscriptionId $subscriptionId -Confirm:$false
                 }
             }
