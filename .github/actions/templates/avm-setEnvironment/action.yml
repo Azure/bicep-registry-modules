@@ -74,4 +74,7 @@ runs:
         # Set agent up
         Set-EnvironmentOnAgent -PSModules $modules
 
+        # Import needed PowerShell modules
+        Import-Module Az.Subscription
+
         Write-Output '::endgroup::'

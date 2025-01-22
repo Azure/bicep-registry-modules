@@ -591,6 +591,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
     subscriptionId: subscriptionId
     resourceGroupName: deploymentScriptResourceGroupName
     principalType: 'ServicePrincipal'
+    description: 'Storage File Data Privileged Contributor'
   }
 }
 
@@ -691,8 +692,7 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.5.2' = if (!emp
     enableTelemetry: enableTelemetry
   }
 }
-
-module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.4.0' = if (!empty(resourceProviders)) {
+module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.5.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.registerResourceProviders
   params: {
