@@ -77,7 +77,7 @@ runs:
         # Import needed PowerShell modules
         if(Get-Module -Name 'Az.Subscription' -ListAvailable) {
           Write-Verbose "Importing module 'Az.Subscription'" -Verbose
-          Import-Module Az.Subscription -Force -AllowClobber
+          Import-Module Az.Subscription -Force
         }
 
         Write-Output '::endgroup::'
