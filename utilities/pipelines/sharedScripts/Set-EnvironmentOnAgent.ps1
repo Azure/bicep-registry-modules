@@ -84,9 +84,6 @@ function Install-CustomModule {
                 Write-Error ('Installation of module [{0}] failed' -f $foundModule.Name)
             }
         }
-
-        # Import needed PowerShell modules
-        Import-Module Az.Subscription
     }
 }
 #endregion
