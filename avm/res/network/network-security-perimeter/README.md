@@ -32,8 +32,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/network-security-perimeter:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -99,9 +99,9 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -311,7 +311,10 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -324,7 +327,49 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
     // Required parameters
     name: 'nnspwaf001'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     location: '<location>'
+    profiles: [
+      {
+        accessRules: [
+          {
+            direction: 'Outbound'
+            fullyQualifiedDomainNames: [
+              'www.contoso.com'
+            ]
+            name: 'rule-outbound-01'
+          }
+          {
+            addressPrefixes: [
+              '198.168.1.0/24'
+            ]
+            direction: 'Inbound'
+            name: 'rule-inbound-01'
+          }
+        ]
+        name: 'profile-01'
+      }
+    ]
+    resourceAssociations: [
+      {
+        accessMode: 'Learning'
+        privateLinkResource: '<privateLinkResource>'
+        profile: 'profile-01'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -346,8 +391,58 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
       "value": "nnspwaf001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "profiles": {
+      "value": [
+        {
+          "accessRules": [
+            {
+              "direction": "Outbound",
+              "fullyQualifiedDomainNames": [
+                "www.contoso.com"
+              ],
+              "name": "rule-outbound-01"
+            },
+            {
+              "addressPrefixes": [
+                "198.168.1.0/24"
+              ],
+              "direction": "Inbound",
+              "name": "rule-inbound-01"
+            }
+          ],
+          "name": "profile-01"
+        }
+      ]
+    },
+    "resourceAssociations": {
+      "value": [
+        {
+          "accessMode": "Learning",
+          "privateLinkResource": "<privateLinkResource>",
+          "profile": "profile-01"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -366,7 +461,49 @@ using 'br/public:avm/res/network/network-security-perimeter:<version>'
 // Required parameters
 param name = 'nnspwaf001'
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param location = '<location>'
+param profiles = [
+  {
+    accessRules: [
+      {
+        direction: 'Outbound'
+        fullyQualifiedDomainNames: [
+          'www.contoso.com'
+        ]
+        name: 'rule-outbound-01'
+      }
+      {
+        addressPrefixes: [
+          '198.168.1.0/24'
+        ]
+        direction: 'Inbound'
+        name: 'rule-inbound-01'
+      }
+    ]
+    name: 'profile-01'
+  }
+]
+param resourceAssociations = [
+  {
+    accessMode: 'Learning'
+    privateLinkResource: '<privateLinkResource>'
+    profile: 'profile-01'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 ```
 
 </details>
