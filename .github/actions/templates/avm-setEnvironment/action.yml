@@ -73,6 +73,7 @@ runs:
 
         # Set agent up
         Set-EnvironmentOnAgent -PSModules $modules
-        #Import-module Az.Accounts -MinimumVersion 4.0.1
+
         Import-module Az.Subscription -MinimumVersion 0.11.1
+
         Write-Output '::endgroup::'
