@@ -45,7 +45,7 @@ runs:
 
         # Define PS modules to install on the runner
         $modules = @(
-            @{ Name = 'Az.Accounts'; Version = '4.0.1' },
+            @{ Name = 'Az.Accounts'; Version = '4.0.2' },
             @{ Name = 'Az.Resources' },
             @{ Name = 'powershell-yaml'; Version = '0.4.2'}
         )
@@ -73,5 +73,6 @@ runs:
 
         # Set agent up
         Set-EnvironmentOnAgent -PSModules $modules
+        Import-module Az.Accounts -MinimumVersion 4.0.1 -Force
 
         Write-Output '::endgroup::'
