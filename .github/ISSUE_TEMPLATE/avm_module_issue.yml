@@ -41,6 +41,7 @@ body:
         - "avm/ptn/aca-lza/hosting-environment"
         - "avm/ptn/ai-platform/baseline"
         - "avm/ptn/app/container-job-toolkit"
+        - "avm/ptn/authorization/pim-role-assignment"
         - "avm/ptn/authorization/policy-assignment"
         - "avm/ptn/authorization/policy-exemption"
         - "avm/ptn/authorization/resource-role-assignment"
