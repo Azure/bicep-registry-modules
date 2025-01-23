@@ -114,7 +114,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   tags: tags
 }
 @batchSize(1)
-module deploymentSetting 'deployment-settings/main.bicep' = [
+module deploymentSetting 'deployment-setting/main.bicep' = [
   for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation) && !empty(deploymentSettings)) {
     name: 'deploymentSettings-${deploymentOperation}'
     params: {
