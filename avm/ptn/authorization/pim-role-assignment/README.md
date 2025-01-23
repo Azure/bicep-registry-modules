@@ -141,7 +141,7 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
     // Required parameters
     principalId: '<principalId>'
     requestType: 'AdminAssign'
-    roleDefinitionIdOrName: 'Resource Policy Contributor'
+    roleDefinitionIdOrName: 'Contributor'
     scheduleInfo: {
       expiration: {
         type: 'AfterDateTime'
@@ -179,7 +179,7 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
       "value": "AdminAssign"
     },
     "roleDefinitionIdOrName": {
-      "value": "Resource Policy Contributor"
+      "value": "Contributor"
     },
     "scheduleInfo": {
       "value": {
@@ -219,7 +219,7 @@ using 'br/public:avm/ptn/authorization/pim-role-assignment:<version>'
 // Required parameters
 param principalId = '<principalId>'
 param requestType = 'AdminAssign'
-param roleDefinitionIdOrName = 'Resource Policy Contributor'
+param roleDefinitionIdOrName = 'Contributor'
 param scheduleInfo = {
   expiration: {
     type: 'AfterDateTime'
@@ -358,7 +358,7 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
     // Required parameters
     principalId: '<principalId>'
     requestType: 'AdminAssign'
-    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
     scheduleInfo: {
       expiration: {
         type: 'AfterDateTime'
@@ -398,7 +398,7 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
       "value": "AdminAssign"
     },
     "roleDefinitionIdOrName": {
-      "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
+      "value": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
     },
     "scheduleInfo": {
       "value": {
@@ -444,7 +444,7 @@ using 'br/public:avm/ptn/authorization/pim-role-assignment:<version>'
 // Required parameters
 param principalId = '<principalId>'
 param requestType = 'AdminAssign'
-param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
 param scheduleInfo = {
   expiration: {
     type: 'AfterDateTime'
