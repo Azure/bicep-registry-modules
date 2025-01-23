@@ -95,61 +95,60 @@ module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscripti
   }
 }
 
-/*
 module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-RoleAssignment-Sub-Module'
+  name: '${uniqueString(deployment().name, location)}-PimRoleAssignment-Sub-Module'
   scope: subscription(subscriptionId)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
     principalId: principalId
     subscriptionId: subscriptionId
-    description: !empty(description) ? description : ''
-    principalType: !empty(principalType) ? principalType : ''
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
-      ? delegatedManagedIdentityResourceId
-      : ''
+    requestType: requestType
+    justification: justification
+    targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
+    targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
+    ticketInfo: ticketInfo
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
+    scheduleInfo: scheduleInfo
   }
 }
 
 module roleAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
-  name: '${uniqueString(deployment().name, location)}-RoleAssignment-RG-Module'
+  name: '${uniqueString(deployment().name, location)}-PimRoleAssignment-RG-Module'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
     principalId: principalId
     subscriptionId: subscriptionId
     resourceGroupName: resourceGroupName
-    description: !empty(description) ? description : ''
-    principalType: !empty(principalType) ? principalType : ''
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
-      ? delegatedManagedIdentityResourceId
-      : ''
+    requestType: requestType
+    justification: justification
+    targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
+    targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
+    ticketInfo: ticketInfo
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
+    scheduleInfo: scheduleInfo
   }
 }
 
-
-@sys.description('The GUID of the Role Assignment.')
+@sys.description('The GUID of the PIM Role Assignment.')
 output name string = empty(subscriptionId) && empty(resourceGroupName)
   ? roleAssignment_mg.outputs.name
   : (!empty(subscriptionId) && empty(resourceGroupName)
       ? roleAssignment_sub.outputs.name
       : roleAssignment_rg.outputs.name)
 
-@sys.description('The resource ID of the Role Assignment.')
+@sys.description('The resource ID of the PIM Role Assignment.')
 output resourceId string = empty(subscriptionId) && empty(resourceGroupName)
   ? roleAssignment_mg.outputs.resourceId
   : (!empty(subscriptionId) && empty(resourceGroupName)
       ? roleAssignment_sub.outputs.resourceId
       : roleAssignment_rg.outputs.resourceId)
 
-@sys.description('The scope this Role Assignment applies to.')
+@sys.description('The scope this PIM Role Assignment applies to.')
 output scope string = empty(subscriptionId) && empty(resourceGroupName)
   ? roleAssignment_mg.outputs.scope
   : (!empty(subscriptionId) && empty(resourceGroupName)
       ? roleAssignment_sub.outputs.scope
       : roleAssignment_rg.outputs.scope)
-*/
