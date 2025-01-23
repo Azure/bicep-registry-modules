@@ -25,6 +25,10 @@ param subscriptionId string = '#_subscriptionId_#'
 @description('Optional. The dateTime of the role assignment eligibility.')
 param startTime string = utcNow()
 
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'userPrinicipalId\'.')
+@secure()
+param userPrinicipalId string = ''
+
 // General resources
 // =================
 module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
@@ -43,7 +47,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
-    principalId: ''
+    principalId: userPrinicipalId
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     location: resourceLocation
     subscriptionId: subscriptionId

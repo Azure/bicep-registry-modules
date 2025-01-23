@@ -15,6 +15,10 @@ param serviceShort string = 'pimmgmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'userPrinicipalId\'.')
+@secure()
+param userPrinicipalId string = ''
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -22,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${namePrefix}-${serviceShort}'
   params: {
-    principalId: ''
+    principalId: userPrinicipalId
     roleDefinitionIdOrName: 'Resource Policy Contributor'
     requestType: 'AdminAssign'
     location: resourceLocation

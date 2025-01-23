@@ -15,6 +15,10 @@ param serviceShort string = 'pimsubmax'
 @description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
 param subscriptionId string = '#_subscriptionId_#'
 
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'userPrinicipalId\'.')
+@secure()
+param userPrinicipalId string = ''
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -22,7 +26,7 @@ param subscriptionId string = '#_subscriptionId_#'
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
-    principalId: ''
+    principalId: userPrinicipalId
     roleDefinitionIdOrName: 'Reader'
     requestType: 'AdminAssign'
     scheduleInfo: {
