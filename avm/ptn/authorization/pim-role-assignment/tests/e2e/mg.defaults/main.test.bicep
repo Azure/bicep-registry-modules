@@ -12,6 +12,9 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'pimmgmin'
 
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
 @description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'userPrinicipalId\'.')
 @secure()
 param userPrinicipalId string = ''
@@ -21,7 +24,7 @@ param userPrinicipalId string = ''
 // ============== //
 
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name)}-test-${serviceShort}-${namePrefix}'
   params: {
     principalId: userPrinicipalId
     roleDefinitionIdOrName: 'Resource Policy Contributor'
