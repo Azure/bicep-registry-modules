@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9411570515213964908"
+      "templateHash": "10525677449958227084"
     },
     "name": "Network Security Perimeter Profile",
     "description": "This module deploys a Network Security Perimeter Profile.",
@@ -107,6 +107,7 @@
           }
         }
       },
+      "nullable": true,
       "metadata": {
         "__bicep_export!": true
       }
@@ -148,23 +149,46 @@
     "nsp_accessRules": {
       "copy": {
         "name": "nsp_accessRules",
-        "count": "[length(parameters('accessRules'))]"
+        "count": "[length(coalesce(parameters('accessRules'), createArray()))]"
       },
       "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
       "apiVersion": "2023-08-01-preview",
-      "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('name'), parameters('accessRules')[copyIndex()].name)]",
+      "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('name'), coalesce(parameters('accessRules'), createArray())[copyIndex()].name)]",
       "properties": {
-        "addressPrefixes": "[tryGet(parameters('accessRules')[copyIndex()], 'addressPrefixes')]",
-        "direction": "[parameters('accessRules')[copyIndex()].direction]",
-        "emailAddresses": "[tryGet(parameters('accessRules')[copyIndex()], 'emailAddresses')]",
-        "fullyQualifiedDomainNames": "[tryGet(parameters('accessRules')[copyIndex()], 'fullyQualifiedDomainNames')]",
-        "phoneNumbers": "[tryGet(parameters('accessRules')[copyIndex()], 'phoneNumbers')]",
-        "serviceTags": "[tryGet(parameters('accessRules')[copyIndex()], 'serviceTags')]",
-        "subscriptions": "[tryGet(parameters('accessRules')[copyIndex()], 'subscriptions')]"
+        "addressPrefixes": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'addressPrefixes')]",
+        "direction": "[coalesce(parameters('accessRules'), createArray())[copyIndex()].direction]",
+        "emailAddresses": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'emailAddresses')]",
+        "fullyQualifiedDomainNames": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'fullyQualifiedDomainNames')]",
+        "phoneNumbers": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'phoneNumbers')]",
+        "serviceTags": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'serviceTags')]",
+        "subscriptions": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'subscriptions')]"
       },
       "dependsOn": [
         "networkSecurityPerimeter_profile"
       ]
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the network security perimeter was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed profile."
+      },
+      "value": "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkPerimeterName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed profile."
+      },
+      "value": "[parameters('name')]"
     }
   }
 }

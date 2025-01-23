@@ -53,7 +53,7 @@ The name of the parent network perimeter. Required if the template is used in a 
 
 Static Members to create for the network group. Contains virtual networks to add to the network group.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 **Required parameters**
@@ -152,4 +152,8 @@ The subscription id.
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `name` | string | The name of the deployed profile. |
+| `resourceGroupName` | string | The resource group the network security perimeter was deployed into. |
+| `resourceId` | string | The resource ID of the deployed profile. |

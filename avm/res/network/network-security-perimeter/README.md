@@ -719,7 +719,7 @@ Array of Security Rules to deploy to the Network Security Group. When not provid
 
 Whether network traffic is allowed or denied.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 **Required parameters**

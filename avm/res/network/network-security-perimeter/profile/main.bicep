@@ -22,7 +22,7 @@ resource networkSecurityPerimeter_profile 'Microsoft.Network/networkSecurityPeri
 }
 
 resource nsp_accessRules 'Microsoft.Network/networkSecurityPerimeters/profiles/accessRules@2023-08-01-preview' = [
-  for (accessRule, index) in accessRules: {
+  for (accessRule, index) in (accessRules ?? []): {
     name: accessRule.name
     parent: networkSecurityPerimeter_profile
     properties: {
@@ -36,6 +36,15 @@ resource nsp_accessRules 'Microsoft.Network/networkSecurityPerimeters/profiles/a
     }
   }
 ]
+
+@description('The resource group the network security perimeter was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The resource ID of the deployed profile.')
+output resourceId string = networkSecurityPerimeter_profile.id
+
+@description('The name of the deployed profile.')
+output name string = networkSecurityPerimeter_profile.name
 
 type subscriptionIdType = {
   @description('Required. The subscription id.')
@@ -67,4 +76,4 @@ type accessRulesType = {
 
   @description('Optional. List of subscription ids.')
   subscriptions: subscriptionIdType
-}[]
+}[]?

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8183748185340254689"
+      "templateHash": "975290797092127058"
     },
     "name": "Network Security Perimeter",
     "description": "This module deploys a Network Security Perimeter (NSP).",
@@ -156,6 +156,7 @@
               "Enforced",
               "Learning"
             ],
+            "nullable": true,
             "metadata": {
               "description": "Optional. The access mode of the resource association."
             }
@@ -212,7 +213,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. Inbound address prefixes (IPv4/IPv6).s"
+              "description": "Optional. Inbound address prefixes (IPv4/IPv6).s."
             }
           },
           "emailAddresses": {
@@ -263,8 +264,8 @@
           }
         }
       },
+      "nullable": true,
       "metadata": {
-        "description": "The access rule type.",
         "__bicep_imported_from!": {
           "sourceTemplate": "profile/main.bicep"
         }
@@ -391,7 +392,7 @@
     "resourceAssociations": {
       "$ref": "#/definitions/resourceAssociationsType",
       "metadata": {
-        "description": "Required. Array of resource associations to create."
+        "description": "Optional. Array of resource associations to create."
       }
     },
     "diagnosticSettings": {
@@ -453,7 +454,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.network-nwsecurityperimeter.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -491,7 +492,7 @@
         "profile": {
           "id": "[format('{0}', resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('name'), coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].profile))]"
         },
-        "accessMode": "[coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].accessMode]"
+        "accessMode": "[coalesce(coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].accessMode, 'Learning')]"
       },
       "dependsOn": [
         "networkSecurityPerimeter",
@@ -598,7 +599,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5096305151549437249"
+              "templateHash": "10525677449958227084"
             },
             "name": "Network Security Perimeter Profile",
             "description": "This module deploys a Network Security Perimeter Profile.",
@@ -648,7 +649,7 @@
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. Inbound address prefixes (IPv4/IPv6).s"
+                      "description": "Optional. Inbound address prefixes (IPv4/IPv6).s."
                     }
                   },
                   "emailAddresses": {
@@ -699,9 +700,9 @@
                   }
                 }
               },
+              "nullable": true,
               "metadata": {
-                "__bicep_export!": true,
-                "description": "The access rule type."
+                "__bicep_export!": true
               }
             }
           },
@@ -741,23 +742,46 @@
             "nsp_accessRules": {
               "copy": {
                 "name": "nsp_accessRules",
-                "count": "[length(parameters('accessRules'))]"
+                "count": "[length(coalesce(parameters('accessRules'), createArray()))]"
               },
               "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
               "apiVersion": "2023-08-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('name'), parameters('accessRules')[copyIndex()].name)]",
+              "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('name'), coalesce(parameters('accessRules'), createArray())[copyIndex()].name)]",
               "properties": {
-                "addressPrefixes": "[tryGet(parameters('accessRules')[copyIndex()], 'addressPrefixes')]",
-                "direction": "[parameters('accessRules')[copyIndex()].direction]",
-                "emailAddresses": "[tryGet(parameters('accessRules')[copyIndex()], 'emailAddresses')]",
-                "fullyQualifiedDomainNames": "[tryGet(parameters('accessRules')[copyIndex()], 'fullyQualifiedDomainNames')]",
-                "phoneNumbers": "[tryGet(parameters('accessRules')[copyIndex()], 'phoneNumbers')]",
-                "serviceTags": "[tryGet(parameters('accessRules')[copyIndex()], 'serviceTags')]",
-                "subscriptions": "[tryGet(parameters('accessRules')[copyIndex()], 'subscriptions')]"
+                "addressPrefixes": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'addressPrefixes')]",
+                "direction": "[coalesce(parameters('accessRules'), createArray())[copyIndex()].direction]",
+                "emailAddresses": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'emailAddresses')]",
+                "fullyQualifiedDomainNames": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'fullyQualifiedDomainNames')]",
+                "phoneNumbers": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'phoneNumbers')]",
+                "serviceTags": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'serviceTags')]",
+                "subscriptions": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'subscriptions')]"
               },
               "dependsOn": [
                 "networkSecurityPerimeter_profile"
               ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the network security perimeter was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed profile."
+              },
+              "value": "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkPerimeterName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed profile."
+              },
+              "value": "[parameters('name')]"
             }
           }
         }
