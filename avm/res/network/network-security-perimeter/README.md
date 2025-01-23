@@ -516,7 +516,6 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Network Security Perimeter. |
-| [`resourceAssociations`](#parameter-resourceassociations) | array | Array of resource associations to create. |
 
 **Optional parameters**
 
@@ -527,6 +526,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`profiles`](#parameter-profiles) | array | Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed. |
+| [`resourceAssociations`](#parameter-resourceassociations) | array | Array of resource associations to create. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the NSG resource. |
 
@@ -536,55 +536,6 @@ Name of the Network Security Perimeter.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `resourceAssociations`
-
-Array of resource associations to create.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`privateLinkResource`](#parameter-resourceassociationsprivatelinkresource) | string | The resource identifier of the resource association. |
-| [`profile`](#parameter-resourceassociationsprofile) | string | The name of the resource association. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`accessMode`](#parameter-resourceassociationsaccessmode) | string | The access mode of the resource association. |
-
-### Parameter: `resourceAssociations.privateLinkResource`
-
-The resource identifier of the resource association.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `resourceAssociations.profile`
-
-The name of the resource association.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `resourceAssociations.accessMode`
-
-The access mode of the resource association.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Audit'
-    'Enforced'
-    'Learning'
-  ]
-  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -782,7 +733,7 @@ Whether network traffic is allowed or denied.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-profilesaccessrulesaddressprefixes) | array | Inbound address prefixes (IPv4/IPv6).s |
+| [`addressPrefixes`](#parameter-profilesaccessrulesaddressprefixes) | array | Inbound address prefixes (IPv4/IPv6).s. |
 | [`emailAddresses`](#parameter-profilesaccessrulesemailaddresses) | array | Outbound rules email address format. |
 | [`fullyQualifiedDomainNames`](#parameter-profilesaccessrulesfullyqualifieddomainnames) | array | Outbound rules fully qualified domain name format. |
 | [`phoneNumbers`](#parameter-profilesaccessrulesphonenumbers) | array | Outbound rules phone number format. |
@@ -812,7 +763,7 @@ The name of the access rule.
 
 ### Parameter: `profiles.accessRules.addressPrefixes`
 
-Inbound address prefixes (IPv4/IPv6).s
+Inbound address prefixes (IPv4/IPv6).s.
 
 - Required: No
 - Type: array
@@ -871,6 +822,55 @@ The name of the network security perimeter profile.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `resourceAssociations`
+
+Array of resource associations to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateLinkResource`](#parameter-resourceassociationsprivatelinkresource) | string | The resource identifier of the resource association. |
+| [`profile`](#parameter-resourceassociationsprofile) | string | The name of the resource association. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessMode`](#parameter-resourceassociationsaccessmode) | string | The access mode of the resource association. |
+
+### Parameter: `resourceAssociations.privateLinkResource`
+
+The resource identifier of the resource association.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `resourceAssociations.profile`
+
+The name of the resource association.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `resourceAssociations.accessMode`
+
+The access mode of the resource association.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Audit'
+    'Enforced'
+    'Learning'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 

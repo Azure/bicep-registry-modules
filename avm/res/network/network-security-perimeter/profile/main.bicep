@@ -43,7 +43,6 @@ type subscriptionIdType = {
 }[]?
 
 @export()
-@description('The access rule type.')
 type accessRulesType = {
   @description('Required. The name of the access rule.')
   name: string
@@ -51,7 +50,7 @@ type accessRulesType = {
   @description('Required. Direction that specifies whether the access rules is inbound/outbound.')
   direction: 'Inbound' | 'Outbound'
 
-  @description('Optional. Inbound address prefixes (IPv4/IPv6).s')
+  @description('Optional. Inbound address prefixes (IPv4/IPv6).s.')
   addressPrefixes: string[]?
 
   @description('Optional. Outbound rules email address format.')

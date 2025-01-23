@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 @description('Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed.')
 param profiles profilesType
 
-@description('Required. Array of resource associations to create.')
+@description('Optional. Array of resource associations to create.')
 param resourceAssociations resourceAssociationsType
 
 @description('Optional. The diagnostic settings of the service.')
@@ -60,7 +60,7 @@ var formattedRoleAssignments = [
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-networksecuritygroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.network-nwsecurityperimeter.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -106,7 +106,7 @@ resource networkSecurityPerimeter_resourceAssociations 'Microsoft.Network/networ
         #disable-next-line use-resource-id-functions
         id: '${resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', name, resourceAssociation.profile)}'
       }
-      accessMode: resourceAssociation.accessMode
+      accessMode: resourceAssociation.accessMode ?? 'Learning'
     }
     dependsOn: [
       networkSecurityPerimeter_profiles
@@ -237,5 +237,5 @@ type resourceAssociationsType = {
   profile: string
 
   @description('Optional. The access mode of the resource association.')
-  accessMode: 'Learning' | 'Audit' | 'Enforced'
+  accessMode: 'Learning' | 'Audit' | 'Enforced'?
 }[]?

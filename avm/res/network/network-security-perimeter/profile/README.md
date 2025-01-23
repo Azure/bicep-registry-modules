@@ -67,7 +67,7 @@ Static Members to create for the network group. Contains virtual networks to add
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-accessrulesaddressprefixes) | array | Inbound address prefixes (IPv4/IPv6).s |
+| [`addressPrefixes`](#parameter-accessrulesaddressprefixes) | array | Inbound address prefixes (IPv4/IPv6).s. |
 | [`emailAddresses`](#parameter-accessrulesemailaddresses) | array | Outbound rules email address format. |
 | [`fullyQualifiedDomainNames`](#parameter-accessrulesfullyqualifieddomainnames) | array | Outbound rules fully qualified domain name format. |
 | [`phoneNumbers`](#parameter-accessrulesphonenumbers) | array | Outbound rules phone number format. |
@@ -97,7 +97,7 @@ The name of the access rule.
 
 ### Parameter: `accessRules.addressPrefixes`
 
-Inbound address prefixes (IPv4/IPv6).s
+Inbound address prefixes (IPv4/IPv6).s.
 
 - Required: No
 - Type: array

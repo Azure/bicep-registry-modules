@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5096305151549437249"
+      "templateHash": "9411570515213964908"
     },
     "name": "Network Security Perimeter Profile",
     "description": "This module deploys a Network Security Perimeter Profile.",
@@ -56,7 +56,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. Inbound address prefixes (IPv4/IPv6).s"
+              "description": "Optional. Inbound address prefixes (IPv4/IPv6).s."
             }
           },
           "emailAddresses": {
@@ -108,8 +108,7 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true,
-        "description": "The access rule type."
+        "__bicep_export!": true
       }
     }
   },
