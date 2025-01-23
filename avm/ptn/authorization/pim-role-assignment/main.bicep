@@ -38,7 +38,7 @@ param targetRoleEligibilityScheduleInstanceId string = ''
 @sys.description('Optional. Ticket Info of the role eligibility.')
 param ticketInfo ticketInfoType?
 
-@sys.description('Optional. Schedule info of the role eligibility assignment.')
+@sys.description('Required. Schedule info of the role eligibility assignment.')
 param scheduleInfo scheduleInfoType
 
 @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to.')

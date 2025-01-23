@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2264747261940316043"
+      "templateHash": "17896703325979208691"
     },
     "name": "<Add module name>",
     "description": "<Add description>"
@@ -39,7 +39,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H"
+            "description": "Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H."
           }
         },
         "endDateTime": {
@@ -196,7 +196,7 @@
     "scheduleInfo": {
       "$ref": "#/definitions/scheduleInfoType",
       "metadata": {
-        "description": "Optional. Schedule info of the role eligibility assignment."
+        "description": "Required. Schedule info of the role eligibility assignment."
       }
     },
     "condition": {
@@ -299,7 +299,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10603070821192131693"
+              "templateHash": "3472269945089695290"
             },
             "name": " PIM Role Assignments (Management Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Management Group scope."
@@ -332,7 +332,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H"
+                    "description": "Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H."
                   }
                 },
                 "endDateTime": {
@@ -599,7 +599,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10664267379889324239"
+              "templateHash": "777676517902942222"
             },
             "name": "PIM Role Assignments (Subscription scope)",
             "description": "This module deploys a PIM Role Assignment at a Subscription scope."
@@ -632,7 +632,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H"
+                    "description": "Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H."
                   }
                 },
                 "endDateTime": {
@@ -907,7 +907,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6536365610380375961"
+              "templateHash": "16754171039560483844"
             },
             "name": "PIM Role Assignments (Resource Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Resource Group scope."
@@ -940,7 +940,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H"
+                    "description": "Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H."
                   }
                 },
                 "endDateTime": {

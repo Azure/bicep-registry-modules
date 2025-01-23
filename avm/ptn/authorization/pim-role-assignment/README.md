@@ -686,6 +686,7 @@ param ticketInfo = {
 | [`principalId`](#parameter-principalid) | string | The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity). |
 | [`requestType`](#parameter-requesttype) | string | The type of the role assignment eligibility request. |
 | [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | string | You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`scheduleInfo`](#parameter-scheduleinfo) | object | Schedule info of the role eligibility assignment. |
 
 **Optional parameters**
 
@@ -698,7 +699,6 @@ param ticketInfo = {
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`managementGroupId`](#parameter-managementgroupid) | string | Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | Name of the Resource Group to assign the RBAC role to. If Resource Group name is provided, and Subscription ID is provided, the module deploys at resource group level, therefore assigns the provided RBAC role to the resource group. |
-| [`scheduleInfo`](#parameter-scheduleinfo) | object | Schedule info of the role eligibility assignment. |
 | [`subscriptionId`](#parameter-subscriptionid) | string | Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription. |
 | [`targetRoleEligibilityScheduleId`](#parameter-targetroleeligibilityscheduleid) | string | The resultant role eligibility assignment id or the role eligibility assignment id being updated. |
 | [`targetRoleEligibilityScheduleInstanceId`](#parameter-targetroleeligibilityscheduleinstanceid) | string | The role eligibility assignment instance id being updated. |
@@ -737,6 +737,71 @@ The type of the role assignment eligibility request.
 You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `scheduleInfo`
+
+Schedule info of the role eligibility assignment.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`expiration`](#parameter-scheduleinfoexpiration) | object | The expiry information for the role eligibility. |
+| [`startDateTime`](#parameter-scheduleinfostartdatetime) | string | Start DateTime of the role eligibility assignment. |
+
+### Parameter: `scheduleInfo.expiration`
+
+The expiry information for the role eligibility.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`duration`](#parameter-scheduleinfoexpirationduration) | string | Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H. |
+| [`endDateTime`](#parameter-scheduleinfoexpirationenddatetime) | string | End DateTime of the role eligibility assignment. |
+| [`type`](#parameter-scheduleinfoexpirationtype) | string | Type of the role eligibility assignment expiration. |
+
+### Parameter: `scheduleInfo.expiration.duration`
+
+Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H.
+
+- Required: No
+- Type: string
+
+### Parameter: `scheduleInfo.expiration.endDateTime`
+
+End DateTime of the role eligibility assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `scheduleInfo.expiration.type`
+
+Type of the role eligibility assignment expiration.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDateTime'
+    'AfterDuration'
+    'NoExpiration'
+  ]
+  ```
+
+### Parameter: `scheduleInfo.startDateTime`
+
+Start DateTime of the role eligibility assignment.
+
+- Required: No
 - Type: string
 
 ### Parameter: `condition`
@@ -800,71 +865,6 @@ Name of the Resource Group to assign the RBAC role to. If Resource Group name is
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `scheduleInfo`
-
-Schedule info of the role eligibility assignment.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`expiration`](#parameter-scheduleinfoexpiration) | object | The expiry information for the role eligibility. |
-| [`startDateTime`](#parameter-scheduleinfostartdatetime) | string | Start DateTime of the role eligibility assignment. |
-
-### Parameter: `scheduleInfo.expiration`
-
-The expiry information for the role eligibility.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`duration`](#parameter-scheduleinfoexpirationduration) | string | Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H |
-| [`endDateTime`](#parameter-scheduleinfoexpirationenddatetime) | string | End DateTime of the role eligibility assignment. |
-| [`type`](#parameter-scheduleinfoexpirationtype) | string | Type of the role eligibility assignment expiration. |
-
-### Parameter: `scheduleInfo.expiration.duration`
-
-Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H
-
-- Required: No
-- Type: string
-
-### Parameter: `scheduleInfo.expiration.endDateTime`
-
-End DateTime of the role eligibility assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `scheduleInfo.expiration.type`
-
-Type of the role eligibility assignment expiration.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AfterDateTime'
-    'AfterDuration'
-    'NoExpiration'
-  ]
-  ```
-
-### Parameter: `scheduleInfo.startDateTime`
-
-Start DateTime of the role eligibility assignment.
-
-- Required: No
-- Type: string
 
 ### Parameter: `subscriptionId`
 
