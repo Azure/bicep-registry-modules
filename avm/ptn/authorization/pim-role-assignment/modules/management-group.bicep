@@ -1,4 +1,4 @@
-metadata name = 'Role Assignments (Management Group scope)'
+metadata name = ' PIM Role Assignments (Management Group scope)'
 metadata description = 'This module deploys a PIM Role Assignment at a Management Group scope.'
 
 targetScope = 'managementGroup'
@@ -69,8 +69,8 @@ resource pimRoleAssignment 'Microsoft.Authorization/roleEligibilityScheduleReque
   name: guid(managementGroupId, roleDefinitionIdVar, principalId)
   properties: {
     principalId: principalId
-    requestType: requestType
     roleDefinitionId: roleDefinitionIdVar
+    requestType: requestType
     condition: !empty(condition) ? condition : null
     conditionVersion: !empty(conditionVersion) && !empty(condition) ? conditionVersion : null
     justification: justification
@@ -81,11 +81,11 @@ resource pimRoleAssignment 'Microsoft.Authorization/roleEligibilityScheduleReque
   }
 }
 
-@sys.description('The GUID of the Role Assignment.')
+@sys.description('The GUID of the PIM Role Assignment.')
 output name string = pimRoleAssignment.name
 
-@sys.description('The resource ID of the Role Assignment.')
+@sys.description('The resource ID of the PIM Role Assignment.')
 output resourceId string = pimRoleAssignment.id
 
-@sys.description('The scope this Role Assignment applies to.')
+@sys.description('The scope this PIM Role Assignment applies to.')
 output scope string = az.resourceId('Microsoft.Management/managementGroups', managementGroupId)

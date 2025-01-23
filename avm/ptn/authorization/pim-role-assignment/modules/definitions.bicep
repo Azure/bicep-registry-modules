@@ -26,7 +26,7 @@ type scheduleInfoType = {
 
 @export()
 type scheduleInfoExpirationType = {
-  @sys.description('Optional. Duration of the role eligibility assignment in TimeSpan format.')
+  @sys.description('Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H')
   duration: string?
 
   @sys.description('Optional. End DateTime of the role eligibility assignment.')

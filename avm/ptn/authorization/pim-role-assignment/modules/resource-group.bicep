@@ -1,7 +1,9 @@
-metadata name = 'Role Assignments (Resource Group scope)'
-metadata description = 'This module deploys a Role Assignment at a Resource Group scope.'
+metadata name = 'PIM Role Assignments (Resource Group scope)'
+metadata description = 'This module deploys a PIM Role Assignment at a Resource Group scope.'
 
 targetScope = 'resourceGroup'
+
+import { requestTypeType, scheduleInfoType, scheduleInfoExpirationType, ticketInfoType } from 'definitions.bicep'
 
 @sys.description('Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleDefinitionIdOrName string
@@ -15,11 +17,23 @@ param resourceGroupName string = resourceGroup().name
 @sys.description('Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment.')
 param subscriptionId string = subscription().subscriptionId
 
-@sys.description('Optional. The description of the role assignment.')
-param description string = ''
+@sys.description('Optional. The justification for the role eligibility.')
+param justification string = ''
 
-@sys.description('Optional. ID of the delegated managed identity resource.')
-param delegatedManagedIdentityResourceId string = ''
+@sys.description('Required. The type of the role assignment eligibility request.')
+param requestType requestTypeType
+
+@sys.description('Optional. The resultant role eligibility assignment id or the role eligibility assignment id being updated.')
+param targetRoleEligibilityScheduleId string = ''
+
+@sys.description('Optional. The role eligibility assignment instance id being updated.')
+param targetRoleEligibilityScheduleInstanceId string = ''
+
+@sys.description('Optional. Ticket Info of the role eligibility.')
+param ticketInfo ticketInfoType?
+
+@sys.description('Optional. Schedule info of the role eligibility assignment.')
+param scheduleInfo scheduleInfoType
 
 @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to.')
 param condition string = ''
@@ -29,17 +43,6 @@ param condition string = ''
   '2.0'
 ])
 param conditionVersion string = '2.0'
-
-@sys.description('Optional. The principal type of the assigned principal ID.')
-@allowed([
-  'ServicePrincipal'
-  'Group'
-  'User'
-  'ForeignGroup'
-  'Device'
-  ''
-])
-param principalType string
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -57,29 +60,30 @@ var builtInRoleNames = {
 
 var roleDefinitionIdVar = (builtInRoleNames[?roleDefinitionIdOrName] ?? roleDefinitionIdOrName)
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource pimRoleAssignment 'Microsoft.Authorization/roleEligibilityScheduleRequests@2022-04-01-preview' = {
   name: guid(subscriptionId, resourceGroupName, roleDefinitionIdVar, principalId)
   properties: {
     roleDefinitionId: roleDefinitionIdVar
     principalId: principalId
-    description: !empty(description) ? description : null
-    principalType: !empty(principalType) ? any(principalType) : null
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
-      ? delegatedManagedIdentityResourceId
-      : null
+    requestType: requestType
     conditionVersion: !empty(conditionVersion) && !empty(condition) ? conditionVersion : null
     condition: !empty(condition) ? condition : null
+    justification: justification
+    scheduleInfo: scheduleInfo
+    targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
+    targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
+    ticketInfo: ticketInfo
   }
 }
 
-@sys.description('The GUID of the Role Assignment.')
-output name string = roleAssignment.name
+@sys.description('The GUID of the PIM Role Assignment.')
+output name string = pimRoleAssignment.name
 
-@sys.description('The resource ID of the Role Assignment.')
-output resourceId string = roleAssignment.id
+@sys.description('The resource ID of the PIM Role Assignment.')
+output resourceId string = pimRoleAssignment.id
 
-@sys.description('The name of the resource group the role assignment was applied at.')
+@sys.description('The name of the resource group the PIM role assignment was applied at.')
 output resourceGroupName string = resourceGroup().name
 
-@sys.description('The scope this Role Assignment applies to.')
+@sys.description('The scope this PIM Role Assignment applies to.')
 output scope string = resourceGroup().id
