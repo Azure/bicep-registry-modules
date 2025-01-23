@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10525677449958227084"
+      "templateHash": "13454714808954601034"
     },
     "name": "Network Security Perimeter Profile",
     "description": "This module deploys a Network Security Perimeter Profile.",
@@ -107,7 +107,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true
       }
@@ -129,6 +128,7 @@
     },
     "accessRules": {
       "$ref": "#/definitions/accessRulesType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
       }

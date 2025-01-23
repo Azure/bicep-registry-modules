@@ -10,7 +10,7 @@ param networkPerimeterName string
 param name string
 
 @description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
-param accessRules accessRulesType
+param accessRules accessRulesType?
 
 resource networkSecurityPerimeter 'Microsoft.Network/networkSecurityPerimeters@2023-08-01-preview' existing = {
   name: networkPerimeterName
@@ -76,4 +76,4 @@ type accessRulesType = {
 
   @description('Optional. List of subscription ids.')
   subscriptions: subscriptionIdType
-}[]?
+}[]
