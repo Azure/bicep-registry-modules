@@ -8,11 +8,11 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -64,7 +64,7 @@ param defaultToOAuthAuthentication bool = false
 @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true.')
 param allowSharedKeyAccess bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -138,11 +138,11 @@ param isLocalUserEnabled bool = false
 @description('Optional. If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableNfsV3 bool = false
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -171,7 +171,7 @@ param publicNetworkAccess string = ''
 @description('Optional. Allows HTTPS traffic only to storage service if sets to true.')
 param supportsHttpsTrafficOnly bool = true
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -499,7 +499,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -720,7 +720,7 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
