@@ -237,9 +237,11 @@ runs:
             Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFolderPath"
             $excludeReason = Get-Content $passCiFilePath
             if ($excludeReason -ne $null) {
-              Write-Warning -Message "Reason for exclusion: $excludeReason"
-              echo "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason" >> $env:VALIDATE_TEST_EXECUTION_RESULT
-              return 1
+              $excludeMessage = "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason"
+              Write-Warning -Message $excludeMessage
+              echo "excludeMessage >> $env:VALIDATE_TEST_EXECUTION_RESULT
+              Write-Error -Message $excludeMessage
+              exit 1
             }
             Write-Output "skip_deployment_ci=true" >> $env:GITHUB_ENV
           } else {
