@@ -1,6 +1,5 @@
 metadata name = 'Azure Stack HCI Cluster Deployment Settings'
 metadata description = 'This module deploys an Azure Stack HCI Cluster Deployment Settings resource.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. The name of the deployment settings.')
 @allowed([

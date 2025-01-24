@@ -294,49 +294,51 @@ If (!$testNodeInternetConnection) {
 
 ## create jobs for each node to initialize Azure Arc
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
-$arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
-    $ErrorActionPreference = 'Stop'
+$arcInitializationJobs = Get-VM | ForEach-Object {
+    Invoke-Command -VMName $_.Name -Credential $adminCred {
+        $ErrorActionPreference = 'Stop'
 
-    $t = $args[0]
-    $subscriptionId = $args[1]
-    $resourceGroupName = $args[2]
-    $tenantId = $args[3]
-    $location = $args[4]
-    $accountName = $args[5]
-    $arcGatewayId = $args[6]
-    $proxyServerEndpoint = $args[7]
-    $proxyBypassString = $args[8]
+        $t = $args[0]
+        $subscriptionId = $args[1]
+        $resourceGroupName = $args[2]
+        $tenantId = $args[3]
+        $location = $args[4]
+        $accountName = $args[5]
+        $arcGatewayId = $args[6]
+        $proxyServerEndpoint = $args[7]
+        $proxyBypassString = $args[8]
 
-    $optionalParameters = @{}
+        $optionalParameters = @{}
 
-    If ($arcGatewayId) {
-        $optionalParameters += @{
-            'arcGatewayId' = $arcGatewayId
+        If ($arcGatewayId) {
+            $optionalParameters += @{
+                'arcGatewayId' = $arcGatewayId
+            }
         }
-    }
-    If ($proxyServerEndpoint) {
-        $optionalParameters += @{
-            'proxy'       = $proxyServerEndpoint
-            'proxyBypass' = $proxyBypassString
+        If ($proxyServerEndpoint) {
+            $optionalParameters += @{
+                'proxy'       = $proxyServerEndpoint
+                'proxyBypass' = $proxyBypassString
+            }
         }
-    }
 
-    #wait for bootstrap service to be reachable
-    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    While (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
-        Write-Host 'Waiting for bootstrap service at 127.0.0.1:9098 to be reachable...'
-        Start-Sleep -Seconds 30
-    }
-    If ($stopwatch.Elapsed.TotalMinutes -ge 30) {
-        Write-Error 'Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes. Exiting...' -ErrorAction Stop
-    }
+        #wait for bootstrap service to be reachable
+        $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+        While (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
+            Write-Host 'Waiting for bootstrap service at 127.0.0.1:9098 to be reachable...'
+            Start-Sleep -Seconds 30
+        }
+        If ($stopwatch.Elapsed.TotalMinutes -ge 30) {
+            Write-Error 'Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes. Exiting...' -ErrorAction Stop
+        }
 
-    try {
-        Invoke-AzStackHciArcInitialization -SubscriptionID $subscriptionId -ResourceGroup $resourceGroupName -TenantID $tenantId -Cloud AzureCloud -AccountID $accountName -ArmAccessToken $t -Region $location -ErrorAction Stop @optionalParameters
-    } catch {
-        Write-Error $_ -ErrorAction Stop
-    }
-} -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $accountName, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
+        try {
+            Invoke-AzStackHciArcInitialization -SubscriptionID $subscriptionId -ResourceGroup $resourceGroupName -TenantID $tenantId -Cloud AzureCloud -AccountID $accountName -ArmAccessToken $t -Region $location -ErrorAction Stop @optionalParameters
+        } catch {
+            Write-Error $_ -ErrorAction Stop
+        }
+    } -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $accountName, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
+}
 
 log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
@@ -346,7 +348,7 @@ $arcInitializationJobs | Wait-Job -Timeout 1800
 log 'Checking status of Azure Arc initialization jobs...'
 $arcInitializationJobs | ForEach-Object {
     $job = $_
-    log "[$($job.ComputerName)] Job output (Receive-Job): '$($job | Receive-Job -Keep -ErrorAction Continue | Out-String)'"
+    log "[$($job.Location)] Job output (Receive-Job): '$($job | Receive-Job -Keep -ErrorAction Continue | Out-String)'"
     Get-Job -Id $job.Id -IncludeChildJob | Receive-Job -ErrorAction SilentlyContinue | ForEach-Object {
         If ($_.Exception -or $_.state -eq 'Failed') {
             log "Azure Arc initialization failed on node '$($job.Location)' with error: $($_.Exception.Message)"
