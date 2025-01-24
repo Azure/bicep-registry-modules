@@ -88,6 +88,9 @@ param functionAppSettings object = {}
 @description('Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present.')
 param customDomains array = []
 
+@description('Optional. The public network access settings for the static site. `Disabled` is configured by default.')
+param publicNetworkAccess string = 'Disabled'
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -155,7 +158,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource staticSite 'Microsoft.Web/staticSites@2021-03-01' = {
+resource staticSite 'Microsoft.Web/staticSites@2024-04-01' = {
   name: name
   location: location
   tags: tags
@@ -174,6 +177,7 @@ resource staticSite 'Microsoft.Web/staticSites@2021-03-01' = {
     repositoryToken: repositoryToken
     repositoryUrl: repositoryUrl
     templateProperties: templateProperties
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
