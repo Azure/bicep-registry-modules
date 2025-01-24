@@ -213,7 +213,39 @@ runs:
 
     # [Deployment validation] task(s)
     # -------------------------------
+    - name: "Validate Test Execution"
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # the first step is to check, if the deployment should be bypassed
+
+          # Resolve template file path
+          $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+
+          # Determine if $moduleTestFilePath is a directory or a file
+          if (Test-Path $moduleTestFilePath -PathType Container) {
+            $moduleTestFolderPath = $moduleTestFilePath
+          } else {
+            $moduleTestFolderPath = Split-Path $moduleTestFilePath
+          }
+
+          # Check if the deployment test should be bypassed
+          $passCiFilePath = Join-Path $moduleTestFolderPath '.e2eignore'
+          if (Test-Path $passCiFilePath) {
+            Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFolderPath"
+            $excludeReason = Get-Content $passCiFilePath
+            if ($excludeReason -ne $null) {
+              Write-Warning -Message "Reason for exclusion: $excludeReason"
+            }
+            Write-Output "skip_deployment_ci=true" >> $env:GITHUB_ENV
+          } else {
+            Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFolderPath" -Verbose
+            Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
+          }
+
     - name: "Validate template file"
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -293,6 +325,7 @@ runs:
     # [Deployment execution] task(s)
     # ------------------------------
     - name: "Deploy template file"
+      if: env.skip_deployment_ci == 'false'
       id: deploy_step
       uses: azure/powershell@v2
       with:
@@ -387,6 +420,7 @@ runs:
     # [Post-Deployment test] task(s)
     # ------------------------------
     - name: "Run post-deployment Pester tests"
+      if: env.skip_deployment_ci == 'false'
       id: pester_run_step
       shell: pwsh
       run: |
@@ -457,7 +491,7 @@ runs:
         }
 
     - name: "Output to GitHub job summaries"
-      if: steps.pester_run_step.outputs.formattedPesterResultsPath != ''
+      if: env.skip_deployment_ci == 'false' && steps.pester_run_step.outputs.formattedPesterResultsPath != ''
       shell: pwsh
       run: |
         # Grouping task logs
