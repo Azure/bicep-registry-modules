@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "602726199400096960"
+      "version": "0.32.4.45862",
+      "templateHash": "7267587823032816737"
     },
     "name": "Private Endpoints",
-    "description": "This module deploys a Private Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Private Endpoint."
   },
   "definitions": {
     "privateDnsZoneGroupType": {
@@ -215,7 +214,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -313,7 +312,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -566,12 +565,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "12329174801198479603"
+              "version": "0.32.4.45862",
+              "templateHash": "15534698908285836761"
             },
             "name": "Private Endpoint Private DNS Zone Groups",
-            "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private Endpoint Private DNS Zone Group."
           },
           "definitions": {
             "privateDnsZoneGroupConfigType": {
@@ -649,10 +647,7 @@
               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
               "properties": {
                 "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
-              },
-              "dependsOn": [
-                "privateEndpoint"
-              ]
+              }
             }
           },
           "outputs": {
@@ -714,7 +709,7 @@
       },
       "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
     },
-    "customDnsConfig": {
+    "customDnsConfigs": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/customDnsConfigType"

@@ -1,6 +1,5 @@
 metadata name = 'Static Web App Site Linked Backends'
 metadata description = 'This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The resource ID of the backend linked to the static site.')
 param backendResourceId string

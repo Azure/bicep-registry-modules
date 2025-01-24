@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "832235689182152716"
+      "version": "0.32.4.45862",
+      "templateHash": "3784464033988272421"
     },
     "name": "Public DNS Zone PTR record",
-    "description": "This module deploys a Public DNS Zone PTR record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone PTR record."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -165,10 +164,7 @@
         "metadata": "[parameters('metadata')]",
         "PTRRecords": "[parameters('ptrRecords')]",
         "TTL": "[parameters('ttl')]"
-      },
-      "dependsOn": [
-        "dnsZone"
-      ]
+      }
     },
     "PTR_roleAssignments": {
       "copy": {

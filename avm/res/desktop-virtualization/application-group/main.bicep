@@ -1,6 +1,5 @@
 metadata name = 'Azure Virtual Desktop Application Group'
 metadata description = 'This module deploys an Azure Virtual Desktop Application Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the Application Group.')
 @minLength(3)

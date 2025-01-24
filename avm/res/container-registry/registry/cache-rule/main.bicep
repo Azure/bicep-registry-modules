@@ -1,6 +1,5 @@
 metadata name = 'Container Registries Cache'
 metadata description = 'Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string

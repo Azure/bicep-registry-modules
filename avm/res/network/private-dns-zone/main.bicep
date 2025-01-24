@@ -1,6 +1,5 @@
 metadata name = 'Private DNS Zones'
 metadata description = 'This module deploys a Private DNS zone.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Private DNS zone name.')
 param name string
@@ -223,6 +222,7 @@ module privateDnsZone_virtualNetworkLinks 'virtual-network-link/main.bicep' = [
       location: virtualNetworkLink.?location ?? 'global'
       registrationEnabled: virtualNetworkLink.?registrationEnabled ?? false
       tags: virtualNetworkLink.?tags ?? tags
+      resolutionPolicy: virtualNetworkLink.?resolutionPolicy
     }
   }
 ]
@@ -511,4 +511,7 @@ type virtualNetworkLinkType = {
 
   @description('Optional. Resource tags.')
   tags: object?
+
+  @description('Optional. The resolution type of the private-dns-zone fallback machanism.')
+  resolutionPolicy: ('Default' | 'NxDomainRedirect')?
 }[]?

@@ -5,86 +5,87 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "7267638032222261061"
+      "version": "0.32.4.45862",
+      "templateHash": "15336007196805099128"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
-    "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
   },
   "definitions": {
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     }
   },
   "parameters": {
@@ -453,12 +454,16 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "backupVaultId": {
+    "backupVaultResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The Id of the Backup Vault."
@@ -468,7 +473,32 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Boolean to enable replication."
+        "description": "Optional. Enables replication."
+      }
+    },
+    "smbEncryption": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume."
+      }
+    },
+    "smbContinuouslyAvailable": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
+      }
+    },
+    "smbNonBrowsable": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
       }
     }
   },
@@ -493,10 +523,7 @@
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
       "apiVersion": "2024-03-01",
-      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
-      "dependsOn": [
-        "netAppAccount"
-      ]
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
     },
     "netAppAccount": {
       "existing": true,
@@ -509,12 +536,11 @@
       "apiVersion": "2024-03-01",
       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
       "location": "[parameters('location')]",
-      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', parameters('backupVaultId')), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject()))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
+      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', parameters('backupVaultResourceId')), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject()))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'))))]",
       "zones": "[parameters('zones')]",
       "dependsOn": [
         "backupPolicies",
         "backupVaults",
-        "netAppAccount::capacityPool",
         "snapshotPolicies"
       ]
     },
@@ -524,10 +550,7 @@
       "apiVersion": "2024-03-01",
       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
       "location": "[parameters('backupVaultLocation')]",
-      "properties": {},
-      "dependsOn": [
-        "netAppAccount"
-      ]
+      "properties": {}
     },
     "backups": {
       "condition": "[parameters('backupEnabled')]",
@@ -598,12 +621,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "13036318518380500677"
+              "version": "0.32.4.45862",
+              "templateHash": "2321320275404095362"
             },
             "name": "Azure NetApp Files Backup Policy",
-            "description": "This module deploys a Backup Policy for Azure NetApp File.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Backup Policy for Azure NetApp File."
           },
           "parameters": {
             "netAppAccountName": {
@@ -769,12 +791,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "12832989826838310090"
+              "version": "0.32.4.45862",
+              "templateHash": "17538391796648994915"
             },
             "name": "Azure NetApp Files Snapshot Policy",
-            "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
           },
           "parameters": {
             "netAppAccountName": {

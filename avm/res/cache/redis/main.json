@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13329670122964938480"
+      "version": "0.32.4.45862",
+      "templateHash": "5511708629648465018"
     },
     "name": "Redis Cache",
-    "description": "This module deploys a Redis Cache.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Redis Cache."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -513,6 +512,93 @@
           }
         }
       }
+    },
+    "secretsExportConfigurationType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
+          }
+        },
+        "primaryAccessKeyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primaryAccessKey secret name to create."
+          }
+        },
+        "primaryConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primaryConnectionString secret name to create."
+          }
+        },
+        "secondaryAccessKeyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondaryAccessKey secret name to create."
+          }
+        },
+        "secondaryConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondaryConnectionString secret name to create."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "_1.secretSetOutputType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        },
+        "secretUriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI with version of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
+    },
+    "secretsOutputType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "$ref": "#/definitions/_1.secretSetOutputType",
+        "metadata": {
+          "description": "An exported secret's references."
+        }
+      },
+      "metadata": {
+        "description": "A map of the exported secrets",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -748,6 +834,13 @@
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Array of access policy assignments."
+      }
+    },
+    "secretsExportConfiguration": {
+      "$ref": "#/definitions/secretsExportConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
       }
     }
   },
@@ -1727,12 +1820,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "4764248912015671674"
+              "version": "0.32.4.45862",
+              "templateHash": "3113734842268106241"
             },
             "name": "Redis Cache Linked Servers",
-            "description": "This module connects a primary and secondary Redis Cache together for geo-replication.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
           },
           "parameters": {
             "redisCacheName": {
@@ -1826,6 +1918,153 @@
         "redis",
         "redis_privateEndpoints"
       ]
+    },
+    "secretsExport": {
+      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+          },
+          "secretsToSet": {
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryAccessKeyName, 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-03-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryConnectionStringName, 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-03-01').primaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryAccessKeyName, 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-03-01').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryConnectionStringName, 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-03-01').secondaryKey, reference('redis').hostName))), createArray()))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "5045365139782277955"
+            }
+          },
+          "definitions": {
+            "secretSetOutputType": {
+              "type": "object",
+              "properties": {
+                "secretResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resourceId of the exported secret."
+                  }
+                },
+                "secretUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI of the exported secret."
+                  }
+                },
+                "secretUriWithVersion": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI with version of the exported secret."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                }
+              }
+            },
+            "secretToSetType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the secret to set."
+                  }
+                },
+                "value": {
+                  "type": "securestring",
+                  "metadata": {
+                    "description": "Required. The value of the secret to set."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Key Vault to set the secrets in."
+              }
+            },
+            "secretsToSet": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretToSetType"
+              },
+              "metadata": {
+                "description": "Required. The secrets to set in the Key Vault."
+              }
+            }
+          },
+          "resources": {
+            "keyVault": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "secrets": {
+              "copy": {
+                "name": "secrets",
+                "count": "[length(parameters('secretsToSet'))]"
+              },
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
+              "properties": {
+                "value": "[parameters('secretsToSet')[copyIndex()].value]"
+              }
+            }
+          },
+          "outputs": {
+            "secretsSet": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretSetOutputType"
+              },
+              "metadata": {
+                "description": "The references to the secrets exported to the provided Key Vault."
+              },
+              "copy": {
+                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
+                "input": {
+                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
+                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]",
+                  "secretUriWithVersion": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUriWithVersion]"
+                }
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis"
+      ]
     }
   },
   "outputs": {
@@ -1900,6 +2139,13 @@
           "networkInterfaceIds": "[reference(format('redis_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
+    },
+    "exportedSecrets": {
+      "$ref": "#/definitions/secretsOutputType",
+      "metadata": {
+        "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
+      },
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     }
   }
 }

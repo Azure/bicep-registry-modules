@@ -1,6 +1,5 @@
 metadata name = 'Azure Cosmos DB account tables'
 metadata description = 'This module deploys a table within an Azure Cosmos DB Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the table.')
 param name string

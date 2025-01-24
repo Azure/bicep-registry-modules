@@ -1,6 +1,5 @@
 metadata name = 'DBforPostgreSQL Flexible Server Administrators'
 metadata description = 'This module deploys a DBforPostgreSQL Flexible Server Administrator.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.')
 param flexibleServerName string
@@ -23,11 +22,11 @@ param principalType string
 @description('Optional. The tenantId of the Active Directory administrator.')
 param tenantId string = tenant().tenantId
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
   name: flexibleServerName
 }
 
-resource administrator 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2022-12-01' = {
+resource administrator 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2024-08-01' = {
   name: objectId
   parent: flexibleServer
   properties: {
