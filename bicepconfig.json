@@ -7,7 +7,7 @@
     "analyzers": {
         "core": {
             "rules": {
-                "use-most-recent-versions": {
+                "use-recent-module-versions": {
                     "level": "error"
                 }
             }
