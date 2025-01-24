@@ -220,24 +220,6 @@ type ipConfigurationType = {
   }
 }
 
-// @export()
-// type manualPrivateLinkServiceConnectionType = {
-//   @description('Required. The name of the private link service connection.')
-//   name: string
-
-//   @description('Required. Properties of private link service connection.')
-//   properties: {
-//     @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
-//     groupIds: string[]
-
-//     @description('Required. The resource id of private link service.')
-//     privateLinkServiceId: string
-
-//     @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
-//     requestMessage: string?
-//   }
-// }
-
 @export()
 type privateLinkServiceConnectionType = {
   @description('Required. The name of the private link service connection.')
