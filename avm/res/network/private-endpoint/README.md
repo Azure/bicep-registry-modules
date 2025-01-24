@@ -49,18 +49,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     // Required parameters
     name: 'npemin001'
     subnetResourceId: '<subnetResourceId>'
-    // Non-required parameters
-    privateLinkServiceConnections: [
-      {
-        name: 'npemin001'
-        properties: {
-          groupIds: [
-            'vault'
-          ]
-          privateLinkServiceId: '<privateLinkServiceId>'
-        }
-      }
-    ]
   }
 }
 ```
@@ -83,20 +71,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
-    },
-    // Non-required parameters
-    "privateLinkServiceConnections": {
-      "value": [
-        {
-          "name": "npemin001",
-          "properties": {
-            "groupIds": [
-              "vault"
-            ],
-            "privateLinkServiceId": "<privateLinkServiceId>"
-          }
-        }
-      ]
     }
   }
 }
@@ -115,18 +89,6 @@ using 'br/public:avm/res/network/private-endpoint:<version>'
 // Required parameters
 param name = 'npemin001'
 param subnetResourceId = '<subnetResourceId>'
-// Non-required parameters
-param privateLinkServiceConnections = [
-  {
-    name: 'npemin001'
-    properties: {
-      groupIds: [
-        'vault'
-      ]
-      privateLinkServiceId: '<privateLinkServiceId>'
-    }
-  }
-]
 ```
 
 </details>

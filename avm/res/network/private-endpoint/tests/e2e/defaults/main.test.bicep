@@ -53,17 +53,17 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      privateLinkServiceConnections: [
-        {
-          name: '${namePrefix}${serviceShort}001'
-          properties: {
-            privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
-            groupIds: [
-              'vault'
-            ]
-          }
-        }
-      ]
+      // privateLinkServiceConnections: [
+      //   {
+      //     name: '${namePrefix}${serviceShort}001'
+      //     properties: {
+      //       privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
+      //       groupIds: [
+      //         'vault'
+      //       ]
+      //     }
+      //   }
+      // ]
     }
   }
 ]
