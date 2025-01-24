@@ -1,8 +1,8 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
+@description('Required. The name of the Azure Container Registry to pre-create before the actual test.')
+param acrName string
 
 @description('Required. The name of the Key Vault referenced by the ACR Credential Set.')
 param keyVaultName string
@@ -14,11 +14,6 @@ param userNameSecret string = newGuid()
 @description('Optional. Password secret used by the ACR Credential Set deployment. The value is a GUID.')
 @secure()
 param passwordSecret string = newGuid()
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
-  location: location
-}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
@@ -90,10 +85,10 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 output userNameSecretURI string = keyVault::userName.properties.secretUri
 
 @description('The password key vault secret URI.')
-output pwdSecretURI string = keyVaulSecretPwd.properties.secretUri
+output pwdSecretURI string = keyVault::password.properties.secretUri
 
 @description('The name of the Azure Container Registry.')
 output acrName string = acr.name
 
 @description('The resource ID of the Azure Container Registry Credential Set.')
-output acrCredentialSetResourceId string = acrCredentialSet.id
+output acrCredentialSetResourceId string = acr::credentialSet.id
