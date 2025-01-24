@@ -217,7 +217,7 @@ runs:
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
-        continueOnError: true
+        errorActionPreference: "SilentlyContinue"
         inlineScript: |
           # the first step is to check, if the deployment should be bypassed
 
