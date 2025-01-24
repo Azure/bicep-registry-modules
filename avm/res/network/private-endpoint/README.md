@@ -50,7 +50,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     name: 'npemin001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    location: '<location>'
     privateLinkServiceConnections: [
       {
         name: 'npemin001'
@@ -86,9 +85,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "privateLinkServiceConnections": {
       "value": [
         {
@@ -120,7 +116,6 @@ using 'br/public:avm/res/network/private-endpoint:<version>'
 param name = 'npemin001'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param location = '<location>'
 param privateLinkServiceConnections = [
   {
     name: 'npemin001'
@@ -464,7 +459,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       }
     ]
-    location: '<location>'
     privateLinkServiceConnections: [
       {
         name: 'npepls001'
@@ -510,9 +504,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "privateLinkServiceConnections": {
       "value": [
         {
@@ -552,7 +543,6 @@ param ipConfigurations = [
     }
   }
 ]
-param location = '<location>'
 param privateLinkServiceConnections = [
   {
     name: 'npepls001'
@@ -598,11 +588,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     privateDnsZoneGroup: {
       privateDnsZoneGroupConfigs: [
         {
@@ -670,15 +655,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "privateDnsZoneGroup": {
       "value": {
         "privateDnsZoneGroupConfigs": [
@@ -740,11 +716,6 @@ param ipConfigurations = [
     }
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param privateDnsZoneGroup = {
   privateDnsZoneGroupConfigs: [
     {
@@ -1271,7 +1242,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `customDnsConfig` | array | The custom DNS configurations of the private endpoint. |
+| `customDnsConfigs` | array | The custom DNS configurations of the private endpoint. |
 | `groupId` | string | The group Id for the private endpoint Group. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the private endpoint. |
@@ -1285,7 +1256,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
