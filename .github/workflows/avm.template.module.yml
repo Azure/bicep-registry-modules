@@ -141,8 +141,8 @@ jobs:
   #############################
   #   Deployment validation   #
   #############################
-  job_module_deploy_evaluation:
-    name: "Module Test Evaluation"
+  job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "Deploy [${{ matrix.testCases.name}}]"
     environment: avm-validation
     runs-on: ubuntu-latest
     if: |
@@ -155,55 +155,6 @@ jobs:
       - job_module_static_validation
       - job_psrule_test_waf_reliability
       - job_psrule_test_waf_security_cb
-    outputs:
-      output_moduleTestFilePaths: ${{ steps.validateTestExecution.outputs.output_skipDeploymentTestcases }}
-    steps:
-      - name: "Validate Test Execution"
-        id: validateTestExecution
-        uses: azure/powershell@v2
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            # Check, if the deployment should be bypassed.
-            $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ matrix.testCases.path }}]'
-            Write-Ouput "Module Test File Path: $moduleTestFilePath" -Verbose
-
-            # Determine if $moduleTestFilePath is a directory or a file
-            if (Test-Path $moduleTestFilePath -PathType Container) {
-              $moduleTestFolderPath = $moduleTestFilePath
-            } else {
-              $moduleTestFolderPath = Split-Path $moduleTestFilePath
-            }
-
-            # Check if the deployment test should be bypassed. temporarily store data in env, then pass to output
-            $passCiFilePath = Join-Path $moduleTestFolderPath '.e2eignore'
-            if (Test-Path $passCiFilePath) {
-              Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFolderPath"
-              $excludeReason = Get-Content $passCiFilePath
-              if ($excludeReason -ne $null) {
-                Write-Warning -Message "Reason for excluding ${{ matrix.testCases.path }}: $excludeReason"
-              }
-              Write-Output "skip_deployment_ci=${{env.skip_deployment_ci}},${{ matrix.testCases.path }}" >> $env:GITHUB_ENV
-            } else {
-              Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFolderPath" -Verbose
-              Write-Output "skip_deployment_ci=${{env.skip_deployment_ci}}," >> $env:GITHUB_ENV
-            }
-            echo "output_skipDeploymentTestcases=${{env.skip_deployment_ci}}" >> "$GITHUB_OUTPUT"
-
-  job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Deploy [${{ matrix.testCases.name }}]"
-    environment: avm-validation
-    runs-on: ubuntu-latest
-    env:
-      moduleTestName: matrix.testCases.name
-      excludeModuleTestNames: needs.job_module_deploy_evaluation.outputs.output_moduleTestFilePaths
-    if: |
-      !cancelled() &&
-      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
-      needs.job_module_deploy_evaluation.result != 'failure' &&
-      not contains(${{ github.env.excludeModuleTestNames}}, ${{ github.env.moduleTestName }} )
-    needs:
-      - job_module_deploy_evaluation
     strategy:
       fail-fast: false
       matrix:
