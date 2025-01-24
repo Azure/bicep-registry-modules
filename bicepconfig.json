@@ -6,7 +6,11 @@
     },
     "analyzers": {
         "core": {
-            "rules": {}
+            "rules": {
+                "use-most-recent-versions": {
+                    "level": "error"
+                }
+            }
         }
     }
 }
