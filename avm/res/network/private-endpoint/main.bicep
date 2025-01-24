@@ -36,10 +36,10 @@ param tags object?
 @description('Optional. Custom DNS configurations.')
 param customDnsConfigs customDnsConfigType[]?
 
-@description('Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
-param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionType[]?
+@description('Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty.')
+param manualPrivateLinkServiceConnections privateLinkServiceConnectionType[]?
 
-@description('Optional. A grouping of information about the connection to the remote resource.')
+@description('Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty.')
 param privateLinkServiceConnections privateLinkServiceConnectionType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -185,7 +185,7 @@ output customDnsConfigs customDnsConfigType[] = privateEndpoint.properties.custo
 output networkInterfaceResourceIds string[] = map(privateEndpoint.properties.networkInterfaces, nic => nic.id)
 
 @description('The group Id for the private endpoint Group.')
-output groupId string? = privateEndpoint.properties.?manualPrivateLinkServiceConnections[?0].properties.?groupIds[?0] ?? privateEndpoint.properties.?privateLinkServiceConnections[?0].properties.?groupIds[?0]
+output groupId string = privateEndpoint.properties.?manualPrivateLinkServiceConnections[?0].properties.?groupIds[?0] ?? privateEndpoint.properties.?privateLinkServiceConnections[?0].properties.?groupIds[?0]
 
 // ================ //
 // Definitions      //
@@ -220,23 +220,23 @@ type ipConfigurationType = {
   }
 }
 
-@export()
-type manualPrivateLinkServiceConnectionType = {
-  @description('Required. The name of the private link service connection.')
-  name: string
+// @export()
+// type manualPrivateLinkServiceConnectionType = {
+//   @description('Required. The name of the private link service connection.')
+//   name: string
 
-  @description('Required. Properties of private link service connection.')
-  properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
-    groupIds: string[]
+//   @description('Required. Properties of private link service connection.')
+//   properties: {
+//     @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
+//     groupIds: string[]
 
-    @description('Required. The resource id of private link service.')
-    privateLinkServiceId: string
+//     @description('Required. The resource id of private link service.')
+//     privateLinkServiceId: string
 
-    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
-    requestMessage: string?
-  }
-}
+//     @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+//     requestMessage: string?
+//   }
+// }
 
 @export()
 type privateLinkServiceConnectionType = {
