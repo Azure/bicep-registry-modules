@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "1373987469754052672"
+      "version": "0.33.13.18514",
+      "templateHash": "5368264975575124872"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -89,6 +89,48 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "secretsExportConfigurationType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
+          }
+        },
+        "rootPrimaryConnectionString": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The rootPrimaryConnectionString secret name to create."
+          }
+        },
+        "rootSecondaryConnectionString": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The rootSecondaryConnectionString secret name to create."
+          }
+        },
+        "rootPrimaryKey": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The rootPrimaryKey secret name to create."
+          }
+        },
+        "rootSecondaryKey": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The rootSecondaryKey secret name to create."
           }
         }
       },
@@ -853,6 +895,13 @@
       "metadata": {
         "description": "Optional. The disaster recovery config for this namespace."
       }
+    },
+    "secretsExportConfiguration": {
+      "$ref": "#/definitions/secretsExportConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
+      }
     }
   },
   "variables": {
@@ -1059,8 +1108,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12932983739098297779"
+              "version": "0.33.13.18514",
+              "templateHash": "10986956603827645787"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule."
@@ -1157,8 +1206,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7157026557302056743"
+              "version": "0.33.13.18514",
+              "templateHash": "367738327808042586"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
@@ -1308,8 +1357,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "4296815979830269323"
+              "version": "0.33.13.18514",
+              "templateHash": "6867966200326116947"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -1743,8 +1792,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15726313856377224651"
+                      "version": "0.33.13.18514",
+                      "templateHash": "12407548355987095287"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -1848,8 +1897,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15938058071622087714"
+                      "version": "0.33.13.18514",
+                      "templateHash": "3026048541307905778"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -1991,8 +2040,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18355940501932134026"
+              "version": "0.33.13.18514",
+              "templateHash": "8142109563540488179"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set."
@@ -2904,6 +2953,153 @@
                 "description": "The group Id for the private endpoint Group."
               },
               "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'manualPrivateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0), tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'privateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    "secretsExport": {
+      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+          },
+          "secretsToSet": {
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryConnectionString'), createArray(createObject('name', parameters('secretsExportConfiguration').rootPrimaryConnectionString, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryConnectionString'), createArray(createObject('name', parameters('secretsExportConfiguration').rootSecondaryConnectionString, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryKey'), createArray(createObject('name', parameters('secretsExportConfiguration').rootPrimaryKey, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryKey'), createArray(createObject('name', parameters('secretsExportConfiguration').rootSecondaryKey, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryKey)), createArray()))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.13.18514",
+              "templateHash": "14562732155748796301"
+            }
+          },
+          "definitions": {
+            "secretSetOutputType": {
+              "type": "object",
+              "properties": {
+                "secretResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resourceId of the exported secret."
+                  }
+                },
+                "secretUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI of the exported secret."
+                  }
+                },
+                "secretUriWithVersion": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI with version of the exported secret."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                }
+              }
+            },
+            "secretToSetType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the secret to set."
+                  }
+                },
+                "value": {
+                  "type": "securestring",
+                  "metadata": {
+                    "description": "Required. The value of the secret to set."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Key Vault to set the secrets in."
+              }
+            },
+            "secretsToSet": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretToSetType"
+              },
+              "metadata": {
+                "description": "Required. The secrets to set in the Key Vault."
+              }
+            }
+          },
+          "resources": {
+            "keyVault": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "secrets": {
+              "copy": {
+                "name": "secrets",
+                "count": "[length(parameters('secretsToSet'))]"
+              },
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
+              "properties": {
+                "value": "[parameters('secretsToSet')[copyIndex()].value]"
+              }
+            }
+          },
+          "outputs": {
+            "secretsSet": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretSetOutputType"
+              },
+              "metadata": {
+                "description": "The references to the secrets exported to the provided Key Vault."
+              },
+              "copy": {
+                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
+                "input": {
+                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
+                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]",
+                  "secretUriWithVersion": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUriWithVersion]"
+                }
+              }
             }
           }
         }

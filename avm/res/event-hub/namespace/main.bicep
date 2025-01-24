@@ -109,6 +109,9 @@ param eventhubs array = []
 @description('Optional. The disaster recovery config for this namespace.')
 param disasterRecoveryConfig disasterRecoveryConfigType?
 
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
+
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
 var formattedUserAssignedIdentities = reduce(
@@ -422,6 +425,52 @@ resource eventHubNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'rootPrimaryConnectionString')
+        ? [
+            {
+              name: secretsExportConfiguration!.rootPrimaryConnectionString
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryConnectionString')
+        ? [
+            {
+              name: secretsExportConfiguration!.rootSecondaryConnectionString
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootPrimaryKey')
+        ? [
+            {
+              name: secretsExportConfiguration!.rootPrimaryKey
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryKey')
+        ? [
+            {
+              name: secretsExportConfiguration!.rootSecondaryKey
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryKey
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The name of the eventspace.')
 output name string = eventHubNamespace.name
 
@@ -488,4 +537,22 @@ type disasterRecoveryConfigType = {
 
   @description('Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing.')
   partnerNamespaceResourceId: string?
+}
+
+@export()
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
+  keyVaultResourceId: string
+
+  @description('Optional. The rootPrimaryConnectionString secret name to create.')
+  rootPrimaryConnectionString: string?
+
+  @description('Optional. The rootSecondaryConnectionString secret name to create.')
+  rootSecondaryConnectionString: string?
+
+  @description('Optional. The rootPrimaryKey secret name to create.')
+  rootPrimaryKey: string?
+
+  @description('Optional. The rootSecondaryKey secret name to create.')
+  rootSecondaryKey: string?
 }

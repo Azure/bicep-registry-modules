@@ -25,6 +25,7 @@ This module deploys an Event Hub Namespace.
 | `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
 | `Microsoft.EventHub/namespaces/networkRuleSets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/networkRuleSets) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -38,8 +39,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-3-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -216,7 +218,93 @@ param skuName = 'Premium'
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
+  name: 'namespaceDeployment'
+  params: {
+    // Required parameters
+    name: 'ehnmin001'
+    // Non-required parameters
+    location: '<location>'
+    params: {
+      secretsExportConfiguration: {
+        keyVaultResourceId: '<keyVaultResourceId>'
+        rootPrimaryKey: 'primary-key-name'
+        rootSecondaryKey: 'secondary-key-name'
+        rootPrimaryConnectionString: 'primary-connectionString-name'
+        rootSecondaryConnectionString: 'secondary-connectionString-name'
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ehnmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "rootPrimaryKey": "primary-key-name",
+        "rootSecondaryKey": "secondary-key-name",
+        "rootPrimaryConnectionString": "primary-connectionString-name",
+        "rootSecondaryConnectionString": "secondary-connectionString-name"
+      }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public"":avm/res/event-hub/namespace:<version>'
+
+// Required parameters
+param name = 'ehnmin001'
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  rootPrimaryKey: 'primary-key-name'
+  rootSecondaryKey: 'secondary-key-name'
+  rootPrimaryConnectionString: 'primary-connectionString-name'
+  rootSecondaryConnectionString: 'secondary-connectionString-name'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -835,7 +923,7 @@ param zoneRedundant = true
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
