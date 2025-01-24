@@ -186,7 +186,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource redis 'Microsoft.Cache/redis@2024-03-01' = {
+resource redis 'Microsoft.Cache/redis@2024-11-01' = {
   name: name
   location: location
   tags: tags
@@ -215,7 +215,7 @@ resource redis 'Microsoft.Cache/redis@2024-03-01' = {
   zones: availabilityZones
 }
 
-resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-04-01-preview' = [
+resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-11-01' = [
   for policy in accessPolicies: {
     name: policy.name
     parent: redis
@@ -225,7 +225,7 @@ resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-04-01-p
   }
 ]
 
-resource redis_accessPolicyAssignments 'Microsoft.Cache/redis/accessPolicyAssignments@2024-04-01-preview' = [
+resource redis_accessPolicyAssignments 'Microsoft.Cache/redis/accessPolicyAssignments@2024-11-01' = [
   for assignment in accessPolicyAssignments: {
     name: assignment.objectId
     parent: redis
