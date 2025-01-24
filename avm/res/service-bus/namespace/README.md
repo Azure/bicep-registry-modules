@@ -43,8 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Deploying with a key vault reference to save secrets](#example-4-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Deploying with a key vault reference to save secrets](#example-3-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-4-using-large-parameter-set)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -230,7 +230,94 @@ param skuObject = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
+  name: 'namespaceDeployment'
+  params: {
+    // Required parameters
+    name: 'sbnkv001'
+    // Non-required parameters
+    location: '<location>'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      rootPrimaryConnectionString: 'primary-connectionString-name'
+      rootPrimaryKey: 'primaryKey-name'
+      rootSecondaryConnectionString: 'secondary-connectionString-name'
+      rootSecondaryKey: 'secondaryKey-name'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sbnkv001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "rootPrimaryConnectionString": "primary-connectionString-name",
+        "rootPrimaryKey": "primaryKey-name",
+        "rootSecondaryConnectionString": "secondary-connectionString-name",
+        "rootSecondaryKey": "secondaryKey-name"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnkv001'
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  rootPrimaryConnectionString: 'primary-connectionString-name'
+  rootPrimaryKey: 'primaryKey-name'
+  rootSecondaryConnectionString: 'secondary-connectionString-name'
+  rootSecondaryKey: 'secondaryKey-name'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1041,92 +1128,6 @@ param topics = [
 </details>
 <p>
 
-### Example 4: _Deploying with a key vault reference to save secrets_
-
-This instance deploys the module saving all its secrets in a key vault.
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
-  params: {
-    // Required parameters
-    name: 'sbnmin001'
-    // Non-required parameters
-    location: '<location>'
-    params: {
-      secretsExportConfiguration: {
-        keyVaultResourceId: '<keyVaultResourceId>'
-        rootPrimaryKey: 'primary-key-name'
-        rootSecondaryKey: 'secondary-key-name'
-        rootPrimaryConnectionString: 'primary-connectionString-name'
-        rootSecondaryConnectionString: 'secondary-connectionString-name'
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "sbnmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "secretsExportConfiguration": {
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "rootPrimaryKey": "primary-key-name",
-        "rootSecondaryKey": "secondary-key-name",
-        "rootPrimaryConnectionString": "primary-connectionString-name",
-        "rootSecondaryConnectionString": "secondary-connectionString-name"
-      }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public"":avm/res/service-bus/namespace:<version>'
-
-// Required parameters
-param name = 'sbnmin001'
-// Non-required parameters
-param location = '<location>'
-param secretsExportConfiguration = {
-  keyVaultResourceId: '<keyVaultResourceId>'
-  rootPrimaryKey: 'primary-key-name'
-  rootSecondaryKey: 'secondary-key-name'
-  rootPrimaryConnectionString: 'primary-connectionString-name'
-  rootSecondaryConnectionString: 'secondary-connectionString-name'
-}
-```
-
-</details>
-<p>
-
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -1584,6 +1585,7 @@ param topics = [
 | [`queues`](#parameter-queues) | array | The queues to create in the service bus namespace. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`topics`](#parameter-topics) | array | The topics to create in the service bus namespace. |
@@ -3046,6 +3048,63 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rootPrimaryConnectionString`](#parameter-secretsexportconfigurationrootprimaryconnectionstring) | string | The rootPrimaryConnectionString secret name to create. |
+| [`rootPrimaryKey`](#parameter-secretsexportconfigurationrootprimarykey) | string | The rootPrimaryKey secret name to create. |
+| [`rootSecondaryConnectionString`](#parameter-secretsexportconfigurationrootsecondaryconnectionstring) | string | The rootSecondaryConnectionString secret name to create. |
+| [`rootSecondaryKey`](#parameter-secretsexportconfigurationrootsecondarykey) | string | The rootSecondaryKey secret name to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The resource ID of the key vault where to store the secrets of this module.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootPrimaryConnectionString`
+
+The rootPrimaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootPrimaryKey`
+
+The rootPrimaryKey secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootSecondaryConnectionString`
+
+The rootSecondaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootSecondaryKey`
+
+The rootSecondaryKey secret name to create.
+
+- Required: No
+- Type: string
+
 ### Parameter: `skuObject`
 
 The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
@@ -3847,6 +3906,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

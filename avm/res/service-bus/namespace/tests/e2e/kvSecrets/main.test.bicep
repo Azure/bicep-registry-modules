@@ -52,10 +52,10 @@ module testDeployment '../../../main.bicep' = {
     location: resourceLocation
     secretsExportConfiguration: {
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      rootPrimaryKey: 'custom-key1-name'
-      rootSecondaryKey: 'custom-key2-name'
-      rootPrimaryConnectionString: 'custom-connectionString1-name'
-      rootSecondaryConnectionString: 'custom-connectionString2-name'
+      rootPrimaryKey: 'primaryKey-name'
+      rootSecondaryKey: 'secondaryKey-name'
+      rootPrimaryConnectionString: 'primary-connectionString-name'
+      rootSecondaryConnectionString: 'secondary-connectionString-name'
     }
   }
 }
