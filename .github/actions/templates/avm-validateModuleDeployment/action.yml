@@ -217,6 +217,7 @@ runs:
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
+        continueOnError: true
         inlineScript: |
           # the first step is to check, if the deployment should be bypassed
 
@@ -238,6 +239,7 @@ runs:
             if ($excludeReason -ne $null) {
               Write-Warning -Message "Reason for exclusion: $excludeReason"
               echo "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason" >> $env:VALIDATE_TEST_EXECUTION_RESULT
+              return 1
             }
             Write-Output "skip_deployment_ci=true" >> $env:GITHUB_ENV
           } else {
