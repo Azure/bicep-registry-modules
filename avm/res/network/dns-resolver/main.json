@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15625169789280490544"
+      "templateHash": "353797495875556869"
     },
     "name": "DNS Resolver",
-    "description": "This module deploys a DNS Resolver.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DNS Resolver."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -394,11 +393,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6624880039751785583"
+              "templateHash": "3824129655159697612"
             },
             "name": "DNS Resolver Inbound Endpoint",
-            "description": "This module deploys a DNS Resolver Inbound Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DNS Resolver Inbound Endpoint."
           },
           "parameters": {
             "dnsResolverName": {
@@ -542,11 +540,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4211052041110233359"
+              "templateHash": "17231952253556640030"
             },
             "name": "DNS Resolver Outbound Endpoint",
-            "description": "This module deploys a DNS Resolver Outbound Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DNS Resolver Outbound Endpoint."
           },
           "parameters": {
             "dnsResolverName": {

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1929991864597825044"
+      "version": "0.32.4.45862",
+      "templateHash": "1804376984077003732"
     },
     "name": "Virtual WANs",
-    "description": "This module deploys a Virtual WAN.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual WAN."
   },
   "definitions": {
     "lockType": {

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15127169976610009255"
+      "templateHash": "7929429293972132995"
     },
     "name": "Batch Accounts",
-    "description": "This module deploys a Batch Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Batch Account."
   },
   "definitions": {
     "networkProfileType": {

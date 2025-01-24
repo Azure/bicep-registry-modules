@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "5428269336337327866"
+      "version": "0.32.4.45862",
+      "templateHash": "616504106529068315"
     },
     "name": "Public SSH Keys",
-    "description": "This module deploys a Public SSH Key.\n\n> Note: The resource does not auto-generate the key for you.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public SSH Key.\n\n> Note: The resource does not auto-generate the key for you."
   },
   "definitions": {
     "roleAssignmentType": {

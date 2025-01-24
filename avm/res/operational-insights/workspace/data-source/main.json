@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17349115996815882874"
+      "templateHash": "12082641043455308513"
     },
     "name": "Log Analytics Workspace Datasources",
-    "description": "This module deploys a Log Analytics Workspace Data Source.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Data Source."
   },
   "parameters": {
     "logAnalyticsWorkspaceName": {

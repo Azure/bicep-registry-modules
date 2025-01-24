@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12041383892639375688"
+      "templateHash": "6318820825027351839"
     },
     "name": "Public DNS Zone TXT record",
-    "description": "This module deploys a Public DNS Zone TXT record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone TXT record."
   },
   "definitions": {
     "roleAssignmentType": {

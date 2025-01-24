@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14133310184627909384"
+      "templateHash": "12862313247679557812"
     },
     "name": "Relay Namespace Network Rules Sets",
-    "description": "This module deploys a Relay Namespace Network Rule Set.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Relay Namespace Network Rule Set."
   },
   "parameters": {
     "namespaceName": {

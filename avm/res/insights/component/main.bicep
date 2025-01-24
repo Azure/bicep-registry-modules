@@ -1,6 +1,5 @@
 metadata name = 'Application Insights'
 metadata description = 'This component deploys an Application Insights instance.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Application Insights.')
 param name string
@@ -65,6 +64,10 @@ param kind string = ''
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @description('Optional. Array of role assignments to create.')
@@ -181,6 +184,17 @@ resource appInsights_roleAssignments 'Microsoft.Authorization/roleAssignments@20
     scope: appInsights
   }
 ]
+
+resource appInsights_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: appInsights
+}
 
 resource appInsights_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

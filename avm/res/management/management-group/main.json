@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "8668116279035886764"
+      "version": "0.32.4.45862",
+      "templateHash": "16098269805793528146"
     },
     "name": "Management Groups",
-    "description": "This template will prepare the management group structure based on the provided parameter.\n\nThis module has some known **limitations**:\n- It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)\n- It can't manage the Root (/) management group",
-    "owner": "Azure/module-maintainers"
+    "description": "This template will prepare the management group structure based on the provided parameter.\n\nThis module has some known **limitations**:\n- It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)\n- It can't manage the Root (/) management group"
   },
   "parameters": {
     "name": {

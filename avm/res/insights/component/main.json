@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6147059661452531763"
+      "templateHash": "8234774084915355769"
     },
     "name": "Application Insights",
-    "description": "This component deploys an Application Insights instance.",
-    "owner": "Azure/module-maintainers"
+    "description": "This component deploys an Application Insights instance."
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -132,6 +131,36 @@
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -326,6 +355,13 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -443,6 +479,20 @@
         "appInsights"
       ]
     },
+    "appInsights_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/components/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "appInsights"
+      ]
+    },
     "appInsights_diagnosticSettings": {
       "copy": {
         "name": "appInsights_diagnosticSettings",
@@ -509,11 +559,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14705419803255524703"
+              "templateHash": "3603934328068593686"
             },
             "name": "Application Insights Linked Storage Account",
-            "description": "This component deploys an Application Insights Linked Storage Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This component deploys an Application Insights Linked Storage Account."
           },
           "parameters": {
             "appInsightsName": {

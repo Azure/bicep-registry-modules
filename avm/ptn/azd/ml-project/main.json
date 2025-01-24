@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8825282270564739482"
+      "templateHash": "3918865125256539339"
     },
     "name": "Azd Machine Learning workspace",
-    "description": "Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
-    "owner": "Azure/module-maintainers"
+    "description": "Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "definitions": {
     "managedIdentitiesType": {

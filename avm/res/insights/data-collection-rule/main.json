@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5749720752654125558"
+      "templateHash": "10211623660401614857"
     },
     "name": "Data Collection Rules",
-    "description": "This module deploys a Data Collection Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Collection Rule."
   },
   "definitions": {
     "dataCollectionRulePropertiesType": {
