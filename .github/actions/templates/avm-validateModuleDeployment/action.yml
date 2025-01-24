@@ -235,15 +235,15 @@ runs:
           $passCiFilePath = Join-Path $moduleTestFolderPath '.e2eignore'
           if (Test-Path $passCiFilePath) {
             Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFolderPath"
+            Write-Output 'skip_deployment_ci=true' >> $env:GITHUB_ENV
             $excludeReason = Get-Content $passCiFilePath
             if ($excludeReason -ne $null) {
               $excludeMessage = "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason"
               Write-Warning -Message $excludeMessage
-              echo "excludeMessage >> $env:VALIDATE_TEST_EXECUTION_RESULT
+              Write-Output $excludeMessage >> $env:VALIDATE_TEST_EXECUTION_RESULT
               Write-Error -Message $excludeMessage
               exit 1
             }
-            Write-Output "skip_deployment_ci=true" >> $env:GITHUB_ENV
           } else {
             Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFolderPath" -Verbose
             Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
