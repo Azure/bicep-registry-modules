@@ -35,219 +35,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-registry/registry:<version>`.
 
-- [Using cache rules](#example-1-using-cache-rules)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using `scopeMaps` in parameter set](#example-4-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using cache rules_
-
-This instance deploys the module with a credential set and a cache rule.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
-  params: {
-    // Required parameters
-    name: 'crrcach001'
-    // Non-required parameters
-    acrAdminUserEnabled: false
-    acrSku: 'Standard'
-    cacheRules: [
-      {
-        credentialSetResourceId: '<credentialSetResourceId>'
-        name: 'docker-rule-with-credentials'
-        sourceRepository: 'docker.io/library/hello-world'
-        targetRepository: 'cached-docker-hub/hello-world'
-      }
-      {
-        name: 'mcr-rule-anonymous'
-        sourceRepository: 'mcr.microsoft.com/*'
-        targetRepository: 'cached-mcr/*'
-      }
-    ]
-    credentialSets: [
-      {
-        authCredentials: [
-          {
-            name: 'Credential1'
-            passwordSecretIdentifier: '<passwordSecretIdentifier>'
-            usernameSecretIdentifier: '<usernameSecretIdentifier>'
-          }
-        ]
-        loginServer: 'docker.io'
-        managedIdentities: {
-          systemAssigned: true
-        }
-        name: 'docker-credential-set'
-      }
-    ]
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "crrcach001"
-    },
-    // Non-required parameters
-    "acrAdminUserEnabled": {
-      "value": false
-    },
-    "acrSku": {
-      "value": "Standard"
-    },
-    "cacheRules": {
-      "value": [
-        {
-          "credentialSetResourceId": "<credentialSetResourceId>",
-          "name": "docker-rule-with-credentials",
-          "sourceRepository": "docker.io/library/hello-world",
-          "targetRepository": "cached-docker-hub/hello-world"
-        },
-        {
-          "name": "mcr-rule-anonymous",
-          "sourceRepository": "mcr.microsoft.com/*",
-          "targetRepository": "cached-mcr/*"
-        }
-      ]
-    },
-    "credentialSets": {
-      "value": [
-        {
-          "authCredentials": [
-            {
-              "name": "Credential1",
-              "passwordSecretIdentifier": "<passwordSecretIdentifier>",
-              "usernameSecretIdentifier": "<usernameSecretIdentifier>"
-            }
-          ],
-          "loginServer": "docker.io",
-          "managedIdentities": {
-            "systemAssigned": true
-          },
-          "name": "docker-credential-set"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "4633458b-17de-408a-b874-0445c86b69e6"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/container-registry/registry:<version>'
-
-// Required parameters
-param name = 'crrcach001'
-// Non-required parameters
-param acrAdminUserEnabled = false
-param acrSku = 'Standard'
-param cacheRules = [
-  {
-    credentialSetResourceId: '<credentialSetResourceId>'
-    name: 'docker-rule-with-credentials'
-    sourceRepository: 'docker.io/library/hello-world'
-    targetRepository: 'cached-docker-hub/hello-world'
-  }
-  {
-    name: 'mcr-rule-anonymous'
-    sourceRepository: 'mcr.microsoft.com/*'
-    targetRepository: 'cached-mcr/*'
-  }
-]
-param credentialSets = [
-  {
-    authCredentials: [
-      {
-        name: 'Credential1'
-        passwordSecretIdentifier: '<passwordSecretIdentifier>'
-        usernameSecretIdentifier: '<usernameSecretIdentifier>'
-      }
-    ]
-    loginServer: 'docker.io'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    name: 'docker-credential-set'
-  }
-]
-param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param roleAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 2: _Using only defaults_
+### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -316,7 +110,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using encryption with Customer-Managed-Key_
+### Example 2: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -424,7 +218,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -825,7 +619,7 @@ param webhooks = [
 </details>
 <p>
 
-### Example 5: _Using `scopeMaps` in parameter set_
+### Example 4: _Using `scopeMaps` in parameter set_
 
 This instance deploys the module with the scopeMaps feature.
 
@@ -923,7 +717,7 @@ param scopeMaps = [
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
