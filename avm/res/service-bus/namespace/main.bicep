@@ -103,6 +103,9 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = true
 
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -455,6 +458,52 @@ resource serviceBusNamespace_roleAssignments 'Microsoft.Authorization/roleAssign
   }
 ]
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'rootPrimaryConnectionString')
+        ? [
+            {
+              name: secretsExportConfiguration!.rootPrimaryConnectionString
+              value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryConnectionString')
+        ? [
+            {
+              name: secretsExportConfiguration!.rootSecondaryConnectionString
+              value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootPrimaryKey')
+        ? [
+            {
+              name: secretsExportConfiguration!.rootPrimaryKey
+              value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryKey')
+        ? [
+            {
+              name: secretsExportConfiguration!.rootSecondaryKey
+              value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryKey
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The resource ID of the deployed service bus namespace.')
 output resourceId string = serviceBusNamespace.id
 
@@ -695,4 +744,22 @@ type topicType = {
 
   @description('Optional. The subscriptions of the topic.')
   subscriptions: subscriptionType[]?
+}
+
+@export()
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
+  keyVaultResourceId: string
+
+  @description('Optional. The rootPrimaryConnectionString secret name to create.')
+  rootPrimaryConnectionString: string?
+
+  @description('Optional. The rootSecondaryConnectionString secret name to create.')
+  rootSecondaryConnectionString: string?
+
+  @description('Optional. The rootPrimaryKey secret name to create.')
+  rootPrimaryKey: string?
+
+  @description('Optional. The rootSecondaryKey secret name to create.')
+  rootSecondaryKey: string?
 }
