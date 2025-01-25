@@ -222,6 +222,7 @@ param skuName = 'Premium'
 
 This instance deploys the module saving all its secrets in a key vault.
 
+
 <details>
 
 <summary>via Bicep module</summary>
@@ -231,17 +232,15 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   name: 'namespaceDeployment'
   params: {
     // Required parameters
-    name: 'ehnmin001'
+    name: 'ehnkv001'
     // Non-required parameters
     location: '<location>'
-    params: {
-      secretsExportConfiguration: {
-        keyVaultResourceId: '<keyVaultResourceId>'
-        rootPrimaryKey: 'primary-key-name'
-        rootSecondaryKey: 'secondary-key-name'
-        rootPrimaryConnectionString: 'primary-connectionString-name'
-        rootSecondaryConnectionString: 'secondary-connectionString-name'
-      }
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      rootPrimaryConnectionString: 'primaryConnectionString-name'
+      rootPrimaryKey: 'primaryKey-name'
+      rootSecondaryConnectionString: 'secondaryConnectionString-name'
+      rootSecondaryKey: 'secondaryKey-name'
     }
   }
 }
@@ -261,19 +260,21 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ehnmin001"
+      "value": "ehnkv001"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
     },
     "secretsExportConfiguration": {
+      "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
-        "rootPrimaryKey": "primary-key-name",
-        "rootSecondaryKey": "secondary-key-name",
-        "rootPrimaryConnectionString": "primary-connectionString-name",
-        "rootSecondaryConnectionString": "secondary-connectionString-name"
+        "rootPrimaryConnectionString": "primaryConnectionString-name",
+        "rootPrimaryKey": "primaryKey-name",
+        "rootSecondaryConnectionString": "secondaryConnectionString-name",
+        "rootSecondaryKey": "secondaryKey-name"
       }
+    }
   }
 }
 ```
@@ -286,18 +287,18 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public"":avm/res/event-hub/namespace:<version>'
+using 'br/public:avm/res/event-hub/namespace:<version>'
 
 // Required parameters
-param name = 'ehnmin001'
+param name = 'ehnkv001'
 // Non-required parameters
 param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
-  rootPrimaryKey: 'primary-key-name'
-  rootSecondaryKey: 'secondary-key-name'
-  rootPrimaryConnectionString: 'primary-connectionString-name'
-  rootSecondaryConnectionString: 'secondary-connectionString-name'
+  rootPrimaryConnectionString: 'primaryConnectionString-name'
+  rootPrimaryKey: 'primaryKey-name'
+  rootSecondaryConnectionString: 'secondaryConnectionString-name'
+  rootSecondaryKey: 'secondaryKey-name'
 }
 ```
 
@@ -1427,6 +1428,7 @@ param tags = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`skuCapacity`](#parameter-skucapacity) | int | The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. |
 | [`skuName`](#parameter-skuname) | string | event hub plan SKU name. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -2487,6 +2489,75 @@ The principal type of the assigned principal ID.
 - MinValue: 0
 - MaxValue: 20
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+- MinValue: 0
+- MaxValue: 20
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rootPrimaryConnectionString`](#parameter-secretsexportconfigurationrootprimaryconnectionstring) | string | The rootPrimaryConnectionString secret name to create. |
+| [`rootPrimaryKey`](#parameter-secretsexportconfigurationrootprimarykey) | string | The rootPrimaryKey secret name to create. |
+| [`rootSecondaryConnectionString`](#parameter-secretsexportconfigurationrootsecondaryconnectionstring) | string | The rootSecondaryConnectionString secret name to create. |
+| [`rootSecondaryKey`](#parameter-secretsexportconfigurationrootsecondarykey) | string | The rootSecondaryKey secret name to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The resource ID of the key vault where to store the secrets of this module.
+
+- Required: Yes
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootPrimaryConnectionString`
+
+The rootPrimaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootPrimaryKey`
+
+The rootPrimaryKey secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootSecondaryConnectionString`
+
+The rootSecondaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootSecondaryKey`
+
+The rootSecondaryKey secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
 ### Parameter: `skuCapacity`
 
 The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.
@@ -2553,6 +2624,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.9.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
