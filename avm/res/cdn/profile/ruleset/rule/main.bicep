@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Rules'
 metadata description = 'This module deploys a CDN Profile rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the rule.')
 param name string

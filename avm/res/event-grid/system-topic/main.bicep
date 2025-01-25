@@ -1,6 +1,5 @@
 metadata name = 'Event Grid System Topics'
 metadata description = 'This module deploys an Event Grid System Topic.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Event Grid Topic.')
 param name string

@@ -13,7 +13,7 @@ This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/workspaces) |
+| `Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/2022-06-01/workspaces/iotconnectors/fhirdestinations) |
 
 ## Parameters
 

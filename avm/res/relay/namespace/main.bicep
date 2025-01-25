@@ -1,6 +1,5 @@
 metadata name = 'Relay Namespaces'
 metadata description = 'This module deploys a Relay Namespace'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Relay Namespace.')
 @minLength(6)

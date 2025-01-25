@@ -1,6 +1,5 @@
 metadata name = 'Service Bus Namespace Topic Subscription'
 metadata description = 'This module deploys a Service Bus Namespace Topic Subscription.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the service bus namespace topic subscription.')
 param name string
@@ -50,6 +49,9 @@ param maxDeliveryCount int = 10
 @description('Optional. A value that indicates whether the subscription supports the concept of session.')
 param requiresSession bool = false
 
+@description('Optional. The subscription rules.')
+param rules ruleType[]?
+
 @description('Optional. Enumerates the possible values for the status of a messaging entity.')
 @allowed([
   'Active'
@@ -93,6 +95,22 @@ resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021
   }
 }
 
+module subscription_rule 'rule/main.bicep' = [
+  for (rule, index) in (rules ?? []): {
+    name: '${deployment().name}-rule-${index}'
+    params: {
+      name: rule.name
+      subscriptionName: subscription.name
+      namespaceName: namespaceName
+      topicName: topicName
+      action: rule.?action
+      correlationFilter: rule.?correlationFilter
+      filterType: rule.?filterType
+      sqlFilter: rule.?sqlFilter
+    }
+  }
+]
+
 @description('The name of the topic subscription.')
 output name string = subscription.name
 
@@ -101,3 +119,73 @@ output resourceId string = subscription.id
 
 @description('The name of the Resource Group the topic subscription was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+@export()
+@description('Optional. The type for rules.')
+type ruleType = {
+  @description('Required. The name of the service bus namespace topic subscription rule.')
+  name: string
+
+  @description('Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.')
+  action: {
+    @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
+    compatibilityLevel: int?
+
+    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
+    requiresPreprocessing: bool?
+
+    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'.')
+    sqlExpression: string?
+  }?
+
+  @description('Optional. Properties of correlationFilter.')
+  correlationFilter: {
+    @description('Optional. Content type of the message.')
+    contentType: string?
+
+    @description('Optional. Identifier of the correlation.')
+    correlationId: string?
+
+    @description('Optional. Application specific label.')
+    label: string?
+
+    @description('Optional. Identifier of the message.')
+    messageId: string?
+
+    @description('Optional. dictionary object for custom filters.')
+    properties: {}[]?
+
+    @description('Optional. Address of the queue to reply to.')
+    replyTo: string?
+
+    @description('Optional. Session identifier to reply to.')
+    replyToSessionId: string?
+
+    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
+    requiresPreprocessing: bool?
+
+    @description('Optional. Session identifier.')
+    sessionId: string?
+
+    @description('Required. Address to send to.')
+    to: string
+  }?
+
+  @description('Optional. Filter type that is evaluated against a BrokeredMessage.')
+  filterType: ('CorrelationFilter' | 'SqlFilter')?
+
+  @description('Optional. Properties of sqlFilter.')
+  sqlFilter: {
+    @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
+    compatibilityLevel: int?
+
+    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
+    requiresPreprocessing: bool?
+
+    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'.')
+    sqlExpression: string?
+  }?
+}

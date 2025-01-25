@@ -1,6 +1,5 @@
 metadata name = 'Role Assignments (Management Group scope)'
 metadata description = 'This module deploys a Role Assignment at a Management Group scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'managementGroup'
 
@@ -41,9 +40,12 @@ param principalType string = ''
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Resource Policy Contributor': '/providers/Microsoft.Authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608'
+  'Resource Policy Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '36243c78-bf99-498c-9df9-86d9f8d28608'
+  )
   'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
@@ -58,9 +60,7 @@ var builtInRoleNames = {
   )
 }
 
-var roleDefinitionIdVar = (contains(builtInRoleNames, roleDefinitionIdOrName)
-  ? builtInRoleNames[roleDefinitionIdOrName]
-  : roleDefinitionIdOrName)
+var roleDefinitionIdVar = (builtInRoleNames[?roleDefinitionIdOrName] ?? roleDefinitionIdOrName)
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(managementGroupId, roleDefinitionIdVar, principalId)

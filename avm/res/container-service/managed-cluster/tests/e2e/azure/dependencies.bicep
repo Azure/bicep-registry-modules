@@ -79,13 +79,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' = {
       kty: 'RSA'
     }
   }
-
-  resource kmskey 'keys@2022-07-01' = {
-    name: 'kmsEncryptionKey'
-    properties: {
-      kty: 'RSA'
-    }
-  }
 }
 
 resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -170,12 +163,6 @@ output managedIdentityKubeletIdentityResourceId string = managedIdentityKubeletI
 
 @description('The resource ID of the created Disk Encryption Set.')
 output diskEncryptionSetResourceId string = diskEncryptionSet.id
-
-@description('The resource ID of the created Key Vault.')
-output keyVaultResourceId string = keyVault.id
-
-@description('The name of the Key Vault Encryption Key.')
-output keyVaultEncryptionKeyName string = keyVault::key.name
 
 @description('The resource ID of the created Proximity Placement Group.')
 output proximityPlacementGroupResourceId string = proximityPlacementGroup.id

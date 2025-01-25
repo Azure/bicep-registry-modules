@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "1366013891071224264"
+      "version": "0.32.4.45862",
+      "templateHash": "17937651504078156143"
     },
     "name": "Azure NetApp Files Capacity Pools",
-    "description": "This module deploys an Azure NetApp Files Capacity Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure NetApp Files Capacity Pool."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -217,10 +216,7 @@
         "qosType": "[parameters('qosType')]",
         "coolAccess": "[parameters('coolAccess')]",
         "encryptionType": "[parameters('encryptionType')]"
-      },
-      "dependsOn": [
-        "netAppAccount"
-      ]
+      }
     },
     "capacityPool_roleAssignments": {
       "copy": {
@@ -442,12 +438,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "14328317888842072540"
+              "version": "0.32.4.45862",
+              "templateHash": "15336007196805099128"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
-            "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -961,10 +956,7 @@
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
               "apiVersion": "2024-03-01",
-              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
-              "dependsOn": [
-                "netAppAccount"
-              ]
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
             },
             "netAppAccount": {
               "existing": true,
@@ -982,7 +974,6 @@
               "dependsOn": [
                 "backupPolicies",
                 "backupVaults",
-                "netAppAccount::capacityPool",
                 "snapshotPolicies"
               ]
             },
@@ -992,10 +983,7 @@
               "apiVersion": "2024-03-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
               "location": "[parameters('backupVaultLocation')]",
-              "properties": {},
-              "dependsOn": [
-                "netAppAccount"
-              ]
+              "properties": {}
             },
             "backups": {
               "condition": "[parameters('backupEnabled')]",
@@ -1066,12 +1054,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15255260076655189132"
+                      "version": "0.32.4.45862",
+                      "templateHash": "2321320275404095362"
                     },
                     "name": "Azure NetApp Files Backup Policy",
-                    "description": "This module deploys a Backup Policy for Azure NetApp File.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Backup Policy for Azure NetApp File."
                   },
                   "parameters": {
                     "netAppAccountName": {
@@ -1237,12 +1224,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "17696312984702506132"
+                      "version": "0.32.4.45862",
+                      "templateHash": "17538391796648994915"
                     },
                     "name": "Azure NetApp Files Snapshot Policy",
-                    "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
                   },
                   "parameters": {
                     "netAppAccountName": {
@@ -1471,8 +1457,7 @@
         }
       },
       "dependsOn": [
-        "capacityPool",
-        "netAppAccount"
+        "capacityPool"
       ]
     }
   },

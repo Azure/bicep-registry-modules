@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "13801162652865106188"
+      "version": "0.32.4.45862",
+      "templateHash": "18024083037530918442"
     },
     "name": "Sender Usernames",
-    "description": "This module deploys an Sender",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Sender"
   },
   "parameters": {
     "emailServiceName": {

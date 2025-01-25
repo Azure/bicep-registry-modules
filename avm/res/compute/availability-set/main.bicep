@@ -1,6 +1,5 @@
 metadata name = 'Availability Sets'
 metadata description = 'This module deploys an Availability Set.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the availability set that is being created.')
 param name string

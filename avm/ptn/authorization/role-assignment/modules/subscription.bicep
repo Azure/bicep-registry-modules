@@ -1,6 +1,5 @@
 metadata name = 'Role Assignments (Subscription scope)'
 metadata description = 'This module deploys a Role Assignment at a Subscription scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 
@@ -53,9 +52,7 @@ var builtInRoleNames = {
   )
 }
 
-var roleDefinitionIdVar = (contains(builtInRoleNames, roleDefinitionIdOrName)
-  ? builtInRoleNames[roleDefinitionIdOrName]
-  : roleDefinitionIdOrName)
+var roleDefinitionIdVar = (builtInRoleNames[?roleDefinitionIdOrName] ?? roleDefinitionIdOrName)
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(subscriptionId, roleDefinitionIdVar, principalId)

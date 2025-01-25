@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "2123095807669273716"
+      "version": "0.32.4.45862",
+      "templateHash": "5836175286172713981"
     },
     "name": "Search Services",
-    "description": "This module deploys a Search Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Search Service."
   },
   "definitions": {
     "secretsExportConfigurationType": {
@@ -1794,12 +1793,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "8234368842276618768"
+              "version": "0.32.4.45862",
+              "templateHash": "10412795355958046746"
             },
             "name": "Search Services Private Link Resources",
-            "description": "This module deploys a Search Service Private Link Resource.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Search Service Private Link Resource."
           },
           "parameters": {
             "searchServiceName": {
@@ -1856,10 +1854,7 @@
                 "groupId": "[parameters('groupId')]",
                 "requestMessage": "[parameters('requestMessage')]",
                 "resourceRegion": "[parameters('resourceRegion')]"
-              },
-              "dependsOn": [
-                "searchService"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1918,8 +1913,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "7954388693868310378"
+              "version": "0.32.4.45862",
+              "templateHash": "13365107869204248001"
             }
           },
           "definitions": {
@@ -1995,10 +1990,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             }
           },
           "outputs": {

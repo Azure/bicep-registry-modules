@@ -35,7 +35,7 @@ This module deploys a MongoDB Database within a CosmosDB Account.
 | :-- | :-- | :-- |
 | [`collections`](#parameter-collections) | array | Collections in the mongodb database. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`throughput`](#parameter-throughput) | int | Request Units per second. |
+| [`throughput`](#parameter-throughput) | int | Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
 
 ### Parameter: `name`
 
@@ -68,7 +68,7 @@ Tags of the resource.
 
 ### Parameter: `throughput`
 
-Request Units per second.
+Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.
 
 - Required: No
 - Type: int

@@ -1514,6 +1514,7 @@ The workspace daily quota for ingestion. The default value is: '-1' (not limited
 
 - Required: No
 - Type: int
+- MinValue: -1
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dataRetention`
 
@@ -1521,6 +1522,8 @@ Number of days data will be retained for. The default value is: '365'.
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `advancedOptions.networkAcls`
 

@@ -32,7 +32,7 @@ This module deploys an Event Hub Namespace Disaster Recovery Config.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`partnerNamespaceId`](#parameter-partnernamespaceid) | string | Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing. |
+| [`partnerNamespaceResourceId`](#parameter-partnernamespaceresourceid) | string | Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing. |
 
 ### Parameter: `name`
 
@@ -48,7 +48,7 @@ The name of the parent event hub namespace. Required if the template is used in 
 - Required: Yes
 - Type: string
 
-### Parameter: `partnerNamespaceId`
+### Parameter: `partnerNamespaceResourceId`
 
 Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing.
 

@@ -45,9 +45,8 @@ Notification channels are used by the schedule resource type in order to send no
 
 The list of event for which this notification is enabled.
 
-- Required: No
+- Required: Yes
 - Type: array
-- Default: `[]`
 
 ### Parameter: `name`
 

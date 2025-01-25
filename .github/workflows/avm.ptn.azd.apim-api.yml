@@ -1,38 +1,38 @@
 name: "avm.ptn.azd.apim-api"
 
 on:
-    workflow_dispatch:
-      inputs:
-        staticValidation:
-          type: boolean
-          description: "Execute static validation"
-          required: false
-          default: true
-        deploymentValidation:
-          type: boolean
-          description: "Execute deployment validation"
-          required: false
-          default: true
-        removeDeployment:
-          type: boolean
-          description: "Remove deployed module"
-          required: false
-          default: true
-        customLocation:
-          type: string
-          description: "Default location overwrite (e.g., eastus)"
-          required: false
-    push:
-      branches:
-        - main
-      paths:
-        - ".github/actions/templates/avm-**"
-        - ".github/workflows/avm.template.module.yml"
-        - ".github/workflows/avm.ptn.azd.apim-api.yml"
-        - "avm/ptn/azd/apim-api/**"
-        - "avm/utilities/pipelines/**"
-        - "!avm/utilities/pipelines/platform/**"
-        - "!*/**/README.md"
+  workflow_dispatch:
+    inputs:
+      staticValidation:
+        type: boolean
+        description: "Execute static validation"
+        required: false
+        default: true
+      deploymentValidation:
+        type: boolean
+        description: "Execute deployment validation"
+        required: false
+        default: true
+      removeDeployment:
+        type: boolean
+        description: "Remove deployed module"
+        required: false
+        default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/actions/templates/avm-**"
+      - ".github/workflows/avm.template.module.yml"
+      - ".github/workflows/avm.ptn.azd.apim-api.yml"
+      - "avm/ptn/azd/apim-api/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
+      - "!*/**/README.md"
 
 env:
     modulePath: "avm/ptn/azd/apim-api"

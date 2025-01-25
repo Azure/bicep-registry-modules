@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Account Gremlin Databases'
 metadata description = 'This module deploys a Gremlin Database within a CosmosDB Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Gremlin database.')
 param name string
@@ -14,10 +13,10 @@ param databaseAccountName string
 @description('Optional. Array of graphs to deploy in the Gremlin database.')
 param graphs array = []
 
-@description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.')
+@description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
 param maxThroughput int = 4000
 
-@description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
+@description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
 param throughput int?
 
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {

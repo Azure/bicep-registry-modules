@@ -1,7 +1,6 @@
 metadata name = 'NSG Flow Logs'
 metadata description = '''This module controls the Network Security Group Flow Logs and analytics settings.
 **Note: this module must be run on the Resource Group where Network Watcher is deployed**'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Name of the network watcher resource. Must be in the resource group where the Flow log will be created and same region as the NSG.')
 param networkWatcherName string = 'NetworkWatcher_${resourceGroup().location}'
@@ -60,11 +59,11 @@ var flowAnalyticsConfiguration = !empty(workspaceResourceId) && enabled == true
       }
     }
 
-resource networkWatcher 'Microsoft.Network/networkWatchers@2023-04-01' existing = {
+resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' existing = {
   name: networkWatcherName
 }
 
-resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2023-04-01' = {
+resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2024-05-01' = {
   name: name
   parent: networkWatcher
   tags: tags

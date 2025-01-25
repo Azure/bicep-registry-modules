@@ -66,7 +66,7 @@ module nestedDependencies2 'dependencies2.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
@@ -123,6 +123,7 @@ module testDeployment '../../../main.bicep' = [
       }
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
+      advancedThreatProtection: 'Enabled'
       skuName: 'Standard_D2ads_v5'
       tier: 'GeneralPurpose'
       storageAutoIoScaling: 'Enabled'
@@ -140,6 +141,7 @@ module testDeployment '../../../main.bicep' = [
           collation: 'ascii_general_ci'
         }
       ]
+      publicNetworkAccess: 'Enabled'
       firewallRules: [
         {
           endIpAddress: '0.0.0.0'
@@ -192,10 +194,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies1
-      nestedDependencies2
-      diagnosticDependencies
-    ]
   }
 ]

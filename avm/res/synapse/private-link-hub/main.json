@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "4249101597778316184"
+      "version": "0.32.4.45862",
+      "templateHash": "14782452399423336676"
     },
     "name": "Azure Synapse Analytics",
-    "description": "This module deploys an Azure Synapse Analytics (Private Link Hub).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Synapse Analytics (Private Link Hub)."
   },
   "definitions": {
     "_1.privateEndpointCustomDnsConfigType": {

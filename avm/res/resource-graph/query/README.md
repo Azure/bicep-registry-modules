@@ -8,6 +8,7 @@ This module deploys a Resource Graph Query.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -46,8 +47,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     // Required parameters
     name: 'rdsmin001'
     query: 'Resources | limit 10'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -70,10 +69,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     },
     "query": {
       "value": "Resources | limit 10"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -92,8 +87,6 @@ using 'br/public:avm/res/resource-graph/query:<version>'
 // Required parameters
 param name = 'rdsmin001'
 param query = 'Resources | limit 10'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -277,10 +270,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     name: 'rdswaf001'
     query: 'resourcecontainers| where type == \'microsoft.resources/subscriptions\' | take 5'
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'None'
-    }
     queryDescription: 'An example query to list first 5 subscriptions.'
     tags: {
       Environment: 'Non-Prod'
@@ -311,14 +300,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
       "value": "resourcecontainers| where type == \"microsoft.resources/subscriptions\" | take 5"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "None"
-      }
-    },
     "queryDescription": {
       "value": "An example query to list first 5 subscriptions."
     },
@@ -347,10 +328,6 @@ using 'br/public:avm/res/resource-graph/query:<version>'
 param name = 'rdswaf001'
 param query = 'resourcecontainers| where type == \'microsoft.resources/subscriptions\' | take 5'
 // Non-required parameters
-param location = '<location>'
-param lock = {
-  kind: 'None'
-}
 param queryDescription = 'An example query to list first 5 subscriptions.'
 param tags = {
   Environment: 'Non-Prod'
@@ -574,6 +551,14 @@ Resource tags.
 | `name` | string | The name of the query. |
 | `resourceGroupName` | string | The resource group the query was deployed into. |
 | `resourceId` | string | The resource ID of the query. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

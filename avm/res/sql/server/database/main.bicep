@@ -1,6 +1,5 @@
 metadata name = 'SQL Server Database'
 metadata description = 'This module deploys an Azure SQL Server Database.'
-metadata owner = 'Azure/module-maintainers'
 
 // START OF DATABASE PROPERTIES
 
@@ -135,7 +134,7 @@ param tags object?
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 

@@ -46,7 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -68,7 +68,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 }
 
 // 'idem' as second iteration will fail, as AAD DS is not ready for a second deployment during its provisioning state even when reported as 'succeeded' by the init iteration
-// as of https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr7---category-testing---idempotency-tests the idem test it is not required
+// as of https://azure.github.io/Azure-Verified-Modules/spec/SNFR7 the idem test it is not required
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'

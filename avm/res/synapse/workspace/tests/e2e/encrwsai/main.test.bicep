@@ -64,10 +64,6 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
       encryptionActivateWorkspace: true
-      location: resourceLocation
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

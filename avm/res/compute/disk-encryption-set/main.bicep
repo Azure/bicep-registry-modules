@@ -1,6 +1,5 @@
 metadata name = 'Disk Encryption Sets'
 metadata description = 'This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the disk encryption set that is being created.')
 param name string

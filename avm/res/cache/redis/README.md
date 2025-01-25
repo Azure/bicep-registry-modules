@@ -18,11 +18,12 @@ This module deploys a Redis Cache.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Cache/redis` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis) |
-| `Microsoft.Cache/redis/accessPolicies` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/accessPolicies) |
-| `Microsoft.Cache/redis/accessPolicyAssignments` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/accessPolicyAssignments) |
-| `Microsoft.Cache/redis/linkedServers` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/linkedServers) |
+| `Microsoft.Cache/redis` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis) |
+| `Microsoft.Cache/redis/accessPolicies` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicies) |
+| `Microsoft.Cache/redis/accessPolicyAssignments` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicyAssignments) |
+| `Microsoft.Cache/redis/linkedServers` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/linkedServers) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -36,9 +37,10 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using EntraID authentication](#example-2-using-entraid-authentication)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Passive Geo-Replicated Redis Cache](#example-4-passive-geo-replicated-redis-cache)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-3-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Passive Geo-Replicated Redis Cache](#example-5-passive-geo-replicated-redis-cache)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -222,7 +224,94 @@ param redisConfiguration = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  name: 'redisDeployment'
+  params: {
+    // Required parameters
+    name: 'kvref'
+    // Non-required parameters
+    location: '<location>'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      primaryAccessKeyName: 'custom-primaryAccessKey-name'
+      primaryConnectionStringName: 'custom-primaryConnectionString-name'
+      secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
+      secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kvref"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "primaryAccessKeyName": "custom-primaryAccessKey-name",
+        "primaryConnectionStringName": "custom-primaryConnectionString-name",
+        "secondaryAccessKeyName": "custom-secondaryAccessKey-name",
+        "secondaryConnectionStringName": "custom-secondaryConnectionString-name"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'kvref'
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  primaryAccessKeyName: 'custom-primaryAccessKey-name'
+  primaryConnectionStringName: 'custom-primaryConnectionString-name'
+  secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
+  secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -623,7 +712,7 @@ param zones = [
 </details>
 <p>
 
-### Example 4: _Passive Geo-Replicated Redis Cache_
+### Example 5: _Passive Geo-Replicated Redis Cache_
 
 This instance deploys the module with geo-replication enabled.
 
@@ -763,7 +852,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1051,6 +1140,7 @@ param zones = [
 | [`replicasPerMaster`](#parameter-replicaspermaster) | int | The number of replicas to be created per primary. |
 | [`replicasPerPrimary`](#parameter-replicasperprimary) | int | The number of replicas to be created per primary. Needs to be the same as replicasPerMaster for a Premium Cluster Cache. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`shardCount`](#parameter-shardcount) | int | The number of shards to be created on a Premium Cluster Cache. |
 | [`skuName`](#parameter-skuname) | string | The type of Redis cache to deploy. |
 | [`staticIP`](#parameter-staticip) | string | Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default. |
@@ -1876,6 +1966,7 @@ The number of replicas to be created per primary.
 - Required: No
 - Type: int
 - Default: `3`
+- MinValue: 1
 
 ### Parameter: `replicasPerPrimary`
 
@@ -1884,6 +1975,7 @@ The number of replicas to be created per primary. Needs to be the same as replic
 - Required: No
 - Type: int
 - Default: `3`
+- MinValue: 1
 
 ### Parameter: `roleAssignments`
 
@@ -1891,6 +1983,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1923,6 +2016,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1930,6 +2024,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1937,6 +2032,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1950,6 +2046,7 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 1
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1957,6 +2054,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.description`
 
@@ -1964,6 +2062,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.name`
 
@@ -1971,6 +2070,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 1
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1988,6 +2088,70 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+- MinValue: 1
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`primaryAccessKeyName`](#parameter-secretsexportconfigurationprimaryaccesskeyname) | string | The primaryAccessKey secret name to create. |
+| [`primaryConnectionStringName`](#parameter-secretsexportconfigurationprimaryconnectionstringname) | string | The primaryConnectionString secret name to create. |
+| [`secondaryAccessKeyName`](#parameter-secretsexportconfigurationsecondaryaccesskeyname) | string | The secondaryAccessKey secret name to create. |
+| [`secondaryConnectionStringName`](#parameter-secretsexportconfigurationsecondaryconnectionstringname) | string | The secondaryConnectionString secret name to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The resource ID of the key vault where to store the secrets of this module.
+
+- Required: Yes
+- Type: string
+- MinValue: 1
+
+### Parameter: `secretsExportConfiguration.primaryAccessKeyName`
+
+The primaryAccessKey secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 1
+
+### Parameter: `secretsExportConfiguration.primaryConnectionStringName`
+
+The primaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 1
+
+### Parameter: `secretsExportConfiguration.secondaryAccessKeyName`
+
+The secondaryAccessKey secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 1
+
+### Parameter: `secretsExportConfiguration.secondaryConnectionStringName`
+
+The secondaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 1
 
 ### Parameter: `shardCount`
 
@@ -1996,6 +2160,7 @@ The number of shards to be created on a Premium Cluster Cache.
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
 
 ### Parameter: `skuName`
 
@@ -2012,6 +2177,7 @@ The type of Redis cache to deploy.
     'Standard'
   ]
   ```
+- MinValue: 1
 
 ### Parameter: `staticIP`
 
@@ -2020,6 +2186,7 @@ Static IP address. Optionally, may be specified when deploying a Redis cache ins
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
 
 ### Parameter: `subnetResourceId`
 
@@ -2028,6 +2195,7 @@ The full resource ID of a subnet in a virtual network to deploy the Redis cache 
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
 
 ### Parameter: `tags`
 
@@ -2035,6 +2203,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 1
 
 ### Parameter: `tenantSettings`
 
@@ -2043,6 +2212,7 @@ A dictionary of tenant settings.
 - Required: No
 - Type: object
 - Default: `{}`
+- MinValue: 1
 
 ### Parameter: `zoneRedundant`
 
@@ -2051,6 +2221,7 @@ When true, replicas will be provisioned in availability zones specified in the z
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
 
 ### Parameter: `zones`
 
@@ -2066,11 +2237,13 @@ If the zoneRedundant parameter is true, replicas will be provisioned in the avai
     3
   ]
   ```
+- MinValue: 1
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `hostName` | string | Redis hostname. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Redis Cache. |
@@ -2088,6 +2261,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Notes
 

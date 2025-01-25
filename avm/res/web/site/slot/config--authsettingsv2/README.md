@@ -12,7 +12,7 @@ This module deploys a Site Auth Settings V2 Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/slots/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots/config) |
+| `Microsoft.Web/sites/slots/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config) |
 
 ## Parameters
 

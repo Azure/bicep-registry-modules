@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "4241820354615246390"
+      "version": "0.32.4.45862",
+      "templateHash": "353797495875556869"
     },
     "name": "DNS Resolver",
-    "description": "This module deploys a DNS Resolver.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DNS Resolver."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -393,12 +392,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10392660876237354468"
+              "version": "0.32.4.45862",
+              "templateHash": "3824129655159697612"
             },
             "name": "DNS Resolver Inbound Endpoint",
-            "description": "This module deploys a DNS Resolver Inbound Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DNS Resolver Inbound Endpoint."
           },
           "parameters": {
             "dnsResolverName": {
@@ -472,10 +470,7 @@
                     "privateIpAllocationMethod": "[parameters('privateIpAllocationMethod')]"
                   }
                 ]
-              },
-              "dependsOn": [
-                "dnsResolver"
-              ]
+              }
             }
           },
           "outputs": {
@@ -544,12 +539,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5025100485259764817"
+              "version": "0.32.4.45862",
+              "templateHash": "17231952253556640030"
             },
             "name": "DNS Resolver Outbound Endpoint",
-            "description": "This module deploys a DNS Resolver Outbound Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DNS Resolver Outbound Endpoint."
           },
           "parameters": {
             "dnsResolverName": {
@@ -603,10 +597,7 @@
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
                 }
-              },
-              "dependsOn": [
-                "dnsResolver"
-              ]
+              }
             }
           },
           "outputs": {

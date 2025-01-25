@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "11518344218995825129"
+      "version": "0.32.4.45862",
+      "templateHash": "15370135778757304817"
     },
     "name": "API Management Service Loggers",
-    "description": "This module deploys an API Management Service Logger.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Logger."
   },
   "parameters": {
     "apiManagementServiceName": {

@@ -52,14 +52,18 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
       managedIdentities: {
         systemAssigned: true
       }
       primaryAgentPoolProfiles: [
         {
           name: 'systempool'
-          count: 3
-          vmSize: 'Standard_DS2_v2'
+          count: 2
+          vmSize: 'Standard_DS4_v2'
           mode: 'System'
         }
       ]
@@ -86,6 +90,6 @@ module secretPermissions 'main.rbac.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-rbac'
   params: {
     keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    principalId: testDeployment[0].outputs.keyvaultIdentityObjectId
+    principalId: testDeployment[0].outputs.keyvaultIdentityObjectId!
   }
 }

@@ -1,6 +1,5 @@
 metadata name = 'Automation Account Modules'
 metadata description = 'This module deploys an Azure Automation Account Module.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Automation Account module.')
 param name string

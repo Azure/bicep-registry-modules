@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "7724811109136350489"
+      "version": "0.32.4.45862",
+      "templateHash": "8237462610300553734"
     },
     "name": "Azure Firewalls",
-    "description": "This module deploys an Azure Firewall.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Firewall."
   },
   "definitions": {
     "lockType": {
@@ -664,6 +663,56 @@
         }
       },
       "nullable": true
+    },
+    "hubIPAddressesType": {
+      "type": "object",
+      "properties": {
+        "privateIPAddress": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Private IP Address associated with AzureFirewall."
+          }
+        },
+        "publicIPs": {
+          "type": "object",
+          "properties": {
+            "addresses": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Public IP."
+                      }
+                    }
+                  }
+                }
+              ],
+              "items": false,
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained."
+              }
+            },
+            "count": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Public IP address count."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of public IP addresses associated with AzureFirewall."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -755,8 +804,8 @@
       }
     },
     "hubIPAddresses": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/hubIPAddressesType",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied."
       }

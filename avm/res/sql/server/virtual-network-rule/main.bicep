@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Server Virtual Network Rules'
 metadata description = 'This module deploys an Azure SQL Server Virtual Network Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Server Virtual Network Rule.')
 param name string

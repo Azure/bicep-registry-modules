@@ -132,6 +132,12 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     additionalManagementGroupsIDsToAssignRbacTo: [
       '<name>'
     ]
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      '<resourceId>'
+    ]
+    additionalSubscriptionIDsToAssignRbacTo: [
+      '<subscriptionId>'
+    ]
     description: '[Description] Policy Assignment at the management group scope'
     displayName: '[Display Name] Policy Assignment at the management group scope'
     enforcementMode: 'DoNotEnforce'
@@ -149,7 +155,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       }
     ]
     notScopes: [
-      '/subscriptions/<value>/resourceGroups/validation-rg'
+      '<resourceId>'
     ]
     overrides: [
       {
@@ -225,6 +231,16 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         "<name>"
       ]
     },
+    "additionalResourceGroupResourceIDsToAssignRbacTo": {
+      "value": [
+        "<resourceId>"
+      ]
+    },
+    "additionalSubscriptionIDsToAssignRbacTo": {
+      "value": [
+        "<subscriptionId>"
+      ]
+    },
     "description": {
       "value": "[Description] Policy Assignment at the management group scope"
     },
@@ -259,7 +275,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "notScopes": {
       "value": [
-        "/subscriptions/<value>/resourceGroups/validation-rg"
+        "<resourceId>"
       ]
     },
     "overrides": {
@@ -336,6 +352,12 @@ param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefiniti
 param additionalManagementGroupsIDsToAssignRbacTo = [
   '<name>'
 ]
+param additionalResourceGroupResourceIDsToAssignRbacTo = [
+  '<resourceId>'
+]
+param additionalSubscriptionIDsToAssignRbacTo = [
+  '<subscriptionId>'
+]
 param description = '[Description] Policy Assignment at the management group scope'
 param displayName = '[Display Name] Policy Assignment at the management group scope'
 param enforcementMode = 'DoNotEnforce'
@@ -353,7 +375,7 @@ param nonComplianceMessages = [
   }
 ]
 param notScopes = [
-  '/subscriptions/<value>/resourceGroups/validation-rg'
+  '<resourceId>'
 ]
 param overrides = [
   {
@@ -1179,6 +1201,8 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalManagementGroupsIDsToAssignRbacTo`](#parameter-additionalmanagementgroupsidstoassignrbacto) | array | An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity. |
+| [`additionalResourceGroupResourceIDsToAssignRbacTo`](#parameter-additionalresourcegroupresourceidstoassignrbacto) | array | An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
+| [`additionalSubscriptionIDsToAssignRbacTo`](#parameter-additionalsubscriptionidstoassignrbacto) | array | An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
 | [`description`](#parameter-description) | string | This message will be part of response in case of policy violation. |
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1214,6 +1238,22 @@ Specifies the ID of the policy definition or policy set definition being assigne
 ### Parameter: `additionalManagementGroupsIDsToAssignRbacTo`
 
 An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `additionalResourceGroupResourceIDsToAssignRbacTo`
+
+An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `additionalSubscriptionIDsToAssignRbacTo`
+
+An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.
 
 - Required: No
 - Type: array

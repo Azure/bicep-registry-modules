@@ -1,6 +1,5 @@
 metadata name = 'Synapse Workspaces'
 metadata description = 'This module deploys a Synapse Workspace.'
-metadata owner = 'Azure/module-maintainers'
 
 // Parameters
 @maxLength(50)
@@ -34,7 +33,7 @@ param defaultDataLakeStorageCreateManagedPrivateEndpoint bool = false
 @description('Optional. The Entra ID administrator for the synapse workspace.')
 param administrator administratorType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -86,23 +85,23 @@ param accountUrl string = 'https://${last(split(defaultDataLakeStorageAccountRes
 @description('Optional. Git integration settings.')
 param workspaceRepositoryConfiguration object?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -270,17 +269,15 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
   name: '${workspace.name}-cmk-rbac'
   params: {
     workspaceIndentityPrincipalId: workspace.identity.principalId
-    keyvaultName: !empty(customerManagedKey.?keyVaultResourceId) ? cMKKeyVault.name : ''
-    usesRbacAuthorization: !empty(customerManagedKey.?keyVaultResourceId)
+    keyvaultName: !empty(customerManagedKey!.keyVaultResourceId) ? cMKKeyVault.name : ''
+    usesRbacAuthorization: !empty(customerManagedKey!.keyVaultResourceId)
       ? cMKKeyVault.properties.enableRbacAuthorization
       : true
   }
-  scope: encryptionActivateWorkspace
-    ? resourceGroup(
-        split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-        split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-      )
-    : resourceGroup()
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 }
 
 // - Workspace encryption - Activate Workspace
@@ -352,10 +349,18 @@ module workspace_firewallRules 'firewall-rules/main.bicep' = [
 ]
 
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -445,19 +450,44 @@ output systemAssignedMIPrincipalId string? = workspace.?identity.?principalId
 output location string = workspace.location
 
 @description('The private endpoints of the Synapse Workspace.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, i) in (privateEndpoints ?? []): {
     name: workspace_privateEndpoints[i].outputs.name
     resourceId: workspace_privateEndpoints[i].outputs.resourceId
     groupId: workspace_privateEndpoints[i].outputs.groupId
-    customDnsConfig: workspace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: workspace_privateEndpoints[i].outputs.networkInterfaceIds
+    customDnsConfigs: workspace_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceResourceIds: workspace_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('The type for a private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 @description('The synapse workspace administrator\'s interface.')

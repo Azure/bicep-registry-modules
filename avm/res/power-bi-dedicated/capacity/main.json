@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "7899315276213055443"
+      "version": "0.32.4.45862",
+      "templateHash": "11211810764868342264"
     },
     "name": "Power BI Dedicated Capacities",
-    "description": "This module deploys a Power BI Dedicated Capacity.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Power BI Dedicated Capacity."
   },
   "definitions": {
     "lockType": {

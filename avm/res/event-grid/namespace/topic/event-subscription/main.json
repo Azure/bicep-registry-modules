@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "484752655079146569"
+      "version": "0.32.4.45862",
+      "templateHash": "3328924279528017223"
     },
     "name": "Event Subscriptions",
-    "description": "This module deploys an Event Subscription.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Subscription."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -163,10 +162,7 @@
       "existing": true,
       "type": "Microsoft.EventGrid/namespaces/topics",
       "apiVersion": "2023-12-15-preview",
-      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]",
-      "dependsOn": [
-        "namespace"
-      ]
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
     },
     "namespace": {
       "existing": true,
@@ -182,10 +178,7 @@
         "deliveryConfiguration": "[parameters('deliveryConfiguration')]",
         "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
         "filtersConfiguration": "[parameters('filtersConfiguration')]"
-      },
-      "dependsOn": [
-        "namespace::topic"
-      ]
+      }
     },
     "eventSubscription_roleAssignments": {
       "copy": {

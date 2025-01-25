@@ -1,6 +1,5 @@
 metadata name = 'Container Apps'
 metadata description = 'This module deploys a Container App.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container App.')
 param name string
@@ -23,7 +22,7 @@ param ingressExternal bool = true
 param clientCertificateMode string = 'ignore'
 
 @description('Optional. Object userd to configure CORS policy.')
-param corsPolicy corsPolicyType
+param corsPolicy corsPolicyType?
 
 @allowed([
   'none'
@@ -48,7 +47,7 @@ param service object = {}
 param includeAddOns bool = false
 
 @description('Optional. Settings to expose additional ports on container app.')
-param additionalPortMappings ingressPortMapping[]?
+param additionalPortMappings ingressPortMappingType[]?
 
 @description('Optional. Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections.')
 param ingressAllowInsecure bool = true
@@ -66,7 +65,7 @@ param scaleMinReplicas int = 3
 param scaleRules array = []
 
 @description('Optional. List of container app services bound to the app.')
-param serviceBinds serviceBind[]?
+param serviceBinds serviceBindingType[]?
 
 @allowed([
   'Multiple'
@@ -78,8 +77,9 @@ param activeRevisionsMode string = 'Single'
 @description('Required. Resource ID of environment.')
 param environmentResourceId string
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -87,11 +87,13 @@ param tags object?
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 param registries array = []
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -123,8 +125,11 @@ param dapr object = {}
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
+@description('Optional. Runtime configuration for the Container App.')
+param runtime runtimeType
+
 @description('Required. List of container definitions for the Container App.')
-param containers container[]
+param containers containerType[]
 
 @description('Optional. List of specialized containers that run before app containers.')
 param initContainersTemplate array = []
@@ -207,7 +212,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
+resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
   name: name
   tags: tags
   location: location
@@ -257,6 +262,20 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secretList
+      runtime: {
+        dotnet: !empty(runtime.?dotnet) ? {
+          autoConfigureDataProtection: runtime.?dotnet.autoConfigureDataProtection
+        } : null
+        java: !empty(runtime.?java) ? {
+          enableMetrics: runtime.?java.enableMetrics
+          javaAgent: {
+            enabled: runtime.?java.enableJavaAgent
+            logging: {
+              loggerSettings: runtime.?java.?loggerSettings
+            }
+          }
+        } : null
+      }
     }
     template: {
       containers: containers
@@ -323,49 +342,9 @@ output location string = containerApp.location
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type container = {
+@export()
+@description('The type for a container.')
+type containerType = {
   @description('Optional. Container start command arguments.')
   args: string[]?
 
@@ -373,7 +352,7 @@ type container = {
   command: string[]?
 
   @description('Optional. Container environment variables.')
-  env: environmentVar[]?
+  env: environmentVarType[]?
 
   @description('Required. Container image tag.')
   image: string
@@ -382,16 +361,18 @@ type container = {
   name: string?
 
   @description('Optional. List of probes for the container.')
-  probes: containerAppProbe[]?
+  probes: containerAppProbeType[]?
 
   @description('Required. Container resource requirements.')
   resources: object
 
   @description('Optional. Container volume mounts.')
-  volumeMounts: volumeMount[]?
+  volumeMounts: volumeMountType[]?
 }
 
-type ingressPortMapping = {
+@export()
+@description('The type for an ingress port mapping.')
+type ingressPortMappingType = {
   @description('Optional. Specifies the exposed port for the target port. If not specified, it defaults to target port.')
   exposedPort: int?
 
@@ -402,7 +383,8 @@ type ingressPortMapping = {
   targetPort: int
 }
 
-type serviceBind = {
+@description('The type for a service binding.')
+type serviceBindingType = {
   @description('Required. The name of the service.')
   name: string
 
@@ -410,7 +392,9 @@ type serviceBind = {
   serviceId: string
 }
 
-type environmentVar = {
+@export()
+@description('The type for an environment variable.')
+type environmentVarType = {
   @description('Required. Environment variable name.')
   name: string
 
@@ -421,14 +405,15 @@ type environmentVar = {
   value: string?
 }
 
-type containerAppProbe = {
+@description('The type for a container app probe.')
+type containerAppProbeType = {
   @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.')
   @minValue(1)
   @maxValue(10)
   failureThreshold: int?
 
   @description('Optional. HTTPGet specifies the http request to perform.')
-  httpGet: containerAppProbeHttpGet?
+  httpGet: containerAppProbeHttpGetType?
 
   @description('Optional. Number of seconds after the container has started before liveness probes are initiated.')
   @minValue(1)
@@ -445,8 +430,8 @@ type containerAppProbe = {
   @maxValue(10)
   successThreshold: int?
 
-  @description('Optional. TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported.')
-  tcpSocket: containerAppProbeTcpSocket?
+  @description('Optional. The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported.')
+  tcpSocket: containerAppProbeTcpSocketType?
 
   @description('Optional. Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod\'s terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour).')
   terminationGracePeriodSeconds: int?
@@ -460,6 +445,8 @@ type containerAppProbe = {
   type: ('Liveness' | 'Startup' | 'Readiness')?
 }
 
+@export()
+@description('The type for a CORS policy.')
 type corsPolicyType = {
   @description('Optional. Switch to determine whether the resource allows credentials.')
   allowCredentials: bool?
@@ -478,14 +465,15 @@ type corsPolicyType = {
 
   @description('Optional. Specifies the content for the access-control-max-age header.')
   maxAge: int?
-}?
+}
 
-type containerAppProbeHttpGet = {
+@description('The type for a container app probe HTTP GET.')
+type containerAppProbeHttpGetType = {
   @description('Optional. Host name to connect to. Defaults to the pod IP.')
   host: string?
 
   @description('Optional. HTTP headers to set in the request.')
-  httpHeaders: containerAppProbeHttpGetHeadersItem[]?
+  httpHeaders: containerAppProbeHttpGetHeadersItemType[]?
 
   @description('Required. Path to access on the HTTP server.')
   path: string
@@ -497,7 +485,8 @@ type containerAppProbeHttpGet = {
   scheme: ('HTTP' | 'HTTPS')?
 }
 
-type containerAppProbeHttpGetHeadersItem = {
+@description('The type for a container app probe HTTP GET header.')
+type containerAppProbeHttpGetHeadersItemType = {
   @description('Required. Name of the header.')
   name: string
 
@@ -505,7 +494,8 @@ type containerAppProbeHttpGetHeadersItem = {
   value: string
 }
 
-type containerAppProbeTcpSocket = {
+@description('The type for a container app probe TCP socket.')
+type containerAppProbeTcpSocketType = {
   @description('Optional. Host name to connect to, defaults to the pod IP.')
   host: string?
 
@@ -515,7 +505,8 @@ type containerAppProbeTcpSocket = {
   port: int
 }
 
-type volumeMount = {
+@description('The type for a volume mount.')
+type volumeMountType = {
   @description('Required. Path within the container at which the volume should be mounted.Must not contain \':\'.')
   mountPath: string
 
@@ -525,3 +516,31 @@ type volumeMount = {
   @description('Required. This must match the Name of a Volume.')
   volumeName: string
 }
+
+@export()
+@description('Optional. App runtime configuration for the Container App.')
+type runtimeType = {
+  @description('Optional. Runtime configuration for ASP.NET Core.')
+  dotnet: {
+    @description('Required. Enable to auto configure the ASP.NET Core Data Protection feature.')
+    autoConfigureDataProtection: bool
+  }?
+
+  @description('Optional. Runtime configuration for Java.')
+  java: {
+    @description('Required. Enable JMX core metrics for the Java app.')
+    enableMetrics: bool
+
+    @description('Required. Enable Java agent injection for the Java app.')
+    enableJavaAgent: bool
+
+    @description('Optional. Java agent logging configuration.')
+    loggerSettings: {
+      @description('Required. Name of the logger.')
+      logger: string
+
+      @description('Required. Java agent logging level.')
+      level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
+    }[]?
+  }?
+}?

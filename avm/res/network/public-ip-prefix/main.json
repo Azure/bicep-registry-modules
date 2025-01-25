@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "12984545577624848737"
+      "version": "0.32.4.45862",
+      "templateHash": "1837206327927302660"
     },
     "name": "Public IP Prefixes",
-    "description": "This module deploys a Public IP Prefix.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public IP Prefix."
   },
   "definitions": {
     "ipTagType": {

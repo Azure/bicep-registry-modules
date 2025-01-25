@@ -26,7 +26,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'avm-${namePrefix}-resources.resourcegroups-${serviceShort}-rg'
-      location: resourceLocation
     }
   }
 ]

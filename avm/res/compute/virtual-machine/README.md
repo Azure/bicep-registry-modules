@@ -18,7 +18,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments) |
 | `Microsoft.Compute/disks` | [2024-03-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks) |
 | `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
@@ -5375,12 +5375,7 @@ The configuration for the [Anti Malware] extension. Must at least contain the ["
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      enabled: false
-  }
-  ```
+- Default: `[if(equals(parameters('osType'), 'Windows'), createObject('enabled', true()), createObject('enabled', false()))]`
 
 ### Parameter: `extensionAzureDiskEncryptionConfig`
 

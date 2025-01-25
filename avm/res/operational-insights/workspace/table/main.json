@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13277383761731431931"
+      "version": "0.32.4.45862",
+      "templateHash": "8047367069034259642"
     },
     "name": "Log Analytics Workspace Tables",
-    "description": "This module deploys a Log Analytics Workspace Table.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Table."
   },
   "definitions": {
     "restoredLogsType": {
@@ -370,10 +369,7 @@
         "schema": "[parameters('schema')]",
         "searchResults": "[parameters('searchResults')]",
         "totalRetentionInDays": "[parameters('totalRetentionInDays')]"
-      },
-      "dependsOn": [
-        "workspace"
-      ]
+      }
     },
     "table_roleAssignments": {
       "copy": {

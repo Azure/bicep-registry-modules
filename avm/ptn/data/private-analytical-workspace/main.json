@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "4437449109602171238"
+      "version": "0.32.4.45862",
+      "templateHash": "4967554975737343791"
     },
     "name": "private-analytical-workspace",
-    "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
-    "owner": "Azure/module-maintainers"
+    "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution."
   },
   "definitions": {
     "userGroupRoleAssignmentType": {
@@ -518,10 +517,7 @@
       "apiVersion": "2023-11-01",
       "subscriptionId": "[if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2])]",
       "resourceGroup": "[if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])]",
-      "name": "[format('{0}/{1}', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))]",
-      "dependsOn": [
-        "vnetExisting"
-      ]
+      "name": "[format('{0}/{1}', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))]"
     },
     "vnetExisting::subnetDbwFrontend": {
       "condition": "[and(not(variables('createNewVNET')), and(parameters('enableDatabricks'), not(empty(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameFrontend')))))]",
@@ -530,10 +526,7 @@
       "apiVersion": "2023-11-01",
       "subscriptionId": "[if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2])]",
       "resourceGroup": "[if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])]",
-      "name": "[format('{0}/{1}', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameFrontend'), 'dummyName'))]",
-      "dependsOn": [
-        "vnetExisting"
-      ]
+      "name": "[format('{0}/{1}', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameFrontend'), 'dummyName'))]"
     },
     "vnetExisting::subnetDbwBackend": {
       "condition": "[and(not(variables('createNewVNET')), and(parameters('enableDatabricks'), not(empty(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameBackend')))))]",
@@ -542,10 +535,7 @@
       "apiVersion": "2023-11-01",
       "subscriptionId": "[if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2])]",
       "resourceGroup": "[if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])]",
-      "name": "[format('{0}/{1}', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameBackend'), 'dummyName'))]",
-      "dependsOn": [
-        "vnetExisting"
-      ]
+      "name": "[format('{0}/{1}', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameBackend'), 'dummyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",

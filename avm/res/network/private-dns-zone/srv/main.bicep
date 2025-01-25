@@ -1,6 +1,5 @@
 metadata name = 'Private DNS Zone SRV record'
 metadata description = 'This module deploys a Private DNS Zone SRV record.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Private DNS zone. Required if the template is used in a standalone deployment.')
 param privateDnsZoneName string

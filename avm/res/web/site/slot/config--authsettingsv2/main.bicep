@@ -1,6 +1,5 @@
 metadata name = 'Site Slot Auth Settings V2 Config'
 metadata description = 'This module deploys a Site Auth Settings V2 Configuration.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment.')
 param appName string
@@ -28,7 +27,7 @@ param kind string
 @description('Required. The auth settings V2 configuration.')
 param authSettingV2Configuration object
 
-resource app 'Microsoft.Web/sites@2023-12-01' existing = {
+resource app 'Microsoft.Web/sites@2024-04-01' existing = {
   name: appName
 
   resource slot 'slots' existing = {
@@ -36,7 +35,7 @@ resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   }
 }
 
-resource slotSettings 'Microsoft.Web/sites/slots/config@2023-12-01' = {
+resource slotSettings 'Microsoft.Web/sites/slots/config@2024-04-01' = {
   name: 'authsettingsV2'
   kind: kind
   parent: app::slot

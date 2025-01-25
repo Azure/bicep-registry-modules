@@ -36,7 +36,7 @@ This module deploys a MongoDB Database Collection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`throughput`](#parameter-throughput) | int | Request Units per second. |
+| [`throughput`](#parameter-throughput) | int | Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
 
 ### Parameter: `indexes`
 
@@ -75,7 +75,7 @@ The name of the parent mongodb database. Required if the template is used in a s
 
 ### Parameter: `throughput`
 
-Request Units per second.
+Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.
 
 - Required: No
 - Type: int

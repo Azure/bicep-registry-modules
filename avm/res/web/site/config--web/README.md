@@ -1,6 +1,6 @@
-# Site Api Management Config `[Microsoft.Web/sites/config]`
+# Site Web Config `[Microsoft.Web/sites/config]`
 
-This module deploys a Site Api Management Configuration.
+This module deploys web settings configuration available under sites/config name: web.
 
 ## Navigation
 
@@ -12,7 +12,7 @@ This module deploys a Site Api Management Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/config) |
+| `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
 
 ## Parameters
 
@@ -26,7 +26,7 @@ This module deploys a Site Api Management Configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementConfiguration`](#parameter-apimanagementconfiguration) | object | The web settings api management configuration. |
+| [`webConfiguration`](#parameter-webconfiguration) | object | The Site Config, Web settings to deploy. |
 
 ### Parameter: `appName`
 
@@ -35,9 +35,9 @@ The name of the parent site resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `apiManagementConfiguration`
+### Parameter: `webConfiguration`
 
-The web settings api management configuration.
+The Site Config, Web settings to deploy.
 
 - Required: No
 - Type: object

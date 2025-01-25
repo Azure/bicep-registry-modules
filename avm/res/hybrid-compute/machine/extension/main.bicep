@@ -1,6 +1,5 @@
 metadata name = 'Arc Machine Extensions'
 metadata description = 'This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent Arc Machine that extension is provisioned for.')
 param arcMachineName string
@@ -39,11 +38,11 @@ param enableAutomaticUpgrade bool
 @description('Optional. Tags of the resource.')
 param tags object?
 
-resource machine 'Microsoft.HybridCompute/machines@2024-03-31-preview' existing = {
+resource machine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
   name: arcMachineName
 }
 
-resource extension 'Microsoft.HybridCompute/machines/extensions@2024-03-31-preview' = {
+resource extension 'Microsoft.HybridCompute/machines/extensions@2024-07-10' = {
   name: name
   parent: machine
   location: location

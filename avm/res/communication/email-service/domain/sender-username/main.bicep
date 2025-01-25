@@ -1,6 +1,5 @@
 metadata name = 'Sender Usernames'
 metadata description = 'This module deploys an Sender'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent email service. Required if the template is used in a standalone deployment.')
 param emailServiceName string

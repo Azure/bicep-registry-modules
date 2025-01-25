@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8183595108547103937"
+      "version": "0.32.4.45862",
+      "templateHash": "14190486431770759654"
     },
     "name": "Disk Encryption Sets",
-    "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -258,10 +257,7 @@
       "apiVersion": "2021-10-01",
       "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName'))]",
-      "dependsOn": [
-        "keyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -310,7 +306,7 @@
         "rotationToLatestKeyVersionEnabled": "[parameters('rotationToLatestKeyVersionEnabled')]"
       },
       "dependsOn": [
-        "keyVault",
+        "keyVault::key",
         "keyVaultPermissions"
       ]
     },
@@ -388,8 +384,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7332173426743050645"
+              "version": "0.32.4.45862",
+              "templateHash": "11047892892596308247"
             }
           },
           "parameters": {
@@ -476,12 +472,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "11254343639333423548"
+                      "version": "0.32.4.45862",
+                      "templateHash": "2291023010330106734"
                     },
                     "name": "Key Vault Access Policies",
-                    "description": "This module deploys a Key Vault Access Policy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Key Vault Access Policy."
                   },
                   "definitions": {
                     "accessPoliciesType": {
@@ -658,10 +653,7 @@
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
                       "properties": {
                         "accessPolicies": "[variables('formattedAccessPolicies')]"
-                      },
-                      "dependsOn": [
-                        "keyVault"
-                      ]
+                      }
                     }
                   },
                   "outputs": {

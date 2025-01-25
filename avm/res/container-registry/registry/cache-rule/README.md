@@ -12,7 +12,7 @@ Cache for Azure Container Registry (Preview) feature allows users to cache conta
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
 
 ## Parameters
 

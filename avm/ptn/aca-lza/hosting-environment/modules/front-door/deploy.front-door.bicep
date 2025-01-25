@@ -3,20 +3,15 @@ targetScope = 'resourceGroup'
 // ------------------
 //    PARAMETERS
 // ------------------
-@description('The name of the workload that is being deployed. Up to 10 characters long.')
-@minLength(2)
-@maxLength(10)
-param workloadName string
-
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
-@maxLength(8)
-param environment string
 
 @description('The location where the resources will be created.')
-param location string = resourceGroup().location
+param location string
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
+
+@description('The naming conventions to use for resources.')
+param resourceNames object
 
 @description('Required. Whether to enable deplotment telemetry.')
 param enableTelemetry bool
@@ -53,24 +48,12 @@ var containerAppsEnvironmentSubscriptionId = containerAppsEnvironmentTokens[2]
 var containerAppsEnvironmentResourceGroupName = containerAppsEnvironmentTokens[4]
 var containerAppsEnvironmentName = containerAppsEnvironmentTokens[8]
 
-var privateLinkServiceName = '${naming.outputs.resourceTypeAbbreviations.privateLinkService}-${naming.outputs.resourcesNames.frontDoor}'
-
 // ------------------
 // RESOURCES
 // ------------------
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' existing = {
   scope: resourceGroup(containerAppsEnvironmentSubscriptionId, containerAppsEnvironmentResourceGroupName)
   name: containerAppsEnvironmentName
-}
-
-module naming '../naming/naming.module.bicep' = {
-  name: take('frontDoorNamingDeployment-${deployment().name}', 64)
-  params: {
-    uniqueId: uniqueString(resourceGroup().id)
-    environment: environment
-    workloadName: workloadName
-    location: location
-  }
 }
 
 module privateLinkService 'private-link-service.bicep' = {
@@ -80,7 +63,7 @@ module privateLinkService 'private-link-service.bicep' = {
     tags: tags
     containerAppsDefaultDomainName: containerAppsEnvironment.properties.defaultDomain
     containerAppsEnvironmentSubscriptionId: containerAppsEnvironmentSubscriptionId
-    privateLinkServiceName: privateLinkServiceName
+    privateLinkServiceName: resourceNames.frontDoorPrivateLinkService
     privateLinkSubnetId: privateLinkSubnetId
   }
 }

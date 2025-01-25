@@ -1,6 +1,5 @@
 metadata name = 'Site Deployment Extension '
 metadata description = 'This module deploys a Site extension for MSDeploy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent site resource.')
 param appName string
@@ -8,10 +7,10 @@ param appName string
 @description('Optional. Sets the MSDeployment Properties.')
 param msDeployConfiguration object?
 
-resource app 'Microsoft.Web/sites@2023-12-01' existing = {
+resource app 'Microsoft.Web/sites@2024-04-01' existing = {
   name: appName
 }
-resource msdeploy 'Microsoft.Web/sites/extensions@2023-12-01' = {
+resource msdeploy 'Microsoft.Web/sites/extensions@2024-04-01' = {
   name: 'MSDeploy'
   kind: 'MSDeploy'
   parent: app

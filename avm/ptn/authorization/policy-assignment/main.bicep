@@ -1,6 +1,5 @@
 metadata name = 'Policy Assignments (All scopes)'
 metadata description = 'This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'managementGroup'
 
@@ -52,6 +51,12 @@ param managementGroupId string = managementGroup().name
 
 @sys.description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
 param additionalManagementGroupsIDsToAssignRbacTo array = []
+
+@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+param additionalSubscriptionIDsToAssignRbacTo array = []
+
+@sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+param additionalResourceGroupResourceIDsToAssignRbacTo array = []
 
 @sys.description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment.')
 param subscriptionId string = ''
@@ -117,6 +122,8 @@ module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscrip
     overrides: !empty(overrides) ? overrides : []
     resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : []
     additionalManagementGroupsIDsToAssignRbacTo: additionalManagementGroupsIDsToAssignRbacTo
+    additionalSubscriptionIDsToAssignRbacTo: additionalSubscriptionIDsToAssignRbacTo
+    additionalResourceGroupResourceIDsToAssignRbacTo: additionalResourceGroupResourceIDsToAssignRbacTo
   }
 }
 

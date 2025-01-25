@@ -1,7 +1,6 @@
 metadata name = 'Network Manager Network Group Static Members'
 metadata description = '''This module deploys a Network Manager Network Group Static Member.
 Static membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment.')
 param networkManagerName string
@@ -15,15 +14,15 @@ param name string
 @description('Required. Resource ID of the virtual network.')
 param resourceId string
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 
-  resource networkGroup 'networkGroups@2023-11-01' existing = {
+  resource networkGroup 'networkGroups' existing = {
     name: networkGroupName
   }
 }
 
-resource staticMember 'Microsoft.Network/networkManagers/networkGroups/staticMembers@2023-11-01' = {
+resource staticMember 'Microsoft.Network/networkManagers/networkGroups/staticMembers@2024-05-01' = {
   name: name
   parent: networkManager::networkGroup
   properties: {

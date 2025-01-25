@@ -13,9 +13,9 @@ A security admin configuration contains a set of rule collections. Each rule col
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/securityAdminConfigurations) |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/securityAdminConfigurations/ruleCollections) |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/securityAdminConfigurations/ruleCollections/rules) |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations) |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections) |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections/rules) |
 
 ## Parameters
 
@@ -37,6 +37,7 @@ A security admin configuration contains a set of rule collections. Each rule col
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | A description of the security admin configuration. |
+| [`networkGroupAddressSpaceAggregationOption`](#parameter-networkgroupaddressspaceaggregationoption) | string | Determine update behavior for changes to network groups referenced within the rules in this configuration. |
 | [`ruleCollections`](#parameter-rulecollections) | array | A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules. |
 
 ### Parameter: `applyOnNetworkIntentPolicyBasedServices`
@@ -74,6 +75,22 @@ A description of the security admin configuration.
 
 - Required: No
 - Type: string
+- Default: `''`
+
+### Parameter: `networkGroupAddressSpaceAggregationOption`
+
+Determine update behavior for changes to network groups referenced within the rules in this configuration.
+
+- Required: No
+- Type: string
+- Default: `'None'`
+- Allowed:
+  ```Bicep
+  [
+    'Manual'
+    'None'
+  ]
+  ```
 
 ### Parameter: `ruleCollections`
 
@@ -199,6 +216,8 @@ The priority of the rule. The value can be between 1 and 4096. The priority numb
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 4096
 
 ### Parameter: `ruleCollections.rules.protocol`
 
@@ -217,6 +236,8 @@ Network protocol this rule applies to.
     'Udp'
   ]
   ```
+- MinValue: 1
+- MaxValue: 4096
 
 ### Parameter: `ruleCollections.rules.description`
 
@@ -224,6 +245,8 @@ A description of the rule.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 4096
 
 ### Parameter: `ruleCollections.rules.destinationPortRanges`
 
@@ -231,6 +254,8 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 4096
 
 ### Parameter: `ruleCollections.rules.destinations`
 
@@ -238,6 +263,8 @@ The destnations filter can be an IP Address or a service tag. Each filter contai
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 4096
 
 **Required parameters**
 
@@ -252,6 +279,8 @@ Address prefix.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 4096
 
 ### Parameter: `ruleCollections.rules.destinations.addressPrefixType`
 
@@ -266,6 +295,8 @@ Address prefix type.
     'ServiceTag'
   ]
   ```
+- MinValue: 1
+- MaxValue: 4096
 
 ### Parameter: `ruleCollections.rules.sourcePortRanges`
 
@@ -273,6 +304,8 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 4096
 
 ### Parameter: `ruleCollections.rules.sources`
 
@@ -280,6 +313,8 @@ The source filter can be an IP Address or a service tag. Each filter contains th
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 4096
 
 **Required parameters**
 
@@ -294,6 +329,8 @@ Address prefix.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 4096
 
 ### Parameter: `ruleCollections.rules.sources.addressPrefixType`
 
@@ -308,6 +345,8 @@ Address prefix type.
     'ServiceTag'
   ]
   ```
+- MinValue: 1
+- MaxValue: 4096
 
 ## Outputs
 

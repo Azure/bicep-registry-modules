@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "2378205016082649078"
+      "version": "0.32.4.45862",
+      "templateHash": "9308022896538130813"
     },
     "name": "Finops-hub",
-    "description": "This module deploys a Finops hub from the Finops toolkit.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Finops hub from the Finops toolkit."
   },
   "parameters": {
     "hubName": {
@@ -210,8 +209,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4568813132024947706"
+              "version": "0.32.4.45862",
+              "templateHash": "6263133870299795120"
             }
           },
           "parameters": {
@@ -5614,8 +5613,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17793535838056076246"
+              "version": "0.32.4.45862",
+              "templateHash": "13505355156582805752"
             }
           },
           "parameters": {
@@ -6140,7 +6139,6 @@
                 "principalType": "ServicePrincipal"
               },
               "dependsOn": [
-                "dataFactory",
                 "identity"
               ]
             },
@@ -6163,7 +6161,6 @@
                 }
               },
               "dependsOn": [
-                "dataFactory",
                 "keyVault"
               ]
             },
@@ -6188,7 +6185,6 @@
                 }
               },
               "dependsOn": [
-                "dataFactory",
                 "linkedService_keyVault",
                 "storageAccount"
               ]
@@ -6216,7 +6212,6 @@
                 }
               },
               "dependsOn": [
-                "dataFactory",
                 "linkedService_keyVault",
                 "linkedService_storageAccount"
               ]
@@ -6244,7 +6239,6 @@
                 }
               },
               "dependsOn": [
-                "dataFactory",
                 "linkedService_keyVault",
                 "linkedService_storageAccount"
               ]
@@ -6285,10 +6279,8 @@
                 }
               },
               "dependsOn": [
-                "dataFactory",
                 "pipeline_ExecuteETL",
-                "stopHubTriggers",
-                "storageAccount"
+                "stopHubTriggers"
               ]
             },
             "pipeline_ExecuteETL": {
@@ -6332,7 +6324,6 @@
                 "annotations": []
               },
               "dependsOn": [
-                "dataFactory",
                 "pipeline_msexports_ETL_ingestion"
               ]
             },
@@ -6667,7 +6658,6 @@
                 "annotations": []
               },
               "dependsOn": [
-                "dataFactory",
                 "dataset_ingestion",
                 "dataset_msexports"
               ]
@@ -7210,7 +7200,6 @@
                 }
               },
               "dependsOn": [
-                "dataFactory",
                 "identity",
                 "identityRoleAssignments"
               ]
@@ -7760,7 +7749,6 @@
                 }
               },
               "dependsOn": [
-                "dataFactory",
                 "identity",
                 "identityRoleAssignments"
               ]
@@ -8307,7 +8295,6 @@
                 }
               },
               "dependsOn": [
-                "dataFactory",
                 "identity",
                 "identityRoleAssignments",
                 "trigger_msexports_FileAdded"
@@ -8386,8 +8373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2016642433151139575"
+              "version": "0.32.4.45862",
+              "templateHash": "4828414419580547531"
             }
           },
           "parameters": {
@@ -10969,10 +10956,7 @@
                     }
                   }
                 }
-              },
-              "dependsOn": [
-                "storageRef"
-              ]
+              }
             }
           },
           "outputs": {

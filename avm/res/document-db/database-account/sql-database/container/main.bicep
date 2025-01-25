@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Account SQL Database Containers'
 metadata description = 'This module deploys a SQL Database Container in a CosmosDB Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -22,11 +21,11 @@ param conflictResolutionPolicy object = {}
 @description('Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don\'t expire by default.')
 param defaultTtl int = -1
 
-@description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
+@description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
 param throughput int = 400
 
 @maxValue(1000000)
-@description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.')
+@description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
 param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL Database resource.')
