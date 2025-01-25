@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9167103947618087078"
+      "templateHash": "7551972959536498344"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint."
@@ -687,6 +687,7 @@
     },
     "groupId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The group Id for the private endpoint Group."
       },
