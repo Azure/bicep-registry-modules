@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "12385278995369535477"
+      "version": "0.32.4.45862",
+      "templateHash": "11683450086168084373"
     },
     "name": "Elastic SAN Volume Snapshots",
-    "description": "This module deploys an Elastic SAN Volume Snapshot.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Elastic SAN Volume Snapshot."
   },
   "parameters": {
     "elasticSanName": {

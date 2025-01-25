@@ -1,6 +1,5 @@
 metadata name = 'Service Fabric Clusters'
 metadata description = 'This module deploys a Service Fabric Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Service Fabric cluster.')
 param name string
@@ -11,8 +10,9 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @allowed([
   'BackupRestoreService'
@@ -30,16 +30,16 @@ param maxUnusedVersionsToKeep int = 3
 param azureActiveDirectory object = {}
 
 @description('Conditional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used.')
-param certificate certificateType
+param certificate certificateType?
 
 @description('Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.')
-param certificateCommonNames certificateCommonNameType
+param certificateCommonNames certificateCommonNameType?
 
 @description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used.')
-param clientCertificateCommonNames clientCertificateCommonNameType
+param clientCertificateCommonNames clientCertificateCommonNameType[]?
 
 @description('Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used.')
-param clientCertificateThumbprints clientCertificateThumbprintType
+param clientCertificateThumbprints clientCertificateThumbprintType[]?
 
 @description('Optional. The Service Fabric runtime version of the cluster. This property can only by set the user when upgradeMode is set to "Manual". To get list of available Service Fabric versions for new clusters use ClusterVersion API. To get the list of available version for existing clusters use availableClusterVersions.')
 param clusterCodeVersion string?
@@ -125,8 +125,9 @@ param vmssZonalUpgradeMode string = 'Hierarchical'
 @description('Optional. Boolean to pause automatic runtime version upgrades to the cluster.')
 param waveUpgradePaused bool = false
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Array of Service Fabric cluster application types.')
 param applicationTypes array = []
@@ -151,8 +152,8 @@ var clientCertificateThumbprintsVar = [
 
 var fabricSettingsVar = [
   for fabricSetting in fabricSettings: {
-    name: contains(fabricSetting, 'name') ? fabricSetting.name : null
-    parameters: contains(fabricSetting, 'parameters') ? fabricSetting.parameters : null
+    name: fabricSetting.?name
+    parameters: fabricSetting.?parameters
   }
 ]
 
@@ -160,42 +161,36 @@ var fnodeTypesVar = [
   for nodeType in nodeTypes: {
     applicationPorts: contains(nodeType, 'applicationPorts')
       ? {
-          endPort: contains(nodeType.applicationPorts, 'endPort') ? nodeType.applicationPorts.endPort : null
-          startPort: contains(nodeType.applicationPorts, 'startPort') ? nodeType.applicationPorts.startPort : null
+          endPort: nodeType.applicationPorts.?endPort
+          startPort: nodeType.applicationPorts.?startPort
         }
       : null
-    capacities: contains(nodeType, 'capacities') ? nodeType.capacities : null
-    clientConnectionEndpointPort: contains(nodeType, 'clientConnectionEndpointPort')
-      ? nodeType.clientConnectionEndpointPort
-      : null
-    durabilityLevel: contains(nodeType, 'durabilityLevel') ? nodeType.durabilityLevel : null
+    capacities: nodeType.?capacities
+    clientConnectionEndpointPort: nodeType.?clientConnectionEndpointPort
+    durabilityLevel: nodeType.?durabilityLevel
     ephemeralPorts: contains(nodeType, 'ephemeralPorts')
       ? {
-          endPort: contains(nodeType.ephemeralPorts, 'endPort') ? nodeType.ephemeralPorts.endPort : null
-          startPort: contains(nodeType.ephemeralPorts, 'startPort') ? nodeType.ephemeralPorts.startPort : null
+          endPort: nodeType.ephemeralPorts.?endPort
+          startPort: nodeType.ephemeralPorts.?startPort
         }
       : null
-    httpGatewayEndpointPort: contains(nodeType, 'httpGatewayEndpointPort') ? nodeType.httpGatewayEndpointPort : null
-    isPrimary: contains(nodeType, 'isPrimary') ? nodeType.isPrimary : null
-    isStateless: contains(nodeType, 'isStateless') ? nodeType.isStateless : null
-    multipleAvailabilityZones: contains(nodeType, 'multipleAvailabilityZones')
-      ? nodeType.multipleAvailabilityZones
-      : null
-    name: contains(nodeType, 'name') ? nodeType.name : 'Node00'
-    placementProperties: contains(nodeType, 'placementProperties') ? nodeType.placementProperties : null
-    reverseProxyEndpointPort: contains(nodeType, 'reverseProxyEndpointPort') ? nodeType.reverseProxyEndpointPort : null
-    vmInstanceCount: contains(nodeType, 'vmInstanceCount') ? nodeType.vmInstanceCount : 1
+    httpGatewayEndpointPort: nodeType.?httpGatewayEndpointPort
+    isPrimary: nodeType.?isPrimary
+    isStateless: nodeType.?isStateless
+    multipleAvailabilityZones: nodeType.?multipleAvailabilityZones
+    name: nodeType.?name ?? 'Node00'
+    placementProperties: nodeType.?placementProperties
+    reverseProxyEndpointPort: nodeType.?reverseProxyEndpointPort
+    vmInstanceCount: nodeType.?vmInstanceCount ?? 1
   }
 ]
 
 var notificationsVar = [
   for notification in notifications: {
-    isEnabled: contains(notification, 'isEnabled') ? notification.isEnabled : false
-    notificationCategory: contains(notification, 'notificationCategory')
-      ? notification.notificationCategory
-      : 'WaveProgress'
-    notificationLevel: contains(notification, 'notificationLevel') ? notification.notificationLevel : 'All'
-    notificationTargets: contains(notification, 'notificationTargets') ? notification.notificationTargets : []
+    isEnabled: notification.?isEnabled ?? false
+    notificationCategory: notification.?notificationCategory ?? 'WaveProgress'
+    notificationLevel: notification.?notificationLevel ?? 'All'
+    notificationTargets: notification.?notificationTargets ?? []
   }
 ]
 
@@ -207,36 +202,20 @@ var upgradeDescriptionVar = union(
       maxPercentDeltaUnhealthyNodes: upgradeDescription.?maxPercentDeltaUnhealthyNodes ?? 0
       maxPercentUpgradeDomainDeltaUnhealthyNodes: upgradeDescription.?maxPercentUpgradeDomainDeltaUnhealthyNodes ?? 0
     }
-    forceRestart: contains(upgradeDescription, 'forceRestart') ? upgradeDescription.forceRestart : false
-    healthCheckRetryTimeout: contains(upgradeDescription, 'healthCheckRetryTimeout')
-      ? upgradeDescription.healthCheckRetryTimeout
-      : '00:45:00'
-    healthCheckStableDuration: contains(upgradeDescription, 'healthCheckStableDuration')
-      ? upgradeDescription.healthCheckStableDuration
-      : '00:01:00'
-    healthCheckWaitDuration: contains(upgradeDescription, 'healthCheckWaitDuration')
-      ? upgradeDescription.healthCheckWaitDuration
-      : '00:00:30'
-    upgradeDomainTimeout: contains(upgradeDescription, 'upgradeDomainTimeout')
-      ? upgradeDescription.upgradeDomainTimeout
-      : '02:00:00'
-    upgradeReplicaSetCheckTimeout: contains(upgradeDescription, 'upgradeReplicaSetCheckTimeout')
-      ? upgradeDescription.upgradeReplicaSetCheckTimeout
-      : '1.00:00:00'
-    upgradeTimeout: contains(upgradeDescription, 'upgradeTimeout') ? upgradeDescription.upgradeTimeout : '02:00:00'
+    forceRestart: upgradeDescription.?forceRestart ?? false
+    healthCheckRetryTimeout: upgradeDescription.?healthCheckRetryTimeout ?? '00:45:00'
+    healthCheckStableDuration: upgradeDescription.?healthCheckStableDuration ?? '00:01:00'
+    healthCheckWaitDuration: upgradeDescription.?healthCheckWaitDuration ?? '00:00:30'
+    upgradeDomainTimeout: upgradeDescription.?upgradeDomainTimeout ?? '02:00:00'
+    upgradeReplicaSetCheckTimeout: upgradeDescription.?upgradeReplicaSetCheckTimeout ?? '1.00:00:00'
+    upgradeTimeout: upgradeDescription.?upgradeTimeout ?? '02:00:00'
   },
   contains(upgradeDescription, 'healthPolicy')
     ? {
         healthPolicy: {
-          applicationHealthPolicies: contains(upgradeDescription.healthPolicy, 'applicationHealthPolicies')
-            ? upgradeDescription.healthPolicy.applicationHealthPolicies
-            : {}
-          maxPercentUnhealthyApplications: contains(upgradeDescription.healthPolicy, 'maxPercentUnhealthyApplications')
-            ? upgradeDescription.healthPolicy.maxPercentUnhealthyApplications
-            : 0
-          maxPercentUnhealthyNodes: contains(upgradeDescription.healthPolicy, 'maxPercentUnhealthyNodes')
-            ? upgradeDescription.healthPolicy.maxPercentUnhealthyNodes
-            : 0
+          applicationHealthPolicies: upgradeDescription.healthPolicy.?applicationHealthPolicies ?? {}
+          maxPercentUnhealthyApplications: upgradeDescription.healthPolicy.?maxPercentUnhealthyApplications ?? 0
+          maxPercentUnhealthyNodes: upgradeDescription.healthPolicy.?maxPercentUnhealthyNodes ?? 0
         }
       }
     : {}
@@ -298,26 +277,22 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     }
     azureActiveDirectory: !empty(azureActiveDirectory)
       ? {
-          clientApplication: contains(azureActiveDirectory, 'clientApplication')
-            ? azureActiveDirectory.clientApplication
-            : null
-          clusterApplication: contains(azureActiveDirectory, 'clusterApplication')
-            ? azureActiveDirectory.clusterApplication
-            : null
-          tenantId: contains(azureActiveDirectory, 'tenantId') ? azureActiveDirectory.tenantId : null
+          clientApplication: azureActiveDirectory.?clientApplication
+          clusterApplication: azureActiveDirectory.?clusterApplication
+          tenantId: azureActiveDirectory.?tenantId
         }
       : null
     certificate: !empty(certificate)
       ? {
           thumbprint: certificate.?thumbprint ?? ''
-          thumbprintSecondary: certificate.?thumbprintSecondary ?? null
-          x509StoreName: certificate.?x509StoreName ?? null
+          thumbprintSecondary: certificate.?thumbprintSecondary
+          x509StoreName: certificate.?x509StoreName
         }
       : null
     certificateCommonNames: !empty(certificateCommonNames)
       ? {
           commonNames: certificateCommonNames.?commonNames ?? []
-          x509StoreName: certificateCommonNames.?x509StoreName ?? null
+          x509StoreName: certificateCommonNames.?x509StoreName
         }
       : null
     clientCertificateCommonNames: clientCertificateCommonNamesVar
@@ -325,24 +300,12 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     clusterCodeVersion: clusterCodeVersion
     diagnosticsStorageAccountConfig: !empty(diagnosticsStorageAccountConfig)
       ? {
-          blobEndpoint: contains(diagnosticsStorageAccountConfig, 'blobEndpoint')
-            ? diagnosticsStorageAccountConfig.blobEndpoint
-            : null
-          protectedAccountKeyName: contains(diagnosticsStorageAccountConfig, 'protectedAccountKeyName')
-            ? diagnosticsStorageAccountConfig.protectedAccountKeyName
-            : null
-          protectedAccountKeyName2: contains(diagnosticsStorageAccountConfig, 'protectedAccountKeyName2')
-            ? diagnosticsStorageAccountConfig.protectedAccountKeyName2
-            : null
-          queueEndpoint: contains(diagnosticsStorageAccountConfig, 'queueEndpoint')
-            ? diagnosticsStorageAccountConfig.queueEndpoint
-            : null
-          storageAccountName: contains(diagnosticsStorageAccountConfig, 'storageAccountName')
-            ? diagnosticsStorageAccountConfig.storageAccountName
-            : null
-          tableEndpoint: contains(diagnosticsStorageAccountConfig, 'tableEndpoint')
-            ? diagnosticsStorageAccountConfig.tableEndpoint
-            : null
+          blobEndpoint: diagnosticsStorageAccountConfig.?blobEndpoint
+          protectedAccountKeyName: diagnosticsStorageAccountConfig.?protectedAccountKeyName
+          protectedAccountKeyName2: diagnosticsStorageAccountConfig.?protectedAccountKeyName2
+          queueEndpoint: diagnosticsStorageAccountConfig.?queueEndpoint
+          storageAccountName: diagnosticsStorageAccountConfig.?storageAccountName
+          tableEndpoint: diagnosticsStorageAccountConfig.?tableEndpoint
         }
       : null
     eventStoreServiceEnabled: eventStoreServiceEnabled
@@ -354,23 +317,15 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     reliabilityLevel: !empty(reliabilityLevel) ? reliabilityLevel : 'None'
     reverseProxyCertificate: !empty(reverseProxyCertificate)
       ? {
-          thumbprint: contains(reverseProxyCertificate, 'thumbprint') ? reverseProxyCertificate.thumbprint : null
-          thumbprintSecondary: contains(reverseProxyCertificate, 'thumbprintSecondary')
-            ? reverseProxyCertificate.thumbprintSecondary
-            : null
-          x509StoreName: contains(reverseProxyCertificate, 'x509StoreName')
-            ? reverseProxyCertificate.x509StoreName
-            : null
+          thumbprint: reverseProxyCertificate.?thumbprint
+          thumbprintSecondary: reverseProxyCertificate.?thumbprintSecondary
+          x509StoreName: reverseProxyCertificate.?x509StoreName
         }
       : null
     reverseProxyCertificateCommonNames: !empty(reverseProxyCertificateCommonNames)
       ? {
-          commonNames: contains(reverseProxyCertificateCommonNames, 'commonNames')
-            ? reverseProxyCertificateCommonNames.commonNames
-            : null
-          x509StoreName: contains(reverseProxyCertificateCommonNames, 'x509StoreName')
-            ? reverseProxyCertificateCommonNames.x509StoreName
-            : null
+          commonNames: reverseProxyCertificateCommonNames.?commonNames
+          x509StoreName: reverseProxyCertificateCommonNames.?x509StoreName
         }
       : null
     sfZonalUpgradeMode: !empty(sfZonalUpgradeMode) ? sfZonalUpgradeMode : null
@@ -449,6 +404,8 @@ output location string = serviceFabricCluster.location
 //   Definitions   //
 // =============== //
 
+@export()
+@description('The type for a certificate.')
 type certificateType = {
   @description('Required. The thumbprint of the primary certificate.')
   thumbprint: string
@@ -466,11 +423,13 @@ type certificateType = {
     | 'Root'
     | 'TrustedPeople'
     | 'TrustedPublisher')?
-}?
+}
 
+@export()
+@description('The type for a certificate common name.')
 type certificateCommonNameType = {
   @description('Required. The list of server certificates referenced by common name that are used to secure the cluster.')
-  commonNames: serverCertificateCommonNameType
+  commonNames: serverCertificateCommonNameType[]
 
   @description('Optional. The local certificate store location.')
   x509StoreName: (
@@ -482,16 +441,18 @@ type certificateCommonNameType = {
     | 'Root'
     | 'TrustedPeople'
     | 'TrustedPublisher')?
-}?
+}
 
+@description('The type for a server certificate common name.')
 type serverCertificateCommonNameType = {
   @description('Required. The common name of the server certificate.')
   certificateCommonName: string
 
   @description('Required. The issuer thumbprint of the server certificate.')
   certificateIssuerThumbprint: string
-}[]
+}
 
+@description('The type for a client certificate common name.')
 type clientCertificateCommonNameType = {
   @description('Required. The common name of the client certificate.')
   certificateCommonName: string
@@ -501,46 +462,14 @@ type clientCertificateCommonNameType = {
 
   @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
   isAdmin: bool
-}[]?
+}
 
+@export()
+@description('The type for a client certificate thumbprint.')
 type clientCertificateThumbprintType = {
   @description('Required. The thumbprint of the client certificate.')
   certificateThumbprint: string
 
   @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
   isAdmin: bool
-}[]?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+}

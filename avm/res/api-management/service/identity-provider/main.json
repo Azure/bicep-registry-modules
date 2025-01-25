@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "11902978823059118045"
+      "version": "0.32.4.45862",
+      "templateHash": "13378170063684269324"
     },
     "name": "API Management Service Identity Providers",
-    "description": "This module deploys an API Management Service Identity Provider.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Identity Provider."
   },
   "parameters": {
     "apiManagementServiceName": {

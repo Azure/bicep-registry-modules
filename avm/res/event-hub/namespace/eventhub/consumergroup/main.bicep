@@ -1,6 +1,5 @@
 metadata name = 'Event Hub Namespace Event Hub Consumer Groups'
 metadata description = 'This module deploys an Event Hub Namespace Event Hub Consumer Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment.s.')
 param namespaceName string

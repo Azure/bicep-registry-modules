@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8195372149835761348"
+      "templateHash": "17003976301716291586"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
-    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
   },
   "parameters": {
     "managedClusterName": {
@@ -185,7 +184,7 @@
         "description": "Optional. The default is \"Ephemeral\" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to \"Managed\". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os)."
       }
     },
-    "osSku": {
+    "osSKU": {
       "type": "string",
       "nullable": true,
       "allowedValues": [
@@ -316,7 +315,7 @@
     },
     "agentPool": {
       "type": "Microsoft.ContainerService/managedClusters/agentPools",
-      "apiVersion": "2023-07-02-preview",
+      "apiVersion": "2024-08-01",
       "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
       "properties": {
         "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
@@ -339,7 +338,7 @@
         "orchestratorVersion": "[parameters('orchestratorVersion')]",
         "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
         "osDiskType": "[parameters('osDiskType')]",
-        "osSKU": "[parameters('osSku')]",
+        "osSKU": "[parameters('osSKU')]",
         "osType": "[parameters('osType')]",
         "podSubnetID": "[parameters('podSubnetResourceId')]",
         "proximityPlacementGroupID": "[parameters('proximityPlacementGroupResourceId')]",
