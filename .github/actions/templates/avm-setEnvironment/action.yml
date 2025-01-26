@@ -44,6 +44,7 @@ runs:
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
 
         # Define PS modules to install on the runner
+        # Az.Accounts version 4.0.2 is specified to avoid the issue with the latest version the runners are using. This pin down can be removed once the agents are using this version by default.
         $modules = @(
             @{ Name = 'Az.Accounts'; Version = '4.0.2' },
             @{ Name = 'Az.Resources' },
