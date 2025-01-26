@@ -1,6 +1,5 @@
 metadata name = 'Service-Endpoint-Policy'
 metadata description = 'This module deploys a Service Endpoint Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Service Endpoint Policy to create.')
 @minLength(1)

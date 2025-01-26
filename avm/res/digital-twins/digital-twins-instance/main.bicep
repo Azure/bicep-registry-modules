@@ -1,6 +1,5 @@
 metadata name = 'Digital Twins Instances'
 metadata description = 'This module deploys an Azure Digital Twins Instance.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Digital Twin Instance.')
 @minLength(3)
@@ -13,18 +12,18 @@ param location string = resourceGroup().location
 @description('Optional. Resource tags.')
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. The endpoints of the service.')
 param endpoints endpointType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -36,14 +35,14 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 ])
 param publicNetworkAccess string = ''
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType[]?
 
@@ -137,10 +136,18 @@ module digitalTwinsInstance_endpoints 'endpoint/main.bicep' = [
   }
 ]
 
-module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
+module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-digitalTwinsInstance-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(digitalTwinsInstance.id, '/'))}-${privateEndpoint.?service ?? 'API'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -272,8 +279,8 @@ output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {
     name: digitalTwinsInstance_privateEndpoints[index].outputs.name
     resourceId: digitalTwinsInstance_privateEndpoints[index].outputs.resourceId
-    groupId: digitalTwinsInstance_privateEndpoints[index].outputs.groupId
-    customDnsConfigs: digitalTwinsInstance_privateEndpoints[index].outputs.customDnsConfig
+    groupId: digitalTwinsInstance_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: digitalTwinsInstance_privateEndpoints[index].outputs.customDnsConfigs
     networkInterfaceResourceIds: digitalTwinsInstance_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]

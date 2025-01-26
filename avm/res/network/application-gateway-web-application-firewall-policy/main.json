@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10893386311526546547"
+      "templateHash": "10739474921909261763"
     },
     "name": "Application Gateway Web Application Firewall (WAF) Policies",
-    "description": "This module deploys an Application Gateway Web Application Firewall (WAF) Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Application Gateway Web Application Firewall (WAF) Policy."
   },
   "parameters": {
     "name": {

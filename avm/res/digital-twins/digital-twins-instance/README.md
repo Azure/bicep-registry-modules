@@ -34,7 +34,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Using private endpoint parameter set](#example-3-using-private-endpoint-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Testme](#example-4-testme)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -124,6 +125,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         name: 'EventGridPrimary'
         properties: {
           endpointType: 'EventGrid'
+          eventGridTopicEndpoint: '<eventGridTopicEndpoint>'
           eventGridTopicResourceId: '<eventGridTopicResourceId>'
         }
       }
@@ -132,14 +134,12 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         properties: {
           authentication: {
             eventHubResourceId: '<eventHubResourceId>'
+            managedIdentities: {
+              userAssignedResourceId: '<userAssignedResourceId>'
+            }
             type: 'IdentityBased'
           }
           endpointType: 'EventHub'
-          managedIdentities: {
-            userAssignedResourceIds: [
-              '<managedIdentityResourceId>'
-            ]
-          }
         }
       }
       {
@@ -151,17 +151,15 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
             type: 'KeyBased'
           }
           endpointType: 'EventHub'
-          managedIdentities: {
-            userAssignedResourceIds: [
-              '<managedIdentityResourceId>'
-            ]
-          }
         }
       }
       {
         name: 'IdentityBasedServiceBusPrimaryEndpoint'
         properties: {
           authentication: {
+            managedIdentities: {
+              userAssignedResourceId: '<userAssignedResourceId>'
+            }
             serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
             type: 'IdentityBased'
           }
@@ -172,20 +170,21 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         name: 'IdentityBasedServiceBusSecondaryEndpoint'
         properties: {
           authentication: {
+            managedIdentities: {
+              systemAssigned: true
+            }
             serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
             type: 'IdentityBased'
           }
           endpointType: 'ServiceBus'
-          managedIdentities: {
-            systemAssigned: true
-          }
         }
       }
       {
         name: 'KeyBasedServiceBusEndpoint'
         properties: {
           authentication: {
-            serviceBusNamespaceAuthorizationRuleResourceId: '<serviceBusNamespaceAuthorizationRuleResourceId>'
+            serviceBusNamespaceTopicAuthorizationRuleName: '<serviceBusNamespaceTopicAuthorizationRuleName>'
+            serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
             type: 'KeyBased'
           }
           endpointType: 'ServiceBus'
@@ -280,6 +279,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "name": "EventGridPrimary",
           "properties": {
             "endpointType": "EventGrid",
+            "eventGridTopicEndpoint": "<eventGridTopicEndpoint>",
             "eventGridTopicResourceId": "<eventGridTopicResourceId>"
           }
         },
@@ -288,14 +288,12 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "properties": {
             "authentication": {
               "eventHubResourceId": "<eventHubResourceId>",
+              "managedIdentities": {
+                "userAssignedResourceId": "<userAssignedResourceId>"
+              },
               "type": "IdentityBased"
             },
-            "endpointType": "EventHub",
-            "managedIdentities": {
-              "userAssignedResourceIds": [
-                "<managedIdentityResourceId>"
-              ]
-            }
+            "endpointType": "EventHub"
           }
         },
         {
@@ -306,18 +304,16 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
               "eventHubResourceId": "<eventHubResourceId>",
               "type": "KeyBased"
             },
-            "endpointType": "EventHub",
-            "managedIdentities": {
-              "userAssignedResourceIds": [
-                "<managedIdentityResourceId>"
-              ]
-            }
+            "endpointType": "EventHub"
           }
         },
         {
           "name": "IdentityBasedServiceBusPrimaryEndpoint",
           "properties": {
             "authentication": {
+              "managedIdentities": {
+                "userAssignedResourceId": "<userAssignedResourceId>"
+              },
               "serviceBusNamespaceTopicResourceId": "<serviceBusNamespaceTopicResourceId>",
               "type": "IdentityBased"
             },
@@ -328,20 +324,21 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "name": "IdentityBasedServiceBusSecondaryEndpoint",
           "properties": {
             "authentication": {
+              "managedIdentities": {
+                "systemAssigned": true
+              },
               "serviceBusNamespaceTopicResourceId": "<serviceBusNamespaceTopicResourceId>",
               "type": "IdentityBased"
             },
-            "endpointType": "ServiceBus",
-            "managedIdentities": {
-              "systemAssigned": true
-            }
+            "endpointType": "ServiceBus"
           }
         },
         {
           "name": "KeyBasedServiceBusEndpoint",
           "properties": {
             "authentication": {
-              "serviceBusNamespaceAuthorizationRuleResourceId": "<serviceBusNamespaceAuthorizationRuleResourceId>",
+              "serviceBusNamespaceTopicAuthorizationRuleName": "<serviceBusNamespaceTopicAuthorizationRuleName>",
+              "serviceBusNamespaceTopicResourceId": "<serviceBusNamespaceTopicResourceId>",
               "type": "KeyBased"
             },
             "endpointType": "ServiceBus"
@@ -442,6 +439,7 @@ param endpoints = [
     name: 'EventGridPrimary'
     properties: {
       endpointType: 'EventGrid'
+      eventGridTopicEndpoint: '<eventGridTopicEndpoint>'
       eventGridTopicResourceId: '<eventGridTopicResourceId>'
     }
   }
@@ -450,14 +448,12 @@ param endpoints = [
     properties: {
       authentication: {
         eventHubResourceId: '<eventHubResourceId>'
+        managedIdentities: {
+          userAssignedResourceId: '<userAssignedResourceId>'
+        }
         type: 'IdentityBased'
       }
       endpointType: 'EventHub'
-      managedIdentities: {
-        userAssignedResourceIds: [
-          '<managedIdentityResourceId>'
-        ]
-      }
     }
   }
   {
@@ -469,17 +465,15 @@ param endpoints = [
         type: 'KeyBased'
       }
       endpointType: 'EventHub'
-      managedIdentities: {
-        userAssignedResourceIds: [
-          '<managedIdentityResourceId>'
-        ]
-      }
     }
   }
   {
     name: 'IdentityBasedServiceBusPrimaryEndpoint'
     properties: {
       authentication: {
+        managedIdentities: {
+          userAssignedResourceId: '<userAssignedResourceId>'
+        }
         serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
         type: 'IdentityBased'
       }
@@ -490,20 +484,21 @@ param endpoints = [
     name: 'IdentityBasedServiceBusSecondaryEndpoint'
     properties: {
       authentication: {
+        managedIdentities: {
+          systemAssigned: true
+        }
         serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
         type: 'IdentityBased'
       }
       endpointType: 'ServiceBus'
-      managedIdentities: {
-        systemAssigned: true
-      }
     }
   }
   {
     name: 'KeyBasedServiceBusEndpoint'
     properties: {
       authentication: {
-        serviceBusNamespaceAuthorizationRuleResourceId: '<serviceBusNamespaceAuthorizationRuleResourceId>'
+        serviceBusNamespaceTopicAuthorizationRuleName: '<serviceBusNamespaceTopicAuthorizationRuleName>'
+        serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
         type: 'KeyBased'
       }
       endpointType: 'ServiceBus'
@@ -687,7 +682,303 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Testme_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
+  name: 'digitalTwinsInstanceDeployment'
+  params: {
+    // Required parameters
+    name: 'alsehr001'
+    // Non-required parameters
+    endpoints: [
+      {
+        name: 'EventGridPrimary'
+        properties: {
+          endpointType: 'EventGrid'
+          eventGridTopicEndpoint: '<eventGridTopicEndpoint>'
+          eventGridTopicResourceId: '<eventGridTopicResourceId>'
+        }
+      }
+      {
+        name: 'IdentityBasedEndpoint'
+        properties: {
+          authentication: {
+            eventHubResourceId: '<eventHubResourceId>'
+            managedIdentities: {
+              userAssignedResourceId: '<userAssignedResourceId>'
+            }
+            type: 'IdentityBased'
+          }
+          endpointType: 'EventHub'
+        }
+      }
+      {
+        name: 'KeyBasedEndpoint'
+        properties: {
+          authentication: {
+            eventHubAuthorizationRuleName: '<eventHubAuthorizationRuleName>'
+            eventHubResourceId: '<eventHubResourceId>'
+            type: 'KeyBased'
+          }
+          endpointType: 'EventHub'
+        }
+      }
+      {
+        name: 'IdentityBasedServiceBusPrimaryEndpoint'
+        properties: {
+          authentication: {
+            managedIdentities: {
+              userAssignedResourceId: '<userAssignedResourceId>'
+            }
+            serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
+            type: 'IdentityBased'
+          }
+          endpointType: 'ServiceBus'
+        }
+      }
+      {
+        name: 'IdentityBasedServiceBusSecondaryEndpoint'
+        properties: {
+          authentication: {
+            managedIdentities: {
+              systemAssigned: true
+            }
+            serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
+            type: 'IdentityBased'
+          }
+          endpointType: 'ServiceBus'
+        }
+      }
+      {
+        name: 'KeyBasedServiceBusEndpoint'
+        properties: {
+          authentication: {
+            serviceBusNamespaceTopicAuthorizationRuleName: '<serviceBusNamespaceTopicAuthorizationRuleName>'
+            serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
+            type: 'KeyBased'
+          }
+          endpointType: 'ServiceBus'
+        }
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "alsehr001"
+    },
+    // Non-required parameters
+    "endpoints": {
+      "value": [
+        {
+          "name": "EventGridPrimary",
+          "properties": {
+            "endpointType": "EventGrid",
+            "eventGridTopicEndpoint": "<eventGridTopicEndpoint>",
+            "eventGridTopicResourceId": "<eventGridTopicResourceId>"
+          }
+        },
+        {
+          "name": "IdentityBasedEndpoint",
+          "properties": {
+            "authentication": {
+              "eventHubResourceId": "<eventHubResourceId>",
+              "managedIdentities": {
+                "userAssignedResourceId": "<userAssignedResourceId>"
+              },
+              "type": "IdentityBased"
+            },
+            "endpointType": "EventHub"
+          }
+        },
+        {
+          "name": "KeyBasedEndpoint",
+          "properties": {
+            "authentication": {
+              "eventHubAuthorizationRuleName": "<eventHubAuthorizationRuleName>",
+              "eventHubResourceId": "<eventHubResourceId>",
+              "type": "KeyBased"
+            },
+            "endpointType": "EventHub"
+          }
+        },
+        {
+          "name": "IdentityBasedServiceBusPrimaryEndpoint",
+          "properties": {
+            "authentication": {
+              "managedIdentities": {
+                "userAssignedResourceId": "<userAssignedResourceId>"
+              },
+              "serviceBusNamespaceTopicResourceId": "<serviceBusNamespaceTopicResourceId>",
+              "type": "IdentityBased"
+            },
+            "endpointType": "ServiceBus"
+          }
+        },
+        {
+          "name": "IdentityBasedServiceBusSecondaryEndpoint",
+          "properties": {
+            "authentication": {
+              "managedIdentities": {
+                "systemAssigned": true
+              },
+              "serviceBusNamespaceTopicResourceId": "<serviceBusNamespaceTopicResourceId>",
+              "type": "IdentityBased"
+            },
+            "endpointType": "ServiceBus"
+          }
+        },
+        {
+          "name": "KeyBasedServiceBusEndpoint",
+          "properties": {
+            "authentication": {
+              "serviceBusNamespaceTopicAuthorizationRuleName": "<serviceBusNamespaceTopicAuthorizationRuleName>",
+              "serviceBusNamespaceTopicResourceId": "<serviceBusNamespaceTopicResourceId>",
+              "type": "KeyBased"
+            },
+            "endpointType": "ServiceBus"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
+
+// Required parameters
+param name = 'alsehr001'
+// Non-required parameters
+param endpoints = [
+  {
+    name: 'EventGridPrimary'
+    properties: {
+      endpointType: 'EventGrid'
+      eventGridTopicEndpoint: '<eventGridTopicEndpoint>'
+      eventGridTopicResourceId: '<eventGridTopicResourceId>'
+    }
+  }
+  {
+    name: 'IdentityBasedEndpoint'
+    properties: {
+      authentication: {
+        eventHubResourceId: '<eventHubResourceId>'
+        managedIdentities: {
+          userAssignedResourceId: '<userAssignedResourceId>'
+        }
+        type: 'IdentityBased'
+      }
+      endpointType: 'EventHub'
+    }
+  }
+  {
+    name: 'KeyBasedEndpoint'
+    properties: {
+      authentication: {
+        eventHubAuthorizationRuleName: '<eventHubAuthorizationRuleName>'
+        eventHubResourceId: '<eventHubResourceId>'
+        type: 'KeyBased'
+      }
+      endpointType: 'EventHub'
+    }
+  }
+  {
+    name: 'IdentityBasedServiceBusPrimaryEndpoint'
+    properties: {
+      authentication: {
+        managedIdentities: {
+          userAssignedResourceId: '<userAssignedResourceId>'
+        }
+        serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
+        type: 'IdentityBased'
+      }
+      endpointType: 'ServiceBus'
+    }
+  }
+  {
+    name: 'IdentityBasedServiceBusSecondaryEndpoint'
+    properties: {
+      authentication: {
+        managedIdentities: {
+          systemAssigned: true
+        }
+        serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
+        type: 'IdentityBased'
+      }
+      endpointType: 'ServiceBus'
+    }
+  }
+  {
+    name: 'KeyBasedServiceBusEndpoint'
+    properties: {
+      authentication: {
+        serviceBusNamespaceTopicAuthorizationRuleName: '<serviceBusNamespaceTopicAuthorizationRuleName>'
+        serviceBusNamespaceTopicResourceId: '<serviceBusNamespaceTopicResourceId>'
+        type: 'KeyBased'
+      }
+      endpointType: 'ServiceBus'
+    }
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1175,7 +1466,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -1428,9 +1719,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1703,8 +1994,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

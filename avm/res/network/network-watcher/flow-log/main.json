@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3458210252337234612"
+      "templateHash": "18017322852547669945"
     },
     "name": "NSG Flow Logs",
-    "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**",
-    "owner": "Azure/module-maintainers"
+    "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**"
   },
   "parameters": {
     "networkWatcherName": {
@@ -106,12 +105,12 @@
     "networkWatcher": {
       "existing": true,
       "type": "Microsoft.Network/networkWatchers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('networkWatcherName')]"
     },
     "flowLog": {
       "type": "Microsoft.Network/networkWatchers/flowLogs",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -158,7 +157,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('flowLog', '2023-04-01', 'full').location]"
+      "value": "[reference('flowLog', '2024-05-01', 'full').location]"
     }
   }
 }

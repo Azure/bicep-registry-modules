@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1229234901077806053"
+      "version": "0.32.4.45862",
+      "templateHash": "142872509148371547"
     },
     "name": "Route Tables",
-    "description": "This module deploys a User Defined Route Table (UDR).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a User Defined Route Table (UDR)."
   },
   "definitions": {
     "lockType": {

@@ -5,13 +5,35 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "1872253241260109642"
+      "version": "0.33.13.18514",
+      "templateHash": "7513280026665528168"
     },
     "name": "Digital Twins Instance Endpoint",
     "description": "This module deploys a Digital Twins Instance Endpoint."
   },
   "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the managed identity."
+      }
+    },
     "propertiesType": {
       "type": "object",
       "discriminator": {
@@ -59,17 +81,16 @@
             "description": "Optional. Dead letter storage URL for identity-based authentication."
           }
         },
-        "managedIdentities": {
-          "$ref": "#/definitions/managedIdentityAllType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
-          }
-        },
         "eventGridTopicResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. The resource ID of the Event Grid Topic to get access keys from."
+          }
+        },
+        "eventGridTopicEndpoint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The endpoint of the Event Grid Topic to get access keys from."
           }
         }
       },
@@ -102,13 +123,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Dead letter storage URL for identity-based authentication."
-          }
-        },
-        "managedIdentities": {
-          "$ref": "#/definitions/managedIdentityAllType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
           }
         },
         "authentication": {
@@ -150,6 +164,13 @@
           ],
           "metadata": {
             "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+          }
+        },
+        "managedIdentities": {
+          "$ref": "#/definitions/managedIdentitiesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
           }
         },
         "eventHubResourceId": {
@@ -217,13 +238,6 @@
           "metadata": {
             "description": "Optional. Dead letter storage URL for identity-based authentication."
           }
-        },
-        "managedIdentities": {
-          "$ref": "#/definitions/managedIdentityAllType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
-          }
         }
       },
       "metadata": {
@@ -260,6 +274,13 @@
             "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
           }
         },
+        "managedIdentities": {
+          "$ref": "#/definitions/managedIdentitiesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
+          }
+        },
         "serviceBusNamespaceTopicResourceId": {
           "type": "string",
           "metadata": {
@@ -280,39 +301,17 @@
             "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
           }
         },
-        "serviceBusNamespaceAuthorizationRuleResourceId": {
+        "serviceBusNamespaceTopicResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Required. The ServiceBus Namespace Authorization Rule resource ID."
-          }
-        }
-      }
-    },
-    "managedIdentityAllType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Required. The ServiceBus Namespace Topic resource ID."
           }
         },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
+        "serviceBusNamespaceTopicAuthorizationRuleName": {
+          "type": "string",
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+            "description": "Required. The ServiceBus Namespace Topic Authorization Rule name."
           }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
         }
       }
     }
@@ -338,7 +337,7 @@
     }
   },
   "variables": {
-    "identity": "[if(not(empty(tryGet(parameters('properties'), 'managedIdentities'))), createObject('type', if(coalesce(tryGet(tryGet(parameters('properties'), 'managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(tryGet(parameters('properties'), 'managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(tryGet(parameters('properties'), 'managedIdentities'), 'userAssignedResourceId')), null())]"
+    "identity": "[if(not(empty(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'))), createObject('type', if(coalesce(tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'userAssignedResourceId')), null())]"
   },
   "resources": {
     "eventHubNamespace::eventHub::authorizationRule": {
@@ -348,7 +347,7 @@
       "apiVersion": "2024-01-01",
       "subscriptionId": "[split(coalesce(parameters('properties').authentication.eventHubResourceId, '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[4]]",
-      "name": "[format('{0}/{1}/{2}', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8], last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName'))]"
+      "name": "[format('{0}/{1}/{2}', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8], last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '/'), '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName'))]"
     },
     "eventHubNamespace::eventHub": {
       "condition": "[and(equals(parameters('properties').endpointType, 'EventHub'), equals(parameters('properties').endpointType, 'EventHub'))]",
@@ -357,21 +356,25 @@
       "apiVersion": "2024-01-01",
       "subscriptionId": "[split(coalesce(parameters('properties').authentication.eventHubResourceId, '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8], last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')))]"
+      "name": "[format('{0}/{1}', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8], last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '/'), '/')))]"
+    },
+    "serviceBusNamespace::topic::authorizationRule": {
+      "condition": "[and(and(equals(parameters('properties').endpointType, 'ServiceBus'), equals(parameters('properties').endpointType, 'ServiceBus')), not(empty(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicAuthorizationRuleName'))))]",
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+      "apiVersion": "2024-01-01",
+      "subscriptionId": "[split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '////'), '/')[4]]",
+      "name": "[format('{0}/{1}/{2}', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/'), '/')), tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicAuthorizationRuleName'))]"
     },
     "serviceBusNamespace::topic": {
-      "condition": "[and(equals(parameters('properties').endpointType, 'ServiceBus'), not(empty(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'))))]",
+      "condition": "[and(equals(parameters('properties').endpointType, 'ServiceBus'), equals(parameters('properties').endpointType, 'ServiceBus'))]",
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces/topics",
       "apiVersion": "2024-01-01",
-      "name": "[format('{0}/{1}', if(equals(parameters('properties').authentication.type, 'IdentityBased'), split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'), '/')[8], split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/')[8]), last(split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'), '/')))]"
-    },
-    "serviceBusNamespace::authorizationRule": {
-      "condition": "[and(equals(parameters('properties').endpointType, 'ServiceBus'), not(empty(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'))))]",
-      "existing": true,
-      "type": "Microsoft.ServiceBus/namespaces/AuthorizationRules",
-      "apiVersion": "2024-01-01",
-      "name": "[format('{0}/{1}', if(equals(parameters('properties').authentication.type, 'IdentityBased'), split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'), '/')[8], split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/')[8]), last(split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/')))]"
+      "subscriptionId": "[split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '////'), '/')[4]]",
+      "name": "[format('{0}/{1}', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/'), '/')))]"
     },
     "eventGridTopic": {
       "condition": "[equals(parameters('properties').endpointType, 'EventGrid')]",
@@ -396,7 +399,9 @@
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces",
       "apiVersion": "2024-01-01",
-      "name": "[if(equals(parameters('properties').authentication.type, 'IdentityBased'), split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'), '/')[8], split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/')[8])]"
+      "subscriptionId": "[split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '////'), '/')[4]]",
+      "name": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8]]"
     },
     "digitalTwinsInstance": {
       "existing": true,
@@ -408,10 +413,7 @@
       "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
       "apiVersion": "2023-01-31",
       "name": "[format('{0}/{1}', parameters('digitalTwinInstanceName'), parameters('name'))]",
-      "properties": "[shallowMerge(createArray(createObject('endpointType', parameters('properties').endpointType, 'identity', variables('identity'), 'deadLetterSecret', tryGet(parameters('properties'), 'deadLetterSecret'), 'deadLetterUri', tryGet(parameters('properties'), 'deadLetterUri')), if(equals(parameters('properties').endpointType, 'EventGrid'), createObject('authenticationType', 'KeyBased', 'TopicEndpoint', tryGet(tryGet(reference('eventGridTopic', '2022-06-15', 'full'), 'properties'), 'endpoint'), 'accessKey1', listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '////'), '/')[4]), 'Microsoft.EventGrid/topics', last(split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/'))), '2022-06-15').key1, 'accessKey2', listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '////'), '/')[4]), 'Microsoft.EventGrid/topics', last(split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/'))), '2022-06-15').key2), createObject()), if(equals(parameters('properties').endpointType, 'EventHub'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authenticationType), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8]), 'entityPath', last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/'))), createObject('connectionStringPrimaryKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('properties').authentication.eventHubResourceId, '//'), '/')[2], split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[4]), 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8], last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName')), '2024-01-01').primaryConnectionString, 'connectionStringSecondaryKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('properties').authentication.eventHubResourceId, '//'), '/')[2], split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[4]), 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8], last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName')), '2024-01-01').secondaryConnectionString)))), createObject()), if(equals(parameters('properties').endpointType, 'ServiceBus'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', if(equals(parameters('properties').authentication.type, 'IdentityBased'), split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'), '/')[8], split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/')[8])), 'entityPath', last(split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'), '/'))), createObject('primaryConnectionString', listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules', if(equals(parameters('properties').authentication.type, 'IdentityBased'), split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'), '/')[8], split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/')[8]), last(split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/'))), '2024-01-01').primaryConnectionString, 'secondaryConnectionString', listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules', if(equals(parameters('properties').authentication.type, 'IdentityBased'), split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicResourceId'), '/')[8], split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/')[8]), last(split(tryGet(parameters('properties').authentication, 'serviceBusNamespaceAuthorizationRuleResourceId'), '/'))), '2024-01-01').secondaryConnectionString)))), createObject())))]",
-      "dependsOn": [
-        "eventGridTopic"
-      ]
+      "properties": "[shallowMerge(createArray(createObject('endpointType', parameters('properties').endpointType, 'identity', variables('identity'), 'deadLetterSecret', tryGet(parameters('properties'), 'deadLetterSecret'), 'deadLetterUri', tryGet(parameters('properties'), 'deadLetterUri')), if(equals(parameters('properties').endpointType, 'EventGrid'), createObject('authenticationType', 'KeyBased', 'TopicEndpoint', parameters('properties').eventGridTopicEndpoint, 'accessKey1', listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '////'), '/')[4]), 'Microsoft.EventGrid/topics', last(split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/'))), '2022-06-15').key1, 'accessKey2', listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '////'), '/')[4]), 'Microsoft.EventGrid/topics', last(split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/'))), '2022-06-15').key2), createObject()), if(equals(parameters('properties').endpointType, 'EventHub'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8]), 'entityPath', last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '/'), '/'))), createObject('connectionStringPrimaryKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('properties').authentication.eventHubResourceId, '//'), '/')[2], split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[4]), 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8], last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '/'), '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName')), '2024-01-01').primaryConnectionString, 'connectionStringSecondaryKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('properties').authentication.eventHubResourceId, '//'), '/')[2], split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[4]), 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules', split(coalesce(parameters('properties').authentication.eventHubResourceId, '////'), '/')[8], last(split(coalesce(parameters('properties').authentication.eventHubResourceId, '/'), '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName')), '2024-01-01').secondaryConnectionString)))), createObject()), if(equals(parameters('properties').endpointType, 'ServiceBus'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8]), 'entityPath', last(split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/'), '/'))), createObject('primaryConnectionString', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '//'), '/')[2], split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '////'), '/')[4]), 'Microsoft.ServiceBus/namespaces/topics/authorizationRules', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/'), '/')), tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicAuthorizationRuleName')), '2024-01-01').primaryConnectionString, 'secondaryConnectionString', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '//'), '/')[2], split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '////'), '/')[4]), 'Microsoft.ServiceBus/namespaces/topics/authorizationRules', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(coalesce(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/'), '/')), tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicAuthorizationRuleName')), '2024-01-01').secondaryConnectionString)))), createObject())))]"
     }
   },
   "outputs": {
@@ -435,6 +437,14 @@
         "description": "The name of the Endpoint."
       },
       "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
+      },
+      "value": "[tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

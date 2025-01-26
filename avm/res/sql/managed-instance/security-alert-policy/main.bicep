@@ -1,6 +1,5 @@
 metadata name = 'SQL Managed Instance Security Alert Policies'
 metadata description = 'This module deploys a SQL Managed Instance Security Alert Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the security alert policy.')
 param name string

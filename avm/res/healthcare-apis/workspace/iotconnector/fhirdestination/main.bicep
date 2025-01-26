@@ -1,6 +1,5 @@
 metadata name = 'Healthcare API Workspace IoT Connector FHIR Destinations'
 metadata description = 'This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the FHIR destination.')
 @maxLength(24)

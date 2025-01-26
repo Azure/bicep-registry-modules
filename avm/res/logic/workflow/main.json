@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "7782212274562315083"
+      "version": "0.32.4.45862",
+      "templateHash": "1208938412424290106"
     },
     "name": "Logic Apps (Workflows)",
-    "description": "This module deploys a Logic App (Workflow).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Logic App (Workflow)."
   },
   "definitions": {
     "diagnosticSettingType": {
