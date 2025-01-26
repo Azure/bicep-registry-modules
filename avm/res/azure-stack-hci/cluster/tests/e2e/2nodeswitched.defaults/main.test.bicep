@@ -61,7 +61,7 @@ module nestedDependencies 'dependencies.bicep' = {
     HCIHostVirtualMachineScaleSetName: 'dep-${namePrefix}-hvmss-${serviceShort}'
     networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
     diskNamePrefix: 'dep-${namePrefix}-disk-${serviceShort}'
-    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+    virtualMachineName: 'depvm${serviceShort}' // Must not be longer than 15 char
     waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
