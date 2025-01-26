@@ -297,7 +297,7 @@ resource rsv_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
   }
 ]
 
-module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.0' = [
+module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-rsv-PrivateEndpoint-${index}'
     scope: !empty(privateEndpoint.?resourceGroupResourceId)
@@ -393,7 +393,7 @@ output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: rsv_privateEndpoints[i].outputs.name
     resourceId: rsv_privateEndpoints[i].outputs.resourceId
-    groupId: rsv_privateEndpoints[i].outputs.groupId
+    groupId: rsv_privateEndpoints[i].outputs.?groupId!
     customDnsConfigs: rsv_privateEndpoints[i].outputs.customDnsConfigs
     networkInterfaceResourceIds: rsv_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
