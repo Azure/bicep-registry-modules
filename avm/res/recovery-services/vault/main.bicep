@@ -4,6 +4,9 @@ metadata description = 'This module deploys a Recovery Services Vault.'
 @description('Required. Name of the Azure Recovery Service Vault.')
 param name string
 
+@description('Optional. The storage configuration for the Azure Recovery Service Vault.')
+param backupStorageConfig object = {}
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -15,9 +18,6 @@ param backupPolicies array = []
 
 @description('Optional. The backup configuration.')
 param backupConfig object = {}
-
-@description('Optional. The storage configuration for the Azure Recovery Service Vault.')
-param backupStorageConfig object = {}
 
 @description('Optional. List of all protection containers.')
 param protectionContainers array = []
@@ -171,9 +171,11 @@ module rsv_replicationFabrics 'replication-fabric/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-RSV-Fabric-${index}'
     params: {
       recoveryVaultName: rsv.name
-      name: replicationFabric.?name ?? replicationFabric.location
+      name: contains(replicationFabric, 'name') ? replicationFabric.name : replicationFabric.location
       location: replicationFabric.location
-      replicationContainers: replicationFabric.?replicationContainers ?? []
+      replicationContainers: contains(replicationFabric, 'replicationContainers')
+        ? replicationFabric.replicationContainers
+        : []
     }
     dependsOn: [
       rsv_replicationPolicies
@@ -187,10 +189,18 @@ module rsv_replicationPolicies 'replication-policy/main.bicep' = [
     params: {
       name: replicationPolicy.name
       recoveryVaultName: rsv.name
-      appConsistentFrequencyInMinutes: replicationPolicy.?appConsistentFrequencyInMinutes ?? 60
-      crashConsistentFrequencyInMinutes: replicationPolicy.?crashConsistentFrequencyInMinutes ?? 5
-      multiVmSyncStatus: replicationPolicy.?multiVmSyncStatus ?? 'Enable'
-      recoveryPointHistory: replicationPolicy.?recoveryPointHistory ?? 1440
+      appConsistentFrequencyInMinutes: contains(replicationPolicy, 'appConsistentFrequencyInMinutes')
+        ? replicationPolicy.appConsistentFrequencyInMinutes
+        : 60
+      crashConsistentFrequencyInMinutes: contains(replicationPolicy, 'crashConsistentFrequencyInMinutes')
+        ? replicationPolicy.crashConsistentFrequencyInMinutes
+        : 5
+      multiVmSyncStatus: contains(replicationPolicy, 'multiVmSyncStatus')
+        ? replicationPolicy.multiVmSyncStatus
+        : 'Enable'
+      recoveryPointHistory: contains(replicationPolicy, 'recoveryPointHistory')
+        ? replicationPolicy.recoveryPointHistory
+        : 1440
     }
   }
 ]
@@ -214,7 +224,7 @@ module rsv_backupFabric_protectionContainers 'backup-fabric/protection-container
       friendlyName: protectionContainer.?friendlyName
       backupManagementType: protectionContainer.?backupManagementType
       containerType: protectionContainer.?containerType
-      protectedItems: protectionContainer.?protectedItems ?? []
+      protectedItems: contains(protectionContainer, 'protectedItems') ? protectionContainer.protectedItems : []
       location: location
     }
   }
@@ -235,14 +245,22 @@ module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
   name: '${uniqueString(deployment().name, location)}-RSV-BackupConfig'
   params: {
     recoveryVaultName: rsv.name
-    name: backupConfig.?name ?? 'vaultconfig'
-    enhancedSecurityState: backupConfig.?enhancedSecurityState ?? 'Enabled'
-    resourceGuardOperationRequests: backupConfig.?resourceGuardOperationRequests ?? []
-    softDeleteFeatureState: backupConfig.?softDeleteFeatureState ?? 'Enabled'
-    storageModelType: backupConfig.?storageModelType ?? 'GeoRedundant'
-    storageType: backupConfig.?storageType ?? 'GeoRedundant'
-    storageTypeState: backupConfig.?storageTypeState ?? 'Locked'
-    isSoftDeleteFeatureStateEditable: backupConfig.?isSoftDeleteFeatureStateEditable ?? true
+    name: contains(backupConfig, 'name') ? backupConfig.name : 'vaultconfig'
+    enhancedSecurityState: contains(backupConfig, 'enhancedSecurityState')
+      ? backupConfig.enhancedSecurityState
+      : 'Enabled'
+    resourceGuardOperationRequests: contains(backupConfig, 'resourceGuardOperationRequests')
+      ? backupConfig.resourceGuardOperationRequests
+      : []
+    softDeleteFeatureState: contains(backupConfig, 'softDeleteFeatureState')
+      ? backupConfig.softDeleteFeatureState
+      : 'Enabled'
+    storageModelType: contains(backupConfig, 'storageModelType') ? backupConfig.storageModelType : 'GeoRedundant'
+    storageType: contains(backupConfig, 'storageType') ? backupConfig.storageType : 'GeoRedundant'
+    storageTypeState: contains(backupConfig, 'storageTypeState') ? backupConfig.storageTypeState : 'Locked'
+    isSoftDeleteFeatureStateEditable: contains(backupConfig, 'isSoftDeleteFeatureStateEditable')
+      ? backupConfig.isSoftDeleteFeatureStateEditable
+      : true
   }
 }
 
@@ -251,9 +269,11 @@ module rsv_replicationAlertSettings 'replication-alert-setting/main.bicep' = if 
   params: {
     name: 'defaultAlertSetting'
     recoveryVaultName: rsv.name
-    customEmailAddresses: replicationAlertSettings.?customEmailAddresses ?? []
-    locale: replicationAlertSettings.?locale ?? ''
-    sendToOwners: replicationAlertSettings.?sendToOwners ?? 'Send'
+    customEmailAddresses: contains(replicationAlertSettings, 'customEmailAddresses')
+      ? replicationAlertSettings.customEmailAddresses
+      : []
+    locale: contains(replicationAlertSettings, 'locale') ? replicationAlertSettings.locale : ''
+    sendToOwners: contains(replicationAlertSettings, 'sendToOwners') ? replicationAlertSettings.sendToOwners : 'Send'
   }
 }
 

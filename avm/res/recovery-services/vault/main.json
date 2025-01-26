@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11782230466206078570"
+      "templateHash": "9645755142500002495"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -589,6 +589,13 @@
         "description": "Required. Name of the Azure Recovery Service Vault."
       }
     },
+    "backupStorageConfig": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The storage configuration for the Azure Recovery Service Vault."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -615,13 +622,6 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. The backup configuration."
-      }
-    },
-    "backupStorageConfig": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. The storage configuration for the Azure Recovery Service Vault."
       }
     },
     "protectionContainers": {
@@ -885,15 +885,11 @@
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
-          "name": {
-            "value": "[coalesce(tryGet(parameters('replicationFabrics')[copyIndex()], 'name'), parameters('replicationFabrics')[copyIndex()].location)]"
-          },
+          "name": "[if(contains(parameters('replicationFabrics')[copyIndex()], 'name'), createObject('value', parameters('replicationFabrics')[copyIndex()].name), createObject('value', parameters('replicationFabrics')[copyIndex()].location))]",
           "location": {
             "value": "[parameters('replicationFabrics')[copyIndex()].location]"
           },
-          "replicationContainers": {
-            "value": "[coalesce(tryGet(parameters('replicationFabrics')[copyIndex()], 'replicationContainers'), createArray())]"
-          }
+          "replicationContainers": "[if(contains(parameters('replicationFabrics')[copyIndex()], 'replicationContainers'), createObject('value', parameters('replicationFabrics')[copyIndex()].replicationContainers), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1272,18 +1268,10 @@
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
-          "appConsistentFrequencyInMinutes": {
-            "value": "[coalesce(tryGet(parameters('replicationPolicies')[copyIndex()], 'appConsistentFrequencyInMinutes'), 60)]"
-          },
-          "crashConsistentFrequencyInMinutes": {
-            "value": "[coalesce(tryGet(parameters('replicationPolicies')[copyIndex()], 'crashConsistentFrequencyInMinutes'), 5)]"
-          },
-          "multiVmSyncStatus": {
-            "value": "[coalesce(tryGet(parameters('replicationPolicies')[copyIndex()], 'multiVmSyncStatus'), 'Enable')]"
-          },
-          "recoveryPointHistory": {
-            "value": "[coalesce(tryGet(parameters('replicationPolicies')[copyIndex()], 'recoveryPointHistory'), 1440)]"
-          }
+          "appConsistentFrequencyInMinutes": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'appConsistentFrequencyInMinutes'), createObject('value', parameters('replicationPolicies')[copyIndex()].appConsistentFrequencyInMinutes), createObject('value', 60))]",
+          "crashConsistentFrequencyInMinutes": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'crashConsistentFrequencyInMinutes'), createObject('value', parameters('replicationPolicies')[copyIndex()].crashConsistentFrequencyInMinutes), createObject('value', 5))]",
+          "multiVmSyncStatus": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'multiVmSyncStatus'), createObject('value', parameters('replicationPolicies')[copyIndex()].multiVmSyncStatus), createObject('value', 'Enable'))]",
+          "recoveryPointHistory": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'recoveryPointHistory'), createObject('value', parameters('replicationPolicies')[copyIndex()].recoveryPointHistory), createObject('value', 1440))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1528,9 +1516,7 @@
           "containerType": {
             "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'containerType')]"
           },
-          "protectedItems": {
-            "value": "[coalesce(tryGet(parameters('protectionContainers')[copyIndex()], 'protectedItems'), createArray())]"
-          },
+          "protectedItems": "[if(contains(parameters('protectionContainers')[copyIndex()], 'protectedItems'), createObject('value', parameters('protectionContainers')[copyIndex()].protectedItems), createObject('value', createArray()))]",
           "location": {
             "value": "[parameters('location')]"
           }
@@ -1922,30 +1908,14 @@
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
-          "name": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'name'), 'vaultconfig')]"
-          },
-          "enhancedSecurityState": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'enhancedSecurityState'), 'Enabled')]"
-          },
-          "resourceGuardOperationRequests": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'resourceGuardOperationRequests'), createArray())]"
-          },
-          "softDeleteFeatureState": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'softDeleteFeatureState'), 'Enabled')]"
-          },
-          "storageModelType": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'storageModelType'), 'GeoRedundant')]"
-          },
-          "storageType": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'storageType'), 'GeoRedundant')]"
-          },
-          "storageTypeState": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'storageTypeState'), 'Locked')]"
-          },
-          "isSoftDeleteFeatureStateEditable": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable'), true())]"
-          }
+          "name": "[if(contains(parameters('backupConfig'), 'name'), createObject('value', parameters('backupConfig').name), createObject('value', 'vaultconfig'))]",
+          "enhancedSecurityState": "[if(contains(parameters('backupConfig'), 'enhancedSecurityState'), createObject('value', parameters('backupConfig').enhancedSecurityState), createObject('value', 'Enabled'))]",
+          "resourceGuardOperationRequests": "[if(contains(parameters('backupConfig'), 'resourceGuardOperationRequests'), createObject('value', parameters('backupConfig').resourceGuardOperationRequests), createObject('value', createArray()))]",
+          "softDeleteFeatureState": "[if(contains(parameters('backupConfig'), 'softDeleteFeatureState'), createObject('value', parameters('backupConfig').softDeleteFeatureState), createObject('value', 'Enabled'))]",
+          "storageModelType": "[if(contains(parameters('backupConfig'), 'storageModelType'), createObject('value', parameters('backupConfig').storageModelType), createObject('value', 'GeoRedundant'))]",
+          "storageType": "[if(contains(parameters('backupConfig'), 'storageType'), createObject('value', parameters('backupConfig').storageType), createObject('value', 'GeoRedundant'))]",
+          "storageTypeState": "[if(contains(parameters('backupConfig'), 'storageTypeState'), createObject('value', parameters('backupConfig').storageTypeState), createObject('value', 'Locked'))]",
+          "isSoftDeleteFeatureStateEditable": "[if(contains(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable'), createObject('value', parameters('backupConfig').isSoftDeleteFeatureStateEditable), createObject('value', true()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2109,15 +2079,9 @@
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
-          "customEmailAddresses": {
-            "value": "[coalesce(tryGet(parameters('replicationAlertSettings'), 'customEmailAddresses'), createArray())]"
-          },
-          "locale": {
-            "value": "[coalesce(tryGet(parameters('replicationAlertSettings'), 'locale'), '')]"
-          },
-          "sendToOwners": {
-            "value": "[coalesce(tryGet(parameters('replicationAlertSettings'), 'sendToOwners'), 'Send')]"
-          }
+          "customEmailAddresses": "[if(contains(parameters('replicationAlertSettings'), 'customEmailAddresses'), createObject('value', parameters('replicationAlertSettings').customEmailAddresses), createObject('value', createArray()))]",
+          "locale": "[if(contains(parameters('replicationAlertSettings'), 'locale'), createObject('value', parameters('replicationAlertSettings').locale), createObject('value', ''))]",
+          "sendToOwners": "[if(contains(parameters('replicationAlertSettings'), 'sendToOwners'), createObject('value', parameters('replicationAlertSettings').sendToOwners), createObject('value', 'Send'))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
