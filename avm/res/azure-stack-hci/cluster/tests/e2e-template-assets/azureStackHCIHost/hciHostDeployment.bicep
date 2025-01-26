@@ -55,7 +55,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(subscription().subscriptionId, userAssignedIdentity.name, 'Owner', resourceGroup().id)
   properties: {
     principalId: userAssignedIdentity.properties.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635') // Owner
     principalType: 'ServicePrincipal'
     description: 'Role assigned used for Azure Stack HCI IaC testing pipeline - remove if identity no longer exists!'
   }
@@ -102,7 +102,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
 // create a mintenance configuration for the Azure Stack HCI Host VM and proxy server
 resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-09-01-preview' = {
   location: location
-  name: maintenanceConfigurationName ?? ''
+  name: maintenanceConfigurationName
   properties: {
     maintenanceScope: 'InGuestPatch'
     maintenanceWindow: {
@@ -230,12 +230,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
           deleteOption: 'Delete'
         }
       ]
-      //diskControllerType: 'NVMe'
     }
     osProfile: {
       adminPassword: localAdminPassword
       adminUsername: localAdminUsername
-      computerName: 'hciHost01'
+      computerName: virtualMachineName
       windowsConfiguration: {
         provisionVMAgent: true
         enableAutomaticUpdates: true
@@ -338,10 +337,6 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       script: loadTextContent('./scripts/hciHostStage3.ps1')
     }
     parameters: [
-      {
-        name: 'hciVHDXDownloadURL'
-        value: ''
-      }
       {
         name: 'hciISODownloadURL'
         value: hciISODownloadURL
