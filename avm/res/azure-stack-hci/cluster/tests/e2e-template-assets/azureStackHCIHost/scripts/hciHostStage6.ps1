@@ -325,7 +325,7 @@ $arcInitializationJobs = Get-VM | ForEach-Object {
         #wait for bootstrap service to be reachable
         $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
         While (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
-            Write-Host 'Waiting for bootstrap service at 127.0.0.1:9098 to be reachable...'
+            Write-Output 'Waiting for bootstrap service at 127.0.0.1:9098 to be reachable...'
             Start-Sleep -Seconds 30
         }
         If ($stopwatch.Elapsed.TotalMinutes -ge 30) {
@@ -333,6 +333,7 @@ $arcInitializationJobs = Get-VM | ForEach-Object {
         }
 
         try {
+            Write-Output "[$($env:COMPUTERNAME)] Initializing Azure Arc on HCI node..."
             Invoke-AzStackHciArcInitialization -SubscriptionID $subscriptionId -ResourceGroup $resourceGroupName -TenantID $tenantId -Cloud AzureCloud -AccountID $accountName -ArmAccessToken $t -Region $location -ErrorAction Stop @optionalParameters
         } catch {
             Write-Error $_ -ErrorAction Stop
@@ -348,8 +349,8 @@ $arcInitializationJobs | Wait-Job -Timeout 1800
 log 'Checking status of Azure Arc initialization jobs...'
 $arcInitializationJobs | ForEach-Object {
     $job = $_
-    log "[$($job.Location)] Job output (Receive-Job): '$($job | Receive-Job -Keep -ErrorAction Continue | Out-String)'"
-    Get-Job -Id $job.Id -IncludeChildJob | Receive-Job -ErrorAction SilentlyContinue | ForEach-Object {
+    log "[$($job.Location)] Job output (Receive-Job): '$($job | Receive-Job -Keep -ErrorAction 'Continue' | Out-String)'"
+    Get-Job -Id $job.Id -IncludeChildJob | Receive-Job -ErrorAction 'SilentlyContinue' | ForEach-Object {
         If ($_.Exception -or $_.state -eq 'Failed') {
             log "Azure Arc initialization failed on node '$($job.Location)' with error: $($_.Exception.Message)"
             Exit 1

@@ -58,6 +58,8 @@ log "Waiting for HCI Arc Machines to exist in the resource group '$($resourceGro
 $timer = [System.Diagnostics.Stopwatch]::StartNew()
 While (($arcMachines = Get-AzConnectedMachine -ResourceGroupName $resourceGroupName | Where-Object { $_.name -in ($hciNodeNames) }).Count -lt $hciNodeNames.Count -and $timer.Elapsed.TotalMinutes -lt 60) {
     log "Found '$($arcMachines.Count)' HCI Arc Machines, waiting for '$($hciNodeNames.Count)' machines for up to 1 hour..."
+    $currentlyConnectedMachines = Get-AzConnectedMachine -ResourceGroupName $resourceGroupName
+    log ('Currently connected machines are [{0}]' -f $currentlyConnectedMachines.Name -join ', ')
     Start-Sleep -Seconds 30
 }
 If ($timer.Elapsed.TotalMinutes -gt 60) {
