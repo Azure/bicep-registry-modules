@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12745095220727956738"
+      "templateHash": "5661232986574806877"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -1522,23 +1522,22 @@
             "value": "[coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository]"
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), replace(replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-'), '*', ''))]"
           },
           "targetRepository": {
             "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository)]"
           },
-          "credentialSetResourceId": {
-            "value": "[tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')]"
-          }
+          "credentialSetResourceId": "[if(not(empty(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId'))), createObject('value', tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10741185719400519703"
+              "templateHash": "10966757769768845548"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -1552,7 +1551,7 @@
             },
             "name": {
               "type": "string",
-              "defaultValue": "[replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-')]",
+              "defaultValue": "[replace(replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-'), '*', '')]",
               "metadata": {
                 "description": "Optional. The name of the cache rule. Will be derived from the source repository name if not defined."
               }
@@ -1572,13 +1571,20 @@
             },
             "credentialSetResourceId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The resource ID of the credential store which is associated with the cache rule."
+                "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "registry": {
+              "existing": true,
+              "type": "Microsoft.ContainerRegistry/registries",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[parameters('registryName')]"
+            },
+            "cacheRule": {
               "type": "Microsoft.ContainerRegistry/registries/cacheRules",
               "apiVersion": "2023-06-01-preview",
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
@@ -1588,7 +1594,7 @@
                 "credentialSetResourceId": "[parameters('credentialSetResourceId')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
