@@ -310,7 +310,7 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
   }
 }
 
-module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
+module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-eventHubNamespace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -447,8 +447,8 @@ output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: eventHubNamespace_privateEndpoints[i].outputs.name
     resourceId: eventHubNamespace_privateEndpoints[i].outputs.resourceId
-    groupId: eventHubNamespace_privateEndpoints[i].outputs.groupId
-    customDnsConfigs: eventHubNamespace_privateEndpoints[i].outputs.customDnsConfig
+    groupId: eventHubNamespace_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: eventHubNamespace_privateEndpoints[i].outputs.customDnsConfigs
     networkInterfaceResourceIds: eventHubNamespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
