@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9645755142500002495"
+      "templateHash": "3006616509634903013"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -652,38 +652,6 @@
         "description": "Optional. Replication alert settings."
       }
     },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags of the Recovery Service Vault resource."
-      }
-    },
-    "monitoringSettings": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Monitoring Settings of the vault."
-      }
-    },
-    "securitySettings": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Security Settings of the vault."
-      }
-    },
-    "publicNetworkAccess": {
-      "type": "string",
-      "defaultValue": "Disabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
-      "metadata": {
-        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled."
-      }
-    },
     "diagnosticSettings": {
       "type": "array",
       "items": {
@@ -718,6 +686,13 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the Recovery Service Vault resource."
+      }
+    },
     "privateEndpoints": {
       "type": "array",
       "items": {
@@ -726,6 +701,31 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
+      }
+    },
+    "monitoringSettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Monitoring Settings of the vault."
+      }
+    },
+    "securitySettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Security Settings of the vault."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled."
       }
     }
   },

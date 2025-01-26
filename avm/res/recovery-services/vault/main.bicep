@@ -31,22 +31,6 @@ param replicationPolicies array = []
 @description('Optional. Replication alert settings.')
 param replicationAlertSettings object = {}
 
-@description('Optional. Tags of the Recovery Service Vault resource.')
-param tags object?
-
-@description('Optional. Monitoring Settings of the vault.')
-param monitoringSettings object = {}
-
-@description('Optional. Security Settings of the vault.')
-param securitySettings object = {}
-
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param publicNetworkAccess string = 'Disabled'
-
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -63,9 +47,25 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
+@description('Optional. Tags of the Recovery Service Vault resource.')
+param tags object?
+
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
+
+@description('Optional. Monitoring Settings of the vault.')
+param monitoringSettings object = {}
+
+@description('Optional. Security Settings of the vault.')
+param securitySettings object = {}
+
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string = 'Disabled'
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
