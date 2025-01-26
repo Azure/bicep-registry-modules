@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "14510673865187152138"
+      "version": "0.32.4.45862",
+      "templateHash": "7113649683631462027"
     },
     "name": "CDN Profiles",
-    "description": "This module deploys a CDN Profile.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -656,6 +655,156 @@
         }
       }
     },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "dnsValidationType": {
+      "type": "object",
+      "properties": {
+        "dnsTxtRecordName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The DNS record name."
+          }
+        },
+        "dnsTxtRecordValue": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The DNS record value."
+          }
+        },
+        "dnsTxtRecordExpiry": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The expiry date of the DNS record."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "customdomain/main.bicep"
+        }
+      }
+    },
     "originGroupType": {
       "type": "object",
       "properties": {
@@ -885,9 +1034,7 @@
     "sku": {
       "type": "string",
       "allowedValues": [
-        "Custom_Verizon",
         "Premium_AzureFrontDoor",
-        "Premium_Verizon",
         "StandardPlus_955BandWidth_ChinaCdn",
         "StandardPlus_AvgBandWidth_ChinaCdn",
         "StandardPlus_ChinaCdn",
@@ -895,8 +1042,7 @@
         "Standard_AvgBandWidth_ChinaCdn",
         "Standard_AzureFrontDoor",
         "Standard_ChinaCdn",
-        "Standard_Microsoft",
-        "Standard_Verizon"
+        "Standard_Microsoft"
       ],
       "metadata": {
         "description": "Required. The pricing tier (defines a CDN provider, feature list and rate) of the CDN profile."
@@ -1008,6 +1154,16 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "diagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
     }
   },
   "variables": {
@@ -1103,6 +1259,47 @@
         "profile"
       ]
     },
+    "profile_diagnosticSettings": {
+      "copy": {
+        "name": "profile_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Cdn/profiles/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
     "profile_endpoint": {
       "condition": "[not(empty(parameters('endpointProperties')))]",
       "type": "Microsoft.Resources/deployments",
@@ -1134,12 +1331,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "10963194836019535201"
+              "version": "0.32.4.45862",
+              "templateHash": "9549854961484064285"
             },
             "name": "CDN Profiles Endpoints",
-            "description": "This module deploys a CDN Profile Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Endpoint."
           },
           "parameters": {
             "profileName": {
@@ -1188,10 +1384,7 @@
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": "[parameters('properties')]",
-              "tags": "[parameters('tags')]",
-              "dependsOn": [
-                "profile"
-              ]
+              "tags": "[parameters('tags')]"
             },
             "endpoint_origins": {
               "copy": {
@@ -1254,12 +1447,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "11497360667926217808"
+                      "version": "0.32.4.45862",
+                      "templateHash": "13720707069401173773"
                     },
                     "name": "CDN Profiles Endpoints Origins",
-                    "description": "This module deploys a CDN Profile Endpoint Origin.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile Endpoint Origin."
                   },
                   "parameters": {
                     "endpointName": {
@@ -1362,19 +1554,13 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/endpoints",
                       "apiVersion": "2021-06-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]"
                     },
                     "origin": {
                       "type": "Microsoft.Cdn/profiles/endpoints/origins",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
-                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]",
-                      "dependsOn": [
-                        "endpoint"
-                      ]
+                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]"
                     }
                   },
                   "outputs": {
@@ -1410,8 +1596,7 @@
                 }
               },
               "dependsOn": [
-                "endpoint",
-                "profile"
+                "endpoint"
               ]
             }
           },
@@ -1507,12 +1692,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "4792421994565335139"
+              "version": "0.32.4.45862",
+              "templateHash": "8122410068056305563"
             },
             "name": "CDN Profiles Secret",
-            "description": "This module deploys a CDN Profile Secret.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Secret."
           },
           "parameters": {
             "name": {
@@ -1657,12 +1841,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "420872064438039619"
+              "version": "0.32.4.45862",
+              "templateHash": "10872254821030072983"
             },
             "name": "CDN Profiles Custom Domains",
-            "description": "This module deploys a CDN Profile Custom Domains.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Custom Domains."
           },
           "definitions": {
             "customDomainType": {
@@ -1728,6 +1911,32 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Extended properties."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "dnsValidationType": {
+              "type": "object",
+              "properties": {
+                "dnsTxtRecordName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The DNS record name."
+                  }
+                },
+                "dnsTxtRecordValue": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The DNS record value."
+                  }
+                },
+                "dnsTxtRecordExpiry": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The expiry date of the DNS record."
                   }
                 }
               },
@@ -1812,10 +2021,7 @@
               "existing": true,
               "type": "Microsoft.Cdn/profiles/secrets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]"
             },
             "profile": {
               "existing": true,
@@ -1837,10 +2043,7 @@
                   "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
                   "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
                 }
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1864,6 +2067,17 @@
                 "description": "The name of the resource group the custom domain was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "dnsValidation": {
+              "$ref": "#/definitions/dnsValidationType",
+              "metadata": {
+                "description": "The DNS validation records."
+              },
+              "value": {
+                "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
+                "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
+                "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+              }
             }
           }
         }
@@ -1916,12 +2130,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "13972056376134412662"
+              "version": "0.32.4.45862",
+              "templateHash": "2255246560564651285"
             },
             "name": "CDN Profiles Origin Group",
-            "description": "This module deploys a CDN Profile Origin Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Origin Group."
           },
           "definitions": {
             "originGroupType": {
@@ -2200,10 +2413,7 @@
                 "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
                 "sessionAffinityState": "[parameters('sessionAffinityState')]",
                 "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             },
             "originGroup_origins": {
               "copy": {
@@ -2263,12 +2473,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "7808954044639543840"
+                      "version": "0.32.4.45862",
+                      "templateHash": "12548128435491978362"
                     },
                     "name": "CDN Profiles Origin",
-                    "description": "This module deploys a CDN Profile Origin.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile Origin."
                   },
                   "definitions": {
                     "originType": {
@@ -2443,10 +2652,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/originGroups",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
                     },
                     "profile": {
                       "existing": true,
@@ -2468,10 +2674,7 @@
                         "priority": "[parameters('priority')]",
                         "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
                         "weight": "[parameters('weight')]"
-                      },
-                      "dependsOn": [
-                        "profile::originGroup"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -2571,12 +2774,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "6799234533111360012"
+              "version": "0.32.4.45862",
+              "templateHash": "16187656524256202445"
             },
             "name": "CDN Profiles Rule Sets",
-            "description": "This module deploys a CDN Profile rule set.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile rule set."
           },
           "definitions": {
             "ruleSetType": {
@@ -2685,10 +2887,7 @@
             "ruleSet": {
               "type": "Microsoft.Cdn/profiles/ruleSets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]"
             },
             "ruleSet_rules": {
               "copy": {
@@ -2733,12 +2932,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "5961518761760139272"
+                      "version": "0.32.4.45862",
+                      "templateHash": "5126669469544382460"
                     },
                     "name": "CDN Profiles Rules",
-                    "description": "This module deploys a CDN Profile rule.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile rule."
                   },
                   "definitions": {
                     "ruleType": {
@@ -2843,10 +3041,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/ruleSets",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]"
                     },
                     "profile": {
                       "existing": true,
@@ -2863,10 +3058,7 @@
                         "actions": "[parameters('actions')]",
                         "conditions": "[parameters('conditions')]",
                         "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
-                      },
-                      "dependsOn": [
-                        "profile::ruleSet"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -2968,12 +3160,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "8817136365913068133"
+              "version": "0.32.4.45862",
+              "templateHash": "13135731354374453249"
             },
             "name": "CDN Profiles AFD Endpoints",
-            "description": "This module deploys a CDN Profile AFD Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile AFD Endpoint."
           },
           "definitions": {
             "afdEndpointType": {
@@ -3277,10 +3468,7 @@
               "properties": {
                 "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
                 "enabledState": "[parameters('enabledState')]"
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             },
             "afdEndpoint_routes": {
               "copy": {
@@ -3346,12 +3534,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "17863230728556651506"
+                      "version": "0.32.4.45862",
+                      "templateHash": "14731142764965944373"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
-                    "description": "This module deploys a CDN Profile AFD Endpoint route.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile AFD Endpoint route."
                   },
                   "definitions": {
                     "routeType": {
@@ -3640,10 +3827,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/afdEndpoints",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]"
                     },
                     "profile::customDomains": {
                       "copy": {
@@ -3653,19 +3837,13 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/customDomains",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]"
                     },
                     "profile::originGroup": {
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/originGroups",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
                     },
                     "profile::ruleSet": {
                       "copy": {
@@ -3675,10 +3853,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/ruleSets",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]"
                     },
                     "profile": {
                       "existing": true,
@@ -3718,10 +3893,7 @@
                         "originPath": "[parameters('originPath')]",
                         "patternsToMatch": "[parameters('patternsToMatch')]",
                         "supportedProtocols": "[parameters('supportedProtocols')]"
-                      },
-                      "dependsOn": [
-                        "profile::afdEndpoint"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3750,8 +3922,7 @@
                 }
               },
               "dependsOn": [
-                "afdEndpoint",
-                "profile"
+                "afdEndpoint"
               ]
             }
           },
@@ -3790,6 +3961,13 @@
                 "description": "The list of routes assigned to the AFD endpoint."
               },
               "value": "[coalesce(parameters('routes'), createArray())]"
+            },
+            "frontDoorEndpointHostName": {
+              "type": "string",
+              "metadata": {
+                "description": "The host name of the AFD endpoint."
+              },
+              "value": "[reference('afdEndpoint').hostName]"
             }
           }
         }
@@ -3835,12 +4013,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3967677433883074947"
+              "version": "0.32.4.45862",
+              "templateHash": "11785514765749998247"
             },
             "name": "CDN Profiles Security Policy",
-            "description": "This module deploys a CDN Profile Security Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Security Policy."
           },
           "definitions": {
             "associationsType": {
@@ -3926,10 +4103,7 @@
                   },
                   "associations": "[parameters('associations')]"
                 }
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4027,6 +4201,29 @@
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[coalesce(tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+    },
+    "dnsValidation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dnsValidationType"
+      },
+      "metadata": {
+        "description": "The list of records required for custom domains validation."
+      },
+      "copy": {
+        "count": "[length(parameters('customDomains'))]",
+        "input": "[reference(format('profile_customDomains[{0}]', copyIndex())).outputs.dnsValidation.value]"
+      }
+    },
+    "frontDoorEndpointHostNames": {
+      "type": "array",
+      "metadata": {
+        "description": "The list of AFD endpoint host names."
+      },
+      "copy": {
+        "count": "[length(parameters('afdEndpoints'))]",
+        "input": "[reference(format('profile_afdEndpoints[{0}]', copyIndex())).outputs.frontDoorEndpointHostName.value]"
+      }
     }
   }
 }

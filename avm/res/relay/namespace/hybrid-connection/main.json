@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "16821503954722419440"
+      "version": "0.32.4.45862",
+      "templateHash": "634459891697328769"
     },
     "name": "Relay Namespace Hybrid Connections",
-    "description": "This module deploys a Relay Namespace Hybrid Connection.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Relay Namespace Hybrid Connection."
   },
   "definitions": {
     "lockType": {
@@ -216,10 +215,7 @@
       "properties": {
         "requiresClientAuthorization": "[parameters('requiresClientAuthorization')]",
         "userMetadata": "[parameters('userMetadata')]"
-      },
-      "dependsOn": [
-        "namespace"
-      ]
+      }
     },
     "hybridConnection_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -290,12 +286,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "4431168643851665214"
+              "version": "0.32.4.45862",
+              "templateHash": "12152842818030875993"
             },
             "name": "Hybrid Connection Authorization Rules",
-            "description": "This module deploys a Hybrid Connection Authorization Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Hybrid Connection Authorization Rule."
           },
           "parameters": {
             "name": {

@@ -1,6 +1,5 @@
 metadata name = 'Application Insights Linked Storage Account'
 metadata description = 'This component deploys an Application Insights Linked Storage Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Application Insights instance. Required if the template is used in a standalone deployment.')
 param appInsightsName string

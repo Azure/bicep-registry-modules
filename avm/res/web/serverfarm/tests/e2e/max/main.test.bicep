@@ -40,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = [
       skuCapacity: 3
       perSiteScaling: true
       zoneRedundant: true
-      kind: 'App'
+      kind: 'app'
       lock: {
         name: 'lock'
         kind: 'CanNotDelete'

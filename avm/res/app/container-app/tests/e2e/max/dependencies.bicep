@@ -17,7 +17,7 @@ param myCustomKeyVaultSecret string = newGuid()
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
   name: managedEnvironmentName
   location: location
   properties: {

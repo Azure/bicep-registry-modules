@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "11351051395125066237"
+      "version": "0.32.4.45862",
+      "templateHash": "16033490696841065687"
     },
     "name": "import-image-to-acr",
-    "description": "This modules deployes an image to an Azure Container Registry.",
-    "owner": "Azure/module-maintainers"
+    "description": "This modules deployes an image to an Azure Container Registry."
   },
   "definitions": {
     "importedImageType": {
@@ -267,8 +266,6 @@
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "acr",
-        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]",
         "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]"
       ]
     },
@@ -284,7 +281,6 @@
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "acr",
         "newManagedIdentity"
       ]
     },

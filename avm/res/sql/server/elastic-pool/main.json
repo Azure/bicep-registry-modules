@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "9050866823207809352"
+      "version": "0.32.4.45862",
+      "templateHash": "10716835460312206047"
     },
     "name": "SQL Server Elastic Pool",
-    "description": "This module deploys an Azure SQL Server Elastic Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Elastic Pool."
   },
   "definitions": {
     "elasticPoolPerDatabaseSettingsType": {
@@ -251,10 +250,7 @@
         "perDatabaseSettings": "[if(not(empty(parameters('perDatabaseSettings'))), createObject('autoPauseDelay', tryGet(parameters('perDatabaseSettings'), 'autoPauseDelay'), 'maxCapacity', json(tryGet(parameters('perDatabaseSettings'), 'maxCapacity')), 'minCapacity', json(tryGet(parameters('perDatabaseSettings'), 'minCapacity'))), null())]",
         "preferredEnclaveType": "[parameters('preferredEnclaveType')]",
         "zoneRedundant": "[parameters('zoneRedundant')]"
-      },
-      "dependsOn": [
-        "server"
-      ]
+      }
     }
   },
   "outputs": {

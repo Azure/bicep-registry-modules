@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "16457177770650062823"
+      "version": "0.32.4.45862",
+      "templateHash": "10291818452210242472"
     },
     "name": "Azure SQL Server Keys",
-    "description": "This module deploys an Azure SQL Server Key.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Key."
   },
   "parameters": {
     "name": {
@@ -63,10 +62,7 @@
       "properties": {
         "serverKeyType": "[parameters('serverKeyType')]",
         "uri": "[parameters('uri')]"
-      },
-      "dependsOn": [
-        "server"
-      ]
+      }
     }
   },
   "outputs": {

@@ -2,18 +2,22 @@
 /.github/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
 /scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
 /avm/ @Azure/avm-core-team-technical-bicep
-/avm/utilities/ @Azure/avm-core-team-technical-bicep
+/utilities/ @Azure/avm-core-team-technical-bicep
 /avm/ptn/aca-lza/hosting-environment/ @Azure/avm-ptn-acalza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/ai-platform/baseline/ @Azure/avm-ptn-aiplatform-baseline-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/app/container-job-toolkit/ @Azure/avm-ptn-app-containerjobtoolkit-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/authorization/policy-exemption/ @Azure/avm-ptn-authorization-policyexemption-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/resource-role-assignment/ @Azure/avm-ptn-authorization-resourceroleassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/authorization/role-definition/ @Azure/avm-ptn-authorization-roledefinition-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/insights/ @Azure/avm-ptn-avd-lza-insights-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/management-plane/ @Azure/avm-ptn-avd-lza-managementplane-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/acr-container-app/ @Azure/avm-ptn-azd-acrcontainerapp-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/aks/ @Azure/avm-ptn-azd-aks-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/aks-automatic-cluster/ @Azure/avm-ptn-azd-aksautomaticcluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/apim-api/ @Azure/avm-ptn-azd-apimapi-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/container-app-upsert/ @Azure/avm-ptn-azd-containerappupsert-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/container-apps-stack/ @Azure/avm-ptn-azd-containerappsstack-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -130,6 +134,7 @@
 /avm/res/network/network-manager/ @Azure/avm-res-network-networkmanager-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/network-security-group/ @Azure/avm-res-network-networksecuritygroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/network-watcher/ @Azure/avm-res-network-networkwatcher-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/network/p2s-vpn-gateway/ @Azure/avm-res-network-p2svpngateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/private-dns-zone/ @Azure/avm-res-network-privatednszone-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/private-endpoint/ @Azure/avm-res-network-privateendpoint-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/private-link-service/ @Azure/avm-res-network-privatelinkservice-module-owners-bicep @Azure/avm-module-reviewers-bicep

@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Account MongoDB Database Collections'
 metadata description = 'This module deploys a MongoDB Database Collection.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -11,7 +10,7 @@ param mongodbDatabaseName string
 @description('Required. Name of the collection.')
 param name string
 
-@description('Optional. Request Units per second.')
+@description('Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.')
 param throughput int = 400
 
 @description('Required. Indexes for the collection.')

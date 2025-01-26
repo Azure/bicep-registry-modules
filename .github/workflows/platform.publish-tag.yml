@@ -52,7 +52,7 @@ jobs:
             Write-Output '::group::Publish tagged module to public bicep registry'
 
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Publish-ModuleFromTagToPBR.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Publish-ModuleFromTagToPBR.ps1')
 
             $functionInput = @{
               ModuleReleaseTagName = '${{ github.event.inputs.tag }}'
@@ -82,7 +82,7 @@ jobs:
             Write-Output '::group::Validate publish'
 
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
             $functionInput = @{
               Version             = "${{ steps.publish_tag.outputs.version }}"

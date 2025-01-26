@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "14783992773855757023"
+      "version": "0.32.4.45862",
+      "templateHash": "10475367346737056910"
     },
     "name": "DevTest Lab Artifact Sources",
-    "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services."
   },
   "parameters": {
     "labName": {
@@ -118,10 +117,7 @@
         "sourceType": "[parameters('sourceType')]",
         "status": "[parameters('status')]",
         "uri": "[parameters('uri')]"
-      },
-      "dependsOn": [
-        "lab"
-      ]
+      }
     }
   },
   "outputs": {

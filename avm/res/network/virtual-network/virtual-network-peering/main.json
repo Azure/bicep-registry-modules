@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "345394220621166229"
+      "version": "0.32.4.45862",
+      "templateHash": "6667873480569726785"
     },
     "name": "Virtual Network Peerings",
-    "description": "This module deploys a Virtual Network Peering.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Network Peering."
   },
   "parameters": {
     "name": {

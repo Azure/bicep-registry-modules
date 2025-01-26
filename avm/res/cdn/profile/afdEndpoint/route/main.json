@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "17863230728556651506"
+      "version": "0.32.4.45862",
+      "templateHash": "14731142764965944373"
     },
     "name": "CDN Profiles AFD Endpoint Route",
-    "description": "This module deploys a CDN Profile AFD Endpoint route.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile AFD Endpoint route."
   },
   "definitions": {
     "routeType": {
@@ -299,10 +298,7 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/afdEndpoints",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]"
     },
     "profile::customDomains": {
       "copy": {
@@ -312,19 +308,13 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/customDomains",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]"
     },
     "profile::originGroup": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles/originGroups",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
     },
     "profile::ruleSet": {
       "copy": {
@@ -334,10 +324,7 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/ruleSets",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]"
     },
     "profile": {
       "existing": true,
@@ -377,10 +364,7 @@
         "originPath": "[parameters('originPath')]",
         "patternsToMatch": "[parameters('patternsToMatch')]",
         "supportedProtocols": "[parameters('supportedProtocols')]"
-      },
-      "dependsOn": [
-        "profile::afdEndpoint"
-      ]
+      }
     }
   },
   "outputs": {

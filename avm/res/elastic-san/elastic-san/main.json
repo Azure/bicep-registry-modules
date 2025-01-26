@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13500839064429348540"
+      "version": "0.32.4.45862",
+      "templateHash": "12187658159470614288"
     },
     "name": "Elastic SANs",
-    "description": "This module deploys an Elastic SAN.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Elastic SAN."
   },
   "definitions": {
     "volumeGroupType": {
@@ -1102,12 +1101,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "14826437696199531275"
+              "version": "0.32.4.45862",
+              "templateHash": "5472510668055424391"
             },
             "name": "Elastic SAN Volume Groups",
-            "description": "This module deploys an Elastic SAN Volume Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Elastic SAN Volume Group."
           },
           "definitions": {
             "volumeType": {
@@ -1811,10 +1809,7 @@
               "apiVersion": "2023-07-01",
               "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-              "dependsOn": [
-                "cMKKeyVault"
-              ]
+              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
             },
             "elasticSan": {
               "existing": true,
@@ -1852,9 +1847,8 @@
                 "protocolType": "Iscsi"
               },
               "dependsOn": [
-                "cMKKeyVault",
-                "cMKUserAssignedIdentity",
-                "elasticSan"
+                "cMKKeyVault::cMKKey",
+                "cMKKeyVault"
               ]
             },
             "volumeGroup_volumes": {
@@ -1897,12 +1891,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "7294045171019589380"
+                      "version": "0.32.4.45862",
+                      "templateHash": "7324265222363694864"
                     },
                     "name": "Elastic SAN Volumes",
-                    "description": "This module deploys an Elastic SAN Volume.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Elastic SAN Volume."
                   },
                   "definitions": {
                     "volumeSnapshotType": {
@@ -2011,10 +2004,7 @@
                       "existing": true,
                       "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
                       "apiVersion": "2023-01-01",
-                      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]",
-                      "dependsOn": [
-                        "elasticSan"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]"
                     },
                     "elasticSan": {
                       "existing": true,
@@ -2028,10 +2018,7 @@
                       "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
                       "properties": {
                         "sizeGiB": "[parameters('sizeGiB')]"
-                      },
-                      "dependsOn": [
-                        "elasticSan::volumeGroup"
-                      ]
+                      }
                     },
                     "volume_snapshots": {
                       "copy": {
@@ -2069,12 +2056,11 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.31.92.45157",
-                              "templateHash": "12385278995369535477"
+                              "version": "0.32.4.45862",
+                              "templateHash": "11683450086168084373"
                             },
                             "name": "Elastic SAN Volume Snapshots",
-                            "description": "This module deploys an Elastic SAN Volume Snapshot.",
-                            "owner": "Azure/module-maintainers"
+                            "description": "This module deploys an Elastic SAN Volume Snapshot."
                           },
                           "parameters": {
                             "elasticSanName": {
@@ -2163,7 +2149,6 @@
                         }
                       },
                       "dependsOn": [
-                        "elasticSan",
                         "volume"
                       ]
                     }
@@ -2247,7 +2232,6 @@
                 }
               },
               "dependsOn": [
-                "elasticSan",
                 "volumeGroup"
               ]
             },
@@ -3053,7 +3037,6 @@
                 }
               },
               "dependsOn": [
-                "elasticSan",
                 "volumeGroup"
               ]
             }

@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Origin'
 metadata description = 'This module deploys a CDN Profile Origin.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the origion.')
 param name string
