@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "879180908869084577"
+      "templateHash": "13440027849480007516"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -433,7 +433,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "3435782256442375386"
+              "templateHash": "1989949262851803696"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -592,6 +592,7 @@
             },
             "backupPolicyName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. The name of the backup policy."
               }
@@ -1040,7 +1041,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "18029475957082970542"
+                      "templateHash": "5788230720802124306"
                     },
                     "name": "Azure NetApp Files Backup Policy",
                     "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1055,7 +1056,7 @@
                     "backupPolicyName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. The name of the backup policy."
+                        "description": "Required. The name of the backup policy."
                       }
                     },
                     "backupPolicyLocation": {

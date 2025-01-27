@@ -1,7 +1,10 @@
+metadata name = 'Azure NetApp Files Backup Vaults'
+metadata description = 'This module will deploy backup vaults within netapp accounts'
+
 @description('Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment.')
 param netAppAccountName string
 
-@description('Optional. The name of the backup vault.')
+@description('Required. The name of the backup vault.')
 param backupVaultName string
 
 @description('Optional. The location of the backup vault.')

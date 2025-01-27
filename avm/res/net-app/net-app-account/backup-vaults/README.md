@@ -1,5 +1,6 @@
-#  `[Microsoft.NetApp/netAppAccounts/backupVaults]`
+# Azure NetApp Files Backup Vaults `[Microsoft.NetApp/netAppAccounts/backupVaults]`
 
+This module will deploy backup vaults within netapp accounts
 
 ## Navigation
 
@@ -15,6 +16,12 @@
 
 ## Parameters
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backupVaultName`](#parameter-backupvaultname) | string | The name of the backup vault. |
+
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -26,7 +33,13 @@
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`backupVaultLocation`](#parameter-backupvaultlocation) | string | The location of the backup vault. |
-| [`backupVaultName`](#parameter-backupvaultname) | string | The name of the backup vault. |
+
+### Parameter: `backupVaultName`
+
+The name of the backup vault.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `netAppAccountName`
 
@@ -42,13 +55,6 @@ The location of the backup vault.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `backupVaultName`
-
-The name of the backup vault.
-
-- Required: Yes
-- Type: string
 
 ## Outputs
 

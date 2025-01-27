@@ -4,7 +4,7 @@ metadata description = 'This module deploys a Backup Policy for Azure NetApp Fil
 @description('Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment.')
 param netAppAccountName string
 
-@description('Optional. The name of the backup policy.')
+@description('Required. The name of the backup policy.')
 param backupPolicyName string
 
 @description('Required. The location of the backup policy. Required if the template is used in a standalone deployment.')

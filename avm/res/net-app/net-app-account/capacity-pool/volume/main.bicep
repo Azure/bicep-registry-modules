@@ -38,7 +38,7 @@ param replicationSchedule string
 param backupEnabled bool = false
 
 @description('Optional. The name of the backup policy.')
-param backupPolicyName string
+param backupPolicyName string = ''
 
 @description('Required. The daily snapshot hour.')
 param dailyHour int

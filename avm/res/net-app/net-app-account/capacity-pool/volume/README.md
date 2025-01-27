@@ -402,8 +402,9 @@ Indicates whether the backup policy is enabled.
 
 The name of the backup policy.
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `backupVaultName`
 
