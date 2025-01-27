@@ -68,7 +68,7 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   name: netAppAccountName
 }
 
-resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024-07-01' = if (snapEnabled) {
+resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024-03-01' = if (snapEnabled) {
   name: snapshotPolicyName
   parent: netAppAccount
   location: snapshotPolicyLocation

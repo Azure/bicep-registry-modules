@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "11743757683368902099"
+      "templateHash": "8660660825155679630"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -625,7 +625,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.3.12046",
-              "templateHash": "1996335420733896692"
+              "templateHash": "13907483052237728771"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -1055,7 +1055,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.30.3.12046",
-                      "templateHash": "16606893744202605167"
+                      "templateHash": "796902266720308959"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -1840,7 +1840,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.30.3.12046",
-                              "templateHash": "12125445430551628802"
+                              "templateHash": "13375946706741784092"
                             },
                             "name": "Azure NetApp Files Snapshot Policy",
                             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1979,7 +1979,7 @@
                             {
                               "condition": "[parameters('snapEnabled')]",
                               "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
-                              "apiVersion": "2024-07-01",
+                              "apiVersion": "2024-03-01",
                               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]",
                               "location": "[parameters('snapshotPolicyLocation')]",
                               "properties": {
