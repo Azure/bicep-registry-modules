@@ -65,8 +65,10 @@ function Install-CustomModule {
                 # Get latest in case of multiple
                 $alreadyInstalled = ($alreadyInstalled | Sort-Object -Culture 'en-US' -Property 'Version' -Descending)[0]
             }
-            Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
-            continue
+            if ($alreadyInstalled) {
+                Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
+                continue
+            }
         }
 
         # Check if not to be excluded
@@ -79,7 +81,7 @@ function Install-CustomModule {
         if ($PSCmdlet.ShouldProcess('Module [{0}]' -f $foundModule.Name, 'Install')) {
             $foundModule | Install-Module -Force -SkipPublisherCheck -AllowClobber
             if ($installed = Get-Module -Name $foundModule.Name -ListAvailable) {
-                Write-Verbose ('Module [{0}] is installed with version [{1}]' -f $installed.Name, $installed.Version) -Verbose
+                Write-Verbose ('Module [{0}] is installed with version [{1}]' -f $installed[0].name, ($installed.Version -join ', ')) -Verbose
             } else {
                 Write-Error ('Installation of module [{0}] failed' -f $foundModule.Name)
             }

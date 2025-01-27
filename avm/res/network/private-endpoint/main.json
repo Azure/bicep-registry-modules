@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7267587823032816737"
+      "templateHash": "7551972959536498344"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint."
@@ -69,50 +69,6 @@
           },
           "metadata": {
             "description": "Required. Properties of private endpoint IP configurations."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "manualPrivateLinkServiceConnectionType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the private link service connection."
-          }
-        },
-        "properties": {
-          "type": "object",
-          "properties": {
-            "groupIds": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "metadata": {
-                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-              }
-            },
-            "privateLinkServiceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The resource id of private link service."
-              }
-            },
-            "requestMessage": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. Properties of private link service connection."
           }
         }
       },
@@ -408,11 +364,11 @@
     "manualPrivateLinkServiceConnections": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/manualPrivateLinkServiceConnectionType"
+        "$ref": "#/definitions/privateLinkServiceConnectionType"
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+        "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
       }
     },
     "privateLinkServiceConnections": {
@@ -422,7 +378,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. A grouping of information about the connection to the remote resource."
+        "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
       }
     },
     "enableTelemetry": {
