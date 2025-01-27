@@ -22,7 +22,7 @@ param subscriptionBillingScope string = ''
 // =============== //
 
 module dependencies './dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, namePrefix)}-test-dependencies'
+  name: '${uniqueString(deployment().name, namePrefix)}-dependencies-${serviceShort}'
   scope: tenant()
   params: {
     subscriptionBillingScope: subscriptionBillingScope
