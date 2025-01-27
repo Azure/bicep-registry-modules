@@ -242,7 +242,6 @@ runs:
               Write-Warning -Message $excludeMessage
               Write-Output $excludeMessage >> $env:VALIDATE_TEST_EXECUTION_RESULT
               Write-Error -Message $excludeMessage
-              exit 1
             }
           } else {
             Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFolderPath" -Verbose
