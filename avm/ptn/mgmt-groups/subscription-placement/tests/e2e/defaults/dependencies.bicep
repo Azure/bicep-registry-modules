@@ -25,11 +25,14 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:0.2.4' = {
   name: 'subVendingDeployment'
   scope: managementGroup
   params: {
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: 'Test Subscription'
     subscriptionBillingScope: subscriptionBillingScope
     subscriptionDisplayName: 'Test Subscription'
     subscriptionWorkload: 'DevTest'
   }
 }
+
 
 @description('Output of the Management Group Resource ID.')
 output managementGroupId string = managementGroup.id
