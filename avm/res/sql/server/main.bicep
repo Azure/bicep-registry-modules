@@ -340,7 +340,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
     scope: !empty(privateEndpoint.?resourceGroupResourceId)
@@ -511,7 +511,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.sqlAdminPasswordSecretName
+              name: secretsExportConfiguration!.?sqlAdminPasswordSecretName
               value: administratorLoginPassword
             }
           ]
@@ -519,7 +519,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
         ? [
             {
-              name: secretsExportConfiguration!.sqlAzureConnectionStringSercretName
+              name: secretsExportConfiguration!.?sqlAzureConnectionStringSercretName
               value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
             }
           ]
@@ -575,8 +575,8 @@ output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: server_privateEndpoints[i].outputs.name
     resourceId: server_privateEndpoints[i].outputs.resourceId
-    groupId: server_privateEndpoints[i].outputs.groupId
-    customDnsConfigs: server_privateEndpoints[i].outputs.customDnsConfig
+    groupId: server_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[i].outputs.customDnsConfigs
     networkInterfaceResourceIds: server_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
