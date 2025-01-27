@@ -9,9 +9,9 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'subplmin'
 
-@description('Required. The management group ID where the subscriptions will be placed. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-RootManagementGroupId\'.')
+@description('Required. The management group ID where the subscriptions will be placed. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-RootManagementGroupResourceId\'.')
 @secure()
-param rootManagementGroupId string = ''
+param rootManagementGroupResourceId string = ''
 
 @description('Required. The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-SubscriptionBillingScope\'.')
 @secure()
@@ -26,7 +26,7 @@ module dependencies './dependencies.bicep' = {
   scope: tenant()
   params: {
     subscriptionBillingScope: subscriptionBillingScope
-    rootManagementGroupId: rootManagementGroupId
+    rootManagementGroupResourceId: rootManagementGroupResourceId
   }
 }
 

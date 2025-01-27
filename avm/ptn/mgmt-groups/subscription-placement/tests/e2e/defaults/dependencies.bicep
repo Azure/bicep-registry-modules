@@ -2,7 +2,7 @@ targetScope = 'tenant'
 
 @description('Required. The root management group ID where the child management group will be placed.')
 @secure()
-param rootManagementGroupId string = ''
+param rootManagementGroupResourceId string = ''
 
 
 @description('Required. The scope of the subscription billing.')
@@ -15,7 +15,7 @@ resource managementGroup 'Microsoft.Management/managementGroups@2023-04-01' = {
     displayName: 'Test Management Group'
     details:{
       parent:{
-        id: rootManagementGroupId
+        id: rootManagementGroupResourceId
       }
     }
   }
