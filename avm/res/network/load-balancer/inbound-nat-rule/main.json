@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11972266991775052277"
+      "templateHash": "16950982858394467575"
     },
     "name": "Load Balancer Inbound NAT Rules",
-    "description": "This module deploys a Load Balancer Inbound NAT Rules.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Load Balancer Inbound NAT Rules."
   },
   "parameters": {
     "loadBalancerName": {

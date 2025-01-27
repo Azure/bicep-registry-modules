@@ -2,7 +2,6 @@ metadata name = 'Azd AKS'
 metadata description = '''Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent managed cluster. Required if the template is used in a standalone deployment.')
 param name string
@@ -122,7 +121,7 @@ param containerRegistryRoleName string?
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param aksClusterRoleAssignmentName string?
 
-import {agentPoolType} from 'br/public:avm/res/container-service/managed-cluster:0.5.2'
+import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.5.2'
 @description('Optional. Custom configuration of system node pool.')
 param systemPoolConfig agentPoolType[]?
 
@@ -178,13 +177,19 @@ param enableVaultForTemplateDeployment bool = false
 @description('Optional. Enable RBAC using AAD.')
 param enableAzureRbac bool = false
 
-import {aadProfileType} from 'br/public:avm/res/container-service/managed-cluster:0.5.2'
+import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.5.2'
 @description('Optional. Enable Azure Active Directory integration.')
 param aadProfile aadProfileType?
 
-var systemPoolsConfig = !empty(systemPoolConfig) ? systemPoolConfig :  [union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets[systemPoolSize])]
+var systemPoolsConfig = !empty(systemPoolConfig)
+  ? systemPoolConfig
+  : [union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets[systemPoolSize])]
 
-var agentPoolsConfig = !empty(agentPoolConfig) ? agentPoolConfig : empty(agentPoolSize) ? null : [union({ name: 'npuser', mode: 'User' }, nodePoolBase, nodePoolPresets[agentPoolSize])]
+var agentPoolsConfig = !empty(agentPoolConfig)
+  ? agentPoolConfig
+  : empty(agentPoolSize)
+      ? null
+      : [union({ name: 'npuser', mode: 'User' }, nodePoolBase, nodePoolPresets[agentPoolSize])]
 
 var aksClusterAdminRole = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
@@ -240,14 +245,16 @@ var nodePoolBase = {
   }
 }
 
-var roleAssignments = (enableAzureRbac || disableLocalAccounts) ? [
-  {
-    name: aksClusterRoleAssignmentName
-    principalId: principalId
-    principalType: principalType
-    roleDefinitionIdOrName: aksClusterAdminRole
-  }
-] : []
+var roleAssignments = (enableAzureRbac || disableLocalAccounts)
+  ? [
+      {
+        name: aksClusterRoleAssignmentName
+        principalId: principalId
+        principalType: principalType
+        roleDefinitionIdOrName: aksClusterAdminRole
+      }
+    ]
+  : []
 
 // ============== //
 // Resources      //

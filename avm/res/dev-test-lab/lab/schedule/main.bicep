@@ -2,7 +2,6 @@ metadata name = 'DevTest Lab Schedules'
 metadata description = '''This module deploys a DevTest Lab Schedule.
 
 Lab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent lab. Required if the template is used in a standalone deployment.')
 param labName string

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15354937436558255253"
+      "templateHash": "2631969094686923970"
     },
     "name": "Container job toolkit",
-    "description": "This module deploys a container to run as a job.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a container to run as a job."
   },
   "definitions": {
     "environmentVariableType": {

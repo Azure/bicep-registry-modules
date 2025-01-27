@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6624880039751785583"
+      "templateHash": "3824129655159697612"
     },
     "name": "DNS Resolver Inbound Endpoint",
-    "description": "This module deploys a DNS Resolver Inbound Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DNS Resolver Inbound Endpoint."
   },
   "parameters": {
     "dnsResolverName": {
