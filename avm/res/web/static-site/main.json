@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13252221376462071887"
+      "templateHash": "15725968241420107001"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -575,9 +575,14 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "Disabled",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "Enabled",
+        "Disabled"
+      ],
       "metadata": {
-        "description": "Optional. The public network access settings for the static site. `Disabled` is configured by default."
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set."
       }
     }
   },

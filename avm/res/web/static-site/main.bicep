@@ -88,8 +88,13 @@ param functionAppSettings object = {}
 @description('Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present.')
 param customDomains array = []
 
-@description('Optional. The public network access settings for the static site. `Disabled` is configured by default.')
-param publicNetworkAccess string = 'Disabled'
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
+@allowed([
+  ''
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string = ''
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
