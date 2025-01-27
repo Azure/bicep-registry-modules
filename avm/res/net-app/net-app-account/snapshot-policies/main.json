@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "10831939599546920512"
+      "templateHash": "14119927784920096194"
     },
     "name": "Azure NetApp Files Snapshot Policy",
     "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -48,7 +48,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a daily schedule for the snapshot policy."
       }
     },
     "hourlyScheduleType": {
@@ -79,7 +80,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an hourly schedule for the snapshot policy."
       }
     },
     "weeklyScheduleType": {
@@ -133,7 +135,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a weekly schedule for the snapshot policy."
       }
     },
     "monthlyScheduleType": {
@@ -178,7 +181,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a monthly schedule for the snapshot policy."
       }
     }
   },

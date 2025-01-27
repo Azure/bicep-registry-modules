@@ -1,5 +1,5 @@
 metadata name = 'Azure NetApp Files Volume Backup'
-metadata description = 'This module create a backup of a NetApp Files Volume.'
+metadata description = 'This module deploys a backup of a NetApp Files Volume.'
 
 @description('Optional. The name of the backup.')
 param name string = 'backup'
@@ -19,7 +19,7 @@ param snapshotName string?
 @description('Required. The name of the volume to backup.')
 param volumeName string
 
-@description('Required. The name of the capacity pool containing the volumne.')
+@description('Required. The name of the capacity pool containing the volume.')
 param capacityPoolName string
 
 resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
@@ -32,7 +32,7 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   resource remoteCapacityPool 'capacityPools@2024-03-01' existing = {
     name: capacityPoolName
 
-    resource volumne 'volumes@2024-07-01' existing = {
+    resource volume 'volumes@2024-07-01' existing = {
       name: volumeName
     }
   }
@@ -44,7 +44,7 @@ resource backup 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01
   properties: {
     label: label
     snapshotName: snapshotName
-    volumeResourceId: netAppAccount::remoteCapacityPool::volumne.id
+    volumeResourceId: netAppAccount::remoteCapacityPool::volume.id
   }
 }
 

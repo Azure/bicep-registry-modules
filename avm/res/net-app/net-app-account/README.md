@@ -1328,7 +1328,7 @@ The list of backups to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`capacityPoolName`](#parameter-backupvaultbackupscapacitypoolname) | string | The name of the capacity pool containing the volumne. |
+| [`capacityPoolName`](#parameter-backupvaultbackupscapacitypoolname) | string | The name of the capacity pool containing the volume. |
 | [`volumeName`](#parameter-backupvaultbackupsvolumename) | string | The name of the volume to backup. |
 
 **Optional parameters**
@@ -1341,7 +1341,7 @@ The list of backups to create.
 
 ### Parameter: `backupVault.backups.capacityPoolName`
 
-The name of the capacity pool containing the volumne.
+The name of the capacity pool containing the volume.
 
 - Required: Yes
 - Type: string
@@ -1413,7 +1413,7 @@ Capacity pools to create.
 | [`roleAssignments`](#parameter-capacitypoolsroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-capacitypoolsservicelevel) | string | The pool service level. |
 | [`tags`](#parameter-capacitypoolstags) | object | Tags for the capcity pool. |
-| [`volumes`](#parameter-capacitypoolsvolumes) | array | List of volumnes to create in the capacity pool. |
+| [`volumes`](#parameter-capacitypoolsvolumes) | array | List of volumes to create in the capacity pool. |
 
 ### Parameter: `capacityPools.name`
 
@@ -1599,7 +1599,7 @@ Tags for the capcity pool.
 
 ### Parameter: `capacityPools.volumes`
 
-List of volumnes to create in the capacity pool.
+List of volumes to create in the capacity pool.
 
 - Required: No
 - Type: array

@@ -1,6 +1,6 @@
 # Azure NetApp Files Volume Backup Vault `[Microsoft.NetApp/netAppAccounts/backupVaults]`
 
-This module create a NetApps Files Backup Vault.
+This module deploys a NetApp Files Backup Vault.
 
 ## Navigation
 
@@ -49,7 +49,7 @@ The list of backups to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`capacityPoolName`](#parameter-backupscapacitypoolname) | string | The name of the capacity pool containing the volumne. |
+| [`capacityPoolName`](#parameter-backupscapacitypoolname) | string | The name of the capacity pool containing the volume. |
 | [`volumeName`](#parameter-backupsvolumename) | string | The name of the volume to backup. |
 
 **Optional parameters**
@@ -62,7 +62,7 @@ The list of backups to create.
 
 ### Parameter: `backups.capacityPoolName`
 
-The name of the capacity pool containing the volumne.
+The name of the capacity pool containing the volume.
 
 - Required: Yes
 - Type: string

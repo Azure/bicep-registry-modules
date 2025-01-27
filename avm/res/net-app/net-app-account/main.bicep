@@ -320,11 +320,11 @@ output location string = netAppAccount.location
 @description('The resource IDs of the created capacity pools & their volumes.')
 output capacityPoolResourceIds {
   resourceId: string
-  volumneResourceIds: string[]
+  volumeResourceIds: string[]
 }[] = [
   for (capacityPools, index) in (capacityPools ?? []): {
     resourceId: netAppAccount_capacityPools[index].outputs.resourceId
-    volumneResourceIds: netAppAccount_capacityPools[index].outputs.volumeResourceIds
+    volumeResourceIds: netAppAccount_capacityPools[index].outputs.volumeResourceIds
   }
 ]
 
@@ -368,7 +368,7 @@ type capacityPoolType = {
   @description('Optional. The qos type of the pool.')
   qosType: ('Auto' | 'Manual')?
 
-  @description('Optional. List of volumnes to create in the capacity pool.')
+  @description('Optional. List of volumes to create in the capacity pool.')
   volumes: volumeType[]?
 
   @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')

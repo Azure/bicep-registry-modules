@@ -43,7 +43,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
-| [`volumes`](#parameter-volumes) | array | List of volumnes to create in the capacity pool. |
+| [`volumes`](#parameter-volumes) | array | List of volumes to create in the capacity pool. |
 
 ### Parameter: `name`
 
@@ -241,7 +241,7 @@ Tags for all resources.
 
 ### Parameter: `volumes`
 
-List of volumnes to create in the capacity pool.
+List of volumes to create in the capacity pool.
 
 - Required: No
 - Type: array

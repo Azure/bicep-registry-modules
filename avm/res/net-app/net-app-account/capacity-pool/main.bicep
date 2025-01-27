@@ -32,7 +32,7 @@ param size int
 ])
 param qosType string = 'Auto'
 
-@description('Optional. List of volumnes to create in the capacity pool.')
+@description('Optional. List of volumes to create in the capacity pool.')
 param volumes volumeType[]?
 
 @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')

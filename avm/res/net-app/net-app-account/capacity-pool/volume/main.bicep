@@ -154,7 +154,7 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existi
     name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
 
     resource remoteVolume 'volumes@2024-07-01' existing = if (!empty(dataProtection.?replication)) {
-      name: last(split(dataProtection.?replication.?remoteVolumeResourceId ?? 'dummyVolumne', '/'))
+      name: last(split(dataProtection.?replication.?remoteVolumeResourceId ?? 'dummyvolume', '/'))
     }
   }
 }

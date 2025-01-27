@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "10117712724746114157"
+      "templateHash": "1432647773332765235"
     },
     "name": "Azure NetApp Files Volume Backup Vault",
-    "description": "This module create a NetApps Files Backup Vault."
+    "description": "This module deploys a NetApp Files Backup Vault."
   },
   "definitions": {
     "backupType": {
@@ -45,12 +45,13 @@
         "capacityPoolName": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the capacity pool containing the volumne."
+            "description": "Required. The name of the capacity pool containing the volume."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a backup."
       }
     }
   },
@@ -144,10 +145,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "6460084687923721264"
+              "templateHash": "10519572323483923146"
             },
             "name": "Azure NetApp Files Volume Backup",
-            "description": "This module create a backup of a NetApp Files Volume."
+            "description": "This module deploys a backup of a NetApp Files Volume."
           },
           "parameters": {
             "name": {
@@ -192,12 +193,12 @@
             "capacityPoolName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the capacity pool containing the volumne."
+                "description": "Required. The name of the capacity pool containing the volume."
               }
             }
           },
           "resources": {
-            "netAppAccount::remoteCapacityPool::volumne": {
+            "netAppAccount::remoteCapacityPool::volume": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
               "apiVersion": "2024-07-01",

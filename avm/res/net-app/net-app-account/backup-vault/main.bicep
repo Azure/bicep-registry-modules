@@ -1,5 +1,5 @@
 metadata name = 'Azure NetApp Files Volume Backup Vault'
-metadata description = 'This module create a NetApps Files Backup Vault.'
+metadata description = 'This module deploys a NetApp Files Backup Vault.'
 
 @description('Optional. The name of the backup vault.')
 param name string = 'vault'
@@ -70,6 +70,6 @@ type backupType = {
   @description('Required. The name of the volume to backup.')
   volumeName: string
 
-  @description('Required. The name of the capacity pool containing the volumne.')
+  @description('Required. The name of the capacity pool containing the volume.')
   capacityPoolName: string
 }
