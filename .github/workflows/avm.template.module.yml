@@ -159,8 +159,6 @@ jobs:
       fail-fast: false
       matrix:
         testCases: ${{ fromJson(inputs.moduleTestFilePaths) }}
-        exclude:
-          - testCases.e2eignore: true
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
@@ -180,6 +178,7 @@ jobs:
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
+          e2eignore: "${{ matrix.testCases.e2eignore }}"
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
