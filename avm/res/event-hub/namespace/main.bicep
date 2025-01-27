@@ -230,7 +230,7 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.keyVersion
+                ? customerManagedKey!.?keyVersion
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
                     : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -438,7 +438,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'rootPrimaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.rootPrimaryConnectionStringName
+              name: secretsExportConfiguration!.?rootPrimaryConnectionStringName
               value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryConnectionString
             }
           ]
@@ -446,7 +446,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'rootSecondaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.rootSecondaryConnectionStringName
+              name: secretsExportConfiguration!.?rootSecondaryConnectionStringName
               value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryConnectionString
             }
           ]
@@ -454,7 +454,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'rootPrimaryKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.rootPrimaryKeyName
+              name: secretsExportConfiguration!.?rootPrimaryKeyName
               value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryKey
             }
           ]
@@ -462,7 +462,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'rootSecondaryKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.rootSecondaryKeyName
+              name: secretsExportConfiguration!.?rootSecondaryKeyName
               value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryKey
             }
           ]
