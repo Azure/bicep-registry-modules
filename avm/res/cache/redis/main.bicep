@@ -296,10 +296,18 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -372,7 +380,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'primaryAccessKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryAccessKeyName
+              name: secretsExportConfiguration!.?primaryAccessKeyName
               value: redis.listKeys().primaryKey
             }
           ]
@@ -380,7 +388,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'primaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryConnectionStringName
+              name: secretsExportConfiguration!.?primaryConnectionStringName
               value: 'rediss://:${redis.listKeys().primaryKey}@${redis.properties.hostName}:6380'
             }
           ]
@@ -388,7 +396,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryAccessKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryAccessKeyName
+              name: secretsExportConfiguration!.?secondaryAccessKeyName
               value: redis.listKeys().secondaryKey
             }
           ]
@@ -396,7 +404,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryConnectionStringName
+              name: secretsExportConfiguration!.?secondaryConnectionStringName
               value: 'rediss://:${redis.listKeys().secondaryKey}@${redis.properties.hostName}:6380'
             }
           ]
@@ -434,9 +442,9 @@ output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: redis_privateEndpoints[i].outputs.name
     resourceId: redis_privateEndpoints[i].outputs.resourceId
-    groupId: redis_privateEndpoints[i].outputs.groupId
-    customDnsConfig: redis_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: redis_privateEndpoints[i].outputs.networkInterfaceIds
+    groupId: redis_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: redis_privateEndpoints[i].outputs.customDnsConfigs
+    networkInterfaceResourceIds: redis_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -449,6 +457,30 @@ output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
