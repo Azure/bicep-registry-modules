@@ -56,6 +56,7 @@ output location string = backupVault.location
 // ================ //
 
 @export()
+@description('The type for a backup.')
 type backupType = {
   @description('Optional. The name of the backup.')
   name: string?

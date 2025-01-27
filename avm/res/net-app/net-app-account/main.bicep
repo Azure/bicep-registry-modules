@@ -334,6 +334,7 @@ output capacityPoolResourceIds {
 
 import { backupType } from 'backup-vault/main.bicep'
 @export()
+@description('The type for a backup vault.')
 type backupVaultType = {
   @description('Optional. The name of the backup vault.')
   name: string?
@@ -347,6 +348,7 @@ type backupVaultType = {
 
 import { volumeType } from 'capacity-pool/main.bicep'
 @export()
+@description('The type for a capacity pool.')
 type capacityPoolType = {
   @description('Required. The name of the capacity pool.')
   name: string
@@ -381,6 +383,7 @@ type capacityPoolType = {
 
 import { dailyScheduleType, hourlyScheduleType, monthlyScheduleType, weeklyScheduleType } from 'snapshot-policies/main.bicep'
 @export()
+@description('The type for a snapshot policy.')
 type snapshotPolicyType = {
   @description('Required. The name of the snapshot policy.')
   name: string
@@ -402,6 +405,7 @@ type snapshotPolicyType = {
 }
 
 @export()
+@description('The type for a backup policy.')
 type backupPolicyType = {
   @description('Optional. The name of the backup policy.')
   name: string?

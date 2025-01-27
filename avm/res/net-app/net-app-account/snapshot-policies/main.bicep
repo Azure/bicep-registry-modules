@@ -56,6 +56,7 @@ output resourceGroupName string = resourceGroup().name
 // ================ //
 
 @export()
+@description('The type for a daily schedule for the snapshot policy.')
 type dailyScheduleType = {
   @description('Required. The daily snapshot hour.')
   @minValue(0)
@@ -77,6 +78,7 @@ type dailyScheduleType = {
 }
 
 @export()
+@description('The type for an hourly schedule for the snapshot policy.')
 type hourlyScheduleType = {
   @description('Required. The hourly snapshot minute.')
   @minValue(0)
@@ -93,6 +95,7 @@ type hourlyScheduleType = {
 }
 
 @export()
+@description('The type for a weekly schedule for the snapshot policy.')
 type weeklyScheduleType = {
   @description('Required. The weekly snapshot day.')
   day: ('Sunday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday')
@@ -117,6 +120,7 @@ type weeklyScheduleType = {
 }
 
 @export()
+@description('The type for a monthly schedule for the snapshot policy.')
 type monthlyScheduleType = {
   @description('Required. Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., \'10,11,12\'.')
   daysOfMonth: string

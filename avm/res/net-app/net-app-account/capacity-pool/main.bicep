@@ -159,6 +159,7 @@ output volumeResourceIds string[] = [
 
 import { dataProtectionType, exportPolicyType } from 'volume/main.bicep'
 @export()
+@description('The type for a volume in the capacity pool.')
 type volumeType = {
   @description('Required. The name of the pool volume.')
   name: string
