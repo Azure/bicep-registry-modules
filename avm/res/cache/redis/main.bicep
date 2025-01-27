@@ -453,7 +453,7 @@ output privateEndpoints array = [
   }
 ]
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
