@@ -146,14 +146,12 @@ module capacityPool_volumes 'volume/main.bicep' = [
       monthlyBackupsToKeep: volume.?monthlyBackupsToKeep ?? 0
       weeklyBackupsToKeep: volume.?weeklyBackupsToKeep ?? 0
       backupVaultName: volume.?backupVaultName ?? 'vault'
-      backupVaultLocation: volume.?backupVaultLocation ?? ''
       backupName: volume.?backupName ?? 'backup'
       backupLabel: volume.?backupLabel ?? ''
       snapshotName: volume.?snapshotName ?? 'snapshot'
       useExistingSnapshot: volume.?useExistingSnapshot ?? false
       volumeResourceId: volume.?volumeResourceId ?? ''
       volumeType: volume.?volumeType ?? ''
-      backupVaultResourceId: volume.?backupVaultResourceId ?? ''
       replicationEnabled: volume.?replicationEnabled ?? false
     }
   }

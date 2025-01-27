@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "2321320275404095362"
+      "version": "0.33.13.18514",
+      "templateHash": "5788230720802124306"
     },
     "name": "Azure NetApp Files Backup Policy",
     "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -19,9 +19,8 @@
     },
     "backupPolicyName": {
       "type": "string",
-      "defaultValue": "backupPolicy",
       "metadata": {
-        "description": "Optional. The name of the backup policy."
+        "description": "Required. The name of the backup policy."
       }
     },
     "backupPolicyLocation": {

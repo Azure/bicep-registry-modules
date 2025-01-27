@@ -15,7 +15,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupPolicies) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults) |
 | `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults/backups) |
 | `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools/volumes) |
 | `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/snapshotPolicies) |
@@ -29,7 +28,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`backupLabel`](#parameter-backuplabel) | string | The label of the backup. |
 | [`backupName`](#parameter-backupname) | string | The name of the backup. |
 | [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The backup policy location. |
-| [`backupVaultResourceId`](#parameter-backupvaultresourceid) | string | The Id of the Backup Vault. |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
@@ -81,7 +79,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | :-- | :-- | :-- |
 | [`backupEnabled`](#parameter-backupenabled) | bool | Indicates whether the backup policy is enabled. |
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy. |
-| [`backupVaultLocation`](#parameter-backupvaultlocation) | string | The location of the backup vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | The name of the backup vault. |
 | [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
@@ -116,13 +113,6 @@ The name of the backup.
 ### Parameter: `backupPolicyLocation`
 
 The backup policy location.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `backupVaultResourceId`
-
-The Id of the Backup Vault.
 
 - Required: Yes
 - Type: string
@@ -414,15 +404,7 @@ The name of the backup policy.
 
 - Required: No
 - Type: string
-- Default: `'backupPolicy'`
-
-### Parameter: `backupVaultLocation`
-
-The location of the backup vault.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
+- Default: `''`
 
 ### Parameter: `backupVaultName`
 

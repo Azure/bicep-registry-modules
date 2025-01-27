@@ -38,7 +38,7 @@ param replicationSchedule string
 param backupEnabled bool = false
 
 @description('Optional. The name of the backup policy.')
-param backupPolicyName string = 'backupPolicy'
+param backupPolicyName string = ''
 
 @description('Required. The daily snapshot hour.')
 param dailyHour int
@@ -108,9 +108,6 @@ param weeklyBackupsToKeep int
 
 @description('Optional. The name of the backup vault.')
 param backupVaultName string = 'vault'
-
-@description('Optional. The location of the backup vault.')
-param backupVaultLocation string = resourceGroup().location
 
 @description('Required. The name of the backup.')
 param backupName string
@@ -185,9 +182,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Required. The Id of the Backup Vault.')
-param backupVaultResourceId string
-
 @description('Optional. Enables replication.')
 param replicationEnabled bool = true
 
@@ -241,10 +235,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
   name: name
   parent: netAppAccount::capacityPool
   location: location
-  dependsOn: [
-    backupVaults
-    backupPolicies
-  ]
+  dependsOn: []
   properties: {
     coolAccess: coolAccess
     coolAccessRetrievalPolicy: coolAccessRetrievalPolicy
@@ -267,12 +258,11 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
                   replicationSchedule: replicationSchedule
                 }
               : {}
-
             backup: backupEnabled
               ? {
                   backupPolicyId: backupPolicies.outputs.resourceId
                   policyEnforced: policyEnforced
-                  backupVaultId: backupVaultResourceId
+                  backupVaultId: existingBackupVault.id
                 }
               : {}
             snapshot: snapEnabled
@@ -282,7 +272,22 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
               : {}
           }
         }
-      : {})
+      : {
+          dataProtection: {
+            backup: backupEnabled
+              ? {
+                  backupPolicyId: backupPolicies.outputs.resourceId
+                  policyEnforced: policyEnforced
+                  backupVaultId: existingBackupVault.id
+                }
+              : {}
+            snapshot: snapEnabled
+              ? {
+                  snapshotPolicyId: snapshotPolicies.outputs.resourceId
+                }
+              : {}
+          }
+        })
     networkFeatures: networkFeatures
     serviceLevel: serviceLevel
     creationToken: creationToken
@@ -310,6 +315,7 @@ module backupPolicies '../../backup-policies/main.bicep' = if (backupEnabled) {
     weeklyBackupsToKeep: weeklyBackupsToKeep
     backupEnabled: backupEnabled
     backupPolicyLocation: backupPolicyLocation
+    backupPolicyName: backupPolicyName
   }
 }
 
@@ -339,27 +345,21 @@ module snapshotPolicies '../../snapshot-policies/main.bicep' = if (snapEnabled) 
   }
 }
 
-resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' = if (backupEnabled) {
-  name: backupVaultName
+resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' existing = if (backupEnabled) {
   parent: netAppAccount
-  location: backupVaultLocation
-  properties: {}
+  name: backupVaultName
 }
 
 resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01' = if (backupEnabled) {
   name: backupName
-  parent: backupVaults
-  dependsOn: [
-    volume
-  ]
-  properties: backupEnabled
-    ? {
-        label: backupLabel
-        snapshotName: snapshotName
-        useExistingSnapshot: useExistingSnapshot
-        volumeResourceId: volumeResourceId
-      }
-    : {}
+  parent: existingBackupVault
+  dependsOn: []
+  properties: {
+    label: backupLabel
+    snapshotName: snapshotName
+    useExistingSnapshot: useExistingSnapshot
+    volumeResourceId: volumeResourceId == '' ? volume.id : volumeResourceId
+  }
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
