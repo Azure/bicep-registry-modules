@@ -39,7 +39,7 @@ param replicationSchedule string
 param backupEnabled bool = false
 
 @description('Optional. The name of the backup policy.')
-param backupPolicyName string = 'backupPolicy'
+param backupPolicyName string
 
 @description('Required. The daily snapshot hour.')
 param dailyHour int
@@ -333,6 +333,7 @@ module backupPolicies '../../backup-policies/main.bicep' = if (backupEnabled) {
     weeklyBackupsToKeep: weeklyBackupsToKeep
     backupEnabled: backupEnabled
     backupPolicyLocation: backupPolicyLocation
+    backupPolicyName: backupPolicyName
   }
 }
 

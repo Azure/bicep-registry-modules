@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param netAppAccountName string
 
 @description('Optional. The name of the backup policy.')
-param backupPolicyName string = 'backupPolicy'
+param backupPolicyName string
 
 @description('Required. The location of the backup policy. Required if the template is used in a standalone deployment.')
 param backupPolicyLocation string
