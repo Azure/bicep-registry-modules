@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "10771924113864871555"
+      "version": "0.33.13.18514",
+      "templateHash": "6460084687923721264"
     },
     "name": "Azure NetApp Files Volume Backup",
-    "description": "This module create a backup of a NetApp Files Volume.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module create a backup of a NetApp Files Volume."
   },
   "parameters": {
     "name": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9332656894578016832"
+      "version": "0.33.13.18514",
+      "templateHash": "6359639123547576094"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -1410,8 +1410,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10427041920560220119"
+              "version": "0.33.13.18514",
+              "templateHash": "1799863578493793686"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1557,8 +1557,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3363904968535247028"
+              "version": "0.33.13.18514",
+              "templateHash": "10831939599546920512"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1869,12 +1869,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "17931068985495528099"
+              "version": "0.33.13.18514",
+              "templateHash": "10117712724746114157"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
-            "description": "This module create a NetApps Files Backup Vault.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module create a NetApps Files Backup Vault."
           },
           "definitions": {
             "backupType": {
@@ -2008,12 +2007,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "10771924113864871555"
+                      "version": "0.33.13.18514",
+                      "templateHash": "6460084687923721264"
                     },
                     "name": "Azure NetApp Files Volume Backup",
-                    "description": "This module create a backup of a NetApp Files Volume.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module create a backup of a NetApp Files Volume."
                   },
                   "parameters": {
                     "name": {
@@ -2219,8 +2217,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12280024826026638815"
+              "version": "0.33.13.18514",
+              "templateHash": "2133877427504165919"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2957,8 +2955,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "14496423696546216527"
+                      "version": "0.33.13.18514",
+                      "templateHash": "6516500276466512416"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3710,12 +3708,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "17931068985495528099"
+              "version": "0.33.13.18514",
+              "templateHash": "10117712724746114157"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
-            "description": "This module create a NetApps Files Backup Vault.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module create a NetApps Files Backup Vault."
           },
           "definitions": {
             "backupType": {
@@ -3849,12 +3846,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "10771924113864871555"
+                      "version": "0.33.13.18514",
+                      "templateHash": "6460084687923721264"
                     },
                     "name": "Azure NetApp Files Volume Backup",
-                    "description": "This module create a backup of a NetApp Files Volume.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module create a backup of a NetApp Files Volume."
                   },
                   "parameters": {
                     "name": {
