@@ -1261,13 +1261,13 @@ Supply an array of objects containing the details of the role assignments to cre
 | :-- | :-- | :-- |
 | [`definition`](#parameter-roleassignmentsdefinition) | string | The role definition ID or name. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the user, group, or service principal. |
 | [`relativeScope`](#parameter-roleassignmentsrelativescope) | string | The relative scope of the role assignment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the user, group, or service principal. |
 | [`roleAssignmentCondition`](#parameter-roleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
 
 ### Parameter: `roleAssignments.definition`
@@ -1280,6 +1280,13 @@ The role definition ID or name.
 ### Parameter: `roleAssignments.principalId`
 
 The principal ID of the user, group, or service principal.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.relativeScope`
+
+The relative scope of the role assignment.
 
 - Required: Yes
 - Type: string
@@ -1298,13 +1305,6 @@ The principal type of the user, group, or service principal.
     'User'
   ]
   ```
-
-### Parameter: `roleAssignments.relativeScope`
-
-The relative scope of the role assignment.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `roleAssignments.roleAssignmentCondition`
 
@@ -1462,9 +1462,21 @@ The configuration object for the Bastion host. Do not provide this object or kee
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bastionSku`](#parameter-virtualnetworkbastionconfigurationbastionsku) | string | The SKU of the bastion host. |
 | [`bastionSubnetIpAddressRange`](#parameter-virtualnetworkbastionconfigurationbastionsubnetipaddressrange) | string | The Ip address range of the bastion subnet. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bastionSku`](#parameter-virtualnetworkbastionconfigurationbastionsku) | string | The SKU of the bastion host. |
 | [`name`](#parameter-virtualnetworkbastionconfigurationname) | string | The name of the bastion host. |
+
+### Parameter: `virtualNetworkBastionConfiguration.bastionSubnetIpAddressRange`
+
+The Ip address range of the bastion subnet.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `virtualNetworkBastionConfiguration.bastionSku`
 
@@ -1480,13 +1492,6 @@ The SKU of the bastion host.
     'Standard'
   ]
   ```
-
-### Parameter: `virtualNetworkBastionConfiguration.bastionSubnetIpAddressRange`
-
-The Ip address range of the bastion subnet.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `virtualNetworkBastionConfiguration.name`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "17203995652618709286"
+      "templateHash": "12075211658803640219"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -352,7 +352,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The name of the bastion host."
+            "description": "Optional. The name of the bastion host."
           }
         },
         "bastionSku": {
@@ -364,7 +364,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Required. The SKU of the bastion host."
+            "description": "Optional. The SKU of the bastion host."
           }
         },
         "bastionSubnetIpAddressRange": {
@@ -518,7 +518,7 @@
             ],
             "nullable": true,
             "metadata": {
-              "description": "Required. The principal type of the user, group, or service principal."
+              "description": "Optional. The principal type of the user, group, or service principal."
             }
           }
         }
@@ -1377,7 +1377,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "633379098757737215"
+              "templateHash": "4413018879300163447"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1518,7 +1518,7 @@
                     ],
                     "nullable": true,
                     "metadata": {
-                      "description": "Required. The principal type of the user, group, or service principal."
+                      "description": "Optional. The principal type of the user, group, or service principal."
                     }
                   }
                 }
@@ -1836,7 +1836,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The name of the bastion host."
+                    "description": "Optional. The name of the bastion host."
                   }
                 },
                 "bastionSku": {
@@ -1848,7 +1848,7 @@
                   ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The SKU of the bastion host."
+                    "description": "Optional. The SKU of the bastion host."
                   }
                 },
                 "bastionSubnetIpAddressRange": {

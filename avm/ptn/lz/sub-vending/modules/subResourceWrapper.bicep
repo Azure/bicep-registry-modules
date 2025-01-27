@@ -1161,7 +1161,7 @@ type roleAssignmentType = {
   @description('Optional. The condition for the role assignment.')
   roleAssignmentCondition: roleAssignmentConditionType?
 
-  @description('Required. The principal type of the user, group, or service principal.')
+  @description('Optional. The principal type of the user, group, or service principal.')
   principalType: 'User' | 'Group' | 'ServicePrincipal'?
 }[]
 
@@ -1313,10 +1313,10 @@ type subnetType = {
 
 @export()
 type bastionType = {
-  @description('Required. The name of the bastion host.')
+  @description('Optional. The name of the bastion host.')
   name: string?
 
-  @description('Required. The SKU of the bastion host.')
+  @description('Optional. The SKU of the bastion host.')
   bastionSku: 'Basic' | 'Standard' | 'Premium'?
 
   @description('Required. The Ip address range of the bastion subnet.')
