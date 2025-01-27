@@ -1348,6 +1348,7 @@ type pimRoleAssignmentType = {
   ticketInfo: ticketInfoType?
 }[]
 
+@description('Optional. PIM role assignment schedule Information.')
 type scheduleInfoType = {
   @description('Optional. The expiry information for the role eligibility.')
   expiration: scheduleInfoExpirationType?
@@ -1356,6 +1357,7 @@ type scheduleInfoType = {
   startDateTime: string?
 }
 
+@description('Optional. PIM role assignment schedule expiration information.')
 type scheduleInfoExpirationType = {
   @description('Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H.')
   duration: string?
@@ -1367,6 +1369,7 @@ type scheduleInfoExpirationType = {
   type: 'AfterDateTime' | 'AfterDuration' | 'NoExpiration'?
 }
 
+@description('Optional. PIM role assignment ticketing information.')
 type ticketInfoType = {
   @description('Optional. The ticket number for the role eligibility assignment.')
   ticketNumber: string?
