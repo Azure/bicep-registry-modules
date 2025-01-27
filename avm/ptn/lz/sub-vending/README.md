@@ -8,7 +8,6 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,13 +16,19 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| `Microsoft.Authorization/roleEligibilityScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Management/managementGroups/subscriptions` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2021-04-01/managementGroups/subscriptions) |
+| `Microsoft.Network/bastionHosts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/bastionHosts) |
+| `Microsoft.Network/natGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/natGateways) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPPrefixes) |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/hubVirtualNetworkConnections) |
 | `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
@@ -31,7 +36,7 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
 | `Microsoft.Resources/tags` | [2019-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2019-10-01/tags) |
-| `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
+| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
@@ -54,9 +59,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/lz/sub-vending:<version>`.
 
 - [Using only defaults.](#example-1-using-only-defaults)
-- [Hub and spoke topology.](#example-2-hub-and-spoke-topology)
-- [Using RBAC conditions.](#example-3-using-rbac-conditions)
-- [Vwan topology.](#example-4-vwan-topology)
+- [Hub-Spoke](#example-2-hub-spoke)
+- [Rbac-Condition](#example-3-rbac-condition)
+- [Vwan-Spoke](#example-4-vwan-spoke)
 
 ### Example 1: _Using only defaults._
 
@@ -160,10 +165,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 2: _Hub and spoke topology._
-
-This instance deploys a subscription with a hub-spoke network topology.
-
+### Example 2: _Hub-Spoke_
 
 <details>
 
@@ -217,6 +219,12 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     virtualNetworkPeeringEnabled: true
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkSubnets: [
+      {
+        addressPrefix: '10.110.1.0/24'
+        name: 'Subnet1'
+      }
+    ]
     virtualNetworkUseRemoteGateways: false
   }
 }
@@ -330,6 +338,14 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "virtualNetworkResourceGroupName": {
       "value": "<virtualNetworkResourceGroupName>"
     },
+    "virtualNetworkSubnets": {
+      "value": [
+        {
+          "addressPrefix": "10.110.1.0/24",
+          "name": "Subnet1"
+        }
+      ]
+    },
     "virtualNetworkUseRemoteGateways": {
       "value": false
     }
@@ -391,16 +407,19 @@ param virtualNetworkName = '<virtualNetworkName>'
 param virtualNetworkPeeringEnabled = true
 param virtualNetworkResourceGroupLockEnabled = false
 param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkSubnets = [
+  {
+    addressPrefix: '10.110.1.0/24'
+    name: 'Subnet1'
+  }
+]
 param virtualNetworkUseRemoteGateways = false
 ```
 
 </details>
 <p>
 
-### Example 3: _Using RBAC conditions._
-
-This instance deploys the module with RBAC conditions for the role assignments.
-
+### Example 3: _Rbac-Condition_
 
 <details>
 
@@ -563,10 +582,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 4: _Vwan topology._
-
-This instance deploys a subscription with a vwan network topology.
-
+### Example 4: _Vwan-Spoke_
 
 <details>
 
@@ -791,6 +807,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`existingSubscriptionId`](#parameter-existingsubscriptionid) | string | An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`. |
 | [`hubNetworkResourceId`](#parameter-hubnetworkresourceid) | string | The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.<p> |
 | [`managementGroupAssociationDelayCount`](#parameter-managementgroupassociationdelaycount) | int | The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur. |
+| [`pimRoleAssignments`](#parameter-pimroleassignments) | array | Supply an array of objects containing the details of the PIM role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
 | [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p> |
 | [`roleAssignmentEnabled`](#parameter-roleassignmentenabled) | bool | Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.<p> |
 | [`roleAssignments`](#parameter-roleassignments) | array | Supply an array of objects containing the details of the role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
@@ -806,16 +823,20 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`subscriptionWorkload`](#parameter-subscriptionworkload) | string | The workload type can be either `Production` or `DevTest` and is case sensitive.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
 | [`vHubRoutingIntentEnabled`](#parameter-vhubroutingintentenabled) | bool | Indicates whether routing intent is enabled on the Virtual Hub within the Virtual WAN.<p> |
 | [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`. |
+| [`virtualNetworkBastionConfiguration`](#parameter-virtualnetworkbastionconfiguration) | object | The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host. |
 | [`virtualNetworkDdosPlanResourceId`](#parameter-virtualnetworkddosplanresourceid) | string | The resource ID of an existing DDoS Network Protection Plan that you wish to link to this Virtual Network.<p> |
 | [`virtualNetworkDeploymentScriptAddressPrefix`](#parameter-virtualnetworkdeploymentscriptaddressprefix) | string | The address prefix of the private virtual network for the deployment script. |
+| [`virtualNetworkDeployNatGateway`](#parameter-virtualnetworkdeploynatgateway) | bool | Whether to deploy a NAT gateway to the created virtual network. |
 | [`virtualNetworkDnsServers`](#parameter-virtualnetworkdnsservers) | array | The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.<p> |
 | [`virtualNetworkEnabled`](#parameter-virtualnetworkenabled) | bool | Whether to create a Virtual Network or not.<p><p>If set to `true` ensure you also provide values for the following parameters at a minimum:<p><li>`virtualNetworkResourceGroupName`<li>`virtualNetworkResourceGroupLockEnabled`<li>`virtualNetworkLocation`<li>`virtualNetworkName`<li>`virtualNetworkAddressSpace`<p><p>> Other parameters may need to be set based on other parameters that you enable that are listed above. Check each parameters documentation for further information.<p> |
 | [`virtualNetworkLocation`](#parameter-virtualnetworklocation) | string | The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.<p> |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.<p> |
+| [`virtualNetworkNatGatewayConfiguration`](#parameter-virtualnetworknatgatewayconfiguration) | object | The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway. |
 | [`virtualNetworkPeeringEnabled`](#parameter-virtualnetworkpeeringenabled) | bool | Whether to enable peering/connection with the supplied hub Virtual Network or Virtual WAN Virtual Hub.<p> |
 | [`virtualNetworkResourceGroupLockEnabled`](#parameter-virtualnetworkresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.<p> |
 | [`virtualNetworkResourceGroupName`](#parameter-virtualnetworkresourcegroupname) | string | The name of the Resource Group to create the Virtual Network in that is created by this module.<p> |
 | [`virtualNetworkResourceGroupTags`](#parameter-virtualnetworkresourcegrouptags) | object | An object of Tag key & value pairs to be appended to the Resource Group that the Virtual Network is created in.<p><p>> **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.<p> |
+| [`virtualNetworkSubnets`](#parameter-virtualnetworksubnets) | array | The subnets of the Virtual Network that will be created by this module. |
 | [`virtualNetworkTags`](#parameter-virtualnetworktags) | object | An object of tag key/value pairs to be set on the Virtual Network that is created.<p><p>> **NOTE:** Tags will be overwritten on resource if any exist already.<p> |
 | [`virtualNetworkUseRemoteGateways`](#parameter-virtualnetworkuseremotegateways) | bool | Enables the use of remote gateways in the specified hub virtual network.<p><p>> **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.<p> |
 | [`virtualNetworkVwanAssociatedRouteTableResourceId`](#parameter-virtualnetworkvwanassociatedroutetableresourceid) | string | The resource ID of the virtual hub route table to associate to the virtual hub connection (this virtual network). If left blank/empty the `defaultRouteTable` will be associated.<p> |
@@ -910,6 +931,211 @@ The number of blank ARM deployments to create sequentially to introduce a delay 
 - Required: No
 - Type: int
 - Default: `15`
+
+### Parameter: `pimRoleAssignments`
+
+Supply an array of objects containing the details of the PIM role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p>
+
+- Required: No
+- Type: array
+- Default: `[]`
+- Example:
+  ```Bicep
+  [
+    {
+      // Contributor role assignment at subscription scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/Contributor'
+      relativeScope: ''
+    }
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`definition`](#parameter-pimroleassignmentsdefinition) | string | The role definition ID. |
+| [`principalId`](#parameter-pimroleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
+| [`relativeScope`](#parameter-pimroleassignmentsrelativescope) | string | The relative scope of the role assignment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`justification`](#parameter-pimroleassignmentsjustification) | string | The justification for the role eligibility. |
+| [`roleAssignmentCondition`](#parameter-pimroleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
+| [`scheduleInfo`](#parameter-pimroleassignmentsscheduleinfo) | object | The schedule information for the role assignment. |
+| [`ticketInfo`](#parameter-pimroleassignmentsticketinfo) | object | The ticket information for the role assignment. |
+
+### Parameter: `pimRoleAssignments.definition`
+
+The role definition ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignments.principalId`
+
+The principal ID of the user, group, or service principal.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignments.relativeScope`
+
+The relative scope of the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignments.justification`
+
+The justification for the role eligibility.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition`
+
+The condition for the role assignment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conditionVersion`](#parameter-pimroleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
+| [`delegationCode`](#parameter-pimroleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
+| [`roleConditionType`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.conditionVersion`
+
+The version of the condition template.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.delegationCode`
+
+The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType`
+
+The type of template for the role assignment condition.
+
+- Required: No
+- Type: object
+
+### Parameter: `pimRoleAssignments.scheduleInfo`
+
+The schedule information for the role assignment.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`expiration`](#parameter-pimroleassignmentsscheduleinfoexpiration) | object | The expiry information for the role eligibility. |
+| [`startDateTime`](#parameter-pimroleassignmentsscheduleinfostartdatetime) | string | Start DateTime of the role eligibility assignment. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.expiration`
+
+The expiry information for the role eligibility.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`duration`](#parameter-pimroleassignmentsscheduleinfoexpirationduration) | string | Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H. |
+| [`endDateTime`](#parameter-pimroleassignmentsscheduleinfoexpirationenddatetime) | string | End DateTime of the role eligibility assignment. |
+| [`type`](#parameter-pimroleassignmentsscheduleinfoexpirationtype) | string | Type of the role eligibility assignment expiration. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.expiration.duration`
+
+Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.scheduleInfo.expiration.endDateTime`
+
+End DateTime of the role eligibility assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.scheduleInfo.expiration.type`
+
+Type of the role eligibility assignment expiration.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDateTime'
+    'AfterDuration'
+    'NoExpiration'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.scheduleInfo.startDateTime`
+
+Start DateTime of the role eligibility assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.ticketInfo`
+
+The ticket information for the role assignment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ticketNumber`](#parameter-pimroleassignmentsticketinfoticketnumber) | string | The ticket number for the role eligibility assignment. |
+| [`ticketSystem`](#parameter-pimroleassignmentsticketinfoticketsystem) | string | The ticket system name for the role eligibility assignment. |
+
+### Parameter: `pimRoleAssignments.ticketInfo.ticketNumber`
+
+The ticket number for the role eligibility assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.ticketInfo.ticketSystem`
+
+The ticket system name for the role eligibility assignment.
+
+- Required: No
+- Type: string
 
 ### Parameter: `resourceProviders`
 
@@ -1026,6 +1252,7 @@ Supply an array of objects containing the details of the role assignments to cre
 | :-- | :-- | :-- |
 | [`definition`](#parameter-roleassignmentsdefinition) | string | The role definition ID or name. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the user, group, or service principal. |
 | [`relativeScope`](#parameter-roleassignmentsrelativescope) | string | The relative scope of the role assignment. |
 
 **Optional parameters**
@@ -1047,6 +1274,21 @@ The principal ID of the user, group, or service principal.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `roleAssignments.principalType`
+
+The principal type of the user, group, or service principal.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.relativeScope`
 
@@ -1200,6 +1442,50 @@ The address space of the Virtual Network that will be created by this module, su
 - Type: array
 - Default: `[]`
 
+### Parameter: `virtualNetworkBastionConfiguration`
+
+The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bastionSku`](#parameter-virtualnetworkbastionconfigurationbastionsku) | string | The SKU of the bastion host. |
+| [`bastionSubnetIpAddressRange`](#parameter-virtualnetworkbastionconfigurationbastionsubnetipaddressrange) | string | The Ip address range of the bastion subnet. |
+| [`name`](#parameter-virtualnetworkbastionconfigurationname) | string | The name of the bastion host. |
+
+### Parameter: `virtualNetworkBastionConfiguration.bastionSku`
+
+The SKU of the bastion host.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `virtualNetworkBastionConfiguration.bastionSubnetIpAddressRange`
+
+The Ip address range of the bastion subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkBastionConfiguration.name`
+
+The name of the bastion host.
+
+- Required: No
+- Type: string
+
 ### Parameter: `virtualNetworkDdosPlanResourceId`
 
 The resource ID of an existing DDoS Network Protection Plan that you wish to link to this Virtual Network.<p>
@@ -1215,6 +1501,14 @@ The address prefix of the private virtual network for the deployment script.
 - Required: No
 - Type: string
 - Default: `'192.168.0.0/24'`
+
+### Parameter: `virtualNetworkDeployNatGateway`
+
+Whether to deploy a NAT gateway to the created virtual network.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `virtualNetworkDnsServers`
 
@@ -1247,6 +1541,33 @@ The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _,
 - Required: No
 - Type: string
 
+### Parameter: `virtualNetworkNatGatewayConfiguration`
+
+The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway.
+
+- Required: No
+- Type: object
+
+**The name of the NAT gateway parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+
+**The availability zones of the NAT gateway parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+
+**The Public IP address(es) properties to be attached to the NAT gateway parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+
+**The Public IP address(es) prefixes properties to be attached to the NAT gateway parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+
 ### Parameter: `virtualNetworkPeeringEnabled`
 
 Whether to enable peering/connection with the supplied hub Virtual Network or Virtual WAN Virtual Hub.<p>
@@ -1278,6 +1599,171 @@ An object of Tag key & value pairs to be appended to the Resource Group that the
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `virtualNetworkSubnets`
+
+The subnets of the Virtual Network that will be created by this module.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworksubnetsname) | string | The Name of the subnet resource. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-virtualnetworksubnetsaddressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
+| [`addressPrefixes`](#parameter-virtualnetworksubnetsaddressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationGatewayIPConfigurations`](#parameter-virtualnetworksubnetsapplicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
+| [`associateWithNatGateway`](#parameter-virtualnetworksubnetsassociatewithnatgateway) | bool | Option to assosciate with NAT gatway. |
+| [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
+| [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
+| [`networkSecurityGroupResourceId`](#parameter-virtualnetworksubnetsnetworksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-virtualnetworksubnetsprivatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
+| [`routeTableResourceId`](#parameter-virtualnetworksubnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`serviceEndpointPolicies`](#parameter-virtualnetworksubnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
+| [`serviceEndpoints`](#parameter-virtualnetworksubnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
+| [`sharingScope`](#parameter-virtualnetworksubnetssharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
+
+### Parameter: `virtualNetworkSubnets.name`
+
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.addressPrefix`
+
+The address prefix for the subnet. Required if `addressPrefixes` is empty.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.addressPrefixes`
+
+List of address prefixes for the subnet. Required if `addressPrefix` is empty.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.applicationGatewayIPConfigurations`
+
+Application gateway IP configurations of virtual network resource.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.associateWithNatGateway`
+
+Option to assosciate with NAT gatway.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkSubnets.defaultOutboundAccess`
+
+Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkSubnets.delegation`
+
+The delegation to enable on the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.natGatewayResourceId`
+
+The resource ID of the NAT Gateway to use for the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroupResourceId`
+
+The resource ID of the network security group to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.privateEndpointNetworkPolicies`
+
+enable or disable apply network policies on private endpoint in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
+  ]
+  ```
+
+### Parameter: `virtualNetworkSubnets.privateLinkServiceNetworkPolicies`
+
+enable or disable apply network policies on private link service in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `virtualNetworkSubnets.routeTableResourceId`
+
+The resource ID of the route table to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.serviceEndpointPolicies`
+
+An array of service endpoint policies.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.serviceEndpoints`
+
+The service endpoints to enable on the subnet.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.sharingScope`
+
+Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DelegatedServices'
+    'Tenant'
+  ]
+  ```
 
 ### Parameter: `virtualNetworkTags`
 
@@ -1337,20 +1823,6 @@ An array of of objects of virtual hub route table resource IDs to propagate rout
 | `subscriptionAcceptOwnershipUrl` | string | The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants. |
 | `subscriptionId` | string | The Subscription ID that has been created or provided. |
 | `subscriptionResourceId` | string | The Subscription Resource ID that has been created or provided. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/ptn/authorization/role-assignment:0.1.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.3.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.2.4` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
 
 ## Data Collection
 

@@ -100,6 +100,9 @@ param roleAssignmentEnabled bool = false
 @sys.description('Supply an array of objects containing the details of the role assignments to create.')
 param roleAssignments roleAssignmentType = []
 
+@description('Supply an array of objects containing the details of the PIM role assignments to create.')
+param pimRoleAssignments pimRoleAssignmentType = []
+
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
 param enableTelemetry bool = true
 
@@ -249,6 +252,18 @@ var deploymentNames = {
     'lz-vend-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
     64
   )
+  createLzPimRoleAssignmentsSub: take(
+    'lz-vend-pim-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzPimRoleAssignmentsRsgsSelf: take(
+    'lz-vend-pim-rbac-rsg-self-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzPimRoleAssignmentsRsgsNotSelf: take(
+    'lz-vend-pim-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
   createResourceGroupForDeploymentScript: take(
     'lz-vend-rsg-ds-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deploymentScriptLocation, deployment().name)}',
     64
@@ -302,6 +317,24 @@ var roleAssignmentsResourceGroupSelf = filter(
 )
 var roleAssignmentsResourceGroupNotSelf = filter(
   roleAssignmentsResourceGroups,
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+)
+
+// PIM Role Assignments filtering and splitting
+var pimRoleAssignmentsSubscription = filter(
+  pimRoleAssignments,
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/')
+)
+var pimRoleAssignmentsResourceGroups = filter(
+  pimRoleAssignments,
+  assignment => contains(assignment.relativeScope, '/resourceGroups/')
+)
+var pimRoleAssignmentsResourceGroupSelf = filter(
+  pimRoleAssignmentsResourceGroups,
+  assignment => contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+)
+var pimRoleAssignmentsResourceGroupNotSelf = filter(
+  pimRoleAssignmentsResourceGroups,
   assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
 )
 
@@ -445,7 +478,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
         ? union(
             {
               name: subnet.name
-              addressPrefix: subnet.addressPrefix
+              addressPrefix: subnet.?addressPrefix
               networkSecurityGroupResourceId: createLzNsg.outputs.resourceId
               natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
                 ? createNatGateway.outputs.resourceId
@@ -733,6 +766,120 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
       principalType: assignment.principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzPimRoleAssignmentsSub 'pimRoleAssignmentsSub.bicep' = [
+  for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription)) {
+    name: take(
+      '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    scope: subscription(subscriptionId)
+    params: {
+      principalId: assignment.principalId
+      roleDefinitionIdOrName: assignment.definition
+      justification: assignment.?justification ?? null
+      duration: assignment.scheduleInfo.?duration ?? null
+      endDateTime: assignment.scheduleInfo.?endDateTime ?? null
+      startDateTime: assignment.scheduleInfo.?startDateTime ?? null
+      ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
+      ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
+      expirationType: assignment.scheduleInfo.?expirationType
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzPimRoleAssignmentsRsgsSelf 'pimRoleAssignmentsRg.bicep' = [
+  for assignment in pimRoleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupSelf)) {
+    dependsOn: [
+      createResourceGroupForLzNetworking
+    ]
+    name: take(
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+    params: {
+      principalId: assignment.principalId
+      roleDefinitionIdOrName: assignment.definition
+      justification: assignment.?justification ?? null
+      duration: assignment.scheduleInfo.?duration ?? null
+      endDateTime: assignment.scheduleInfo.?endDateTime ?? null
+      startDateTime: assignment.scheduleInfo.?startDateTime ?? null
+      ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
+      ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
+      expirationType: assignment.scheduleInfo.?expirationType
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzPimRoleAssignmentsRsgsNotSelf 'pimRoleAssignmentsRg.bicep' = [
+  for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf)) {
+    name: take(
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    scope: resourceGroup(subscriptionId, split(assignment.relativeScope, '/')[2])
+    params: {
+      principalId: assignment.principalId
+      roleDefinitionIdOrName: assignment.definition
+      justification: assignment.?justification ?? null
+      duration: assignment.scheduleInfo.?duration ?? null
+      endDateTime: assignment.scheduleInfo.?endDateTime ?? null
+      startDateTime: assignment.scheduleInfo.?startDateTime ?? null
+      ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
+      ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
+      expirationType: assignment.scheduleInfo.?expirationType
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -1174,4 +1321,56 @@ type bastionType = {
 
   @description('Required. The Ip address range of the bastion subnet.')
   bastionSubnetIpAddressRange: string
+}?
+
+@export()
+@description('Optional. PIM role assignment type.')
+type pimRoleAssignmentType = {
+  @description('Required. The principal ID of the user, group, or service principal.')
+  principalId: string
+
+  @description('Required. The role definition ID.')
+  definition: string
+
+  @description('Required. The relative scope of the role assignment.')
+  relativeScope: string
+
+  @description('Optional. The justification for the role eligibility.')
+  justification: string?
+
+  @description('Optional. The condition for the role assignment.')
+  roleAssignmentCondition: roleAssignmentConditionType?
+
+  @description('Optional. The schedule information for the role assignment.')
+  scheduleInfo: scheduleInfoType
+
+  @description('Optional. The ticket information for the role assignment.')
+  ticketInfo: ticketInfoType?
+}[]
+
+type scheduleInfoType = {
+  @description('Optional. The expiry information for the role eligibility.')
+  expiration: scheduleInfoExpirationType?
+
+  @description('Optional. Start DateTime of the role eligibility assignment.')
+  startDateTime: string?
+}
+
+type scheduleInfoExpirationType = {
+  @description('Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H.')
+  duration: string?
+
+  @description('Optional. End DateTime of the role eligibility assignment.')
+  endDateTime: string?
+
+  @description('Optional. Type of the role eligibility assignment expiration.')
+  type: 'AfterDateTime' | 'AfterDuration' | 'NoExpiration'?
+}
+
+type ticketInfoType = {
+  @description('Optional. The ticket number for the role eligibility assignment.')
+  ticketNumber: string?
+
+  @description('Optional. The ticket system name for the role eligibility assignment.')
+  ticketSystem: string?
 }?
