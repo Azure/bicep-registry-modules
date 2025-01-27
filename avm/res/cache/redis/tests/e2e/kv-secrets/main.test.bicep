@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module saving all its secrets 
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-storage.storageaccount-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cache.redis-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssakvs'
+param serviceShort string = 'crkvs'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -49,10 +49,10 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}kvref'
     secretsExportConfiguration: {
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      accessKey1Name: 'custom-key1-name'
-      accessKey2Name: 'custom-key2-name'
-      connectionString1Name: 'custom-connectionString1-name'
-      connectionString2Name: 'custom-connectionString2-name'
+      primaryAccessKeyName: 'custom-primaryAccessKey-name'
+      primaryConnectionStringName: 'custom-primaryConnectionString-name'
+      secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
+      secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
     }
   }
 }
