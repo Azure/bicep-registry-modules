@@ -249,10 +249,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
-      rootPrimaryConnectionString: 'primary-connectionString-name'
-      rootPrimaryKey: 'primaryKey-name'
-      rootSecondaryConnectionString: 'secondary-connectionString-name'
-      rootSecondaryKey: 'secondaryKey-name'
+      rootPrimaryConnectionStringName: 'primary-connectionString-name'
+      rootPrimaryKeyName: 'primaryKey-name'
+      rootSecondaryConnectionStringName: 'secondary-connectionString-name'
+      rootSecondaryKeyName: 'secondaryKey-name'
     }
   }
 }
@@ -281,10 +281,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
-        "rootPrimaryConnectionString": "primary-connectionString-name",
-        "rootPrimaryKey": "primaryKey-name",
-        "rootSecondaryConnectionString": "secondary-connectionString-name",
-        "rootSecondaryKey": "secondaryKey-name"
+        "rootPrimaryConnectionStringName": "primary-connectionString-name",
+        "rootPrimaryKeyName": "primaryKey-name",
+        "rootSecondaryConnectionStringName": "secondary-connectionString-name",
+        "rootSecondaryKeyName": "secondaryKey-name"
       }
     }
   }
@@ -307,10 +307,10 @@ param name = 'sbnkv001'
 param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
-  rootPrimaryConnectionString: 'primary-connectionString-name'
-  rootPrimaryKey: 'primaryKey-name'
-  rootSecondaryConnectionString: 'secondary-connectionString-name'
-  rootSecondaryKey: 'secondaryKey-name'
+  rootPrimaryConnectionStringName: 'primary-connectionString-name'
+  rootPrimaryKeyName: 'primaryKey-name'
+  rootSecondaryConnectionStringName: 'secondary-connectionString-name'
+  rootSecondaryKeyName: 'secondaryKey-name'
 }
 ```
 
@@ -3065,10 +3065,10 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`rootPrimaryConnectionString`](#parameter-secretsexportconfigurationrootprimaryconnectionstring) | string | The rootPrimaryConnectionString secret name to create. |
-| [`rootPrimaryKey`](#parameter-secretsexportconfigurationrootprimarykey) | string | The rootPrimaryKey secret name to create. |
-| [`rootSecondaryConnectionString`](#parameter-secretsexportconfigurationrootsecondaryconnectionstring) | string | The rootSecondaryConnectionString secret name to create. |
-| [`rootSecondaryKey`](#parameter-secretsexportconfigurationrootsecondarykey) | string | The rootSecondaryKey secret name to create. |
+| [`rootPrimaryConnectionStringName`](#parameter-secretsexportconfigurationrootprimaryconnectionstringname) | string | The rootPrimaryConnectionStringName secret name to create. |
+| [`rootPrimaryKeyName`](#parameter-secretsexportconfigurationrootprimarykeyname) | string | The rootPrimaryKeyName secret name to create. |
+| [`rootSecondaryConnectionStringName`](#parameter-secretsexportconfigurationrootsecondaryconnectionstringname) | string | The rootSecondaryConnectionStringName secret name to create. |
+| [`rootSecondaryKeyName`](#parameter-secretsexportconfigurationrootsecondarykeyname) | string | The rootSecondaryKeyName secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -3077,30 +3077,30 @@ The resource ID of the key vault where to store the secrets of this module.
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsExportConfiguration.rootPrimaryConnectionString`
+### Parameter: `secretsExportConfiguration.rootPrimaryConnectionStringName`
 
-The rootPrimaryConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.rootPrimaryKey`
-
-The rootPrimaryKey secret name to create.
+The rootPrimaryConnectionStringName secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.rootSecondaryConnectionString`
+### Parameter: `secretsExportConfiguration.rootPrimaryKeyName`
 
-The rootSecondaryConnectionString secret name to create.
+The rootPrimaryKeyName secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.rootSecondaryKey`
+### Parameter: `secretsExportConfiguration.rootSecondaryConnectionStringName`
 
-The rootSecondaryKey secret name to create.
+The rootSecondaryConnectionStringName secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootSecondaryKeyName`
+
+The rootSecondaryKeyName secret name to create.
 
 - Required: No
 - Type: string
@@ -3890,6 +3890,7 @@ Enabled by default in order to align with resiliency best practices, thus requir
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed service bus namespace. |
 | `privateEndpoints` | array | The private endpoints of the service bus namespace. |
@@ -3904,9 +3905,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "452096103689672842"
+      "templateHash": "17077373690413572154"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace."
@@ -584,32 +584,32 @@
             "description": "Required. The resource ID of the key vault where to store the secrets of this module."
           }
         },
-        "rootPrimaryConnectionString": {
+        "rootPrimaryConnectionStringName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The rootPrimaryConnectionString secret name to create."
+            "description": "Optional. The rootPrimaryConnectionStringName secret name to create."
           }
         },
-        "rootSecondaryConnectionString": {
+        "rootSecondaryConnectionStringName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The rootSecondaryConnectionString secret name to create."
+            "description": "Optional. The rootSecondaryConnectionStringName secret name to create."
           }
         },
-        "rootPrimaryKey": {
+        "rootPrimaryKeyName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The rootPrimaryKey secret name to create."
+            "description": "Optional. The rootPrimaryKeyName secret name to create."
           }
         },
-        "rootSecondaryKey": {
+        "rootSecondaryKeyName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The rootSecondaryKey secret name to create."
+            "description": "Optional. The rootSecondaryKeyName secret name to create."
           }
         }
       },
@@ -721,6 +721,35 @@
         }
       },
       "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.secretSetOutputType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        },
+        "secretUriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI with version of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
@@ -1336,6 +1365,22 @@
         }
       }
     },
+    "secretsOutputType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "$ref": "#/definitions/_1.secretSetOutputType",
+        "metadata": {
+          "description": "An exported secret's references."
+        }
+      },
+      "metadata": {
+        "description": "A map of the exported secrets",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
     "subscriptionType": {
       "type": "object",
       "properties": {
@@ -1800,7 +1845,7 @@
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "premiumMessagingPartitions": "[if(equals(parameters('skuObject').name, 'Premium'), parameters('premiumMessagingPartitions'), 0)]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createArray(createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]"
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createArray(createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]"
       },
       "dependsOn": [
         "cMKKeyVault::cMKKey",
@@ -3003,13 +3048,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              <<<<<<< HEAD
               "version": "0.33.13.18514",
-              "templateHash": "18201924438507667342"
-              =======
-              "version": "0.32.4.45862",
-              "templateHash": "4751434073420963969"
-              >>>>>>> upstream/main
+              "templateHash": "15157624750923042287"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic."
@@ -5193,7 +5233,7 @@
             "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryConnectionString'), createArray(createObject('name', parameters('secretsExportConfiguration').rootPrimaryConnectionString, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryConnectionString'), createArray(createObject('name', parameters('secretsExportConfiguration').rootSecondaryConnectionString, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryKey'), createArray(createObject('name', parameters('secretsExportConfiguration').rootPrimaryKey, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryKey'), createArray(createObject('name', parameters('secretsExportConfiguration').rootSecondaryKey, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').secondaryKey)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'rootPrimaryConnectionStringName'), 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'rootSecondaryConnectionStringName'), 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'rootPrimaryKeyName'), 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'rootSecondaryKeyName'), 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').secondaryKey)), createArray()))]"
           }
         },
         "template": {
@@ -5204,7 +5244,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "14562732155748796301"
+              "templateHash": "14045530027687796477"
             }
           },
           "definitions": {
@@ -5233,7 +5273,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -5256,7 +5296,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -5386,6 +5426,13 @@
         "description": "The endpoint of the deployed service bus namespace."
       },
       "value": "[reference('serviceBusNamespace').serviceBusEndpoint]"
+    },
+    "exportedSecrets": {
+      "$ref": "#/definitions/secretsOutputType",
+      "metadata": {
+        "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
+      },
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     }
   }
 }

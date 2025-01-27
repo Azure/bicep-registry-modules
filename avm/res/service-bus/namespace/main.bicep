@@ -228,7 +228,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.keyVersion
+                ? customerManagedKey!.?keyVersion
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
                     : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -471,7 +471,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'rootPrimaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.rootPrimaryConnectionStringName
+              name: secretsExportConfiguration!.?rootPrimaryConnectionStringName
               value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryConnectionString
             }
           ]
@@ -479,7 +479,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'rootSecondaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.rootSecondaryConnectionStringName
+              name: secretsExportConfiguration!.?rootSecondaryConnectionStringName
               value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryConnectionString
             }
           ]
@@ -487,7 +487,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'rootPrimaryKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.rootPrimaryKeyName
+              name: secretsExportConfiguration!.?rootPrimaryKeyName
               value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryKey
             }
           ]
@@ -495,7 +495,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'rootSecondaryKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.rootSecondaryKeyName
+              name: secretsExportConfiguration!.?rootSecondaryKeyName
               value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryKey
             }
           ]
@@ -532,6 +532,12 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @description('The endpoint of the deployed service bus namespace.')
 output serviceBusEndpoint string = serviceBusNamespace.properties.serviceBusEndpoint
+
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 // =============== //
 //   Definitions   //
