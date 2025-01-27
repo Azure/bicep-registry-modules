@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "17725707688961505973"
+      "templateHash": "12297724460610129906"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -164,7 +164,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "The name of the Public IP address."
+              "description": "Optional. The name of the Public IP address."
             }
           },
           "zones": {
@@ -176,7 +176,7 @@
             ],
             "nullable": true,
             "metadata": {
-              "description": "The SKU of the Public IP address."
+              "description": "Optional. The SKU of the Public IP address."
             }
           }
         }
@@ -197,21 +197,21 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "The name of the Public IP address prefix."
+              "description": "Optional. The name of the Public IP address prefix."
             }
           },
           "prefixLength": {
             "type": "int",
             "nullable": true,
             "metadata": {
-              "description": "The prefix length of the public IP address prefix.."
+              "description": "Optional. The prefix length of the public IP address prefix.."
             }
           },
           "customIPPrefix": {
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "The custom IP prefix of the public IP address prefix."
+              "description": "Optional. The custom IP prefix of the public IP address prefix."
             }
           }
         }
@@ -385,28 +385,28 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "The name of the NAT gateway."
+            "description": "Optional. The name of the NAT gateway."
           }
         },
         "zones": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "The availability zones of the NAT gateway."
+            "description": "Optional. The availability zones of the NAT gateway."
           }
         },
         "publicIPAddressProperties": {
           "$ref": "#/definitions/_1.natGatewayPublicIpAddressPropertiesType",
           "nullable": true,
           "metadata": {
-            "description": "The Public IP address(es) properties to be attached to the NAT gateway."
+            "description": "Optional. The Public IP address(es) properties to be attached to the NAT gateway."
           }
         },
         "publicIPAddressPrefixesProperties": {
           "$ref": "#/definitions/_1.publicIPAddressPrefixesPropertiesType",
           "nullable": true,
           "metadata": {
-            "description": "The Public IP address(es) prefixes properties to be attached to the NAT gateway."
+            "description": "Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway."
           }
         }
       },
@@ -513,6 +513,7 @@
               "ServicePrincipal",
               "User"
             ],
+            "nullable": true,
             "metadata": {
               "description": "Required. The principal type of the user, group, or service principal."
             }
@@ -1373,7 +1374,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "18389021070009179927"
+              "templateHash": "17460453798751635092"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1387,28 +1388,28 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "The name of the NAT gateway."
+                    "description": "Optional. The name of the NAT gateway."
                   }
                 },
                 "zones": {
                   "type": "int",
                   "nullable": true,
                   "metadata": {
-                    "description": "The availability zones of the NAT gateway."
+                    "description": "Optional. The availability zones of the NAT gateway."
                   }
                 },
                 "publicIPAddressProperties": {
                   "$ref": "#/definitions/natGatewayPublicIpAddressPropertiesType",
                   "nullable": true,
                   "metadata": {
-                    "description": "The Public IP address(es) properties to be attached to the NAT gateway."
+                    "description": "Optional. The Public IP address(es) properties to be attached to the NAT gateway."
                   }
                 },
                 "publicIPAddressPrefixesProperties": {
                   "$ref": "#/definitions/publicIPAddressPrefixesPropertiesType",
                   "nullable": true,
                   "metadata": {
-                    "description": "The Public IP address(es) prefixes properties to be attached to the NAT gateway."
+                    "description": "Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway."
                   }
                 }
               },
@@ -1426,7 +1427,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "The name of the Public IP address."
+                      "description": "Optional. The name of the Public IP address."
                     }
                   },
                   "zones": {
@@ -1438,7 +1439,7 @@
                     ],
                     "nullable": true,
                     "metadata": {
-                      "description": "The SKU of the Public IP address."
+                      "description": "Optional. The SKU of the Public IP address."
                     }
                   }
                 }
@@ -1454,21 +1455,21 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "The name of the Public IP address prefix."
+                      "description": "Optional. The name of the Public IP address prefix."
                     }
                   },
                   "prefixLength": {
                     "type": "int",
                     "nullable": true,
                     "metadata": {
-                      "description": "The prefix length of the public IP address prefix.."
+                      "description": "Optional. The prefix length of the public IP address prefix.."
                     }
                   },
                   "customIPPrefix": {
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "The custom IP prefix of the public IP address prefix."
+                      "description": "Optional. The custom IP prefix of the public IP address prefix."
                     }
                   }
                 }
@@ -1512,6 +1513,7 @@
                       "ServicePrincipal",
                       "User"
                     ],
+                    "nullable": true,
                     "metadata": {
                       "description": "Required. The principal type of the user, group, or service principal."
                     }
@@ -6906,7 +6908,7 @@
                     "value": "[variables('roleAssignmentsSubscription')[copyIndex()].definition]"
                   },
                   "principalType": {
-                    "value": "[variables('roleAssignmentsSubscription')[copyIndex()].principalType]"
+                    "value": "[tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'principalType')]"
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
@@ -7608,7 +7610,7 @@
                     "value": "[variables('roleAssignmentsResourceGroupSelf')[copyIndex()].definition]"
                   },
                   "principalType": {
-                    "value": "[variables('roleAssignmentsResourceGroupSelf')[copyIndex()].principalType]"
+                    "value": "[tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'principalType')]"
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
@@ -8316,7 +8318,7 @@
                     "value": "[variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].definition]"
                   },
                   "principalType": {
-                    "value": "[variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].principalType]"
+                    "value": "[tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'principalType')]"
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"

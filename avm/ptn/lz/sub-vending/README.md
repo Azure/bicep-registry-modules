@@ -59,9 +59,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/lz/sub-vending:<version>`.
 
 - [Using only defaults.](#example-1-using-only-defaults)
-- [Hub-Spoke](#example-2-hub-spoke)
-- [Rbac-Condition](#example-3-rbac-condition)
-- [Vwan-Spoke](#example-4-vwan-spoke)
+- [Hub and spoke topology.](#example-2-hub-and-spoke-topology)
+- [Using RBAC conditions.](#example-3-using-rbac-conditions)
+- [Vwan topology.](#example-4-vwan-topology)
 
 ### Example 1: _Using only defaults._
 
@@ -165,7 +165,10 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 2: _Hub-Spoke_
+### Example 2: _Hub and spoke topology._
+
+This instance deploys a subscription with a hub-spoke network topology.
+
 
 <details>
 
@@ -419,7 +422,10 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 3: _Rbac-Condition_
+### Example 3: _Using RBAC conditions._
+
+This instance deploys the module with RBAC conditions for the role assignments.
+
 
 <details>
 
@@ -582,7 +588,10 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 4: _Vwan-Spoke_
+### Example 4: _Vwan topology._
+
+This instance deploys a subscription with a vwan network topology.
+
 
 <details>
 
@@ -1279,7 +1288,7 @@ The principal ID of the user, group, or service principal.
 
 The principal type of the user, group, or service principal.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -1548,25 +1557,100 @@ The NAT Gateway configuration object. Do not provide this object or keep it empt
 - Required: No
 - Type: object
 
-**The name of the NAT gateway parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworknatgatewayconfigurationname) | string | The name of the NAT gateway. |
+| [`publicIPAddressPrefixesProperties`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddressprefixesproperties) | array | The Public IP address(es) prefixes properties to be attached to the NAT gateway. |
+| [`publicIPAddressProperties`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddressproperties) | array | The Public IP address(es) properties to be attached to the NAT gateway. |
+| [`zones`](#parameter-virtualnetworknatgatewayconfigurationzones) | int | The availability zones of the NAT gateway. |
 
-**The availability zones of the NAT gateway parameters**
+### Parameter: `virtualNetworkNatGatewayConfiguration.name`
+
+The name of the NAT gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkNatGatewayConfiguration.publicIPAddressPrefixesProperties`
+
+The Public IP address(es) prefixes properties to be attached to the NAT gateway.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`customIPPrefix`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddressprefixespropertiescustomipprefix) | string | The custom IP prefix of the public IP address prefix. |
+| [`name`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddressprefixespropertiesname) | string | The name of the Public IP address prefix. |
+| [`prefixLength`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddressprefixespropertiesprefixlength) | int | The prefix length of the public IP address prefix.. |
 
-**The Public IP address(es) properties to be attached to the NAT gateway parameters**
+### Parameter: `virtualNetworkNatGatewayConfiguration.publicIPAddressPrefixesProperties.customIPPrefix`
+
+The custom IP prefix of the public IP address prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkNatGatewayConfiguration.publicIPAddressPrefixesProperties.name`
+
+The name of the Public IP address prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkNatGatewayConfiguration.publicIPAddressPrefixesProperties.prefixLength`
+
+The prefix length of the public IP address prefix..
+
+- Required: No
+- Type: int
+
+### Parameter: `virtualNetworkNatGatewayConfiguration.publicIPAddressProperties`
+
+The Public IP address(es) properties to be attached to the NAT gateway.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddresspropertiesname) | string | The name of the Public IP address. |
+| [`zones`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddresspropertieszones) | array | The SKU of the Public IP address. |
 
-**The Public IP address(es) prefixes properties to be attached to the NAT gateway parameters**
+### Parameter: `virtualNetworkNatGatewayConfiguration.publicIPAddressProperties.name`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
+The name of the Public IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkNatGatewayConfiguration.publicIPAddressProperties.zones`
+
+The SKU of the Public IP address.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+
+### Parameter: `virtualNetworkNatGatewayConfiguration.zones`
+
+The availability zones of the NAT gateway.
+
+- Required: No
+- Type: int
 
 ### Parameter: `virtualNetworkPeeringEnabled`
 

@@ -695,7 +695,7 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
       location: virtualNetworkLocation
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
-      principalType: assignment.principalType
+      principalType: assignment.?principalType
       subscriptionId: subscriptionId
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
@@ -730,7 +730,7 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
       location: virtualNetworkLocation
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
-      principalType: assignment.principalType
+      principalType: assignment.?principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
@@ -763,7 +763,7 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
       location: virtualNetworkLocation
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
-      principalType: assignment.principalType
+      principalType: assignment.?principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
@@ -1115,35 +1115,35 @@ output failedFeatures string = !empty(resourceProviders)
 
 @export()
 type natGatewayType = {
-  @description('The name of the NAT gateway.')
+  @description('Optional. The name of the NAT gateway.')
   name: string?
 
-  @description('The availability zones of the NAT gateway.')
+  @description('Optional. The availability zones of the NAT gateway.')
   zones: int?
 
-  @description('The Public IP address(es) properties to be attached to the NAT gateway.')
+  @description('Optional. The Public IP address(es) properties to be attached to the NAT gateway.')
   publicIPAddressProperties: natGatewayPublicIpAddressPropertiesType?
 
-  @description('The Public IP address(es) prefixes properties to be attached to the NAT gateway.')
+  @description('Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway.')
   publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType?
 }?
 
 type natGatewayPublicIpAddressPropertiesType = {
-  @description('The name of the Public IP address.')
+  @description('Optional. The name of the Public IP address.')
   name: string?
 
-  @description('The SKU of the Public IP address.')
+  @description('Optional. The SKU of the Public IP address.')
   zones: (1 | 2 | 3)[]?
 }[]?
 
 type publicIPAddressPrefixesPropertiesType = {
-  @description('The name of the Public IP address prefix.')
+  @description('Optional. The name of the Public IP address prefix.')
   name: string?
 
-  @description('The prefix length of the public IP address prefix..')
+  @description('Optional. The prefix length of the public IP address prefix..')
   prefixLength: int?
 
-  @description('The custom IP prefix of the public IP address prefix.')
+  @description('Optional. The custom IP prefix of the public IP address prefix.')
   customIPPrefix: string?
 }[]?
 
@@ -1162,7 +1162,7 @@ type roleAssignmentType = {
   roleAssignmentCondition: roleAssignmentConditionType?
 
   @description('Required. The principal type of the user, group, or service principal.')
-  principalType: 'User' | 'Group' | 'ServicePrincipal'
+  principalType: 'User' | 'Group' | 'ServicePrincipal'?
 }[]
 
 // "Constrain Roles" - Condition template
