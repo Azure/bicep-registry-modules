@@ -570,4 +570,4 @@ type replicaType = {
 
   @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication.''')
   role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
-}?
+}

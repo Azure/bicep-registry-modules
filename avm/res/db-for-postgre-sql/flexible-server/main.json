@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10721315482830723375"
+      "templateHash": "5117660498106393139"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -111,7 +111,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true
       }
