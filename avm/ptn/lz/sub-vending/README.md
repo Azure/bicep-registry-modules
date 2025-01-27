@@ -973,6 +973,7 @@ Supply an array of objects containing the details of the PIM role assignments to
 | [`definition`](#parameter-pimroleassignmentsdefinition) | string | The role definition ID. |
 | [`principalId`](#parameter-pimroleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
 | [`relativeScope`](#parameter-pimroleassignmentsrelativescope) | string | The relative scope of the role assignment. |
+| [`scheduleInfo`](#parameter-pimroleassignmentsscheduleinfo) | object | The schedule information for the role assignment. |
 
 **Optional parameters**
 
@@ -980,7 +981,6 @@ Supply an array of objects containing the details of the PIM role assignments to
 | :-- | :-- | :-- |
 | [`justification`](#parameter-pimroleassignmentsjustification) | string | The justification for the role eligibility. |
 | [`roleAssignmentCondition`](#parameter-pimroleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
-| [`scheduleInfo`](#parameter-pimroleassignmentsscheduleinfo) | object | The schedule information for the role assignment. |
 | [`ticketInfo`](#parameter-pimroleassignmentsticketinfo) | object | The ticket information for the role assignment. |
 
 ### Parameter: `pimRoleAssignments.definition`
@@ -1003,55 +1003,6 @@ The relative scope of the role assignment.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `pimRoleAssignments.justification`
-
-The justification for the role eligibility.
-
-- Required: No
-- Type: string
-
-### Parameter: `pimRoleAssignments.roleAssignmentCondition`
-
-The condition for the role assignment.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`conditionVersion`](#parameter-pimroleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
-| [`delegationCode`](#parameter-pimroleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
-| [`roleConditionType`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
-
-### Parameter: `pimRoleAssignments.roleAssignmentCondition.conditionVersion`
-
-The version of the condition template.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `pimRoleAssignments.roleAssignmentCondition.delegationCode`
-
-The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
-
-- Required: No
-- Type: string
-
-### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType`
-
-The type of template for the role assignment condition.
-
-- Required: No
-- Type: object
 
 ### Parameter: `pimRoleAssignments.scheduleInfo`
 
@@ -1117,6 +1068,55 @@ Start DateTime of the role eligibility assignment.
 
 - Required: No
 - Type: string
+
+### Parameter: `pimRoleAssignments.justification`
+
+The justification for the role eligibility.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition`
+
+The condition for the role assignment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conditionVersion`](#parameter-pimroleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
+| [`delegationCode`](#parameter-pimroleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
+| [`roleConditionType`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.conditionVersion`
+
+The version of the condition template.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.delegationCode`
+
+The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType`
+
+The type of template for the role assignment condition.
+
+- Required: No
+- Type: object
 
 ### Parameter: `pimRoleAssignments.ticketInfo`
 

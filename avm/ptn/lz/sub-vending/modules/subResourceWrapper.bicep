@@ -1341,7 +1341,7 @@ type pimRoleAssignmentType = {
   @description('Optional. The condition for the role assignment.')
   roleAssignmentCondition: roleAssignmentConditionType?
 
-  @description('Optional. The schedule information for the role assignment.')
+  @description('Required. The schedule information for the role assignment.')
   scheduleInfo: scheduleInfoType
 
   @description('Optional. The ticket information for the role assignment.')

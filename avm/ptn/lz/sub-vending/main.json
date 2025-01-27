@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "11914722177705964942"
+      "templateHash": "17203995652618709286"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -460,7 +460,7 @@
           "scheduleInfo": {
             "$ref": "#/definitions/_1.scheduleInfoType",
             "metadata": {
-              "description": "Optional. The schedule information for the role assignment."
+              "description": "Required. The schedule information for the role assignment."
             }
           },
           "ticketInfo": {
@@ -1377,7 +1377,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "8117687493522998633"
+              "templateHash": "633379098757737215"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1903,7 +1903,7 @@
                   "scheduleInfo": {
                     "$ref": "#/definitions/scheduleInfoType",
                     "metadata": {
-                      "description": "Optional. The schedule information for the role assignment."
+                      "description": "Required. The schedule information for the role assignment."
                     }
                   },
                   "ticketInfo": {
