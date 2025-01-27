@@ -85,9 +85,8 @@ Indicates whether the backup policy is enabled.
 
 The name of the backup policy.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `'backupPolicy'`
 
 ## Outputs
 

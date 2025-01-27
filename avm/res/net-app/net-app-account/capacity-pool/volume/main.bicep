@@ -124,9 +124,6 @@ param snapshotName string
 @description('Required. The resource ID of the volume.')
 param volumeResourceId string
 
-@description('Required.To create a new backup vault')
-param useExistingBackupVault bool
-
 @description('Required. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string
 
@@ -362,7 +359,7 @@ module snapshotPolicies '../../snapshot-policies/main.bicep' = if (snapEnabled) 
   }
 }
 
-resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' existing = if (backupEnabled && useExistingBackupVault) {
+resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' existing = if (backupEnabled) {
   parent: netAppAccount
   name: backupVaultName
 }
