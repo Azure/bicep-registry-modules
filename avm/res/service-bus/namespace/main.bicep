@@ -468,34 +468,34 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
     keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
     secretsToSet: union(
       [],
-      contains(secretsExportConfiguration!, 'rootPrimaryConnectionString')
+      contains(secretsExportConfiguration!, 'rootPrimaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.rootPrimaryConnectionString
+              name: secretsExportConfiguration!.rootPrimaryConnectionStringName
               value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryConnectionString
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'rootSecondaryConnectionString')
+      contains(secretsExportConfiguration!, 'rootSecondaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.rootSecondaryConnectionString
+              name: secretsExportConfiguration!.rootSecondaryConnectionStringName
               value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryConnectionString
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'rootPrimaryKey')
+      contains(secretsExportConfiguration!, 'rootPrimaryKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.rootPrimaryKey
+              name: secretsExportConfiguration!.rootPrimaryKeyName
               value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryKey
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'rootSecondaryKey')
+      contains(secretsExportConfiguration!, 'rootSecondaryKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.rootSecondaryKey
+              name: secretsExportConfiguration!.rootSecondaryKeyName
               value: listkeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryKey
             }
           ]
@@ -775,15 +775,15 @@ type secretsExportConfigurationType = {
   @description('Required. The resource ID of the key vault where to store the secrets of this module.')
   keyVaultResourceId: string
 
-  @description('Optional. The rootPrimaryConnectionString secret name to create.')
-  rootPrimaryConnectionString: string?
+  @description('Optional. The rootPrimaryConnectionStringName secret name to create.')
+  rootPrimaryConnectionStringName: string?
 
-  @description('Optional. The rootSecondaryConnectionString secret name to create.')
-  rootSecondaryConnectionString: string?
+  @description('Optional. The rootSecondaryConnectionStringName secret name to create.')
+  rootSecondaryConnectionStringName: string?
 
-  @description('Optional. The rootPrimaryKey secret name to create.')
-  rootPrimaryKey: string?
+  @description('Optional. The rootPrimaryKeyName secret name to create.')
+  rootPrimaryKeyName: string?
 
-  @description('Optional. The rootSecondaryKey secret name to create.')
-  rootSecondaryKey: string?
+  @description('Optional. The rootSecondaryKeyName secret name to create.')
+  rootSecondaryKeyName: string?
 }
