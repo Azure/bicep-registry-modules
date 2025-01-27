@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5376630188051666429"
+      "version": "0.33.13.18514",
+      "templateHash": "13288442843261887605"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups ",
@@ -109,8 +109,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16047016274117361351"
+              "version": "0.33.13.18514",
+              "templateHash": "10679020409212079790"
             }
           },
           "parameters": {
