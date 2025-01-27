@@ -453,6 +453,9 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
+@description('The connection string of the Event Hub namespace using the Root Managed Shared Access Key.')
+output connectionString string = listKeys(concat(resourceId('Microsoft.EventHub/namespaces', name), '/AuthorizationRules/RootManageSharedAccessKey'), '2024-01-01').primaryConnectionString
+
 // =============== //
 //   Definitions   //
 // =============== //
