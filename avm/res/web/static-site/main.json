@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11046224615249635639"
+      "templateHash": "13252221376462071887"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -643,7 +643,7 @@
         "repositoryToken": "[parameters('repositoryToken')]",
         "repositoryUrl": "[parameters('repositoryUrl')]",
         "templateProperties": "[parameters('templateProperties')]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]"
       }
     },
     "staticSite_lock": {

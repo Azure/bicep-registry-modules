@@ -156,6 +156,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
         name: 'ba1328f0-c7ab-47bf-afbf-0637b9c02bbe'
@@ -272,6 +273,9 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         }
       ]
     },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -374,6 +378,7 @@ param privateEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
     name: 'ba1328f0-c7ab-47bf-afbf-0637b9c02bbe'

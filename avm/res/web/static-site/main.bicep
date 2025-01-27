@@ -177,7 +177,9 @@ resource staticSite 'Microsoft.Web/staticSites@2024-04-01' = {
     repositoryToken: repositoryToken
     repositoryUrl: repositoryUrl
     templateProperties: templateProperties
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? any(publicNetworkAccess)
+      : (!empty(privateEndpoints) ? 'Disabled' : null)
   }
 }
 
