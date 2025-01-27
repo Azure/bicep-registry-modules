@@ -159,6 +159,8 @@ jobs:
       fail-fast: false
       matrix:
         testCases: ${{ fromJson(inputs.moduleTestFilePaths) }}
+        exclude:
+          - testCases.e2eignore: true
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
