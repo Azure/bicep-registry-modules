@@ -185,15 +185,6 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Enables replication.')
 param replicationEnabled bool = true
 
-@description('Required.The name of a volume on the server')
-param volumeName string
-
-@description('Required.The name of a server on the ONTAP Host')
-param serverName string
-
-@description('Required.The Path to a ONTAP Host')
-param externalHostName string
-
 @description('Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume.')
 param smbEncryption bool = false
 
@@ -232,15 +223,15 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   name: netAppAccountName
 
-  resource capacityPool 'capacityPools@2024-07-01' existing = {
+  resource capacityPool 'capacityPools@2024-03-01' existing = {
     name: capacityPoolName
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location
@@ -265,11 +256,6 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
                   remoteVolumeRegion: remoteVolumeRegion
                   remoteVolumeResourceId: remoteVolumeResourceId
                   replicationSchedule: replicationSchedule
-                  remotePath: {
-                    externalHostName: externalHostName
-                    serverName: serverName
-                    volumeName: volumeName
-                  }
                 }
               : {}
             backup: backupEnabled
@@ -359,12 +345,12 @@ module snapshotPolicies '../../snapshot-policies/main.bicep' = if (snapEnabled) 
   }
 }
 
-resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-07-01' existing = if (backupEnabled) {
+resource existingBackupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' existing = if (backupEnabled) {
   parent: netAppAccount
   name: backupVaultName
 }
 
-resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-07-01' = if (backupEnabled) {
+resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01' = if (backupEnabled) {
   name: backupName
   parent: existingBackupVault
   dependsOn: []

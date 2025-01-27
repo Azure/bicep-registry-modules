@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "12217186264816728490"
+      "templateHash": "1415276079524437230"
     }
   },
   "parameters": {
@@ -32,7 +32,7 @@
   "resources": [
     {
       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
       "location": "[parameters('backupVaultLocation')]",
       "properties": {}

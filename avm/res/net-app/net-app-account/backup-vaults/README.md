@@ -11,7 +11,7 @@
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults) |
 
 ## Parameters
 
