@@ -1,6 +1,5 @@
 metadata name = 'Eventgrid Namespace CA Certificates'
 metadata description = 'This module deploys an Eventgrid Namespace CA Certificate.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string

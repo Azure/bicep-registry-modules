@@ -1,7 +1,6 @@
 metadata name = 'Network Manager Routing Configurations'
 metadata description = '''This module deploys an Network Manager Routing Configuration.
 Routing configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment.')
 param networkManagerName string

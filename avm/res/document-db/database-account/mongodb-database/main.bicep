@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Account MongoDB Databases'
 metadata description = 'This module deploys a MongoDB Database within a CosmosDB Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
