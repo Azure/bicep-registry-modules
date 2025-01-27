@@ -237,10 +237,10 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
-      rootPrimaryConnectionString: 'primaryConnectionString-name'
-      rootPrimaryKey: 'primaryKey-name'
-      rootSecondaryConnectionString: 'secondaryConnectionString-name'
-      rootSecondaryKey: 'secondaryKey-name'
+      rootPrimaryConnectionStringName: 'primaryConnectionString-name'
+      rootPrimaryKeyName: 'primaryKey-name'
+      rootSecondaryConnectionStringName: 'secondaryConnectionString-name'
+      rootSecondaryKeyName: 'secondaryKey-name'
     }
   }
 }
@@ -269,10 +269,10 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
-        "rootPrimaryConnectionString": "primaryConnectionString-name",
-        "rootPrimaryKey": "primaryKey-name",
-        "rootSecondaryConnectionString": "secondaryConnectionString-name",
-        "rootSecondaryKey": "secondaryKey-name"
+        "rootPrimaryConnectionStringName": "primaryConnectionString-name",
+        "rootPrimaryKeyName": "primaryKey-name",
+        "rootSecondaryConnectionStringName": "secondaryConnectionString-name",
+        "rootSecondaryKeyName": "secondaryKey-name"
       }
     }
   }
@@ -295,10 +295,10 @@ param name = 'ehnkv001'
 param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
-  rootPrimaryConnectionString: 'primaryConnectionString-name'
-  rootPrimaryKey: 'primaryKey-name'
-  rootSecondaryConnectionString: 'secondaryConnectionString-name'
-  rootSecondaryKey: 'secondaryKey-name'
+  rootPrimaryConnectionStringName: 'primaryConnectionString-name'
+  rootPrimaryKeyName: 'primaryKey-name'
+  rootSecondaryConnectionStringName: 'secondaryConnectionString-name'
+  rootSecondaryKeyName: 'secondaryKey-name'
 }
 ```
 
@@ -2508,10 +2508,10 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`rootPrimaryConnectionString`](#parameter-secretsexportconfigurationrootprimaryconnectionstring) | string | The rootPrimaryConnectionString secret name to create. |
-| [`rootPrimaryKey`](#parameter-secretsexportconfigurationrootprimarykey) | string | The rootPrimaryKey secret name to create. |
-| [`rootSecondaryConnectionString`](#parameter-secretsexportconfigurationrootsecondaryconnectionstring) | string | The rootSecondaryConnectionString secret name to create. |
-| [`rootSecondaryKey`](#parameter-secretsexportconfigurationrootsecondarykey) | string | The rootSecondaryKey secret name to create. |
+| [`rootPrimaryConnectionStringName`](#parameter-secretsexportconfigurationrootprimaryconnectionstringname) | string | The rootPrimaryConnectionStringName secret name to create. |
+| [`rootPrimaryKeyName`](#parameter-secretsexportconfigurationrootprimarykeyname) | string | The rootPrimaryKeyName secret name to create. |
+| [`rootSecondaryConnectionStringName`](#parameter-secretsexportconfigurationrootsecondaryconnectionstringname) | string | The rootSecondaryConnectionStringName secret name to create. |
+| [`rootSecondaryKeyName`](#parameter-secretsexportconfigurationrootsecondarykeyname) | string | The rootSecondaryKeyName secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -2522,36 +2522,36 @@ The resource ID of the key vault where to store the secrets of this module.
 - MinValue: 0
 - MaxValue: 20
 
-### Parameter: `secretsExportConfiguration.rootPrimaryConnectionString`
+### Parameter: `secretsExportConfiguration.rootPrimaryConnectionStringName`
 
-The rootPrimaryConnectionString secret name to create.
-
-- Required: No
-- Type: string
-- MinValue: 0
-- MaxValue: 20
-
-### Parameter: `secretsExportConfiguration.rootPrimaryKey`
-
-The rootPrimaryKey secret name to create.
+The rootPrimaryConnectionStringName secret name to create.
 
 - Required: No
 - Type: string
 - MinValue: 0
 - MaxValue: 20
 
-### Parameter: `secretsExportConfiguration.rootSecondaryConnectionString`
+### Parameter: `secretsExportConfiguration.rootPrimaryKeyName`
 
-The rootSecondaryConnectionString secret name to create.
+The rootPrimaryKeyName secret name to create.
 
 - Required: No
 - Type: string
 - MinValue: 0
 - MaxValue: 20
 
-### Parameter: `secretsExportConfiguration.rootSecondaryKey`
+### Parameter: `secretsExportConfiguration.rootSecondaryConnectionStringName`
 
-The rootSecondaryKey secret name to create.
+The rootSecondaryConnectionStringName secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootSecondaryKeyName`
+
+The rootSecondaryKeyName secret name to create.
 
 - Required: No
 - Type: string
@@ -2610,6 +2610,7 @@ Switch to make the Event Hub Namespace zone redundant.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `eventHubResourceIds` | array | The Resources IDs of the EventHubs within this eventspace. |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the eventspace. |
 | `privateEndpoints` | array | The private endpoints of the eventspace. |

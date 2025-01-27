@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "5368264975575124872"
+      "templateHash": "15550955567406320039"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -105,32 +105,32 @@
             "description": "Required. The resource ID of the key vault where to store the secrets of this module."
           }
         },
-        "rootPrimaryConnectionString": {
+        "rootPrimaryConnectionStringName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The rootPrimaryConnectionString secret name to create."
+            "description": "Optional. The rootPrimaryConnectionStringName secret name to create."
           }
         },
-        "rootSecondaryConnectionString": {
+        "rootSecondaryConnectionStringName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The rootSecondaryConnectionString secret name to create."
+            "description": "Optional. The rootSecondaryConnectionStringName secret name to create."
           }
         },
-        "rootPrimaryKey": {
+        "rootPrimaryKeyName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The rootPrimaryKey secret name to create."
+            "description": "Optional. The rootPrimaryKeyName secret name to create."
           }
         },
-        "rootSecondaryKey": {
+        "rootSecondaryKeyName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The rootSecondaryKey secret name to create."
+            "description": "Optional. The rootSecondaryKeyName secret name to create."
           }
         }
       },
@@ -138,7 +138,36 @@
         "__bicep_export!": true
       }
     },
-    "_1.privateEndpointCustomDnsConfigType": {
+    "_1.secretSetOutputType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        },
+        "secretUriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI with version of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
+    },
+    "_2.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
         "fqdn": {
@@ -164,7 +193,7 @@
         }
       }
     },
-    "_1.privateEndpointIpConfigurationType": {
+    "_2.privateEndpointIpConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -206,7 +235,7 @@
         }
       }
     },
-    "_1.privateEndpointPrivateDnsZoneGroupType": {
+    "_2.privateEndpointPrivateDnsZoneGroupType": {
       "type": "object",
       "properties": {
         "name": {
@@ -516,7 +545,7 @@
           }
         },
         "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
@@ -540,7 +569,7 @@
         "customDnsConfigs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
           },
           "nullable": true,
           "metadata": {
@@ -550,7 +579,7 @@
         "ipConfigurations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
           },
           "nullable": true,
           "metadata": {
@@ -685,6 +714,22 @@
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "secretsOutputType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "$ref": "#/definitions/_1.secretSetOutputType",
+        "metadata": {
+          "description": "An exported secret's references."
+        }
+      },
+      "metadata": {
+        "description": "A map of the exported secrets",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
         }
       }
     }
@@ -2978,7 +3023,7 @@
             "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryConnectionString'), createArray(createObject('name', parameters('secretsExportConfiguration').rootPrimaryConnectionString, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryConnectionString'), createArray(createObject('name', parameters('secretsExportConfiguration').rootSecondaryConnectionString, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryKey'), createArray(createObject('name', parameters('secretsExportConfiguration').rootPrimaryKey, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryKey'), createArray(createObject('name', parameters('secretsExportConfiguration').rootSecondaryKey, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryKey)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryConnectionStringName'), createArray(createObject('name', parameters('secretsExportConfiguration').rootPrimaryConnectionStringName, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryConnectionStringName'), createArray(createObject('name', parameters('secretsExportConfiguration').rootSecondaryConnectionStringName, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootPrimaryKeyName'), createArray(createObject('name', parameters('secretsExportConfiguration').rootPrimaryKeyName, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'rootSecondaryKeyName'), createArray(createObject('name', parameters('secretsExportConfiguration').rootSecondaryKeyName, 'value', listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryKey)), createArray()))]"
           }
         },
         "template": {
@@ -3177,6 +3222,13 @@
           "networkInterfaceResourceIds": "[reference(format('eventHubNamespace_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
+    },
+    "exportedSecrets": {
+      "$ref": "#/definitions/secretsOutputType",
+      "metadata": {
+        "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
+      },
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     }
   }
 }
