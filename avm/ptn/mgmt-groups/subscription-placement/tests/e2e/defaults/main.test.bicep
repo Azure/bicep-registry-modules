@@ -39,7 +39,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     parSubscriptionPlacement: [
       {
-        managementGroupId: dependencies.outputs.managementGroupResourceId
+        managementGroupId: dependencies.outputs.managementGroupId
         subscriptionIds: [
           dependencies.outputs.subVendingSubscriptionId
         ]

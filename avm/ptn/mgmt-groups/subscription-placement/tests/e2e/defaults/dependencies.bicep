@@ -31,6 +31,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:0.2.4' = {
   }
 }
 
+@description('Output of the Management Group ID.')
+output managementGroupId string = managementGroup.id
+
 @description('Output of the Management Group Resource ID.')
 output managementGroupResourceId string = managementGroup.id
 
