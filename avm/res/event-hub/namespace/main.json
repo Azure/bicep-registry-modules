@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "13110257447488027452"
+      "templateHash": "7151416896607308553"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -138,36 +138,7 @@
         "__bicep_export!": true
       }
     },
-    "_1.secretSetOutputType": {
-      "type": "object",
-      "properties": {
-        "secretResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resourceId of the exported secret."
-          }
-        },
-        "secretUri": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI of the exported secret."
-          }
-        },
-        "secretUriWithVersion": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI with version of the exported secret."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
-        }
-      }
-    },
-    "_2.privateEndpointCustomDnsConfigType": {
+    "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
         "fqdn": {
@@ -193,7 +164,7 @@
         }
       }
     },
-    "_2.privateEndpointIpConfigurationType": {
+    "_1.privateEndpointIpConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -235,7 +206,7 @@
         }
       }
     },
-    "_2.privateEndpointPrivateDnsZoneGroupType": {
+    "_1.privateEndpointPrivateDnsZoneGroupType": {
       "type": "object",
       "properties": {
         "name": {
@@ -271,6 +242,35 @@
         }
       },
       "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.secretSetOutputType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        },
+        "secretUriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI with version of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
@@ -545,7 +545,7 @@
           }
         },
         "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
+          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
@@ -569,7 +569,7 @@
         "customDnsConfigs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
+            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
           },
           "nullable": true,
           "metadata": {
@@ -579,7 +579,7 @@
         "ipConfigurations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
+            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
           },
           "nullable": true,
           "metadata": {
@@ -729,7 +729,7 @@
       "metadata": {
         "description": "A map of the exported secrets",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -2988,7 +2988,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "14562732155748796301"
+              "templateHash": "14045530027687796477"
             }
           },
           "definitions": {
@@ -3017,7 +3017,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -3040,7 +3040,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
