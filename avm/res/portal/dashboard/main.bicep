@@ -1,6 +1,5 @@
 metadata name = 'Portal Dashboards'
 metadata description = 'This module deploys a Portal Dashboard.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the dashboard to create.')
 param name string

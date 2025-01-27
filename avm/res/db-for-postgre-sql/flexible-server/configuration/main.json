@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4946690157452229101"
+      "templateHash": "17791142604055425268"
     },
     "name": "DBforPostgreSQL Flexible Server Configurations",
-    "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
   },
   "parameters": {
     "name": {

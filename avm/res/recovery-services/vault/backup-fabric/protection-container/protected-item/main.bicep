@@ -1,6 +1,5 @@
 metadata name = 'Recovery Service Vaults Protection Container Protected Item'
 metadata description = 'This module deploys a Recovery Services Vault Protection Container Protected Item.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the resource.')
 param name string

@@ -2,7 +2,6 @@ targetScope = 'subscription'
 
 metadata name = 'Container Apps Landing Zone Accelerator'
 metadata description = 'This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework'
-metadata owner = 'Azure/avm-ptn-acalza-hostingenvironment-module-contributors-bicep'
 
 // ------------------
 //    PARAMETERS
@@ -100,6 +99,9 @@ param applicationGatewayCertificateKeyName string
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. The FQDN of the backend to use for the Application Gateway. Default is empty.')
+param applicationGatewayBackendFqdn string = ''
+
 @description('Optional. Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true.')
 param deployZoneRedundantResources bool = true
 
@@ -123,7 +125,9 @@ param enableDdosProtection bool = false
 // ------------------
 // VARIABLES
 // ------------------
-
+var agwBackendFqdn = (empty(applicationGatewayBackendFqdn))
+  ? (deploySampleApplication) ? sampleApplication.outputs.helloWorldAppFqdn : ''
+  : applicationGatewayBackendFqdn
 // ------------------
 // RESOURCES
 // ------------------
@@ -131,7 +135,7 @@ param enableDdosProtection bool = false
 module naming 'modules/naming/naming.module.bicep' = {
   name: take('deploy-naming-${deployment().name}', 64)
   params: {
-    uniqueId: uniqueString(workloadName)
+    uniqueId: uniqueString(subscription().id, location, environment, workloadName)
     spokeResourceGroupName: spokeResourceGroupName
     environment: environment
     workloadName: workloadName
@@ -236,9 +240,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
     enableTelemetry: enableTelemetry
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFqdn: applicationGatewayFqdn
-    applicationGatewayPrimaryBackendEndFqdn: (deploySampleApplication)
-      ? sampleApplication.outputs.helloWorldAppFqdn
-      : ''
+    applicationGatewayPrimaryBackendEndFqdn: agwBackendFqdn
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     base64Certificate: base64Certificate
     keyVaultId: supportingServices.outputs.keyVaultResourceId
@@ -273,6 +275,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
 // ------------------
 // OUTPUTS
 // ------------------
+@description('The name of the created resource group.')
+output resourceGroupName string = spokeResourceGroup.outputs.name
+
 @description('The  resource ID of the Spoke Virtual Network.')
 output spokeVNetResourceId string = spoke.outputs.spokeVNetId
 
@@ -310,6 +315,9 @@ output containerRegistryName string = supportingServices.outputs.containerRegist
 @description('The name of the container registry login server.')
 output containerRegistryLoginServer string = supportingServices.outputs.containerRegistryLoginServer
 
+@description('The name of the internal agent pool for the container registry.')
+output containerRegistryAgentPoolName string = supportingServices.outputs.containerRegistryAgentPoolName
+
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityResourceId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
 
@@ -318,6 +326,9 @@ output keyVaultResourceId string = supportingServices.outputs.keyVaultResourceId
 
 @description('The name of the Azure key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName
+
+@description('The keyvault URI endpoint.')
+output keyVaultUri string = '${supportingServices.outputs.keyVaultName}.${az.environment().suffixes.keyvaultDns}'
 
 // Application Gateway
 @description('The resource ID of the Azure Application Gateway.')
@@ -338,6 +349,9 @@ output applicationGatewayPublicIp string = (exposeContainerAppsWith == 'applicat
 // Container Apps Environment
 @description('The resource ID of the container apps environment.')
 output containerAppsEnvironmentResourceId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId
+
+@description('The available workload profile names of the container apps environment.')
+output containerAppsEnvironmentWorkloadProfileNames string[] = containerAppsEnvironment.outputs.workloadProfileNames
 
 @description('The name of the container apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName

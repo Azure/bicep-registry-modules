@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3792208754349407242"
+      "templateHash": "4553934965960286090"
     },
     "name": "Data Factories",
-    "description": "This module deploys a Data Factory.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Factory."
   },
   "definitions": {
     "managedPrivateEndpointType": {
@@ -1095,11 +1094,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8469223320923719233"
+              "templateHash": "11848856352373050663"
             },
             "name": "Data Factory Managed Virtual Networks",
-            "description": "This module deploys a Data Factory Managed Virtual Network.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Managed Virtual Network."
           },
           "parameters": {
             "dataFactoryName": {
@@ -1169,11 +1167,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18056121862353335725"
+                      "templateHash": "5082368270790092206"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
-                    "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
                   },
                   "parameters": {
                     "dataFactoryName": {
@@ -1321,11 +1318,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13126987498401118493"
+              "templateHash": "8093952642750500375"
             },
             "name": "Data Factory Integration RunTimes",
-            "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
           },
           "parameters": {
             "dataFactoryName": {
@@ -1459,11 +1455,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4235667434763749307"
+              "templateHash": "2233835364121960452"
             },
             "name": "Data Factory Linked Service",
-            "description": "This module deploys a Data Factory Linked Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Linked Service."
           },
           "parameters": {
             "dataFactoryName": {

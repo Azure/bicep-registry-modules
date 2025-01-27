@@ -35,164 +35,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-registry/registry:<version>`.
 
-- [Using cache rules](#example-1-using-cache-rules)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using `scopeMaps` in parameter set](#example-4-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using cache rules_
-
-This instance deploys the module with a credential set and a cache rule.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
-  params: {
-    // Required parameters
-    name: '<name>'
-    // Non-required parameters
-    acrAdminUserEnabled: false
-    acrSku: 'Standard'
-    cacheRules: [
-      {
-        credentialSetResourceId: '<credentialSetResourceId>'
-        name: 'customRule'
-        sourceRepository: 'docker.io/library/hello-world'
-        targetRepository: 'cached-docker-hub/hello-world'
-      }
-    ]
-    credentialSets: [
-      {
-        authCredentials: [
-          {
-            name: 'Credential1'
-            passwordSecretIdentifier: '<passwordSecretIdentifier>'
-            usernameSecretIdentifier: '<usernameSecretIdentifier>'
-          }
-        ]
-        loginServer: 'docker.io'
-        managedIdentities: {
-          systemAssigned: true
-        }
-        name: 'default'
-      }
-    ]
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
-    "acrAdminUserEnabled": {
-      "value": false
-    },
-    "acrSku": {
-      "value": "Standard"
-    },
-    "cacheRules": {
-      "value": [
-        {
-          "credentialSetResourceId": "<credentialSetResourceId>",
-          "name": "customRule",
-          "sourceRepository": "docker.io/library/hello-world",
-          "targetRepository": "cached-docker-hub/hello-world"
-        }
-      ]
-    },
-    "credentialSets": {
-      "value": [
-        {
-          "authCredentials": [
-            {
-              "name": "Credential1",
-              "passwordSecretIdentifier": "<passwordSecretIdentifier>",
-              "usernameSecretIdentifier": "<usernameSecretIdentifier>"
-            }
-          ],
-          "loginServer": "docker.io",
-          "managedIdentities": {
-            "systemAssigned": true
-          },
-          "name": "default"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/container-registry/registry:<version>'
-
-// Required parameters
-param name = '<name>'
-// Non-required parameters
-param acrAdminUserEnabled = false
-param acrSku = 'Standard'
-param cacheRules = [
-  {
-    credentialSetResourceId: '<credentialSetResourceId>'
-    name: 'customRule'
-    sourceRepository: 'docker.io/library/hello-world'
-    targetRepository: 'cached-docker-hub/hello-world'
-  }
-]
-param credentialSets = [
-  {
-    authCredentials: [
-      {
-        name: 'Credential1'
-        passwordSecretIdentifier: '<passwordSecretIdentifier>'
-        usernameSecretIdentifier: '<usernameSecretIdentifier>'
-      }
-    ]
-    loginServer: 'docker.io'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    name: 'default'
-  }
-]
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 2: _Using only defaults_
+### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -261,7 +110,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using encryption with Customer-Managed-Key_
+### Example 2: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -369,7 +218,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -770,7 +619,7 @@ param webhooks = [
 </details>
 <p>
 
-### Example 5: _Using `scopeMaps` in parameter set_
+### Example 4: _Using `scopeMaps` in parameter set_
 
 This instance deploys the module with the scopeMaps feature.
 
@@ -868,7 +717,7 @@ param scopeMaps = [
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1558,7 +1407,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -1811,9 +1660,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1834,7 +1683,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2236,8 +2085,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
