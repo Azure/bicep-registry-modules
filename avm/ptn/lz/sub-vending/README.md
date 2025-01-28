@@ -458,7 +458,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
     subscriptionWorkload: 'Production'
     virtualNetworkAddressSpace: [
-      '10.110.0.0/16'
+      '10.120.0.0/16'
     ]
     virtualNetworkEnabled: true
     virtualNetworkLocation: '<virtualNetworkLocation>'
@@ -481,7 +481,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
     virtualNetworkSubnets: [
       {
-        addressPrefix: '10.110.1.0/24'
+        addressPrefix: '10.120.1.0/24'
         associateWithNatGateway: true
         name: 'Subnet1'
       }
@@ -550,7 +550,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "virtualNetworkAddressSpace": {
       "value": [
-        "10.110.0.0/16"
+        "10.120.0.0/16"
       ]
     },
     "virtualNetworkEnabled": {
@@ -589,7 +589,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "virtualNetworkSubnets": {
       "value": [
         {
-          "addressPrefix": "10.110.1.0/24",
+          "addressPrefix": "10.120.1.0/24",
           "associateWithNatGateway": true,
           "name": "Subnet1"
         }
@@ -634,7 +634,7 @@ param subscriptionTags = {
 }
 param subscriptionWorkload = 'Production'
 param virtualNetworkAddressSpace = [
-  '10.110.0.0/16'
+  '10.120.0.0/16'
 ]
 param virtualNetworkEnabled = true
 param virtualNetworkLocation = '<virtualNetworkLocation>'
@@ -657,7 +657,7 @@ param virtualNetworkResourceGroupLockEnabled = false
 param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 param virtualNetworkSubnets = [
   {
-    addressPrefix: '10.110.1.0/24'
+    addressPrefix: '10.120.1.0/24'
     associateWithNatGateway: true
     name: 'Subnet1'
   }

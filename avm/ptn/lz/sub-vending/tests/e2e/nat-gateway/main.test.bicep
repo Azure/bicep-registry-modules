@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
     virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
     virtualNetworkAddressSpace: [
-      '10.110.0.0/16'
+      '10.120.0.0/16'
     ]
     virtualNetworkNatGatewayConfiguration: {
       name: 'natgw-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkSubnets: [
       {
         name: 'Subnet1'
-        addressPrefix: '10.110.1.0/24'
+        addressPrefix: '10.120.1.0/24'
         associateWithNatGateway: true
       }
     ]
