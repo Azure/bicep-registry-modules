@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Web App, using only defaults'
+metadata name = 'Linux Web App, using only defaults'
 metadata description = 'This instance deploys the module as a Linux Web App with the minimum set of required parameters.'
 
 // ========== //
@@ -51,12 +51,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       kind: 'app,linux'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
