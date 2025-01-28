@@ -812,8 +812,13 @@ Describe 'Module tests' -Tag 'Module' {
                         [hashtable] $templateFileContent
                     )
 
-                    if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
-                        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/managed-identities).'
+                    $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentity' }
+                    if ($matchingTypeKey -and $templateFileContent.definitions.$matchingTypeKey.properties.keys -contains 'systemAssigned') {
+                        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
+
+                        $templateFileContent.outputs.systemAssignedMIPrincipalId.type | Should -Be 'string' -Because 'it should match the AVM spec for managed identities. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
+                        $templateFileContent.outputs.systemAssignedMIPrincipalId.nullable | Should -Be $true -Because 'the API actually returns null, not an empty string as we should pass it through as such. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
+                        $templateFileContent.outputs.systemAssignedMIPrincipalId.value | Should -Not -Match "coalesce\(.+, ''\)" -Because 'as the [systemAssignedMIPrincipalId] output is nullable, it should not have an empty string as a default value. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
                     } else {
                         Set-ItResult -Skipped -Because 'the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities.'
                     }
