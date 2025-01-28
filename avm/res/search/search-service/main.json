@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "1605274864236835812"
+      "version": "0.33.13.18514",
+      "templateHash": "679203951427786895"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service.",
@@ -1794,8 +1794,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15700504938596502383"
+              "version": "0.33.13.18514",
+              "templateHash": "4048986051896880859"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource.",
@@ -1915,8 +1915,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13365107869204248001"
+              "version": "0.33.13.18514",
+              "templateHash": "5455406267618725608"
             }
           },
           "definitions": {
@@ -2044,10 +2044,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('searchService', '2024-03-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('searchService', '2024-03-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

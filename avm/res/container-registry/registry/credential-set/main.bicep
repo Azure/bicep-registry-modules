@@ -47,7 +47,7 @@ output resourceGroupName string = resourceGroup().name
 output resourceId string = credentialSet.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = credentialSet.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = credentialSet.?identity.?principalId
 
 // =============== //
 //   Definitions   //

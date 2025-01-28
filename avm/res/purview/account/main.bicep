@@ -485,7 +485,7 @@ output managedStorageAccountId string = account.properties.managedResources.stor
 output managedEventHubId string = account.properties.managedResources.eventHubNamespace
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = account.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = account.?identity.?principalId
 
 @description('The private endpoints of the Purview Account.')
 output accountPrivateEndpoints array = [
