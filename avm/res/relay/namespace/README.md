@@ -58,10 +58,7 @@ This instance deploys the module with the minimum set of required parameters.
 module namespace 'br/public:avm/res/relay/namespace:<version>' = {
   name: 'namespaceDeployment'
   params: {
-    // Required parameters
     name: 'rnmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -78,13 +75,8 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "rnmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -100,10 +92,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/relay/namespace:<version>'
 
-// Required parameters
 param name = 'rnmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -648,7 +637,6 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
         userMetadata: '[{\'key\':\'endpoint\',\'value\':\'db-server.constoso.com:1433\'}]'
       }
     ]
-    location: '<location>'
     networkRuleSets: {
       defaultAction: 'Deny'
       ipRules: [
@@ -758,9 +746,6 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "networkRuleSets": {
       "value": {
         "defaultAction": "Deny",
@@ -868,7 +853,6 @@ param hybridConnections = [
     userMetadata: '[{\'key\':\'endpoint\',\'value\':\'db-server.constoso.com:1433\'}]'
   }
 ]
-param location = '<location>'
 param networkRuleSets = {
   defaultAction: 'Deny'
   ipRules: [
