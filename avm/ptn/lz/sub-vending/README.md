@@ -873,7 +873,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         relativeScope: ''
         scheduleInfo: {
           expiration: {
-            duration: 'P1D'
+            duration: 'P10D'
             type: 'AfterDuration'
           }
           startDateTime: '<startDateTime>'
@@ -917,7 +917,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "relativeScope": "",
           "scheduleInfo": {
             "expiration": {
-              "duration": "P1D",
+              "duration": "P10D",
               "type": "AfterDuration"
             },
             "startDateTime": "<startDateTime>"
@@ -979,7 +979,7 @@ param pimRoleAssignments = [
     relativeScope: ''
     scheduleInfo: {
       expiration: {
-        duration: 'P1D'
+        duration: 'P10D'
         type: 'AfterDuration'
       }
       startDateTime: '<startDateTime>'

@@ -24,18 +24,25 @@ param condition string = ''
 ])
 param conditionVersion string = '2.0'
 
+@description('Optional. Justification for the PIM role assignment.')
 param justification string = ''
 
+@description('Optional. The duration of the PIM role assignment.')
 param duration string = ''
 
+@description('Optional. The end time of the PIM role assignment.')
 param endDateTime string = ''
 
+@description('Optional. The type of expiration of the PIM role assignment.')
 param expirationType string = ''
 
+@description('Optional. The start time of the PIM role assignment.')
 param startDateTime string = ''
 
+@description('Optional. The ticket number of the PIM role assignment.')
 param ticketNumber string = ''
 
+@description('Optional. The ticket system of the PIM role assignment.')
 param ticketSystem string = ''
 
 var builtInRoleNames = {

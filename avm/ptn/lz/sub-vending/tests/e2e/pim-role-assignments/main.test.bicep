@@ -45,7 +45,7 @@ module testDeployment '../../../main.bicep' = {
         relativeScope: ''
         scheduleInfo: {
           expiration: {
-            duration: 'P1D'
+            duration: 'P10D'
             type: 'AfterDuration'
           }
           startDateTime: pimAssignmentStartDateTime

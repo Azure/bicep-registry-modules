@@ -506,7 +506,7 @@ module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0'
   ]
   name: deploymentNames.createBastionNsg
   params: {
-    name: 'nsg-bastion'
+    name: 'nsg-${virtualNetworkLocation}-bastion'
     location: virtualNetworkLocation
     securityRules: [
       // Inbound Rules
@@ -1052,7 +1052,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virt
   ]
   name: deploymentNames.createNatGateway
   params: {
-    name: 'nat-gw-${virtualNetworkName}'
+    name: virtualNetworkNatGatewayConfiguration.?name ?? 'nat-gw-${virtualNetworkName}'
     zone: virtualNetworkNatGatewayConfiguration.?zones ?? 0
     location: virtualNetworkLocation
     enableTelemetry: enableTelemetry

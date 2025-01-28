@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "16296438382463694042"
+      "templateHash": "14747974139582024239"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1376,7 +1376,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "9142526835735520261"
+              "templateHash": "11577618221268655871"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -5393,7 +5393,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "nsg-bastion"
+                    "value": "[format('nsg-{0}-bastion', parameters('virtualNetworkLocation'))]"
                   },
                   "location": {
                     "value": "[parameters('virtualNetworkLocation')]"
@@ -20054,7 +20054,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('nat-gw-{0}', parameters('virtualNetworkName'))]"
+                    "value": "[coalesce(tryGet(parameters('virtualNetworkNatGatewayConfiguration'), 'name'), format('nat-gw-{0}', parameters('virtualNetworkName')))]"
                   },
                   "zone": {
                     "value": "[coalesce(tryGet(parameters('virtualNetworkNatGatewayConfiguration'), 'zones'), 0)]"
