@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9099880544607906701"
+      "version": "0.33.13.18514",
+      "templateHash": "2059398827164710297"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1409,8 +1409,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8139381088003807442"
+              "version": "0.33.13.18514",
+              "templateHash": "17390012982173989290"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1542,8 +1542,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "17981519331875226629"
+                      "version": "0.33.13.18514",
+                      "templateHash": "10824152907759263146"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1796,8 +1796,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5835214316063453536"
+              "version": "0.33.13.18514",
+              "templateHash": "479522941808780846"
             },
             "name": "DocumentDB Database Account SQL Role.",
             "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
@@ -1883,8 +1883,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "2988995240332079717"
+                      "version": "0.33.13.18514",
+                      "templateHash": "373046367267368472"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
                     "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
@@ -2004,8 +2004,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "14595063605642768334"
+                      "version": "0.33.13.18514",
+                      "templateHash": "10896678842325697317"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
@@ -2118,8 +2118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "939785849909819169"
+              "version": "0.33.13.18514",
+              "templateHash": "3787212418719062763"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -2221,8 +2221,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "5155169114754629889"
+                      "version": "0.33.13.18514",
+                      "templateHash": "17282995027762195277"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -2381,8 +2381,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13299789944475628568"
+              "version": "0.33.13.18514",
+              "templateHash": "17284856046508966427"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -2487,8 +2487,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "11166187042354172574"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5212607397116166892"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
@@ -2660,8 +2660,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "424696651537600433"
+              "version": "0.33.13.18514",
+              "templateHash": "11963037550768387658"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account.",
@@ -3547,8 +3547,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13365107869204248001"
+              "version": "0.33.13.18514",
+              "templateHash": "5455406267618725608"
             }
           },
           "definitions": {
@@ -3683,10 +3683,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('databaseAccount', '2023-04-15', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('databaseAccount', '2023-04-15', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
