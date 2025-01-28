@@ -3,9 +3,6 @@ metadata description = 'This instance deploys a subscription with a hub-spoke ne
 
 targetScope = 'managementGroup'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 // This parameter needs to be updated with the billing account and the enrollment account of your enviornment.
 @description('Optional. The subscription billing scope.')
 param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAccounts/7690848/enrollmentAccounts/350580'
@@ -28,16 +25,19 @@ param vnetHubResourceGroup string = 'rsg-blzv-perm-hubs-001'
 @description('Optional. The name of the existing hub virtual network.')
 param hubVirtualNetworkName string = 'vnet-uksouth-hub-blzv'
 
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
+var enforcedLocation = 'uksouth'
+
 // Provide a reference to an existing hub virtual network.
 module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   scope: resourceGroup(vnetHubSubId, vnetHubResourceGroup)
   params: {
     hubVirtualNetworkName: hubVirtualNetworkName
   }
 }
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${subscriptionGuid}'
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
@@ -51,16 +51,16 @@ module testDeployment '../../../main.bicep' = {
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     virtualNetworkEnabled: true
-    virtualNetworkLocation: resourceLocation
-    virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
-    deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
+    virtualNetworkLocation: enforcedLocation
+    virtualNetworkResourceGroupName: 'rsg-${enforcedLocation}-net-hs-${namePrefix}-${serviceShort}'
+    deploymentScriptResourceGroupName: 'rsg-${enforcedLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptManagedIdentityName: 'id-${enforcedLocation}-${namePrefix}-${serviceShort}'
     deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
-    virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
-    deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    virtualNetworkName: 'vnet-${enforcedLocation}-hs-${namePrefix}-${serviceShort}'
+    deploymentScriptNetworkSecurityGroupName: 'nsg-${enforcedLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptVirtualNetworkName: 'vnet-${enforcedLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
-    deploymentScriptLocation: resourceLocation
+    deploymentScriptLocation: enforcedLocation
     virtualNetworkAddressSpace: [
       '10.110.0.0/16'
     ]
@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = {
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         //Network contributor role
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
-        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+        relativeScope: '/resourceGroups/rsg-${enforcedLocation}-net-hs-${namePrefix}-${serviceShort}'
       }
     ]
     resourceProviders: {
@@ -94,4 +94,4 @@ output createdSubId string = testDeployment.outputs.subscriptionId
 output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
-output resourceLocation string = resourceLocation
+output enforcedLocation string = enforcedLocation
