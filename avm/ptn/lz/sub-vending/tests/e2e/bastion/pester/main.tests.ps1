@@ -48,7 +48,6 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Hub Spoke - Resource Group Tests' {
         BeforeAll {
             $rsg = Get-AzResourceGroup -Name "rsg-$location-net-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
-            $bastionHost = Get-AzBastion -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
         }
 
         It 'Should have a Resource Group with the correct name' {
@@ -62,6 +61,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
+            $bastionHost = Get-AzBastion -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
         }
 
         It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-hs-$namePrefix-$serviceShort)" {

@@ -45,7 +45,7 @@ module testDeployment '../../../main.bicep' = {
       name: 'natgw-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
       publicIPAddressProperties: [
         {
-          name: 'pip-${resourceLocation}-natgw-${namePrefix}-${serviceShort}'
+          name: 'pip-natgw-${resourceLocation}-${namePrefix}-${serviceShort}'
           zones: [
             1
             2
