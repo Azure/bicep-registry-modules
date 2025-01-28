@@ -1,6 +1,5 @@
 metadata name = 'Synapse Workspaces Administrators'
 metadata description = 'This module deploys Synapse Workspaces Administrators.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string

@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1116000770546444664"
+      "templateHash": "4291338019800376753"
     },
     "name": "DBforMySQL Flexible Server Advanced Threat Protection",
-    "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
   },
   "parameters": {
     "flexibleServerName": {

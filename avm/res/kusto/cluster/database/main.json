@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "18422341525898722212"
+      "templateHash": "2230838564092408507"
     },
     "name": "Kusto Cluster Databases",
-    "description": "This module deploys a Kusto Cluster Database.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Kusto Cluster Database."
   },
   "definitions": {
     "databaseReadWriteType": {

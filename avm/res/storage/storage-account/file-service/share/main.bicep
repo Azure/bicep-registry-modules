@@ -1,6 +1,5 @@
 metadata name = 'Storage Account File Shares'
 metadata description = 'This module deploys a Storage Account File Share.'
-metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
@@ -39,7 +38,7 @@ param enabledProtocols string = 'SMB'
 @description('Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares.')
 param rootSquash string = 'NoRootSquash'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 

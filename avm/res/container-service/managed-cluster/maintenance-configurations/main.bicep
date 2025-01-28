@@ -1,6 +1,5 @@
 metadata name = 'Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations'
 metadata description = 'This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Maintenance window for the maintenance configuration.')
 param maintenanceWindow object
