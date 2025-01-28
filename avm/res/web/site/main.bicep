@@ -61,6 +61,9 @@ param vnetImagePullEnabled bool = false
 @description('Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.')
 param vnetRouteAllEnabled bool = false
 
+@description('Optional. Property to configure various DNS related settings for a site')
+param vnetDnsConfiguration vnetDnsConfigurationType?
+
 @description('Optional. Stop SCM (KUDU) site when the app is stopped.')
 param scmSiteAlsoStopped bool = false
 
@@ -294,6 +297,7 @@ resource app 'Microsoft.Web/sites@2024-04-01' = {
     vnetContentShareEnabled: vnetContentShareEnabled
     vnetImagePullEnabled: vnetImagePullEnabled
     vnetRouteAllEnabled: vnetRouteAllEnabled
+    dnsConfiguration: vnetDnsConfiguration
     scmSiteAlsoStopped: scmSiteAlsoStopped
     endToEndEncryptionEnabled: e2eEncryptionEnabled
   }
@@ -540,6 +544,29 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' =
     }
   }
 ]
+
+@export()
+type vnetDnsConfigurationType = {
+  @description('Optional. Alternate DNS server to be used by apps. This property replicates the WEBSITE_DNS_ALT_SERVER app setting.')
+  dnsAltServer: string?
+
+  @description('Optional. Custom time for DNS to be cached in seconds. Allowed range: 0-60. Default is 30 seconds. 0 means caching disabled.')
+  dnsMaxCacheTimeout: int?
+
+  @description('Optional. Total number of retries for dns lookup. Allowed range: 1-5. Default is 3.')
+  @maxValue(5)
+  @minValue(1)
+  dnsRetryAttemptCount: int?
+
+  @description('Optional. Timeout for a single dns lookup in seconds. Allowed range: 1-30. Default is 3.')
+  @maxValue(30)
+  @minValue(1)
+  dnsRetryAttemptTimeout: int?
+
+  @description('Optional. List of custom DNS servers to be used by an app for lookups. Maximum 5 dns servers can be set.')
+  @maxLength(5)
+  dnsServers: string[]?
+}
 
 @description('The name of the site.')
 output name string = app.name
