@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "4783843171571544598"
+      "version": "0.32.4.45862",
+      "templateHash": "17441221183640310554"
     },
     "name": "Proximity Placement Groups",
-    "description": "This module deploys a Proximity Placement Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Proximity Placement Group."
   },
   "definitions": {
     "lockType": {

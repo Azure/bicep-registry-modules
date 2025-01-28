@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4423004143872202690"
+      "templateHash": "3403338957196025610"
     },
     "name": "Synapse Workspaces Firewall Rules",
-    "description": "This module deploys Synapse Workspaces Firewall Rules.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys Synapse Workspaces Firewall Rules."
   },
   "parameters": {
     "workspaceName": {

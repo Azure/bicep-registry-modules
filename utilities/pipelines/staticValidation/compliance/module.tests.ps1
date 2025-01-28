@@ -561,15 +561,6 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $templateFileContent.metadata.description | Should -Not -BeNullOrEmpty
             }
-
-            It '[<moduleFolderName>] template file should have a module owner specified.' -TestCases $moduleFolderTestCases {
-
-                param(
-                    [hashtable] $templateFileContent
-                )
-
-                $templateFileContent.metadata.owner | Should -Not -BeNullOrEmpty
-            }
         }
 
         Context 'Parameters' {
@@ -1253,7 +1244,13 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $incorrectTypes = [System.Collections.ArrayList]@()
                 foreach ($typeName in $templateFileContent.definitions.Keys) {
-                    if ($typeName -cnotmatch '^[a-z].*Type$') {
+                    if ($typeName -cnotmatch '^(.+\.)?[a-z].*Type$') {
+                        # Passes
+                        # - testType
+                        # - _1.testType
+                        # NOT passes
+                        # - test
+                        # - _1.TestType
                         $incorrectTypes += $typeName
                     }
                 }

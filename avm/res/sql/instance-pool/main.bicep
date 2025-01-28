@@ -1,6 +1,5 @@
 metadata name = 'SQL Server Instance Pool'
 metadata description = 'This module deploys an Azure SQL Server Instance Pool.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the instance pool.')
 param name string

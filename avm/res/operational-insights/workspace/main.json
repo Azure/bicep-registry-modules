@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "307365615759786736"
+      "version": "0.32.4.45862",
+      "templateHash": "9056755055437839591"
     },
     "name": "Log Analytics Workspaces",
-    "description": "This module deploys a Log Analytics Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace."
   },
   "definitions": {
     "diagnosticSettingType": {
@@ -1319,12 +1318,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "16834373315692053343"
+              "version": "0.32.4.45862",
+              "templateHash": "12148501849006788324"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
-            "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -1465,12 +1463,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "8028236025018730300"
+              "version": "0.32.4.45862",
+              "templateHash": "17762270878383445421"
             },
             "name": "Log Analytics Workspace Linked Services",
-            "description": "This module deploys a Log Analytics Workspace Linked Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Linked Service."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -1585,12 +1582,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15958804149553799749"
+              "version": "0.32.4.45862",
+              "templateHash": "11986582912298301528"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
-            "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -1719,12 +1715,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6393407077695800922"
+              "version": "0.32.4.45862",
+              "templateHash": "9640551980154944642"
             },
             "name": "Log Analytics Workspace Saved Searches",
-            "description": "This module deploys a Log Analytics Workspace Saved Search.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Saved Search."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -1883,12 +1878,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "7056289958392950917"
+              "version": "0.32.4.45862",
+              "templateHash": "14977926524140126314"
             },
             "name": "Log Analytics Workspace Data Exports",
-            "description": "This module deploys a Log Analytics Workspace Data Export.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Data Export."
           },
           "definitions": {
             "destinationType": {
@@ -2077,12 +2071,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "2381118050987494074"
+              "version": "0.32.4.45862",
+              "templateHash": "12082641043455308513"
             },
             "name": "Log Analytics Workspace Datasources",
-            "description": "This module deploys a Log Analytics Workspace Data Source.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Data Source."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -2305,12 +2298,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13608511677985704812"
+              "version": "0.32.4.45862",
+              "templateHash": "8047367069034259642"
             },
             "name": "Log Analytics Workspace Tables",
-            "description": "This module deploys a Log Analytics Workspace Table.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Table."
           },
           "definitions": {
             "restoredLogsType": {

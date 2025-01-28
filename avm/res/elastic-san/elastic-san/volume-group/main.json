@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13480651999751189159"
+      "version": "0.32.4.45862",
+      "templateHash": "5472510668055424391"
     },
     "name": "Elastic SAN Volume Groups",
-    "description": "This module deploys an Elastic SAN Volume Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Elastic SAN Volume Group."
   },
   "definitions": {
     "volumeType": {
@@ -796,12 +795,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15562431450838737362"
+              "version": "0.32.4.45862",
+              "templateHash": "7324265222363694864"
             },
             "name": "Elastic SAN Volumes",
-            "description": "This module deploys an Elastic SAN Volume.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Elastic SAN Volume."
           },
           "definitions": {
             "volumeSnapshotType": {
@@ -962,12 +960,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "782229996533719178"
+                      "version": "0.32.4.45862",
+                      "templateHash": "11683450086168084373"
                     },
                     "name": "Elastic SAN Volume Snapshots",
-                    "description": "This module deploys an Elastic SAN Volume Snapshot.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Elastic SAN Volume Snapshot."
                   },
                   "parameters": {
                     "elasticSanName": {

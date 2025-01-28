@@ -1,6 +1,5 @@
 metadata name = 'Event Grid Namespaces'
 metadata description = 'This module deploys an Event Grid Namespace.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(3)
 @maxLength(50)

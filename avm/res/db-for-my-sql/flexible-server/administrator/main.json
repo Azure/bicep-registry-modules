@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "4183350849272759957"
+      "templateHash": "14550363826535160600"
     },
     "name": "DBforMySQL Flexible Server Administrators",
-    "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforMySQL Flexible Server Administrator."
   },
   "parameters": {
     "flexibleServerName": {

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "13221664498320911695"
+      "version": "0.32.4.45862",
+      "templateHash": "14428404705624081617"
     },
     "name": "Azure Active Directory Domain Services",
-    "description": "This module deploys an Azure Active Directory Domain Services (AADDS) instance.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Active Directory Domain Services (AADDS) instance."
   },
   "definitions": {
     "lockType": {

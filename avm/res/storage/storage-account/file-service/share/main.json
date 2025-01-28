@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "10329158340014558519"
+      "templateHash": "5204319087439022536"
     },
     "name": "Storage Account File Shares",
-    "description": "This module deploys a Storage Account File Share.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account File Share."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -84,7 +83,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }

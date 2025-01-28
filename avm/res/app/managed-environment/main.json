@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "3375034274694883345"
+      "version": "0.32.4.45862",
+      "templateHash": "15540000443534992861"
     },
     "name": "App ManagedEnvironments",
-    "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
   },
   "definitions": {
     "managedIdentitiesType": {

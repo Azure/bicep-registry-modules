@@ -1,6 +1,5 @@
 metadata name = 'Search Services'
 metadata description = 'This module deploys a Search Service.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //

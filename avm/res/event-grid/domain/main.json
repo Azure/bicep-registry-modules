@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "3926306941120715902"
+      "version": "0.32.4.45862",
+      "templateHash": "17637415605593774734"
     },
     "name": "Event Grid Domains",
-    "description": "This module deploys an Event Grid Domain.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Grid Domain."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -743,12 +742,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6233175610420198950"
+              "version": "0.32.4.45862",
+              "templateHash": "9083571930533091533"
             },
             "name": "Event Grid Domain Topics",
-            "description": "This module deploys an Event Grid Domain Topic.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Grid Domain Topic."
           },
           "parameters": {
             "name": {

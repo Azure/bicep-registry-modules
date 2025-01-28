@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "9080948373192033748"
+      "version": "0.32.4.45862",
+      "templateHash": "15649735189663073116"
     },
     "name": "Virtual Hub Routing Intent",
-    "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
   },
   "parameters": {
     "azureFirewallResourceId": {
