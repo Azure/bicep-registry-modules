@@ -110,8 +110,8 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $vnetHs.Location | Should -Be $location
         }
 
-        It 'Should have a Virtual Network with the correct address space (10.110.0.0/16)' {
-            $vnetHs.AddressSpace.AddressPrefixes | Should -Be '10.110.0.0/16'
+        It 'Should have a Virtual Network with the correct address space (10.120.0.0/16)' {
+            $vnetHs.AddressSpace.AddressPrefixes | Should -Be '10.120.0.0/16'
         }
 
         It 'Should have a Virtual Network with DDoS protection disabled' {
@@ -153,9 +153,9 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $natGw.Name | Should -Be "natgw-$location-hs-$namePrefix-$serviceShort"
         }
 
-        It "Should have a Virtual Network with a subnet with the correct name with addressPrefix '10.110.1.0/24' and a NAT gateway attached" {
+        It "Should have a Virtual Network with a subnet with the correct name with addressPrefix '10.120.1.0/24' and a NAT gateway attached" {
             $vnetHs.Subnets[0].Name | Should -Be 'Subnet1'
-            $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.110.1.0/24'
+            $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.120.1.0/24'
             $vnetHs.Subnets[0].NatGateway | Should -Not -BeNullOrEmpty
         }
     }
