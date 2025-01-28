@@ -37,12 +37,16 @@ module testDeployment '../../../main.bicep' = {
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     resourceProviders: {}
+    virtualNetworkEnabled: true
+    virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+    virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+    virtualNetworkLocation: resourceLocation
     roleAssignmentEnabled: true
     pimRoleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-        relativeScope: ''
+        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
         scheduleInfo: {
           expiration: {
             duration: 'P10D'

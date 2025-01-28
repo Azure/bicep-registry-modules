@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "14747974139582024239"
+      "templateHash": "14493386539853299116"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1376,7 +1376,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "11577618221268655871"
+              "templateHash": "5935103449460865244"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -9262,7 +9262,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "7676856185390055934"
+                      "templateHash": "16182632120503832839"
                     },
                     "name": "Pim Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope."
@@ -9313,31 +9313,52 @@
                     },
                     "justification": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. Justification for the PIM role assignment."
+                      }
                     },
                     "duration": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The duration of the PIM role assignment."
+                      }
                     },
                     "endDateTime": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The end time of the PIM role assignment."
+                      }
                     },
                     "expirationType": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The type of expiration of the PIM role assignment."
+                      }
                     },
                     "startDateTime": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The start time of the PIM role assignment."
+                      }
                     },
                     "ticketNumber": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The ticket number of the PIM role assignment."
+                      }
                     },
                     "ticketSystem": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The ticket system of the PIM role assignment."
+                      }
                     }
                   },
                   "variables": {
@@ -9466,7 +9487,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "7676856185390055934"
+                      "templateHash": "16182632120503832839"
                     },
                     "name": "Pim Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope."
@@ -9517,31 +9538,52 @@
                     },
                     "justification": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. Justification for the PIM role assignment."
+                      }
                     },
                     "duration": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The duration of the PIM role assignment."
+                      }
                     },
                     "endDateTime": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The end time of the PIM role assignment."
+                      }
                     },
                     "expirationType": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The type of expiration of the PIM role assignment."
+                      }
                     },
                     "startDateTime": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The start time of the PIM role assignment."
+                      }
                     },
                     "ticketNumber": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The ticket number of the PIM role assignment."
+                      }
                     },
                     "ticketSystem": {
                       "type": "string",
-                      "defaultValue": ""
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The ticket system of the PIM role assignment."
+                      }
                     }
                   },
                   "variables": {

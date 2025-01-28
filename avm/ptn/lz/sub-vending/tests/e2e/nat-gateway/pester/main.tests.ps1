@@ -82,7 +82,6 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Hub Spoke - Resource Group Tests' {
         BeforeAll {
             $rsg = Get-AzResourceGroup -Name "rsg-$location-net-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
-            $natGw = Get-AzNatGateway -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
         }
 
         It 'Should have a Resource Group with the correct name' {
@@ -96,6 +95,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
+            $natGw = Get-AzNatGateway -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
         }
 
         It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-hs-$namePrefix-$serviceShort)" {
@@ -119,36 +119,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $vnetHs.ddosProtectionPlan | Should -BeNullOrEmpty
         }
 
-        It 'Should have a Virtual Network with a single Virtual Network Peer' {
-            $vnetHs.VirtualNetworkPeerings.Count | Should -Be 1
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv'" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that is in the Connected state and FullyInSync" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-            $vnetHs.VirtualNetworkPeerings[0].PeeringState | Should -Be 'Connected'
-            $vnetHs.VirtualNetworkPeerings[0].PeeringSyncLevel | Should -Be 'FullyInSync'
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowForwardedTraffic set to $true" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-            $vnetHs.VirtualNetworkPeerings[0].AllowForwardedTraffic | Should -Be $true
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowVirtualNetworkAccess set to $true" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-            $vnetHs.VirtualNetworkPeerings[0].AllowVirtualNetworkAccess | Should -Be $true
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowGatewayTransit set to $false" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-            $vnetHs.VirtualNetworkPeerings[0].AllowGatewayTransit | Should -Be $false
-        }
-
-        It "Should have a NAT Gateway deployed with the correct name" {
+        It 'Should have a NAT Gateway deployed with the correct name' {
             $natGw | Should -Not -BeNullOrEmpty
             $natGw.Name | Should -Be "natgw-$location-hs-$namePrefix-$serviceShort"
         }

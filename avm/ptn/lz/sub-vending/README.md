@@ -616,7 +616,6 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   name: 'subVendingDeployment'
   params: {
-    hubNetworkResourceId: '<hubNetworkResourceId>'
     resourceProviders: {}
     roleAssignmentEnabled: true
     roleAssignments: [
@@ -657,7 +656,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         }
       ]
     }
-    virtualNetworkPeeringEnabled: true
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
     virtualNetworkSubnets: [
@@ -667,7 +665,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         name: 'Subnet1'
       }
     ]
-    virtualNetworkUseRemoteGateways: false
   }
 }
 ```
@@ -684,9 +681,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "hubNetworkResourceId": {
-      "value": "<hubNetworkResourceId>"
-    },
     "resourceProviders": {
       "value": {}
     },
@@ -761,9 +755,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         ]
       }
     },
-    "virtualNetworkPeeringEnabled": {
-      "value": true
-    },
     "virtualNetworkResourceGroupLockEnabled": {
       "value": false
     },
@@ -778,9 +769,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "name": "Subnet1"
         }
       ]
-    },
-    "virtualNetworkUseRemoteGateways": {
-      "value": false
     }
   }
 }
@@ -796,7 +784,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
-param hubNetworkResourceId = '<hubNetworkResourceId>'
 param resourceProviders = {}
 param roleAssignmentEnabled = true
 param roleAssignments = [
@@ -837,7 +824,6 @@ param virtualNetworkNatGatewayConfiguration = {
     }
   ]
 }
-param virtualNetworkPeeringEnabled = true
 param virtualNetworkResourceGroupLockEnabled = false
 param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 param virtualNetworkSubnets = [
@@ -847,7 +833,6 @@ param virtualNetworkSubnets = [
     name: 'Subnet1'
   }
 ]
-param virtualNetworkUseRemoteGateways = false
 ```
 
 </details>
@@ -870,7 +855,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-        relativeScope: ''
+        relativeScope: '<relativeScope>'
         scheduleInfo: {
           expiration: {
             duration: 'P10D'
@@ -893,6 +878,10 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       serviceShort: '<serviceShort>'
     }
     subscriptionWorkload: 'Production'
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
   }
 }
 ```
@@ -914,7 +903,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
-          "relativeScope": "",
+          "relativeScope": "<relativeScope>",
           "scheduleInfo": {
             "expiration": {
               "duration": "P10D",
@@ -957,6 +946,18 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "subscriptionWorkload": {
       "value": "Production"
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
     }
   }
 }
@@ -976,7 +977,7 @@ param pimRoleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
     principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-    relativeScope: ''
+    relativeScope: '<relativeScope>'
     scheduleInfo: {
       expiration: {
         duration: 'P10D'
@@ -999,6 +1000,10 @@ param subscriptionTags = {
   serviceShort: '<serviceShort>'
 }
 param subscriptionWorkload = 'Production'
+param virtualNetworkEnabled = true
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 ```
 
 </details>

@@ -19,23 +19,6 @@ param serviceShort string = 'ssanat'
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 
-@description('Optional. The subscription id of the existing hub virtual network.')
-param vnetHubSubId string = '9948cae8-8c7c-4f5f-81c1-c53317cab23d'
-
-@description('Optional. The resource group of the existing hub virtual network.')
-param vnetHubResourceGroup string = 'rsg-blzv-perm-hubs-001'
-
-@description('Optional. The name of the existing hub virtual network.')
-param hubVirtualNetworkName string = 'vnet-uksouth-hub-blzv'
-
-// Provide a reference to an existing hub virtual network.
-module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  scope: resourceGroup(vnetHubSubId, vnetHubResourceGroup)
-  params: {
-    hubVirtualNetworkName: hubVirtualNetworkName
-  }
-}
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
   params: {
@@ -79,9 +62,6 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     virtualNetworkResourceGroupLockEnabled: false
-    virtualNetworkPeeringEnabled: true
-    virtualNetworkUseRemoteGateways: false
-    hubNetworkResourceId: nestedDependencies.outputs.hubNetworkResourceId
     roleAssignmentEnabled: true
     roleAssignments: [
       {
@@ -96,7 +76,6 @@ module testDeployment '../../../main.bicep' = {
 }
 
 output createdSubId string = testDeployment.outputs.subscriptionId
-output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
 output resourceLocation string = resourceLocation
