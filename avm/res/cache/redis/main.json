@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "17904749553568757682"
+      "version": "0.33.13.18514",
+      "templateHash": "6280028405930372235"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -1931,8 +1931,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "395538410437204745"
+              "version": "0.33.13.18514",
+              "templateHash": "11294861621866290910"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2057,8 +2057,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9992767491398107530"
+              "version": "0.33.13.18514",
+              "templateHash": "14045530027687796477"
             }
           },
           "definitions": {
@@ -2227,7 +2227,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('redis', '2024-11-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('redis', '2024-11-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5690262690202652451"
+      "version": "0.33.13.18514",
+      "templateHash": "11753654952624297354"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account."
