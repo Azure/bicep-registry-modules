@@ -71,7 +71,9 @@ module testDeployment '../../../main.bicep' = {
         relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
       }
     ]
-    resourceProviders: {}
+    resourceProviders: {
+      'Microsoft.Network': []
+    }
   }
 }
 
