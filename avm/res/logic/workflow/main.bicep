@@ -243,7 +243,7 @@ output resourceGroupName string = resourceGroup().name
 output resourceId string = logicApp.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = logicApp.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = logicApp.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = logicApp.location

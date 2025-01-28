@@ -523,7 +523,7 @@ output resourceGroupName string = resourceGroup().name
 output resourceId string = registry.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = registry.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = registry.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = registry.location
