@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "6280028405930372235"
+      "templateHash": "2410782192648783488"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -2238,6 +2238,9 @@
     },
     "privateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
       "metadata": {
         "description": "The private endpoints of the Redis Cache."
       },
