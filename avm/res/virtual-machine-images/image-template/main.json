@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "6178255053020724047"
+      "version": "0.33.13.18514",
+      "templateHash": "8136605932117820877"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB)."
@@ -332,7 +332,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -353,7 +353,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -428,7 +428,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -574,6 +574,46 @@
       "metadata": {
         "description": "Optional. The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time."
       }
+    },
+    "autoRunState": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates whether or not to automatically run the image template build on template creation or update."
+      }
+    },
+    "errorHandlingOnCustomizerError": {
+      "type": "string",
+      "defaultValue": "cleanup",
+      "allowedValues": [
+        "cleanup",
+        "abort"
+      ],
+      "metadata": {
+        "description": "Optional. If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved."
+      }
+    },
+    "errorHandlingOnValidationError": {
+      "type": "string",
+      "defaultValue": "cleanup",
+      "allowedValues": [
+        "cleanup",
+        "abort"
+      ],
+      "metadata": {
+        "description": "Optional. If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior."
+      }
+    },
+    "managedResourceTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags that will be applied to the resource group and/or resources created by the service."
+      }
     }
   },
   "variables": {
@@ -619,7 +659,7 @@
     },
     "imageTemplate": {
       "type": "Microsoft.VirtualMachineImages/imageTemplates",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-02-01",
       "name": "[format('{0}-{1}', parameters('name'), parameters('baseTime'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -643,7 +683,15 @@
         "customize": "[parameters('customizationSteps')]",
         "stagingResourceGroup": "[parameters('stagingResourceGroupResourceId')]",
         "validate": "[parameters('validationProcess')]",
-        "optimize": "[if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null())]"
+        "optimize": "[if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null())]",
+        "autoRun": {
+          "state": "[parameters('autoRunState')]"
+        },
+        "errorHandling": {
+          "onCustomizerError": "[parameters('errorHandlingOnCustomizerError')]",
+          "onValidationError": "[parameters('errorHandlingOnValidationError')]"
+        },
+        "managedResourceTags": "[parameters('managedResourceTags')]"
       }
     },
     "imageTemplate_lock": {
@@ -724,7 +772,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('imageTemplate', '2023-07-01', 'full').location]"
+      "value": "[reference('imageTemplate', '2024-02-01', 'full').location]"
     }
   }
 }
