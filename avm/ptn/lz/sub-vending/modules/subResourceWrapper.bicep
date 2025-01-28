@@ -501,6 +501,9 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
 
 module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(virtualNetworkBastionConfiguration) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+  dependsOn: [
+    createResourceGroupForLzNetworking
+  ]
   name: deploymentNames.createBastionNsg
   params: {
     name: 'nsg-bastion'
@@ -651,6 +654,9 @@ module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0'
 
 module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(virtualNetworkSubnets)) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+  dependsOn: [
+    createResourceGroupForLzNetworking
+  ]
   name: deploymentNames.createLzNsg
   params: {
     name: 'nsg-${virtualNetworkName}'

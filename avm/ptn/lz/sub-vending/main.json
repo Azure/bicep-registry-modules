@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "12075211658803640219"
+      "templateHash": "16019027792234990786"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1377,7 +1377,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "4413018879300163447"
+              "templateHash": "14731430026010155539"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -6149,7 +6149,10 @@
                     }
                   }
                 }
-              }
+              },
+              "dependsOn": [
+                "createResourceGroupForLzNetworking"
+              ]
             },
             "createLzNsg": {
               "condition": "[not(empty(parameters('virtualNetworkSubnets')))]",
@@ -6777,7 +6780,10 @@
                     }
                   }
                 }
-              }
+              },
+              "dependsOn": [
+                "createResourceGroupForLzNetworking"
+              ]
             },
             "createLzVirtualWanConnection": {
               "condition": "[and(and(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('virtualHubResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(variables('virtualWanHubResourceGroupName')))), not(empty(variables('virtualWanHubSubscriptionId'))))]",
