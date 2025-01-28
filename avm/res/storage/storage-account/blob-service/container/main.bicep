@@ -43,7 +43,7 @@ param metadata object = {}
 @description('Optional. Specifies whether data in the container may be accessed publicly and the level of access.')
 param publicAccess string = 'None'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
