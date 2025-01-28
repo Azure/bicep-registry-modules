@@ -60,8 +60,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults.](#example-1-using-only-defaults)
 - [Hub and spoke topology.](#example-2-hub-and-spoke-topology)
-- [Using RBAC conditions.](#example-3-using-rbac-conditions)
-- [Vwan topology.](#example-4-vwan-topology)
+- [Hub and spoke topology with NAT gateway.](#example-3-hub-and-spoke-topology-with-nat-gateway)
+- [Using RBAC conditions.](#example-4-using-rbac-conditions)
+- [Vwan topology.](#example-5-vwan-topology)
 
 ### Example 1: _Using only defaults._
 
@@ -422,7 +423,252 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 3: _Using RBAC conditions._
+### Example 3: _Hub and spoke topology with NAT gateway._
+
+This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    hubNetworkResourceId: '<hubNetworkResourceId>'
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    roleAssignments: [
+      {
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        relativeScope: '<relativeScope>'
+      }
+    ]
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkAddressSpace: [
+      '10.110.0.0/16'
+    ]
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkNatGatewayConfiguration: {
+      name: '<name>'
+      publicIPAddressProperties: [
+        {
+          name: '<name>'
+          zones: [
+            1
+            2
+            3
+          ]
+        }
+      ]
+    }
+    virtualNetworkPeeringEnabled: true
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkSubnets: [
+      {
+        addressPrefix: '10.110.1.0/24'
+        associateWithNatGateway: true
+        name: 'Subnet1'
+      }
+    ]
+    virtualNetworkUseRemoteGateways: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubNetworkResourceId": {
+      "value": "<hubNetworkResourceId>"
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "relativeScope": "<relativeScope>"
+        }
+      ]
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "10.110.0.0/16"
+      ]
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkNatGatewayConfiguration": {
+      "value": {
+        "name": "<name>",
+        "publicIPAddressProperties": [
+          {
+            "name": "<name>",
+            "zones": [
+              1,
+              2,
+              3
+            ]
+          }
+        ]
+      }
+    },
+    "virtualNetworkPeeringEnabled": {
+      "value": true
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    },
+    "virtualNetworkSubnets": {
+      "value": [
+        {
+          "addressPrefix": "10.110.1.0/24",
+          "associateWithNatGateway": true,
+          "name": "Subnet1"
+        }
+      ]
+    },
+    "virtualNetworkUseRemoteGateways": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param hubNetworkResourceId = '<hubNetworkResourceId>'
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param roleAssignments = [
+  {
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    relativeScope: '<relativeScope>'
+  }
+]
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkAddressSpace = [
+  '10.110.0.0/16'
+]
+param virtualNetworkEnabled = true
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkNatGatewayConfiguration = {
+  name: '<name>'
+  publicIPAddressProperties: [
+    {
+      name: '<name>'
+      zones: [
+        1
+        2
+        3
+      ]
+    }
+  ]
+}
+param virtualNetworkPeeringEnabled = true
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkSubnets = [
+  {
+    addressPrefix: '10.110.1.0/24'
+    associateWithNatGateway: true
+    name: 'Subnet1'
+  }
+]
+param virtualNetworkUseRemoteGateways = false
+```
+
+</details>
+<p>
+
+### Example 4: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
@@ -588,7 +834,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 4: _Vwan topology._
+### Example 5: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
