@@ -1,5 +1,5 @@
-metadata name = 'Hub and spoke topology with NAT gateway.'
-metadata description = 'This instance deploys a subscription with a hub-spoke network topology with NAT gateway.'
+metadata name = 'Deploy subscription with Bastion.'
+metadata description = 'This instance deploys a subscription with a bastion host.'
 
 targetScope = 'managementGroup'
 
@@ -14,28 +14,11 @@ param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAcco
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssanat'
+param serviceShort string = 'ssabs'
 
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 
-@description('Optional. The subscription id of the existing hub virtual network.')
-param vnetHubSubId string = '9948cae8-8c7c-4f5f-81c1-c53317cab23d'
-
-@description('Optional. The resource group of the existing hub virtual network.')
-param vnetHubResourceGroup string = 'rsg-blzv-perm-hubs-001'
-
-@description('Optional. The name of the existing hub virtual network.')
-param hubVirtualNetworkName string = 'vnet-uksouth-hub-blzv'
-
-// Provide a reference to an existing hub virtual network.
-module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  scope: resourceGroup(vnetHubSubId, vnetHubResourceGroup)
-  params: {
-    hubVirtualNetworkName: hubVirtualNetworkName
-  }
-}
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
   params: {
@@ -55,48 +38,26 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
     virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
     virtualNetworkAddressSpace: [
-      '10.120.0.0/16'
+      '10.130.0.0/16'
     ]
-    virtualNetworkDeployNatGateway: true
-    virtualNetworkNatGatewayConfiguration: {
-      name: 'natgw-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
-      publicIPAddressProperties: [
-        {
-          name: 'pip-${resourceLocation}-natgw-${namePrefix}-${serviceShort}'
-          zones: [
-            1
-            2
-            3
-          ]
-        }
-      ]
+    virtualNetworkBastionConfiguration: {
+      bastionSubnetIpAddressRange: '10.130.0.0/26'
+      bastionSku: 'Standard'
+      name: 'bastion-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
     }
     virtualNetworkSubnets: [
       {
         name: 'Subnet1'
-        addressPrefix: '10.120.1.0/24'
+        addressPrefix: '10.130.1.0/24'
         associateWithNatGateway: true
       }
     ]
     virtualNetworkResourceGroupLockEnabled: false
-    virtualNetworkPeeringEnabled: true
-    virtualNetworkUseRemoteGateways: false
-    hubNetworkResourceId: nestedDependencies.outputs.hubNetworkResourceId
-    roleAssignmentEnabled: true
-    roleAssignments: [
-      {
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-        //Network contributor role
-        definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
-        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
-      }
-    ]
     resourceProviders: {}
   }
 }
 
 output createdSubId string = testDeployment.outputs.subscriptionId
-output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
 output resourceLocation string = resourceLocation

@@ -71,7 +71,7 @@ param virtualNetworkDeployNatGateway bool = false
 param virtualNetworkNatGatewayConfiguration natGatewayType
 
 @sys.description('The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
-param virtualNetworkBastionConfiguration bastionType
+param virtualNetworkBastionConfiguration bastionType?
 
 @sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection.')
 param hubNetworkResourceId string = ''
@@ -805,7 +805,7 @@ module createLzPimRoleAssignmentsSub 'pimRoleAssignmentsSub.bicep' = [
       justification: assignment.?justification ?? null
       duration: assignment.scheduleInfo.?duration ?? null
       endDateTime: assignment.scheduleInfo.?endDateTime ?? null
-      startDateTime: assignment.scheduleInfo.?startDateTime ?? null
+      startDateTime: assignment.scheduleInfo.startDateTime
       ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
       ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
       expirationType: assignment.scheduleInfo.?expirationType
@@ -845,7 +845,7 @@ module createLzPimRoleAssignmentsRsgsSelf 'pimRoleAssignmentsRg.bicep' = [
       justification: assignment.?justification ?? null
       duration: assignment.scheduleInfo.?duration ?? null
       endDateTime: assignment.scheduleInfo.?endDateTime ?? null
-      startDateTime: assignment.scheduleInfo.?startDateTime ?? null
+      startDateTime: assignment.scheduleInfo.startDateTime
       ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
       ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
       expirationType: assignment.scheduleInfo.?expirationType
@@ -882,7 +882,7 @@ module createLzPimRoleAssignmentsRsgsNotSelf 'pimRoleAssignmentsRg.bicep' = [
       justification: assignment.?justification ?? null
       duration: assignment.scheduleInfo.?duration ?? null
       endDateTime: assignment.scheduleInfo.?endDateTime ?? null
-      startDateTime: assignment.scheduleInfo.?startDateTime ?? null
+      startDateTime: assignment.scheduleInfo.startDateTime
       ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
       ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
       expirationType: assignment.scheduleInfo.?expirationType
@@ -1323,7 +1323,7 @@ type bastionType = {
   name: string?
 
   @description('Optional. The SKU of the bastion host.')
-  bastionSku: 'Basic' | 'Standard' | 'Premium'?
+  bastionSku: ('Basic' | 'Standard' | 'Premium')?
 
   @description('Required. The Ip address range of the bastion subnet.')
   bastionSubnetIpAddressRange: string
@@ -1359,8 +1359,8 @@ type scheduleInfoType = {
   @description('Optional. The expiry information for the role eligibility.')
   expiration: scheduleInfoExpirationType?
 
-  @description('Optional. Start DateTime of the role eligibility assignment.')
-  startDateTime: string?
+  @description('Required. Start DateTime of the role eligibility assignment.')
+  startDateTime: string
 }
 
 @description('Optional. PIM role assignment schedule expiration information.')

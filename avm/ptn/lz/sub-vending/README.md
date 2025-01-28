@@ -58,13 +58,193 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/lz/sub-vending:<version>`.
 
-- [Using only defaults.](#example-1-using-only-defaults)
-- [Hub and spoke topology.](#example-2-hub-and-spoke-topology)
-- [Hub and spoke topology with NAT gateway.](#example-3-hub-and-spoke-topology-with-nat-gateway)
-- [Using RBAC conditions.](#example-4-using-rbac-conditions)
-- [Vwan topology.](#example-5-vwan-topology)
+- [Deploy subscription with Bastion.](#example-1-deploy-subscription-with-bastion)
+- [Using only defaults.](#example-2-using-only-defaults)
+- [Hub and spoke topology.](#example-3-hub-and-spoke-topology)
+- [Hub and spoke topology with NAT gateway.](#example-4-hub-and-spoke-topology-with-nat-gateway)
+- [Using PIM Role assignments.](#example-5-using-pim-role-assignments)
+- [Using RBAC conditions.](#example-6-using-rbac-conditions)
+- [Vwan topology.](#example-7-vwan-topology)
 
-### Example 1: _Using only defaults._
+### Example 1: _Deploy subscription with Bastion._
+
+This instance deploys a subscription with a bastion host.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    resourceProviders: {}
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkAddressSpace: [
+      '10.130.0.0/16'
+    ]
+    virtualNetworkBastionConfiguration: {
+      bastionSku: 'Standard'
+      bastionSubnetIpAddressRange: '10.130.0.0/26'
+      name: '<name>'
+    }
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkSubnets: [
+      {
+        addressPrefix: '10.130.1.0/24'
+        associateWithNatGateway: true
+        name: 'Subnet1'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceProviders": {
+      "value": {}
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "10.130.0.0/16"
+      ]
+    },
+    "virtualNetworkBastionConfiguration": {
+      "value": {
+        "bastionSku": "Standard",
+        "bastionSubnetIpAddressRange": "10.130.0.0/26",
+        "name": "<name>"
+      }
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    },
+    "virtualNetworkSubnets": {
+      "value": [
+        {
+          "addressPrefix": "10.130.1.0/24",
+          "associateWithNatGateway": true,
+          "name": "Subnet1"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param resourceProviders = {}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkAddressSpace = [
+  '10.130.0.0/16'
+]
+param virtualNetworkBastionConfiguration = {
+  bastionSku: 'Standard'
+  bastionSubnetIpAddressRange: '10.130.0.0/26'
+  name: '<name>'
+}
+param virtualNetworkEnabled = true
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkSubnets = [
+  {
+    addressPrefix: '10.130.1.0/24'
+    associateWithNatGateway: true
+    name: 'Subnet1'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults._
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -166,7 +346,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 2: _Hub and spoke topology._
+### Example 3: _Hub and spoke topology._
 
 This instance deploys a subscription with a hub-spoke network topology.
 
@@ -423,7 +603,7 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 3: _Hub and spoke topology with NAT gateway._
+### Example 4: _Hub and spoke topology with NAT gateway._
 
 This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
 
@@ -460,6 +640,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     virtualNetworkAddressSpace: [
       '10.120.0.0/16'
     ]
+    virtualNetworkDeployNatGateway: true
     virtualNetworkEnabled: true
     virtualNetworkLocation: '<virtualNetworkLocation>'
     virtualNetworkName: '<virtualNetworkName>'
@@ -553,6 +734,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         "10.120.0.0/16"
       ]
     },
+    "virtualNetworkDeployNatGateway": {
+      "value": true
+    },
     "virtualNetworkEnabled": {
       "value": true
     },
@@ -636,6 +820,7 @@ param subscriptionWorkload = 'Production'
 param virtualNetworkAddressSpace = [
   '10.120.0.0/16'
 ]
+param virtualNetworkDeployNatGateway = true
 param virtualNetworkEnabled = true
 param virtualNetworkLocation = '<virtualNetworkLocation>'
 param virtualNetworkName = '<virtualNetworkName>'
@@ -668,7 +853,158 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 4: _Using RBAC conditions._
+### Example 5: _Using PIM Role assignments._
+
+This instance deploys the module with PIM Role assignments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    pimRoleAssignments: [
+      {
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        relativeScope: ''
+        scheduleInfo: {
+          expiration: {
+            duration: 'P1D'
+            type: 'AfterDuration'
+          }
+          startDateTime: '<startDateTime>'
+        }
+      }
+    ]
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "pimRoleAssignments": {
+      "value": [
+        {
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "relativeScope": "",
+          "scheduleInfo": {
+            "expiration": {
+              "duration": "P1D",
+              "type": "AfterDuration"
+            },
+            "startDateTime": "<startDateTime>"
+          }
+        }
+      ]
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param pimRoleAssignments = [
+  {
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    relativeScope: ''
+    scheduleInfo: {
+      expiration: {
+        duration: 'P1D'
+        type: 'AfterDuration'
+      }
+      startDateTime: '<startDateTime>'
+    }
+  }
+]
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+```
+
+</details>
+<p>
+
+### Example 6: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
@@ -834,7 +1170,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 5: _Vwan topology._
+### Example 7: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -1257,12 +1593,24 @@ The schedule information for the role assignment.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`startDateTime`](#parameter-pimroleassignmentsscheduleinfostartdatetime) | string | Start DateTime of the role eligibility assignment. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`expiration`](#parameter-pimroleassignmentsscheduleinfoexpiration) | object | The expiry information for the role eligibility. |
-| [`startDateTime`](#parameter-pimroleassignmentsscheduleinfostartdatetime) | string | Start DateTime of the role eligibility assignment. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.startDateTime`
+
+Start DateTime of the role eligibility assignment.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `pimRoleAssignments.scheduleInfo.expiration`
 
@@ -1307,13 +1655,6 @@ Type of the role eligibility assignment expiration.
     'NoExpiration'
   ]
   ```
-
-### Parameter: `pimRoleAssignments.scheduleInfo.startDateTime`
-
-Start DateTime of the role eligibility assignment.
-
-- Required: No
-- Type: string
 
 ### Parameter: `pimRoleAssignments.justification`
 
