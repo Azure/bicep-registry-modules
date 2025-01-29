@@ -54,10 +54,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}-${serviceShort}'
       virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         tagA: 'valueA'
@@ -104,8 +100,5 @@ module testDeployment '../../../main.bicep' = [
         }
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
