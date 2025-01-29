@@ -50,11 +50,7 @@ param ipTags ipTagType[]?
   2
   3
 ])
-param zones int[] = [
-  1
-  2
-  3
-]
+param zones int[] = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
