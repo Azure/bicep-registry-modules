@@ -44,10 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
   name: 'dashboardDeployment'
   params: {
-    // Required parameters
     name: 'pdmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -64,13 +61,8 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "pdmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -86,10 +78,7 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/portal/dashboard:<version>'
 
-// Required parameters
 param name = 'pdmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
