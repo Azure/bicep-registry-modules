@@ -8,6 +8,7 @@ This module deploys a Virtual WAN.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -43,10 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
   name: 'virtualWanDeployment'
   params: {
-    // Required parameters
     name: 'nvwmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -63,13 +61,8 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "nvwmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -85,10 +78,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/network/virtual-wan:<version>'
 
-// Required parameters
 param name = 'nvwmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -287,7 +277,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     allowBranchToBranchTraffic: true
     allowVnetToVnetTraffic: true
     disableVpnEncryption: true
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -324,9 +313,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     "disableVpnEncryption": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -357,7 +343,6 @@ param name = 'nvwwaf001'
 param allowBranchToBranchTraffic = true
 param allowVnetToVnetTraffic = true
 param disableVpnEncryption = true
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -608,6 +593,14 @@ The type of the Virtual WAN.
 | `name` | string | The name of the virtual WAN. |
 | `resourceGroupName` | string | The resource group the virtual WAN was deployed into. |
 | `resourceId` | string | The resource ID of the virtual WAN. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

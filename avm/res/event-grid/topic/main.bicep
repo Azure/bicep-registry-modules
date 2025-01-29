@@ -286,7 +286,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = topic.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = topic.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = topic.?identity.?principalId
 
 @description('The private endpoints of the event grid topic.')
 output privateEndpoints array = [
