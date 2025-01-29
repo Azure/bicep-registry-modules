@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "9588791558128799411"
+      "templateHash": "16839288679507454258"
     },
     "name": "Container Registries Credential Sets",
     "description": "This module deploys an ACR Credential Set."
@@ -75,7 +75,7 @@
       "$ref": "#/definitions/managedIdentityOnlySysAssignedType",
       "nullable": true,
       "metadata": {
-        "description": "Required. The managed identity definition for this resource."
+        "description": "Optional. The managed identity definition for this resource."
       }
     },
     "authCredentials": {

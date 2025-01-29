@@ -23,7 +23,6 @@ This module deploys an ACR Credential Set.
 | :-- | :-- | :-- |
 | [`authCredentials`](#parameter-authcredentials) | array | List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential. |
 | [`loginServer`](#parameter-loginserver) | string | The credentials are stored for this upstream or login server. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`name`](#parameter-name) | string | The name of the credential set. |
 
 **Conditional parameters**
@@ -31,6 +30,12 @@ This module deploys an ACR Credential Set.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`registryName`](#parameter-registryname) | string | The name of the parent registry. Required if the template is used in a standalone deployment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 
 ### Parameter: `authCredentials`
 
@@ -75,6 +80,20 @@ The credentials are stored for this upstream or login server.
 - Required: Yes
 - Type: string
 
+### Parameter: `name`
+
+The name of the credential set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `registryName`
+
+The name of the parent registry. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource.
@@ -94,20 +113,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-
-### Parameter: `name`
-
-The name of the credential set.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `registryName`
-
-The name of the parent registry. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
 
 ## Outputs
 

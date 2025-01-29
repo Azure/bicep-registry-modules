@@ -8,7 +8,7 @@ param registryName string
 param name string
 
 import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Required. The managed identity definition for this resource.')
+@description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlySysAssignedType?
 
 @description('Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential.')
