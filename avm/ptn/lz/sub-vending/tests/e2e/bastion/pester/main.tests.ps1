@@ -87,8 +87,8 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         }
 
         It "Should have a Virtual Network with a subnet with the correct name with addressPrefix '10.130.1.0/24'" {
-            'Subnet1' | Should -BeIn $vnetHs.Subnets.Name
-            '10.130.1.0/24' | Should Should -BeIn $vnetHs.Subnets.AddressPrefix
+            $vnetHs.Subnets.Name | Should -Contain 'Subnet1'
+            $vnetHs.Subnets.AddressPrefix | Should -Contain '10.130.1.0/24'
         }
     }
 }
