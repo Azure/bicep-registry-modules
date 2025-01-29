@@ -616,7 +616,9 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   name: 'subVendingDeployment'
   params: {
-    resourceProviders: {}
+    resourceProviders: {
+      'Microsoft.Network': []
+    }
     roleAssignmentEnabled: true
     roleAssignments: [
       {
@@ -682,7 +684,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "resourceProviders": {
-      "value": {}
+      "value": {
+        "Microsoft.Network": []
+      }
     },
     "roleAssignmentEnabled": {
       "value": true
@@ -784,7 +788,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
-param resourceProviders = {}
+param resourceProviders = {
+  'Microsoft.Network': []
+}
 param roleAssignmentEnabled = true
 param roleAssignments = [
   {
