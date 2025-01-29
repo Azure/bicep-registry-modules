@@ -1027,13 +1027,133 @@ Array of Cache Rules.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sourceRepository`](#parameter-cacherulessourcerepository) | string | Source repository pulled from upstream. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentialSetResourceId`](#parameter-cacherulescredentialsetresourceid) | string | The resource ID of the credential store which is associated with the cache rule. |
+| [`name`](#parameter-cacherulesname) | string | The name of the cache rule. Will be derived from the source repository name if not defined. |
+| [`targetRepository`](#parameter-cacherulestargetrepository) | string | Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}. |
+
+### Parameter: `cacheRules.sourceRepository`
+
+Source repository pulled from upstream.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cacheRules.credentialSetResourceId`
+
+The resource ID of the credential store which is associated with the cache rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `cacheRules.name`
+
+The name of the cache rule. Will be derived from the source repository name if not defined.
+
+- Required: No
+- Type: string
+
+### Parameter: `cacheRules.targetRepository`
+
+Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.
+
+- Required: No
+- Type: string
+
 ### Parameter: `credentialSets`
 
 Array of Credential Sets.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authCredentials`](#parameter-credentialsetsauthcredentials) | array | List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential. |
+| [`loginServer`](#parameter-credentialsetsloginserver) | string | The credentials are stored for this upstream or login server. |
+| [`managedIdentities`](#parameter-credentialsetsmanagedidentities) | object | The managed identity definition for this resource. |
+| [`name`](#parameter-credentialsetsname) | string | The name of the credential set. |
+
+### Parameter: `credentialSets.authCredentials`
+
+List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-credentialsetsauthcredentialsname) | string | The name of the credential. |
+| [`passwordSecretIdentifier`](#parameter-credentialsetsauthcredentialspasswordsecretidentifier) | string | KeyVault Secret URI for accessing the password. |
+| [`usernameSecretIdentifier`](#parameter-credentialsetsauthcredentialsusernamesecretidentifier) | string | KeyVault Secret URI for accessing the username. |
+
+### Parameter: `credentialSets.authCredentials.name`
+
+The name of the credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.authCredentials.passwordSecretIdentifier`
+
+KeyVault Secret URI for accessing the password.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.authCredentials.usernameSecretIdentifier`
+
+KeyVault Secret URI for accessing the username.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.loginServer`
+
+The credentials are stored for this upstream or login server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-credentialsetsmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+
+### Parameter: `credentialSets.managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `credentialSets.name`
+
+The name of the credential set.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `customerManagedKey`
 
@@ -1825,6 +1945,63 @@ All replications to create.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-replicationsname) | string | The name of the replication. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-replicationslocation) | string | Location for all resources. |
+| [`regionEndpointEnabled`](#parameter-replicationsregionendpointenabled) | bool | Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications. |
+| [`tags`](#parameter-replicationstags) | object | Tags of the resource. |
+| [`zoneRedundancy`](#parameter-replicationszoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
+
+### Parameter: `replications.name`
+
+The name of the replication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replications.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `replications.regionEndpointEnabled`
+
+Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.
+
+- Required: No
+- Type: bool
+
+### Parameter: `replications.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `replications.zoneRedundancy`
+
+Whether or not zone redundancy is enabled for this container registry.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `retentionPolicyDays`
 
 The number of days to retain an untagged manifest after which it gets purged.
@@ -2049,6 +2226,87 @@ All webhooks to create.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serviceUri`](#parameter-webhooksserviceuri) | string | The service URI for the webhook to post notifications. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-webhooksaction) | array | The list of actions that trigger the webhook to post notifications. |
+| [`customHeaders`](#parameter-webhookscustomheaders) | object | Custom headers that will be added to the webhook notifications. |
+| [`location`](#parameter-webhookslocation) | string | Location for all resources. |
+| [`name`](#parameter-webhooksname) | string | The name of the registry webhook. |
+| [`scope`](#parameter-webhooksscope) | string | The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events. |
+| [`status`](#parameter-webhooksstatus) | string | The status of the webhook at the time the operation was called. |
+| [`tags`](#parameter-webhookstags) | object | Tags of the resource. |
+
+### Parameter: `webhooks.serviceUri`
+
+The service URI for the webhook to post notifications.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `webhooks.action`
+
+The list of actions that trigger the webhook to post notifications.
+
+- Required: No
+- Type: array
+
+### Parameter: `webhooks.customHeaders`
+
+Custom headers that will be added to the webhook notifications.
+
+- Required: No
+- Type: object
+
+### Parameter: `webhooks.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.name`
+
+The name of the registry webhook.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.scope`
+
+The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.status`
+
+The status of the webhook at the time the operation was called.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'disabled'
+    'enabled'
+  ]
+  ```
+
+### Parameter: `webhooks.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `zoneRedundancy`
 

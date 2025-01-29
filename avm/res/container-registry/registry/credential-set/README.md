@@ -7,6 +7,7 @@ This module deploys an ACR Credential Set.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -24,6 +25,11 @@ This module deploys an ACR Credential Set.
 | [`loginServer`](#parameter-loginserver) | string | The credentials are stored for this upstream or login server. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`name`](#parameter-name) | string | The name of the credential set. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`registryName`](#parameter-registryname) | string | The name of the parent registry. Required if the template is used in a standalone deployment. |
 
 ### Parameter: `authCredentials`
@@ -73,7 +79,7 @@ The credentials are stored for this upstream or login server.
 
 The managed identity definition for this resource.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Optional parameters**
@@ -111,3 +117,11 @@ The name of the parent registry. Required if the template is used in a standalon
 | `resourceGroupName` | string | The name of the Credential Set. |
 | `resourceId` | string | The resource ID of the Credential Set. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
