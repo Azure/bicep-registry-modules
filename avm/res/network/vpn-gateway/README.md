@@ -8,7 +8,6 @@ This module deploys a VPN Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -49,6 +48,8 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     // Required parameters
     name: 'vpngmin001'
     virtualHubResourceId: '<virtualHubResourceId>'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -71,6 +72,10 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -89,6 +94,8 @@ using 'br/public:avm/res/network/vpn-gateway:<version>'
 // Required parameters
 param name = 'vpngmin001'
 param virtualHubResourceId = '<virtualHubResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -327,6 +334,10 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
       peerWeight: 0
     }
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     natRules: [
       {
         externalMappings: [
@@ -396,6 +407,12 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "natRules": {
       "value": [
         {
@@ -461,6 +478,10 @@ param bgpSettings = {
   peerWeight: 0
 }
 param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param natRules = [
   {
     externalMappings: [
@@ -655,14 +676,6 @@ The scale unit for this VPN gateway.
 | `name` | string | The name of the VPN gateway. |
 | `resourceGroupName` | string | The name of the resource group the VPN gateway was deployed into. |
 | `resourceId` | string | The resource ID of the VPN gateway. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13461484235913765557"
+      "version": "0.32.4.45862",
+      "templateHash": "8342635055821923062"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
@@ -35,12 +35,7 @@
           }
         }
       },
-      "metadata": {
-        "description": "An AVM-aligned type for a lock.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-        }
-      }
+      "nullable": true
     }
   },
   "parameters": {
@@ -114,7 +109,6 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -223,15 +217,9 @@
           "vpnGatewayName": {
             "value": "[parameters('name')]"
           },
-          "externalMappings": {
-            "value": "[tryGet(parameters('natRules')[copyIndex()], 'externalMappings')]"
-          },
-          "internalMappings": {
-            "value": "[tryGet(parameters('natRules')[copyIndex()], 'internalMappings')]"
-          },
-          "ipConfigurationId": {
-            "value": "[tryGet(parameters('natRules')[copyIndex()], 'ipConfigurationId')]"
-          },
+          "externalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'externalMappings'), createObject('value', parameters('natRules')[copyIndex()].externalMappings), createObject('value', createArray()))]",
+          "internalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'internalMappings'), createObject('value', parameters('natRules')[copyIndex()].internalMappings), createObject('value', createArray()))]",
+          "ipConfigurationId": "[if(contains(parameters('natRules')[copyIndex()], 'ipConfigurationId'), createObject('value', parameters('natRules')[copyIndex()].ipConfigurationId), createObject('value', ''))]",
           "mode": {
             "value": "[tryGet(parameters('natRules')[copyIndex()], 'mode')]"
           },
@@ -246,8 +234,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11380942489395706225"
+              "version": "0.32.4.45862",
+              "templateHash": "1228645763554247410"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule."
@@ -427,8 +415,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6343342170986309278"
+              "version": "0.32.4.45862",
+              "templateHash": "5835591601144574416"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection."
