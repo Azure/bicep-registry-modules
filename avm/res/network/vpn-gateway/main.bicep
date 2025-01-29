@@ -31,8 +31,9 @@ param vpnGatewayScaleUnit int = 2
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -116,9 +117,9 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [
     params: {
       name: natRule.name
       vpnGatewayName: vpnGateway.name
-      externalMappings: contains(natRule, 'externalMappings') ? natRule.externalMappings : []
-      internalMappings: contains(natRule, 'internalMappings') ? natRule.internalMappings : []
-      ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
+      externalMappings: natRule.?externalMappings
+      internalMappings: natRule.?internalMappings
+      ipConfigurationId: natRule.?ipConfigurationId
       mode: natRule.?mode
       type: natRule.?type
     }
@@ -160,15 +161,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = vpnGateway.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
