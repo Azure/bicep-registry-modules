@@ -55,9 +55,24 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
+    backupPolicies: [
+      {
+        name: 'myBackupPolicy'
+      }
+    ]
+    snapshotPolicies: [
+      {
+        name: 'mySnapshotPolicy'
+        dailySchedule: {
+          snapshotsToKeep: 1
+          minute: 0
+          hour: 0
+        }
+      }
+    ]
     capacityPools: [
       {
-        name: '${namePrefix}-${serviceShort}-cp-001'
+        name: 'cp-001'
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -69,18 +84,36 @@ module testDeployment '../../../main.bicep' = {
         size: 4398046511104
         volumes: [
           {
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: false
-                nfsv41: true
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
+            name: 'vol-001'
+            dataProtection: {
+              backup: {
+                backupPolicyName: 'myBackupPolicy'
+                backupVaultName: 'myVault'
+                policyEnforced: false
               }
-            ]
-            name: '${namePrefix}-${serviceShort}-vol-001'
-            zones: ['1']
+              snapshot: {
+                snapshotPolicyName: 'mySnapshotPolicy'
+              }
+            }
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  nfsv3: false
+                  nfsv41: true
+                  ruleIndex: 1
+                  unixReadOnly: false
+                  unixReadWrite: true
+                  kerberos5iReadOnly: false
+                  kerberos5pReadOnly: false
+                  kerberos5ReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadWrite: false
+                  kerberos5ReadWrite: false
+                }
+              ]
+            }
+            zones: [1]
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
@@ -97,18 +130,27 @@ module testDeployment '../../../main.bicep' = {
             usageThreshold: 107374182400
           }
           {
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: false
-                nfsv41: true
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
-            name: '${namePrefix}-${serviceShort}-vol-002'
-            zones: ['1']
+            kerberosEnabled: false
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  nfsv3: false
+                  nfsv41: true
+                  ruleIndex: 1
+                  unixReadOnly: false
+                  unixReadWrite: false
+                  kerberos5ReadOnly: false
+                  kerberos5ReadWrite: false
+                  kerberos5iReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadOnly: false
+                  kerberos5pReadWrite: false
+                }
+              ]
+            }
+            name: 'vol-002'
+            zones: [1]
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
@@ -123,7 +165,7 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
       {
-        name: '${namePrefix}-${serviceShort}-cp-002'
+        name: 'cp-002'
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -136,6 +178,17 @@ module testDeployment '../../../main.bicep' = {
         volumes: []
       }
     ]
+    backupVault: {
+      name: 'myVault'
+      backups: [
+        {
+          name: 'myBackup01'
+          capacityPoolName: 'cp-001'
+          volumeName: 'vol-001'
+          label: 'myLabel'
+        }
+      ]
+    }
     roleAssignments: [
       {
         name: '18051111-2a33-4f8e-8b24-441aac1e6562'
@@ -173,7 +226,4 @@ module testDeployment '../../../main.bicep' = {
       ]
     }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }

@@ -123,6 +123,7 @@
 /avm/res/network/dns-zone/ @Azure/avm-res-network-dnszone-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/express-route-circuit/ @Azure/avm-res-network-expressroutecircuit-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/express-route-gateway/ @Azure/avm-res-network-expressroutegateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/network/express-route-port/ @Azure/avm-res-network-expressrouteport-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/firewall-policy/ @Azure/avm-res-network-firewallpolicy-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/front-door/ @Azure/avm-res-network-frontdoor-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/front-door-web-application-firewall-policy/ @Azure/avm-res-network-frontdoorwebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-module-reviewers-bicep
