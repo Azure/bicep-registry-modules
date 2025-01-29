@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "14493386539853299116"
+      "templateHash": "2486877091886120445"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -969,7 +969,7 @@
     },
     "deploymentScriptVirtualNetworkName": {
       "type": "string",
-      "defaultValue": "[format('vnet-{0}', deployment().location)]",
+      "defaultValue": "[format('vnet-ds-{0}', deployment().location)]",
       "maxLength": 64,
       "metadata": {
         "description": "Optional. The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length."
@@ -977,7 +977,7 @@
     },
     "deploymentScriptNetworkSecurityGroupName": {
       "type": "string",
-      "defaultValue": "[format('nsg-{0}', deployment().location)]",
+      "defaultValue": "[format('nsg-ds-{0}', deployment().location)]",
       "metadata": {
         "description": "Optional. The name of the network security group for the deployment script private subnet."
       }
@@ -991,7 +991,7 @@
     },
     "deploymentScriptStorageAccountName": {
       "type": "string",
-      "defaultValue": "[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 10))]",
+      "defaultValue": "[format('stgds{0}', substring(uniqueString(deployment().name, parameters('existingSubscriptionId'), parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('virtualNetworkLocation')), 0, 10))]",
       "metadata": {
         "description": "Optional. The name of the storage account for the deployment script."
       }

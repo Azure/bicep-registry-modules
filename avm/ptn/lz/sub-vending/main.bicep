@@ -280,16 +280,16 @@ param deploymentScriptManagedIdentityName string = 'id-${deployment().location}'
 
 @maxLength(64)
 @description('Optional. The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.')
-param deploymentScriptVirtualNetworkName string = 'vnet-${deployment().location}'
+param deploymentScriptVirtualNetworkName string = 'vnet-ds-${deployment().location}'
 
 @description('Optional. The name of the network security group for the deployment script private subnet.')
-param deploymentScriptNetworkSecurityGroupName string = 'nsg-${deployment().location}'
+param deploymentScriptNetworkSecurityGroupName string = 'nsg-ds-${deployment().location}'
 
 @description('Optional. The address prefix of the private virtual network for the deployment script.')
 param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
 
 @description('Optional. The name of the storage account for the deployment script.')
-param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 10)}'
+param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name,existingSubscriptionId,subscriptionAliasName,subscriptionDisplayName, virtualNetworkLocation), 0, 10)}'
 
 @description('Optional. The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
 param deploymentScriptLocation string = deployment().location

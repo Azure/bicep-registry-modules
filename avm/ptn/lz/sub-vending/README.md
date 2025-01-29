@@ -616,6 +616,7 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   name: 'subVendingDeployment'
   params: {
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     resourceProviders: {
       'Microsoft.Network': []
     }
@@ -683,6 +684,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "deploymentScriptStorageAccountName": {
+      "value": "<deploymentScriptStorageAccountName>"
+    },
     "resourceProviders": {
       "value": {
         "Microsoft.Network": []
@@ -788,6 +792,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param resourceProviders = {
   'Microsoft.Network': []
 }
@@ -1476,7 +1481,7 @@ The name of the network security group for the deployment script private subnet.
 
 - Required: No
 - Type: string
-- Default: `[format('nsg-{0}', deployment().location)]`
+- Default: `[format('nsg-ds-{0}', deployment().location)]`
 
 ### Parameter: `deploymentScriptResourceGroupName`
 
@@ -1492,7 +1497,7 @@ The name of the storage account for the deployment script.
 
 - Required: No
 - Type: string
-- Default: `[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 10))]`
+- Default: `[format('stgds{0}', substring(uniqueString(deployment().name, parameters('existingSubscriptionId'), parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('virtualNetworkLocation')), 0, 10))]`
 
 ### Parameter: `deploymentScriptVirtualNetworkName`
 
@@ -1500,7 +1505,7 @@ The name of the private virtual network for the deployment script. The string mu
 
 - Required: No
 - Type: string
-- Default: `[format('vnet-{0}', deployment().location)]`
+- Default: `[format('vnet-ds-{0}', deployment().location)]`
 
 ### Parameter: `enableTelemetry`
 
