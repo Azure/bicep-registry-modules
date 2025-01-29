@@ -616,7 +616,6 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   name: 'subVendingDeployment'
   params: {
-    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     resourceProviders: {
       'Microsoft.Network': []
     }
@@ -684,9 +683,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "deploymentScriptStorageAccountName": {
-      "value": "<deploymentScriptStorageAccountName>"
-    },
     "resourceProviders": {
       "value": {
         "Microsoft.Network": []
@@ -792,7 +788,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
-param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param resourceProviders = {
   'Microsoft.Network': []
 }
