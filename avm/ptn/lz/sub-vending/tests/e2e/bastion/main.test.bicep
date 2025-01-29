@@ -40,6 +40,7 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkAddressSpace: [
       '10.130.0.0/16'
     ]
+    virtualNetworkDeployBastion: true
     virtualNetworkBastionConfiguration: {
       bastionSku: 'Standard'
       name: 'bastion-${resourceLocation}-hs-${namePrefix}-${serviceShort}'

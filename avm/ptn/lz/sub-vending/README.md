@@ -98,6 +98,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       bastionSku: 'Standard'
       name: '<name>'
     }
+    virtualNetworkDeployBastion: true
     virtualNetworkEnabled: true
     virtualNetworkLocation: '<virtualNetworkLocation>'
     virtualNetworkName: '<virtualNetworkName>'
@@ -170,6 +171,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         "name": "<name>"
       }
     },
+    "virtualNetworkDeployBastion": {
+      "value": true
+    },
     "virtualNetworkEnabled": {
       "value": true
     },
@@ -230,6 +234,7 @@ param virtualNetworkBastionConfiguration = {
   bastionSku: 'Standard'
   name: '<name>'
 }
+param virtualNetworkDeployBastion = true
 param virtualNetworkEnabled = true
 param virtualNetworkLocation = '<virtualNetworkLocation>'
 param virtualNetworkName = '<virtualNetworkName>'
@@ -1436,6 +1441,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`. |
 | [`virtualNetworkBastionConfiguration`](#parameter-virtualnetworkbastionconfiguration) | object | The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host. |
 | [`virtualNetworkDdosPlanResourceId`](#parameter-virtualnetworkddosplanresourceid) | string | The resource ID of an existing DDoS Network Protection Plan that you wish to link to this Virtual Network.<p> |
+| [`virtualNetworkDeployBastion`](#parameter-virtualnetworkdeploybastion) | bool | Whether to deploy a Bastion host to the created virtual network. |
 | [`virtualNetworkDeploymentScriptAddressPrefix`](#parameter-virtualnetworkdeploymentscriptaddressprefix) | string | The address prefix of the private virtual network for the deployment script. |
 | [`virtualNetworkDeployNatGateway`](#parameter-virtualnetworkdeploynatgateway) | bool | Whether to deploy a NAT gateway to the created virtual network. |
 | [`virtualNetworkDnsServers`](#parameter-virtualnetworkdnsservers) | array | The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.<p> |
@@ -2101,6 +2107,14 @@ The resource ID of an existing DDoS Network Protection Plan that you wish to lin
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `virtualNetworkDeployBastion`
+
+Whether to deploy a Bastion host to the created virtual network.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `virtualNetworkDeploymentScriptAddressPrefix`
 

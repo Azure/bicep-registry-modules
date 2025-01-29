@@ -70,6 +70,9 @@ param virtualNetworkDeployNatGateway bool = false
 @sys.description('The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway.')
 param virtualNetworkNatGatewayConfiguration natGatewayType
 
+@sys.description('Whether to deploy a Bastion host to the created virtual network.')
+param virtualNetworkDeployBastion bool = false
+
 @sys.description('The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
 param virtualNetworkBastionConfiguration bastionType?
 
@@ -478,7 +481,9 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
         ? {
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
-            networkSecurityGroupResourceId: createLzNsg.outputs.resourceId
+            networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
+              ? createBastionNsg.outputs.resourceId
+              : createLzNsg.outputs.resourceId
             natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
               ? createNatGateway.outputs.resourceId
               : null
@@ -489,7 +494,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
   }
 }
 
-module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(virtualNetworkBastionConfiguration) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -1039,6 +1044,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virt
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
+    registerResourceProviders
   ]
   name: deploymentNames.createNatGateway
   params: {
@@ -1082,7 +1088,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virt
   }
 }
 
-module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (!empty(virtualNetworkBastionConfiguration) && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   name: 'bastion-${virtualNetworkName}'
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
