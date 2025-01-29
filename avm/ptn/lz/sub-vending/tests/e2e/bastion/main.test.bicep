@@ -41,7 +41,6 @@ module testDeployment '../../../main.bicep' = {
       '10.130.0.0/16'
     ]
     virtualNetworkBastionConfiguration: {
-      bastionSubnetIpAddressRange: '10.130.0.0/26'
       bastionSku: 'Standard'
       name: 'bastion-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
     }
@@ -49,7 +48,10 @@ module testDeployment '../../../main.bicep' = {
       {
         name: 'Subnet1'
         addressPrefix: '10.130.1.0/24'
-        associateWithNatGateway: true
+      }
+      {
+        name: 'AzureBastionSubnet'
+        addressPrefix: '10.130.0.0/26'
       }
     ]
     virtualNetworkResourceGroupLockEnabled: false

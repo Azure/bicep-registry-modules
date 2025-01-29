@@ -86,6 +86,7 @@ module testDeployment '../../../main.bicep' = {
     resourceProviders: {
       'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
       'Microsoft.AVS': ['AzureServicesVm']
+      'Microsoft.Network': []
     }
   }
 }

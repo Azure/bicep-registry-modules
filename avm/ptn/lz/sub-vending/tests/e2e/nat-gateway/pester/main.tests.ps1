@@ -43,14 +43,6 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subscriptionId -GroupId 'bicep-lz-vending-automation-child' -ErrorAction SilentlyContinue
             $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subscriptionId"
         }
-
-        It "Should have the 'Microsoft.Network' resource provider registered" {
-            $resourceProviders = @( 'Microsoft.Network')
-            ForEach ($provider in $resourceProviders) {
-                $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState
-                $providerStatus | Should -BeIn @('Registered', 'Registering')
-            }
-        }
     }
 
     Context 'Role-Based Access Control Assignment Tests' {

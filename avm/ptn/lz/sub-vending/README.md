@@ -96,7 +96,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     ]
     virtualNetworkBastionConfiguration: {
       bastionSku: 'Standard'
-      bastionSubnetIpAddressRange: '10.130.0.0/26'
       name: '<name>'
     }
     virtualNetworkEnabled: true
@@ -107,8 +106,11 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     virtualNetworkSubnets: [
       {
         addressPrefix: '10.130.1.0/24'
-        associateWithNatGateway: true
         name: 'Subnet1'
+      }
+      {
+        addressPrefix: '10.130.0.0/26'
+        name: 'AzureBastionSubnet'
       }
     ]
   }
@@ -165,7 +167,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "virtualNetworkBastionConfiguration": {
       "value": {
         "bastionSku": "Standard",
-        "bastionSubnetIpAddressRange": "10.130.0.0/26",
         "name": "<name>"
       }
     },
@@ -188,8 +189,11 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "addressPrefix": "10.130.1.0/24",
-          "associateWithNatGateway": true,
           "name": "Subnet1"
+        },
+        {
+          "addressPrefix": "10.130.0.0/26",
+          "name": "AzureBastionSubnet"
         }
       ]
     }
@@ -224,7 +228,6 @@ param virtualNetworkAddressSpace = [
 ]
 param virtualNetworkBastionConfiguration = {
   bastionSku: 'Standard'
-  bastionSubnetIpAddressRange: '10.130.0.0/26'
   name: '<name>'
 }
 param virtualNetworkEnabled = true
@@ -235,8 +238,11 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 param virtualNetworkSubnets = [
   {
     addressPrefix: '10.130.1.0/24'
-    associateWithNatGateway: true
     name: 'Subnet1'
+  }
+  {
+    addressPrefix: '10.130.0.0/26'
+    name: 'AzureBastionSubnet'
   }
 ]
 ```
@@ -374,6 +380,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       'Microsoft.HybridCompute': [
         'ArcServerPrivateLinkPreview'
       ]
+      'Microsoft.Network': []
     }
     roleAssignmentEnabled: true
     roleAssignments: [
@@ -457,7 +464,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         ],
         "Microsoft.HybridCompute": [
           "ArcServerPrivateLinkPreview"
-        ]
+        ],
+        "Microsoft.Network": []
       }
     },
     "roleAssignmentEnabled": {
@@ -562,6 +570,7 @@ param resourceProviders = {
   'Microsoft.HybridCompute': [
     'ArcServerPrivateLinkPreview'
   ]
+  'Microsoft.Network': []
 }
 param roleAssignmentEnabled = true
 param roleAssignments = [
@@ -2056,25 +2065,12 @@ The configuration object for the Bastion host. Do not provide this object or kee
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`bastionSubnetIpAddressRange`](#parameter-virtualnetworkbastionconfigurationbastionsubnetipaddressrange) | string | The Ip address range of the bastion subnet. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`bastionSku`](#parameter-virtualnetworkbastionconfigurationbastionsku) | string | The SKU of the bastion host. |
 | [`name`](#parameter-virtualnetworkbastionconfigurationname) | string | The name of the bastion host. |
-
-### Parameter: `virtualNetworkBastionConfiguration.bastionSubnetIpAddressRange`
-
-The Ip address range of the bastion subnet.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `virtualNetworkBastionConfiguration.bastionSku`
 

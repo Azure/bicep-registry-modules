@@ -475,24 +475,14 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
       : null
     subnets: [
       for subnet in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
-        ? union(
-            {
-              name: subnet.name
-              addressPrefix: subnet.?addressPrefix
-              networkSecurityGroupResourceId: createLzNsg.outputs.resourceId
-              natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
-                ? createNatGateway.outputs.resourceId
-                : null
-            },
-            !empty(virtualNetworkBastionConfiguration)
-              ? {
-                  name: 'AzureBastionSubnet'
-                  addressPrefix: virtualNetworkBastionConfiguration.?bastionSubnetIpAddressRange
-                  networkSecurityGroupResourceId: createBastionNsg.outputs.resourceId
-                }
-              : {},
-            {}
-          )
+        ? {
+            name: subnet.name
+            addressPrefix: subnet.?addressPrefix
+            networkSecurityGroupResourceId: createLzNsg.outputs.resourceId
+            natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
+              ? createNatGateway.outputs.resourceId
+              : null
+          }
         : {}
     ]
     enableTelemetry: enableTelemetry
@@ -1324,9 +1314,6 @@ type bastionType = {
 
   @description('Optional. The SKU of the bastion host.')
   bastionSku: ('Basic' | 'Standard' | 'Premium')?
-
-  @description('Required. The Ip address range of the bastion subnet.')
-  bastionSubnetIpAddressRange: string
 }?
 
 @export()
