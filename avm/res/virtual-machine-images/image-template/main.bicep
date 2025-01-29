@@ -163,7 +163,11 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01
         : null
     }
     source: imageSource
-    customize: customizationSteps
+    ...(!empty(customizationSteps)
+      ? {
+          customize: customizationSteps
+        }
+      : {})
     stagingResourceGroup: stagingResourceGroupResourceId
     distribute: [
       for distribution in distributions: union(
