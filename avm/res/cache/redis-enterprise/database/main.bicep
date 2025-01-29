@@ -74,7 +74,7 @@ param accessPolicyAssignments accessPolicyAssignmentType[]?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The database-level diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -163,7 +163,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'primaryAccessKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryAccessKeyName
+              name: secretsExportConfiguration!.?primaryAccessKeyName
               value: redisDatabase.listKeys().primaryKey
             }
           ]
@@ -171,15 +171,23 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'primaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryConnectionStringName
+              name: secretsExportConfiguration!.?primaryConnectionStringName
               value: '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://' }:${redisDatabase.listKeys().primaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'primaryStackExchangeRedisConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?primaryStackExchangeRedisConnectionStringName
+              value: '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().primaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
             }
           ]
         : [],
       contains(secretsExportConfiguration!, 'secondaryAccessKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryAccessKeyName
+              name: secretsExportConfiguration!.?secondaryAccessKeyName
               value: redisDatabase.listKeys().secondaryKey
             }
           ]
@@ -187,8 +195,16 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryConnectionStringName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryConnectionStringName
+              name: secretsExportConfiguration!.?secondaryConnectionStringName
               value: '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://' }:${redisDatabase.listKeys().secondaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryStackExchangeRedisConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?secondaryStackExchangeRedisConnectionStringName
+              value: '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().secondaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
             }
           ]
         : []
@@ -215,7 +231,7 @@ output port int = redisDatabase.properties.port
 @description('The Redis endpoint.')
 output endpoint string = '${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
@@ -236,11 +252,17 @@ type secretsExportConfigurationType = {
   @description('Optional. The primaryConnectionString secret name to create.')
   primaryConnectionStringName: string?
 
+  @description('Optional. The primaryStackExchangeRedisConnectionString secret name to create.')
+  primaryStackExchangeRedisConnectionStringName: string?
+
   @description('Optional. The secondaryAccessKey secret name to create.')
   secondaryAccessKeyName: string?
 
   @description('Optional. The secondaryConnectionString secret name to create.')
   secondaryConnectionStringName: string?
+
+  @description('Optional. The secondaryStackExchangeRedisConnectionString secret name to create.')
+  secondaryStackExchangeRedisConnectionStringName: string?
 }
 
 @export()

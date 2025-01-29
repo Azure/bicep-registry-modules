@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5187111908272415656"
+      "version": "0.33.13.18514",
+      "templateHash": "13417767081952422508"
     },
     "name": "Azure Managed Redis (Preview) Database Access Policy Assignment",
     "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database.",
@@ -53,13 +53,13 @@
     "redisCluster::database": {
       "existing": true,
       "type": "Microsoft.Cache/redisEnterprise/databases",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-09-01-preview",
       "name": "[format('{0}/{1}', parameters('clusterName'), parameters('databaseName'))]"
     },
     "redisCluster": {
       "existing": true,
       "type": "Microsoft.Cache/redisEnterprise",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-09-01-preview",
       "name": "[parameters('clusterName')]"
     },
     "accessPolicyAssignment": {

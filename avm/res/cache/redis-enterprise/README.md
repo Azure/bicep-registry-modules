@@ -399,8 +399,10 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         keyVaultResourceId: '<keyVaultResourceId>'
         primaryAccessKeyName: 'custom-primaryAccessKey-name'
         primaryConnectionStringName: 'custom-primaryConnectionString-name'
+        primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
         secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
         secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+        secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
       }
     }
     location: '<location>'
@@ -431,8 +433,10 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           "keyVaultResourceId": "<keyVaultResourceId>",
           "primaryAccessKeyName": "custom-primaryAccessKey-name",
           "primaryConnectionStringName": "custom-primaryConnectionString-name",
+          "primaryStackExchangeRedisConnectionStringName": "custom-primaryStackExchangeRedisConnectionString-name",
           "secondaryAccessKeyName": "custom-secondaryAccessKey-name",
-          "secondaryConnectionStringName": "custom-secondaryConnectionString-name"
+          "secondaryConnectionStringName": "custom-secondaryConnectionString-name",
+          "secondaryStackExchangeRedisConnectionStringName": "custom-secondaryStackExchangeRedisConnectionString-name"
         }
       }
     },
@@ -461,8 +465,10 @@ param database = {
     keyVaultResourceId: '<keyVaultResourceId>'
     primaryAccessKeyName: 'custom-primaryAccessKey-name'
     primaryConnectionStringName: 'custom-primaryConnectionString-name'
+    primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
     secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
     secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+    secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
   }
 }
 param location = '<location>'
@@ -1700,8 +1706,10 @@ Key vault reference and secret settings for the module's secrets export.
 | :-- | :-- | :-- |
 | [`primaryAccessKeyName`](#parameter-databasesecretsexportconfigurationprimaryaccesskeyname) | string | The primaryAccessKey secret name to create. |
 | [`primaryConnectionStringName`](#parameter-databasesecretsexportconfigurationprimaryconnectionstringname) | string | The primaryConnectionString secret name to create. |
+| [`primaryStackExchangeRedisConnectionStringName`](#parameter-databasesecretsexportconfigurationprimarystackexchangeredisconnectionstringname) | string | The primaryStackExchangeRedisConnectionString secret name to create. |
 | [`secondaryAccessKeyName`](#parameter-databasesecretsexportconfigurationsecondaryaccesskeyname) | string | The secondaryAccessKey secret name to create. |
 | [`secondaryConnectionStringName`](#parameter-databasesecretsexportconfigurationsecondaryconnectionstringname) | string | The secondaryConnectionString secret name to create. |
+| [`secondaryStackExchangeRedisConnectionStringName`](#parameter-databasesecretsexportconfigurationsecondarystackexchangeredisconnectionstringname) | string | The secondaryStackExchangeRedisConnectionString secret name to create. |
 
 ### Parameter: `database.secretsExportConfiguration.keyVaultResourceId`
 
@@ -1730,6 +1738,15 @@ The primaryConnectionString secret name to create.
 - MinValue: 10000
 - MaxValue: 10000
 
+### Parameter: `database.secretsExportConfiguration.primaryStackExchangeRedisConnectionStringName`
+
+The primaryStackExchangeRedisConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 10000
+- MaxValue: 10000
+
 ### Parameter: `database.secretsExportConfiguration.secondaryAccessKeyName`
 
 The secondaryAccessKey secret name to create.
@@ -1742,6 +1759,15 @@ The secondaryAccessKey secret name to create.
 ### Parameter: `database.secretsExportConfiguration.secondaryConnectionStringName`
 
 The secondaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 10000
+- MaxValue: 10000
+
+### Parameter: `database.secretsExportConfiguration.secondaryStackExchangeRedisConnectionStringName`
+
+The secondaryStackExchangeRedisConnectionString secret name to create.
 
 - Required: No
 - Type: string
@@ -1967,7 +1993,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -2220,9 +2246,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -2571,8 +2597,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.9.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

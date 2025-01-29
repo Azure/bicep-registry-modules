@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5173791782273970000"
+      "version": "0.33.13.18514",
+      "templateHash": "15700613682926444319"
     },
     "name": "Redis Enterprise and Azure Managed Redis (Preview)",
     "description": "This module deploys a Redis Enterprise or Azure Managed Redis (Preview) cache.",
@@ -174,7 +174,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -216,7 +216,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -257,7 +257,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -286,7 +286,7 @@
       "metadata": {
         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -449,7 +449,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -546,7 +546,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -635,7 +635,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -690,7 +690,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -711,7 +711,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -803,6 +803,13 @@
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
           }
         },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
+          }
+        },
         "privateDnsZoneGroup": {
           "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
@@ -892,19 +899,12 @@
           "metadata": {
             "description": "Optional. Enable/Disable usage telemetry for module."
           }
-        },
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource."
-          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -979,7 +979,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -1006,6 +1006,13 @@
             "description": "Optional. The primaryConnectionString secret name to create."
           }
         },
+        "primaryStackExchangeRedisConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primaryStackExchangeRedisConnectionString secret name to create."
+          }
+        },
         "secondaryAccessKeyName": {
           "type": "string",
           "nullable": true,
@@ -1018,6 +1025,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The secondaryConnectionString secret name to create."
+          }
+        },
+        "secondaryStackExchangeRedisConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondaryStackExchangeRedisConnectionString secret name to create."
           }
         }
       },
@@ -1039,7 +1053,7 @@
       "metadata": {
         "description": "A map of the exported secrets",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -1329,7 +1343,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('identityType', 'userAssignedIdentity', 'userAssignedIdentityResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyEncryptionKeyUrl', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null())]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('identityType', 'userAssignedIdentity', 'userAssignedIdentityResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyEncryptionKeyUrl', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null())]",
         "highAvailability": "[if(variables('isAmr'), parameters('highAvailability'), null())]",
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]"
       },
@@ -1466,8 +1480,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12357419139768604071"
+              "version": "0.33.13.18514",
+              "templateHash": "12716757913108489391"
             },
             "name": "Redis database",
             "description": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis (Preview) cluster.",
@@ -1497,6 +1511,13 @@
                     "description": "Optional. The primaryConnectionString secret name to create."
                   }
                 },
+                "primaryStackExchangeRedisConnectionStringName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The primaryStackExchangeRedisConnectionString secret name to create."
+                  }
+                },
                 "secondaryAccessKeyName": {
                   "type": "string",
                   "nullable": true,
@@ -1509,6 +1530,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The secondaryConnectionString secret name to create."
+                  }
+                },
+                "secondaryStackExchangeRedisConnectionStringName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The secondaryStackExchangeRedisConnectionString secret name to create."
                   }
                 }
               },
@@ -1727,7 +1755,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1824,7 +1852,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1840,7 +1868,7 @@
               "metadata": {
                 "description": "A map of the exported secrets",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -2081,8 +2109,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "5187111908272415656"
+                      "version": "0.33.13.18514",
+                      "templateHash": "13417767081952422508"
                     },
                     "name": "Azure Managed Redis (Preview) Database Access Policy Assignment",
                     "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database.",
@@ -2129,13 +2157,13 @@
                     "redisCluster::database": {
                       "existing": true,
                       "type": "Microsoft.Cache/redisEnterprise/databases",
-                      "apiVersion": "2023-08-01-preview",
+                      "apiVersion": "2024-09-01-preview",
                       "name": "[format('{0}/{1}', parameters('clusterName'), parameters('databaseName'))]"
                     },
                     "redisCluster": {
                       "existing": true,
                       "type": "Microsoft.Cache/redisEnterprise",
-                      "apiVersion": "2023-08-01-preview",
+                      "apiVersion": "2024-09-01-preview",
                       "name": "[parameters('clusterName')]"
                     },
                     "accessPolicyAssignment": {
@@ -2203,7 +2231,7 @@
                     "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
                   },
                   "secretsToSet": {
-                    "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryAccessKeyName, 'value', listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryConnectionStringName, 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryAccessKeyName, 'value', listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryConnectionStringName, 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()))]"
+                    "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')))), createArray()))]"
                   }
                 },
                 "template": {
@@ -2213,8 +2241,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "5045365139782277955"
+                      "version": "0.33.13.18514",
+                      "templateHash": "14045530027687796477"
                     }
                   },
                   "definitions": {
@@ -2243,7 +2271,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                         }
                       }
                     },
@@ -2266,7 +2294,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                         }
                       }
                     }
@@ -2393,7 +2421,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-redisEnterprise-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2446,12 +2473,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15164027369246485309"
+              "version": "0.33.13.18514",
+              "templateHash": "15954548978129725136"
             },
             "name": "Private Endpoints",
-            "description": "This module deploys a Private Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private Endpoint."
           },
           "definitions": {
             "privateDnsZoneGroupType": {
@@ -2511,50 +2537,6 @@
                   },
                   "metadata": {
                     "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "manualPrivateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
                   }
                 }
               },
@@ -2656,7 +2638,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -2754,7 +2736,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -2850,11 +2832,11 @@
             "manualPrivateLinkServiceConnections": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/manualPrivateLinkServiceConnectionType"
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               }
             },
             "privateLinkServiceConnections": {
@@ -2864,7 +2846,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               }
             },
             "enableTelemetry": {
@@ -2901,7 +2883,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3007,12 +2989,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "14591244586837935522"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5440815542537978381"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
-                    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group."
                   },
                   "definitions": {
                     "privateDnsZoneGroupConfigType": {
@@ -3152,7 +3133,7 @@
               },
               "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
             },
-            "customDnsConfig": {
+            "customDnsConfigs": {
               "type": "array",
               "items": {
                 "$ref": "#/definitions/customDnsConfigType"
@@ -3247,9 +3228,10 @@
         "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
         "input": {
           "name": "[reference(format('redisEnterprise_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceGroupName": "[reference(format('redisEnterprise_privateEndpoints[{0}]', copyIndex())).outputs.resourceGroupName.value]",
           "resourceId": "[reference(format('redisEnterprise_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('redisEnterprise_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('redisEnterprise_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "groupId": "[tryGet(tryGet(reference(format('redisEnterprise_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('redisEnterprise_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
           "networkInterfaceResourceIds": "[reference(format('redisEnterprise_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }

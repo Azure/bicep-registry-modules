@@ -20,10 +20,10 @@ param databaseName string
 @description('Optional. Name of the access policy to be assigned.')
 param accessPolicyName string = 'default'
 
-resource redisCluster 'Microsoft.Cache/redisEnterprise@2023-08-01-preview' existing = {
+resource redisCluster 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' existing = {
   name: clusterName
 
-  resource database 'databases@2023-08-01-preview' existing = {
+  resource database 'databases@2024-09-01-preview' existing = {
     name: databaseName
   }
 }

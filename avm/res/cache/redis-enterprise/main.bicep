@@ -8,22 +8,22 @@ param location string = resourceGroup().location
 @description('Required. The name of the cache resource.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Conditional. The managed identity definition for this resource. Required if \'customerManagedKey\' is not empty.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition to use for the managed service.')
 param customerManagedKey customerManagedKeyType?
 
@@ -134,11 +134,11 @@ param database databaseType?
 // Other params //
 // ============ //
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The cluster-level diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
@@ -254,7 +254,7 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
                 }
               : null
             keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion ?? '')
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
               : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           }
         }
@@ -338,10 +338,18 @@ resource redisCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
+module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redisEnterprise-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(redisCluster.id, '/'))}-${privateEndpoint.?service ?? 'redisEnterprise'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -419,14 +427,15 @@ output location string = redisCluster.location
 output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: redisEnterprise_privateEndpoints[i].outputs.name
+    resourceGroupName: redisEnterprise_privateEndpoints[i].outputs.resourceGroupName
     resourceId: redisEnterprise_privateEndpoints[i].outputs.resourceId
-    groupId: redisEnterprise_privateEndpoints[i].outputs.groupId
-    customDnsConfig: redisEnterprise_privateEndpoints[i].outputs.customDnsConfig
+    groupId: redisEnterprise_privateEndpoints[i].outputs.?groupId
+    customDnsConfigs: redisEnterprise_privateEndpoints[i].outputs.customDnsConfigs
     networkInterfaceResourceIds: redisEnterprise_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = redisCluster_database.outputs.exportedSecrets
 
@@ -434,7 +443,7 @@ output exportedSecrets secretsOutputType = redisCluster_database.outputs.exporte
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 import { geoReplicationType, moduleType, persistenceType, accessPolicyAssignmentType, secretsExportConfigurationType } from 'database/main.bicep'
 
 @export()

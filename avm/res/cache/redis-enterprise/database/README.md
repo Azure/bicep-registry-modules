@@ -433,8 +433,10 @@ Key vault reference and secret settings for the module's secrets export.
 | :-- | :-- | :-- |
 | [`primaryAccessKeyName`](#parameter-secretsexportconfigurationprimaryaccesskeyname) | string | The primaryAccessKey secret name to create. |
 | [`primaryConnectionStringName`](#parameter-secretsexportconfigurationprimaryconnectionstringname) | string | The primaryConnectionString secret name to create. |
+| [`primaryStackExchangeRedisConnectionStringName`](#parameter-secretsexportconfigurationprimarystackexchangeredisconnectionstringname) | string | The primaryStackExchangeRedisConnectionString secret name to create. |
 | [`secondaryAccessKeyName`](#parameter-secretsexportconfigurationsecondaryaccesskeyname) | string | The secondaryAccessKey secret name to create. |
 | [`secondaryConnectionStringName`](#parameter-secretsexportconfigurationsecondaryconnectionstringname) | string | The secondaryConnectionString secret name to create. |
+| [`secondaryStackExchangeRedisConnectionStringName`](#parameter-secretsexportconfigurationsecondarystackexchangeredisconnectionstringname) | string | The secondaryStackExchangeRedisConnectionString secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -463,6 +465,15 @@ The primaryConnectionString secret name to create.
 - MinValue: 10000
 - MaxValue: 10000
 
+### Parameter: `secretsExportConfiguration.primaryStackExchangeRedisConnectionStringName`
+
+The primaryStackExchangeRedisConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 10000
+- MaxValue: 10000
+
 ### Parameter: `secretsExportConfiguration.secondaryAccessKeyName`
 
 The secondaryAccessKey secret name to create.
@@ -475,6 +486,15 @@ The secondaryAccessKey secret name to create.
 ### Parameter: `secretsExportConfiguration.secondaryConnectionStringName`
 
 The secondaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 10000
+- MaxValue: 10000
+
+### Parameter: `secretsExportConfiguration.secondaryStackExchangeRedisConnectionStringName`
+
+The secondaryStackExchangeRedisConnectionString secret name to create.
 
 - Required: No
 - Type: string
@@ -498,4 +518,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
