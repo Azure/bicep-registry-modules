@@ -611,7 +611,7 @@ type credentialSetType = {
   @description('Required. The name of the credential set.')
   name: string
 
-  @description('Required. The managed identity definition for this resource.')
+  @description('Optional. The managed identity definition for this resource.')
   managedIdentities: managedIdentityOnlySysAssignedType?
 
   @description('Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential.')

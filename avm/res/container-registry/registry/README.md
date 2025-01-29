@@ -1082,8 +1082,13 @@ Array of Credential Sets.
 | :-- | :-- | :-- |
 | [`authCredentials`](#parameter-credentialsetsauthcredentials) | array | List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential. |
 | [`loginServer`](#parameter-credentialsetsloginserver) | string | The credentials are stored for this upstream or login server. |
-| [`managedIdentities`](#parameter-credentialsetsmanagedidentities) | object | The managed identity definition for this resource. |
 | [`name`](#parameter-credentialsetsname) | string | The name of the credential set. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedIdentities`](#parameter-credentialsetsmanagedidentities) | object | The managed identity definition for this resource. |
 
 ### Parameter: `credentialSets.authCredentials`
 
@@ -1128,6 +1133,13 @@ The credentials are stored for this upstream or login server.
 - Required: Yes
 - Type: string
 
+### Parameter: `credentialSets.name`
+
+The name of the credential set.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `credentialSets.managedIdentities`
 
 The managed identity definition for this resource.
@@ -1147,13 +1159,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-
-### Parameter: `credentialSets.name`
-
-The name of the credential set.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `customerManagedKey`
 
