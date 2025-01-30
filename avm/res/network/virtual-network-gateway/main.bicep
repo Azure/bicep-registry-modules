@@ -521,7 +521,7 @@ output defaultBgpIpAddresses string? = join(
 
 @description('The primary custom Azure APIPA BGP IP address.')
 output customBgpIpAddresses string? = join(
-  virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[?0].?customBgpIpAddresses ?? [],
+  virtualNetworkGateway.properties.?bgpSettings.?bgpPeeringAddresses[?0].?customBgpIpAddresses ?? [],
   ','
 ) //'Not applicable (No Bgp)'
 

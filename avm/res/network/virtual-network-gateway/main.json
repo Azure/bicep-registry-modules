@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "16188741313666908861"
+      "templateHash": "12485861548949491583"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -1784,7 +1784,7 @@
       "metadata": {
         "description": "The primary custom Azure APIPA BGP IP address."
       },
-      "value": "[join(coalesce(tryGet(tryGet(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses, 0), 'customBgpIpAddresses'), createArray()), ',')]"
+      "value": "[join(coalesce(tryGet(tryGet(tryGet(tryGet(reference('virtualNetworkGateway'), 'bgpSettings'), 'bgpPeeringAddresses'), 0), 'customBgpIpAddresses'), createArray()), ',')]"
     },
     "secondaryPublicIpAddress": {
       "type": "string",
