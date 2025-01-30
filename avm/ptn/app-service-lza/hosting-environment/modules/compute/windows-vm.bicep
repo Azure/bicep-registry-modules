@@ -174,7 +174,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
     }
     dataDisks: [
       {
-        caching: 'ReadWrite'
+        caching: 'ReadOnly'
         createOption: 'Empty'
         diskSizeGB: 128
         lun: 0
