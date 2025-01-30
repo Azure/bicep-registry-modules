@@ -520,7 +520,7 @@ output location string = flexibleServer.location
 output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
 
 @description('The private endpoints of the PostgreSQL Flexible server.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: server_privateEndpoints[i].outputs.name
     resourceId: server_privateEndpoints[i].outputs.resourceId
