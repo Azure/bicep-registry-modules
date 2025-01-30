@@ -51,8 +51,10 @@ module testDeployment '../../../main.bicep' = {
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       primaryAccessKeyName: 'custom-primaryAccessKey-name'
       primaryConnectionStringName: 'custom-primaryConnectionString-name'
+      primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
       secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
       secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+      secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
     }
   }
 }
