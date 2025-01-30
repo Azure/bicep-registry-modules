@@ -8,8 +8,8 @@ param recoveryVaultName string
 @description('Optional. The name of the replication Alert Setting.')
 param name string = 'defaultAlertSetting'
 
-@description('Optional. Comma separated list of custom email address for sending alert emails.')
-param customEmailAddresses array = []
+@description('Optional. The custom email address for sending emails.')
+param customEmailAddresses string[]?
 
 @description('Optional. The locale for the email notification.')
 param locale string = ''
@@ -29,7 +29,7 @@ resource replicationAlertSettings 'Microsoft.RecoveryServices/vaults/replication
   name: name
   parent: recoveryVault
   properties: {
-    customEmailAddresses: !empty(customEmailAddresses) ? customEmailAddresses : null
+    customEmailAddresses: customEmailAddresses
     locale: locale
     sendToOwners: sendToOwners
   }

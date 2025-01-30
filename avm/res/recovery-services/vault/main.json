@@ -6,59 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "401808338893247802"
+      "templateHash": "18099590867877548946"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "customerManagedKeyType": {
-      "type": "object",
-      "properties": {
-        "infrastructureEncryption": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the key vault."
-          }
-        },
-        "kekIdentity": {
-          "type": "object",
-          "properties": {
-            "userAssignedIdentity": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The user assigned identity to be used to grant permissions in case the type of identity used is UserAssigned."
-              }
-            },
-            "useSystemAssignedIdentity": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Indicate that system assigned identity should be used. Mutually exclusive with userAssignedIdentity field."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. The details of the identity used for CMK\t."
-          }
-        },
-        "keyVaultProperties": {
-          "type": "object",
-          "properties": {
-            "keyUri": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The key uri of the Customer Managed Key."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. The properties of the Key Vault which hosts CMK."
-          }
-        }
-      },
-      "nullable": true
-    },
     "redundancySettingsType": {
       "type": "object",
       "properties": {
@@ -77,9 +31,9 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for redundancy settings."
       }
     },
     "restoreSettingsType": {
@@ -100,33 +54,845 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for restore settings."
       }
     },
-    "managedIdentitiesType": {
+    "replicationFabricType": {
       "type": "object",
       "properties": {
-        "systemAssigned": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the fabric."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The recovery location the fabric represents."
+          }
+        },
+        "replicationContainers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/containerType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Replication containers to create."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for replication fabrics."
+      }
+    },
+    "replicationPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the replication policy."
+          }
+        },
+        "appConsistentFrequencyInMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The app consistent snapshot frequency (in minutes)."
+          }
+        },
+        "crashConsistentFrequencyInMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The crash consistent snapshot frequency (in minutes)."
+          }
+        },
+        "multiVmSyncStatus": {
+          "type": "string",
+          "allowedValues": [
+            "Disable",
+            "Enable"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value indicating whether multi-VM sync has to be enabled."
+          }
+        },
+        "recoveryPointHistory": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The duration in minutes until which the recovery points need to be stored."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for replication policies."
+      }
+    },
+    "backupStorageConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the backup storage config."
+          }
+        },
+        "storageModelType": {
+          "type": "string",
+          "allowedValues": [
+            "GeoRedundant",
+            "LocallyRedundant",
+            "ReadAccessGeoZoneRedundant",
+            "ZoneRedundant"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Change Vault Storage Type (Works if vault has not registered any backup instance)."
+          }
+        },
+        "crossRegionRestoreFlag": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Optional. Opt in details of Cross Region Restore feature."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a backup storage config."
+      }
+    },
+    "backupConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the Azure Recovery Service Vault Backup Policy."
           }
         },
-        "userAssignedResourceIds": {
+        "enhancedSecurityState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations."
+          }
+        },
+        "resourceGuardOperationRequests": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ResourceGuard Operation Requests."
+          }
+        },
+        "softDeleteFeatureState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes."
+          }
+        },
+        "storageModelType": {
+          "type": "string",
+          "allowedValues": [
+            "GeoRedundant",
+            "LocallyRedundant",
+            "ReadAccessGeoZoneRedundant",
+            "ZoneRedundant"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Storage type."
+          }
+        },
+        "storageType": {
+          "type": "string",
+          "allowedValues": [
+            "GeoRedundant",
+            "LocallyRedundant",
+            "ReadAccessGeoZoneRedundant",
+            "ZoneRedundant"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Storage type."
+          }
+        },
+        "storageTypeState": {
+          "type": "string",
+          "allowedValues": [
+            "Locked",
+            "Unlocked"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Once a machine is registered against a resource, the storageTypeState is always Locked."
+          }
+        },
+        "isSoftDeleteFeatureStateEditable": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Is soft delete feature state editable."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a backup configuration."
+      }
+    },
+    "replicationAlertSettingsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the replication Alert Setting."
+          }
+        },
+        "customEmailAddresses": {
           "type": "array",
           "items": {
             "type": "string"
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The custom email address for sending emails."
+          }
+        },
+        "locale": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The locale for the email notification."
+          }
+        },
+        "sendToOwners": {
+          "type": "string",
+          "allowedValues": [
+            "DoNotSend",
+            "Send"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The value indicating whether to send email to subscription administrator."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for replication alert settings"
+      }
+    },
+    "protectedItemType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the resource."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for all resources."
+          }
+        },
+        "protectionContainerName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Azure Recovery Service Vault Protection Container."
+          }
+        },
+        "protectedItemType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureFileShareProtectedItem",
+            "AzureVmWorkloadSAPAseDatabase",
+            "AzureVmWorkloadSAPHanaDatabase",
+            "AzureVmWorkloadSQLDatabase",
+            "DPMProtectedItem",
+            "GenericProtectedItem",
+            "MabFileFolderProtectedItem",
+            "Microsoft.ClassicCompute/virtualMachines",
+            "Microsoft.Compute/virtualMachines",
+            "Microsoft.Sql/servers/databases"
+          ],
+          "metadata": {
+            "description": "Required. The backup item type."
+          }
+        },
+        "policyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The backup policy with which this item is backed up."
+          }
+        },
+        "sourceResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the resource to back up."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a protected item"
+      }
+    },
+    "backupPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Azure Recovery Service Vault Backup Policy."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Configuration of the Azure Recovery Service Vault Backup Policy."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a backup policy."
+      }
+    },
+    "monitoringSettingsType": {
+      "type": "object",
+      "properties": {
+        "azureMonitorAlertSettings": {
+          "type": "object",
+          "properties": {
+            "alertsForAllFailoverIssues": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable alerts for all failover issues."
+              }
+            },
+            "alertsForAllJobFailures": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable alerts for all job failures."
+              }
+            },
+            "alertsForAllReplicationIssues": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable alerts for all replication issues."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The alert settings."
+          }
+        },
+        "classicAlertSettings": {
+          "type": "object",
+          "properties": {
+            "alertsForCriticalOperations": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable alerts for critical operations."
+              }
+            },
+            "emailNotificationsForSiteRecovery": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable email notifications for site recovery."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The classic alert settings."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "securitySettingType": {
+      "type": "object",
+      "properties": {
+        "immutabilitySettings": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Locked",
+                "Unlocked"
+              ],
+              "metadata": {
+                "description": "Required. The immmutability setting of the vault."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Immutability settings of a vault."
+          }
+        },
+        "softDeleteSettings": {
+          "type": "object",
+          "properties": {
+            "enhancedSecurityState": {
+              "type": "string",
+              "allowedValues": [
+                "AlwaysON",
+                "Disabled",
+                "Enabled",
+                "Invalid"
+              ],
+              "metadata": {
+                "description": "Required. The enhanced security state."
+              }
+            },
+            "softDeleteRetentionPeriodInDays": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The soft delete retention period in days."
+              }
+            },
+            "softDeleteState": {
+              "type": "string",
+              "allowedValues": [
+                "AlwaysON",
+                "Disabled",
+                "Enabled",
+                "Invalid"
+              ],
+              "metadata": {
+                "description": "Required. The soft delete state."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Soft delete settings of a vault."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for security settings."
+      }
+    },
+    "_1.privateEndpointCustomDnsConfigType": {
+      "type": "object",
+      "properties": {
+        "fqdn": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
+          }
+        },
+        "ipAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of private IP addresses of the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "_1.privateEndpointIpConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the resource that is unique within a resource group."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "memberName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "privateIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A private IP address obtained from the private endpoint's subnet."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of private endpoint IP configurations."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "_1.privateEndpointPrivateDnsZoneGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private DNS Zone Group."
+          }
+        },
+        "privateDnsZoneGroupConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the private DNS Zone Group config."
+                }
+              },
+              "privateDnsZoneResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of the private DNS zone."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "_2.mappingType": {
+      "type": "object",
+      "properties": {
+        "targetProtectionContainerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
+          }
+        },
+        "targetContainerFabricName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+          }
+        },
+        "targetContainerName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+          }
+        },
+        "policyResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the replication policy. If defined, policyName will be ignored."
+          }
+        },
+        "policyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for protection container mappings.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "replication-fabric/replication-protection-container/main.bicep"
+        }
+      }
+    },
+    "containerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the replication container."
+          }
+        },
+        "mappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_2.mappingType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Replication containers mappings to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a replication protection container.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "replication-fabric/main.bicep"
+        }
+      }
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -151,420 +917,257 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "privateEndpointSingleServiceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private Endpoint."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location to deploy the Private Endpoint to."
+          }
+        },
+        "privateLinkServiceConnectionName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private link connection to create."
+          }
+        },
+        "service": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The subresource to deploy the Private Endpoint for. For example \"vault\" for a Key Vault Private Endpoint."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "privateDnsZoneGroup": {
+          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
+          }
+        },
+        "isManualConnection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If Manual Private Link Connection is required."
+          }
+        },
+        "manualConnectionRequestMessage": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 140,
+          "metadata": {
+            "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom DNS configurations."
+          }
+        },
+        "ipConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints."
+          }
+        },
+        "applicationSecurityGroupResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application security groups in which the Private Endpoint IP configuration is included."
+          }
+        },
+        "customNetworkInterfaceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom name of the network interface attached to the Private Endpoint."
+          }
+        },
+        "lock": {
+          "$ref": "#/definitions/lockType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
+        },
+        "resourceGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
-    },
-    "privateEndpointType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private endpoint."
-            }
-          },
-          "location": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The location to deploy the private endpoint to."
-            }
-          },
-          "privateLinkServiceConnectionName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private link connection to create."
-            }
-          },
-          "service": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The subresource to deploy the private endpoint for. For example \"vault\", \"mysqlServer\" or \"dataFactory\"."
-            }
-          },
-          "subnetResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
-            }
-          },
-          "privateDnsZoneGroup": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The name of the Private DNS Zone Group."
-                }
-              },
-              "privateDnsZoneGroupConfigs": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The name of the private DNS zone group config."
-                      }
-                    },
-                    "privateDnsZoneResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of the private DNS zone."
-                      }
-                    }
-                  }
-                },
-                "metadata": {
-                  "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The private DNS zone group to configure for the private endpoint."
-            }
-          },
-          "isManualConnection": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. If Manual Private Link Connection is required."
-            }
-          },
-          "manualConnectionRequestMessage": {
-            "type": "string",
-            "nullable": true,
-            "maxLength": 140,
-            "metadata": {
-              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
-            }
-          },
-          "customDnsConfigs": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. FQDN that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Custom DNS configurations."
-            }
-          },
-          "ipConfigurations": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-            }
-          },
-          "applicationSecurityGroupResourceIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
-            }
-          },
-          "customNetworkInterfaceName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The custom name of the network interface attached to the private endpoint."
-            }
-          },
-          "lock": {
-            "$ref": "#/definitions/lockType",
-            "metadata": {
-              "description": "Optional. Specify the type of lock."
-            }
-          },
-          "roleAssignments": {
-            "$ref": "#/definitions/roleAssignmentType",
-            "metadata": {
-              "description": "Optional. Array of role assignments to create."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "enableTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable/Disable usage telemetry for module."
-            }
-          },
-          "resourceGroupName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
-      },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
-        }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -575,8 +1178,8 @@
       }
     },
     "backupStorageConfig": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/backupStorageConfigType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The storage configuration for the Azure Recovery Service Vault."
       }
@@ -597,66 +1200,88 @@
     },
     "backupPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/backupPolicyType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all backup policies."
       }
     },
     "backupConfig": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/backupConfigType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The backup configuration."
       }
     },
-    "protectionContainers": {
+    "protectedItems": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/protectedItemType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all protection containers."
       }
     },
     "replicationFabrics": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/replicationFabricType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all replication fabrics."
       }
     },
     "replicationPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/replicationPolicyType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all replication policies."
       }
     },
     "replicationAlertSettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/replicationAlertSettingsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Replication alert settings."
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
@@ -669,21 +1294,25 @@
       }
     },
     "privateEndpoints": {
-      "$ref": "#/definitions/privateEndpointType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointSingleServiceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
     },
     "monitoringSettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/monitoringSettingsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Monitoring Settings of the vault."
       }
     },
     "securitySettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/securitySettingType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Security Settings of the vault."
       }
@@ -714,7 +1343,8 @@
       }
     },
     "customerManagedKey": {
-      "$ref": "#/definitions/customerManagedKeyType",
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The customer managed key definition."
       }
@@ -804,15 +1434,15 @@
         "tier": "Standard"
       },
       "properties": {
-        "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), parameters('monitoringSettings'), null())]",
-        "securitySettings": "[if(not(empty(parameters('securitySettings'))), parameters('securitySettings'), null())]",
+        "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), createObject('azureMonitorAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'))), createObject('alertsForAllFailoverIssues', coalesce(tryGet(parameters('monitoringSettings').azureMonitorAlertSettings, 'alertsForAllFailoverIssues'), 'Enabled'), 'alertsForAllJobFailures', coalesce(tryGet(parameters('monitoringSettings').azureMonitorAlertSettings, 'alertsForAllJobFailures'), 'Enabled'), 'alertsForAllReplicationIssues', coalesce(tryGet(parameters('monitoringSettings').azureMonitorAlertSettings, 'alertsForAllReplicationIssues'), 'Enabled')), null()), 'classicAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'))), createObject('alertsForCriticalOperations', coalesce(tryGet(parameters('monitoringSettings').classicAlertSettings, 'alertsForCriticalOperations'), 'Enabled'), 'emailNotificationsForSiteRecovery', coalesce(tryGet(parameters('monitoringSettings').classicAlertSettings, 'emailNotificationsForSiteRecovery'), 'Enabled')), null())), null())]",
+        "securitySettings": "[parameters('securitySettings')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "redundancySettings": "[if(not(empty(parameters('redundancySettings'))), parameters('redundancySettings'), null())]",
-        "restoreSettings": "[if(not(empty(parameters('restoreSettings'))), parameters('restoreSettings'), null())]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', 'Enabled', 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'keyVaultProperties', createObject('keyUri', reference('cMKKeyVault').vaultUri)), null())]"
+        "redundancySettings": "[parameters('redundancySettings')]",
+        "restoreSettings": "[parameters('restoreSettings')]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', 'Enabled', 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]"
       },
       "dependsOn": [
-        "cMKKeyVault"
+        "cMKKeyVault::cMKKey"
       ]
     },
     "rsv_lock": {
@@ -895,7 +1525,7 @@
     "rsv_replicationFabrics": {
       "copy": {
         "name": "rsv_replicationFabrics",
-        "count": "[length(parameters('replicationFabrics'))]"
+        "count": "[length(coalesce(parameters('replicationFabrics'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -910,27 +1540,108 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('replicationFabrics')[copyIndex()], 'name'), parameters('replicationFabrics')[copyIndex()].location)]"
+            "value": "[tryGet(coalesce(parameters('replicationFabrics'), createArray())[copyIndex()], 'name')]"
           },
           "location": {
-            "value": "[parameters('replicationFabrics')[copyIndex()].location]"
+            "value": "[coalesce(parameters('replicationFabrics'), createArray())[copyIndex()].location]"
           },
           "replicationContainers": {
-            "value": "[coalesce(tryGet(parameters('replicationFabrics')[copyIndex()], 'replicationContainers'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('replicationFabrics'), createArray())[copyIndex()], 'replicationContainers')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13020741801560916296"
+              "templateHash": "11341714430852064297"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "containerType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the replication container."
+                  }
+                },
+                "mappings": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mappingType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Replication containers mappings to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a replication protection container."
+              }
+            },
+            "mappingType": {
+              "type": "object",
+              "properties": {
+                "targetProtectionContainerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
+                  }
+                },
+                "targetContainerFabricName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+                  }
+                },
+                "targetContainerName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+                  }
+                },
+                "policyResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the replication policy. If defined, policyName will be ignored."
+                  }
+                },
+                "policyName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for protection container mappings.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "replication-protection-container/main.bicep"
+                }
+              }
+            }
           },
           "parameters": {
             "recoveryVaultName": {
@@ -955,14 +1666,23 @@
             },
             "replicationContainers": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/containerType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Replication containers to create."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "recoveryServicesVault": {
+              "existing": true,
+              "type": "Microsoft.RecoveryServices/vaults",
+              "apiVersion": "2024-10-01",
+              "name": "[parameters('recoveryVaultName')]"
+            },
+            "replicationFabric": {
               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
               "apiVersion": "2022-10-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
@@ -973,10 +1693,10 @@
                 }
               }
             },
-            {
+            "fabric_replicationContainers": {
               "copy": {
                 "name": "fabric_replicationContainers",
-                "count": "[length(parameters('replicationContainers'))]"
+                "count": "[length(coalesce(parameters('replicationContainers'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -988,7 +1708,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('replicationContainers')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('replicationContainers'), createArray())[copyIndex()].name]"
                   },
                   "recoveryVaultName": {
                     "value": "[parameters('recoveryVaultName')]"
@@ -996,22 +1716,76 @@
                   "replicationFabricName": {
                     "value": "[parameters('name')]"
                   },
-                  "replicationContainerMappings": {
-                    "value": "[tryGet(parameters('replicationContainers')[copyIndex()], 'replicationContainerMappings')]"
+                  "mappings": {
+                    "value": "[tryGet(coalesce(parameters('replicationContainers'), createArray())[copyIndex()], 'mappings')]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16395278264712983948"
+                      "templateHash": "1359390885457273694"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
                     "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "mappingType": {
+                      "type": "object",
+                      "properties": {
+                        "targetProtectionContainerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
+                          }
+                        },
+                        "targetContainerFabricName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+                          }
+                        },
+                        "targetContainerName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+                          }
+                        },
+                        "policyResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the replication policy. If defined, policyName will be ignored."
+                          }
+                        },
+                        "policyName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
+                          }
+                        },
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type for protection container mappings."
+                      }
+                    }
                   },
                   "parameters": {
                     "recoveryVaultName": {
@@ -1032,16 +1806,31 @@
                         "description": "Required. The name of the replication container."
                       }
                     },
-                    "replicationContainerMappings": {
+                    "mappings": {
                       "type": "array",
-                      "defaultValue": [],
+                      "items": {
+                        "$ref": "#/definitions/mappingType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Replication containers mappings to create."
                       }
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "recoveryServicesVault::replicationFabric": {
+                      "existing": true,
+                      "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
+                      "apiVersion": "2022-10-01",
+                      "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
+                    },
+                    "recoveryServicesVault": {
+                      "existing": true,
+                      "type": "Microsoft.RecoveryServices/vaults",
+                      "apiVersion": "2024-10-01",
+                      "name": "[parameters('recoveryVaultName')]"
+                    },
+                    "replicationContainer": {
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
                       "apiVersion": "2022-10-01",
                       "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]",
@@ -1053,10 +1842,10 @@
                         ]
                       }
                     },
-                    {
+                    "fabric_container_containerMappings": {
                       "copy": {
                         "name": "fabric_container_containerMappings",
-                        "count": "[length(parameters('replicationContainerMappings'))]"
+                        "count": "[length(coalesce(parameters('mappings'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
@@ -1068,13 +1857,13 @@
                         "mode": "Incremental",
                         "parameters": {
                           "name": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'name')]"
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'name')]"
                           },
-                          "policyId": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'policyId')]"
+                          "policyResourceId": {
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'policyResourceId')]"
                           },
                           "policyName": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'policyName')]"
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'policyName')]"
                           },
                           "recoveryVaultName": {
                             "value": "[parameters('recoveryVaultName')]"
@@ -1085,24 +1874,25 @@
                           "sourceProtectionContainerName": {
                             "value": "[parameters('name')]"
                           },
-                          "targetProtectionContainerId": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetProtectionContainerId')]"
+                          "targetProtectionContainerResourceId": {
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'targetProtectionContainerResourceId')]"
                           },
                           "targetContainerFabricName": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerFabricName')]"
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'targetContainerFabricName')]"
                           },
                           "targetContainerName": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerName')]"
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'targetContainerName')]"
                           }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "1224703613168192078"
+                              "templateHash": "1452689332019027380"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -1127,9 +1917,9 @@
                                 "description": "Conditional. The name of the parent source Replication container. Required if the template is used in a standalone deployment."
                               }
                             },
-                            "targetProtectionContainerId": {
+                            "targetProtectionContainerResourceId": {
                               "type": "string",
-                              "defaultValue": "",
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
                               }
@@ -1138,17 +1928,17 @@
                               "type": "string",
                               "defaultValue": "[parameters('replicationFabricName')]",
                               "metadata": {
-                                "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerId is specified, this parameter will be ignored."
+                                "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
                               }
                             },
                             "targetContainerName": {
                               "type": "string",
                               "defaultValue": "",
                               "metadata": {
-                                "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerId is not. If targetProtectionContainerId is specified, this parameter will be ignored."
+                                "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
                               }
                             },
-                            "policyId": {
+                            "policyResourceId": {
                               "type": "string",
                               "defaultValue": "",
                               "metadata": {
@@ -1159,7 +1949,7 @@
                               "type": "string",
                               "defaultValue": "",
                               "metadata": {
-                                "description": "Optional. Name of the replication policy. Will be ignored if policyId is also specified."
+                                "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
                               }
                             },
                             "name": {
@@ -1171,38 +1961,56 @@
                             }
                           },
                           "variables": {
-                            "policyResourceId": "[if(not(equals(parameters('policyId'), '')), parameters('policyId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
-                            "targetProtectionContainerResourceId": "[if(not(equals(parameters('targetProtectionContainerId'), '')), parameters('targetProtectionContainerId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
-                            "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('targetProtectionContainerResourceId'), '/')[10]))]"
+                            "calcPolicyResourceId": "[if(not(empty(parameters('policyResourceId'))), parameters('policyResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
+                            "calcTargetProtectionContainerResourceId": "[if(not(empty(parameters('targetProtectionContainerResourceId'))), parameters('targetProtectionContainerResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
+                            "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('calcTargetProtectionContainerResourceId'), '/')[10]))]"
                           },
-                          "resources": [
-                            {
+                          "resources": {
+                            "recoveryServicesVault::replicationFabric::replicationContainer": {
+                              "existing": true,
+                              "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
+                              "apiVersion": "2022-10-01",
+                              "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'))]"
+                            },
+                            "recoveryServicesVault::replicationFabric": {
+                              "existing": true,
+                              "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
+                              "apiVersion": "2022-10-01",
+                              "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
+                            },
+                            "recoveryServicesVault": {
+                              "existing": true,
+                              "type": "Microsoft.RecoveryServices/vaults",
+                              "apiVersion": "2024-10-01",
+                              "name": "[parameters('recoveryVaultName')]"
+                            },
+                            "replicationContainer": {
                               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings",
                               "apiVersion": "2022-10-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]",
                               "properties": {
-                                "targetProtectionContainerId": "[variables('targetProtectionContainerResourceId')]",
-                                "policyId": "[variables('policyResourceId')]",
+                                "targetProtectionContainerId": "[variables('calcTargetProtectionContainerResourceId')]",
+                                "policyId": "[variables('calcPolicyResourceId')]",
                                 "providerSpecificInput": {
                                   "instanceType": "A2A"
                                 }
                               }
                             }
-                          ],
+                          },
                           "outputs": {
                             "name": {
                               "type": "string",
                               "metadata": {
                                 "description": "The name of the replication container."
                               },
-                              "value": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]"
+                              "value": "[variables('mappingName')]"
                             },
                             "resourceId": {
                               "type": "string",
                               "metadata": {
                                 "description": "The resource ID of the replication container."
                               },
-                              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings', split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[0], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[1], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[2], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[3])]"
+                              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
@@ -1215,24 +2023,24 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[0], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[1], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[2])]"
+                        "replicationContainer"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
                       "metadata": {
                         "description": "The name of the replication container."
                       },
-                      "value": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]"
+                      "value": "[parameters('name')]"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource ID of the replication container."
                       },
-                      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[0], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[1], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[2])]"
+                      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]"
                     },
                     "resourceGroupName": {
                       "type": "string",
@@ -1245,24 +2053,24 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics', split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1])]"
+                "replicationFabric"
               ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The name of the replication fabric."
               },
-              "value": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]"
+              "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the replication fabric."
               },
-              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics', split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1])]"
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics', parameters('recoveryVaultName'), parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -1282,7 +2090,7 @@
     "rsv_replicationPolicies": {
       "copy": {
         "name": "rsv_replicationPolicies",
-        "count": "[length(parameters('replicationPolicies'))]"
+        "count": "[length(coalesce(parameters('replicationPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1294,22 +2102,22 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('replicationPolicies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('replicationPolicies'), createArray())[copyIndex()].name]"
           },
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
           "appConsistentFrequencyInMinutes": {
-            "value": "[coalesce(tryGet(parameters('replicationPolicies')[copyIndex()], 'appConsistentFrequencyInMinutes'), 60)]"
+            "value": "[tryGet(coalesce(parameters('replicationPolicies'), createArray())[copyIndex()], 'appConsistentFrequencyInMinutes')]"
           },
           "crashConsistentFrequencyInMinutes": {
-            "value": "[coalesce(tryGet(parameters('replicationPolicies')[copyIndex()], 'crashConsistentFrequencyInMinutes'), 5)]"
+            "value": "[tryGet(coalesce(parameters('replicationPolicies'), createArray())[copyIndex()], 'crashConsistentFrequencyInMinutes')]"
           },
           "multiVmSyncStatus": {
-            "value": "[coalesce(tryGet(parameters('replicationPolicies')[copyIndex()], 'multiVmSyncStatus'), 'Enable')]"
+            "value": "[tryGet(coalesce(parameters('replicationPolicies'), createArray())[copyIndex()], 'multiVmSyncStatus')]"
           },
           "recoveryPointHistory": {
-            "value": "[coalesce(tryGet(parameters('replicationPolicies')[copyIndex()], 'recoveryPointHistory'), 1440)]"
+            "value": "[tryGet(coalesce(parameters('replicationPolicies'), createArray())[copyIndex()], 'recoveryPointHistory')]"
           }
         },
         "template": {
@@ -1525,14 +2333,14 @@
         "rsv"
       ]
     },
-    "rsv_backupFabric_protectionContainers": {
+    "rsv_backupFabric_protectionContainer_protectedItems": {
       "copy": {
-        "name": "rsv_backupFabric_protectionContainers",
-        "count": "[length(parameters('protectionContainers'))]"
+        "name": "rsv_backupFabric_protectionContainer_protectedItems",
+        "count": "[length(coalesce(parameters('protectedItems'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-RSV-ProtectionContainers-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-ProtectedItem-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1543,52 +2351,54 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('protectionContainers')[copyIndex()].name]"
-          },
-          "sourceResourceId": {
-            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'sourceResourceId')]"
-          },
-          "friendlyName": {
-            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'friendlyName')]"
-          },
-          "backupManagementType": {
-            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'backupManagementType')]"
-          },
-          "containerType": {
-            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'containerType')]"
-          },
-          "protectedItems": {
-            "value": "[coalesce(tryGet(parameters('protectionContainers')[copyIndex()], 'protectedItems'), createArray())]"
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].name]"
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "policyName": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].policyName]"
+          },
+          "protectedItemType": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].protectedItemType]"
+          },
+          "protectionContainerName": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].protectionContainerName]"
+          },
+          "sourceResourceId": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].sourceResourceId]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6107144281664309791"
+              "templateHash": "8205166848462332551"
             },
-            "name": "Recovery Services Vault Protection Container",
-            "description": "This module deploys a Recovery Services Vault Protection Container.",
+            "name": "Recovery Service Vaults Protection Container Protected Item",
+            "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the resource."
+              }
+            },
+            "protectionContainerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. Name of the Azure Recovery Service Vault Protection Container. Required if the template is used in a standalone deployment."
+              }
+            },
             "recoveryVaultName": {
               "type": "string",
               "metadata": {
                 "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
-              }
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Name of the Azure Recovery Service Vault Protection Container."
               }
             },
             "location": {
@@ -1598,258 +2408,84 @@
                 "description": "Optional. Location for all resources."
               }
             },
-            "backupManagementType": {
+            "protectedItemType": {
               "type": "string",
-              "nullable": true,
               "allowedValues": [
-                "AzureBackupServer",
-                "AzureIaasVM",
-                "AzureSql",
-                "AzureStorage",
-                "AzureWorkload",
-                "DPM",
-                "DefaultBackup",
-                "Invalid",
-                "MAB"
+                "AzureFileShareProtectedItem",
+                "AzureVmWorkloadSAPAseDatabase",
+                "AzureVmWorkloadSAPHanaDatabase",
+                "AzureVmWorkloadSQLDatabase",
+                "DPMProtectedItem",
+                "GenericProtectedItem",
+                "MabFileFolderProtectedItem",
+                "Microsoft.ClassicCompute/virtualMachines",
+                "Microsoft.Compute/virtualMachines",
+                "Microsoft.Sql/servers/databases"
               ],
               "metadata": {
-                "description": "Optional. Backup management type to execute the current Protection Container job."
+                "description": "Required. The backup item type."
+              }
+            },
+            "policyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The backup policy with which this item is backed up."
               }
             },
             "sourceResourceId": {
               "type": "string",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Resource ID of the target resource for the Protection Container."
-              }
-            },
-            "friendlyName": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Friendly name of the Protection Container."
-              }
-            },
-            "protectedItems": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. Protected items to register in the container."
-              }
-            },
-            "containerType": {
-              "type": "string",
-              "nullable": true,
-              "allowedValues": [
-                "AzureBackupServerContainer",
-                "AzureSqlContainer",
-                "GenericContainer",
-                "Microsoft.ClassicCompute/virtualMachines",
-                "Microsoft.Compute/virtualMachines",
-                "SQLAGWorkLoadContainer",
-                "StorageContainer",
-                "VMAppContainer",
-                "Windows"
-              ],
-              "metadata": {
-                "description": "Optional. Type of the container."
+                "description": "Required. Resource ID of the resource to back up."
               }
             }
           },
-          "resources": {
-            "protectionContainer": {
-              "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers",
-              "apiVersion": "2023-01-01",
-              "name": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+          "resources": [
+            {
+              "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
+              "apiVersion": "2024-10-01",
+              "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
+              "location": "[parameters('location')]",
               "properties": {
-                "sourceResourceId": "[parameters('sourceResourceId')]",
-                "friendlyName": "[parameters('friendlyName')]",
-                "backupManagementType": "[parameters('backupManagementType')]",
-                "containerType": "[if(not(empty(parameters('containerType'))), parameters('containerType'), null())]"
+                "protectedItemType": "[parameters('protectedItemType')]",
+                "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('recoveryVaultName'), parameters('policyName'))]",
+                "sourceResourceId": "[parameters('sourceResourceId')]"
               }
-            },
-            "protectionContainer_protectedItems": {
-              "copy": {
-                "name": "protectionContainer_protectedItems",
-                "count": "[length(parameters('protectedItems'))]"
-              },
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-ProtectedItem-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "policyId": {
-                    "value": "[parameters('protectedItems')[copyIndex()].policyId]"
-                  },
-                  "name": {
-                    "value": "[parameters('protectedItems')[copyIndex()].name]"
-                  },
-                  "protectedItemType": {
-                    "value": "[parameters('protectedItems')[copyIndex()].protectedItemType]"
-                  },
-                  "protectionContainerName": {
-                    "value": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]"
-                  },
-                  "recoveryVaultName": {
-                    "value": "[parameters('recoveryVaultName')]"
-                  },
-                  "sourceResourceId": {
-                    "value": "[parameters('protectedItems')[copyIndex()].sourceResourceId]"
-                  },
-                  "location": {
-                    "value": "[parameters('location')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "8409556960090427141"
-                    },
-                    "name": "Recovery Service Vaults Protection Container Protected Item",
-                    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
-                    "owner": "Azure/module-maintainers"
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the resource."
-                      }
-                    },
-                    "protectionContainerName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. Name of the Azure Recovery Service Vault Protection Container. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "recoveryVaultName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "location": {
-                      "type": "string",
-                      "defaultValue": "[resourceGroup().location]",
-                      "metadata": {
-                        "description": "Optional. Location for all resources."
-                      }
-                    },
-                    "protectedItemType": {
-                      "type": "string",
-                      "allowedValues": [
-                        "AzureFileShareProtectedItem",
-                        "AzureVmWorkloadSAPAseDatabase",
-                        "AzureVmWorkloadSAPHanaDatabase",
-                        "AzureVmWorkloadSQLDatabase",
-                        "DPMProtectedItem",
-                        "GenericProtectedItem",
-                        "MabFileFolderProtectedItem",
-                        "Microsoft.ClassicCompute/virtualMachines",
-                        "Microsoft.Compute/virtualMachines",
-                        "Microsoft.Sql/servers/databases"
-                      ],
-                      "metadata": {
-                        "description": "Required. The backup item type."
-                      }
-                    },
-                    "policyId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. ID of the backup policy with which this item is backed up."
-                      }
-                    },
-                    "sourceResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Resource ID of the resource to back up."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
-                      "apiVersion": "2023-01-01",
-                      "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
-                      "location": "[parameters('location')]",
-                      "properties": {
-                        "protectedItemType": "[parameters('protectedItemType')]",
-                        "policyId": "[parameters('policyId')]",
-                        "sourceResourceId": "[parameters('sourceResourceId')]"
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the Resource Group the protected item was created in."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the protected item."
-                      },
-                      "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems', split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[2], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[3])]"
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The Name of the protected item."
-                      },
-                      "value": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]"
-                    }
-                  }
-                }
-              },
-              "dependsOn": [
-                "protectionContainer"
-              ]
             }
-          },
+          ],
           "outputs": {
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the Resource Group the Protection Container was created in."
+                "description": "The name of the Resource Group the protected item was created in."
               },
               "value": "[resourceGroup().name]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the Protection Container."
+                "description": "The resource ID of the protected item."
               },
-              "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers', split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[2])]"
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems', split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[2], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[3])]"
             },
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The Name of the Protection Container."
+                "description": "The Name of the protected item."
               },
-              "value": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]"
+              "value": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]"
             }
           }
         }
       },
       "dependsOn": [
-        "rsv"
+        "rsv",
+        "rsv_backupPolicies"
       ]
     },
     "rsv_backupPolicies": {
       "copy": {
         "name": "rsv_backupPolicies",
-        "count": "[length(parameters('backupPolicies'))]"
+        "count": "[length(coalesce(parameters('backupPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1864,10 +2500,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('backupPolicies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('backupPolicies'), createArray())[copyIndex()].name]"
           },
           "properties": {
-            "value": "[parameters('backupPolicies')[copyIndex()].properties]"
+            "value": "[coalesce(parameters('backupPolicies'), createArray())[copyIndex()].properties]"
           }
         },
         "template": {
@@ -1877,7 +2513,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7139861727518132001"
+              "templateHash": "4639298378196651590"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy.",
@@ -1906,7 +2542,7 @@
           "resources": [
             {
               "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": "[parameters('properties')]"
             }
@@ -1955,28 +2591,28 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'name'), 'vaultconfig')]"
+            "value": "[tryGet(parameters('backupConfig'), 'name')]"
           },
           "enhancedSecurityState": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'enhancedSecurityState'), 'Enabled')]"
+            "value": "[tryGet(parameters('backupConfig'), 'enhancedSecurityState')]"
           },
           "resourceGuardOperationRequests": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'resourceGuardOperationRequests'), createArray())]"
+            "value": "[tryGet(parameters('backupConfig'), 'resourceGuardOperationRequests')]"
           },
           "softDeleteFeatureState": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'softDeleteFeatureState'), 'Enabled')]"
+            "value": "[tryGet(parameters('backupConfig'), 'softDeleteFeatureState')]"
           },
           "storageModelType": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'storageModelType'), 'GeoRedundant')]"
+            "value": "[tryGet(parameters('backupConfig'), 'storageModelType')]"
           },
           "storageType": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'storageType'), 'GeoRedundant')]"
+            "value": "[tryGet(parameters('backupConfig'), 'storageType')]"
           },
           "storageTypeState": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'storageTypeState'), 'Locked')]"
+            "value": "[tryGet(parameters('backupConfig'), 'storageTypeState')]"
           },
           "isSoftDeleteFeatureStateEditable": {
-            "value": "[coalesce(tryGet(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable'), true())]"
+            "value": "[tryGet(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable')]"
           }
         },
         "template": {
@@ -2143,23 +2779,24 @@
             "value": "[parameters('name')]"
           },
           "customEmailAddresses": {
-            "value": "[coalesce(tryGet(parameters('replicationAlertSettings'), 'customEmailAddresses'), createArray())]"
+            "value": "[tryGet(parameters('replicationAlertSettings'), 'customEmailAddresses')]"
           },
           "locale": {
-            "value": "[coalesce(tryGet(parameters('replicationAlertSettings'), 'locale'), '')]"
+            "value": "[tryGet(parameters('replicationAlertSettings'), 'locale')]"
           },
           "sendToOwners": {
-            "value": "[coalesce(tryGet(parameters('replicationAlertSettings'), 'sendToOwners'), 'Send')]"
+            "value": "[tryGet(parameters('replicationAlertSettings'), 'sendToOwners')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17490215492719435947"
+              "templateHash": "3276613868849082513"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings.",
@@ -2181,9 +2818,12 @@
             },
             "customEmailAddresses": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Comma separated list of custom email address for sending alert emails."
+                "description": "Optional. The custom email address for sending emails."
               }
             },
             "locale": {
@@ -2205,18 +2845,24 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "recoveryVault": {
+              "existing": true,
+              "type": "Microsoft.RecoveryServices/vaults",
+              "apiVersion": "2023-01-01",
+              "name": "[parameters('recoveryVaultName')]"
+            },
+            "replicationAlertSettings": {
               "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
               "apiVersion": "2022-10-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": {
-                "customEmailAddresses": "[if(not(empty(parameters('customEmailAddresses'))), parameters('customEmailAddresses'), null())]",
+                "customEmailAddresses": "[parameters('customEmailAddresses')]",
                 "locale": "[parameters('locale')]",
                 "sendToOwners": "[parameters('sendToOwners')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -2307,8 +2953,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1277254088602407590"
+              "version": "0.30.23.60470",
+              "templateHash": "6724714132049298262"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2334,80 +2980,162 @@
                     "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
-            "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
+            "ipConfigurationType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
+                },
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
                     }
                   },
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "manualPrivateLinkServiceConnectionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the private link service connection."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
+                      }
+                    },
+                    "privateLinkServiceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource id of private link service."
+                      }
+                    },
+                    "requestMessage": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private link service connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "privateLinkServiceConnectionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the private link service connection."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
+                      }
+                    },
+                    "privateLinkServiceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource id of private link service."
+                      }
+                    },
+                    "requestMessage": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private link service connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "customDnsConfigType": {
+              "type": "object",
+              "properties": {
+                "fqdn": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
+                  }
+                },
+                "ipAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private IP addresses of the private endpoint."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
             },
             "lockType": {
               "type": "object",
@@ -2432,161 +3160,12 @@
                   }
                 }
               },
-              "nullable": true
-            },
-            "ipConfigurationsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the resource that is unique within a resource group."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                        }
-                      },
-                      "memberName": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                        }
-                      },
-                      "privateIPAddress": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private endpoint IP configurations."
-                    }
-                  }
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
                 }
-              },
-              "nullable": true
-            },
-            "manualPrivateLinkServiceConnectionsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the private link service connection."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupIds": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                        }
-                      },
-                      "privateLinkServiceId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The resource id of private link service."
-                        }
-                      },
-                      "requestMessage": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private link service connection."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "privateLinkServiceConnectionsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the private link service connection."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupIds": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                        }
-                      },
-                      "privateLinkServiceId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The resource id of private link service."
-                        }
-                      },
-                      "requestMessage": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private link service connection."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "customDnsConfigType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "fqdn": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint IP address."
-                    }
-                  },
-                  "ipAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "metadata": {
-                      "description": "Required. A list of private IP addresses of the private endpoint."
-                    }
-                  }
-                }
-              },
-              "nullable": true
+              }
             },
             "privateDnsZoneGroupConfigType": {
               "type": "object",
@@ -2610,6 +3189,81 @@
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
               }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -2627,6 +3281,9 @@
             },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
@@ -2640,7 +3297,11 @@
               }
             },
             "ipConfigurations": {
-              "$ref": "#/definitions/ipConfigurationsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipConfigurationType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
@@ -2661,12 +3322,17 @@
             },
             "lock": {
               "$ref": "#/definitions/lockType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The lock settings of the service."
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
@@ -2679,19 +3345,31 @@
               }
             },
             "customDnsConfigs": {
-              "$ref": "#/definitions/customDnsConfigType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/manualPrivateLinkServiceConnectionType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
               }
             },
             "privateLinkServiceConnections": {
-              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A grouping of information about the connection to the remote resource."
               }
@@ -2722,7 +3400,7 @@
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             }
           },
           "resources": {
@@ -2730,7 +3408,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2836,8 +3514,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "5805178546717255803"
+                      "version": "0.30.23.60470",
+                      "templateHash": "12329174801198479603"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2985,25 +3663,32 @@
               "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
             },
             "customDnsConfig": {
-              "$ref": "#/definitions/customDnsConfigType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
               "metadata": {
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
             },
-            "networkInterfaceIds": {
+            "networkInterfaceResourceIds": {
               "type": "array",
-              "metadata": {
-                "description": "The IDs of the network interfaces associated with the private endpoint."
+              "items": {
+                "type": "string"
               },
-              "value": "[reference('privateEndpoint').networkInterfaces]"
+              "metadata": {
+                "description": "The resource IDs of the network interfaces associated with the private endpoint."
+              },
+              "value": "[map(reference('privateEndpoint').networkInterfaces, lambda('nic', lambdaVariables('nic').id))]"
             },
             "groupId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The group Id for the private endpoint Group."
               },
-              "value": "[if(and(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), greater(length(tryGet(reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties, 'groupIds')), 0)), coalesce(tryGet(reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties, 'groupIds', 0), ''), if(and(not(empty(reference('privateEndpoint').privateLinkServiceConnections)), greater(length(tryGet(reference('privateEndpoint').privateLinkServiceConnections[0].properties, 'groupIds')), 0)), coalesce(tryGet(reference('privateEndpoint').privateLinkServiceConnections[0].properties, 'groupIds', 0), ''), ''))]"
+              "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'manualPrivateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0), tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'privateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0))]"
             }
           }
         }
@@ -3037,10 +3722,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('rsv', '2024-04-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('rsv', '2024-04-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
@@ -3060,8 +3746,8 @@
           "name": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
           "groupId": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "customDnsConfigs": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceResourceIds": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
     }

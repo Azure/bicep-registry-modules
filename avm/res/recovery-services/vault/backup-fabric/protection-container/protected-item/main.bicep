@@ -29,18 +29,26 @@ param location string = resourceGroup().location
 @description('Required. The backup item type.')
 param protectedItemType string
 
-@description('Required. ID of the backup policy with which this item is backed up.')
-param policyId string
+@description('Required. The backup policy with which this item is backed up.')
+param policyName string
 
 @description('Required. Resource ID of the resource to back up.')
 param sourceResourceId string
 
-resource protectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems@2023-01-01' = {
+resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
+  name: recoveryVaultName
+
+  resource backupPolicy 'backupPolicies@2024-10-01' existing = {
+    name: policyName
+  }
+}
+
+resource protectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems@2024-10-01' = {
   name: '${recoveryVaultName}/Azure/${protectionContainerName}/${name}'
   location: location
   properties: {
     protectedItemType: any(protectedItemType)
-    policyId: policyId
+    policyId: rsv::backupPolicy.id
     sourceResourceId: sourceResourceId
   }
 }

@@ -14,28 +14,28 @@ param replicationFabricName string
 param sourceProtectionContainerName string
 
 @description('Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored.')
-param targetProtectionContainerId string = ''
+param targetProtectionContainerResourceId string?
 
-@description('Optional. Name of the fabric containing the target container. If targetProtectionContainerId is specified, this parameter will be ignored.')
+@description('Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored.')
 param targetContainerFabricName string = replicationFabricName
 
-@description('Optional. Name of the target container. Must be specified if targetProtectionContainerId is not. If targetProtectionContainerId is specified, this parameter will be ignored.')
+@description('Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored.')
 param targetContainerName string = ''
 
 @description('Optional. Resource ID of the replication policy. If defined, policyName will be ignored.')
-param policyId string = ''
+param policyResourceId string = ''
 
-@description('Optional. Name of the replication policy. Will be ignored if policyId is also specified.')
+@description('Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified.')
 param policyName string = ''
 
 @description('Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`.')
 param name string = ''
 
-var policyResourceId = policyId != ''
-  ? policyId
+var calcPolicyResourceId = !empty(policyResourceId)
+  ? policyResourceId
   : subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', recoveryVaultName, policyName)
-var targetProtectionContainerResourceId = targetProtectionContainerId != ''
-  ? targetProtectionContainerId
+var calcTargetProtectionContainerResourceId = !empty(targetProtectionContainerResourceId)
+  ? targetProtectionContainerResourceId
   : subscriptionResourceId(
       'Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers',
       recoveryVaultName,
@@ -44,13 +44,26 @@ var targetProtectionContainerResourceId = targetProtectionContainerId != ''
     )
 var mappingName = !empty(name)
   ? name
-  : '${sourceProtectionContainerName}-${split(targetProtectionContainerResourceId, '/')[10]}'
+  : '${sourceProtectionContainerName}-${split(calcTargetProtectionContainerResourceId!, '/')[10]}'
+
+resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2024-10-01' existing = {
+  name: recoveryVaultName
+
+  resource replicationFabric 'replicationFabrics@2022-10-01' existing = {
+    name: replicationFabricName
+
+    resource replicationContainer 'replicationProtectionContainers@2022-10-01' existing = {
+      name: sourceProtectionContainerName
+    }
+  }
+}
 
 resource replicationContainer 'Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings@2022-10-01' = {
-  name: '${recoveryVaultName}/${replicationFabricName}/${sourceProtectionContainerName}/${mappingName}'
+  name: mappingName
+  parent: recoveryServicesVault::replicationFabric::replicationContainer
   properties: {
-    targetProtectionContainerId: targetProtectionContainerResourceId
-    policyId: policyResourceId
+    targetProtectionContainerId: calcTargetProtectionContainerResourceId
+    policyId: calcPolicyResourceId
     providerSpecificInput: {
       instanceType: 'A2A'
     }
