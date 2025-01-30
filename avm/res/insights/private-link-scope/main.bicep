@@ -155,7 +155,7 @@ resource privateLinkScope_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: privateLinkScope
 }
 
-module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
+module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-privateLinkScope-PrivateEndpoint-${index}'
     // use the subnet resource group if the resource group is not explicitly provided
@@ -253,7 +253,7 @@ output privateEndpoints array = [
     name: privateLinkScope_privateEndpoints[i].outputs.name
     resourceId: privateLinkScope_privateEndpoints[i].outputs.resourceId
     groupId: privateLinkScope_privateEndpoints[i].outputs.groupId
-    customDnsConfig: privateLinkScope_privateEndpoints[i].outputs.customDnsConfig
+    customDnsConfig: privateLinkScope_privateEndpoints[i].outputs.customDnsConfigs
     networkInterfaceIds: privateLinkScope_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
