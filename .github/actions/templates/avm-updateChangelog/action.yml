@@ -1,0 +1,60 @@
+#########################################################
+## 'Publishing' Composite Action                   ##
+#########################################################
+##
+## This composite action contains the logic to publish a given module to the Public Bicep Registry.
+##
+#########################################################
+##
+##-------------------------------------------##
+## ACTION PARAMETERS                         ##
+##-------------------------------------------##
+##
+##   |==============================================================================================================================================================================================================|
+##   | Parameter                  | Required | Default | Description                                                                                       | Example                                                |
+##   |----------------------------|----------|---------|---------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+##   | templateFilePath           | true     | ''      | The path to the template file to publish                                                          | 'modules/api-management/service'                       |
+##   |==============================================================================================================================================================================================================|
+##
+##---------------------------------------------##
+name: "Update Changelog"
+description: "Update Changelog"
+
+inputs:
+  templateFilePath:
+    description: "The path to the template file to publish"
+    required: true
+  modulePath:
+    description: "Relative path to the module folder"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Generate the CHANGELOG.md file"
+      id: generate_changelog_step
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Modify the changelog file'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Set-ModuleChangelog.ps1')
+
+          $functionInput = @{
+            ModulePath = "${{ inputs.modulePath}}"
+          }
+
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          if($changelogOutput = Set-ModuleChangelog @functionInput -Verbose) {
+            $changelogOutput.Keys | Foreach-Object {
+              Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $changelogOutput.$_) -Verbose
+              Write-Output ('{0}={1}' -f $_, $changelogOutput.$_) >> $env:GITHUB_OUTPUT
+            }
+          }
+
+          Write-Output '::endgroup::'

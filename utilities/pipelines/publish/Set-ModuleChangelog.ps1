@@ -2,43 +2,51 @@
 
     [CmdletBinding()]
     param (
-        # avm/res/app/job/CHANGELOG.md avm/res/app/job/README.md
-        # [Parameter(Mandatory)]
-        # [array] $Files
         [Parameter(Mandatory)]
-        [string] $RepoRoot
+        [string] $ModulePath,
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
     )
 
-    Write-Verbose "Setting module changelog - RepoRoot: $RepoRoot" -Verbose
+    # Load used functions
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
 
-    # $FileArray = $Files.split(' ')
-    # Write-Host "Setting module changelog - FileArray: $FileArray"
+    Write-Verbose "Set-ModuleChangelog - ModulePath: $ModulePath" -Verbose
+    Write-Verbose "Set-ModuleChangelog - RepoRoot: $RepoRoot" -Verbose
 
-    # # parse input array to get module path and filename
-    # $ProcessedFiles = @()
-    # $FileArray | ForEach-Object {
-    #     $splitArray = $_ -split '/'
-    #     $modulePath = "$($splitArray[1])/$($splitArray[2])/$($splitArray[3])"
-    #     $filename = $splitArray[4]
-    #     $ProcessedFiles += [PSCustomObject]@{ ModulePath = $modulePath; Filename = $filename }
-    # }
+    $fullModulePath = Join-Path -Path $RepoRoot $ModulePath
+    $changelogFilePath = Join-Path -Path $fullModulePath 'CHANGELOG.md'
+    if (-not (Test-Path -Path $changelogFilePath)) {
+        Write-Warning -Message "CHANGELOG.md file not found in $fullModulePath."
+        return
+    }
 
-    # # group files by module path, to check if there are multiple files for a module
-    # $GroupedFiles = $ProcessedFiles | Group-Object -Property ModulePath
-    # $GroupedFiles | ForEach-Object {
-    #     # Write-Host "ModulePath: $($_.Name)"
-    #     # $_.Group | ForEach-Object {
-    #     #     Write-Host "  Filename: $($_.Filename)"
-    #     # }
-    #     if ($_.Count -gt 1) {
-    #         Write-Host "Multiple files found for module path $($_.Name). Parsing changelog file."
-    #         $changelogContent = Get-Content "avm/$modulePath/CHANGELOG.md"
-    #         $sections = $changelogContent | Where-Object { $_ -match '^##' }
-    #         $changelogSection = $sections | Where-Object { $_ -match '^##\s+unreleased' }
+    # get new version
+    $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $fullModulePath
+    Write-Verbose "The module's new version is: $moduleVersion" -Verbose
 
-    #     }
-    # }
+    # modify changelog content
+    $changelogContent = Get-Content $changelogFilePath
+    $changelogSection = $changelogContent | Where-Object { $_ -match '^##\s+unreleased' }
+    if (!$changelogSection) {
+        Write-Error -Message "'## unreleased' section not found in $changelogFilePath."
+        return
+    }
+    Write-Verbose ('Setting the new version and date in the changelog file "{0}"' -f $changelogFilePath) -Verbose
+    $newChangelogContent = $changelogContent -replace '^##\s+unreleased', ("## $moduleVersion - " + (Get-Date -Format 'yyyy-MM-dd'))
+    Set-Content -Path $changelogFilePath -Value $newChangelogContent -Verbose
 
-    # TODO: Implement logic to set module changelog
-    return 'TODO: CHANGELOG.md File Content'
+    # Update the changelog file and commit the changes
+    Write-Verbose 'Updating and commiting the changelog file' -Verbose
+    git config --global user.name 'github-actions[bot]'
+    git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+    git add $changelogFilePath
+    git commit -m "Updating CHANGELOG.md to version $moduleVersion" $changelogFilePath
+    git push --verbose
+
+    return @{
+        version          = $moduleVersion
+        changelogContent = $changelogContent
+    }
 }
