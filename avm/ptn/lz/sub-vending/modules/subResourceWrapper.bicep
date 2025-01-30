@@ -1099,6 +1099,11 @@ module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (vi
     virtualNetworkResourceId: createLzVnet.outputs.resourceId
     location: virtualNetworkLocation
     skuName: virtualNetworkBastionConfiguration.?bastionSku ?? 'Standard'
+    disableCopyPaste: virtualNetworkBastionConfiguration.?disableCopyPaste ?? true
+    enableFileCopy: virtualNetworkBastionConfiguration.?enableFileCopy ?? false
+    enableIpConnect: virtualNetworkBastionConfiguration.?enableIpConnect ?? false
+    enableShareableLink: virtualNetworkBastionConfiguration.?enableShareableLink ?? false
+    scaleUnits: virtualNetworkBastionConfiguration.?scaleUnits ?? 1
     enableTelemetry: enableTelemetry
   }
 }
@@ -1120,7 +1125,7 @@ type natGatewayType = {
   @description('Optional. The name of the NAT gateway.')
   name: string?
 
-  @description('Optional. The availability zones of the NAT gateway.')
+  @description('Optional. The availability zones of the NAT gateway. Check the availability zone guidance for NAT gateway to understand how to map NAT gateway zone to the associated Public IP address zones (https://learn.microsoft.com/azure/nat-gateway/nat-availability-zones).')
   zones: int?
 
   @description('Optional. The Public IP address(es) properties to be attached to the NAT gateway.')
@@ -1285,7 +1290,7 @@ type subnetType = {
   @description('Optional. The resource ID of the NAT Gateway to use for the subnet.')
   natGatewayResourceId: string?
 
-  @description('Optional. Option to assosciate with NAT gatway.')
+  @description('Optional. Option to associate the subnet with the NAT gatway deployed by this module.')
   associateWithNatGateway: bool?
 
   @description('Optional. The resource ID of the network security group to assign to the subnet.')
@@ -1320,6 +1325,21 @@ type bastionType = {
 
   @description('Optional. The SKU of the bastion host.')
   bastionSku: ('Basic' | 'Standard' | 'Premium')?
+
+  @description('Optional. The option to allow copy and paste.')
+  disableCopyPaste: bool?
+
+  @description('Optional. The option to allow file copy.')
+  enableFileCopy: bool?
+
+  @description('Optional. The option to allow IP connect.')
+  enableIpConnect: bool?
+
+  @description('Optional. The option to allow shareable link.')
+  enableShareableLink: bool?
+
+  @description('Optional. The number of scale units. The Basic SKU only supports 2 scale units.')
+  scaleUnits: int?
 }?
 
 @export()
@@ -1349,8 +1369,8 @@ type pimRoleAssignmentType = {
 
 @description('Optional. PIM role assignment schedule Information.')
 type scheduleInfoType = {
-  @description('Optional. The expiry information for the role eligibility.')
-  expiration: scheduleInfoExpirationType?
+  @description('Required. The expiry information for the role eligibility.')
+  expiration: scheduleInfoExpirationType
 
   @description('Required. Start DateTime of the role eligibility assignment.')
   startDateTime: string
