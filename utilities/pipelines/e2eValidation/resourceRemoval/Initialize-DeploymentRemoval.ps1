@@ -78,8 +78,7 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Insights/diagnosticSettings',
             'Microsoft.Network/privateEndpoints/privateDnsZoneGroups',
             'Microsoft.Network/privateEndpoints',
-            'Microsoft.Network/virtualHubs/routingIntent', # Must be deleted before e.g., an Azure Firewall that it is referencing
-            'Microsoft.Network/azureFirewalls', # Must be deleted before e.g., a Virtual Hub that it is using.
+            'Microsoft.Network/azureFirewalls',
             'Microsoft.Network/virtualHubs',
             'Microsoft.Network/virtualWans',
             'Microsoft.OperationsManagement/solutions',
