@@ -42,27 +42,6 @@ jobs:
           sudo mv ./bicep /usr/local/bin/bicep
           bicep --version
 
-      # - name: Update Changelog with tag and date
-      #   uses: azure/powershell@v2
-      #   with:
-      #     azPSVersion: "latest"
-      #     inlineScript: |
-      #       # Grouping task logs
-      #       Write-Output '::group::Update Changelog'
-
-      #       # Load used functions
-      #       . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleChangelog.ps1')
-      #       $functionInput = @{
-      #         RepoRoot = $env:GITHUB_WORKSPACE
-      #       }
-
-      #       Write-Verbose 'Invoke function with' -Verbose
-      #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-      #       $newChangelogContent = Set-ModuleChangelog @functionInput -Verbose
-      #       Write-Verbose ('New changelog content: {0]}' -f $newChangelogContent) -Verbose
-
-      #       Write-Output '::endgroup::'
-
       - name: "Publish tagged module to public bicep registry"
         id: publish_tag
         uses: azure/powershell@v2
@@ -109,6 +88,7 @@ jobs:
               Version             = "${{ steps.publish_tag.outputs.version }}"
               PublishedModuleName = "${{ steps.publish_tag.outputs.publishedModuleName }}"
               GitTagName          = "${{ steps.publish_tag.outputs.gitTagName }}"
+
             }
 
             Write-Verbose "Invoke function with" -Verbose
