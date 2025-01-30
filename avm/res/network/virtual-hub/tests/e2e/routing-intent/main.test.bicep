@@ -60,7 +60,6 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'connection1'
           remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
-          routingConfiguration: {}
         }
       ]
       hubRoutingPreference: 'ASPath'

@@ -312,7 +312,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       {
         name: 'connection1'
         remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
-        routingConfiguration: {}
       }
     ]
     routingIntent: {
@@ -356,8 +355,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": [
         {
           "name": "connection1",
-          "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>",
-          "routingConfiguration": {}
+          "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
         }
       ]
     },
@@ -392,7 +390,6 @@ param hubVirtualNetworkConnections = [
   {
     name: 'connection1'
     remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
-    routingConfiguration: {}
   }
 ]
 param routingIntent = {
