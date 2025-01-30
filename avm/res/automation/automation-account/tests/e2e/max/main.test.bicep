@@ -13,7 +13,7 @@ param resourceGroupName string = 'dep-${namePrefix}-automation.account-${service
 
 // Enforce uksouth to avoid restrictions around zone redundancy in certain regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'westeurope'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'aamax'
