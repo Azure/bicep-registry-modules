@@ -22,14 +22,26 @@ This module configures Routing Intent for a Virtual Hub; this module requires an
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureFirewallResourceId`](#parameter-azurefirewallresourceid) | string | Hub firewall Resource ID. |
+| [`virtualHubName`](#parameter-virtualhubname) | string | Name of the Virtual Hub. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`internetToFirewall`](#parameter-internettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
 | [`name`](#parameter-name) | string | The name of the routing intent configuration. |
 | [`privateToFirewall`](#parameter-privatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
-| [`virtualHubName`](#parameter-virtualhubname) | string | Name of the Virtual Hub. |
 
 ### Parameter: `azureFirewallResourceId`
 
 Hub firewall Resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubName`
+
+Name of the Virtual Hub.
 
 - Required: Yes
 - Type: string
@@ -63,13 +75,6 @@ Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `virtualHubName`
-
-Name of the Virtual Hub.
-
-- Required: Yes
-- Type: string
 
 ## Outputs
 

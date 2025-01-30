@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "3260237921910234165"
+      "templateHash": "7933241653038038304"
     },
     "name": "Virtual Hub Routing Intent",
     "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -24,7 +24,7 @@
         "defaultRouteTable"
       ],
       "metadata": {
-        "description": "Required. The name of the routing intent configuration."
+        "description": "Optional. The name of the routing intent configuration."
       }
     },
     "virtualHubName": {
@@ -37,14 +37,14 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Required. Configures Routing Intent to forward Private traffic to the firewall (RFC1918)."
+        "description": "Optional. Configures Routing Intent to forward Private traffic to the firewall (RFC1918)."
       }
     },
     "internetToFirewall": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Required. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0)."
+        "description": "Optional. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0)."
       }
     }
   },
