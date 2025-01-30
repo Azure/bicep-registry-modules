@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "9339643817917972102"
+      "templateHash": "16188741313666908861"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -552,7 +552,7 @@
         "ErGw3AZ"
       ],
       "metadata": {
-        "description": "Required. The SKU of the Gateway."
+        "description": "Optional. The SKU of the Gateway."
       }
     },
     "vpnType": {
