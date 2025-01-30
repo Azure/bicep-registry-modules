@@ -771,14 +771,7 @@ A list of availability zones denoting the IP allocated for the resource needs to
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
+- Default: `[]`
 - Allowed:
   ```Bicep
   [
