@@ -1,6 +1,5 @@
 metadata name = 'Container Registries Credential Sets'
 metadata description = 'This module deploys an ACR Credential Set.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string
@@ -47,7 +46,7 @@ output resourceGroupName string = resourceGroup().name
 output resourceId string = credentialSet.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = credentialSet.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = credentialSet.?identity.?principalId
 
 // =============== //
 //   Definitions   //

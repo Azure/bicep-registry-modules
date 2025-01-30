@@ -1,6 +1,5 @@
 metadata name = 'Disk Encryption Sets'
 metadata description = 'This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the disk encryption set that is being created.')
 param name string
@@ -214,7 +213,7 @@ output name string = diskEncryptionSet.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = diskEncryptionSet.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = diskEncryptionSet.?identity.?principalId
 
 @description('The idenities of the disk encryption set.')
 output identities object = diskEncryptionSet.identity

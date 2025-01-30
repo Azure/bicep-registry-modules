@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12976219964590265329"
+      "templateHash": "1544899685990336416"
     },
     "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
-    "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
   },
   "parameters": {
     "mongoClusterName": {

@@ -1,6 +1,5 @@
 metadata name = 'Redis Cache Linked Servers'
 metadata description = 'This module connects a primary and secondary Redis Cache together for geo-replication.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Primary Redis cache name.')
 param redisCacheName string
@@ -17,11 +16,11 @@ param linkedRedisCacheLocation string?
 @description('Optional. The role of the linked server. Possible values include: "Primary", "Secondary". Default value is "Secondary".')
 param serverRole string = 'Secondary'
 
-resource redisCache 'Microsoft.Cache/redis@2024-03-01' existing = {
+resource redisCache 'Microsoft.Cache/redis@2024-11-01' existing = {
   name: redisCacheName
 }
 
-resource redisLinkedServer 'Microsoft.Cache/redis/linkedServers@2024-03-01' = {
+resource redisLinkedServer 'Microsoft.Cache/redis/linkedServers@2024-11-01' = {
   name: name
   properties: {
     linkedRedisCacheId: linkedRedisCacheResourceId

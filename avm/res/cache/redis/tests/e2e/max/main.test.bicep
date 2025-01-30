@@ -174,9 +174,5 @@ module testDeployment '../../../main.bicep' = [
         resourceType: 'Redis Cache'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

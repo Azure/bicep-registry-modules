@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7947618410451373301"
+      "templateHash": "8291521551754556445"
     },
     "name": "Azure Monitor Private Link Scopes",
-    "description": "This module deploys an Azure Monitor Private Link Scope.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Monitor Private Link Scope."
   },
   "definitions": {
     "privateEndpointType": {
@@ -629,11 +628,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10288768513135810035"
+              "templateHash": "15902182804479467110"
             },
             "name": "Private Link Scope Scoped Resources",
-            "description": "This module deploys a Private Link Scope Scoped Resource.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private Link Scope Scoped Resource."
           },
           "parameters": {
             "name": {

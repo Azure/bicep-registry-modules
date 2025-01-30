@@ -1,6 +1,5 @@
 metadata name = 'Data Protection Backup Vaults'
 metadata description = 'This module deploys a Data Protection Backup Vault.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Backup Vault.')
 param name string
@@ -187,7 +186,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = backupVault.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = backupVault.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = backupVault.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = backupVault.location

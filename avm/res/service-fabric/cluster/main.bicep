@@ -1,6 +1,5 @@
 metadata name = 'Service Fabric Clusters'
 metadata description = 'This module deploys a Service Fabric Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Service Fabric cluster.')
 param name string
@@ -11,8 +10,9 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @allowed([
   'BackupRestoreService'
@@ -30,16 +30,16 @@ param maxUnusedVersionsToKeep int = 3
 param azureActiveDirectory object = {}
 
 @description('Conditional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used.')
-param certificate certificateType
+param certificate certificateType?
 
 @description('Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.')
-param certificateCommonNames certificateCommonNameType
+param certificateCommonNames certificateCommonNameType?
 
 @description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used.')
-param clientCertificateCommonNames clientCertificateCommonNameType
+param clientCertificateCommonNames clientCertificateCommonNameType[]?
 
 @description('Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used.')
-param clientCertificateThumbprints clientCertificateThumbprintType
+param clientCertificateThumbprints clientCertificateThumbprintType[]?
 
 @description('Optional. The Service Fabric runtime version of the cluster. This property can only by set the user when upgradeMode is set to "Manual". To get list of available Service Fabric versions for new clusters use ClusterVersion API. To get the list of available version for existing clusters use availableClusterVersions.')
 param clusterCodeVersion string?
@@ -125,8 +125,9 @@ param vmssZonalUpgradeMode string = 'Hierarchical'
 @description('Optional. Boolean to pause automatic runtime version upgrades to the cluster.')
 param waveUpgradePaused bool = false
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Array of Service Fabric cluster application types.')
 param applicationTypes array = []
@@ -403,6 +404,8 @@ output location string = serviceFabricCluster.location
 //   Definitions   //
 // =============== //
 
+@export()
+@description('The type for a certificate.')
 type certificateType = {
   @description('Required. The thumbprint of the primary certificate.')
   thumbprint: string
@@ -420,11 +423,13 @@ type certificateType = {
     | 'Root'
     | 'TrustedPeople'
     | 'TrustedPublisher')?
-}?
+}
 
+@export()
+@description('The type for a certificate common name.')
 type certificateCommonNameType = {
   @description('Required. The list of server certificates referenced by common name that are used to secure the cluster.')
-  commonNames: serverCertificateCommonNameType
+  commonNames: serverCertificateCommonNameType[]
 
   @description('Optional. The local certificate store location.')
   x509StoreName: (
@@ -436,16 +441,18 @@ type certificateCommonNameType = {
     | 'Root'
     | 'TrustedPeople'
     | 'TrustedPublisher')?
-}?
+}
 
+@description('The type for a server certificate common name.')
 type serverCertificateCommonNameType = {
   @description('Required. The common name of the server certificate.')
   certificateCommonName: string
 
   @description('Required. The issuer thumbprint of the server certificate.')
   certificateIssuerThumbprint: string
-}[]
+}
 
+@description('The type for a client certificate common name.')
 type clientCertificateCommonNameType = {
   @description('Required. The common name of the client certificate.')
   certificateCommonName: string
@@ -455,46 +462,14 @@ type clientCertificateCommonNameType = {
 
   @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
   isAdmin: bool
-}[]?
+}
 
+@export()
+@description('The type for a client certificate thumbprint.')
 type clientCertificateThumbprintType = {
   @description('Required. The thumbprint of the client certificate.')
   certificateThumbprint: string
 
   @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
   isAdmin: bool
-}[]?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+}

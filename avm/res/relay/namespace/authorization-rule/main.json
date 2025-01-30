@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7479847383920027864"
+      "templateHash": "18419508106540588848"
     },
     "name": "Relay Namespace Authorization Rules",
-    "description": "This module deploys a Relay Namespace Authorization Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Relay Namespace Authorization Rule."
   },
   "parameters": {
     "namespaceName": {

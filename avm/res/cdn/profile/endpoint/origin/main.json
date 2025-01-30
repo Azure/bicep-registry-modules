@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1967881427631941882"
+      "templateHash": "13720707069401173773"
     },
     "name": "CDN Profiles Endpoints Origins",
-    "description": "This module deploys a CDN Profile Endpoint Origin.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Endpoint Origin."
   },
   "parameters": {
     "endpointName": {

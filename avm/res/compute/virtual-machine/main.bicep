@@ -1,6 +1,5 @@
 metadata name = 'Virtual Machines'
 metadata description = 'This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
@@ -1040,7 +1039,7 @@ output resourceId string = vm.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = vm.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = vm.location

@@ -1,6 +1,5 @@
 metadata name = 'Activity Log Alerts'
 metadata description = 'This module deploys an Activity Log Alert.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the alert.')
 param name string

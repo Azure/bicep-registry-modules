@@ -1,6 +1,5 @@
 metadata name = 'SignalR Service SignalR'
 metadata description = 'This module deploys a SignalR Service SignalR.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //
@@ -362,7 +361,7 @@ output resourceId string = signalR.id
 output location string = signalR.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = signalR.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = signalR.?identity.?principalId
 
 @description('The private endpoints of the SignalR.')
 output privateEndpoints array = [
