@@ -398,6 +398,14 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             }
           ]
         : [],
+      contains(secretsExportConfiguration!, 'primaryStackExchangeRedisConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?primaryStackExchangeRedisConnectionStringName
+              value: '${redis.properties.hostName}:6380,password=${redis.listKeys().primaryKey},ssl=True,abortConnect=False'
+            }
+          ]
+        : [],
       contains(secretsExportConfiguration!, 'secondaryAccessKeyName')
         ? [
             {
@@ -411,6 +419,14 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             {
               name: secretsExportConfiguration!.?secondaryConnectionStringName
               value: 'rediss://:${redis.listKeys().secondaryKey}@${redis.properties.hostName}:6380'
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryStackExchangeRedisConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?secondaryStackExchangeRedisConnectionStringName
+              value: '${redis.properties.hostName}:6380,password=${redis.listKeys().secondaryKey},ssl=True,abortConnect=False'
             }
           ]
         : []
@@ -514,9 +530,15 @@ type secretsExportConfigurationType = {
   @description('Optional. The primaryConnectionString secret name to create.')
   primaryConnectionStringName: string?
 
+  @description('Optional. The primaryStackExchangeRedisConnectionString secret name to create.')
+  primaryStackExchangeRedisConnectionStringName: string?
+
   @description('Optional. The secondaryAccessKey secret name to create.')
   secondaryAccessKeyName: string?
 
   @description('Optional. The secondaryConnectionString secret name to create.')
   secondaryConnectionStringName: string?
+
+  @description('Optional. The secondaryStackExchangeRedisConnectionString secret name to create.')
+  secondaryStackExchangeRedisConnectionStringName: string?
 }
