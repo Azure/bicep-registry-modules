@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "18099590867877548946"
+      "version": "0.33.13.18514",
+      "templateHash": "15051901101550748959"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -1556,8 +1556,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "11341714430852064297"
+              "version": "0.33.13.18514",
+              "templateHash": "16077688623857845203"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario.",
@@ -1727,8 +1727,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "1359390885457273694"
+                      "version": "0.33.13.18514",
+                      "templateHash": "12758328736946258717"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -1891,8 +1891,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "1452689332019027380"
+                              "version": "0.33.13.18514",
+                              "templateHash": "10098186458760693567"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -2126,8 +2126,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16761066701375125054"
+              "version": "0.33.13.18514",
+              "templateHash": "2464977047944680666"
             },
             "name": "Recovery Services Vault Replication Policies",
             "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -2251,8 +2251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10094439213599978270"
+              "version": "0.33.13.18514",
+              "templateHash": "16699435971639081806"
             },
             "name": "Recovery Services Vault Backup Storage Config",
             "description": "This module deploys a Recovery Service Vault Backup Storage Configuration.",
@@ -2375,8 +2375,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8205166848462332551"
+              "version": "0.33.13.18514",
+              "templateHash": "5826727120006121033"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
@@ -2512,8 +2512,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "4639298378196651590"
+              "version": "0.33.13.18514",
+              "templateHash": "11191050047911512584"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy.",
@@ -2621,8 +2621,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "985903164551110149"
+              "version": "0.33.13.18514",
+              "templateHash": "15191070063311815406"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config.",
@@ -2795,8 +2795,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3276613868849082513"
+              "version": "0.33.13.18514",
+              "templateHash": "900011945391133486"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings.",
