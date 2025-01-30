@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
       vpnGatewayGeneration: 'Generation2'
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
       clusterSettings: {
         clusterMode: 'activeActiveBgp'
         secondPipName: '${namePrefix}${serviceShort}001-pip2'
@@ -133,7 +133,7 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       enablePrivateIpAddress: true
-      gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
+      gatewayDefaultSiteLocalNetworkGatewayResourceId: nestedDependencies.outputs.localNetworkGatewayResourceId
       disableIPSecReplayProtection: true
       allowRemoteVnetTraffic: true
       natRules: [
@@ -172,9 +172,5 @@ module testDeployment '../../../main.bicep' = [
       ]
       enableBgpRouteTranslationForNat: true
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

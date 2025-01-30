@@ -50,26 +50,22 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       skuName: 'ErGw1AZ'
       gatewayType: 'ExpressRoute'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      clusterSettings:{
+      virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
+      clusterSettings: {
         clusterMode: 'activePassiveBgp'
       }
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]
-      firstPipName: '${namePrefix}-pip-${serviceShort}'
+      primaryPublicIPName: '${namePrefix}-pip-${serviceShort}'
       publicIpZones: [
         1
         2
         3
       ]
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

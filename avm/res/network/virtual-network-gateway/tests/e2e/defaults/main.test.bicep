@@ -52,22 +52,13 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      publicIpZones: [
-        1
-        2
-        3
-      ]
+      virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
       clusterSettings: {
-        clusterMode:'activeActiveNoBgp'
+        clusterMode: 'activeActiveNoBgp'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

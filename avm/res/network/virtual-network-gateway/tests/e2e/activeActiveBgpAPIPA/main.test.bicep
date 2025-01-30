@@ -51,16 +51,15 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       vpnGatewayGeneration: 'Generation2'
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
       clusterSettings: {
         clusterMode: 'activeActiveBgp'
-        customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
-        secondCustomBgpIpAddresses:  ['169.254.22.4','169.254.22.5']
+        customBgpIpAddresses: ['169.254.21.4', '169.254.21.5']
+        secondCustomBgpIpAddresses: ['169.254.22.4', '169.254.22.5']
       }
 
       domainNameLabel: [
@@ -73,13 +72,10 @@ module testDeployment '../../../main.bicep' = [
       ]
       vpnType: 'RouteBased'
       enablePrivateIpAddress: true
-      gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
+      gatewayDefaultSiteLocalNetworkGatewayResourceId: nestedDependencies.outputs.localNetworkGatewayResourceId
       disableIPSecReplayProtection: true
       allowRemoteVnetTraffic: true
       enableBgpRouteTranslationForNat: true
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
