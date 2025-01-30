@@ -459,7 +459,7 @@ output systemAssignedMIPrincipalId string? = redis.?identity.?principalId
 output location string = redis.location
 
 @description('The private endpoints of the Redis Cache.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: redis_privateEndpoints[i].outputs.name
     resourceId: redis_privateEndpoints[i].outputs.resourceId
