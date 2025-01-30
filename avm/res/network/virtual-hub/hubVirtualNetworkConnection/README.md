@@ -21,7 +21,7 @@ This module deploys a Virtual Hub Virtual Network Connection.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The connection name. |
-| [`remoteVirtualNetworkId`](#parameter-remotevirtualnetworkid) | string | Resource ID of the virtual network to link to. |
+| [`remoteVirtualNetworkResourceId`](#parameter-remotevirtualnetworkresourceid) | string | Resource ID of the virtual network to link to. |
 
 **Conditional parameters**
 
@@ -43,7 +43,7 @@ The connection name.
 - Required: Yes
 - Type: string
 
-### Parameter: `remoteVirtualNetworkId`
+### Parameter: `remoteVirtualNetworkResourceId`
 
 Resource ID of the virtual network to link to.
 
@@ -71,7 +71,6 @@ Routing Configuration indicating the associated and propagated route tables for 
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ## Outputs
 

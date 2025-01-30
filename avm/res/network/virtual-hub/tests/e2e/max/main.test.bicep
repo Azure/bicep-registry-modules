@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       addressPrefix: '10.1.0.0/16'
-      virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
+      virtualWanResourceId: nestedDependencies.outputs.virtualWWANResourceId
       hubRouteTables: [
         {
           name: 'routeTable1'
@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
       hubVirtualNetworkConnections: [
         {
           name: 'connection1'
-          remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
+          remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
           routingConfiguration: {
             associatedRouteTable: {
               id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
