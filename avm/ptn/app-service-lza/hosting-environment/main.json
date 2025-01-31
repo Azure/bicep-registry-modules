@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13599289799413153196"
+      "templateHash": "15696137504557557118"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12519647591659630635"
+              "templateHash": "18031048895713988624"
             }
           },
           "definitions": {
@@ -3519,13 +3519,6 @@
               "defaultValue": 0,
               "metadata": {
                 "description": "Optional. The zone to create the jump box in. Defaults to 0."
-              }
-            },
-            "storageAccountType": {
-              "type": "string",
-              "defaultValue": "Premium_LRS",
-              "metadata": {
-                "description": "Optional. The storage account type to use for the jump box. Defaults to Premium_LRS."
               }
             },
             "vmAdminUsername": {
@@ -30080,9 +30073,6 @@
                   "vmZone": {
                     "value": "[parameters('vmZone')]"
                   },
-                  "storageAccountType": {
-                    "value": "[parameters('storageAccountType')]"
-                  },
                   "vmVnetName": {
                     "value": "[reference('networking').outputs.vnetSpokeName.value]"
                   },
@@ -30112,7 +30102,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "3599966873711316007"
+                      "templateHash": "1329154048416629285"
                     }
                   },
                   "parameters": {
@@ -30121,10 +30111,6 @@
                     },
                     "vmSize": {
                       "type": "string"
-                    },
-                    "storageAccountType": {
-                      "type": "string",
-                      "defaultValue": "Premium_LRS"
                     },
                     "vmZone": {
                       "type": "int",
@@ -31534,19 +31520,19 @@
                               "deleteOption": "Delete",
                               "diskSizeGB": 128,
                               "managedDisk": {
-                                "storageAccountType": "[parameters('storageAccountType')]"
+                                "storageAccountType": "Premium_LRS"
                               }
                             }
                           },
                           "dataDisks": {
                             "value": [
                               {
-                                "caching": "ReadWrite",
+                                "caching": "ReadOnly",
                                 "createOption": "Empty",
                                 "diskSizeGB": 128,
                                 "lun": 0,
                                 "managedDisk": {
-                                  "storageAccountType": "[parameters('storageAccountType')]"
+                                  "storageAccountType": "Premium_LRS"
                                 }
                               }
                             ]
@@ -37009,9 +36995,6 @@
                   "vmZone": {
                     "value": "[parameters('vmZone')]"
                   },
-                  "storageAccountType": {
-                    "value": "[parameters('storageAccountType')]"
-                  },
                   "vmVnetName": {
                     "value": "[reference('networking').outputs.vnetSpokeName.value]"
                   },
@@ -37038,7 +37021,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5550740089245163932"
+                      "templateHash": "3745287659561253947"
                     }
                   },
                   "parameters": {
@@ -37047,10 +37030,6 @@
                     },
                     "vmSize": {
                       "type": "string"
-                    },
-                    "storageAccountType": {
-                      "type": "string",
-                      "defaultValue": "Premium_LRS"
                     },
                     "vmWindowsOSVersion": {
                       "type": "string",
@@ -37918,19 +37897,19 @@
                               "deleteOption": "Delete",
                               "diskSizeGB": 128,
                               "managedDisk": {
-                                "storageAccountType": "[parameters('storageAccountType')]"
+                                "storageAccountType": "Premium_LRS"
                               }
                             }
                           },
                           "dataDisks": {
                             "value": [
                               {
-                                "caching": "ReadWrite",
+                                "caching": "ReadOnly",
                                 "createOption": "Empty",
                                 "diskSizeGB": 128,
                                 "lun": 0,
                                 "managedDisk": {
-                                  "storageAccountType": "[parameters('storageAccountType')]"
+                                  "storageAccountType": "Premium_LRS"
                                 }
                               }
                             ]
