@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15696137504557557118"
+      "templateHash": "8634261542111506056"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "18031048895713988624"
+              "templateHash": "7345110734339456695"
             }
           },
           "definitions": {
@@ -24474,7 +24474,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "2065943319602700003"
+                      "templateHash": "1846560919397236384"
                     }
                   },
                   "parameters": {
@@ -24569,7 +24569,7 @@
                       }
                     },
                     "logAnalyticsWorkspaceId": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "Required. The resource ID of the Log Analytics workspace to send logs to."
                       }

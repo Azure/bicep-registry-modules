@@ -56,6 +56,7 @@ param wafPolicyState string = 'Enabled'
 param wafPolicyMode string = 'Prevention'
 
 @description('Required. The resource ID of the Log Analytics workspace to send logs to.')
+@secure()
 param logAnalyticsWorkspaceId string
 
 // Create an Array of all Endpoint which includes customDomain Id and afdEndpoint Id
