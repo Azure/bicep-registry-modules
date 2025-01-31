@@ -622,6 +622,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
               any(dnsZoneResourceId)
             ]
           : null
+        nginx: !empty(defaultIngressControllerType)
+          ? {
+              defaultIngressControllerType: any(defaultIngressControllerType)
+            }
+          : null
       }
     }
     addonProfiles: {
