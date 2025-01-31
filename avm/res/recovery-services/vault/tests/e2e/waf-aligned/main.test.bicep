@@ -301,10 +301,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      backupStorageConfig: {
-        crossRegionRestoreFlag: true
-        storageModelType: 'GeoRedundant'
-      }
       replicationAlertSettings: {
         customEmailAddresses: [
           'test.user@testcompany.com'
@@ -398,9 +394,12 @@ module testDeployment '../../../main.bicep' = [
       monitoringSettings: {
         azureMonitorAlertSettings: {
           alertsForAllJobFailures: 'Enabled'
+          alertsForAllFailoverIssues: 'Enabled'
+          alertsForAllReplicationIssues: 'Enabled'
         }
         classicAlertSettings: {
           alertsForCriticalOperations: 'Enabled'
+          emailNotificationsForSiteRecovery: 'Enabled'
         }
       }
       securitySettings: {

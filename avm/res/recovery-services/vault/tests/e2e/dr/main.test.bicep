@@ -49,17 +49,17 @@ module testDeployment '../../../main.bicep' = [
           replicationContainers: [
             {
               name: 'ne-container1'
-              replicationContainerMappings: [
+              mappings: [
                 {
                   policyName: 'Default_values'
                   targetContainerName: 'pluto'
-                  targetProtectionContainerId: '${resourceGroup.id}/providers/Microsoft.RecoveryServices/vaults/${rsvName}/replicationFabrics/NorthEurope/replicationProtectionContainers/ne-container2'
+                  targetProtectionContainerResourceId: '${resourceGroup.id}/providers/Microsoft.RecoveryServices/vaults/${rsvName}/replicationFabrics/NorthEurope/replicationProtectionContainers/ne-container2'
                 }
               ]
             }
             {
               name: 'ne-container2'
-              replicationContainerMappings: [
+              mappings: [
                 {
                   policyName: 'Default_values'
                   targetContainerFabricName: 'WE-2'
@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
           replicationContainers: [
             {
               name: 'we-container1'
-              replicationContainerMappings: [
+              mappings: [
                 {
                   policyName: 'Default_values'
                   targetContainerFabricName: 'NorthEurope'

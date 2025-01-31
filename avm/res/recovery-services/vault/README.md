@@ -20,11 +20,10 @@ This module deploys a Recovery Services Vault.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.RecoveryServices/vaults` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults) |
+| `Microsoft.RecoveryServices/vaults` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-04-01/vaults) |
 | `Microsoft.RecoveryServices/vaults/backupconfig` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupconfig) |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers) |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
-| `Microsoft.RecoveryServices/vaults/backupPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupPolicies) |
+| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupFabrics/protectionContainers/protectedItems) |
+| `Microsoft.RecoveryServices/vaults/backupPolicies` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupPolicies) |
 | `Microsoft.RecoveryServices/vaults/backupstorageconfig` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupstorageconfig) |
 | `Microsoft.RecoveryServices/vaults/replicationAlertSettings` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationAlertSettings) |
 | `Microsoft.RecoveryServices/vaults/replicationFabrics` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationFabrics) |
@@ -42,8 +41,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Test case for disaster recovery enabled](#example-2-test-case-for-disaster-recovery-enabled)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -171,24 +171,24 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         location: 'NorthEurope'
         replicationContainers: [
           {
-            name: 'ne-container1'
-            replicationContainerMappings: [
+            mappings: [
               {
                 policyName: 'Default_values'
                 targetContainerName: 'pluto'
-                targetProtectionContainerId: '<targetProtectionContainerId>'
+                targetProtectionContainerResourceId: '<targetProtectionContainerResourceId>'
               }
             ]
+            name: 'ne-container1'
           }
           {
-            name: 'ne-container2'
-            replicationContainerMappings: [
+            mappings: [
               {
                 policyName: 'Default_values'
                 targetContainerFabricName: 'WE-2'
                 targetContainerName: 'we-container1'
               }
             ]
+            name: 'ne-container2'
           }
         ]
       }
@@ -197,14 +197,14 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         name: 'WE-2'
         replicationContainers: [
           {
-            name: 'we-container1'
-            replicationContainerMappings: [
+            mappings: [
               {
                 policyName: 'Default_values'
                 targetContainerFabricName: 'NorthEurope'
                 targetContainerName: 'ne-container2'
               }
             ]
+            name: 'we-container1'
           }
         ]
       }
@@ -256,24 +256,24 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           "location": "NorthEurope",
           "replicationContainers": [
             {
-              "name": "ne-container1",
-              "replicationContainerMappings": [
+              "mappings": [
                 {
                   "policyName": "Default_values",
                   "targetContainerName": "pluto",
-                  "targetProtectionContainerId": "<targetProtectionContainerId>"
+                  "targetProtectionContainerResourceId": "<targetProtectionContainerResourceId>"
                 }
-              ]
+              ],
+              "name": "ne-container1"
             },
             {
-              "name": "ne-container2",
-              "replicationContainerMappings": [
+              "mappings": [
                 {
                   "policyName": "Default_values",
                   "targetContainerFabricName": "WE-2",
                   "targetContainerName": "we-container1"
                 }
-              ]
+              ],
+              "name": "ne-container2"
             }
           ]
         },
@@ -282,14 +282,14 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           "name": "WE-2",
           "replicationContainers": [
             {
-              "name": "we-container1",
-              "replicationContainerMappings": [
+              "mappings": [
                 {
                   "policyName": "Default_values",
                   "targetContainerFabricName": "NorthEurope",
                   "targetContainerName": "ne-container2"
                 }
-              ]
+              ],
+              "name": "we-container1"
             }
           ]
         }
@@ -339,24 +339,24 @@ param replicationFabrics = [
     location: 'NorthEurope'
     replicationContainers: [
       {
-        name: 'ne-container1'
-        replicationContainerMappings: [
+        mappings: [
           {
             policyName: 'Default_values'
             targetContainerName: 'pluto'
-            targetProtectionContainerId: '<targetProtectionContainerId>'
+            targetProtectionContainerResourceId: '<targetProtectionContainerResourceId>'
           }
         ]
+        name: 'ne-container1'
       }
       {
-        name: 'ne-container2'
-        replicationContainerMappings: [
+        mappings: [
           {
             policyName: 'Default_values'
             targetContainerFabricName: 'WE-2'
             targetContainerName: 'we-container1'
           }
         ]
+        name: 'ne-container2'
       }
     ]
   }
@@ -365,14 +365,14 @@ param replicationFabrics = [
     name: 'WE-2'
     replicationContainers: [
       {
-        name: 'we-container1'
-        replicationContainerMappings: [
+        mappings: [
           {
             policyName: 'Default_values'
             targetContainerFabricName: 'NorthEurope'
             targetContainerName: 'ne-container2'
           }
         ]
+        name: 'we-container1'
       }
     ]
   }
@@ -399,7 +399,108 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
+  name: 'vaultDeployment'
+  params: {
+    // Required parameters
+    name: 'rsvencr001'
+    // Non-required parameters
+    customerManagedKey: {
+      autoRotationEnabled: false
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "rsvencr001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": false,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/recovery-services/vault:<version>'
+
+// Required parameters
+param name = 'rsvencr001'
+// Non-required parameters
+param customerManagedKey = {
+  autoRotationEnabled: false
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -649,10 +750,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
-    backupStorageConfig: {
-      crossRegionRestoreFlag: true
-      storageModelType: 'GeoRedundant'
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -680,10 +777,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     }
     monitoringSettings: {
       azureMonitorAlertSettings: {
+        alertsForAllFailoverIssues: 'Enabled'
         alertsForAllJobFailures: 'Enabled'
+        alertsForAllReplicationIssues: 'Enabled'
       }
       classicAlertSettings: {
         alertsForCriticalOperations: 'Enabled'
+        emailNotificationsForSiteRecovery: 'Enabled'
       }
     }
     privateEndpoints: [
@@ -743,6 +843,15 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+    ]
+    protectedItems: [
+      {
+        name: '<name>'
+        policyName: 'VMpolicy'
+        protectedItemType: 'Microsoft.Compute/virtualMachines'
+        protectionContainerName: '<protectionContainerName>'
+        sourceResourceId: '<sourceResourceId>'
       }
     ]
     replicationAlertSettings: {
@@ -1040,12 +1149,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
-    "backupStorageConfig": {
-      "value": {
-        "crossRegionRestoreFlag": true,
-        "storageModelType": "GeoRedundant"
-      }
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1082,10 +1185,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "monitoringSettings": {
       "value": {
         "azureMonitorAlertSettings": {
-          "alertsForAllJobFailures": "Enabled"
+          "alertsForAllFailoverIssues": "Enabled",
+          "alertsForAllJobFailures": "Enabled",
+          "alertsForAllReplicationIssues": "Enabled"
         },
         "classicAlertSettings": {
-          "alertsForCriticalOperations": "Enabled"
+          "alertsForCriticalOperations": "Enabled",
+          "emailNotificationsForSiteRecovery": "Enabled"
         }
       }
     },
@@ -1147,6 +1253,17 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        }
+      ]
+    },
+    "protectedItems": {
+      "value": [
+        {
+          "name": "<name>",
+          "policyName": "VMpolicy",
+          "protectedItemType": "Microsoft.Compute/virtualMachines",
+          "protectionContainerName": "<protectionContainerName>",
+          "sourceResourceId": "<sourceResourceId>"
         }
       ]
     },
@@ -1445,10 +1562,6 @@ param backupPolicies = [
     }
   }
 ]
-param backupStorageConfig = {
-  crossRegionRestoreFlag: true
-  storageModelType: 'GeoRedundant'
-}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1476,10 +1589,13 @@ param managedIdentities = {
 }
 param monitoringSettings = {
   azureMonitorAlertSettings: {
+    alertsForAllFailoverIssues: 'Enabled'
     alertsForAllJobFailures: 'Enabled'
+    alertsForAllReplicationIssues: 'Enabled'
   }
   classicAlertSettings: {
     alertsForCriticalOperations: 'Enabled'
+    emailNotificationsForSiteRecovery: 'Enabled'
   }
 }
 param privateEndpoints = [
@@ -1541,6 +1657,15 @@ param privateEndpoints = [
     }
   }
 ]
+param protectedItems = [
+  {
+    name: '<name>'
+    policyName: 'VMpolicy'
+    protectedItemType: 'Microsoft.Compute/virtualMachines'
+    protectionContainerName: '<protectionContainerName>'
+    sourceResourceId: '<sourceResourceId>'
+  }
+]
 param replicationAlertSettings = {
   customEmailAddresses: [
     'test.user@testcompany.com'
@@ -1582,7 +1707,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1832,10 +1957,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
-    backupStorageConfig: {
-      crossRegionRestoreFlag: true
-      storageModelType: 'GeoRedundant'
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1863,10 +1984,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     }
     monitoringSettings: {
       azureMonitorAlertSettings: {
+        alertsForAllFailoverIssues: 'Enabled'
         alertsForAllJobFailures: 'Enabled'
+        alertsForAllReplicationIssues: 'Enabled'
       }
       classicAlertSettings: {
         alertsForCriticalOperations: 'Enabled'
+        emailNotificationsForSiteRecovery: 'Enabled'
       }
     }
     privateEndpoints: [
@@ -2204,12 +2328,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
-    "backupStorageConfig": {
-      "value": {
-        "crossRegionRestoreFlag": true,
-        "storageModelType": "GeoRedundant"
-      }
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -2246,10 +2364,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "monitoringSettings": {
       "value": {
         "azureMonitorAlertSettings": {
-          "alertsForAllJobFailures": "Enabled"
+          "alertsForAllFailoverIssues": "Enabled",
+          "alertsForAllJobFailures": "Enabled",
+          "alertsForAllReplicationIssues": "Enabled"
         },
         "classicAlertSettings": {
-          "alertsForCriticalOperations": "Enabled"
+          "alertsForCriticalOperations": "Enabled",
+          "emailNotificationsForSiteRecovery": "Enabled"
         }
       }
     },
@@ -2588,10 +2709,6 @@ param backupPolicies = [
     }
   }
 ]
-param backupStorageConfig = {
-  crossRegionRestoreFlag: true
-  storageModelType: 'GeoRedundant'
-}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2619,10 +2736,13 @@ param managedIdentities = {
 }
 param monitoringSettings = {
   azureMonitorAlertSettings: {
+    alertsForAllFailoverIssues: 'Enabled'
     alertsForAllJobFailures: 'Enabled'
+    alertsForAllReplicationIssues: 'Enabled'
   }
   classicAlertSettings: {
     alertsForCriticalOperations: 'Enabled'
+    emailNotificationsForSiteRecovery: 'Enabled'
   }
 }
 param privateEndpoints = [
@@ -2721,6 +2841,7 @@ param tags = {
 | [`backupConfig`](#parameter-backupconfig) | object | The backup configuration. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | List of all backup policies. |
 | [`backupStorageConfig`](#parameter-backupstorageconfig) | object | The storage configuration for the Azure Recovery Service Vault. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -2728,11 +2849,13 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`monitoringSettings`](#parameter-monitoringsettings) | object | Monitoring Settings of the vault. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`protectionContainers`](#parameter-protectioncontainers) | array | List of all protection containers. |
+| [`protectedItems`](#parameter-protecteditems) | array | List of all protection containers. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
+| [`redundancySettings`](#parameter-redundancysettings) | object | The redundancy settings of the vault. |
 | [`replicationAlertSettings`](#parameter-replicationalertsettings) | object | Replication alert settings. |
 | [`replicationFabrics`](#parameter-replicationfabrics) | array | List of all replication fabrics. |
 | [`replicationPolicies`](#parameter-replicationpolicies) | array | List of all replication policies. |
+| [`restoreSettings`](#parameter-restoresettings) | object | The restore settings of the vault. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securitySettings`](#parameter-securitysettings) | object | Security Settings of the vault. |
 | [`tags`](#parameter-tags) | object | Tags of the Recovery Service Vault resource. |
@@ -2750,7 +2873,114 @@ The backup configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enhancedSecurityState`](#parameter-backupconfigenhancedsecuritystate) | string | Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations. |
+| [`isSoftDeleteFeatureStateEditable`](#parameter-backupconfigissoftdeletefeaturestateeditable) | bool | Is soft delete feature state editable. |
+| [`name`](#parameter-backupconfigname) | string | Name of the Azure Recovery Service Vault Backup Policy. |
+| [`resourceGuardOperationRequests`](#parameter-backupconfigresourceguardoperationrequests) | array | ResourceGuard Operation Requests. |
+| [`softDeleteFeatureState`](#parameter-backupconfigsoftdeletefeaturestate) | string | Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes. |
+| [`storageModelType`](#parameter-backupconfigstoragemodeltype) | string | Storage type. |
+| [`storageType`](#parameter-backupconfigstoragetype) | string | Storage type. |
+| [`storageTypeState`](#parameter-backupconfigstoragetypestate) | string | Once a machine is registered against a resource, the storageTypeState is always Locked. |
+
+### Parameter: `backupConfig.enhancedSecurityState`
+
+Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `backupConfig.isSoftDeleteFeatureStateEditable`
+
+Is soft delete feature state editable.
+
+- Required: No
+- Type: bool
+
+### Parameter: `backupConfig.name`
+
+Name of the Azure Recovery Service Vault Backup Policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupConfig.resourceGuardOperationRequests`
+
+ResourceGuard Operation Requests.
+
+- Required: No
+- Type: array
+
+### Parameter: `backupConfig.softDeleteFeatureState`
+
+Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `backupConfig.storageModelType`
+
+Storage type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GeoRedundant'
+    'LocallyRedundant'
+    'ReadAccessGeoZoneRedundant'
+    'ZoneRedundant'
+  ]
+  ```
+
+### Parameter: `backupConfig.storageType`
+
+Storage type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GeoRedundant'
+    'LocallyRedundant'
+    'ReadAccessGeoZoneRedundant'
+    'ZoneRedundant'
+  ]
+  ```
+
+### Parameter: `backupConfig.storageTypeState`
+
+Once a machine is registered against a resource, the storageTypeState is always Locked.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Locked'
+    'Unlocked'
+  ]
+  ```
 
 ### Parameter: `backupPolicies`
 
@@ -2758,7 +2988,27 @@ List of all backup policies.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-backuppoliciesname) | string | Name of the Azure Recovery Service Vault Backup Policy. |
+| [`properties`](#parameter-backuppoliciesproperties) | object | Configuration of the Azure Recovery Service Vault Backup Policy. |
+
+### Parameter: `backupPolicies.name`
+
+Name of the Azure Recovery Service Vault Backup Policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupPolicies.properties`
+
+Configuration of the Azure Recovery Service Vault Backup Policy.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `backupStorageConfig`
 
@@ -2766,7 +3016,101 @@ The storage configuration for the Azure Recovery Service Vault.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossRegionRestoreFlag`](#parameter-backupstorageconfigcrossregionrestoreflag) | bool | Opt in details of Cross Region Restore feature. |
+| [`name`](#parameter-backupstorageconfigname) | string | The name of the backup storage config. |
+| [`storageModelType`](#parameter-backupstorageconfigstoragemodeltype) | string | Change Vault Storage Type (Works if vault has not registered any backup instance). |
+
+### Parameter: `backupStorageConfig.crossRegionRestoreFlag`
+
+Opt in details of Cross Region Restore feature.
+
+- Required: No
+- Type: bool
+
+### Parameter: `backupStorageConfig.name`
+
+The name of the backup storage config.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupStorageConfig.storageModelType`
+
+Change Vault Storage Type (Works if vault has not registered any backup instance).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GeoRedundant'
+    'LocallyRedundant'
+    'ReadAccessGeoZoneRedundant'
+    'ZoneRedundant'
+  ]
+  ```
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -3000,7 +3344,112 @@ Monitoring Settings of the vault.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureMonitorAlertSettings`](#parameter-monitoringsettingsazuremonitoralertsettings) | object | The alert settings. |
+| [`classicAlertSettings`](#parameter-monitoringsettingsclassicalertsettings) | object | The classic alert settings. |
+
+### Parameter: `monitoringSettings.azureMonitorAlertSettings`
+
+The alert settings.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alertsForAllFailoverIssues`](#parameter-monitoringsettingsazuremonitoralertsettingsalertsforallfailoverissues) | string | Enable / disable alerts for all failover issues. |
+| [`alertsForAllJobFailures`](#parameter-monitoringsettingsazuremonitoralertsettingsalertsforalljobfailures) | string | Enable / disable alerts for all job failures. |
+| [`alertsForAllReplicationIssues`](#parameter-monitoringsettingsazuremonitoralertsettingsalertsforallreplicationissues) | string | Enable / disable alerts for all replication issues. |
+
+### Parameter: `monitoringSettings.azureMonitorAlertSettings.alertsForAllFailoverIssues`
+
+Enable / disable alerts for all failover issues.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures`
+
+Enable / disable alerts for all job failures.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `monitoringSettings.azureMonitorAlertSettings.alertsForAllReplicationIssues`
+
+Enable / disable alerts for all replication issues.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `monitoringSettings.classicAlertSettings`
+
+The classic alert settings.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alertsForCriticalOperations`](#parameter-monitoringsettingsclassicalertsettingsalertsforcriticaloperations) | string | Enable / disable alerts for critical operations. |
+| [`emailNotificationsForSiteRecovery`](#parameter-monitoringsettingsclassicalertsettingsemailnotificationsforsiterecovery) | string | Enable / disable email notifications for site recovery. |
+
+### Parameter: `monitoringSettings.classicAlertSettings.alertsForCriticalOperations`
+
+Enable / disable alerts for critical operations.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `monitoringSettings.classicAlertSettings.emailNotificationsForSiteRecovery`
+
+Enable / disable email notifications for site recovery.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -3413,13 +3862,85 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 - Required: No
 - Type: object
 
-### Parameter: `protectionContainers`
+### Parameter: `protectedItems`
 
 List of all protection containers.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-protecteditemsname) | string | Name of the resource. |
+| [`policyName`](#parameter-protecteditemspolicyname) | string | The backup policy with which this item is backed up. |
+| [`protectedItemType`](#parameter-protecteditemsprotecteditemtype) | string | The backup item type. |
+| [`protectionContainerName`](#parameter-protecteditemsprotectioncontainername) | string | Name of the Azure Recovery Service Vault Protection Container. |
+| [`sourceResourceId`](#parameter-protecteditemssourceresourceid) | string | Resource ID of the resource to back up. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-protecteditemslocation) | string | Location for all resources. |
+
+### Parameter: `protectedItems.name`
+
+Name of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `protectedItems.policyName`
+
+The backup policy with which this item is backed up.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `protectedItems.protectedItemType`
+
+The backup item type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureFileShareProtectedItem'
+    'AzureVmWorkloadSAPAseDatabase'
+    'AzureVmWorkloadSAPHanaDatabase'
+    'AzureVmWorkloadSQLDatabase'
+    'DPMProtectedItem'
+    'GenericProtectedItem'
+    'MabFileFolderProtectedItem'
+    'Microsoft.ClassicCompute/virtualMachines'
+    'Microsoft.Compute/virtualMachines'
+    'Microsoft.Sql/servers/databases'
+  ]
+  ```
+
+### Parameter: `protectedItems.protectionContainerName`
+
+Name of the Azure Recovery Service Vault Protection Container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `protectedItems.sourceResourceId`
+
+Resource ID of the resource to back up.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `protectedItems.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
 
 ### Parameter: `publicNetworkAccess`
 
@@ -3436,13 +3957,84 @@ Whether or not public network access is allowed for this resource. For security 
   ]
   ```
 
+### Parameter: `redundancySettings`
+
+The redundancy settings of the vault.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossRegionRestore`](#parameter-redundancysettingscrossregionrestore) | string | Flag to show if Cross Region Restore is enabled on the Vault or not. |
+| [`standardTierStorageRedundancy`](#parameter-redundancysettingsstandardtierstorageredundancy) | string | The storage redundancy setting of a vault. |
+
+### Parameter: `redundancySettings.crossRegionRestore`
+
+Flag to show if Cross Region Restore is enabled on the Vault or not.
+
+- Required: No
+- Type: string
+
+### Parameter: `redundancySettings.standardTierStorageRedundancy`
+
+The storage redundancy setting of a vault.
+
+- Required: No
+- Type: string
+
 ### Parameter: `replicationAlertSettings`
 
 Replication alert settings.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customEmailAddresses`](#parameter-replicationalertsettingscustomemailaddresses) | array | The custom email address for sending emails. |
+| [`locale`](#parameter-replicationalertsettingslocale) | string | The locale for the email notification. |
+| [`name`](#parameter-replicationalertsettingsname) | string | The name of the replication Alert Setting. |
+| [`sendToOwners`](#parameter-replicationalertsettingssendtoowners) | string | The value indicating whether to send email to subscription administrator. |
+
+### Parameter: `replicationAlertSettings.customEmailAddresses`
+
+The custom email address for sending emails.
+
+- Required: No
+- Type: array
+
+### Parameter: `replicationAlertSettings.locale`
+
+The locale for the email notification.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationAlertSettings.name`
+
+The name of the replication Alert Setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationAlertSettings.sendToOwners`
+
+The value indicating whether to send email to subscription administrator.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DoNotSend'
+    'Send'
+  ]
+  ```
 
 ### Parameter: `replicationFabrics`
 
@@ -3450,7 +4042,114 @@ List of all replication fabrics.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-replicationfabricslocation) | string | The recovery location the fabric represents. |
+| [`name`](#parameter-replicationfabricsname) | string | The name of the fabric. |
+| [`replicationContainers`](#parameter-replicationfabricsreplicationcontainers) | array | Replication containers to create. |
+
+### Parameter: `replicationFabrics.location`
+
+The recovery location the fabric represents.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationFabrics.name`
+
+The name of the fabric.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationFabrics.replicationContainers`
+
+Replication containers to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-replicationfabricsreplicationcontainersname) | string | The name of the replication container. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mappings`](#parameter-replicationfabricsreplicationcontainersmappings) | array | Replication containers mappings to create. |
+
+### Parameter: `replicationFabrics.replicationContainers.name`
+
+The name of the replication container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replicationFabrics.replicationContainers.mappings`
+
+Replication containers mappings to create.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-replicationfabricsreplicationcontainersmappingsname) | string | The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`. |
+| [`policyName`](#parameter-replicationfabricsreplicationcontainersmappingspolicyname) | string | Name of the replication policy. Will be ignored if policyResourceId is also specified. |
+| [`policyResourceId`](#parameter-replicationfabricsreplicationcontainersmappingspolicyresourceid) | string | Resource ID of the replication policy. If defined, policyName will be ignored. |
+| [`targetContainerFabricName`](#parameter-replicationfabricsreplicationcontainersmappingstargetcontainerfabricname) | string | Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored. |
+| [`targetContainerName`](#parameter-replicationfabricsreplicationcontainersmappingstargetcontainername) | string | Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored. |
+| [`targetProtectionContainerResourceId`](#parameter-replicationfabricsreplicationcontainersmappingstargetprotectioncontainerresourceid) | string | Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored. |
+
+### Parameter: `replicationFabrics.replicationContainers.mappings.name`
+
+The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationFabrics.replicationContainers.mappings.policyName`
+
+Name of the replication policy. Will be ignored if policyResourceId is also specified.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationFabrics.replicationContainers.mappings.policyResourceId`
+
+Resource ID of the replication policy. If defined, policyName will be ignored.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationFabrics.replicationContainers.mappings.targetContainerFabricName`
+
+Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationFabrics.replicationContainers.mappings.targetContainerName`
+
+Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored.
+
+- Required: No
+- Type: string
+
+### Parameter: `replicationFabrics.replicationContainers.mappings.targetProtectionContainerResourceId`
+
+Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored.
+
+- Required: No
+- Type: string
 
 ### Parameter: `replicationPolicies`
 
@@ -3458,7 +4157,96 @@ List of all replication policies.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-replicationpoliciesname) | string | The name of the replication policy. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`appConsistentFrequencyInMinutes`](#parameter-replicationpoliciesappconsistentfrequencyinminutes) | int | The app consistent snapshot frequency (in minutes). |
+| [`crashConsistentFrequencyInMinutes`](#parameter-replicationpoliciescrashconsistentfrequencyinminutes) | int | The crash consistent snapshot frequency (in minutes). |
+| [`multiVmSyncStatus`](#parameter-replicationpoliciesmultivmsyncstatus) | string | A value indicating whether multi-VM sync has to be enabled. |
+| [`recoveryPointHistory`](#parameter-replicationpoliciesrecoverypointhistory) | int | The duration in minutes until which the recovery points need to be stored. |
+
+### Parameter: `replicationPolicies.name`
+
+The name of the replication policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replicationPolicies.appConsistentFrequencyInMinutes`
+
+The app consistent snapshot frequency (in minutes).
+
+- Required: No
+- Type: int
+
+### Parameter: `replicationPolicies.crashConsistentFrequencyInMinutes`
+
+The crash consistent snapshot frequency (in minutes).
+
+- Required: No
+- Type: int
+
+### Parameter: `replicationPolicies.multiVmSyncStatus`
+
+A value indicating whether multi-VM sync has to be enabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disable'
+    'Enable'
+  ]
+  ```
+
+### Parameter: `replicationPolicies.recoveryPointHistory`
+
+The duration in minutes until which the recovery points need to be stored.
+
+- Required: No
+- Type: int
+
+### Parameter: `restoreSettings`
+
+The restore settings of the vault.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossSubscriptionRestoreSettings`](#parameter-restoresettingscrosssubscriptionrestoresettings) | object | The restore settings of the vault. |
+
+### Parameter: `restoreSettings.crossSubscriptionRestoreSettings`
+
+The restore settings of the vault.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`crossSubscriptionRestoreState`](#parameter-restoresettingscrosssubscriptionrestoresettingscrosssubscriptionrestorestate) | string | The restore settings of the vault. |
+
+### Parameter: `restoreSettings.crossSubscriptionRestoreSettings.crossSubscriptionRestoreState`
+
+The restore settings of the vault.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -3575,7 +4363,95 @@ Security Settings of the vault.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`immutabilitySettings`](#parameter-securitysettingsimmutabilitysettings) | object | Immutability settings of a vault. |
+| [`softDeleteSettings`](#parameter-securitysettingssoftdeletesettings) | object | Soft delete settings of a vault. |
+
+### Parameter: `securitySettings.immutabilitySettings`
+
+Immutability settings of a vault.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`state`](#parameter-securitysettingsimmutabilitysettingsstate) | string | The immmutability setting of the vault. |
+
+### Parameter: `securitySettings.immutabilitySettings.state`
+
+The immmutability setting of the vault.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Locked'
+    'Unlocked'
+  ]
+  ```
+
+### Parameter: `securitySettings.softDeleteSettings`
+
+Soft delete settings of a vault.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enhancedSecurityState`](#parameter-securitysettingssoftdeletesettingsenhancedsecuritystate) | string | The enhanced security state. |
+| [`softDeleteRetentionPeriodInDays`](#parameter-securitysettingssoftdeletesettingssoftdeleteretentionperiodindays) | int | The soft delete retention period in days. |
+| [`softDeleteState`](#parameter-securitysettingssoftdeletesettingssoftdeletestate) | string | The soft delete state. |
+
+### Parameter: `securitySettings.softDeleteSettings.enhancedSecurityState`
+
+The enhanced security state.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AlwaysON'
+    'Disabled'
+    'Enabled'
+    'Invalid'
+  ]
+  ```
+
+### Parameter: `securitySettings.softDeleteSettings.softDeleteRetentionPeriodInDays`
+
+The soft delete retention period in days.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `securitySettings.softDeleteSettings.softDeleteState`
+
+The soft delete state.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AlwaysON'
+    'Disabled'
+    'Enabled'
+    'Invalid'
+  ]
+  ```
 
 ### Parameter: `tags`
 
@@ -3602,6 +4478,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
