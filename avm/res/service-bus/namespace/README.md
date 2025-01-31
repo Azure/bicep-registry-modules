@@ -18,6 +18,7 @@ This module deploys a Service Bus Namespace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.ServiceBus/namespaces` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces) |
@@ -42,8 +43,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-3-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -228,7 +230,94 @@ param skuObject = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
+  name: 'namespaceDeployment'
+  params: {
+    // Required parameters
+    name: 'sbnkv001'
+    // Non-required parameters
+    location: '<location>'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      rootPrimaryConnectionStringName: 'primary-connectionString-name'
+      rootPrimaryKeyName: 'primaryKey-name'
+      rootSecondaryConnectionStringName: 'secondary-connectionString-name'
+      rootSecondaryKeyName: 'secondaryKey-name'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sbnkv001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "rootPrimaryConnectionStringName": "primary-connectionString-name",
+        "rootPrimaryKeyName": "primaryKey-name",
+        "rootSecondaryConnectionStringName": "secondary-connectionString-name",
+        "rootSecondaryKeyName": "secondaryKey-name"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnkv001'
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  rootPrimaryConnectionStringName: 'primary-connectionString-name'
+  rootPrimaryKeyName: 'primaryKey-name'
+  rootSecondaryConnectionStringName: 'secondary-connectionString-name'
+  rootSecondaryKeyName: 'secondaryKey-name'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1039,7 +1128,7 @@ param topics = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -1496,6 +1585,7 @@ param topics = [
 | [`queues`](#parameter-queues) | array | The queues to create in the service bus namespace. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`topics`](#parameter-topics) | array | The topics to create in the service bus namespace. |
@@ -2958,6 +3048,63 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rootPrimaryConnectionStringName`](#parameter-secretsexportconfigurationrootprimaryconnectionstringname) | string | The rootPrimaryConnectionStringName secret name to create. |
+| [`rootPrimaryKeyName`](#parameter-secretsexportconfigurationrootprimarykeyname) | string | The rootPrimaryKeyName secret name to create. |
+| [`rootSecondaryConnectionStringName`](#parameter-secretsexportconfigurationrootsecondaryconnectionstringname) | string | The rootSecondaryConnectionStringName secret name to create. |
+| [`rootSecondaryKeyName`](#parameter-secretsexportconfigurationrootsecondarykeyname) | string | The rootSecondaryKeyName secret name to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The resource ID of the key vault where to store the secrets of this module.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootPrimaryConnectionStringName`
+
+The rootPrimaryConnectionStringName secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootPrimaryKeyName`
+
+The rootPrimaryKeyName secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootSecondaryConnectionStringName`
+
+The rootSecondaryConnectionStringName secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.rootSecondaryKeyName`
+
+The rootSecondaryKeyName secret name to create.
+
+- Required: No
+- Type: string
+
 ### Parameter: `skuObject`
 
 The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
@@ -3743,6 +3890,7 @@ Enabled by default in order to align with resiliency best practices, thus requir
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed service bus namespace. |
 | `privateEndpoints` | array | The private endpoints of the service bus namespace. |
