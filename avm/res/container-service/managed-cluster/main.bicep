@@ -542,7 +542,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-preview' = {
   name: name
   location: location
   tags: tags

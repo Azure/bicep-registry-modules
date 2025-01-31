@@ -95,6 +95,7 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Automatic'
       vpaAddon: true
       webApplicationRoutingEnabled: true
+      defaultIngressControllerType: 'Internal'
     }
   }
 ]

@@ -17,7 +17,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerService/managedClusters` | [2024-03-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-03-02-preview/managedClusters) |
+| `Microsoft.ContainerService/managedClusters` | [2024-09-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-02-preview/managedClusters) |
 | `Microsoft.ContainerService/managedClusters/agentPools` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-08-01/managedClusters/agentPools) |
 | `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | [2023-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-10-01/managedClusters/maintenanceConfigurations) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -76,6 +76,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       aadProfileManaged: true
     }
     autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
+    defaultIngressControllerType: 'Internal'
     disableLocalAccounts: true
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
@@ -152,6 +153,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "autoNodeOsUpgradeProfileUpgradeChannel": {
       "value": "NodeImage"
+    },
+    "defaultIngressControllerType": {
+      "value": "Internal"
     },
     "disableLocalAccounts": {
       "value": true
@@ -248,6 +252,7 @@ param aadProfile = {
   aadProfileManaged: true
 }
 param autoNodeOsUpgradeProfileUpgradeChannel = 'NodeImage'
+param defaultIngressControllerType = 'Internal'
 param disableLocalAccounts = true
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
@@ -2711,6 +2716,7 @@ param tags = {
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
 | [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
+| [`defaultIngressControllerType`](#parameter-defaultingresscontrollertype) | string | Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableCustomMetrics`](#parameter-disablecustommetrics) | bool | Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
@@ -3856,6 +3862,22 @@ Specifies whether the cost analysis add-on is enabled or not. If Enabled `enable
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `defaultIngressControllerType`
+
+Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AnnotationControlled'
+    'External'
+    'Internal'
+    'None'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings`
 
