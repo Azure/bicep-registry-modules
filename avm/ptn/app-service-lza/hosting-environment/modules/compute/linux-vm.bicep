@@ -6,7 +6,6 @@ targetScope = 'resourceGroup'
 
 param vmName string
 param vmSize string
-param storageAccountType string = 'Premium_LRS'
 param vmZone int = 0
 param vmVnetName string
 param vmSubnetName string
@@ -245,7 +244,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
       deleteOption: 'Delete'
       diskSizeGB: 128
       managedDisk: {
-        storageAccountType: storageAccountType
+        storageAccountType: 'Premium_LRS'
       }
     }
     dataDisks: [
@@ -255,7 +254,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
         diskSizeGB: 128
         lun: 0
         managedDisk: {
-          storageAccountType: storageAccountType
+          storageAccountType: 'Premium_LRS'
         }
       }
     ]
