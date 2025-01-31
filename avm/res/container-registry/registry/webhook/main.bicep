@@ -20,7 +20,7 @@ param serviceUri string
 param status string = 'enabled'
 
 @description('Optional. The list of actions that trigger the webhook to post notifications.')
-param action array = [
+param action string[] = [
   'chart_delete'
   'chart_push'
   'delete'
