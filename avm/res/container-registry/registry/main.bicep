@@ -536,7 +536,7 @@ output credentialSetsResourceIds array = [
 ]
 
 @description('The private endpoints of the Azure container registry.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: registry_privateEndpoints[i].outputs.name
     resourceId: registry_privateEndpoints[i].outputs.resourceId
