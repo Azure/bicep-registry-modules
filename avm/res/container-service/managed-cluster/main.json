@@ -5,7 +5,7 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
+      "version": "0.32.4.45862",
       "templateHash": "3994448633609633397"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
@@ -1970,7 +1970,7 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
+              "version": "0.32.4.45862",
               "templateHash": "8370238557121472803"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
@@ -2166,7 +2166,7 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
+              "version": "0.32.4.45862",
               "templateHash": "3772142304849625200"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
