@@ -262,7 +262,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
           minApiVersion: '2021-08-01'
         }
     restore: restore
-    developerPortalStatus: sku == 'Consumption' ? null : (enableDeveloperPortal ? 'Enabled' : 'Disabled')
+    developerPortalStatus: sku != 'Consumption' ? (enableDeveloperPortal ? 'Enabled' : 'Disabled') : null
   }
 }
 
