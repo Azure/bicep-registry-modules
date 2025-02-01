@@ -124,6 +124,12 @@ param scaleSetEvictionPolicy string = 'Delete'
 ])
 param scaleSetPriority string?
 
+@description('Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.')
+param enableSecureBoot bool = false
+
+@description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
+param enableVTPM bool = false
+
 @description('Optional. Possible values are any decimal value greater than zero or -1 which indicates the willingness to pay any on-demand price. For more details on spot pricing, see spot VMs pricing (https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms#pricing).')
 param spotMaxPrice int?
 
@@ -145,11 +151,11 @@ param vnetSubnetResourceId string?
 @description('Optional. Determines the type of workload a node can run.')
 param workloadRuntime string?
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' existing = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-01' existing = {
   name: managedClusterName
 }
 
-resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-08-01' = {
+resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-09-01' = {
   name: name
   parent: managedCluster
   properties: {
@@ -184,6 +190,10 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-0
     scaleDownMode: scaleDownMode
     scaleSetEvictionPolicy: scaleSetEvictionPolicy
     scaleSetPriority: scaleSetPriority
+    securityProfile: {
+      enableSecureBoot: enableSecureBoot
+      enableVTPM: enableVTPM
+    }
     spotMaxPrice: spotMaxPrice
     tags: tags
     type: type

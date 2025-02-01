@@ -12,7 +12,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-08-01/managedClusters/agentPools) |
+| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-01/managedClusters/agentPools) |
 
 ## Parameters
 
@@ -38,7 +38,9 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`enableEncryptionAtHost`](#parameter-enableencryptionathost) | bool | This is only supported on certain VM sizes and in certain Azure regions. For more information, see: /azure/aks/enable-host-encryption. For security reasons, this setting should be enabled. |
 | [`enableFIPS`](#parameter-enablefips) | bool | See Add a FIPS-enabled node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview) for more details. |
 | [`enableNodePublicIP`](#parameter-enablenodepublicip) | bool | Some scenarios may require nodes in a node pool to receive their own dedicated public IP addresses. A common scenario is for gaming workloads, where a console needs to make a direct connection to a cloud virtual machine to minimize hops. For more information see assigning a public IP per node (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools). |
+| [`enableSecureBoot`](#parameter-enablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-enableultrassd) | bool | Whether to enable UltraSSD. |
+| [`enableVTPM`](#parameter-enablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-gpuinstanceprofile) | string | GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU. |
 | [`kubeletDiskType`](#parameter-kubeletdisktype) | string | Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage. |
 | [`maxCount`](#parameter-maxcount) | int | The maximum number of nodes for auto-scaling. |
@@ -146,9 +148,29 @@ Some scenarios may require nodes in a node pool to receive their own dedicated p
 - MinValue: 0
 - MaxValue: 1000
 
+### Parameter: `enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+- Default: `False`
+- MinValue: 0
+- MaxValue: 1000
+
 ### Parameter: `enableUltraSSD`
 
 Whether to enable UltraSSD.
+
+- Required: No
+- Type: bool
+- Default: `False`
+- MinValue: 0
+- MaxValue: 1000
+
+### Parameter: `enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
