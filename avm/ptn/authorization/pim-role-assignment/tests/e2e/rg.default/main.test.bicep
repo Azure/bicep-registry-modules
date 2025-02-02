@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
-metadata name = 'PIM Role Assignments (Resource Group scope)'
-metadata description = 'This module deploys a PIM Role Assignment at a Resource Group scope using minimal parameters.'
+metadata name = 'PIM Eligible Role Assignments (Resource Group scope)'
+metadata description = 'This module deploys a PIM Eligible Role Assignment at a Resource Group scope using minimal parameters.'
 
 // ========== //
 // Parameters //
@@ -26,6 +26,12 @@ param subscriptionId string = '#_subscriptionId_#'
 @secure()
 param userPrinicipalId string = ''
 
+@description('Optional. The start date and time for the role assignment. Defaults to the current date and time.')
+param startDateTime string = utcNow()
+
+@description('Optional. The end date and time for the role assignment. Defaults to one year from the start date and time.')
+param endDateTime string = dateTimeAdd(startDateTime, 'P1Y')
+
 // General resources
 // =================
 module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
@@ -50,10 +56,12 @@ module testDeployment '../../../main.bicep' = {
     subscriptionId: subscriptionId
     resourceGroupName: resourceGroup.outputs.name
     requestType: 'AdminAssign'
-    scheduleInfo: {
-      expiration: {
-        duration: 'P1H'
-        type: 'AfterDuration'
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Eligible'
+      scheduleInfo: {
+        durationType: 'AfterDateTime'
+        endDateTime: endDateTime
+        startTime: startDateTime
       }
     }
   }

@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
-metadata name = 'PIM Role Assignments (Subscription scope)'
-metadata description = 'This module deploys a PIM Role Assignment at a Subscription scope using common parameters.'
+metadata name = 'PIM Active permenant Role Assignments (Subscription scope)'
+metadata description = 'This module deploys a PIM Active permenant Role Assignment at a Subscription scope using common parameters.'
 
 // ========== //
 // Parameters //
@@ -32,10 +32,10 @@ module testDeployment '../../../main.bicep' = {
     principalId: userPrinicipalId
     roleDefinitionIdOrName: 'Reader'
     requestType: 'AdminAssign'
-    scheduleInfo: {
-      expiration: {
-        duration: 'P1H'
-        type: 'AfterDuration'
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Active'
+      scheduleInfo: {
+        durationType: 'NoExpiration'
       }
     }
     justification: 'Justification for role assignment'

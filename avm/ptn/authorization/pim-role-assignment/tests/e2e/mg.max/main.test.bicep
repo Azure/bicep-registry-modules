@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
-metadata name = 'PIM Role Assignments (Management Group scope)'
-metadata description = 'This module deploys a PIM Role Assignment at a Management Group scope using common parameters.'
+metadata name = 'PIM Active Role Assignments (Management Group scope)'
+metadata description = 'This module deploys a PIM Active Role Assignment at a Management Group scope using common parameters.'
 
 // ========== //
 // Parameters //
@@ -19,6 +19,9 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param userPrinicipalId string = ''
 
+@description('Optional. The start date and time for the role assignment. Defaults to the current date and time.')
+param startDateTime string = utcNow()
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -30,11 +33,13 @@ module testDeployment '../../../main.bicep' = {
     roleDefinitionIdOrName: 'Contributor'
     requestType: 'AdminAssign'
     location: resourceLocation
-    scheduleInfo: {
-      expiration: {
-        type: 'AfterDateTime'
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Active'
+      scheduleInfo: {
+        duration: 'P10D'
+        durationType: 'AfterDuration'
+        startTime: startDateTime
       }
-      startDateTime: '2025-01-23T12:39:44Z'
     }
     justification: 'Justification for the role eligibility'
     ticketInfo: {

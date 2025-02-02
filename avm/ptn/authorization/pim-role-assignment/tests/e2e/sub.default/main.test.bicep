@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
-metadata name = 'PIM Role Assignments (Subscription scope)'
-metadata description = 'This module deploys a PIM Role Assignment at a Subscription scope using minimal parameters.'
+metadata name = 'PIM Eligible Role Assignments (Subscription scope)'
+metadata description = 'This module deploys a PIM Eligible Role Assignment at a Subscription scope using minimal parameters.'
 
 // ========== //
 // Parameters //
@@ -19,6 +19,9 @@ param subscriptionId string = '#_subscriptionId_#'
 @secure()
 param userPrinicipalId string = ''
 
+@description('Optional. The start date and time for the role assignment. Defaults to the current date and time.')
+param startDateTime string = utcNow()
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -33,10 +36,12 @@ module testDeployment '../../../main.bicep' = {
     )
     subscriptionId: subscriptionId
     requestType: 'AdminAssign'
-    scheduleInfo: {
-      expiration: {
-        duration: 'P1H'
-        type: 'AfterDuration'
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Eligible'
+      scheduleInfo: {
+        duration: 'P10D'
+        durationType: 'AfterDuration'
+        startTime: startDateTime
       }
     }
   }

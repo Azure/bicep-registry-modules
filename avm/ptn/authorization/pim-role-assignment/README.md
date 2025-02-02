@@ -14,6 +14,7 @@
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/roleAssignmentScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests) |
 | `Microsoft.Authorization/roleEligibilityScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests) |
 
 ## Usage examples
@@ -24,16 +25,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/pim-role-assignment:<version>`.
 
-- [ PIM Role Assignments (Management Group scope)](#example-1-pim-role-assignments-management-group-scope)
-- [PIM Role Assignments (Management Group scope)](#example-2-pim-role-assignments-management-group-scope)
-- [PIM Role Assignments (Resource Group scope)](#example-3-pim-role-assignments-resource-group-scope)
-- [PIM Role Assignments (Resource Group)](#example-4-pim-role-assignments-resource-group)
-- [PIM Role Assignments (Subscription scope)](#example-5-pim-role-assignments-subscription-scope)
-- [PIM Role Assignments (Subscription scope)](#example-6-pim-role-assignments-subscription-scope)
+- [ PIM Eligible Role Assignments (Management Group scope)](#example-1-pim-eligible-role-assignments-management-group-scope)
+- [PIM Active Role Assignments (Management Group scope)](#example-2-pim-active-role-assignments-management-group-scope)
+- [PIM Eligible Role Assignments (Resource Group scope)](#example-3-pim-eligible-role-assignments-resource-group-scope)
+- [PIM Active Role Assignments (Resource Group)](#example-4-pim-active-role-assignments-resource-group)
+- [PIM Eligible Role Assignments (Subscription scope)](#example-5-pim-eligible-role-assignments-subscription-scope)
+- [PIM Active permenant Role Assignments (Subscription scope)](#example-6-pim-active-permenant-role-assignments-subscription-scope)
 
-### Example 1: _ PIM Role Assignments (Management Group scope)_
+### Example 1: _ PIM Eligible Role Assignments (Management Group scope)_
 
-This module deploys a PIM Role Assignment at a Management Group scope using minimal parameters.
+This module deploys a PIM Eligible Role Assignment at a Management Group scope using minimal parameters.
 
 
 <details>
@@ -45,15 +46,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
-    principalId: '<principalId>'
-    requestType: 'AdminAssign'
-    roleDefinitionIdOrName: 'Resource Policy Contributor'
-    scheduleInfo: {
-      expiration: {
-        duration: 'P1H'
-        type: 'AfterDuration'
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Eligible'
+      scheduleInfo: {
+        duration: 'P10D'
+        durationType: 'AfterDuration'
+        startTime: '<startTime>'
       }
     }
+    principalId: '<principalId>'
+    requestType: 'AdminAssign'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
     // Non-required parameters
     location: '<location>'
   }
@@ -73,6 +76,16 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "pimRoleAssignmentType": {
+      "value": {
+        "roleAssignmentType": "Eligible",
+        "scheduleInfo": {
+          "duration": "P10D",
+          "durationType": "AfterDuration",
+          "startTime": "<startTime>"
+        }
+      }
+    },
     "principalId": {
       "value": "<principalId>"
     },
@@ -80,15 +93,7 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
       "value": "AdminAssign"
     },
     "roleDefinitionIdOrName": {
-      "value": "Resource Policy Contributor"
-    },
-    "scheduleInfo": {
-      "value": {
-        "expiration": {
-          "duration": "P1H",
-          "type": "AfterDuration"
-        }
-      }
+      "value": "/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
     },
     // Non-required parameters
     "location": {
@@ -109,15 +114,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
 using 'br/public:avm/ptn/authorization/pim-role-assignment:<version>'
 
 // Required parameters
-param principalId = '<principalId>'
-param requestType = 'AdminAssign'
-param roleDefinitionIdOrName = 'Resource Policy Contributor'
-param scheduleInfo = {
-  expiration: {
-    duration: 'P1H'
-    type: 'AfterDuration'
+param pimRoleAssignmentType = {
+  roleAssignmentType: 'Eligible'
+  scheduleInfo: {
+    duration: 'P10D'
+    durationType: 'AfterDuration'
+    startTime: '<startTime>'
   }
 }
+param principalId = '<principalId>'
+param requestType = 'AdminAssign'
+param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -125,9 +132,9 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _PIM Role Assignments (Management Group scope)_
+### Example 2: _PIM Active Role Assignments (Management Group scope)_
 
-This module deploys a PIM Role Assignment at a Management Group scope using common parameters.
+This module deploys a PIM Active Role Assignment at a Management Group scope using common parameters.
 
 
 <details>
@@ -139,15 +146,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Active'
+      scheduleInfo: {
+        duration: 'P10D'
+        durationType: 'AfterDuration'
+        startTime: '<startTime>'
+      }
+    }
     principalId: '<principalId>'
     requestType: 'AdminAssign'
     roleDefinitionIdOrName: 'Contributor'
-    scheduleInfo: {
-      expiration: {
-        type: 'AfterDateTime'
-      }
-      startDateTime: '2025-01-23T12:39:44Z'
-    }
     // Non-required parameters
     justification: 'Justification for the role eligibility'
     location: '<location>'
@@ -172,6 +181,16 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "pimRoleAssignmentType": {
+      "value": {
+        "roleAssignmentType": "Active",
+        "scheduleInfo": {
+          "duration": "P10D",
+          "durationType": "AfterDuration",
+          "startTime": "<startTime>"
+        }
+      }
+    },
     "principalId": {
       "value": "<principalId>"
     },
@@ -180,14 +199,6 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
     },
     "roleDefinitionIdOrName": {
       "value": "Contributor"
-    },
-    "scheduleInfo": {
-      "value": {
-        "expiration": {
-          "type": "AfterDateTime"
-        },
-        "startDateTime": "2025-01-23T12:39:44Z"
-      }
     },
     // Non-required parameters
     "justification": {
@@ -217,15 +228,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
 using 'br/public:avm/ptn/authorization/pim-role-assignment:<version>'
 
 // Required parameters
+param pimRoleAssignmentType = {
+  roleAssignmentType: 'Active'
+  scheduleInfo: {
+    duration: 'P10D'
+    durationType: 'AfterDuration'
+    startTime: '<startTime>'
+  }
+}
 param principalId = '<principalId>'
 param requestType = 'AdminAssign'
 param roleDefinitionIdOrName = 'Contributor'
-param scheduleInfo = {
-  expiration: {
-    type: 'AfterDateTime'
-  }
-  startDateTime: '2025-01-23T12:39:44Z'
-}
 // Non-required parameters
 param justification = 'Justification for the role eligibility'
 param location = '<location>'
@@ -238,9 +251,9 @@ param ticketInfo = {
 </details>
 <p>
 
-### Example 3: _PIM Role Assignments (Resource Group scope)_
+### Example 3: _PIM Eligible Role Assignments (Resource Group scope)_
 
-This module deploys a PIM Role Assignment at a Resource Group scope using minimal parameters.
+This module deploys a PIM Eligible Role Assignment at a Resource Group scope using minimal parameters.
 
 
 <details>
@@ -252,15 +265,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Eligible'
+      scheduleInfo: {
+        durationType: 'AfterDateTime'
+        endDateTime: '<endDateTime>'
+        startTime: '<startTime>'
+      }
+    }
     principalId: '<principalId>'
     requestType: 'AdminAssign'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
-    scheduleInfo: {
-      expiration: {
-        duration: 'P1H'
-        type: 'AfterDuration'
-      }
-    }
     // Non-required parameters
     location: '<location>'
     resourceGroupName: '<resourceGroupName>'
@@ -282,6 +297,16 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "pimRoleAssignmentType": {
+      "value": {
+        "roleAssignmentType": "Eligible",
+        "scheduleInfo": {
+          "durationType": "AfterDateTime",
+          "endDateTime": "<endDateTime>",
+          "startTime": "<startTime>"
+        }
+      }
+    },
     "principalId": {
       "value": "<principalId>"
     },
@@ -290,14 +315,6 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
     },
     "roleDefinitionIdOrName": {
       "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
-    },
-    "scheduleInfo": {
-      "value": {
-        "expiration": {
-          "duration": "P1H",
-          "type": "AfterDuration"
-        }
-      }
     },
     // Non-required parameters
     "location": {
@@ -324,15 +341,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
 using 'br/public:avm/ptn/authorization/pim-role-assignment:<version>'
 
 // Required parameters
+param pimRoleAssignmentType = {
+  roleAssignmentType: 'Eligible'
+  scheduleInfo: {
+    durationType: 'AfterDateTime'
+    endDateTime: '<endDateTime>'
+    startTime: '<startTime>'
+  }
+}
 param principalId = '<principalId>'
 param requestType = 'AdminAssign'
 param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
-param scheduleInfo = {
-  expiration: {
-    duration: 'P1H'
-    type: 'AfterDuration'
-  }
-}
 // Non-required parameters
 param location = '<location>'
 param resourceGroupName = '<resourceGroupName>'
@@ -342,9 +361,9 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 4: _PIM Role Assignments (Resource Group)_
+### Example 4: _PIM Active Role Assignments (Resource Group)_
 
-This module deploys a PIM Role Assignment at a Resource Group scope using common parameters.
+This module deploys a PIM Active Role Assignment at a Resource Group scope using common parameters.
 
 
 <details>
@@ -356,15 +375,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Active'
+      scheduleInfo: {
+        durationType: 'AfterDateTime'
+        endDateTime: '<endDateTime>'
+        startTime: '<startTime>'
+      }
+    }
     principalId: '<principalId>'
     requestType: 'AdminAssign'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
-    scheduleInfo: {
-      expiration: {
-        type: 'AfterDateTime'
-      }
-      startDateTime: '<startDateTime>'
-    }
     // Non-required parameters
     justification: 'Justification for role eligibility'
     location: '<location>'
@@ -391,6 +412,16 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "pimRoleAssignmentType": {
+      "value": {
+        "roleAssignmentType": "Active",
+        "scheduleInfo": {
+          "durationType": "AfterDateTime",
+          "endDateTime": "<endDateTime>",
+          "startTime": "<startTime>"
+        }
+      }
+    },
     "principalId": {
       "value": "<principalId>"
     },
@@ -399,14 +430,6 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
     },
     "roleDefinitionIdOrName": {
       "value": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
-    },
-    "scheduleInfo": {
-      "value": {
-        "expiration": {
-          "type": "AfterDateTime"
-        },
-        "startDateTime": "<startDateTime>"
-      }
     },
     // Non-required parameters
     "justification": {
@@ -442,15 +465,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
 using 'br/public:avm/ptn/authorization/pim-role-assignment:<version>'
 
 // Required parameters
+param pimRoleAssignmentType = {
+  roleAssignmentType: 'Active'
+  scheduleInfo: {
+    durationType: 'AfterDateTime'
+    endDateTime: '<endDateTime>'
+    startTime: '<startTime>'
+  }
+}
 param principalId = '<principalId>'
 param requestType = 'AdminAssign'
 param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
-param scheduleInfo = {
-  expiration: {
-    type: 'AfterDateTime'
-  }
-  startDateTime: '<startDateTime>'
-}
 // Non-required parameters
 param justification = 'Justification for role eligibility'
 param location = '<location>'
@@ -465,9 +490,9 @@ param ticketInfo = {
 </details>
 <p>
 
-### Example 5: _PIM Role Assignments (Subscription scope)_
+### Example 5: _PIM Eligible Role Assignments (Subscription scope)_
 
-This module deploys a PIM Role Assignment at a Subscription scope using minimal parameters.
+This module deploys a PIM Eligible Role Assignment at a Subscription scope using minimal parameters.
 
 
 <details>
@@ -479,15 +504,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Eligible'
+      scheduleInfo: {
+        duration: 'P10D'
+        durationType: 'AfterDuration'
+        startTime: '<startTime>'
+      }
+    }
     principalId: '<principalId>'
     requestType: 'AdminAssign'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-    scheduleInfo: {
-      expiration: {
-        duration: 'P1H'
-        type: 'AfterDuration'
-      }
-    }
     // Non-required parameters
     subscriptionId: '<subscriptionId>'
   }
@@ -507,6 +534,16 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "pimRoleAssignmentType": {
+      "value": {
+        "roleAssignmentType": "Eligible",
+        "scheduleInfo": {
+          "duration": "P10D",
+          "durationType": "AfterDuration",
+          "startTime": "<startTime>"
+        }
+      }
+    },
     "principalId": {
       "value": "<principalId>"
     },
@@ -515,14 +552,6 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
     },
     "roleDefinitionIdOrName": {
       "value": "<roleDefinitionIdOrName>"
-    },
-    "scheduleInfo": {
-      "value": {
-        "expiration": {
-          "duration": "P1H",
-          "type": "AfterDuration"
-        }
-      }
     },
     // Non-required parameters
     "subscriptionId": {
@@ -543,15 +572,17 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
 using 'br/public:avm/ptn/authorization/pim-role-assignment:<version>'
 
 // Required parameters
+param pimRoleAssignmentType = {
+  roleAssignmentType: 'Eligible'
+  scheduleInfo: {
+    duration: 'P10D'
+    durationType: 'AfterDuration'
+    startTime: '<startTime>'
+  }
+}
 param principalId = '<principalId>'
 param requestType = 'AdminAssign'
 param roleDefinitionIdOrName = '<roleDefinitionIdOrName>'
-param scheduleInfo = {
-  expiration: {
-    duration: 'P1H'
-    type: 'AfterDuration'
-  }
-}
 // Non-required parameters
 param subscriptionId = '<subscriptionId>'
 ```
@@ -559,9 +590,9 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 6: _PIM Role Assignments (Subscription scope)_
+### Example 6: _PIM Active permenant Role Assignments (Subscription scope)_
 
-This module deploys a PIM Role Assignment at a Subscription scope using common parameters.
+This module deploys a PIM Active permenant Role Assignment at a Subscription scope using common parameters.
 
 
 <details>
@@ -573,15 +604,15 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Active'
+      scheduleInfo: {
+        durationType: 'NoExpiration'
+      }
+    }
     principalId: '<principalId>'
     requestType: 'AdminAssign'
     roleDefinitionIdOrName: 'Reader'
-    scheduleInfo: {
-      expiration: {
-        duration: 'P1H'
-        type: 'AfterDuration'
-      }
-    }
     // Non-required parameters
     justification: 'Justification for role assignment'
     location: '<location>'
@@ -607,6 +638,14 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "pimRoleAssignmentType": {
+      "value": {
+        "roleAssignmentType": "Active",
+        "scheduleInfo": {
+          "durationType": "NoExpiration"
+        }
+      }
+    },
     "principalId": {
       "value": "<principalId>"
     },
@@ -615,14 +654,6 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
     },
     "roleDefinitionIdOrName": {
       "value": "Reader"
-    },
-    "scheduleInfo": {
-      "value": {
-        "expiration": {
-          "duration": "P1H",
-          "type": "AfterDuration"
-        }
-      }
     },
     // Non-required parameters
     "justification": {
@@ -655,15 +686,15 @@ module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<v
 using 'br/public:avm/ptn/authorization/pim-role-assignment:<version>'
 
 // Required parameters
+param pimRoleAssignmentType = {
+  roleAssignmentType: 'Active'
+  scheduleInfo: {
+    durationType: 'NoExpiration'
+  }
+}
 param principalId = '<principalId>'
 param requestType = 'AdminAssign'
 param roleDefinitionIdOrName = 'Reader'
-param scheduleInfo = {
-  expiration: {
-    duration: 'P1H'
-    type: 'AfterDuration'
-  }
-}
 // Non-required parameters
 param justification = 'Justification for role assignment'
 param location = '<location>'
@@ -683,10 +714,10 @@ param ticketInfo = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`pimRoleAssignmentType`](#parameter-pimroleassignmenttype) | object | The type of the PIM role assignment whether its active or eligible. |
 | [`principalId`](#parameter-principalid) | string | The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity). |
 | [`requestType`](#parameter-requesttype) | string | The type of the role assignment eligibility request. |
 | [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | string | You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`scheduleInfo`](#parameter-scheduleinfo) | object | Schedule info of the role eligibility assignment. |
 
 **Optional parameters**
 
@@ -700,9 +731,18 @@ param ticketInfo = {
 | [`managementGroupId`](#parameter-managementgroupid) | string | Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | Name of the Resource Group to assign the RBAC role to. If Resource Group name is provided, and Subscription ID is provided, the module deploys at resource group level, therefore assigns the provided RBAC role to the resource group. |
 | [`subscriptionId`](#parameter-subscriptionid) | string | Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription. |
+| [`targetRoleAssignmentScheduleId`](#parameter-targetroleassignmentscheduleid) | string | The resultant role assignment schedule id or the role assignment schedule id being updated. |
+| [`targetRoleAssignmentScheduleInstanceId`](#parameter-targetroleassignmentscheduleinstanceid) | string | The role assignment schedule instance id being updated. |
 | [`targetRoleEligibilityScheduleId`](#parameter-targetroleeligibilityscheduleid) | string | The resultant role eligibility assignment id or the role eligibility assignment id being updated. |
 | [`targetRoleEligibilityScheduleInstanceId`](#parameter-targetroleeligibilityscheduleinstanceid) | string | The role eligibility assignment instance id being updated. |
 | [`ticketInfo`](#parameter-ticketinfo) | object | Ticket Info of the role eligibility. |
+
+### Parameter: `pimRoleAssignmentType`
+
+The type of the PIM role assignment whether its active or eligible.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `principalId`
 
@@ -737,71 +777,6 @@ The type of the role assignment eligibility request.
 You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `scheduleInfo`
-
-Schedule info of the role eligibility assignment.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`expiration`](#parameter-scheduleinfoexpiration) | object | The expiry information for the role eligibility. |
-| [`startDateTime`](#parameter-scheduleinfostartdatetime) | string | Start DateTime of the role eligibility assignment. |
-
-### Parameter: `scheduleInfo.expiration`
-
-The expiry information for the role eligibility.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`duration`](#parameter-scheduleinfoexpirationduration) | string | Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H. |
-| [`endDateTime`](#parameter-scheduleinfoexpirationenddatetime) | string | End DateTime of the role eligibility assignment. |
-| [`type`](#parameter-scheduleinfoexpirationtype) | string | Type of the role eligibility assignment expiration. |
-
-### Parameter: `scheduleInfo.expiration.duration`
-
-Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H.
-
-- Required: No
-- Type: string
-
-### Parameter: `scheduleInfo.expiration.endDateTime`
-
-End DateTime of the role eligibility assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `scheduleInfo.expiration.type`
-
-Type of the role eligibility assignment expiration.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AfterDateTime'
-    'AfterDuration'
-    'NoExpiration'
-  ]
-  ```
-
-### Parameter: `scheduleInfo.startDateTime`
-
-Start DateTime of the role eligibility assignment.
-
-- Required: No
 - Type: string
 
 ### Parameter: `condition`
@@ -874,6 +849,22 @@ Subscription ID of the subscription to assign the RBAC role to. If no Resource G
 - Type: string
 - Default: `''`
 
+### Parameter: `targetRoleAssignmentScheduleId`
+
+The resultant role assignment schedule id or the role assignment schedule id being updated.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `targetRoleAssignmentScheduleInstanceId`
+
+The role assignment schedule instance id being updated.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `targetRoleEligibilityScheduleId`
 
 The resultant role eligibility assignment id or the role eligibility assignment id being updated.
@@ -920,11 +911,7 @@ The ticket system name for the role eligibility assignment.
 
 ## Outputs
 
-| Output | Type | Description |
-| :-- | :-- | :-- |
-| `name` | string | The GUID of the PIM Role Assignment. |
-| `resourceId` | string | The resource ID of the PIM Role Assignment. |
-| `scope` | string | The scope this PIM Role Assignment applies to. |
+_None_
 
 ## Data Collection
 
