@@ -1633,6 +1633,7 @@ List of volumes to create in the capacity pool.
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 | [`zones`](#parameter-capacitypoolsvolumeszones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `capacityPools.volumes.name`
@@ -2168,6 +2169,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `capacityPools.volumes.volumeType`
+
+The type of the volume. DataProtection volumes are used for replication.
+
+- Required: No
+- Type: string
 
 ### Parameter: `capacityPools.volumes.zones`
 

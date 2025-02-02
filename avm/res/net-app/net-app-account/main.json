@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "6509519164461633683"
+      "templateHash": "7243886438696922162"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -988,6 +988,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Define if a volume is KerberosEnabled."
+          }
+        },
+        "volumeType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
           }
         }
       },
@@ -2233,7 +2240,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "2539920372355196545"
+              "templateHash": "11501347496223087191"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2409,6 +2416,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Define if a volume is KerberosEnabled."
+                  }
+                },
+                "volumeType": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
                   }
                 }
               },
@@ -2962,6 +2976,21 @@
                   },
                   "dataProtection": {
                     "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'dataProtection')]"
+                  },
+                  "kerberosEnabled": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'kerberosEnabled')]"
+                  },
+                  "smbContinuouslyAvailable": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbContinuouslyAvailable')]"
+                  },
+                  "smbEncryption": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbEncryption')]"
+                  },
+                  "smbNonBrowsable": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbNonBrowsable')]"
+                  },
+                  "volumeType": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'volumeType')]"
                   }
                 },
                 "template": {
