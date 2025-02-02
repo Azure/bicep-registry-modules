@@ -19,6 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param userPrinicipalId string = ''
 
+@description('Optional. The start date and time for the role assignment. Defaults to the current date and time.')
 param startDateTime string = utcNow()
 
 // ============== //

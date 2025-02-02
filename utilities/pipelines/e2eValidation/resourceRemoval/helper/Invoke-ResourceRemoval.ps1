@@ -105,6 +105,10 @@ function Invoke-ResourceRemoval {
             $null = $roleAssignmentsOnScope | Where-Object { $_.RoleAssignmentId -eq $ResourceId } | Remove-AzRoleAssignment
             break
         }
+        'Microsoft.Authorization/roleEligibilityScheduleRequests' {
+            $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
+            break
+        }
         'Microsoft.RecoveryServices/vaults' {
             # Pre-Removal
             # -----------
