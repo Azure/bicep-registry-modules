@@ -38,7 +38,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     principalId: userPrinicipalId
-    requestType: 'AdminAssign'
+    requestType: 'AdminUpdate'
     roleDefinitionIdOrName: 'Resource Policy Contributor'
     location: resourceLocation
   }
