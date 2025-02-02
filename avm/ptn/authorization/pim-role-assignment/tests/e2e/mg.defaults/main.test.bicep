@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
-metadata name = ' PIM Role Assignments (Management Group scope)'
-metadata description = 'This module deploys a PIM Role Assignment at a Management Group scope using minimal parameters.'
+metadata name = ' PIM Eligible Role Assignments (Management Group scope)'
+metadata description = 'This module deploys a PIM Eligible Role Assignment at a Management Group scope using minimal parameters.'
 
 // ========== //
 // Parameters //
@@ -19,6 +19,8 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param userPrinicipalId string = ''
 
+param startDateTime string = utcNow()
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -26,15 +28,17 @@ param userPrinicipalId string = ''
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}-${namePrefix}'
   params: {
-    principalId: userPrinicipalId
-    roleDefinitionIdOrName: 'Resource Policy Contributor'
-    requestType: 'AdminAssign'
-    location: resourceLocation
-    scheduleInfo: {
-      expiration: {
-        duration: 'P1H'
-        type: 'AfterDuration'
+    pimRoleAssignmentType: {
+      roleAssignmentType: 'Eligible'
+      scheduleInfo: {
+        duration: 'P10D'
+        durationType: 'AfterDuration'
+        startTime: startDateTime
       }
     }
+    principalId: userPrinicipalId
+    requestType: 'AdminAssign'
+    roleDefinitionIdOrName: 'User Access Administrator'
+    location: resourceLocation
   }
 }

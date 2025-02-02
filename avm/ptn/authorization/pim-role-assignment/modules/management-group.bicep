@@ -3,7 +3,7 @@ metadata description = 'This module deploys a PIM Role Assignment at a Managemen
 
 targetScope = 'managementGroup'
 
-import { requestTypeType, scheduleInfoType, scheduleInfoExpirationType, ticketInfoType } from 'definitions.bicep'
+import { requestTypeType, pimRoleAssignmentTypeType, ticketInfoType } from 'definitions.bicep'
 
 @sys.description('Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleDefinitionIdOrName string
@@ -13,6 +13,9 @@ param principalId string
 
 @sys.description('Optional. Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment.')
 param managementGroupId string = managementGroup().name
+
+@description('Required. The type of the PIM role assignment whether its active or eligible.')
+param pimRoleAssignmentType pimRoleAssignmentTypeType
 
 @sys.description('Optional. The justification for the role eligibility.')
 param justification string = ''
@@ -26,11 +29,14 @@ param targetRoleEligibilityScheduleId string = ''
 @sys.description('Optional. The role eligibility assignment instance id being updated.')
 param targetRoleEligibilityScheduleInstanceId string = ''
 
+@sys.description('Optional. The resultant role assignment schedule id or the role assignment schedule id being updated.')
+param targetRoleAssignmentScheduleId string = ''
+
+@sys.description('Optional. The role assignment schedule instance id being updated.')
+param targetRoleAssignmentScheduleInstanceId string = ''
+
 @sys.description('Optional. Ticket Info of the role eligibility.')
 param ticketInfo ticketInfoType?
-
-@sys.description('Optional. Schedule info of the role eligibility assignment.')
-param scheduleInfo scheduleInfoType
 
 @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to.')
 param condition string = ''
@@ -65,7 +71,7 @@ var builtInRoleNames = {
 
 var roleDefinitionIdVar = (builtInRoleNames[?roleDefinitionIdOrName] ?? roleDefinitionIdOrName)
 
-resource pimRoleAssignment 'Microsoft.Authorization/roleEligibilityScheduleRequests@2022-04-01-preview' = {
+resource pimEligibleRoleAssignment 'Microsoft.Authorization/roleEligibilityScheduleRequests@2022-04-01-preview' = if (pimRoleAssignmentType.roleAssignmentType == 'Eligible') {
   name: guid(managementGroupId, roleDefinitionIdVar, principalId)
   properties: {
     principalId: principalId
@@ -74,18 +80,82 @@ resource pimRoleAssignment 'Microsoft.Authorization/roleEligibilityScheduleReque
     condition: !empty(condition) ? condition : null
     conditionVersion: !empty(conditionVersion) && !empty(condition) ? conditionVersion : null
     justification: justification
-    scheduleInfo: scheduleInfo
     targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
     targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
     ticketInfo: ticketInfo
+    scheduleInfo: pimRoleAssignmentType.scheduleInfo.durationType == 'NoExpiration'
+      ? {
+          expiration: {
+            type: 'NoExpiration'
+          }
+        }
+      : pimRoleAssignmentType.scheduleInfo.durationType == 'AfterDuration'
+          ? {
+              expiration: {
+                type: 'AfterDuration'
+                duration: pimRoleAssignmentType.scheduleInfo.duration
+              }
+              startDateTime: pimRoleAssignmentType.scheduleInfo.startTime
+            }
+          : pimRoleAssignmentType.scheduleInfo.durationType == 'AfterDateTime'
+              ? {
+                  expiration: {
+                    type: 'AfterDateTime'
+                    endDateTime: pimRoleAssignmentType.scheduleInfo.endDateTime
+                  }
+                  startDateTime: pimRoleAssignmentType.scheduleInfo.startTime
+                }
+              : null
+  }
+}
+
+resource pimActiveRoleAssignment 'Microsoft.Authorization/roleAssignmentScheduleRequests@2022-04-01-preview' = if (pimRoleAssignmentType.roleAssignmentType == 'Active') {
+  name: guid(managementGroupId, roleDefinitionIdVar, principalId)
+  properties: {
+    principalId: principalId
+    roleDefinitionId: roleDefinitionIdVar
+    requestType: requestType
+    condition: !empty(condition) ? condition : null
+    conditionVersion: !empty(conditionVersion) && !empty(condition) ? conditionVersion : null
+    justification: justification
+    targetRoleAssignmentScheduleId: targetRoleAssignmentScheduleId
+    targetRoleAssignmentScheduleInstanceId: targetRoleAssignmentScheduleInstanceId
+    ticketInfo: ticketInfo
+    scheduleInfo: pimRoleAssignmentType.scheduleInfo.durationType == 'NoExpiration'
+      ? {
+          expiration: {
+            type: 'NoExpiration'
+          }
+        }
+      : pimRoleAssignmentType.scheduleInfo.durationType == 'AfterDuration'
+          ? {
+              expiration: {
+                type: 'AfterDuration'
+                duration: pimRoleAssignmentType.scheduleInfo.duration
+              }
+              startDateTime: pimRoleAssignmentType.scheduleInfo.startTime
+            }
+          : pimRoleAssignmentType.scheduleInfo.durationType == 'AfterDateTime'
+              ? {
+                  expiration: {
+                    type: 'AfterDateTime'
+                    endDateTime: pimRoleAssignmentType.scheduleInfo.endDateTime
+                  }
+                  startDateTime: pimRoleAssignmentType.scheduleInfo.startTime
+                }
+              : null
   }
 }
 
 @sys.description('The GUID of the PIM Role Assignment.')
-output name string = pimRoleAssignment.name
+output name string = pimRoleAssignmentType.roleAssignmentType == 'Eligible'
+  ? pimEligibleRoleAssignment.name
+  : pimActiveRoleAssignment.name
 
 @sys.description('The resource ID of the PIM Role Assignment.')
-output resourceId string = pimRoleAssignment.id
+output resourceId string = pimRoleAssignmentType.roleAssignmentType == 'Eligible'
+  ? pimEligibleRoleAssignment.id
+  : pimActiveRoleAssignment.id
 
 @sys.description('The scope this PIM Role Assignment applies to.')
 output scope string = az.resourceId('Microsoft.Management/managementGroups', managementGroupId)

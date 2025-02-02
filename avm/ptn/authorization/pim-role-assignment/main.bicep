@@ -3,7 +3,7 @@ metadata description = '<Add description>'
 
 targetScope = 'managementGroup'
 
-import { requestTypeType, scheduleInfoType, scheduleInfoExpirationType, ticketInfoType } from 'modules/definitions.bicep'
+import { requestTypeType, ticketInfoType, pimRoleAssignmentTypeType } from 'modules/definitions.bicep'
 
 @sys.description('Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleDefinitionIdOrName string
@@ -23,6 +23,9 @@ param managementGroupId string = managementGroup().name
 @sys.description('Optional. Location deployment metadata.')
 param location string = deployment().location
 
+@description('Required. The type of the PIM role assignment whether its active or eligible.')
+param pimRoleAssignmentType pimRoleAssignmentTypeType
+
 @sys.description('Optional. The justification for the role eligibility.')
 param justification string = ''
 
@@ -35,11 +38,14 @@ param targetRoleEligibilityScheduleId string = ''
 @sys.description('Optional. The role eligibility assignment instance id being updated.')
 param targetRoleEligibilityScheduleInstanceId string = ''
 
+@sys.description('Optional. The resultant role assignment schedule id or the role assignment schedule id being updated.')
+param targetRoleAssignmentScheduleId string = ''
+
+@sys.description('Optional. The role assignment schedule instance id being updated.')
+param targetRoleAssignmentScheduleInstanceId string = ''
+
 @sys.description('Optional. Ticket Info of the role eligibility.')
 param ticketInfo ticketInfoType?
-
-@sys.description('Required. Schedule info of the role eligibility assignment.')
-param scheduleInfo scheduleInfoType
 
 @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to.')
 param condition string = ''
@@ -88,14 +94,16 @@ module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscripti
     justification: justification
     targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
     targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
+    targetRoleAssignmentScheduleId: targetRoleAssignmentScheduleId
+    targetRoleAssignmentScheduleInstanceId: targetRoleAssignmentScheduleInstanceId
     ticketInfo: ticketInfo
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
-    scheduleInfo: scheduleInfo
+    pimRoleAssignmentType: pimRoleAssignmentType
   }
 }
 
-module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
+/*module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-PimRoleAssignment-Sub-Module'
   scope: subscription(subscriptionId)
   params: {
@@ -109,7 +117,7 @@ module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscription
     ticketInfo: ticketInfo
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
-    scheduleInfo: scheduleInfo
+    pimRoleAssignmentType: pimRoleAssignmentType
   }
 }
 
@@ -128,7 +136,7 @@ module roleAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceGro
     ticketInfo: ticketInfo
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
-    scheduleInfo: scheduleInfo
+    pimRoleAssignmentType: pimRoleAssignmentType
   }
 }
 
@@ -152,3 +160,5 @@ output scope string = empty(subscriptionId) && empty(resourceGroupName)
   : (!empty(subscriptionId) && empty(resourceGroupName)
       ? roleAssignment_sub.outputs.scope
       : roleAssignment_rg.outputs.scope)
+
+      */

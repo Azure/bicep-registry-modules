@@ -16,27 +16,6 @@ type requestTypeType =
   | 'SelfRenew'
 
 @export()
-type scheduleInfoType = {
-  @sys.description('Optional. The expiry information for the role eligibility.')
-  expiration: scheduleInfoExpirationType?
-
-  @sys.description('Optional. Start DateTime of the role eligibility assignment.')
-  startDateTime: string?
-}
-
-@export()
-type scheduleInfoExpirationType = {
-  @sys.description('Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H.')
-  duration: string?
-
-  @sys.description('Optional. End DateTime of the role eligibility assignment.')
-  endDateTime: string?
-
-  @sys.description('Optional. Type of the role eligibility assignment expiration.')
-  type: 'AfterDateTime' | 'AfterDuration' | 'NoExpiration'?
-}
-
-@export()
 type ticketInfoType = {
   @sys.description('Optional. The ticket number for the role eligibility assignment.')
   ticketNumber: string?
@@ -44,3 +23,44 @@ type ticketInfoType = {
   @sys.description('Optional. The ticket system name for the role eligibility assignment.')
   ticketSystem: string?
 }?
+
+@export()
+@discriminator('roleAssignmentType')
+type pimRoleAssignmentTypeType = pimActiveRoleAssignmentType | pimEligibleRoleAssignmentType
+
+type pimActiveRoleAssignmentType = {
+  roleAssignmentType: 'Active'
+  linkedRoleEligibilityScheduleId: string?
+  targetRoleAssignmentScheduleId: string?
+  targetRoleAssignmentScheduleInstanceId: string?
+  scheduleInfo: roleAssignmentScheduleType
+}
+
+type pimEligibleRoleAssignmentType = {
+  roleAssignmentType: 'Eligible'
+  targetRoleEligibilityScheduleId: string?
+  targetRoleEligibilityScheduleInstanceId: string?
+  scheduleInfo: roleAssignmentScheduleType
+}
+
+@discriminator('durationType')
+type roleAssignmentScheduleType =
+  | permenantRoleAssignmentScheduleType
+  | timeBoundDurationRoleAssignmentScheduleType
+  | timeBoundDateTimeRoleAssignmentScheduleType
+
+type permenantRoleAssignmentScheduleType = {
+  durationType: 'NoExpiration'
+}
+
+type timeBoundDurationRoleAssignmentScheduleType = {
+  durationType: 'AfterDuration'
+  duration: string
+  startTime: string
+}
+
+type timeBoundDateTimeRoleAssignmentScheduleType = {
+  durationType: 'AfterDateTime'
+  endDateTime: string
+  startTime: string
+}
