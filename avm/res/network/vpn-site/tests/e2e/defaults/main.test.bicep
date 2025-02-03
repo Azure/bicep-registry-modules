@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}-${serviceShort}'
       virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
       addressPrefixes: [
@@ -58,8 +57,5 @@ module testDeployment '../../../main.bicep' = [
       ]
       ipAddress: '1.2.3.4'
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
