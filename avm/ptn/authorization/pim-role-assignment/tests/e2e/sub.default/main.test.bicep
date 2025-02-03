@@ -32,7 +32,7 @@ module testDeployment '../../../main.bicep' = {
     principalId: userPrinicipalId
     roleDefinitionIdOrName: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
     )
     subscriptionId: subscriptionId
     requestType: 'AdminAssign'
