@@ -15,8 +15,8 @@ param resourceGroupName string = 'dep-${namePrefix}-containerregistry.registries
 // param resourceLocation string = deployment().location
 
 #disable-next-line no-hardcoded-location // testing
-var enforcedLocation = 'westeurope'
-var enforcedLocation2 = 'northeurope'
+var enforcedLocation = 'uaenorth'
+var enforcedLocation2 = 'uaecentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'crrwaf'
