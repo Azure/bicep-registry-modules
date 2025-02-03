@@ -74,7 +74,6 @@ A NAT rule must be configured to a specific Virtual Network Gateway instance. Th
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `mode`
 
@@ -82,11 +81,9 @@ The type of NAT rule for Virtual Network NAT. IngressSnat mode (also known as In
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'EgressSnat'
     'IngressSnat'
   ]
@@ -98,11 +95,9 @@ The type of NAT rule for Virtual Network NAT. Static one-to-one NAT establishes 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Dynamic'
     'Static'
   ]
