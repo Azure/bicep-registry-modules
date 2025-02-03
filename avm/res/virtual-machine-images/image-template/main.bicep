@@ -169,49 +169,45 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01
         }
       : {})
     stagingResourceGroup: stagingResourceGroupResourceId
-    distribute: [
-      for distribution in distributions: union(
-        {
-          type: distribution.type
-          artifactTags: distribution.?artifactTags ?? {
-            sourceType: imageSource.type
-            sourcePublisher: imageSource.?publisher
-            sourceOffer: imageSource.?offer
-            sourceSku: imageSource.?sku
-            sourceVersion: imageSource.?version
-            sourceImageId: imageSource.?imageId
-            sourceImageVersionID: imageSource.?imageVersionID
-            creationTime: baseTime
+    distribute: map(distributions, distribution => {
+      type: distribution.type
+      artifactTags: distribution.?artifactTags ?? {
+        sourceType: imageSource.type
+        sourcePublisher: imageSource.?publisher
+        sourceOffer: imageSource.?offer
+        sourceSku: imageSource.?sku
+        sourceVersion: imageSource.?version
+        sourceImageId: imageSource.?imageId
+        sourceImageVersionID: imageSource.?imageVersionID
+        creationTime: baseTime
+      }
+      ...(distribution.type == 'ManagedImage'
+        ? {
+            runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-${baseTime}-ManagedImage'
+            location: distribution.?location ?? location
+            #disable-next-line use-resource-id-functions // Disabling rule as this is an input parameter that is used inside an array.
+            imageId: distribution.?imageResourceId ?? '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/images/${distribution.imageName}-${baseTime}'
           }
-        },
-        (distribution.type == 'ManagedImage'
-          ? {
-              runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-${baseTime}-ManagedImage'
-              location: distribution.?location ?? location
-              #disable-next-line use-resource-id-functions // Disabling rule as this is an input parameter that is used inside an array.
-              imageId: distribution.?imageResourceId ?? '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/images/${distribution.imageName}-${baseTime}'
-            }
-          : {}),
-        (distribution.type == 'SharedImage'
-          ? {
-              runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId)
-                ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage'
-                : 'SharedImage')
-              galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion)
-                ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}'
-                : distribution.sharedImageGalleryImageDefinitionResourceId
-              excludeFromLatest: distribution.?excludeFromLatest ?? false
-              replicationRegions: distribution.?replicationRegions ?? [location]
-              storageAccountType: distribution.?storageAccountType ?? 'Standard_LRS'
-            }
-          : {}),
-        (distribution.type == 'VHD'
-          ? {
-              runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-VHD'
-            }
-          : {})
-      )
-    ]
+        : {})
+      ...(distribution.type == 'SharedImage'
+        ? {
+            runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId)
+              ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage'
+              : 'SharedImage')
+            galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion)
+              ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}'
+              : distribution.sharedImageGalleryImageDefinitionResourceId
+            excludeFromLatest: distribution.?excludeFromLatest ?? false
+            replicationRegions: distribution.?replicationRegions ?? [location]
+            storageAccountType: distribution.?storageAccountType ?? 'Standard_LRS'
+          }
+        : {})
+      ...(distribution.type == 'VHD'
+        ? {
+            runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-VHD'
+          }
+        : {})
+    })
     #disable-next-line BCP225 //  The discriminator property "type" value cannot be determined at compilation time. - which is fine
     validate: validationProcess
     optimize: optimizeVmBoot != null
