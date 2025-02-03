@@ -293,7 +293,7 @@ output publicPort int = webPubSub.properties.publicPort
 output serverPort int = webPubSub.properties.serverPort
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = webPubSub.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = webPubSub.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = webPubSub.location

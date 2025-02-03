@@ -435,7 +435,7 @@ output resourceId string = managedInstance.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = managedInstance.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = managedInstance.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = managedInstance.location
