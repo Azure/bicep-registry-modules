@@ -9,21 +9,24 @@ metadata description = 'This instance deploys the module saving all its secrets 
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-cache.redis-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-eventhub.namespaces-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'crkvs'
+param serviceShort string = 'ehnkv'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// ============== //
+// ============ //
+// Dependencies //
+// ============ //
+
 // General resources
-// ============== //
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -45,16 +48,14 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
+    name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    name: '${namePrefix}kvref'
     secretsExportConfiguration: {
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      primaryAccessKeyName: 'custom-primaryAccessKey-name'
-      primaryConnectionStringName: 'custom-primaryConnectionString-name'
-      primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
-      secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
-      secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
-      secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
+      rootPrimaryKeyName: 'primaryKey-name'
+      rootSecondaryKeyName: 'secondaryKey-name'
+      rootPrimaryConnectionStringName: 'primaryConnectionString-name'
+      rootSecondaryConnectionStringName: 'secondaryConnectionString-name'
     }
   }
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5117660498106393139"
+      "version": "0.33.13.18514",
+      "templateHash": "8102121291373013517"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -927,6 +927,13 @@
         "description": "Optional. The replication settings for the server. Can only be set on existing flexible servers."
       }
     },
+    "enableAdvancedThreatProtection": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable advanced threat protection."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -1063,7 +1070,7 @@
           "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
         },
         "createMode": "[parameters('createMode')]",
-        "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('primaryKeyURI', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), 'type', 'AzureKeyVault'), null())]",
+        "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('primaryKeyURI', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), 'type', 'AzureKeyVault'), null())]",
         "highAvailability": {
           "mode": "[parameters('highAvailability')]",
           "standbyAvailabilityZone": "[if(equals(parameters('highAvailability'), 'SameZone'), parameters('availabilityZone'), null())]"
@@ -1194,8 +1201,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15358721384580155368"
+              "version": "0.33.13.18514",
+              "templateHash": "12559382321541199726"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1307,8 +1314,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "1547810610444554016"
+              "version": "0.33.13.18514",
+              "templateHash": "533163168353951900"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1416,8 +1423,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "17791142604055425268"
+              "version": "0.33.13.18514",
+              "templateHash": "14381841795302215842"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1533,8 +1540,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16643531997327278217"
+              "version": "0.33.13.18514",
+              "templateHash": "9438694500506305843"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1621,6 +1628,7 @@
       ]
     },
     "flexibleServer_advancedThreatProtection": {
+      "condition": "[parameters('enableAdvancedThreatProtection')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PostgreSQL-Threat', uniqueString(deployment().name, parameters('location')))]",
@@ -1643,8 +1651,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6141187485193116497"
+              "version": "0.33.13.18514",
+              "templateHash": "17600786812294347393"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -1710,7 +1718,8 @@
         }
       },
       "dependsOn": [
-        "flexibleServer"
+        "flexibleServer",
+        "flexibleServer_administrators"
       ]
     },
     "server_privateEndpoints": {
@@ -2508,6 +2517,9 @@
     },
     "privateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
       "metadata": {
         "description": "The private endpoints of the PostgreSQL Flexible server."
       },
