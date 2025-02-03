@@ -6,7 +6,7 @@ targetScope = 'resourceGroup'
 
 param vmName string
 param vmSize string
-param vmZone int = 0
+param vmZone int = 1
 param vmVnetName string
 param vmSubnetName string
 param vmSubnetAddressPrefix string
