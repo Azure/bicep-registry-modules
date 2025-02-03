@@ -52,8 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}-${serviceShort}'
       addressPrefix: '10.0.0.0/16'
-      virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
-      location: resourceLocation
+      virtualWanResourceId: nestedDependencies.outputs.virtualWWANResourceId
     }
   }
 ]

@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13762641450479393784"
+      "version": "0.33.13.18514",
+      "templateHash": "764444428633484381"
     },
     "name": "Virtual Hub Virtual Network Connections",
     "description": "This module deploys a Virtual Hub Virtual Network Connection."
@@ -30,7 +31,7 @@
         "description": "Optional. Enable internet security."
       }
     },
-    "remoteVirtualNetworkId": {
+    "remoteVirtualNetworkResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the virtual network to link to."
@@ -38,26 +39,32 @@
     },
     "routingConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "virtualHub": {
+      "existing": true,
+      "type": "Microsoft.Network/virtualHubs",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('virtualHubName')]"
+    },
+    "hubVirtualNetworkConnection": {
       "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
       "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
       "properties": {
         "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
         "remoteVirtualNetwork": {
-          "id": "[parameters('remoteVirtualNetworkId')]"
+          "id": "[parameters('remoteVirtualNetworkResourceId')]"
         },
-        "routingConfiguration": "[if(not(empty(parameters('routingConfiguration'))), parameters('routingConfiguration'), null())]"
+        "routingConfiguration": "[parameters('routingConfiguration')]"
       }
     }
-  ],
+  },
   "outputs": {
     "resourceGroupName": {
       "type": "string",
