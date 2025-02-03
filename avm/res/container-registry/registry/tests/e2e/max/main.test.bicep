@@ -16,7 +16,7 @@ param resourceLocation string = deployment().location
 
 #disable-next-line no-hardcoded-location // testing
 var enforcedLocation = 'uaenorth'
-var enforcedLocation2 = 'uaecentral'
+var enforcedLocation2 = 'uaenorth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'crrmax'
@@ -137,6 +137,7 @@ module testDeployment '../../../main.bicep' = [
           // name: nestedDependencies.outputs.pairedRegionName
           location: enforcedLocation2
           name: enforcedLocation2
+          zoneRedundancy: 'Enabled'
         }
       ]
       roleAssignments: [
