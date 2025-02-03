@@ -116,7 +116,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # if the child modules version has been increased, the main modules version should be increased as well
-        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) }) {
+        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
             param (
                 [string] $moduleFolderPath
@@ -128,7 +128,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
                 $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
 
-                ($childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
+                # the first release of a child module does not require the parent module to be updated
+                ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
             }
         }
 
@@ -481,6 +482,7 @@ Describe 'Module tests' -Tag 'Module' {
                 # Test file setup
                 $moduleFolderTestCases += @{
                     moduleFolderName       = $resourceTypeIdentifier
+                    moduleFolderPath       = Split-Path $templateFilePath
                     templateFileContent    = $templateFileContent
                     templateFilePath       = $templateFilePath
                     templateFileParameters = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
@@ -489,6 +491,13 @@ Describe 'Module tests' -Tag 'Module' {
                     moduleType             = $moduleType
                 }
             }
+        }
+
+        BeforeAll {
+            # Load function
+            . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
+            # load cross-references
+            $crossReferencedModuleList = Get-CrossReferencedModuleList
         }
 
         Context 'General' {
@@ -991,6 +1000,52 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $telemetryDeploymentName = $telemetryDeployment.name # The AVM telemetry prefix
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
+            }
+
+            It '[<moduleFolderName>] Telemetry should be disabled for child modules.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+                param(
+                    [hashtable] $templateFileContent,
+                    [string] $templateFilePath
+                )
+
+                $crossReferencedModuleList = Get-CrossReferencedModuleList -Path $moduleFolderPath
+                $modulesWithChildReferences = $crossReferencedModuleList.Values | Where-Object {
+                    $_.ContainsKey('childModuleReferences') -and $_['childModuleReferences'].Count -gt 0
+                }
+                if ($modulesWithChildReferences.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no child modules found'
+                    return
+                }
+
+                $modulesWithChildReferences | ForEach-Object {
+                    $_['childModuleReferences'] | ForEach-Object {
+                        # 'avm/res|ptn|utl/<provider>/<resourceType>/<childResourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>/<childResourceType>'
+                        $null, $childModuleType, $childResourceTypeIdentifier = ((Split-Path $_) -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')
+                        $childModuleName = (Split-Path $childResourceTypeIdentifier -Leaf)
+                        Write-Verbose "Checking telemetry for child module [$childModuleName]" -Verbose
+                        # find the child modules reference in the parent module
+                        $moduleBicep = Get-Content -Path $templateFilePath
+                        $regexPattern = "module\s+(\S+)\s+'$childModuleName/main.bicep'\s+="
+                        $moduleName = ''
+                        foreach ($line in $moduleBicep) {
+                            if ($line -match $regexPattern) {
+                                $moduleName = $matches[1]
+                                break
+                            }
+                        }
+                        # with the module name, get the resource and its properties
+                        $childModuleParameters = $templateFileContent.resources.$moduleName.properties.parameters
+                        $containsTelemetryParameter = $childModuleParameters.ContainsKey('enableTelemetry')
+                        $containsTelemetryParameter | Should -Be $true -Because "the child module [$childModuleName] should be referenced with a telemetry parameter."
+
+                        if ($containsTelemetryParameter) {
+                            $isTelemetryDisabled = $childModuleParameters.enableTelemetry.value -eq $false
+                            $isTelemetryDisabled | Should -Be $true -Because "the child module [$childModuleName] should have telemetry disabled."
+                        }
+                    }
+                }
+
             }
         }
 
