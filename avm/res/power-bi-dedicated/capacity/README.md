@@ -8,6 +8,7 @@ This module deploys a Power BI Dedicated Capacity.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -51,8 +52,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
     sku: {
       capacity: 1
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -82,10 +81,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
       "value": {
         "capacity": 1
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -109,8 +104,6 @@ param name = 'pbdcapmin001'
 param sku = {
   capacity: 1
 }
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -319,11 +312,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
       capacity: 1
     }
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -360,15 +348,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
       }
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -399,11 +378,6 @@ param sku = {
   capacity: 1
 }
 // Non-required parameters
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -588,7 +562,7 @@ Array of role assignments to create.
   - `'Log Analytics Reader'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
 **Required parameters**
@@ -606,6 +580,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -656,6 +631,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -688,6 +670,14 @@ Tags of the resource.
 | `name` | string | The Name of the PowerBi Embedded instance. |
 | `resourceGroupName` | string | The name of the resource group the PowerBi Embedded was created in. |
 | `resourceId` | string | The resource ID of the PowerBi Embedded instance. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

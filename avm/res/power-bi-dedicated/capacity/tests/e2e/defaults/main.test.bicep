@@ -57,7 +57,6 @@ module testDeployment '../../../main.bicep' = [
       members: [
         nestedDependencies.outputs.managedIdentityPrincipalId
       ]
-      location: resourceLocation
     }
   }
 ]
