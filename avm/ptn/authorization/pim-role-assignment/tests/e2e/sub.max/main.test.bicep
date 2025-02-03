@@ -38,7 +38,7 @@ module testDeployment '../../../main.bicep' = {
         durationType: 'NoExpiration'
       }
     }
-    justification: 'Justification for role assignment'
+    justification: 'AVM test'
     ticketInfo: {
       ticketNumber: '21312'
       ticketSystem: ' System2'

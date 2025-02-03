@@ -41,5 +41,6 @@ module testDeployment '../../../main.bicep' = {
     requestType: 'AdminAssign'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
     location: resourceLocation
+    justification: 'AVM test'
   }
 }

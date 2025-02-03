@@ -41,7 +41,7 @@ module testDeployment '../../../main.bicep' = {
         startTime: startDateTime
       }
     }
-    justification: 'Justification for the role eligibility'
+    justification: 'AVM test'
     ticketInfo: {
       ticketNumber: '123456'
       ticketSystem: 'system1'

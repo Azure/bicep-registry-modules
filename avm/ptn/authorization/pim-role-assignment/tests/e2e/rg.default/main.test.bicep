@@ -64,5 +64,6 @@ module testDeployment '../../../main.bicep' = {
         startTime: startDateTime
       }
     }
+    justification: 'AVM test'
   }
 }
