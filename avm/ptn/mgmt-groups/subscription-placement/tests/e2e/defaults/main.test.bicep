@@ -17,8 +17,6 @@ param rootManagementGroupResourceId string = ''
 @secure()
 param subscriptionBillingScope string = ''
 
-var managementGroupId = dependencies.outputs.managementGroupId
-
 // =============== //
 //   Dependencies  //
 // =============== //
@@ -41,7 +39,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     parSubscriptionPlacement: [
       {
-        managementGroupId: dependencies.outputs.managementGroupId
+        managementGroupId: dependencies.outputs.managementGroupDisplayName
         subscriptionIds: [
           dependencies.outputs.subVendingSubscriptionId
         ]
