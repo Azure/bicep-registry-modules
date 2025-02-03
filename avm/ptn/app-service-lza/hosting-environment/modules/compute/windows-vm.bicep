@@ -133,7 +133,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
   }
 }
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.12.0' = {
   name: 'vmDeployment'
   params: {
     name: vmName
@@ -171,17 +171,6 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
         storageAccountType: 'Premium_LRS'
       }
     }
-    dataDisks: [
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: 128
-        lun: 0
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-    ]
     zone: vmZone
     vmSize: vmSize
     imageReference: {

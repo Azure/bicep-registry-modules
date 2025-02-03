@@ -167,7 +167,7 @@ module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy
   }
 }
 
-module frontDoor 'br/public:avm/res/cdn/profile:0.11.0' = {
+module frontDoor 'br/public:avm/res/cdn/profile:0.11.1' = {
   name: afdName
   params: {
     name: afdName
