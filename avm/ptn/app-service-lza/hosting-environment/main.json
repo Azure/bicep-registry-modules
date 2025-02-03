@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8634261542111506056"
+      "templateHash": "9332310003874148327"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7345110734339456695"
+              "templateHash": "5417674505436144903"
             }
           },
           "definitions": {
@@ -30102,7 +30102,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1329154048416629285"
+                      "templateHash": "5569862132243692148"
                     }
                   },
                   "parameters": {
@@ -30114,7 +30114,7 @@
                     },
                     "vmZone": {
                       "type": "int",
-                      "defaultValue": 0
+                      "defaultValue": 1
                     },
                     "vmVnetName": {
                       "type": "string"
