@@ -14,6 +14,10 @@ param resourceGroupName string = 'dep-${namePrefix}-containerregistry.registries
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+#disable-next-line no-hardcoded-location // testing
+var enforcedLocation = 'uaenorth'
+var enforcedLocation2 = 'uaecentral'
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'crrmax'
 
@@ -28,15 +32,15 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    location: resourceLocation
+    location: enforcedLocation
     managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -47,13 +51,13 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -65,10 +69,10 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      location: enforcedLocation
       acrAdminUserEnabled: false
       acrSku: 'Premium'
       diagnosticSettings: [
@@ -129,8 +133,10 @@ module testDeployment '../../../main.bicep' = [
       quarantinePolicyStatus: 'enabled'
       replications: [
         {
-          location: nestedDependencies.outputs.pairedRegionName
-          name: nestedDependencies.outputs.pairedRegionName
+          // location: nestedDependencies.outputs.pairedRegionName
+          // name: nestedDependencies.outputs.pairedRegionName
+          location: enforcedLocation2
+          name: enforcedLocation2
         }
       ]
       roleAssignments: [

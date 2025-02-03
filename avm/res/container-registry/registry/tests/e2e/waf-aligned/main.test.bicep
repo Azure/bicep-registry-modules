@@ -15,7 +15,8 @@ param resourceGroupName string = 'dep-${namePrefix}-containerregistry.registries
 // param resourceLocation string = deployment().location
 
 #disable-next-line no-hardcoded-location // testing
-var enforcedLocation = 'uaenorth'
+var enforcedLocation = 'westeurope'
+var enforcedLocation2 = 'northeurope'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'crrwaf'
@@ -90,8 +91,8 @@ module testDeployment '../../../main.bicep' = [
         {
           // location: nestedDependencies.outputs.pairedRegionName
           // name: nestedDependencies.outputs.pairedRegionName
-          location: enforcedLocation
-          name: enforcedLocation
+          location: enforcedLocation2
+          name: enforcedLocation2
         }
       ]
       trustPolicyStatus: 'enabled'
