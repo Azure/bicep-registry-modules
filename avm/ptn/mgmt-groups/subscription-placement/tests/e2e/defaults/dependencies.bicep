@@ -33,13 +33,14 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:0.2.4' = {
   }
 }
 
-
-@description('Output of the Management Group Resource ID.')
+@description('Output of the management group resource ID.')
 output managementGroupId string = managementGroup.id
 
-@description('Output of the Subscription Vending Resource ID.')
-output subVendingResourceId string = subVending.outputs.subscriptionId
+@description('Output of the management group name.')
+output managementGroupDisplayName string = managementGroup.name
 
-@description('Output of the Subscription Vending Subscription ID.')
+@description('Output of the subscription vending resource ID.')
+output subVendingResourceId string = subVending.outputs.subscriptionResourceId
+
+@description('Output of the subscription vending subscription ID.')
 output subVendingSubscriptionId string = subVending.outputs.subscriptionId
-

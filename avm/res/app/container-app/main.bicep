@@ -1,5 +1,6 @@
 metadata name = 'Container Apps'
 metadata description = 'This module deploys a Container App.'
+metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container App.')
 param name string
@@ -333,7 +334,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = containerApp.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = containerApp.?identity.?principalId
+output systemAssignedMIPrincipalId string = containerApp.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = containerApp.location
