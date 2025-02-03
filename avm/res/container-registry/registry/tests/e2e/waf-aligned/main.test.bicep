@@ -88,8 +88,10 @@ module testDeployment '../../../main.bicep' = [
       quarantinePolicyStatus: 'enabled'
       replications: [
         {
-          location: nestedDependencies.outputs.pairedRegionName
-          name: nestedDependencies.outputs.pairedRegionName
+          // location: nestedDependencies.outputs.pairedRegionName
+          // name: nestedDependencies.outputs.pairedRegionName
+          location: enforcedLocation
+          name: enforcedLocation
         }
       ]
       trustPolicyStatus: 'enabled'
