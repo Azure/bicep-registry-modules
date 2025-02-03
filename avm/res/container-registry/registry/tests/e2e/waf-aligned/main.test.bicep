@@ -93,6 +93,7 @@ module testDeployment '../../../main.bicep' = [
           // name: nestedDependencies.outputs.pairedRegionName
           location: enforcedLocation2
           name: enforcedLocation2
+          zoneRedundancy: 'Enabled'
         }
       ]
       trustPolicyStatus: 'enabled'
