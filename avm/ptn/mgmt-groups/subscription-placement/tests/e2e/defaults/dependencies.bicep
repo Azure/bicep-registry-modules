@@ -37,7 +37,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:0.2.4' = {
 output managementGroupId string = managementGroup.id
 
 @description('Output of the management group name.')
-output managementGroupDisplayName string = managementGroup.name
+output managementGroupName string = managementGroup.name
 
 @description('Output of the subscription vending resource ID.')
 output subVendingResourceId string = subVending.outputs.subscriptionResourceId
