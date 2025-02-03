@@ -81,7 +81,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
     kedaAddon: true
-    kubernetesVersion: '1.28'
     maintenanceConfigurations: [
       {
         maintenanceWindow: {
@@ -169,9 +168,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "kedaAddon": {
       "value": true
     },
-    "kubernetesVersion": {
-      "value": "1.28"
-    },
     "maintenanceConfigurations": {
       "value": [
         {
@@ -257,7 +253,6 @@ param disableLocalAccounts = true
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
 param kedaAddon = true
-param kubernetesVersion = '1.28'
 param maintenanceConfigurations = [
   {
     maintenanceWindow: {

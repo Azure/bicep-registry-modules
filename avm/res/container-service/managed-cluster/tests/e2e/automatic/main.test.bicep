@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = [
       enableKeyvaultSecretsProvider: true
       enableSecretRotation: true
       kedaAddon: true
-      kubernetesVersion: '1.28'
       aadProfile: {
         aadProfileEnableAzureRBAC: true
         aadProfileManaged: true
