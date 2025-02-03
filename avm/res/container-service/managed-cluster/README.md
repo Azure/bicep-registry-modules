@@ -416,6 +416,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             timeoutInSeconds: 180
             url: 'https://github.com/mspnp/aks-baseline'
           }
+          kustomizations: {
+            unified: {
+              path: './cluster-manifests'
+            }
+          }
           namespace: 'flux-system'
           scope: 'cluster'
         }
@@ -705,6 +710,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
               "timeoutInSeconds": 180,
               "url": "https://github.com/mspnp/aks-baseline"
             },
+            "kustomizations": {
+              "unified": {
+                "path": "./cluster-manifests"
+              }
+            },
             "namespace": "flux-system",
             "scope": "cluster"
           },
@@ -981,6 +991,11 @@ param fluxExtension = {
         syncIntervalInSeconds: 300
         timeoutInSeconds: 180
         url: 'https://github.com/mspnp/aks-baseline'
+      }
+      kustomizations: {
+        unified: {
+          path: './cluster-manifests'
+        }
       }
       namespace: 'flux-system'
       scope: 'cluster'
