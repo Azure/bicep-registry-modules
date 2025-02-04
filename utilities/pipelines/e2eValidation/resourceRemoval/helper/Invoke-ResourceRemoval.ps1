@@ -109,36 +109,44 @@ function Invoke-ResourceRemoval {
             $idElem = $ResourceId.Split('/')
             $scope = $idElem[0..($idElem.Count - 5)] -join '/'
             $pimRoleAssignment = Get-AzRoleEligibilityScheduleRequest -Scope $scope | Where-Object { $_.Justification -eq 'AVM test' -and $_.Status -eq 'Provisioned' }
-            $pimRoleAssignmentPrinicpalId = $pimRoleAssignment[0].PrincipalId
-            $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment[0].RoleDefinitionId
-            $guid = New-Guid
-            $startTime = Get-Date -Format o
-            Write-Verbose "Removing assignment at scope $scope for principal $pimRoleAssignmentPrinicpalId" -Verbose
-            $null = New-AzRoleEligibilityScheduleRequest -Name $guid `
-                -Scope $scope `
-                -ExpirationDuration PT1H `
-                -PrincipalId $pimRoleAssignmentPrinicpalId `
-                -RequestType AdminRemove `
-                -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId `
-                -ScheduleInfoStartDateTime $startTime
+            if ($pimRoleAssignment) {
+                $pimRoleAssignment | ForEach-Object {
+                    $pimRoleAssignmentPrinicpalId = $_.PrincipalId
+                    $pimRoleAssignmentRoleDefinitionId = $_.RoleDefinitionId
+                    $guid = New-Guid
+                    $startTime = Get-Date -Format o
+                    Write-Verbose "Removing assignment at scope $scope for principal $pimRoleAssignmentPrinicpalId" -Verbose
+                    $null = New-AzRoleEligibilityScheduleRequest -Name $guid `
+                        -Scope $scope `
+                        -ExpirationDuration PT1H `
+                        -PrincipalId $pimRoleAssignmentPrinicpalId `
+                        -RequestType AdminRemove `
+                        -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId `
+                        -ScheduleInfoStartDateTime $startTime
+                }
+            }
             break
         }
         'Microsoft.Authorization/roleAssignmentScheduleRequests' {
             $idElem = $ResourceId.Split('/')
             $scope = $idElem[0..($idElem.Count - 5)] -join '/'
             $pimRoleAssignment = Get-AzRoleAssignmentScheduleRequest -Scope $scope | Where-Object { $_.Justification -eq 'AVM test' -and $_.Status -eq 'Provisioned' }
-            $pimRoleAssignmentPrinicpalId = $pimRoleAssignment[0].PrincipalId
-            $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment[0].RoleDefinitionId
-            $guid = New-Guid
-            $startTime = Get-Date -Format o
-            Write-Verbose "Removing assignment at scope $scope for principal $pimRoleAssignmentPrinicpalId" -Verbose
-            $null = New-AzRoleAssignmentScheduleRequest -Name $guid `
-                -Scope $scope `
-                -ExpirationDuration PT1H `
-                -PrincipalId $pimRoleAssignmentPrinicpalId `
-                -RequestType AdminRemove `
-                -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId `
-                -ScheduleInfoStartDateTime $startTime
+            if ($pimRoleAssignment) {
+                $pimRoleAssignment | ForEach-Object {
+                    $pimRoleAssignmentPrinicpalId = $_.PrincipalId
+                    $pimRoleAssignmentRoleDefinitionId = $_.RoleDefinitionId
+                    $guid = New-Guid
+                    $startTime = Get-Date -Format o
+                    Write-Verbose "Removing assignment at scope $scope for principal $pimRoleAssignmentPrinicpalId" -Verbose
+                    $null = New-AzRoleAssignmentScheduleRequest -Name $guid `
+                        -Scope $scope `
+                        -ExpirationDuration PT1H `
+                        -PrincipalId $pimRoleAssignmentPrinicpalId `
+                        -RequestType AdminRemove `
+                        -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId `
+                        -ScheduleInfoStartDateTime $startTime
+                }
+            }
             break
         }
         'Microsoft.RecoveryServices/vaults' {
