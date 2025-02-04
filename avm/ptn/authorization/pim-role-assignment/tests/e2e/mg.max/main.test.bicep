@@ -30,7 +30,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${namePrefix}-${serviceShort}'
   params: {
     principalId: userPrinicipalId
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Contributor'
     requestType: 'AdminAssign'
     location: resourceLocation
     pimRoleAssignmentType: {
