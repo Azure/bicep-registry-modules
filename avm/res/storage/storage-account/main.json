@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5246578872866885121"
+      "templateHash": "1259310633067810999"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -1246,7 +1246,7 @@
         "description": "Optional. Key vault reference and secret settings for the module's secrets export."
       }
     },
-    "advancedThreatProtection": {
+    "enableAdvancedThreatProtection": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -1451,7 +1451,7 @@
       ]
     },
     "storageAccount_atp": {
-      "condition": "[parameters('advancedThreatProtection')]",
+      "condition": "[parameters('enableAdvancedThreatProtection')]",
       "type": "Microsoft.Security/advancedThreatProtectionSettings",
       "apiVersion": "2019-01-01",
       "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('name'))]",
