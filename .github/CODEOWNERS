@@ -31,6 +31,7 @@
 /avm/ptn/dev-ops/cicd-agents-and-runners/ @Azure/avm-ptn-devops-cicdagentsandrunners-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/finops-toolkit/finops-hub/ @Azure/avm-ptn-finopstoolkit-finopshub-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/lz/sub-vending/ @Azure/avm-ptn-lz-subvending-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/mgmt-groups/subscription-placement/ @Azure/avm-ptn-mgmtgroups-subscriptionplacement-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/network/hub-networking/ @Azure/avm-ptn-network-hubnetworking-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/network/private-link-private-dns-zones/ @Azure/avm-ptn-network-privatelinkprivatednszones-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-module-reviewers-bicep
