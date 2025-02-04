@@ -258,7 +258,7 @@ The full path to a volume that is to be migrated into ANF. Required for Migratio
 | :-- | :-- | :-- |
 | [`externalHostName`](#parameter-dataprotectionreplicationremotepathexternalhostname) | string | The Path to a ONTAP Host. |
 | [`serverName`](#parameter-dataprotectionreplicationremotepathservername) | string | The name of a server on the ONTAP Host. |
-| [`volumeName`](#parameter-dataprotectionreplicationremotepathvolumename) | string | The name of a volume on the server |
+| [`volumeName`](#parameter-dataprotectionreplicationremotepathvolumename) | string | The name of a volume on the server. |
 
 ### Parameter: `dataProtection.replication.remotePath.externalHostName`
 
@@ -276,7 +276,7 @@ The name of a server on the ONTAP Host.
 
 ### Parameter: `dataProtection.replication.remotePath.volumeName`
 
-The name of a volume on the server
+The name of a volume on the server.
 
 - Required: Yes
 - Type: string

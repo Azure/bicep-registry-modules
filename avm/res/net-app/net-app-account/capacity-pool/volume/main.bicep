@@ -293,7 +293,7 @@ type replicationType = {
     @description('Required. The name of a server on the ONTAP Host.')
     serverName: string
 
-    @description('Required. The name of a volume on the server')
+    @description('Required. The name of a volume on the server.')
     volumeName: string
   }?
 }

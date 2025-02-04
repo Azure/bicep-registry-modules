@@ -1814,7 +1814,7 @@ The full path to a volume that is to be migrated into ANF. Required for Migratio
 | :-- | :-- | :-- |
 | [`externalHostName`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepathexternalhostname) | string | The Path to a ONTAP Host. |
 | [`serverName`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepathservername) | string | The name of a server on the ONTAP Host. |
-| [`volumeName`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepathvolumename) | string | The name of a volume on the server |
+| [`volumeName`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepathvolumename) | string | The name of a volume on the server. |
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath.externalHostName`
 
@@ -1832,7 +1832,7 @@ The name of a server on the ONTAP Host.
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath.volumeName`
 
-The name of a volume on the server
+The name of a volume on the server.
 
 - Required: Yes
 - Type: string

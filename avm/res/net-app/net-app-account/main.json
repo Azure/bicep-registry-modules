@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "10576189533556025772"
+      "templateHash": "15376852435816415720"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -480,7 +480,7 @@
             "volumeName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of a volume on the server"
+                "description": "Required. The name of a volume on the server."
               }
             }
           },
@@ -2267,7 +2267,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "4983029614945433901"
+              "templateHash": "10620001426687567729"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2541,7 +2541,7 @@
                     "volumeName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. The name of a volume on the server"
+                        "description": "Required. The name of a volume on the server."
                       }
                     }
                   },
@@ -3055,7 +3055,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "4178347271387320112"
+                      "templateHash": "14921990871750776609"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3145,7 +3145,7 @@
                             "volumeName": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. The name of a volume on the server"
+                                "description": "Required. The name of a volume on the server."
                               }
                             }
                           },
