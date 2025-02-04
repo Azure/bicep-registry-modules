@@ -103,7 +103,7 @@ module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscripti
   }
 }
 
-/*module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
+module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-PimRoleAssignment-Sub-Module'
   scope: subscription(subscriptionId)
   params: {
@@ -160,5 +160,3 @@ output scope string = empty(subscriptionId) && empty(resourceGroupName)
   : (!empty(subscriptionId) && empty(resourceGroupName)
       ? roleAssignment_sub.outputs.scope
       : roleAssignment_rg.outputs.scope)
-
-      */
