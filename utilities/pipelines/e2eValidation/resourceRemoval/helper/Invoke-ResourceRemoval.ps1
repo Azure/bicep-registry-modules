@@ -109,8 +109,8 @@ function Invoke-ResourceRemoval {
             $idElem = $ResourceId.Split('/')
             $scope = $idElem[0..($idElem.Count - 5)] -join '/'
             $pimRoleAssignment = Get-AzRoleEligibilityScheduleRequest -Scope $scope | Where-Object { $_.Justification -eq 'AVM test' -and $_.Status -eq 'Provisioned' }
-            $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
-            $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
+            $pimRoleAssignmentPrinicpalId = $pimRoleAssignment[0].PrincipalId
+            $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment[0].RoleDefinitionId
             $guid = New-Guid
             $startTime = Get-Date -Format o
             $null = New-AzRoleEligibilityScheduleRequest -Name $guid `
@@ -126,8 +126,8 @@ function Invoke-ResourceRemoval {
             $idElem = $ResourceId.Split('/')
             $scope = $idElem[0..($idElem.Count - 5)] -join '/'
             $pimRoleAssignment = Get-AzRoleAssignmentScheduleRequest -Scope $scope | Where-Object { $_.Justification -eq 'AVM test' -and $_.Status -eq 'Provisioned' }
-            $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
-            $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
+            $pimRoleAssignmentPrinicpalId = $pimRoleAssignment[0].PrincipalId
+            $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment[0].RoleDefinitionId
             $guid = New-Guid
             $startTime = Get-Date -Format o
             $null = New-AzRoleAssignmentScheduleRequest -Name $guid `
