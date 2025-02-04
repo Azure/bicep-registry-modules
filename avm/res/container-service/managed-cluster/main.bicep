@@ -170,6 +170,15 @@ param webApplicationRoutingEnabled bool = false
 @description('Optional. Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
 param dnsZoneResourceId string?
 
+@description('Optional. Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
+@allowed([
+  'AnnotationControlled'
+  'External'
+  'Internal'
+  'None'
+])
+param defaultIngressControllerType string?
+
 @description('Optional. Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.')
 param enableDnsZoneContributorRoleAssignment bool = true
 
@@ -533,7 +542,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -621,6 +630,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
           ? [
               any(dnsZoneResourceId)
             ]
+          : null
+        nginx: !empty(defaultIngressControllerType)
+          ? {
+              defaultIngressControllerType: any(defaultIngressControllerType)
+            }
           : null
       }
     }
