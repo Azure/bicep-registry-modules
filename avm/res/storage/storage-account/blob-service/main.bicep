@@ -60,7 +60,7 @@ param restorePolicyDays int = 6
 @description('Optional. Blob containers to create.')
 param containers array?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 

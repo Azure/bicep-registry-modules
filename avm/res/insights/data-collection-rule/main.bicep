@@ -153,9 +153,9 @@ output location string = dataCollectionRuleProperties.kind == 'All'
   : dataCollectionRule.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = dataCollectionRuleProperties.kind == 'All'
-  ? dataCollectionRuleAll.?identity.?principalId ?? ''
-  : dataCollectionRule.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind == 'All'
+  ? dataCollectionRuleAll.?identity.?principalId
+  : dataCollectionRule.?identity.?principalId
 
 // =============== //
 //   Definitions   //

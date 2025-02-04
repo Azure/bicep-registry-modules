@@ -138,6 +138,18 @@ module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
   }
 }
 
+resource agentPool 'Microsoft.ContainerRegistry/registries/agentPools@2019-06-01-preview' = {
+  name: '${containerRegistryName}/agentpool'
+  location: location
+  properties: {
+    count: 2
+    virtualNetworkSubnetResourceId: spokePrivateEndpointSubnetResourceId
+    os: 'Linux'
+    tier: 'S2'
+  }
+  dependsOn: [acr]
+}
+
 // ------------------
 // OUTPUTS
 // ------------------
@@ -150,6 +162,9 @@ output containerRegistryName string = acr.outputs.name
 
 @description('The name of the container registry login server.')
 output containerRegistryLoginServer string = acr.outputs.loginServer
+
+@description('The name of the internal agent pool for the container registry.')
+output containerRegistryAgentPoolName string = agentPool.name
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = acrUserAssignedIdentity.outputs.resourceId

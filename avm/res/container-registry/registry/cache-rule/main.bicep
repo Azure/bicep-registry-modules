@@ -5,7 +5,7 @@ metadata description = 'Cache for Azure Container Registry (Preview) feature all
 param registryName string
 
 @description('Optional. The name of the cache rule. Will be derived from the source repository name if not defined.')
-param name string = replace(replace(sourceRepository, '/', '-'), '.', '-')
+param name string = replace(replace(replace(sourceRepository, '/', '-'), '.', '-'), '*', '')
 
 @description('Required. Source repository pulled from upstream.')
 param sourceRepository string
@@ -13,8 +13,8 @@ param sourceRepository string
 @description('Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.')
 param targetRepository string = sourceRepository
 
-@description('Required. The resource ID of the credential store which is associated with the cache rule.')
-param credentialSetResourceId string
+@description('Optional. The resource ID of the credential store which is associated with the cache rule.')
+param credentialSetResourceId string?
 
 resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
   name: registryName
