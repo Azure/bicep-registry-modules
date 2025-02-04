@@ -46,6 +46,7 @@ module testDeployment '../../../main.bicep' = [
       sku: 'BasicV2'
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
+      enableDeveloperPortal: true
     }
   }
 ]
