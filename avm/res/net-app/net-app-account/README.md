@@ -22,7 +22,7 @@ This module deploys an Azure NetApp File.
 | `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults) |
 | `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults/backups) |
 | `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
 | `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/snapshotPolicies) |
 
 ## Usage examples
@@ -1752,6 +1752,12 @@ Replication properties.
 | [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`remotePath`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
+
 ### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
 
 Indicates whether the local volume is the source or destination for the Volume Replication.
@@ -1794,6 +1800,42 @@ The replication schedule for the volume.
     'hourly'
   ]
   ```
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath`
+
+The full path to a volume that is to be migrated into ANF. Required for Migration volumes.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`externalHostName`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepathexternalhostname) | string | The Path to a ONTAP Host. |
+| [`serverName`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepathservername) | string | The name of a server on the ONTAP Host. |
+| [`volumeName`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepathvolumename) | string | The name of a volume on the server |
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath.externalHostName`
+
+The Path to a ONTAP Host.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath.serverName`
+
+The name of a server on the ONTAP Host.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath.volumeName`
+
+The name of a volume on the server
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `capacityPools.volumes.dataProtection.snapshot`
 
