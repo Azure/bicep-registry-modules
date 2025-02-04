@@ -64,7 +64,7 @@ var builtInRoleNames = {
 var roleDefinitionIdVar = (builtInRoleNames[?roleDefinitionIdOrName] ?? roleDefinitionIdOrName)
 
 resource pimEligibleRoleAssignment 'Microsoft.Authorization/roleEligibilityScheduleRequests@2022-04-01-preview' = if (pimRoleAssignmentType.roleAssignmentType == 'Eligible') {
-  name: guid(subscriptionId, roleDefinitionIdVar, principalId)
+  name: guid(deployment().name, subscriptionId, roleDefinitionIdVar, principalId)
   properties: {
     principalId: principalId
     roleDefinitionId: roleDefinitionIdVar
@@ -102,7 +102,7 @@ resource pimEligibleRoleAssignment 'Microsoft.Authorization/roleEligibilitySched
 }
 
 resource pimActiveRoleAssignment 'Microsoft.Authorization/roleAssignmentScheduleRequests@2022-04-01-preview' = if (pimRoleAssignmentType.roleAssignmentType == 'Active') {
-  name: guid(subscriptionId, roleDefinitionIdVar, principalId)
+  name: guid(deployment().name, subscriptionId, roleDefinitionIdVar, principalId)
   properties: {
     principalId: principalId
     roleDefinitionId: roleDefinitionIdVar

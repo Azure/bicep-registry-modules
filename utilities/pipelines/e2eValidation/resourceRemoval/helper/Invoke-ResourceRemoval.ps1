@@ -108,44 +108,35 @@ function Invoke-ResourceRemoval {
         'Microsoft.Authorization/roleEligibilityScheduleRequests' {
             $idElem = $ResourceId.Split('/')
             $scope = $idElem[0..($idElem.Count - 5)] -join '/'
-            $pimRoleAssignment = Get-AzRoleEligibilityScheduleRequest -Scope $scope | Where-Object { $_.Justification -eq 'AVM test' -and $_.Status -eq 'Provisioned' }
+            $pimRequestName = $idElem[-1]
+            $pimRoleAssignment = Get-AzRoleEligibilityScheduleRequest -Scope $scope -Name $pimRequestName
             if ($pimRoleAssignment) {
-                $pimRoleAssignment | ForEach-Object {
-                    $pimRoleAssignmentPrinicpalId = $_.PrincipalId
-                    $pimRoleAssignmentRoleDefinitionId = $_.RoleDefinitionId
-                    $guid = New-Guid
-                    $startTime = Get-Date -Format o
-                    Write-Verbose "Removing assignment at scope $scope for principal $pimRoleAssignmentPrinicpalId" -Verbose
-                    $null = New-AzRoleEligibilityScheduleRequest -Name $guid `
-                        -Scope $scope `
-                        -ExpirationDuration PT1H `
-                        -PrincipalId $pimRoleAssignmentPrinicpalId `
-                        -RequestType AdminRemove `
-                        -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId `
-                        -ScheduleInfoStartDateTime $startTime
-                }
+                $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
+                $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
+                $guid = New-Guid
+                $null = New-AzRoleEligibilityScheduleRequest -Name $guid `
+                    -Scope $scope `
+                    -PrincipalId $pimRoleAssignmentPrinicpalId `
+                    -RequestType AdminRemove `
+                    -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId
+
             }
             break
         }
         'Microsoft.Authorization/roleAssignmentScheduleRequests' {
             $idElem = $ResourceId.Split('/')
             $scope = $idElem[0..($idElem.Count - 5)] -join '/'
-            $pimRoleAssignment = Get-AzRoleAssignmentScheduleRequest -Scope $scope | Where-Object { $_.Justification -eq 'AVM test' -and $_.Status -eq 'Provisioned' }
+            $pimRequestName = $idElem[-1]
+            $pimRoleAssignment = Get-AzRoleAssignmentScheduleRequest -Scope $scope -Name $pimRequestName
             if ($pimRoleAssignment) {
-                $pimRoleAssignment | ForEach-Object {
-                    $pimRoleAssignmentPrinicpalId = $_.PrincipalId
-                    $pimRoleAssignmentRoleDefinitionId = $_.RoleDefinitionId
-                    $guid = New-Guid
-                    $startTime = Get-Date -Format o
-                    Write-Verbose "Removing assignment at scope $scope for principal $pimRoleAssignmentPrinicpalId" -Verbose
-                    $null = New-AzRoleAssignmentScheduleRequest -Name $guid `
-                        -Scope $scope `
-                        -ExpirationDuration PT1H `
-                        -PrincipalId $pimRoleAssignmentPrinicpalId `
-                        -RequestType AdminRemove `
-                        -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId `
-                        -ScheduleInfoStartDateTime $startTime
-                }
+                $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
+                $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
+                $guid = New-Guid
+                $null = New-AzRoleAssignmentScheduleRequest -Name $guid `
+                    -Scope $scope `
+                    -PrincipalId $pimRoleAssignmentPrinicpalId `
+                    -RequestType AdminRemove `
+                    -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId
             }
             break
         }
