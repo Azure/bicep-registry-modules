@@ -4769,13 +4769,13 @@ Key vault reference and secret settings for the module's secrets export.
 - Required: No
 - Type: object
 
-### Parameter: `EnableAdvancedThreatProtection`
+### Parameter: `enableAdvancedThreatProtection`
 
-A boolean indicating whether or not to enable Microsoft Defender plan. Incurs additional billing per "Defender for Storage" pricing model.
+A boolean indicating whether to enable Microsoft Defender plan.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 **Required parameters**
 
