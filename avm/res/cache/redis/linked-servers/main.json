@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "4764248912015671674"
+      "version": "0.33.13.18514",
+      "templateHash": "11294861621866290910"
     },
     "name": "Redis Cache Linked Servers",
-    "description": "This module connects a primary and secondary Redis Cache together for geo-replication.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
   },
   "parameters": {
     "redisCacheName": {
@@ -51,16 +50,16 @@
     "redisCache": {
       "existing": true,
       "type": "Microsoft.Cache/redis",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('redisCacheName')]"
     },
     "redisLinkedServer": {
       "type": "Microsoft.Cache/redis/linkedServers",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
       "properties": {
         "linkedRedisCacheId": "[parameters('linkedRedisCacheResourceId')]",
-        "linkedRedisCacheLocation": "[coalesce(parameters('linkedRedisCacheLocation'), reference('redisCache', '2024-03-01', 'full').location)]",
+        "linkedRedisCacheLocation": "[coalesce(parameters('linkedRedisCacheLocation'), reference('redisCache', '2024-11-01', 'full').location)]",
         "serverRole": "[parameters('serverRole')]"
       },
       "dependsOn": [

@@ -1,6 +1,5 @@
 metadata name = 'API Management Service Products'
 metadata description = 'This module deploys an API Management Service Product.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string

@@ -1,6 +1,5 @@
 metadata name = 'API Connections'
 metadata description = 'This module deploys an Azure API Connection.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Connection name for connection. It can change depending on the resource.')
 param name string

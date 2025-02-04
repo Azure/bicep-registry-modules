@@ -1,6 +1,5 @@
 metadata name = 'API Management Service Subscriptions'
 metadata description = 'This module deploys an API Management Service Subscription.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Determines whether tracing can be enabled.')
 param allowTracing bool = true

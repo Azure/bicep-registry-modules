@@ -1,6 +1,5 @@
 metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
 param additionalLocations array = []
@@ -148,6 +147,9 @@ param subscriptions array = []
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
 param publicIpAddressResourceId string?
 
+@description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
+param enableDeveloperPortal bool = false
+
 var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
 var formattedUserAssignedIdentities = reduce(
@@ -225,7 +227,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -260,6 +262,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
           minApiVersion: '2021-08-01'
         }
     restore: restore
+    developerPortalStatus: sku != 'Consumption' ? (enableDeveloperPortal ? 'Enabled' : 'Disabled') : null
   }
 }
 

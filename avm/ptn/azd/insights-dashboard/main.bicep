@@ -2,7 +2,6 @@ metadata name = 'Application Insights Components'
 metadata description = '''Creates an Application Insights instance based on an existing Log Analytics workspace.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The resource insights components name.')
 param name string

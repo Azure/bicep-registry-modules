@@ -1,6 +1,5 @@
 metadata name = 'Virtual Machine Scale Sets'
 metadata description = 'This module deploys a Virtual Machine Scale Set.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the VMSS.')
 param name string
@@ -875,7 +874,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = vmss.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = vmss.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = vmss.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = vmss.location

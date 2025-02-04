@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2099029777392195135"
+      "templateHash": "14895863223298395283"
     },
     "name": "Arc Machine Extensions",
-    "description": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource."
   },
   "parameters": {
     "arcMachineName": {

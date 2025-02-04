@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3469519329529657459"
+      "templateHash": "14497929042813606497"
     },
     "name": "Storage Account Queue Services",
-    "description": "This module deploys a Storage Account Queue Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Queue Service."
   },
   "definitions": {
     "corsRuleType": {
@@ -191,7 +190,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -326,11 +325,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11255566639202978270"
+              "templateHash": "9969689246600110741"
             },
             "name": "Storage Account Queues",
-            "description": "This module deploys a Storage Account Queue.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Queue."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -404,7 +402,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
