@@ -22,7 +22,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 | `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | [2023-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-10-01/managedClusters/maintenanceConfigurations) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KubernetesConfiguration/extensions` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions) |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/fluxConfigurations) |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2023-05-01/fluxConfigurations) |
 
 ## Usage examples
 
@@ -416,6 +416,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             timeoutInSeconds: 180
             url: 'https://github.com/mspnp/aks-baseline'
           }
+          kustomizations: {
+            unified: {
+              path: './cluster-manifests'
+            }
+          }
           namespace: 'flux-system'
           scope: 'cluster'
         }
@@ -705,6 +710,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
               "timeoutInSeconds": 180,
               "url": "https://github.com/mspnp/aks-baseline"
             },
+            "kustomizations": {
+              "unified": {
+                "path": "./cluster-manifests"
+              }
+            },
             "namespace": "flux-system",
             "scope": "cluster"
           },
@@ -981,6 +991,11 @@ param fluxExtension = {
         syncIntervalInSeconds: 300
         timeoutInSeconds: 180
         url: 'https://github.com/mspnp/aks-baseline'
+      }
+      kustomizations: {
+        unified: {
+          path: './cluster-manifests'
+        }
       }
       namespace: 'flux-system'
       scope: 'cluster'
@@ -5089,8 +5104,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/extension:0.2.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/extension:0.3.5` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
