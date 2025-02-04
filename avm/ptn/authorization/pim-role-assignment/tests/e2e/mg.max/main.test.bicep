@@ -36,7 +36,7 @@ module testDeployment '../../../main.bicep' = {
     pimRoleAssignmentType: {
       roleAssignmentType: 'Active'
       scheduleInfo: {
-        duration: 'P1D'
+        duration: 'PT4H'
         durationType: 'AfterDuration'
         startTime: startDateTime
       }

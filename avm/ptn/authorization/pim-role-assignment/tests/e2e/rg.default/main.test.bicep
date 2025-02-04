@@ -30,7 +30,7 @@ param userPrinicipalId string = ''
 param startDateTime string = utcNow()
 
 @description('Optional. The end date and time for the role assignment. Defaults to one year from the start date and time.')
-param endDateTime string = dateTimeAdd(startDateTime, 'P1D')
+param endDateTime string = dateTimeAdd(startDateTime, 'PT4H')
 
 // General resources
 // =================
