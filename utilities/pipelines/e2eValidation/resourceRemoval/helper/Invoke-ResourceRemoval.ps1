@@ -112,7 +112,7 @@ function Invoke-ResourceRemoval {
             $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
             $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
             $guid = New-Guid
-            $startTime = Get-Date -Format 'yyyyMMddTHHmmssZ'
+            $startTime = Get-Date -Format o
             $null = New-AzRoleEligibilityScheduleRequest -Name $guid `
                 -Scope $scope `
                 -ExpirationDuration PT1H `
@@ -129,7 +129,7 @@ function Invoke-ResourceRemoval {
             $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
             $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
             $guid = New-Guid
-            $startTime = Get-Date -Format 'yyyyMMddTHHmmssZ'
+            $startTime = Get-Date -Format o
             $null = New-AzRoleAssignmentScheduleRequest -Name $guid `
                 -Scope $scope `
                 -ExpirationDuration PT1H `
