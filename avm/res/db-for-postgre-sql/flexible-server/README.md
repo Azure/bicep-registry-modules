@@ -1345,6 +1345,7 @@ param tags = {
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`delegatedSubnetResourceId`](#parameter-delegatedsubnetresourceid) | string | Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Private Access' - virtual network integration. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableAdvancedThreatProtection`](#parameter-enableadvancedthreatprotection) | bool | Enable/Disable advanced threat protection. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
 | [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if 'cMKKeyName' is not empty. |
@@ -1774,6 +1775,16 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- MinValue: 7
+- MaxValue: 35
+
+### Parameter: `enableAdvancedThreatProtection`
+
+Enable/Disable advanced threat protection.
+
+- Required: No
+- Type: bool
+- Default: `True`
 - MinValue: 7
 - MaxValue: 35
 
