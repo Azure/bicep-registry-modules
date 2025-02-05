@@ -1,16 +1,13 @@
 targetScope = 'managementGroup'
-metadata name = 'PIM Active permenant Role Assignments (Subscription scope)'
-metadata description = 'This module deploys a PIM Active permenant Role Assignment at a Subscription scope using common parameters.'
+metadata name = 'PIM Active permanent Role Assignments (Subscription scope)'
+metadata description = 'This module deploys a PIM permanent Role Assignment at a Subscription scope using minimal parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'pimsubmax'
+param serviceShort string = 'pimsubmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -22,6 +19,9 @@ param subscriptionId string = '#_subscriptionId_#'
 @secure()
 param userPrinicipalId string = ''
 
+@description('Optional. The start date and time for the role assignment. Defaults to the current date and time.')
+param startDateTime string = utcNow()
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -30,7 +30,11 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}-${namePrefix}'
   params: {
     principalId: userPrinicipalId
-    roleDefinitionIdOrName: 'Contributor'
+    roleDefinitionIdOrName: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    )
+    subscriptionId: subscriptionId
     requestType: 'AdminAssign'
     pimRoleAssignmentType: {
       roleAssignmentType: 'Active'
@@ -39,11 +43,5 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     justification: 'AVM test'
-    ticketInfo: {
-      ticketNumber: '21312'
-      ticketSystem: ' System2'
-    }
-    location: resourceLocation
-    subscriptionId: subscriptionId
   }
 }
