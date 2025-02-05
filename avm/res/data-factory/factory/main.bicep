@@ -1,6 +1,5 @@
 metadata name = 'Data Factories'
 metadata description = 'This module deploys a Data Factory.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Azure Factory to create.')
 param name string
@@ -389,7 +388,7 @@ output resourceId string = dataFactory.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = dataFactory.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = dataFactory.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = dataFactory.location

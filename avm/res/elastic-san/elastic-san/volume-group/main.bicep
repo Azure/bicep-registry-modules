@@ -1,6 +1,5 @@
 metadata name = 'Elastic SAN Volume Groups'
 metadata description = 'This module deploys an Elastic SAN Volume Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.minLength(3)
 @sys.maxLength(24)
@@ -216,7 +215,7 @@ output location string = location
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
-output systemAssignedMIPrincipalId string = volumeGroup.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = volumeGroup.?identity.?principalId
 
 @sys.description('Details on the deployed Elastic SAN Volumes.')
 output volumes volumeOutputType[] = [

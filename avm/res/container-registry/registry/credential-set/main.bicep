@@ -1,18 +1,18 @@
 metadata name = 'Container Registries Credential Sets'
 metadata description = 'This module deploys an ACR Credential Set.'
-metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name of the parent registry. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string
 
 @description('Required. The name of the credential set.')
 param name string
 
-@description('Required. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityOnlySysAssignedType?
 
 @description('Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential.')
-param authCredentials authCredentialsType
+param authCredentials authCredentialsType[]
 
 @description('Required. The credentials are stored for this upstream or login server.')
 param loginServer string
@@ -47,17 +47,14 @@ output resourceGroupName string = resourceGroup().name
 output resourceId string = credentialSet.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = credentialSet.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = credentialSet.?identity.?principalId
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-}
-
+@export()
+@description('The type for auth credentials.')
 type authCredentialsType = {
   @description('Required. The name of the credential.')
   name: string
@@ -67,4 +64,4 @@ type authCredentialsType = {
 
   @description('Required. KeyVault Secret URI for accessing the password.')
   passwordSecretIdentifier: string
-}[]
+}

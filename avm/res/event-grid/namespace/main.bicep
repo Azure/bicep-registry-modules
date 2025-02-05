@@ -1,6 +1,5 @@
 metadata name = 'Event Grid Namespaces'
 metadata description = 'This module deploys an Event Grid Namespace.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(3)
 @maxLength(50)
@@ -439,7 +438,7 @@ output location string = namespace.location
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = namespace.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = namespace.?identity.?principalId
 
 @sys.description('The Resources IDs of the EventGrid Namespace Topics.')
 output topicResourceIds array = [
