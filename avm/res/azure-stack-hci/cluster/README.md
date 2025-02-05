@@ -8,7 +8,6 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -28,7 +27,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/cluster:<version>`.
 
 - [Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration](#example-1-deploy-azure-stack-hci-cluster-in-azure-with-a-2-node-switched-configuration)
-- [Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned](#example-2-deploy-azure-stack-hci-cluster-in-azure-with-a-2-node-switched-configuration-waf-aligned)
+- [Deploy Azure Stack HCI Cluster in Azure with a 3 node switchless configuration](#example-2-deploy-azure-stack-hci-cluster-in-azure-with-a-3-node-switchless-configuration)
+- [Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned](#example-3-deploy-azure-stack-hci-cluster-in-azure-with-a-2-node-switched-configuration-waf-aligned)
 
 ### Example 1: _Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration_
 
@@ -435,23 +435,152 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    clusterNodeNames: '<clusterNodeNames>'
-    clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-    customLocationName: '<customLocationName>'
-    defaultGateway: '<defaultGateway>'
-    deploymentPrefix: '<deploymentPrefix>'
-    dnsServers: '<dnsServers>'
-    domainFqdn: '<domainFqdn>'
-    domainOUPath: '<domainOUPath>'
-    enableStorageAutoIp: '<enableStorageAutoIp>'
-    endingIPAddress: '<endingIPAddress>'
-    keyVaultName: '<keyVaultName>'
     name: '<name>'
-    networkIntents: '<networkIntents>'
-    startingIPAddress: '<startingIPAddress>'
-    storageConnectivitySwitchless: false
-    storageNetworks: '<storageNetworks>'
-    subnetMask: '<subnetMask>'
+    // Non-required parameters
+    deploymentSettings: {
+      clusterNodeNames: '<clusterNodeNames>'
+      clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
+      customLocationName: 'ashc3nmin-location'
+      defaultGateway: '172.20.0.1'
+      deploymentPrefix: '<deploymentPrefix>'
+      dnsServers: [
+        '172.20.0.1'
+      ]
+      domainFqdn: 'hci.local'
+      domainOUPath: '<domainOUPath>'
+      enableStorageAutoIp: false
+      endingIPAddress: '172.20.0.7'
+      keyVaultName: '<keyVaultName>'
+      networkIntents: [
+        {
+          adapter: [
+            'mgmt'
+          ]
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          name: 'management'
+          overrideAdapterProperty: true
+          overrideQosPolicy: false
+          overrideVirtualSwitchConfiguration: false
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          trafficType: [
+            'Management'
+          ]
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+        }
+        {
+          adapter: [
+            'comp0'
+            'comp1'
+          ]
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          name: 'compute'
+          overrideAdapterProperty: true
+          overrideQosPolicy: false
+          overrideVirtualSwitchConfiguration: false
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          trafficType: [
+            'Compute'
+          ]
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+        }
+        {
+          adapter: [
+            'smb0'
+            'smb1'
+          ]
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          name: 'storage'
+          overrideAdapterProperty: true
+          overrideQosPolicy: true
+          overrideVirtualSwitchConfiguration: false
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          trafficType: [
+            'Storage'
+          ]
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+        }
+      ]
+      startingIPAddress: '172.20.0.2'
+      storageConnectivitySwitchless: false
+      storageNetworks: [
+        {
+          adapterName: 'smb0'
+          storageAdapterIPInfo: [
+            {
+              ipv4Address: '10.71.1.1'
+              physicalNode: 'hcinode1'
+              subnetMask: '255.255.255.0'
+            }
+            {
+              ipv4Address: '10.71.1.2'
+              physicalNode: 'hcinode2'
+              subnetMask: '255.255.255.0'
+            }
+            {
+              ipv4Address: '10.71.2.3'
+              physicalNode: 'hcinode3'
+              subnetMask: '255.255.255.0'
+            }
+          ]
+          vlan: '711'
+        }
+        {
+          adapterName: 'smb1'
+          storageAdapterIPInfo: [
+            {
+              ipv4Address: '10.71.2.1'
+              physicalNode: 'hcinode1'
+              subnetMask: '255.255.255.0'
+            }
+            {
+              ipv4Address: '10.71.3.2'
+              physicalNode: 'hcinode2'
+              subnetMask: '255.255.255.0'
+            }
+            {
+              ipv4Address: '10.71.3.3'
+              physicalNode: 'hcinode3'
+              subnetMask: '255.255.255.0'
+            }
+          ]
+          vlan: '711'
+        }
+      ]
+      subnetMask: '255.255.255.0'
+    }
   }
 }
 ```
@@ -469,56 +598,155 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "clusterNodeNames": {
-      "value": "<clusterNodeNames>"
-    },
-    "clusterWitnessStorageAccountName": {
-      "value": "<clusterWitnessStorageAccountName>"
-    },
-    "customLocationName": {
-      "value": "<customLocationName>"
-    },
-    "defaultGateway": {
-      "value": "<defaultGateway>"
-    },
-    "deploymentPrefix": {
-      "value": "<deploymentPrefix>"
-    },
-    "dnsServers": {
-      "value": "<dnsServers>"
-    },
-    "domainFqdn": {
-      "value": "<domainFqdn>"
-    },
-    "domainOUPath": {
-      "value": "<domainOUPath>"
-    },
-    "enableStorageAutoIp": {
-      "value": "<enableStorageAutoIp>"
-    },
-    "endingIPAddress": {
-      "value": "<endingIPAddress>"
-    },
-    "keyVaultName": {
-      "value": "<keyVaultName>"
-    },
     "name": {
       "value": "<name>"
     },
-    "networkIntents": {
-      "value": "<networkIntents>"
-    },
-    "startingIPAddress": {
-      "value": "<startingIPAddress>"
-    },
-    "storageConnectivitySwitchless": {
-      "value": false
-    },
-    "storageNetworks": {
-      "value": "<storageNetworks>"
-    },
-    "subnetMask": {
-      "value": "<subnetMask>"
+    // Non-required parameters
+    "deploymentSettings": {
+      "value": {
+        "clusterNodeNames": "<clusterNodeNames>",
+        "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
+        "customLocationName": "ashc3nmin-location",
+        "defaultGateway": "172.20.0.1",
+        "deploymentPrefix": "<deploymentPrefix>",
+        "dnsServers": [
+          "172.20.0.1"
+        ],
+        "domainFqdn": "hci.local",
+        "domainOUPath": "<domainOUPath>",
+        "enableStorageAutoIp": false,
+        "endingIPAddress": "172.20.0.7",
+        "keyVaultName": "<keyVaultName>",
+        "networkIntents": [
+          {
+            "adapter": [
+              "mgmt"
+            ],
+            "adapterPropertyOverrides": {
+              "jumboPacket": "9014",
+              "networkDirect": "Disabled",
+              "networkDirectTechnology": "iWARP"
+            },
+            "name": "management",
+            "overrideAdapterProperty": true,
+            "overrideQosPolicy": false,
+            "overrideVirtualSwitchConfiguration": false,
+            "qosPolicyOverrides": {
+              "bandwidthPercentage_SMB": "50",
+              "priorityValue8021Action_Cluster": "7",
+              "priorityValue8021Action_SMB": "3"
+            },
+            "trafficType": [
+              "Management"
+            ],
+            "virtualSwitchConfigurationOverrides": {
+              "enableIov": "true",
+              "loadBalancingAlgorithm": "Dynamic"
+            }
+          },
+          {
+            "adapter": [
+              "comp0",
+              "comp1"
+            ],
+            "adapterPropertyOverrides": {
+              "jumboPacket": "9014",
+              "networkDirect": "Disabled",
+              "networkDirectTechnology": "iWARP"
+            },
+            "name": "compute",
+            "overrideAdapterProperty": true,
+            "overrideQosPolicy": false,
+            "overrideVirtualSwitchConfiguration": false,
+            "qosPolicyOverrides": {
+              "bandwidthPercentage_SMB": "50",
+              "priorityValue8021Action_Cluster": "7",
+              "priorityValue8021Action_SMB": "3"
+            },
+            "trafficType": [
+              "Compute"
+            ],
+            "virtualSwitchConfigurationOverrides": {
+              "enableIov": "true",
+              "loadBalancingAlgorithm": "Dynamic"
+            }
+          },
+          {
+            "adapter": [
+              "smb0",
+              "smb1"
+            ],
+            "adapterPropertyOverrides": {
+              "jumboPacket": "9014",
+              "networkDirect": "Disabled",
+              "networkDirectTechnology": "iWARP"
+            },
+            "name": "storage",
+            "overrideAdapterProperty": true,
+            "overrideQosPolicy": true,
+            "overrideVirtualSwitchConfiguration": false,
+            "qosPolicyOverrides": {
+              "bandwidthPercentage_SMB": "50",
+              "priorityValue8021Action_Cluster": "7",
+              "priorityValue8021Action_SMB": "3"
+            },
+            "trafficType": [
+              "Storage"
+            ],
+            "virtualSwitchConfigurationOverrides": {
+              "enableIov": "true",
+              "loadBalancingAlgorithm": "Dynamic"
+            }
+          }
+        ],
+        "startingIPAddress": "172.20.0.2",
+        "storageConnectivitySwitchless": false,
+        "storageNetworks": [
+          {
+            "adapterName": "smb0",
+            "storageAdapterIPInfo": [
+              {
+                "ipv4Address": "10.71.1.1",
+                "physicalNode": "hcinode1",
+                "subnetMask": "255.255.255.0"
+              },
+              {
+                "ipv4Address": "10.71.1.2",
+                "physicalNode": "hcinode2",
+                "subnetMask": "255.255.255.0"
+              },
+              {
+                "ipv4Address": "10.71.2.3",
+                "physicalNode": "hcinode3",
+                "subnetMask": "255.255.255.0"
+              }
+            ],
+            "vlan": "711"
+          },
+          {
+            "adapterName": "smb1",
+            "storageAdapterIPInfo": [
+              {
+                "ipv4Address": "10.71.2.1",
+                "physicalNode": "hcinode1",
+                "subnetMask": "255.255.255.0"
+              },
+              {
+                "ipv4Address": "10.71.3.2",
+                "physicalNode": "hcinode2",
+                "subnetMask": "255.255.255.0"
+              },
+              {
+                "ipv4Address": "10.71.3.3",
+                "physicalNode": "hcinode3",
+                "subnetMask": "255.255.255.0"
+              }
+            ],
+            "vlan": "711"
+          }
+        ],
+        "subnetMask": "255.255.255.0"
+      }
     }
   }
 }
@@ -535,23 +763,152 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
 
 // Required parameters
-param clusterNodeNames = '<clusterNodeNames>'
-param clusterWitnessStorageAccountName = '<clusterWitnessStorageAccountName>'
-param customLocationName = '<customLocationName>'
-param defaultGateway = '<defaultGateway>'
-param deploymentPrefix = '<deploymentPrefix>'
-param dnsServers = '<dnsServers>'
-param domainFqdn = '<domainFqdn>'
-param domainOUPath = '<domainOUPath>'
-param enableStorageAutoIp = '<enableStorageAutoIp>'
-param endingIPAddress = '<endingIPAddress>'
-param keyVaultName = '<keyVaultName>'
 param name = '<name>'
-param networkIntents = '<networkIntents>'
-param startingIPAddress = '<startingIPAddress>'
-param storageConnectivitySwitchless = false
-param storageNetworks = '<storageNetworks>'
-param subnetMask = '<subnetMask>'
+// Non-required parameters
+param deploymentSettings = {
+  clusterNodeNames: '<clusterNodeNames>'
+  clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
+  customLocationName: 'ashc3nmin-location'
+  defaultGateway: '172.20.0.1'
+  deploymentPrefix: '<deploymentPrefix>'
+  dnsServers: [
+    '172.20.0.1'
+  ]
+  domainFqdn: 'hci.local'
+  domainOUPath: '<domainOUPath>'
+  enableStorageAutoIp: false
+  endingIPAddress: '172.20.0.7'
+  keyVaultName: '<keyVaultName>'
+  networkIntents: [
+    {
+      adapter: [
+        'mgmt'
+      ]
+      adapterPropertyOverrides: {
+        jumboPacket: '9014'
+        networkDirect: 'Disabled'
+        networkDirectTechnology: 'iWARP'
+      }
+      name: 'management'
+      overrideAdapterProperty: true
+      overrideQosPolicy: false
+      overrideVirtualSwitchConfiguration: false
+      qosPolicyOverrides: {
+        bandwidthPercentage_SMB: '50'
+        priorityValue8021Action_Cluster: '7'
+        priorityValue8021Action_SMB: '3'
+      }
+      trafficType: [
+        'Management'
+      ]
+      virtualSwitchConfigurationOverrides: {
+        enableIov: 'true'
+        loadBalancingAlgorithm: 'Dynamic'
+      }
+    }
+    {
+      adapter: [
+        'comp0'
+        'comp1'
+      ]
+      adapterPropertyOverrides: {
+        jumboPacket: '9014'
+        networkDirect: 'Disabled'
+        networkDirectTechnology: 'iWARP'
+      }
+      name: 'compute'
+      overrideAdapterProperty: true
+      overrideQosPolicy: false
+      overrideVirtualSwitchConfiguration: false
+      qosPolicyOverrides: {
+        bandwidthPercentage_SMB: '50'
+        priorityValue8021Action_Cluster: '7'
+        priorityValue8021Action_SMB: '3'
+      }
+      trafficType: [
+        'Compute'
+      ]
+      virtualSwitchConfigurationOverrides: {
+        enableIov: 'true'
+        loadBalancingAlgorithm: 'Dynamic'
+      }
+    }
+    {
+      adapter: [
+        'smb0'
+        'smb1'
+      ]
+      adapterPropertyOverrides: {
+        jumboPacket: '9014'
+        networkDirect: 'Disabled'
+        networkDirectTechnology: 'iWARP'
+      }
+      name: 'storage'
+      overrideAdapterProperty: true
+      overrideQosPolicy: true
+      overrideVirtualSwitchConfiguration: false
+      qosPolicyOverrides: {
+        bandwidthPercentage_SMB: '50'
+        priorityValue8021Action_Cluster: '7'
+        priorityValue8021Action_SMB: '3'
+      }
+      trafficType: [
+        'Storage'
+      ]
+      virtualSwitchConfigurationOverrides: {
+        enableIov: 'true'
+        loadBalancingAlgorithm: 'Dynamic'
+      }
+    }
+  ]
+  startingIPAddress: '172.20.0.2'
+  storageConnectivitySwitchless: false
+  storageNetworks: [
+    {
+      adapterName: 'smb0'
+      storageAdapterIPInfo: [
+        {
+          ipv4Address: '10.71.1.1'
+          physicalNode: 'hcinode1'
+          subnetMask: '255.255.255.0'
+        }
+        {
+          ipv4Address: '10.71.1.2'
+          physicalNode: 'hcinode2'
+          subnetMask: '255.255.255.0'
+        }
+        {
+          ipv4Address: '10.71.2.3'
+          physicalNode: 'hcinode3'
+          subnetMask: '255.255.255.0'
+        }
+      ]
+      vlan: '711'
+    }
+    {
+      adapterName: 'smb1'
+      storageAdapterIPInfo: [
+        {
+          ipv4Address: '10.71.2.1'
+          physicalNode: 'hcinode1'
+          subnetMask: '255.255.255.0'
+        }
+        {
+          ipv4Address: '10.71.3.2'
+          physicalNode: 'hcinode2'
+          subnetMask: '255.255.255.0'
+        }
+        {
+          ipv4Address: '10.71.3.3'
+          physicalNode: 'hcinode3'
+          subnetMask: '255.255.255.0'
+        }
+      ]
+      vlan: '711'
+    }
+  ]
+  subnetMask: '255.255.255.0'
+}
 ```
 
 </details>
@@ -1414,14 +1771,6 @@ Specify whether to use the shared key vault for the HCI cluster.
 | `resourceGroupName` | string | The resource group of the cluster. |
 | `resourceId` | string | The ID of the cluster. |
 | `systemAssignedMIPrincipalId` | string | The managed identity of the cluster. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
