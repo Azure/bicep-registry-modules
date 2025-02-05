@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8957375042269792339"
+      "version": "0.33.93.31351",
+      "templateHash": "11112300500664950599"
     },
     "name": "Container Registries scopeMaps",
     "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
