@@ -546,6 +546,7 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' =
 ]
 
 @export()
+@description('The type for a DNS configuration.')
 type vnetDnsConfigurationType = {
   @description('Optional. Alternate DNS server to be used by apps. This property replicates the WEBSITE_DNS_ALT_SERVER app setting.')
   dnsAltServer: string?
