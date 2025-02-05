@@ -116,6 +116,11 @@ module capacityPool_volumes 'volume/main.bicep' = [
       encryptionKeySource: volume.?encryptionKeySource ?? 'Microsoft.NetApp'
       keyVaultPrivateEndpointResourceId: volume.?keyVaultPrivateEndpointResourceId
       dataProtection: volume.?dataProtection
+      kerberosEnabled: volume.?kerberosEnabled
+      smbContinuouslyAvailable: volume.?smbContinuouslyAvailable
+      smbEncryption: volume.?smbEncryption
+      smbNonBrowsable: volume.?smbNonBrowsable
+      volumeType: volume.?volumeType
     }
   }
 ]
@@ -223,4 +228,7 @@ type volumeType = {
 
   @description('Optional. Define if a volume is KerberosEnabled.')
   kerberosEnabled: bool?
+
+  @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
+  volumeType: string?
 }
