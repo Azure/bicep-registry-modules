@@ -344,6 +344,9 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. Specifies whether the OMS agent is enabled.')
 param omsAgentEnabled bool = true
 
+@description('Optional. Specifies whether the OMS agent is using managed identity authentication.')
+param omsAgentUseAADAuth bool = false
+
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
 param monitoringWorkspaceResourceId string?
 
@@ -655,9 +658,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       omsagent: {
         enabled: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
         config: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
-          ? {
-              logAnalyticsWorkspaceResourceID: monitoringWorkspaceResourceId!
-            }
+          ? union(
+              {
+                logAnalyticsWorkspaceResourceID: monitoringWorkspaceResourceId!
+              },
+              omsAgentUseAADAuth ? { useAADAuth: 'true' } : {}
+            )
           : null
       }
       aciConnectorLinux: {
