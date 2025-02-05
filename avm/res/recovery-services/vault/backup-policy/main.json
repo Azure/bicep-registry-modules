@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8749531505758368980"
+      "version": "0.33.13.18514",
+      "templateHash": "18409788320626401161"
     },
     "name": "Recovery Services Vault Backup Policies",
     "description": "This module deploys a Recovery Services Vault Backup Policy."
@@ -33,7 +33,7 @@
   "resources": [
     {
       "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
       "properties": "[parameters('properties')]"
     }

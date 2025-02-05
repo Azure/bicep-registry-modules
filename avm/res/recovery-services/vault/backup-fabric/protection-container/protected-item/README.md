@@ -12,7 +12,7 @@ This module deploys a Recovery Services Vault Protection Container Protected Ite
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
+| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 
 ## Parameters
 
@@ -21,7 +21,7 @@ This module deploys a Recovery Services Vault Protection Container Protected Ite
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the resource. |
-| [`policyId`](#parameter-policyid) | string | ID of the backup policy with which this item is backed up. |
+| [`policyName`](#parameter-policyname) | string | The backup policy with which this item is backed up. |
 | [`protectedItemType`](#parameter-protecteditemtype) | string | The backup item type. |
 | [`sourceResourceId`](#parameter-sourceresourceid) | string | Resource ID of the resource to back up. |
 
@@ -45,9 +45,9 @@ Name of the resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `policyId`
+### Parameter: `policyName`
 
-ID of the backup policy with which this item is backed up.
+The backup policy with which this item is backed up.
 
 - Required: Yes
 - Type: string

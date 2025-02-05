@@ -31,11 +31,11 @@ This module deploys a Recovery Services Vault (RSV) Replication Protection Conta
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`. |
-| [`policyId`](#parameter-policyid) | string | Resource ID of the replication policy. If defined, policyName will be ignored. |
-| [`policyName`](#parameter-policyname) | string | Name of the replication policy. Will be ignored if policyId is also specified. |
-| [`targetContainerFabricName`](#parameter-targetcontainerfabricname) | string | Name of the fabric containing the target container. If targetProtectionContainerId is specified, this parameter will be ignored. |
-| [`targetContainerName`](#parameter-targetcontainername) | string | Name of the target container. Must be specified if targetProtectionContainerId is not. If targetProtectionContainerId is specified, this parameter will be ignored. |
-| [`targetProtectionContainerId`](#parameter-targetprotectioncontainerid) | string | Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored. |
+| [`policyName`](#parameter-policyname) | string | Name of the replication policy. Will be ignored if policyResourceId is also specified. |
+| [`policyResourceId`](#parameter-policyresourceid) | string | Resource ID of the replication policy. If defined, policyName will be ignored. |
+| [`targetContainerFabricName`](#parameter-targetcontainerfabricname) | string | Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored. |
+| [`targetContainerName`](#parameter-targetcontainername) | string | Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored. |
+| [`targetProtectionContainerResourceId`](#parameter-targetprotectioncontainerresourceid) | string | Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored. |
 
 ### Parameter: `recoveryVaultName`
 
@@ -66,7 +66,15 @@ The name of the replication container mapping. If not provided, it will be autom
 - Type: string
 - Default: `''`
 
-### Parameter: `policyId`
+### Parameter: `policyName`
+
+Name of the replication policy. Will be ignored if policyResourceId is also specified.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `policyResourceId`
 
 Resource ID of the replication policy. If defined, policyName will be ignored.
 
@@ -74,17 +82,9 @@ Resource ID of the replication policy. If defined, policyName will be ignored.
 - Type: string
 - Default: `''`
 
-### Parameter: `policyName`
-
-Name of the replication policy. Will be ignored if policyId is also specified.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `targetContainerFabricName`
 
-Name of the fabric containing the target container. If targetProtectionContainerId is specified, this parameter will be ignored.
+Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored.
 
 - Required: No
 - Type: string
@@ -92,19 +92,18 @@ Name of the fabric containing the target container. If targetProtectionContainer
 
 ### Parameter: `targetContainerName`
 
-Name of the target container. Must be specified if targetProtectionContainerId is not. If targetProtectionContainerId is specified, this parameter will be ignored.
+Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored.
 
 - Required: No
 - Type: string
 - Default: `''`
 
-### Parameter: `targetProtectionContainerId`
+### Parameter: `targetProtectionContainerResourceId`
 
 Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 
