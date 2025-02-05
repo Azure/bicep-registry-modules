@@ -76,9 +76,6 @@ param serverVersion string = '4.2'
 param sqlDatabases sqlDatabaseType[] = []
 
 @description('Optional. SQL Role Definitions configurations.')
-param sqlRoleAssignmentsPrincipalIds array = []
-
-@description('Optional. SQL Role Definitions configurations.')
 param sqlRoleDefinitions sqlRoleDefinitionsType
 
 @description('Optional. MongoDB Databases configurations.')
@@ -456,7 +453,7 @@ module databaseAccount_sqlRoleDefinitions 'sql-role/main.bicep' = [
       dataActions: sqlRoleDefinition.?dataActions
       roleName: sqlRoleDefinition.?roleName
       roleType: sqlRoleDefinition.?roleType
-      principalIds: sqlRoleAssignmentsPrincipalIds
+      principalIds: sqlRoleDefinition.?sqlRoleAssignmentsPrincipalIds
     }
   }
 ]
@@ -865,6 +862,9 @@ type sqlRoleDefinitionsType = {
 
   @description('Optional. Indicates whether the Role Definition was built-in or user created.')
   roleType: ('CustomRole' | 'BuiltInRole')?
+
+  @description('Optional. A lists of principalIds to assign the sql role ')
+  sqlRoleAssignmentsPrincipalIds: array?
 }[]?
 
 type sqlDatabaseType = {
