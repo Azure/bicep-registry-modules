@@ -3061,6 +3061,7 @@ param siteConfig = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetId`](#parameter-virtualnetworksubnetid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
 | [`vnetContentShareEnabled`](#parameter-vnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
+| [`vnetDnsConfiguration`](#parameter-vnetdnsconfiguration) | object | Property to configure various DNS related settings for a site |
 | [`vnetImagePullEnabled`](#parameter-vnetimagepullenabled) | bool | To enable pulling image over Virtual Network. |
 | [`vnetRouteAllEnabled`](#parameter-vnetrouteallenabled) | bool | Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied. |
 | [`webConfiguration`](#parameter-webconfiguration) | object | The Site Config, Web settings to deploy. |
@@ -4116,6 +4117,64 @@ To enable accessing content over virtual network.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `vnetDnsConfiguration`
+
+Property to configure various DNS related settings for a site
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dnsAltServer`](#parameter-vnetdnsconfigurationdnsaltserver) | string | Alternate DNS server to be used by apps. This property replicates the WEBSITE_DNS_ALT_SERVER app setting. |
+| [`dnsMaxCacheTimeout`](#parameter-vnetdnsconfigurationdnsmaxcachetimeout) | int | Custom time for DNS to be cached in seconds. Allowed range: 0-60. Default is 30 seconds. 0 means caching disabled. |
+| [`dnsRetryAttemptCount`](#parameter-vnetdnsconfigurationdnsretryattemptcount) | int | Total number of retries for dns lookup. Allowed range: 1-5. Default is 3. |
+| [`dnsRetryAttemptTimeout`](#parameter-vnetdnsconfigurationdnsretryattempttimeout) | int | Timeout for a single dns lookup in seconds. Allowed range: 1-30. Default is 3. |
+| [`dnsServers`](#parameter-vnetdnsconfigurationdnsservers) | array | List of custom DNS servers to be used by an app for lookups. Maximum 5 dns servers can be set. |
+
+### Parameter: `vnetDnsConfiguration.dnsAltServer`
+
+Alternate DNS server to be used by apps. This property replicates the WEBSITE_DNS_ALT_SERVER app setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `vnetDnsConfiguration.dnsMaxCacheTimeout`
+
+Custom time for DNS to be cached in seconds. Allowed range: 0-60. Default is 30 seconds. 0 means caching disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `vnetDnsConfiguration.dnsRetryAttemptCount`
+
+Total number of retries for dns lookup. Allowed range: 1-5. Default is 3.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 5
+
+### Parameter: `vnetDnsConfiguration.dnsRetryAttemptTimeout`
+
+Timeout for a single dns lookup in seconds. Allowed range: 1-30. Default is 3.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 30
+
+### Parameter: `vnetDnsConfiguration.dnsServers`
+
+List of custom DNS servers to be used by an app for lookups. Maximum 5 dns servers can be set.
+
+- Required: No
+- Type: array
+- MinValue: 1
+- MaxValue: 30
 
 ### Parameter: `vnetImagePullEnabled`
 
