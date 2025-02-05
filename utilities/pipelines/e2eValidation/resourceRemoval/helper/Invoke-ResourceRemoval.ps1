@@ -109,8 +109,6 @@ function Invoke-ResourceRemoval {
             $idElem = $ResourceId.Split('/')
             $scope = $idElem[0..($idElem.Count - 5)] -join '/'
             $pimRequestName = $idElem[-1]
-            Write-Verbose "Request Name: $pimRequestName" -Verbose
-            Write-Verbose "Request scope: $scope" -Verbose
             $pimRoleAssignment = Get-AzRoleEligibilityScheduleRequest -Scope $scope -Name $pimRequestName
             if ($pimRoleAssignment) {
                 $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
@@ -129,8 +127,6 @@ function Invoke-ResourceRemoval {
             $idElem = $ResourceId.Split('/')
             $scope = $idElem[0..($idElem.Count - 5)] -join '/'
             $pimRequestName = $idElem[-1]
-            Write-Verbose "Request Name: $pimRequestName" -Verbose
-            Write-Verbose "Request scope: $scope" -Verbose
             $pimRoleAssignment = Get-AzRoleAssignmentScheduleRequest -Scope $scope -Name $pimRequestName
             if ($pimRoleAssignment) {
                 $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
