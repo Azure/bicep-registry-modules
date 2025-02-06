@@ -209,7 +209,7 @@ var bastionpropertiesVar = union(
 resource azureBastion 'Microsoft.Network/bastionHosts@2024-05-01' = {
   name: name
   location: location
-  tags: tags
+  tags: tags ?? {} // The empty object is a workaround for error when deploying with the Developer SKU. The error seems unrelated to the tags, but it is resolved by adding the empty object.
   sku: {
     name: skuName
   }
@@ -279,4 +279,4 @@ output resourceId string = azureBastion.id
 output location string = azureBastion.location
 
 @description('The Public IPconfiguration object for the AzureBastionSubnet.')
-output ipConfAzureBastionSubnet object = azureBastion.properties.ipConfigurations[0]
+output ipConfAzureBastionSubnet object = skuName == 'Developer' ? {} : azureBastion.properties.ipConfigurations[0]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "8446193185447882975"
+      "templateHash": "10078458429836627297"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host."
@@ -419,7 +419,7 @@
       "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
+      "tags": "[coalesce(parameters('tags'), createObject())]",
       "sku": {
         "name": "[parameters('skuName')]"
       },
@@ -1256,7 +1256,7 @@
       "metadata": {
         "description": "The Public IPconfiguration object for the AzureBastionSubnet."
       },
-      "value": "[reference('azureBastion').ipConfigurations[0]]"
+      "value": "[if(equals(parameters('skuName'), 'Developer'), createObject(), reference('azureBastion').ipConfigurations[0])]"
     }
   }
 }
