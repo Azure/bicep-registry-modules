@@ -1653,7 +1653,7 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
   - `'Azure Stack HCI Administrator'`
   - `'Windows Admin Center Administrator Login'`
