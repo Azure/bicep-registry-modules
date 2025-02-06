@@ -75,7 +75,7 @@ param enableTelemetry bool = true
   2
   3
 ])
-param zones int[] = [1, 2, 3]
+param zones int[] = [] // Availability Zones are currently in preview and only available in certain regions, therefore the default is an empty array.
 
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
