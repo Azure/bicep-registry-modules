@@ -1266,7 +1266,14 @@ A list of availability zones denoting where the Bastion Host resource needs to c
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 - Allowed:
   ```Bicep
   [
