@@ -37,18 +37,9 @@ for ($i = 1; $i -le $hciNodeCount; $i++) {
     $hciNodeNames += "hcinode$i"
 }
 
-Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted'
-foreach ($module in @(
-        'Az.Accounts',
-        'Az.ConnectedMachine')) {
-    if (-not (Get-Module -Name $module -ListAvailable)) {
-        log "Installing module [$module]" -Verbose
-        $res = Install-Module -Name $module -Force -AllowClobber -Scope 'CurrentUser' -Repository 'PSGallery' -Force -Confirm:$false
-        log ("Installed module [$module] with version [{0}]" -f $res.Version)
-    }
-}
-Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Untrusted'
-
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+Install-Module -Name Az.ConnectedMachine -Force -AllowClobber -Scope CurrentUser -Repository PSGallery -ErrorAction SilentlyContinue
+Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
 log "Logging in to Azure with user-assigned managed identity '$($userAssignedManagedIdentityClientId)'..."
 Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
