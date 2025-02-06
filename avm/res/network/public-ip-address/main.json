@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7493361708090920602"
+      "templateHash": "11118459859179868367"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address."
@@ -31,7 +31,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Required. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
+            "description": "Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
           }
         },
         "fqdn": {
