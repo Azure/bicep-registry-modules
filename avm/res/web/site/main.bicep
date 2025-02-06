@@ -61,7 +61,7 @@ param vnetImagePullEnabled bool = false
 @description('Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.')
 param vnetRouteAllEnabled bool = false
 
-@description('Optional. Property to configure various DNS related settings for a site')
+@description('Optional. Property to configure various DNS related settings for a site.')
 param vnetDnsConfiguration vnetDnsConfigurationType?
 
 @description('Optional. Stop SCM (KUDU) site when the app is stopped.')
