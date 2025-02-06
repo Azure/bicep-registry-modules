@@ -75,7 +75,7 @@ var arcNodeResourceIds = [
 
 var tenantId = subscription().tenantId
 
-module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
+module hciHostDeployment '../../e2e-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     domainOUPath: domainOUPath
@@ -108,7 +108,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
 }
 
-module hciClusterPreqs '../../e2e-template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
+module hciClusterPreqs '../../e2e-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs'
   params: {
     location: location

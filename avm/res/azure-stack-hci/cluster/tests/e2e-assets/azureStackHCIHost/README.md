@@ -41,8 +41,8 @@ It is also possible to review Run Command output with a REST call, making sure y
 To use this Bicep module, you'll need to download a copy then supply values for the required parameters. Follow these steps:
 
 1. Clone the repository with Git: `git clone https://github.com/Azure/bicep-registry-modules.git`
-1. Navigate to this directory `avm\utilities\e2e-template-assets\templates\azure-stack-hci\modules\azureStackHCIHost` and review the parameters at the top of the `hciHostDeployment.bicep` file. Provide values as required by hardcoding them into the Bicep file or by building a parameters file.
-1. Run the Bicep deployment. For example: `az deployment group create -f .\avm\utilities\e2e-template-assets\templates\azure-stack-hci\modules\azureStackHCIHost\hciHostDeployment.bicep`
+1. Navigate to this directory `avm\utilities\e2e-assets\templates\azure-stack-hci\modules\azureStackHCIHost` and review the parameters at the top of the `hciHostDeployment.bicep` file. Provide values as required by hardcoding them into the Bicep file or by building a parameters file.
+1. Run the Bicep deployment. For example: `az deployment group create -f .\avm\utilities\e2e-assets\templates\azure-stack-hci\modules\azureStackHCIHost\hciHostDeployment.bicep`
 1. When the deployment completes, the HCI nodes will be ready for an HCI cluster to be deployed on them. For example, you could use the Bicep module at this path `avm\res\azure-stack-hci\cluster\main.bicep` or using the Azure Portal.
 
 ## Using this template for an end-to-end HCI cluster deployment in Azure
