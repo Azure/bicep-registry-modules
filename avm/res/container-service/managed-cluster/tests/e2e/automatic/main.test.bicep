@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = [
       enableKeyvaultSecretsProvider: true
       enableSecretRotation: true
       kedaAddon: true
-      kubernetesVersion: '1.28'
       aadProfile: {
         aadProfileEnableAzureRBAC: true
         aadProfileManaged: true
@@ -95,6 +94,7 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Automatic'
       vpaAddon: true
       webApplicationRoutingEnabled: true
+      defaultIngressControllerType: 'Internal'
     }
   }
 ]
