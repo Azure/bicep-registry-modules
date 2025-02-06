@@ -123,7 +123,7 @@ $t = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com' -AsSecureStr
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
 $deployUserCred = [pscredential]::new($deploymentUsername, (ConvertTo-SecureString -AsPlainText -Force $adminPw))
 
-Install-Module AsHciADArtifactsPreCreationTool
+# Install-Module AsHciADArtifactsPreCreationTool
 New-HciAdObjectsPreCreation -AzureStackLCMUserCredential $deployUserCred -AsHciOUName $domainOUPath
 
 ## set the LCM deployUser password to the adminPw value - this aligns the password with the KeyVault during re-runs
