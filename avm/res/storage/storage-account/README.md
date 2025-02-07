@@ -3450,7 +3450,6 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sasExpirationPeriod`](#parameter-sasexpirationperiod) | string | The SAS expiration period. DD.HH:MM:SS. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`enableAdvancedThreatProtection`](#parameter-enableadvancedthreatprotection) | bool | A boolean indicating whether or not to enable Microsoft Defender plan. |
 | [`skuName`](#parameter-skuname) | string | Storage Account Sku Name. |
 | [`supportsHttpsTrafficOnly`](#parameter-supportshttpstrafficonly) | bool | Allows HTTPS traffic only to storage service if sets to true. |
 | [`tableServices`](#parameter-tableservices) | object | Table service and tables to create. |
@@ -4768,14 +4767,6 @@ Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
-
-### Parameter: `enableAdvancedThreatProtection`
-
-A boolean indicating whether to enable Microsoft Defender plan.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 **Required parameters**
 
