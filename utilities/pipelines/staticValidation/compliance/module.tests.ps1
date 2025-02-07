@@ -1002,7 +1002,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
             }
 
-            It '[<moduleFolderName>] Telemetry should be disabled for child modules.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases $moduleFolderTestCases {
 
                 param(
                     [hashtable] $templateFileContent,
