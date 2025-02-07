@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8234774084915355769"
+      "version": "0.33.93.31351",
+      "templateHash": "10160470062491934963"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance."
@@ -341,6 +341,20 @@
         "description": "Optional. Percentage of the data produced by the application being monitored that is being sampled for Application Insights telemetry."
       }
     },
+    "flowType": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Used by the Application Insights system to determine what kind of flow this component was created by. This is to be set to 'Bluefield' when creating/updating a component via the REST API."
+      }
+    },
+    "requestSource": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Describes what tool created this Application Insights component. Customers using this API should set this to the default 'rest'."
+      }
+    },
     "kind": {
       "type": "string",
       "defaultValue": "",
@@ -454,7 +468,9 @@
         "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
         "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
         "RetentionInDays": "[parameters('retentionInDays')]",
-        "SamplingPercentage": "[parameters('samplingPercentage')]"
+        "SamplingPercentage": "[parameters('samplingPercentage')]",
+        "Flow_Type": "[parameters('flowType')]",
+        "Request_Source": "[parameters('requestSource')]"
       }
     },
     "appInsights_roleAssignments": {
@@ -558,8 +574,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3603934328068593686"
+              "version": "0.33.93.31351",
+              "templateHash": "10861379689695100897"
             },
             "name": "Application Insights Linked Storage Account",
             "description": "This component deploys an Application Insights Linked Storage Account."
