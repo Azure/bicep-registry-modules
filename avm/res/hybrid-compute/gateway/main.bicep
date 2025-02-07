@@ -16,7 +16,7 @@ param tags object?
 @description('Optional. Specifies the list of features that are enabled for this Gateway.')
 param allowedFeatures string[] = ['*']
 
-@description('Optiona. The type of the Gateway resource.')
+@description('Optional. The type of the Gateway resource.')
 @allowed([
   'Public'
 ])

@@ -1,7 +1,6 @@
 targetScope = 'subscription'
 
 metadata name = 'Azure Arc Gateway using only the defaults'
-
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //

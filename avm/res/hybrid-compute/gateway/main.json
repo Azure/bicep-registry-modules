@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16501987567006589644"
+      "templateHash": "867867395973688040"
     },
     "name": "Azure Arc Gateway",
     "description": "This module deploys a Azure Arc Gateway."
@@ -90,7 +90,7 @@
         "Public"
       ],
       "metadata": {
-        "description": "Optiona. The type of the Gateway resource."
+        "description": "Optional. The type of the Gateway resource."
       }
     },
     "lock": {

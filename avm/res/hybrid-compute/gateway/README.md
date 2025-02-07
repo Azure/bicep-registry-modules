@@ -171,15 +171,10 @@ param location = '<location>'
 | :-- | :-- | :-- |
 | [`allowedFeatures`](#parameter-allowedfeatures) | array | Specifies the list of features that are enabled for this Gateway. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`gatewayType`](#parameter-gatewaytype) | string | The type of the Gateway resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-
-**Optiona parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`gatewayType`](#parameter-gatewaytype) | string | The type of the Gateway resource. |
 
 ### Parameter: `name`
 
@@ -208,6 +203,20 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `gatewayType`
+
+The type of the Gateway resource.
+
+- Required: No
+- Type: string
+- Default: `'Public'`
+- Allowed:
+  ```Bicep
+  [
+    'Public'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -259,20 +268,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `gatewayType`
-
-The type of the Gateway resource.
-
-- Required: No
-- Type: string
-- Default: `'Public'`
-- Allowed:
-  ```Bicep
-  [
-    'Public'
-  ]
-  ```
 
 ## Outputs
 

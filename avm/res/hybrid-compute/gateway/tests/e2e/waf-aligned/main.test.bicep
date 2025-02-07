@@ -1,7 +1,6 @@
 targetScope = 'subscription'
 
 metadata name = 'Azure Arc Gateway according to WAF'
-
 metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
