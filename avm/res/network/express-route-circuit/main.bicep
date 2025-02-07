@@ -256,7 +256,7 @@ output serviceKey string = expressRouteCircuit.properties.serviceKey
 @description('The service provider provisioning state of the express route circuit.')
 output serviceProviderProvisioningState string = expressRouteCircuit.properties.serviceProviderProvisioningState
 
-@description('The authorizations for the express route circuit')
+@description('The authorizations for the express route circuit.')
 output authorizations array = map(expressRouteCircuit.properties.authorizations, (authorization, i) => {
   i: i
   name: authorization.name

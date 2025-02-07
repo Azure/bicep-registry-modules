@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4318103980622140416"
+      "templateHash": "1678770311715497187"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -595,7 +595,7 @@
     "authorizations": {
       "type": "array",
       "metadata": {
-        "description": "The authorizations for the express route circuit"
+        "description": "The authorizations for the express route circuit."
       },
       "value": "[map(reference('expressRouteCircuit').authorizations, lambda('authorization', 'i', createObject('i', lambdaVariables('i'), 'name', lambdaVariables('authorization').name, 'key', lambdaVariables('authorization').properties.authorizationKey)))]"
     },

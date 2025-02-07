@@ -1024,6 +1024,7 @@ Specifies the identifier that is used to identify the customer.
 | `resourceId` | string | The resource ID of express route curcuit. |
 | `serviceKey` | string | The service key of the express route circuit. |
 | `serviceProviderProvisioningState` | string | The service provider provisioning state of the express route circuit. |
+| `authorizations` | array | TThe authorizations for the express route circuit. |
 
 ## Data Collection
 
