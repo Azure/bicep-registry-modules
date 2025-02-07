@@ -48,10 +48,7 @@ This instance deploys the module with the minimum set of required parameters.
 module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
-    // Required parameters
-    name: 'dwmin001'
-    // Non-required parameters
-    location: '<location>'
+    name: 'dwmin002'
   }
 }
 ```
@@ -68,13 +65,8 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
-      "value": "dwmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
+      "value": "dwmin002"
     }
   }
 }
@@ -90,10 +82,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/databricks/workspace:<version>'
 
-// Required parameters
-param name = 'dwmin001'
-// Non-required parameters
-param location = '<location>'
+param name = 'dwmin002'
 ```
 
 </details>
@@ -113,7 +102,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'dwmax002'
+    name: 'dwmax003'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     automaticClusterUpdate: 'Enabled'
@@ -127,7 +116,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
     }
     customerManagedKeyManagedDisk: {
-      autoRotationDisabled: true
+      autoRotationEnabled: false
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
@@ -244,7 +233,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dwmax002"
+      "value": "dwmax003"
     },
     // Non-required parameters
     "amlWorkspaceResourceId": {
@@ -270,7 +259,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "customerManagedKeyManagedDisk": {
       "value": {
-        "autoRotationDisabled": true,
+        "autoRotationEnabled": false,
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
@@ -435,7 +424,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 using 'br/public:avm/res/databricks/workspace:<version>'
 
 // Required parameters
-param name = 'dwmax002'
+param name = 'dwmax003'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
 param automaticClusterUpdate = 'Enabled'
@@ -449,7 +438,7 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
 }
 param customerManagedKeyManagedDisk = {
-  autoRotationDisabled: true
+  autoRotationEnabled: false
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
 }
@@ -567,7 +556,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'dwwaf001'
+    name: 'dwwaf002'
     // Non-required parameters
     accessConnectorResourceId: '<accessConnectorResourceId>'
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
@@ -605,11 +594,6 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     enhancedSecurityMonitoring: 'Enabled'
     loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
     loadBalancerResourceId: '<loadBalancerResourceId>'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedResourceGroupResourceId: '<managedResourceGroupResourceId>'
     natGatewayName: 'nat-gateway'
     prepareEncryption: true
@@ -679,7 +663,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dwwaf001"
+      "value": "dwwaf002"
     },
     // Non-required parameters
     "accessConnectorResourceId": {
@@ -745,15 +729,6 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "loadBalancerResourceId": {
       "value": "<loadBalancerResourceId>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedResourceGroupResourceId": {
       "value": "<managedResourceGroupResourceId>"
@@ -851,7 +826,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 using 'br/public:avm/res/databricks/workspace:<version>'
 
 // Required parameters
-param name = 'dwwaf001'
+param name = 'dwwaf002'
 // Non-required parameters
 param accessConnectorResourceId = '<accessConnectorResourceId>'
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
@@ -889,11 +864,6 @@ param disablePublicIp = true
 param enhancedSecurityMonitoring = 'Enabled'
 param loadBalancerBackendPoolName = '<loadBalancerBackendPoolName>'
 param loadBalancerResourceId = '<loadBalancerResourceId>'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedResourceGroupResourceId = '<managedResourceGroupResourceId>'
 param natGatewayName = 'nat-gateway'
 param prepareEncryption = true
@@ -1481,7 +1451,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -1740,9 +1710,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1763,7 +1733,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2081,7 +2051,7 @@ Configuration details for private endpoints for the managed workspace storage ac
 | [`name`](#parameter-storageaccountprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-storageaccountprivateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-storageaccountprivateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-storageaccountprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-storageaccountprivateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-storageaccountprivateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-storageaccountprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -2340,9 +2310,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `storageAccountPrivateEndpoints.resourceGroupName`
+### Parameter: `storageAccountPrivateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -2363,7 +2333,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2508,8 +2478,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 
