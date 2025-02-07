@@ -1018,13 +1018,13 @@ Specifies the identifier that is used to identify the customer.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `authorizations` | array | The authorizations for the express route circuit. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of express route curcuit. |
 | `resourceGroupName` | string | The resource group the express route curcuit was deployed into. |
 | `resourceId` | string | The resource ID of express route curcuit. |
 | `serviceKey` | string | The service key of the express route circuit. |
 | `serviceProviderProvisioningState` | string | The service provider provisioning state of the express route circuit. |
-| `authorizations` | array | TThe authorizations for the express route circuit. |
 
 ## Data Collection
 
