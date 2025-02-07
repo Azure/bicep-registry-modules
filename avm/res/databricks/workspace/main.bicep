@@ -623,6 +623,7 @@ output storagePrivateEndpoints privateEndpointOutputType[] = [
 // =============== //
 
 @export()
+@description('The type for a private endpoint output.')
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
   name: string
@@ -647,6 +648,7 @@ type privateEndpointOutputType = {
 }
 
 @export()
+@description('The type for a default catalog configuration.')
 type defaultCatalogType = {
   //This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
   //@description('Optional. Set the name of the Catalog.')
