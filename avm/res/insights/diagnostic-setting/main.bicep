@@ -21,10 +21,10 @@ param eventHubAuthorizationRuleResourceId string?
 param eventHubName string?
 
 @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-param logCategoriesAndGroups logCategoriesAndGroupsType
+param logCategoriesAndGroups logCategoriesAndGroupsType[]?
 
 @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-param metricCategories metricCategoriesType?
+param metricCategories metricCategoriesType[]?
 
 @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
 @allowed([
@@ -112,7 +112,7 @@ type logCategoriesAndGroupsType = {
 
   @description('Optional. Enable or disable the category explicitly. Default is `true`.')
   enabled: bool?
-}[]?
+}
 
 @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
 type metricCategoriesType = {
@@ -121,4 +121,4 @@ type metricCategoriesType = {
 
   @description('Optional. Enable or disable the category explicitly. Default is `true`.')
   enabled: bool?
-}[]?
+}
