@@ -128,6 +128,10 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $subModulePathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
             if ($subModulePathExisting) {
                 $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+                if ($childModuleVersion -eq '0.1.0') {
+                    Set-ItResult -Skipped -Because 'Child module version is 0.1.0, which is the initial version.'
+                    return
+                }
                 $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
                 $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
 
@@ -185,7 +189,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` CHANGELOG.md `] file.' -TestCases $moduleFolderTestCases {
+        # Changelogs are required for all (child-)modules that are published (having a version.json file)
+        It '[<moduleFolderName>] Module should contain a [` CHANGELOG.md `] file.' -TestCases ($moduleFolderTestCases | Where-Object { Test-Path -Path (Join-Path $_.moduleFolderPath 'version.json') }) {
 
             param(
                 [string] $moduleFolderPath
@@ -213,27 +218,27 @@ Describe 'File/folder tests' -Tag 'Modules' {
             # get the next version of the module
             $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
 
-            $sections = $changelogContent | Where-Object { $_ -match '^##' }
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
             $changelogSection = $sections | Where-Object { $_ -match "^##\s+$moduleVersion" }
 
             # the changelog should start with '# Changelog'
-            $changelogContent.Length | Should -BeGreaterThan 0 -Because 'The changelog should not be empty'
-            $changelogContent[0] | Should -Be '# Changelog' -Because 'The changelog should start with `# Changelog`'
-            $changelogContent[1] | Should -Be '' -Because 'The changelog should start with `# Changelog`, followed by an empty line'
+            $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
+            $changelogContent[0] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`'
+            $changelogContent[1] | Should -Be '' -Because 'the changelog should start with `# Changelog`, followed by an empty line'
 
             # check for the presence of the `## unreleased` section
-            $changelogSection | Should -BeIn $sections -Because "The `## $moduleVersion` section should be in the changelog"
+            $changelogSection | Should -BeIn $sections -Because "the `## $moduleVersion` section should be in the changelog"
 
             # only one unrealeased section should be present
-            $changelogSection.Count | Should -BeExactly 1 -Because "The `## $moduleVersion` section should be in the changelog only once"
+            $changelogSection.Count | Should -BeExactly 1 -Because "the `## $moduleVersion` section should be in the changelog only once"
 
             # check for unrealeased being the first section. Ignore, if there is only one section
             if ($sections -is [array]) {
-                $sections[0] | Should -Be $changelogSection -Because "The `## $moduleVersion` section should be the first section in the changelog"
+                $sections[0] | Should -Be $changelogSection -Because "the `## $moduleVersion` section should be the first section in the changelog"
             }
 
             # check for the order of the versions
-            ($changelogContent | Where-Object { $_ -match '^##' } | Sort-Object -Descending) | Should -BeExactly $sections 'The versions in the changelog should appear in descending order'
+            ($changelogContent | Where-Object { $_ -match '^##\s+' } | Sort-Object -Descending) | Should -BeExactly $sections 'the versions in the changelog should appear in descending order'
 
             # the unreleased section must contain certain content
             if ($sections -is [array]) {
@@ -244,15 +249,14 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 # special treatment, if there is only one section
                 $changelogSectionContent = $changelogContent
             }
-            # $changelogSectionContent | Should -Contain 'New Features' -Because 'The `## unreleased` section should contain "New Features" surrounded by empty lines'
-            $changelogSectionContent -join "`n" | Should -MatchExactly '\nNew Features\n\n' -Because 'The `## unreleased` section should contain "New Features" surrounded by empty lines'
-            $changelogSectionContent -join "`n" | Should -MatchExactly '\nChanges\n\n' -Because 'The `## unreleased` section should contain "Changes" surrounded by empty lines'
-            $changelogSectionContent -join "`n" | Should -MatchExactly '\nBugfixes\n\n' -Because 'The `## unreleased` section should contain "Bugfixes" surrounded by empty lines'
-            $changelogSectionContent -join "`n" | Should -MatchExactly '\nBreaking Changes\n\n' -Because 'The `## unreleased` section should "Breaking Changes" surrounded by empty lines'
+            # $changelogSectionContent | Should -Contain 'New Features' -Because 'The `## unreleased` section should contain "New Features" surrounded by empty lines'. The last section can end with only one \n, as Get-Content does not read the last empty line
+            $changelogSectionContent -join "`n" | Should -MatchExactly '\n### Changes\n\n' -Because "the `## $moduleVersion` section should contain '### Changes' surrounded by empty lines"
+            $changelogSectionContent -join "`n" | Should -MatchExactly '\n### Breaking Changes' -Because "the `## $moduleVersion` section should '### Breaking Changes' surrounded by empty lines"
+            $changelogSectionContent.IndexOf('### Changes') -lt $changelogSectionContent.IndexOf('### Breaking Changes') | Should -Be $true -Because "The `### Changes` section should appear before the `### Breaking Changes` section"
 
             # the unreleased section must contain content and not only the headings and empty lines
-            $nonEmptyContent = $changelogSectionContent | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(New Features|Changes|Bugfixes|Breaking Changes)$' }
-            $nonEmptyContent.Count | Should -BeGreaterThan 0 -Because 'The `## unreleased` section should contain actual content and not just headers or empty lines'
+            $nonEmptyContent = $changelogSectionContent | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(### Changes|### Breaking Changes)$' }
+            $nonEmptyContent.Count | Should -BeGreaterThan 0 -Because "The `## $moduleVersion` section should contain actual content and not just headers or empty lines"
         }
     }
 

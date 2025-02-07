@@ -206,11 +206,6 @@ jobs:
           fetch-depth: 0
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "ModifyChangelog"
-        uses: ./.github/actions/templates/avm-updateChangelog
-        with:
-          templateFilePath: "${{ inputs.modulePath }}"
-          modulePath: "${{ inputs.modulePath }}"
       - name: "Publishing"
         uses: ./.github/actions/templates/avm-publishModule
         with:
