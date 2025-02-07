@@ -156,10 +156,18 @@ resource privateLinkScope_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: privateLinkScope
 }
 
-module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-privateLinkScope-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -240,13 +248,13 @@ output resourceGroupName string = resourceGroup().name
 output location string = privateLinkScope.location
 
 @description('The private endpoints of the private link scope.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: privateLinkScope_privateEndpoints[i].outputs.name
     resourceId: privateLinkScope_privateEndpoints[i].outputs.resourceId
-    groupId: privateLinkScope_privateEndpoints[i].outputs.groupId
-    customDnsConfig: privateLinkScope_privateEndpoints[i].outputs.?customDnsConfig
-    networkInterfaceIds: privateLinkScope_privateEndpoints[i].outputs.networkInterfaceIds
+    groupId: privateLinkScope_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: privateLinkScope_privateEndpoints[i].outputs.customDnsConfigs
+    networkInterfaceResourceIds: privateLinkScope_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -254,6 +262,32 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
+@export()
+@description('The type for a private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
+
+@export()
 type scopedResourceType = {
   @description('Required. Name of the private link scoped resource.')
   name: string
@@ -262,6 +296,7 @@ type scopedResourceType = {
   linkedResourceId: string
 }
 
+@export()
 type accessModeType = {
   @description('Optional. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.')
   exclusions: {
