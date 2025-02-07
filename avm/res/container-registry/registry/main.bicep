@@ -59,7 +59,7 @@ param retentionPolicyDays int = 15
   'disabled'
   'enabled'
 ])
-@description('Optional. The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.')
+@description('Optional. The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled.')
 param azureADAuthenticationAsArmPolicyStatus string = 'enabled'
 
 @allowed([
