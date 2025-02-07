@@ -70,6 +70,8 @@ module testDeployment '../../../main.bicep' = {
     forceCustomerStorageForProfiler: true
     linkedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    flowType: 'Redfield'
+    requestSource: 'Azure'
     diagnosticSettings: [
       {
         name: 'customSetting'
