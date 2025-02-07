@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "17484476736436996858"
+      "version": "0.33.93.31351",
+      "templateHash": "5280183598381935177"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -346,6 +346,13 @@
         "description": "Optional. Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true."
       }
     },
+    "authorizations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of authorizations for the circuit."
+      }
+    },
     "bandwidthInGbps": {
       "type": "int",
       "defaultValue": 0,
@@ -451,6 +458,7 @@
       },
       "properties": {
         "allowClassicOperations": "[parameters('allowClassicOperations')]",
+        "authorizations": "[parameters('authorizations')]",
         "globalReachEnabled": "[parameters('globalReachEnabled')]",
         "bandwidthInGbps": "[if(not(equals(parameters('bandwidthInGbps'), 0)), parameters('bandwidthInGbps'), null())]",
         "expressRoutePort": "[if(not(empty(parameters('expressRoutePortResourceId'))), createObject('id', parameters('expressRoutePortResourceId')), null())]",
@@ -568,6 +576,13 @@
         "description": "The service key of the express route circuit."
       },
       "value": "[reference('expressRouteCircuit').serviceKey]"
+    },
+    "serviceProviderProvisioningState": {
+      "type": "string",
+      "metadata": {
+        "description": "The service provider provisioning state of the express route circuit."
+      },
+      "value": "[reference('expressRouteCircuit').serviceProviderProvisioningState]"
     },
     "location": {
       "type": "string",
