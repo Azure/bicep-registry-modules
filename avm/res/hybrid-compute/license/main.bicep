@@ -14,11 +14,10 @@ param location string = resourceGroup().location
 ])
 param licenseDetailEdition string = 'Standard'
 
-@description('Optional. Provide the amount needed for this ESU licens. The minimum number of cores is 16 for physical and 8 for virtual core license.')
-@minValue(8)
-param licenseDetailProcessors int = 8
+@description('Optional. Describes the number of processors.')
+param licenseDetailProcessors int = 2
 
-@description('Optional. Activate or Deactivate the license billing cycle. Billing will not start until the license is activated.')
+@description('Optional. Describes the license state.')
 @allowed([
   'Active'
   'Deactivated'
@@ -57,7 +56,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource license 'Microsoft.HybridCompute/licenses@2024-07-31-preview' = {
+resource license 'Microsoft.HybridCompute/licenses@2024-11-10-preview' = {
   name: name
   location: location
   properties: {
