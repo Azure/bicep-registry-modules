@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5280183598381935177"
+      "templateHash": "14631557751906489786"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -346,11 +346,11 @@
         "description": "Optional. Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true."
       }
     },
-    "authorizations": {
+    "authorizationNames": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of authorizations for the circuit."
+        "description": "Optional. List of authorization Names."
       }
     },
     "bandwidthInGbps": {
@@ -457,8 +457,16 @@
         "family": "[if(equals(parameters('skuTier'), 'Local'), 'UnlimitedData', parameters('skuFamily'))]"
       },
       "properties": {
+        "copy": [
+          {
+            "name": "authorizations",
+            "count": "[length(parameters('authorizationNames'))]",
+            "input": {
+              "name": "[parameters('authorizationNames')[copyIndex('authorizations')]]"
+            }
+          }
+        ],
         "allowClassicOperations": "[parameters('allowClassicOperations')]",
-        "authorizations": "[parameters('authorizations')]",
         "globalReachEnabled": "[parameters('globalReachEnabled')]",
         "bandwidthInGbps": "[if(not(equals(parameters('bandwidthInGbps'), 0)), parameters('bandwidthInGbps'), null())]",
         "expressRoutePort": "[if(not(empty(parameters('expressRoutePortResourceId'))), createObject('id', parameters('expressRoutePortResourceId')), null())]",
