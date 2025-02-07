@@ -189,7 +189,7 @@ param keyType string?
 param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. Enables Advanced Threat Protection on the storage account.')
-param enableAdvancedThreatProtection bool = false
+param enableAdvancedThreatProtection bool = true
 
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
