@@ -90,9 +90,3 @@ output location string = gateway.location
 @description('The resource group of the deployed storage account.')
 output resourceGroupName string = resourceGroup().name
 
-// ================ //
-// Definitions      //
-// ================ //
-//
-// Add your User-defined-types here, if any
-//
