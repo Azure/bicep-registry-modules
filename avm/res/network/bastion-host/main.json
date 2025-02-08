@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10078458429836627297"
+      "templateHash": "16499979971476585213"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host."
@@ -555,8 +555,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "11947161479273210881"
+              "version": "0.33.93.31351",
+              "templateHash": "5168739580767459761"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address."
@@ -574,14 +574,14 @@
                 "domainNameLabelScope": {
                   "type": "string",
                   "allowedValues": [
-                    "",
                     "NoReuse",
                     "ResourceGroupReuse",
                     "SubscriptionReuse",
                     "TenantReuse"
                   ],
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
+                    "description": "Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
                   }
                 },
                 "fqdn": {
@@ -1066,7 +1066,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.7.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1084,7 +1084,7 @@
             },
             "publicIpAddress": {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2023-09-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1215,7 +1215,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
+              "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
             }
           }
         }
