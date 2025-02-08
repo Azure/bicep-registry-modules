@@ -26,10 +26,6 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-//
-// Add your parameters here
-//
-
 // ============== //
 // Resources      //
 // ============== //
