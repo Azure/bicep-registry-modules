@@ -14,7 +14,7 @@ This module deploys an Azure Arc License for use with Azure Arc-enabled servers.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.HybridCompute/licenses` | [2024-11-10-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-11-10-preview/licenses) |
+| `Microsoft.HybridCompute/licenses` | [2024-07-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-31-preview/licenses) |
 
 ## Usage examples
 

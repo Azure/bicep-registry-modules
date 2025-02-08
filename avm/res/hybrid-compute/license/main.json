@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2450279209791185954"
+      "templateHash": "4063370187688285408"
     },
     "name": "Azure Arc License",
     "description": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process."
@@ -146,7 +146,7 @@
   "resources": {
     "license": {
       "type": "Microsoft.HybridCompute/licenses",
-      "apiVersion": "2024-11-10-preview",
+      "apiVersion": "2024-07-31-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "properties": {
@@ -211,7 +211,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('license', '2024-11-10-preview', 'full').location]"
+      "value": "[reference('license', '2024-07-31-preview', 'full').location]"
     }
   }
 }
