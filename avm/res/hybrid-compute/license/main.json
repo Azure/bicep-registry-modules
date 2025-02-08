@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17846338208131133417"
+      "templateHash": "2450279209791185954"
     },
     "name": "Azure Arc License",
     "description": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process."
@@ -62,20 +62,21 @@
     },
     "licenseDetailProcessors": {
       "type": "int",
-      "defaultValue": 2,
+      "defaultValue": 8,
+      "minValue": 8,
       "metadata": {
-        "description": "Optional. Describes the number of processors."
+        "description": "Optional. Provide the amount needed for this ESU licens. The minimum number of cores is 16 for physical and 8 for virtual core license."
       }
     },
     "licenseDetailState": {
       "type": "string",
-      "defaultValue": "Active",
+      "defaultValue": "Deactivated",
       "allowedValues": [
         "Active",
         "Deactivated"
       ],
       "metadata": {
-        "description": "Optional. Describes the license state."
+        "description": "Optional. Activate or Deactivate the license billing cycle. Billing will not start until the license is activated."
       }
     },
     "licenseDetailTarget": {
@@ -97,7 +98,7 @@
         "vCore"
       ],
       "metadata": {
-        "description": "Optional. Describes the license core type (pCore or vCore)."
+        "description": "Optional. Provide the core type (vCore or pCore) needed for this ESU licens."
       }
     },
     "licenseVolumeLicenseDetails": {

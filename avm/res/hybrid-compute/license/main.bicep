@@ -14,15 +14,16 @@ param location string = resourceGroup().location
 ])
 param licenseDetailEdition string = 'Standard'
 
-@description('Optional. Describes the number of processors.')
-param licenseDetailProcessors int = 2
+@description('Optional. Provide the amount needed for this ESU licens. The minimum number of cores is 16 for physical and 8 for virtual core license.')
+@minValue(8)
+param licenseDetailProcessors int = 8
 
-@description('Optional. Describes the license state.')
+@description('Optional. Activate or Deactivate the license billing cycle. Billing will not start until the license is activated.')
 @allowed([
   'Active'
   'Deactivated'
 ])
-param licenseDetailState string = 'Active'
+param licenseDetailState string = 'Deactivated'
 
 @description('Optional. Describes the license target server.')
 @allowed([
@@ -31,7 +32,7 @@ param licenseDetailState string = 'Active'
 ])
 param licenseDetailTarget string = 'Windows Server 2012 R2'
 
-@description('Optional. Describes the license core type (pCore or vCore).')
+@description('Optional. Provide the core type (vCore or pCore) needed for this ESU licens.')
 @allowed([
   'pCore'
   'vCore'

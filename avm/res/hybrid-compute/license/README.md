@@ -169,10 +169,10 @@ param location = '<location>'
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`licenseDetailEdition`](#parameter-licensedetailedition) | string | Describes the edition of the license. The values are either Standard or Datacenter.. |
-| [`licenseDetailProcessors`](#parameter-licensedetailprocessors) | int | Describes the number of processors. |
-| [`licenseDetailState`](#parameter-licensedetailstate) | string | Describes the license state. |
+| [`licenseDetailProcessors`](#parameter-licensedetailprocessors) | int | Provide the amount needed for this ESU licens. The minimum number of cores is 16 for physical and 8 for virtual core license. |
+| [`licenseDetailState`](#parameter-licensedetailstate) | string | Activate or Deactivate the license billing cycle. Billing will not start until the license is activated. |
 | [`licenseDetailTarget`](#parameter-licensedetailtarget) | string | Describes the license target server. |
-| [`licenseDetailType`](#parameter-licensedetailtype) | string | Describes the license core type (pCore or vCore). |
+| [`licenseDetailType`](#parameter-licensedetailtype) | string | Provide the core type (vCore or pCore) needed for this ESU licens. |
 | [`licenseType`](#parameter-licensetype) | string | The type of the license resource. The value is ESU. |
 | [`licenseVolumeLicenseDetails`](#parameter-licensevolumelicensedetails) | array | A list of volume license details. |
 | [`location`](#parameter-location) | string | The location of the Azure Arc License to be created. |
@@ -211,19 +211,20 @@ Describes the edition of the license. The values are either Standard or Datacent
 
 ### Parameter: `licenseDetailProcessors`
 
-Describes the number of processors.
+Provide the amount needed for this ESU licens. The minimum number of cores is 16 for physical and 8 for virtual core license.
 
 - Required: No
 - Type: int
-- Default: `2`
+- Default: `8`
+- MinValue: 8
 
 ### Parameter: `licenseDetailState`
 
-Describes the license state.
+Activate or Deactivate the license billing cycle. Billing will not start until the license is activated.
 
 - Required: No
 - Type: string
-- Default: `'Active'`
+- Default: `'Deactivated'`
 - Allowed:
   ```Bicep
   [
@@ -231,6 +232,7 @@ Describes the license state.
     'Deactivated'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `licenseDetailTarget`
 
@@ -246,10 +248,11 @@ Describes the license target server.
     'Windows Server 2012 R2'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `licenseDetailType`
 
-Describes the license core type (pCore or vCore).
+Provide the core type (vCore or pCore) needed for this ESU licens.
 
 - Required: No
 - Type: string
@@ -261,6 +264,7 @@ Describes the license core type (pCore or vCore).
     'vCore'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `licenseType`
 
@@ -275,6 +279,7 @@ The type of the license resource. The value is ESU.
     'ESU'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `licenseVolumeLicenseDetails`
 
@@ -283,6 +288,7 @@ A list of volume license details.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 8
 
 **Required parameters**
 
@@ -297,6 +303,7 @@ The invoice id for the volume license.
 
 - Required: Yes
 - Type: string
+- MinValue: 8
 
 ### Parameter: `licenseVolumeLicenseDetails.programYear`
 
@@ -312,6 +319,7 @@ Describes the program year the volume license is for.
     'Year 3'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `location`
 
@@ -320,6 +328,7 @@ The location of the Azure Arc License to be created.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 8
 
 ### Parameter: `tags`
 
@@ -327,6 +336,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 8
 
 ### Parameter: `tenantId`
 
@@ -335,6 +345,7 @@ The tenant ID of the license resource. Default is the tenant ID of the current s
 - Required: No
 - Type: string
 - Default: `[tenant().tenantId]`
+- MinValue: 8
 
 ## Outputs
 
