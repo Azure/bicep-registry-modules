@@ -1,6 +1,5 @@
 metadata name = 'Communication Services'
 metadata description = 'This module deploys a Communication Service'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(1)
 @maxLength(63)
@@ -185,7 +184,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = communicationService.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = communicationService.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = communicationService.?identity.?principalId
 
 // ================ //
 // Definitions      //

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16654908193129390274"
+      "templateHash": "1123742374784430273"
     },
     "name": "DBforMySQL Flexible Servers",
-    "description": "This module deploys a DBforMySQL Flexible Server.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforMySQL Flexible Server."
   },
   "definitions": {
     "customerManagedKeyType": {
@@ -767,8 +766,8 @@
         "version": "[parameters('version')]"
       },
       "dependsOn": [
-        "cMKGeoKeyVault::cMKKey",
-        "cMKKeyVault::cMKKey"
+        "cMKKeyVault::cMKKey",
+        "cMKGeoKeyVault::cMKKey"
       ]
     },
     "flexibleServer_lock": {
@@ -882,11 +881,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8629575611448952116"
+              "templateHash": "13496627960628082971"
             },
             "name": "DBforMySQL Flexible Server Databases",
-            "description": "This module deploys a DBforMySQL Flexible Server Database.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforMySQL Flexible Server Database."
           },
           "parameters": {
             "name": {
@@ -990,11 +988,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11891154534022239824"
+              "templateHash": "18086170322747937551"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
-            "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
           },
           "parameters": {
             "name": {
@@ -1099,11 +1096,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4183350849272759957"
+              "templateHash": "14550363826535160600"
             },
             "name": "DBforMySQL Flexible Server Administrators",
-            "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforMySQL Flexible Server Administrator."
           },
           "parameters": {
             "flexibleServerName": {
@@ -1205,11 +1201,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1116000770546444664"
+              "templateHash": "4291338019800376753"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
-            "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
           },
           "parameters": {
             "flexibleServerName": {

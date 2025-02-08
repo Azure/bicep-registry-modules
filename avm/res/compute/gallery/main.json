@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14986245916786870273"
+      "templateHash": "8716597573060065028"
     },
     "name": "Azure Compute Galleries",
-    "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
   },
   "definitions": {
     "imageType": {
@@ -759,11 +758,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4306934588544765678"
+              "templateHash": "7761447372947910331"
             },
             "name": "Compute Galleries Applications",
-            "description": "This module deploys an Azure Compute Gallery Application.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Compute Gallery Application."
           },
           "definitions": {
             "customActionType": {
@@ -1204,11 +1202,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6427866343651026352"
+              "templateHash": "13858460997059168010"
             },
             "name": "Compute Galleries Image Definitions",
-            "description": "This module deploys an Azure Compute Gallery Image Definition.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Compute Gallery Image Definition."
           },
           "definitions": {
             "roleAssignmentType": {

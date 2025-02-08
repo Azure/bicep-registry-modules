@@ -12,18 +12,9 @@ This module deploys a Backup Policy for Azure NetApp File.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupPolicies) |
 
 ## Parameters
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The location of the backup policy. Required if the template is used in a standalone deployment. |
-| [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
-| [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
-| [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
 
 **Conditional parameters**
 
@@ -35,36 +26,12 @@ This module deploys a Backup Policy for Azure NetApp File.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupEnabled`](#parameter-backupenabled) | bool | Indicates whether the backup policy is enabled. |
-| [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy. |
-
-### Parameter: `backupPolicyLocation`
-
-The location of the backup policy. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dailyBackupsToKeep`
-
-The daily backups to keep.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `monthlyBackupsToKeep`
-
-The monthly backups to keep.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `weeklyBackupsToKeep`
-
-The weekly backups to keep.
-
-- Required: Yes
-- Type: int
+| [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
+| [`enabled`](#parameter-enabled) | bool | Indicates whether the backup policy is enabled. |
+| [`location`](#parameter-location) | string | The location of the backup policy. |
+| [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
+| [`name`](#parameter-name) | string | The name of the backup policy. |
+| [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
 
 ### Parameter: `netAppAccountName`
 
@@ -73,21 +40,65 @@ The name of the parent NetApp account. Required if the template is used in a sta
 - Required: Yes
 - Type: string
 
-### Parameter: `backupEnabled`
+### Parameter: `dailyBackupsToKeep`
+
+The daily backups to keep.
+
+- Required: No
+- Type: int
+- Default: `2`
+- MinValue: 2
+- MaxValue: 1019
+
+### Parameter: `enabled`
 
 Indicates whether the backup policy is enabled.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
+- MinValue: 2
+- MaxValue: 1019
 
-### Parameter: `backupPolicyName`
+### Parameter: `location`
+
+The location of the backup policy.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+- MinValue: 2
+- MaxValue: 1019
+
+### Parameter: `monthlyBackupsToKeep`
+
+The monthly backups to keep.
+
+- Required: No
+- Type: int
+- Default: `0`
+- MinValue: 2
+- MaxValue: 1019
+
+### Parameter: `name`
 
 The name of the backup policy.
 
 - Required: No
 - Type: string
 - Default: `'backupPolicy'`
+- MinValue: 2
+- MaxValue: 1019
+
+### Parameter: `weeklyBackupsToKeep`
+
+The weekly backups to keep.
+
+- Required: No
+- Type: int
+- Default: `0`
+- MinValue: 2
+- MaxValue: 1019
 
 ## Outputs
 

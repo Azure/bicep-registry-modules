@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3792208754349407242"
+      "version": "0.33.13.18514",
+      "templateHash": "2855675946430231043"
     },
     "name": "Data Factories",
-    "description": "This module deploys a Data Factory.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Factory."
   },
   "definitions": {
     "managedPrivateEndpointType": {
@@ -1094,12 +1093,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8469223320923719233"
+              "version": "0.33.13.18514",
+              "templateHash": "17988798320328415885"
             },
             "name": "Data Factory Managed Virtual Networks",
-            "description": "This module deploys a Data Factory Managed Virtual Network.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Managed Virtual Network."
           },
           "parameters": {
             "dataFactoryName": {
@@ -1168,12 +1166,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "18056121862353335725"
+                      "version": "0.33.13.18514",
+                      "templateHash": "12304621154639480158"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
-                    "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
                   },
                   "parameters": {
                     "dataFactoryName": {
@@ -1320,12 +1317,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13126987498401118493"
+              "version": "0.33.13.18514",
+              "templateHash": "12984160632921626743"
             },
             "name": "Data Factory Integration RunTimes",
-            "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
           },
           "parameters": {
             "dataFactoryName": {
@@ -1458,12 +1454,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "4235667434763749307"
+              "version": "0.33.13.18514",
+              "templateHash": "8426964975127254817"
             },
             "name": "Data Factory Linked Service",
-            "description": "This module deploys a Data Factory Linked Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Linked Service."
           },
           "parameters": {
             "dataFactoryName": {
@@ -2388,10 +2383,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('dataFactory', '2018-06-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('dataFactory', '2018-06-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

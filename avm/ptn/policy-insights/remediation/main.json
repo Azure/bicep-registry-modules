@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "1469752443660867394"
+      "version": "0.32.4.45862",
+      "templateHash": "7690893143895476601"
     },
     "name": "Policy Insights Remediations",
-    "description": "This module deploys a Policy Insights Remediation.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Policy Insights Remediation."
   },
   "parameters": {
     "name": {
@@ -176,12 +175,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "2802722151462806427"
+              "version": "0.32.4.45862",
+              "templateHash": "3942331630377598660"
             },
             "name": "Policy Insights Remediations (Management Group scope)",
-            "description": "This module starts a Policy Remediation task at a Management Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module starts a Policy Remediation task at a Management Group scope."
           },
           "parameters": {
             "name": {
@@ -342,12 +340,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13178635694417585402"
+              "version": "0.32.4.45862",
+              "templateHash": "12178537364329357242"
             },
             "name": "Policy Insights Remediations (Subscription scope)",
-            "description": "This module deploys a Policy Insights Remediation on a Subscription scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Policy Insights Remediation on a Subscription scope."
           },
           "parameters": {
             "name": {
@@ -520,12 +517,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4742361634752088015"
+              "version": "0.32.4.45862",
+              "templateHash": "11631247936706483329"
             },
             "name": "Policy Insights Remediations (Resource Group scope)",
-            "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Policy Insights Remediation on a Resource Group scope."
           },
           "parameters": {
             "name": {

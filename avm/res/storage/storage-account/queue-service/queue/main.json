@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "11255566639202978270"
+      "version": "0.33.93.31351",
+      "templateHash": "6383154227554431205"
     },
     "name": "Storage Account Queues",
-    "description": "This module deploys a Storage Account Queue.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Queue."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -84,7 +83,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }

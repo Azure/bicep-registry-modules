@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1346733847143224123"
+      "templateHash": "4751434073420963969"
     },
     "name": "Service Bus Namespace Topic",
-    "description": "This module deploys a Service Bus Namespace Topic.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace Topic."
   },
   "definitions": {
     "subscriptionType": {
@@ -195,7 +194,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -270,7 +269,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -689,11 +688,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "14898317070826327530"
+              "templateHash": "9054915416075794466"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
-            "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
           },
           "parameters": {
             "name": {
@@ -843,11 +841,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5397578841675471522"
+              "templateHash": "3178099276922515439"
             },
             "name": "Service Bus Namespace Topic Subscription",
-            "description": "This module deploys a Service Bus Namespace Topic Subscription.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Bus Namespace Topic Subscription."
           },
           "definitions": {
             "ruleType": {
@@ -1238,11 +1235,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "4927933480188968739"
+                      "templateHash": "2622393872040722258"
                     },
                     "name": "Service Bus Namespace Topic Subscription Rule",
-                    "description": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
                   },
                   "parameters": {
                     "name": {

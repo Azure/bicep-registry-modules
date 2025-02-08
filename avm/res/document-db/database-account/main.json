@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16155049665849608519"
+      "version": "0.33.13.18514",
+      "templateHash": "9027478510653399442"
     },
     "name": "DocumentDB Database Accounts",
-    "description": "This module deploys a DocumentDB Database Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DocumentDB Database Account."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -550,14 +549,14 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+            "description": "Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
           }
         },
         "autoscaleSettingsMaxThroughput": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
           }
         },
         "containers": {
@@ -594,7 +593,7 @@
                 "nullable": true,
                 "maxValue": 1000000,
                 "metadata": {
-                  "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+                  "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level."
                 }
               },
               "conflictResolutionPolicy": {
@@ -1409,12 +1408,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13891951858408318693"
+              "version": "0.33.13.18514",
+              "templateHash": "4730660366074754478"
             },
             "name": "DocumentDB Database Account SQL Databases",
-            "description": "This module deploys a SQL Database in a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Database in a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {
@@ -1443,14 +1441,14 @@
               "type": "int",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+                "description": "Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
               }
             },
             "autoscaleSettingsMaxThroughput": {
               "type": "int",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+                "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
               }
             },
             "tags": {
@@ -1542,12 +1540,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "10312240160742899636"
+                      "version": "0.33.13.18514",
+                      "templateHash": "17386250764817703718"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
-                    "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a SQL Database Container in a CosmosDB Account."
                   },
                   "parameters": {
                     "databaseAccountName": {
@@ -1595,7 +1592,7 @@
                       "type": "int",
                       "defaultValue": 400,
                       "metadata": {
-                        "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+                        "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
                       }
                     },
                     "autoscaleSettingsMaxThroughput": {
@@ -1603,7 +1600,7 @@
                       "nullable": true,
                       "maxValue": 1000000,
                       "metadata": {
-                        "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+                        "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
                       }
                     },
                     "tags": {
@@ -1796,12 +1793,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5835214316063453536"
+              "version": "0.33.13.18514",
+              "templateHash": "1685904024748106506"
             },
             "name": "DocumentDB Database Account SQL Role.",
-            "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {
@@ -1883,12 +1879,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "2988995240332079717"
+                      "version": "0.33.13.18514",
+                      "templateHash": "2400533018599684506"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
-                    "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
                   },
                   "parameters": {
                     "databaseAccountName": {
@@ -2004,12 +1999,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "14595063605642768334"
+                      "version": "0.33.13.18514",
+                      "templateHash": "7526212004798871599"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
-                    "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
                   },
                   "parameters": {
                     "databaseAccountName": {
@@ -2118,12 +2112,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12201850926589437696"
+              "version": "0.33.13.18514",
+              "templateHash": "1267602765838127257"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
-            "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a MongoDB Database within a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {
@@ -2142,7 +2135,7 @@
               "type": "int",
               "defaultValue": 400,
               "metadata": {
-                "description": "Optional. Request Units per second."
+                "description": "Optional. Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
               }
             },
             "collections": {
@@ -2221,12 +2214,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "6624674794933817904"
+                      "version": "0.33.13.18514",
+                      "templateHash": "14692457778129855727"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
-                    "description": "This module deploys a MongoDB Database Collection.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a MongoDB Database Collection."
                   },
                   "parameters": {
                     "databaseAccountName": {
@@ -2251,7 +2243,7 @@
                       "type": "int",
                       "defaultValue": 400,
                       "metadata": {
-                        "description": "Optional. Request Units per second."
+                        "description": "Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
                       }
                     },
                     "indexes": {
@@ -2381,12 +2373,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9048997200136932160"
+              "version": "0.33.13.18514",
+              "templateHash": "8525966528580996304"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
-            "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Gremlin Database within a CosmosDB Account."
           },
           "parameters": {
             "name": {
@@ -2419,14 +2410,14 @@
               "type": "int",
               "defaultValue": 4000,
               "metadata": {
-                "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored."
+                "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level."
               }
             },
             "throughput": {
               "type": "int",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
+                "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level."
               }
             }
           },
@@ -2487,12 +2478,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "11166187042354172574"
+                      "version": "0.33.13.18514",
+                      "templateHash": "6842956277724193822"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
-                    "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
                   },
                   "parameters": {
                     "name": {
@@ -2660,12 +2650,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "424696651537600433"
+              "version": "0.33.13.18514",
+              "templateHash": "8085041866356798294"
             },
             "name": "Azure Cosmos DB account tables",
-            "description": "This module deploys a table within an Azure Cosmos DB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a table within an Azure Cosmos DB Account."
           },
           "parameters": {
             "name": {
@@ -3547,8 +3536,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13365107869204248001"
+              "version": "0.33.13.18514",
+              "templateHash": "5455406267618725608"
             }
           },
           "definitions": {
@@ -3683,10 +3672,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('databaseAccount', '2023-04-15', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('databaseAccount', '2023-04-15', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

@@ -35,164 +35,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-registry/registry:<version>`.
 
-- [Using cache rules](#example-1-using-cache-rules)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using `scopeMaps` in parameter set](#example-4-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using cache rules_
-
-This instance deploys the module with a credential set and a cache rule.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
-  params: {
-    // Required parameters
-    name: '<name>'
-    // Non-required parameters
-    acrAdminUserEnabled: false
-    acrSku: 'Standard'
-    cacheRules: [
-      {
-        credentialSetResourceId: '<credentialSetResourceId>'
-        name: 'customRule'
-        sourceRepository: 'docker.io/library/hello-world'
-        targetRepository: 'cached-docker-hub/hello-world'
-      }
-    ]
-    credentialSets: [
-      {
-        authCredentials: [
-          {
-            name: 'Credential1'
-            passwordSecretIdentifier: '<passwordSecretIdentifier>'
-            usernameSecretIdentifier: '<usernameSecretIdentifier>'
-          }
-        ]
-        loginServer: 'docker.io'
-        managedIdentities: {
-          systemAssigned: true
-        }
-        name: 'default'
-      }
-    ]
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
-    "acrAdminUserEnabled": {
-      "value": false
-    },
-    "acrSku": {
-      "value": "Standard"
-    },
-    "cacheRules": {
-      "value": [
-        {
-          "credentialSetResourceId": "<credentialSetResourceId>",
-          "name": "customRule",
-          "sourceRepository": "docker.io/library/hello-world",
-          "targetRepository": "cached-docker-hub/hello-world"
-        }
-      ]
-    },
-    "credentialSets": {
-      "value": [
-        {
-          "authCredentials": [
-            {
-              "name": "Credential1",
-              "passwordSecretIdentifier": "<passwordSecretIdentifier>",
-              "usernameSecretIdentifier": "<usernameSecretIdentifier>"
-            }
-          ],
-          "loginServer": "docker.io",
-          "managedIdentities": {
-            "systemAssigned": true
-          },
-          "name": "default"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/container-registry/registry:<version>'
-
-// Required parameters
-param name = '<name>'
-// Non-required parameters
-param acrAdminUserEnabled = false
-param acrSku = 'Standard'
-param cacheRules = [
-  {
-    credentialSetResourceId: '<credentialSetResourceId>'
-    name: 'customRule'
-    sourceRepository: 'docker.io/library/hello-world'
-    targetRepository: 'cached-docker-hub/hello-world'
-  }
-]
-param credentialSets = [
-  {
-    authCredentials: [
-      {
-        name: 'Credential1'
-        passwordSecretIdentifier: '<passwordSecretIdentifier>'
-        usernameSecretIdentifier: '<usernameSecretIdentifier>'
-      }
-    ]
-    loginServer: 'docker.io'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    name: 'default'
-  }
-]
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 2: _Using only defaults_
+### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -261,7 +110,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using encryption with Customer-Managed-Key_
+### Example 2: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -369,7 +218,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -770,7 +619,7 @@ param webhooks = [
 </details>
 <p>
 
-### Example 5: _Using `scopeMaps` in parameter set_
+### Example 4: _Using `scopeMaps` in parameter set_
 
 This instance deploys the module with the scopeMaps feature.
 
@@ -868,7 +717,7 @@ param scopeMaps = [
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1088,7 +937,7 @@ param trustPolicyStatus = 'enabled'
 | [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
 | [`anonymousPullEnabled`](#parameter-anonymouspullenabled) | bool | Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers. |
-| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled. |
+| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled. |
 | [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. |
 | [`credentialSets`](#parameter-credentialsets) | array | Array of Credential Sets. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -1158,7 +1007,7 @@ Enables registry-wide pull from unauthenticated clients. It's in preview and ava
 
 ### Parameter: `azureADAuthenticationAsArmPolicyStatus`
 
-The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.
+The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled.
 
 - Required: No
 - Type: string
@@ -1178,13 +1027,138 @@ Array of Cache Rules.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sourceRepository`](#parameter-cacherulessourcerepository) | string | Source repository pulled from upstream. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentialSetResourceId`](#parameter-cacherulescredentialsetresourceid) | string | The resource ID of the credential store which is associated with the cache rule. |
+| [`name`](#parameter-cacherulesname) | string | The name of the cache rule. Will be derived from the source repository name if not defined. |
+| [`targetRepository`](#parameter-cacherulestargetrepository) | string | Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}. |
+
+### Parameter: `cacheRules.sourceRepository`
+
+Source repository pulled from upstream.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cacheRules.credentialSetResourceId`
+
+The resource ID of the credential store which is associated with the cache rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `cacheRules.name`
+
+The name of the cache rule. Will be derived from the source repository name if not defined.
+
+- Required: No
+- Type: string
+
+### Parameter: `cacheRules.targetRepository`
+
+Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.
+
+- Required: No
+- Type: string
+
 ### Parameter: `credentialSets`
 
 Array of Credential Sets.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authCredentials`](#parameter-credentialsetsauthcredentials) | array | List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential. |
+| [`loginServer`](#parameter-credentialsetsloginserver) | string | The credentials are stored for this upstream or login server. |
+| [`name`](#parameter-credentialsetsname) | string | The name of the credential set. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedIdentities`](#parameter-credentialsetsmanagedidentities) | object | The managed identity definition for this resource. |
+
+### Parameter: `credentialSets.authCredentials`
+
+List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-credentialsetsauthcredentialsname) | string | The name of the credential. |
+| [`passwordSecretIdentifier`](#parameter-credentialsetsauthcredentialspasswordsecretidentifier) | string | KeyVault Secret URI for accessing the password. |
+| [`usernameSecretIdentifier`](#parameter-credentialsetsauthcredentialsusernamesecretidentifier) | string | KeyVault Secret URI for accessing the username. |
+
+### Parameter: `credentialSets.authCredentials.name`
+
+The name of the credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.authCredentials.passwordSecretIdentifier`
+
+KeyVault Secret URI for accessing the password.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.authCredentials.usernameSecretIdentifier`
+
+KeyVault Secret URI for accessing the username.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.loginServer`
+
+The credentials are stored for this upstream or login server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.name`
+
+The name of the credential set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentialSets.managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-credentialsetsmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+
+### Parameter: `credentialSets.managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `customerManagedKey`
 
@@ -1558,7 +1532,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -1811,9 +1785,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1834,7 +1808,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1975,6 +1949,63 @@ All replications to create.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-replicationsname) | string | The name of the replication. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-replicationslocation) | string | Location for all resources. |
+| [`regionEndpointEnabled`](#parameter-replicationsregionendpointenabled) | bool | Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications. |
+| [`tags`](#parameter-replicationstags) | object | Tags of the resource. |
+| [`zoneRedundancy`](#parameter-replicationszoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
+
+### Parameter: `replications.name`
+
+The name of the replication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replications.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `replications.regionEndpointEnabled`
+
+Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.
+
+- Required: No
+- Type: bool
+
+### Parameter: `replications.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `replications.zoneRedundancy`
+
+Whether or not zone redundancy is enabled for this container registry.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `retentionPolicyDays`
 
@@ -2201,6 +2232,87 @@ All webhooks to create.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serviceUri`](#parameter-webhooksserviceuri) | string | The service URI for the webhook to post notifications. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-webhooksaction) | array | The list of actions that trigger the webhook to post notifications. |
+| [`customHeaders`](#parameter-webhookscustomheaders) | object | Custom headers that will be added to the webhook notifications. |
+| [`location`](#parameter-webhookslocation) | string | Location for all resources. |
+| [`name`](#parameter-webhooksname) | string | The name of the registry webhook. |
+| [`scope`](#parameter-webhooksscope) | string | The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events. |
+| [`status`](#parameter-webhooksstatus) | string | The status of the webhook at the time the operation was called. |
+| [`tags`](#parameter-webhookstags) | object | Tags of the resource. |
+
+### Parameter: `webhooks.serviceUri`
+
+The service URI for the webhook to post notifications.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `webhooks.action`
+
+The list of actions that trigger the webhook to post notifications.
+
+- Required: No
+- Type: array
+
+### Parameter: `webhooks.customHeaders`
+
+Custom headers that will be added to the webhook notifications.
+
+- Required: No
+- Type: object
+
+### Parameter: `webhooks.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.name`
+
+The name of the registry webhook.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.scope`
+
+The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.status`
+
+The status of the webhook at the time the operation was called.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'disabled'
+    'enabled'
+  ]
+  ```
+
+### Parameter: `webhooks.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
 ### Parameter: `zoneRedundancy`
 
 Whether or not zone redundancy is enabled for this container registry.
@@ -2236,8 +2348,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
