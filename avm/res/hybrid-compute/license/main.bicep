@@ -94,6 +94,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
+@export()
+@description('The type for a volume license detail.')
 type volumeLicenseDetailType = {
   @description('Required. The invoice id for the volume license.')
   invoiceId: string

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4063370187688285408"
+      "templateHash": "11101073144149258419"
     },
     "name": "Azure Arc License",
     "description": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process."
@@ -32,6 +32,10 @@
             "description": "Required. Describes the program year the volume license is for."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a volume license detail."
       }
     }
   },

@@ -40,10 +40,7 @@ This instance deploys the module with the minimum set of required parameters.
 module license 'br/public:avm/res/hybrid-compute/license:<version>' = {
   name: 'licenseDeployment'
   params: {
-    // Required parameters
     name: 'hclmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -60,13 +57,8 @@ module license 'br/public:avm/res/hybrid-compute/license:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "hclmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -82,10 +74,7 @@ module license 'br/public:avm/res/hybrid-compute/license:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/hybrid-compute/license:<version>'
 
-// Required parameters
 param name = 'hclmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -104,10 +93,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 module license 'br/public:avm/res/hybrid-compute/license:<version>' = {
   name: 'licenseDeployment'
   params: {
-    // Required parameters
     name: 'hclwaf001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -124,13 +110,8 @@ module license 'br/public:avm/res/hybrid-compute/license:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "hclwaf001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -146,10 +127,7 @@ module license 'br/public:avm/res/hybrid-compute/license:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/hybrid-compute/license:<version>'
 
-// Required parameters
 param name = 'hclwaf001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
