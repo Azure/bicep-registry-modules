@@ -56,11 +56,11 @@ param syslogName string?
 @description('Optional. Severities to configure when kind is LinuxSyslog.')
 param syslogSeverities array = []
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource dataSource 'Microsoft.OperationalInsights/workspaces/dataSources@2020-08-01' = {
+resource dataSource 'Microsoft.OperationalInsights/workspaces/dataSources@2023-09-01' = {
   name: name
   parent: workspace
   kind: kind
