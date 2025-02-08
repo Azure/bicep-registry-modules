@@ -188,6 +188,9 @@ param keyType string?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
+@description('Optional. Enables Advanced Threat Protection on the storage account.')
+param enableAdvancedThreatProtection bool = true
+
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
 
@@ -691,6 +694,15 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
           ]
         : []
     )
+  }
+}
+
+// Microsoft Defender plan
+resource storageAccount_atp 'Microsoft.Security/advancedThreatProtectionSettings@2019-01-01' = if (enableAdvancedThreatProtection) {
+  name: 'current'
+  scope: storageAccount
+  properties: {
+    isEnabled: true
   }
 }
 
