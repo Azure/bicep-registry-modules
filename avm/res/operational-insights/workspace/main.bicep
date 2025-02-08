@@ -79,8 +79,8 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
-@description('Optional. Set to \'true\' to use resource or workspace permissions and \'false\' (or leave empty) to require workspace permissions.')
-param useResourcePermissions bool = false
+@description('Optional. The workspace features.')
+param features workspaceFeaturesType?
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType[]?
@@ -192,7 +192,11 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   properties: {
     features: {
       searchVersion: 1
-      enableLogAccessUsingOnlyResourcePermissions: useResourcePermissions
+      clusterResourceId: features.?clusterResourceId
+      enableLogAccessUsingOnlyResourcePermissions: features.?enableLogAccessUsingOnlyResourcePermissions ?? false
+      disableLocalAuth: features.?disableLocalAuth ?? true
+      enableDataExport: features.?enableDataExport
+      immediatePurgeDataOn30Days: features.?immediatePurgeDataOn30Days
     }
     sku: {
       name: skuName
@@ -647,4 +651,23 @@ type tableType = {
 
   @description('Optional. The role assignments for the table.')
   roleAssignments: roleAssignmentType[]?
+}
+
+@export()
+@description('Features of the workspace.')
+type workspaceFeaturesType = {
+  @description('Optional. Dedicated LA cluster resourceId that is linked to the workspaces.')
+  clusterResourceId: string?
+
+  @description('Optional. Disable Non-EntraID based Auth. Default is true.')
+  disableLocalAuth: bool?
+
+  @description('Optional. Flag that indicate if data should be exported.')
+  enableDataExport: bool?
+
+  @description('Optional. Enable log access using only resource permissions. Default is false.')
+  enableLogAccessUsingOnlyResourcePermissions: bool?
+
+  @description('Optional. Flag that describes if we want to remove the data after 30 days.')
+  immediatePurgeDataOn30Days: bool?
 }
