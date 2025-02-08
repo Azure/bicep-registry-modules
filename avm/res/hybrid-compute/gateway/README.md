@@ -42,10 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
   name: 'gatewayDeployment'
   params: {
-    // Required parameters
     name: 'hcgmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -62,13 +59,8 @@ module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "hcgmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -84,10 +76,7 @@ module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/hybrid-compute/gateway:<version>'
 
-// Required parameters
 param name = 'hcgmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -106,10 +95,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
   name: 'gatewayDeployment'
   params: {
-    // Required parameters
     name: 'hcgwaf001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -126,13 +112,8 @@ module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "hcgwaf001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -148,10 +129,7 @@ module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/hybrid-compute/gateway:<version>'
 
-// Required parameters
 param name = 'hcgwaf001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -284,7 +262,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
