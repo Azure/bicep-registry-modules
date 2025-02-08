@@ -9,7 +9,6 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-hybridCompute.gateway-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
