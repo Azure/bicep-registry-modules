@@ -61,9 +61,6 @@ param dataRetention int = 365
 @minValue(-1)
 param dailyQuotaGb int = -1
 
-@description('Optional. The resource ID of the default Data Collection Rule to use for this workspace.')
-param defaultDataCollectionRuleResourceId string?
-
 @description('Optional. The network access type for accessing Log Analytics ingestion.')
 @allowed([
   'Enabled'
@@ -212,7 +209,6 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
     publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     forceCmkForQuery: forceCmkForQuery
-    defaultDataCollectionRuleResourceId: defaultDataCollectionRuleResourceId
   }
   identity: identity
 }
