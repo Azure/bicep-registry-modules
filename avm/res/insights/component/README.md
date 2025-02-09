@@ -135,6 +135,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     ]
     disableIpMasking: false
     disableLocalAuth: true
+    flowType: 'Redfield'
     forceCustomerStorageForProfiler: true
     linkedStorageAccountResourceId: '<linkedStorageAccountResourceId>'
     location: '<location>'
@@ -142,6 +143,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    requestSource: 'Azure'
     roleAssignments: [
       {
         name: '8aacced3-3fce-41bc-a416-959df1acec57'
@@ -212,6 +214,9 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     "disableLocalAuth": {
       "value": true
     },
+    "flowType": {
+      "value": "Redfield"
+    },
     "forceCustomerStorageForProfiler": {
       "value": true
     },
@@ -226,6 +231,9 @@ module component 'br/public:avm/res/insights/component:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "requestSource": {
+      "value": "Azure"
     },
     "roleAssignments": {
       "value": [
@@ -289,6 +297,7 @@ param diagnosticSettings = [
 ]
 param disableIpMasking = false
 param disableLocalAuth = true
+param flowType = 'Redfield'
 param forceCustomerStorageForProfiler = true
 param linkedStorageAccountResourceId = '<linkedStorageAccountResourceId>'
 param location = '<location>'
@@ -296,6 +305,7 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param requestSource = 'Azure'
 param roleAssignments = [
   {
     name: '8aacced3-3fce-41bc-a416-959df1acec57'
@@ -473,6 +483,7 @@ param tags = {
 | [`disableIpMasking`](#parameter-disableipmasking) | bool | Disable IP masking. Default value is set to true. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable Non-AAD based Auth. Default value is set to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`flowType`](#parameter-flowtype) | string | Used by the Application Insights system to determine what kind of flow this component was created by. This is to be set to 'Bluefield' when creating/updating a component via the REST API. |
 | [`forceCustomerStorageForProfiler`](#parameter-forcecustomerstorageforprofiler) | bool | Force users to create their own storage account for profiler and debugger. |
 | [`kind`](#parameter-kind) | string | The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone. |
 | [`linkedStorageAccountResourceId`](#parameter-linkedstorageaccountresourceid) | string | Linked storage account resource ID. |
@@ -480,6 +491,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Application Insights ingestion. - Enabled or Disabled. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Application Insights query. - Enabled or Disabled. |
+| [`requestSource`](#parameter-requestsource) | string | Describes what tool created this Application Insights component. Customers using this API should set this to the default 'rest'. |
 | [`retentionInDays`](#parameter-retentionindays) | int | Retention period in days. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`samplingPercentage`](#parameter-samplingpercentage) | int | Percentage of the data produced by the application being monitored that is being sampled for Application Insights telemetry. |
@@ -684,6 +696,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `flowType`
+
+Used by the Application Insights system to determine what kind of flow this component was created by. This is to be set to 'Bluefield' when creating/updating a component via the REST API.
+
+- Required: No
+- Type: string
+
 ### Parameter: `forceCustomerStorageForProfiler`
 
 Force users to create their own storage account for profiler and debugger.
@@ -780,6 +799,13 @@ The network access type for accessing Application Insights query. - Enabled or D
     'Enabled'
   ]
   ```
+
+### Parameter: `requestSource`
+
+Describes what tool created this Application Insights component. Customers using this API should set this to the default 'rest'.
+
+- Required: No
+- Type: string
 
 ### Parameter: `retentionInDays`
 

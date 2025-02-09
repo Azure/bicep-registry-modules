@@ -12,7 +12,7 @@ param managedIdentityName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -32,7 +32,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = {
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
   name: publicIPName
   location: location
   sku: {
