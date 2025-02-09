@@ -2785,6 +2785,7 @@ param tags = {
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
+| [`omsAgentUseAADAuth`](#parameter-omsagentuseaadauth) | bool | Specifies whether the OMS agent is using managed identity authentication. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
@@ -4755,6 +4756,15 @@ Specifies whether the OMS agent is enabled.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 24
+
+### Parameter: `omsAgentUseAADAuth`
+
+Specifies whether the OMS agent is using managed identity authentication.
+
+- Required: No
+- Type: bool
+- Default: `False`
 - MinValue: 24
 
 ### Parameter: `openServiceMeshEnabled`
