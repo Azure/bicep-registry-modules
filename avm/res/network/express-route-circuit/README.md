@@ -1018,7 +1018,6 @@ Specifies the identifier that is used to identify the customer.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `authorizations` | array | The authorizations for the express route circuit. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of express route curcuit. |
 | `resourceGroupName` | string | The resource group the express route curcuit was deployed into. |
