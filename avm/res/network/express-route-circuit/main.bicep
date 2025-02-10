@@ -60,7 +60,7 @@ param location string = resourceGroup().location
 @description('Optional. Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true.')
 param allowClassicOperations bool = false
 
-@description('Optional. List of authorization names.')
+@description('Optional. List of names for ExpressRoute Circuit Authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network expressRouteCircuits/authorizations`')
 param authorizationNames array = []
 
 @description('Optional. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null.')
