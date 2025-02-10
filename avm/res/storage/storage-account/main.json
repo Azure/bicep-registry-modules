@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9739064632358098891"
+      "version": "0.33.93.31351",
+      "templateHash": "17960260729884623690"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2222,8 +2222,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "4014848332192190169"
+              "version": "0.33.93.31351",
+              "templateHash": "10504956743360699891"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy."
@@ -2331,8 +2331,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16427795222629898111"
+              "version": "0.33.93.31351",
+              "templateHash": "5655292159520921149"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -2569,8 +2569,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7416701536235015086"
+              "version": "0.33.93.31351",
+              "templateHash": "2058460323623594433"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -2876,7 +2876,7 @@
             },
             "restorePolicyDays": {
               "type": "int",
-              "defaultValue": 6,
+              "defaultValue": 7,
               "minValue": 1,
               "metadata": {
                 "description": "Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days."
@@ -3036,8 +3036,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "7180309977212880563"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2991444340097371621"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3325,8 +3325,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "12930903258566593173"
+                              "version": "0.33.93.31351",
+                              "templateHash": "8061556339565534458"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -3505,8 +3505,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16196407713115246323"
+              "version": "0.33.93.31351",
+              "templateHash": "3168394810831105529"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service."
@@ -3859,8 +3859,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "5204319087439022536"
+                      "version": "0.33.93.31351",
+                      "templateHash": "12044655551245282190"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share."
@@ -4294,8 +4294,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "14497929042813606497"
+              "version": "0.33.93.31351",
+              "templateHash": "1736438454543575457"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -4613,8 +4613,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "9969689246600110741"
+                      "version": "0.33.93.31351",
+                      "templateHash": "6383154227554431205"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -4883,8 +4883,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "4194630585059896468"
+              "version": "0.33.93.31351",
+              "templateHash": "12583903411447171294"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -5199,8 +5199,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "4457939127962832961"
+                      "version": "0.33.93.31351",
+                      "templateHash": "1369356397929898951"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."
@@ -5453,8 +5453,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9771994149501143078"
+              "version": "0.33.93.31351",
+              "templateHash": "2275047425860597278"
             }
           },
           "definitions": {
