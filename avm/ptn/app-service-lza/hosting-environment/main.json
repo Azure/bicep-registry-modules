@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2136469512761683940"
+      "templateHash": "9349907093840762200"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5160436670069015039"
+              "templateHash": "4800657585256918690"
             }
           },
           "definitions": {
@@ -30090,7 +30090,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12022316584638856095"
+                      "templateHash": "1879794770686846702"
                     }
                   },
                   "parameters": {
@@ -30279,6 +30279,7 @@
                       "name": "[format('dcr-{0}', parameters('vmName'))]",
                       "location": "[parameters('location')]",
                       "kind": "Linux",
+                      "tags": "[parameters('tags')]",
                       "properties": {
                         "dataSources": {
                           "performanceCounters": [
@@ -37246,7 +37247,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7804052472106221363"
+                      "templateHash": "11137324790599955882"
                     }
                   },
                   "parameters": {
@@ -37358,6 +37359,7 @@
                       "name": "[format('dcr-{0}', parameters('vmName'))]",
                       "location": "[parameters('location')]",
                       "kind": "Windows",
+                      "tags": "[parameters('tags')]",
                       "properties": {
                         "dataSources": {
                           "performanceCounters": [

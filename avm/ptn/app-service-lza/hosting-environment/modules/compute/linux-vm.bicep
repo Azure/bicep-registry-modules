@@ -272,6 +272,7 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: 'dcr-${vmName}'
   location: location
   kind: 'Linux'
+  tags: tags
   properties: {
     dataSources: {
       performanceCounters: [
