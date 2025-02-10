@@ -31,112 +31,112 @@ jobs:
   #########################
   #   Static validation   #
   #########################
-  # job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: "Static validation"
-  #   runs-on: ubuntu-latest
-  #   if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
-  #   steps:
-  #     - name: "Checkout"
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: "Run tests"
-  #       uses: ./.github/actions/templates/avm-validateModulePester
-  #       with:
-  #         modulePath: "${{ inputs.modulePath }}"
+  job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "Static validation"
+    runs-on: ubuntu-latest
+    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run tests"
+        uses: ./.github/actions/templates/avm-validateModulePester
+        with:
+          modulePath: "${{ inputs.modulePath }}"
 
   #########################
   #   PSRule validation   #
   #########################
-  # job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: "PSRule [${{ matrix.testCases.name }}]"
-  #   runs-on: ubuntu-latest
-  #   if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
-  #       uses: ./.github/actions/templates/avm-validateModulePSRule
-  #       with:
-  #         templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-  #         subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-  #         managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-  #         psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
-  #         psruleBaseline: "Azure.Default"
+  job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "PSRule [${{ matrix.testCases.name }}]"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psruleBaseline: "Azure.Default"
 
-  # job_psrule_test_waf_reliability: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: "PSRule - WAF Reliability [${{ matrix.testCases.name }}]"
-  #   runs-on: ubuntu-latest
-  #   if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
-  #       uses: ./.github/actions/templates/avm-validateModulePSRule
-  #       with:
-  #         templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-  #         subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-  #         managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-  #         psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
-  #         psruleBaseline: "Azure.Pillar.Reliability"
+  job_psrule_test_waf_reliability: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "PSRule - WAF Reliability [${{ matrix.testCases.name }}]"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psruleBaseline: "Azure.Pillar.Reliability"
 
-  # job_psrule_test_waf_security_cb: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: "PSRule - WAF Security - AVM Custom Baseline [${{ matrix.testCases.name }}]"
-  #   runs-on: ubuntu-latest
-  #   if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
-  #       uses: ./.github/actions/templates/avm-validateModulePSRule
-  #       with:
-  #         templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-  #         subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-  #         managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-  #         psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
-  #         psruleBaseline: "CB.AVM.WAF.Security"
+  job_psrule_test_waf_security_cb: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "PSRule - WAF Security - AVM Custom Baseline [${{ matrix.testCases.name }}]"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psruleBaseline: "CB.AVM.WAF.Security"
 
-  # job_psrule_test_waf_security: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: "PSRule - WAF Security [${{ matrix.testCases.name }}]"
-  #   runs-on: ubuntu-latest
-  #   if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
-  #       uses: ./.github/actions/templates/avm-validateModulePSRule
-  #       with:
-  #         templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-  #         subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-  #         managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-  #         psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
-  #         psruleBaseline: "Azure.Pillar.Security"
+  job_psrule_test_waf_security: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "PSRule - WAF Security [${{ matrix.testCases.name }}]"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+          psruleBaseline: "Azure.Pillar.Security"
 
   #############################
   #   Deployment validation   #
@@ -145,16 +145,16 @@ jobs:
     name: "Deploy [${{ matrix.testCases.name}}]"
     environment: avm-validation
     runs-on: ubuntu-latest
-    # if: |
-    #   !cancelled() &&
-    #   (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
-    #   needs.job_module_static_validation.result != 'failure' &&
-    #   needs.job_psrule_test_waf_reliability.result != 'failure' &&
-    #   needs.job_psrule_test_waf_security_cb.result != 'failure'
-    # # needs:
-    #   - job_module_static_validation
-    #   - job_psrule_test_waf_reliability
-    #   - job_psrule_test_waf_security_cb
+    if: |
+      !cancelled() &&
+      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      needs.job_module_static_validation.result != 'failure' &&
+      needs.job_psrule_test_waf_reliability.result != 'failure' &&
+      needs.job_psrule_test_waf_security_cb.result != 'failure'
+    needs:
+      - job_module_static_validation
+      - job_psrule_test_waf_reliability
+      - job_psrule_test_waf_security_cb
     strategy:
       fail-fast: false
       matrix:
@@ -187,31 +187,31 @@ jobs:
   ##################
   #   Publishing   #
   ##################
-  # job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: "Publishing"
-  #   runs-on: ubuntu-latest
-  #   # Note: Below always() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
-  #   if: github.ref == 'refs/heads/main' &&
-  #     github.repository	 == 'Azure/bicep-registry-modules' &&
-  #     always() &&
-  #     needs.job_module_static_validation.result == 'success' &&
-  #     needs.job_module_deploy_validation.result == 'success'
-  #   needs:
-  #     - job_module_static_validation
-  #     - job_module_deploy_validation
-  #   steps:
-  #     - name: "Checkout"
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: "Publishing"
-  #       uses: ./.github/actions/templates/avm-publishModule
-  #       with:
-  #         templateFilePath: "${{ inputs.modulePath }}/main.bicep"
-  #       env:
-  #         PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
-  #         PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
-  #         PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
-  #         PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
+  job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "Publishing"
+    runs-on: ubuntu-latest
+    # Note: Below always() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
+    if: github.ref == 'refs/heads/main' &&
+      github.repository	 == 'Azure/bicep-registry-modules' &&
+      always() &&
+      needs.job_module_static_validation.result == 'success' &&
+      needs.job_module_deploy_validation.result == 'success'
+    needs:
+      - job_module_static_validation
+      - job_module_deploy_validation
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Publishing"
+        uses: ./.github/actions/templates/avm-publishModule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/main.bicep"
+        env:
+          PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
+          PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
+          PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
+          PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"

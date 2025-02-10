@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           service: 'vault'
-          resourceGroupResourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/alsehr-pe-test'
+          resourceGroupResourceId: resourceGroup.id
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
