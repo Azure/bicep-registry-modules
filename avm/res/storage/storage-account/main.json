@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9582256320776207177"
+      "templateHash": "17960260729884623690"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -1245,13 +1245,6 @@
       "metadata": {
         "description": "Optional. Key vault reference and secret settings for the module's secrets export."
       }
-    },
-    "enableAdvancedThreatProtection": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enables Advanced Threat Protection on the storage account."
-      }
     }
   },
   "variables": {
@@ -1445,19 +1438,6 @@
         "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
         "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-      },
-      "dependsOn": [
-        "storageAccount"
-      ]
-    },
-    "storageAccount_atp": {
-      "condition": "[parameters('enableAdvancedThreatProtection')]",
-      "type": "Microsoft.Security/advancedThreatProtectionSettings",
-      "apiVersion": "2019-01-01",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('name'))]",
-      "name": "current",
-      "properties": {
-        "isEnabled": true
       },
       "dependsOn": [
         "storageAccount"
@@ -2590,7 +2570,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "7588078546699808778"
+              "templateHash": "2058460323623594433"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -2896,7 +2876,7 @@
             },
             "restorePolicyDays": {
               "type": "int",
-              "defaultValue": 6,
+              "defaultValue": 7,
               "minValue": 1,
               "metadata": {
                 "description": "Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days."
