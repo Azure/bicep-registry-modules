@@ -338,7 +338,12 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      useResourcePermissions: true
+      features: {
+        enableLogAccessUsingOnlyResourcePermissions: true
+        disableLocalAuth: true
+        enableDataExport: true
+        immediatePurgeDataOn30Days: true
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -370,9 +375,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
