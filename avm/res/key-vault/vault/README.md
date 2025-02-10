@@ -463,6 +463,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             }
           ]
         }
+        resourceGroupResourceId: '<resourceGroupResourceId>'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -731,6 +732,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
               }
             ]
           },
+          "resourceGroupResourceId": "<resourceGroupResourceId>",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -989,6 +991,7 @@ param privateEndpoints = [
         }
       ]
     }
+    resourceGroupResourceId: '<resourceGroupResourceId>'
     subnetResourceId: '<subnetResourceId>'
   }
 ]
@@ -1234,8 +1237,50 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     // Required parameters
     name: 'kvvwaf002'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     enablePurgeProtection: false
     enableRbacAuthorization: true
+    keys: [
+      {
+        attributes: {
+          enabled: true
+          exp: 1702648632
+          nbf: 10000
+        }
+        keySize: 4096
+        name: 'keyName'
+        rotationPolicy: {
+          attributes: {
+            expiryTime: 'P2Y'
+          }
+          lifetimeActions: [
+            {
+              action: {
+                type: 'Rotate'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P2M'
+              }
+            }
+            {
+              action: {
+                type: 'Notify'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P30D'
+              }
+            }
+          ]
+        }
+      }
+    ]
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
@@ -1249,9 +1294,20 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             }
           ]
         }
-        resourceGroupResourceId: '<resourceGroupResourceId>'
         service: 'vault'
         subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    secrets: [
+      {
+        attributes: {
+          enabled: true
+          exp: 1702648632
+          nbf: 10000
+        }
+        contentType: 'Something'
+        name: 'secretName'
+        value: 'secretValue'
       }
     ]
     softDeleteRetentionInDays: 7
@@ -1276,16 +1332,60 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "kvvwaf002"
     },
-    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "enablePurgeProtection": {
       "value": false
     },
     "enableRbacAuthorization": {
       "value": true
+    },
+    "keys": {
+      "value": [
+        {
+          "attributes": {
+            "enabled": true,
+            "exp": 1702648632,
+            "nbf": 10000
+          },
+          "keySize": 4096,
+          "name": "keyName",
+          "rotationPolicy": {
+            "attributes": {
+              "expiryTime": "P2Y"
+            },
+            "lifetimeActions": [
+              {
+                "action": {
+                  "type": "Rotate"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P2M"
+                }
+              },
+              {
+                "action": {
+                  "type": "Notify"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P30D"
+                }
+              }
+            ]
+          }
+        }
+      ]
     },
     "networkAcls": {
       "value": {
@@ -1303,9 +1403,22 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
               }
             ]
           },
-          "resourceGroupResourceId": "<resourceGroupResourceId>",
           "service": "vault",
           "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "secrets": {
+      "value": [
+        {
+          "attributes": {
+            "enabled": true,
+            "exp": 1702648632,
+            "nbf": 10000
+          },
+          "contentType": "Something",
+          "name": "secretName",
+          "value": "secretValue"
         }
       ]
     },
@@ -1336,8 +1449,50 @@ using 'br/public:avm/res/key-vault/vault:<version>'
 // Required parameters
 param name = 'kvvwaf002'
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param enablePurgeProtection = false
 param enableRbacAuthorization = true
+param keys = [
+  {
+    attributes: {
+      enabled: true
+      exp: 1702648632
+      nbf: 10000
+    }
+    keySize: 4096
+    name: 'keyName'
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
 param networkAcls = {
   bypass: 'AzureServices'
   defaultAction: 'Deny'
@@ -1351,9 +1506,20 @@ param privateEndpoints = [
         }
       ]
     }
-    resourceGroupResourceId: '<resourceGroupResourceId>'
     service: 'vault'
     subnetResourceId: '<subnetResourceId>'
+  }
+]
+param secrets = [
+  {
+    attributes: {
+      enabled: true
+      exp: 1702648632
+      nbf: 10000
+    }
+    contentType: 'Something'
+    name: 'secretName'
+    value: 'secretValue'
   }
 ]
 param softDeleteRetentionInDays = 7
