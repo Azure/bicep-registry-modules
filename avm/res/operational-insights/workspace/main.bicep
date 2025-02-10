@@ -192,7 +192,6 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
   properties: {
     features: {
       searchVersion: 1
-      clusterResourceId: features.?clusterResourceId
       enableLogAccessUsingOnlyResourcePermissions: features.?enableLogAccessUsingOnlyResourcePermissions ?? false
       disableLocalAuth: features.?disableLocalAuth ?? true
       enableDataExport: features.?enableDataExport
@@ -656,9 +655,6 @@ type tableType = {
 @export()
 @description('Features of the workspace.')
 type workspaceFeaturesType = {
-  @description('Optional. Dedicated LA cluster resourceId that is linked to the workspaces.')
-  clusterResourceId: string?
-
   @description('Optional. Disable Non-EntraID based Auth. Default is true.')
   disableLocalAuth: bool?
 

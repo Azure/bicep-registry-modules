@@ -173,6 +173,12 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
+      features: {
+        enableLogAccessUsingOnlyResourcePermissions: true
+        disableLocalAuth: true
+        enableDataExport: true
+        immediatePurgeDataOn30Days: true
+      }
       gallerySolutions: [
         {
           name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
@@ -338,12 +344,6 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      features: {
-        enableLogAccessUsingOnlyResourcePermissions: true
-        disableLocalAuth: true
-        enableDataExport: true
-        immediatePurgeDataOn30Days: true
-      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
