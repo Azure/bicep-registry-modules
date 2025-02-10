@@ -272,10 +272,18 @@ resource namespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
   }
 ]
 
-module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -449,14 +457,42 @@ output systemAssignedMIPrincipalId string? = namespace.?identity.?principalId
 output topicResourceIds array = [
   for index in range(0, length(topics ?? [])): namespace_topics[index].outputs.resourceId
 ]
-
 @description('The private endpoints of the EventGrid Namespace.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: namespace_privateEndpoints[i].outputs.name
     resourceId: namespace_privateEndpoints[i].outputs.resourceId
-    groupId: namespace_privateEndpoints[i].outputs.groupId
-    customDnsConfig: namespace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: namespace_privateEndpoints[i].outputs.networkInterfaceIds
+    groupId: namespace_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: namespace_privateEndpoints[i].outputs.customDnsConfigs
+    networkInterfaceResourceIds: namespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for a private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
