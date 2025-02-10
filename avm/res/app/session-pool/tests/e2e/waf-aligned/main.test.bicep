@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-app.session-pool-${serviceSh
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'crwaf'
+param serviceShort string = 'aspwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -30,15 +30,6 @@ param namePrefix string = '#_namePrefix_#'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    location: resourceLocation
-    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
-  }
 }
 
 // ============== //
@@ -58,17 +49,6 @@ module testDeployment '../../../main.bicep' = [
         resourceType: 'Session Pool'
       }
       sessionNetworkStatus: 'EgressDisabled'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
-      roleAssignments: [
-        {
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          roleDefinitionIdOrName: 'Azure ContainerApps Session Executor'
-          principalType: 'ServicePrincipal'
-        }
-      ]
     }
   }
 ]

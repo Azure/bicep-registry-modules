@@ -29,8 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using a role assignment](#example-3-using-a-role-assignment)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -116,7 +115,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
   params: {
     // Required parameters
     containerType: 'PythonLTS'
-    name: 'crmax001'
+    name: 'aspmax001'
     // Non-required parameters
     cooldownPeriodInSeconds: 350
     location: '<location>'
@@ -165,7 +164,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
       "value": "PythonLTS"
     },
     "name": {
-      "value": "crmax001"
+      "value": "aspmax001"
     },
     // Non-required parameters
     "cooldownPeriodInSeconds": {
@@ -230,7 +229,7 @@ using 'br/public:avm/res/app/session-pool:<version>'
 
 // Required parameters
 param containerType = 'PythonLTS'
-param name = 'crmax001'
+param name = 'aspmax001'
 // Non-required parameters
 param cooldownPeriodInSeconds = 350
 param location = '<location>'
@@ -263,99 +262,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using a role assignment_
-
-This instance deploys the module with a managed identity assigned to the ContainerApps Session Executor role.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
-  name: 'sessionPoolDeployment'
-  params: {
-    // Required parameters
-    containerType: 'PythonLTS'
-    name: 'crra001'
-    // Non-required parameters
-    location: '<location>'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Azure ContainerApps Session Executor'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "containerType": {
-      "value": "PythonLTS"
-    },
-    "name": {
-      "value": "crra001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Azure ContainerApps Session Executor"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/app/session-pool:<version>'
-
-// Required parameters
-param containerType = 'PythonLTS'
-param name = 'crra001'
-// Non-required parameters
-param location = '<location>'
-param roleAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Azure ContainerApps Session Executor'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -370,20 +277,9 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
   params: {
     // Required parameters
     containerType: 'PythonLTS'
-    name: 'crwaf001'
+    name: 'aspwaf001'
     // Non-required parameters
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Azure ContainerApps Session Executor'
-      }
-    ]
     sessionNetworkStatus: 'EgressDisabled'
     tags: {
       resourceType: 'Session Pool'
@@ -409,26 +305,11 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
       "value": "PythonLTS"
     },
     "name": {
-      "value": "crwaf001"
+      "value": "aspwaf001"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Azure ContainerApps Session Executor"
-        }
-      ]
     },
     "sessionNetworkStatus": {
       "value": "EgressDisabled"
@@ -454,20 +335,9 @@ using 'br/public:avm/res/app/session-pool:<version>'
 
 // Required parameters
 param containerType = 'PythonLTS'
-param name = 'crwaf001'
+param name = 'aspwaf001'
 // Non-required parameters
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
-param roleAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Azure ContainerApps Session Executor'
-  }
-]
 param sessionNetworkStatus = 'EgressDisabled'
 param tags = {
   resourceType: 'Session Pool'
