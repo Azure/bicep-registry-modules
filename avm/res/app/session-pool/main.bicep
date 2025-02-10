@@ -269,4 +269,4 @@ type managedIdentitySettingType = {
 
   @description('Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None".')
   lifecycle: string
-}[]?
+}
