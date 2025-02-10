@@ -157,6 +157,25 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
         profile: 'profile-01'
       }
     ]
+    roleAssignments: [
+      {
+        name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -235,6 +254,27 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
         }
       ]
     },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -299,6 +339,25 @@ param resourceAssociations = [
     accessMode: 'Learning'
     privateLinkResource: '<privateLinkResource>'
     profile: 'profile-01'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
 param tags = {
@@ -712,21 +771,33 @@ Array of Security Rules to deploy to the Network Security Group. When not provid
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessRules`](#parameter-profilesaccessrules) | array | Whether network traffic is allowed or denied. |
 | [`name`](#parameter-profilesname) | string | The name of the network security perimeter profile. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessRules`](#parameter-profilesaccessrules) | array | Whether network traffic is allowed or denied. |
+
+### Parameter: `profiles.name`
+
+The name of the network security perimeter profile.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `profiles.accessRules`
 
 Whether network traffic is allowed or denied.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`direction`](#parameter-profilesaccessrulesdirection) | string | Direction that specifies whether the access rules is inbound/outbound. |
+| [`direction`](#parameter-profilesaccessrulesdirection) | string | The type for an access rule. |
 | [`name`](#parameter-profilesaccessrulesname) | string | The name of the access rule. |
 
 **Optional parameters**
@@ -742,7 +813,7 @@ Whether network traffic is allowed or denied.
 
 ### Parameter: `profiles.accessRules.direction`
 
-Direction that specifies whether the access rules is inbound/outbound.
+The type for an access rule.
 
 - Required: Yes
 - Type: string
@@ -812,13 +883,6 @@ List of subscription ids.
 ### Parameter: `profiles.accessRules.subscriptions.id`
 
 The subscription id.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `profiles.name`
-
-The name of the network security perimeter profile.
 
 - Required: Yes
 - Type: string
@@ -998,7 +1062,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

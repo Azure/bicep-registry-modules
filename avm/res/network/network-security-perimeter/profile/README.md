@@ -60,7 +60,7 @@ Static Members to create for the network group. Contains virtual networks to add
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`direction`](#parameter-accessrulesdirection) | string | Direction that specifies whether the access rules is inbound/outbound. |
+| [`direction`](#parameter-accessrulesdirection) | string | The type for an access rule. |
 | [`name`](#parameter-accessrulesname) | string | The name of the access rule. |
 
 **Optional parameters**
@@ -76,7 +76,7 @@ Static Members to create for the network group. Contains virtual networks to add
 
 ### Parameter: `accessRules.direction`
 
-Direction that specifies whether the access rules is inbound/outbound.
+The type for an access rule.
 
 - Required: Yes
 - Type: string

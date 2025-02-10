@@ -5,266 +5,161 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "263456475017494995"
+      "version": "0.33.93.31351",
+      "templateHash": "15151011846661806559"
     },
     "name": "Network Security Perimeter",
-    "description": "This module deploys a Network Security Perimeter (NSP).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network Security Perimeter (NSP)."
   },
   "definitions": {
-    "lockType": {
+    "profileType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the name of lock."
+            "description": "Required. The name of the network security perimeter profile."
           }
         },
-        "kind": {
+        "accessRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/accessRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether network traffic is allowed or denied."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a profile."
+      }
+    },
+    "resourceAssociationType": {
+      "type": "object",
+      "properties": {
+        "privateLinkResource": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource identifier of the resource association."
+          }
+        },
+        "profile": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the resource association."
+          }
+        },
+        "accessMode": {
           "type": "string",
           "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
+            "Audit",
+            "Enforced",
+            "Learning"
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the type of lock."
+            "description": "Optional. The access mode of the resource association."
           }
         }
       },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "profilesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the network security perimeter profile."
-            }
-          },
-          "accessRules": {
-            "$ref": "#/definitions/accessRulesType",
-            "metadata": {
-              "description": "Required. Whether network traffic is allowed or denied."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "resourceAssociationsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "privateLinkResource": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The resource identifier of the resource association."
-            }
-          },
-          "profile": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the resource association."
-            }
-          },
-          "accessMode": {
-            "type": "string",
-            "allowedValues": [
-              "Audit",
-              "Enforced",
-              "Learning"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The access mode of the resource association."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "_1.subscriptionIdType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The subscription id."
-            }
-          }
-        }
-      },
-      "nullable": true,
       "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "profile/main.bicep"
-        }
+        "__bicep_export!": true,
+        "description": "The type for a resource association."
       }
     },
-    "accessRulesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the access rule."
+    "accessRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the access rule."
+          }
+        },
+        "direction": {
+          "type": "string",
+          "allowedValues": [
+            "Inbound",
+            "Outbound"
+          ],
+          "metadata": {
+            "description": "Required. The type for an access rule."
+          }
+        },
+        "addressPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Inbound address prefixes (IPv4/IPv6).s."
+          }
+        },
+        "emailAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Outbound rules email address format."
+          }
+        },
+        "fullyQualifiedDomainNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Outbound rules fully qualified domain name format."
+          }
+        },
+        "phoneNumbers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Outbound rules phone number format."
+          }
+        },
+        "serviceTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Inbound rules service tag names."
+          }
+        },
+        "subscriptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The subscription id."
+                }
+              }
             }
           },
-          "direction": {
-            "type": "string",
-            "allowedValues": [
-              "Inbound",
-              "Outbound"
-            ],
-            "metadata": {
-              "description": "Required. Direction that specifies whether the access rules is inbound/outbound."
-            }
-          },
-          "addressPrefixes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Inbound address prefixes (IPv4/IPv6).s."
-            }
-          },
-          "emailAddresses": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Outbound rules email address format."
-            }
-          },
-          "fullyQualifiedDomainNames": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Outbound rules fully qualified domain name format."
-            }
-          },
-          "phoneNumbers": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Outbound rules phone number format."
-            }
-          },
-          "serviceTags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Inbound rules service tag names."
-            }
-          },
-          "subscriptions": {
-            "$ref": "#/definitions/_1.subscriptionIdType",
-            "metadata": {
-              "description": "Optional. List of subscription ids."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of subscription ids."
           }
         }
       },
       "metadata": {
+        "description": "The type for an access rule.",
         "__bicep_imported_from!": {
           "sourceTemplate": "profile/main.bicep"
         }
@@ -363,7 +258,112 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -383,13 +383,21 @@
       }
     },
     "profiles": {
-      "$ref": "#/definitions/profilesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/profileType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed."
       }
     },
     "resourceAssociations": {
-      "$ref": "#/definitions/resourceAssociationsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/resourceAssociationType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of resource associations to create."
       }
@@ -406,12 +414,17 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -587,7 +600,7 @@
             "value": "[coalesce(parameters('profiles'), createArray())[copyIndex()].name]"
           },
           "accessRules": {
-            "value": "[coalesce(parameters('profiles'), createArray())[copyIndex()].accessRules]"
+            "value": "[tryGet(coalesce(parameters('profiles'), createArray())[copyIndex()], 'accessRules')]"
           }
         },
         "template": {
@@ -597,110 +610,104 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13454714808954601034"
+              "version": "0.33.93.31351",
+              "templateHash": "2297736787884946512"
             },
             "name": "Network Security Perimeter Profile",
-            "description": "This module deploys a Network Security Perimeter Profile.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Network Security Perimeter Profile."
           },
           "definitions": {
-            "subscriptionIdType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The subscription id."
-                    }
+            "accessRuleType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the access rule."
                   }
-                }
-              },
-              "nullable": true
-            },
-            "accessRulesType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the access rule."
+                },
+                "direction": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Inbound",
+                    "Outbound"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type for an access rule."
+                  }
+                },
+                "addressPrefixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Inbound address prefixes (IPv4/IPv6).s."
+                  }
+                },
+                "emailAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Outbound rules email address format."
+                  }
+                },
+                "fullyQualifiedDomainNames": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Outbound rules fully qualified domain name format."
+                  }
+                },
+                "phoneNumbers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Outbound rules phone number format."
+                  }
+                },
+                "serviceTags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Inbound rules service tag names."
+                  }
+                },
+                "subscriptions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The subscription id."
+                        }
+                      }
                     }
                   },
-                  "direction": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Inbound",
-                      "Outbound"
-                    ],
-                    "metadata": {
-                      "description": "Required. Direction that specifies whether the access rules is inbound/outbound."
-                    }
-                  },
-                  "addressPrefixes": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Inbound address prefixes (IPv4/IPv6).s."
-                    }
-                  },
-                  "emailAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Outbound rules email address format."
-                    }
-                  },
-                  "fullyQualifiedDomainNames": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Outbound rules fully qualified domain name format."
-                    }
-                  },
-                  "phoneNumbers": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Outbound rules phone number format."
-                    }
-                  },
-                  "serviceTags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Inbound rules service tag names."
-                    }
-                  },
-                  "subscriptions": {
-                    "$ref": "#/definitions/subscriptionIdType",
-                    "metadata": {
-                      "description": "Optional. List of subscription ids."
-                    }
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of subscription ids."
                   }
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for an access rule."
               }
             }
           },
@@ -719,7 +726,10 @@
               }
             },
             "accessRules": {
-              "$ref": "#/definitions/accessRulesType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/accessRuleType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
@@ -743,21 +753,187 @@
                 "name": "nsp_accessRules",
                 "count": "[length(coalesce(parameters('accessRules'), createArray()))]"
               },
-              "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
-              "apiVersion": "2023-08-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('name'), coalesce(parameters('accessRules'), createArray())[copyIndex()].name)]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-nsp-accessrule-{1}', uniqueString(deployment().name), copyIndex())]",
               "properties": {
-                "addressPrefixes": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'addressPrefixes')]",
-                "direction": "[coalesce(parameters('accessRules'), createArray())[copyIndex()].direction]",
-                "emailAddresses": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'emailAddresses')]",
-                "fullyQualifiedDomainNames": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'fullyQualifiedDomainNames')]",
-                "phoneNumbers": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'phoneNumbers')]",
-                "serviceTags": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'serviceTags')]",
-                "subscriptions": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'subscriptions')]"
-              },
-              "dependsOn": [
-                "networkSecurityPerimeter_profile"
-              ]
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "networkPerimeterName": {
+                    "value": "[parameters('networkPerimeterName')]"
+                  },
+                  "networkPerimeterProfileName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[coalesce(parameters('accessRules'), createArray())[copyIndex()].name]"
+                  },
+                  "addressPrefixes": {
+                    "value": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'addressPrefixes')]"
+                  },
+                  "direction": {
+                    "value": "[coalesce(parameters('accessRules'), createArray())[copyIndex()].direction]"
+                  },
+                  "emailAddresses": {
+                    "value": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'emailAddresses')]"
+                  },
+                  "fullyQualifiedDomainNames": {
+                    "value": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'fullyQualifiedDomainNames')]"
+                  },
+                  "phoneNumbers": {
+                    "value": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'phoneNumbers')]"
+                  },
+                  "serviceTags": {
+                    "value": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'serviceTags')]"
+                  },
+                  "subscriptions": {
+                    "value": "[tryGet(coalesce(parameters('accessRules'), createArray())[copyIndex()], 'subscriptions')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.33.93.31351",
+                      "templateHash": "18212192177654041784"
+                    },
+                    "name": "Network Security Perimeter Access Rule",
+                    "description": "This module deploys a Network Security Perimeter Access Rule."
+                  },
+                  "parameters": {
+                    "networkPerimeterName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent network perimeter. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "networkPerimeterProfileName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent network perimeter Profile. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the access rule."
+                      }
+                    },
+                    "addressPrefixes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Inbound address prefixes (IPv4/IPv6).s."
+                      }
+                    },
+                    "direction": {
+                      "type": "string",
+                      "allowedValues": [
+                        "Inbound",
+                        "Outbound"
+                      ],
+                      "metadata": {
+                        "description": "Required. The type for an access rule."
+                      }
+                    },
+                    "emailAddresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Outbound rules email address format."
+                      }
+                    },
+                    "fullyQualifiedDomainNames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Outbound rules fully qualified domain name format."
+                      }
+                    },
+                    "phoneNumbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Outbound rules phone number format."
+                      }
+                    },
+                    "serviceTags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Inbound rules service tag names."
+                      }
+                    },
+                    "subscriptions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The subscription id."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of subscription ids."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "networkPerimeter::networkSecurityPerimeterProfile": {
+                      "existing": true,
+                      "type": "Microsoft.Network/networkSecurityPerimeters/profiles",
+                      "apiVersion": "2023-08-01-preview",
+                      "name": "[format('{0}/{1}', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'))]"
+                    },
+                    "networkPerimeter": {
+                      "existing": true,
+                      "type": "Microsoft.Network/networkSecurityPerimeters",
+                      "apiVersion": "2023-08-01-preview",
+                      "name": "[parameters('networkPerimeterName')]"
+                    },
+                    "nsp_accessRules": {
+                      "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
+                      "apiVersion": "2023-08-01-preview",
+                      "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'), parameters('name'))]",
+                      "properties": {
+                        "addressPrefixes": "[parameters('addressPrefixes')]",
+                        "direction": "[parameters('direction')]",
+                        "emailAddresses": "[parameters('emailAddresses')]",
+                        "fullyQualifiedDomainNames": "[parameters('fullyQualifiedDomainNames')]",
+                        "phoneNumbers": "[parameters('phoneNumbers')]",
+                        "serviceTags": "[parameters('serviceTags')]",
+                        "subscriptions": "[parameters('subscriptions')]"
+                      }
+                    }
+                  }
+                }
+              }
             }
           },
           "outputs": {

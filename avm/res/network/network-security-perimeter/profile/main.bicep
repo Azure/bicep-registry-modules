@@ -1,6 +1,5 @@
 metadata name = 'Network Security Perimeter Profile'
 metadata description = 'This module deploys a Network Security Perimeter Profile.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent network perimeter. Required if the template is used in a standalone deployment.')
 param networkPerimeterName string
@@ -10,7 +9,7 @@ param networkPerimeterName string
 param name string
 
 @description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
-param accessRules accessRulesType?
+param accessRules accessRuleType[]?
 
 resource networkSecurityPerimeter 'Microsoft.Network/networkSecurityPerimeters@2023-08-01-preview' existing = {
   name: networkPerimeterName
@@ -21,11 +20,13 @@ resource networkSecurityPerimeter_profile 'Microsoft.Network/networkSecurityPeri
   parent: networkSecurityPerimeter
 }
 
-resource nsp_accessRules 'Microsoft.Network/networkSecurityPerimeters/profiles/accessRules@2023-08-01-preview' = [
+module nsp_accessRules 'access-rule/main.bicep' = [
   for (accessRule, index) in (accessRules ?? []): {
-    name: accessRule.name
-    parent: networkSecurityPerimeter_profile
-    properties: {
+    name: '${uniqueString(deployment().name)}-nsp-accessrule-${index}'
+    params: {
+      networkPerimeterName: networkPerimeterName
+      networkPerimeterProfileName: name
+      name: accessRule.name
       addressPrefixes: accessRule.?addressPrefixes
       direction: accessRule.direction
       emailAddresses: accessRule.?emailAddresses
@@ -46,17 +47,13 @@ output resourceId string = networkSecurityPerimeter_profile.id
 @description('The name of the deployed profile.')
 output name string = networkSecurityPerimeter_profile.name
 
-type subscriptionIdType = {
-  @description('Required. The subscription id.')
-  id: string
-}[]?
-
 @export()
-type accessRulesType = {
+@description('The type for an access rule.')
+type accessRuleType = {
   @description('Required. The name of the access rule.')
   name: string
 
-  @description('Required. Direction that specifies whether the access rules is inbound/outbound.')
+  @description('Required. The type for an access rule.')
   direction: 'Inbound' | 'Outbound'
 
   @description('Optional. Inbound address prefixes (IPv4/IPv6).s.')
@@ -75,5 +72,8 @@ type accessRulesType = {
   serviceTags: string[]?
 
   @description('Optional. List of subscription ids.')
-  subscriptions: subscriptionIdType
-}[]
+  subscriptions: {
+    @description('Required. The subscription id.')
+    id: string
+  }[]?
+}

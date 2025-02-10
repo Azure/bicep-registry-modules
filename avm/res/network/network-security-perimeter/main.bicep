@@ -1,6 +1,5 @@
 metadata name = 'Network Security Perimeter'
 metadata description = 'This module deploys a Network Security Perimeter (NSP).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Network Security Perimeter.')
 param name string
@@ -9,19 +8,22 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed.')
-param profiles profilesType
+param profiles profileType[]?
 
 @description('Optional. Array of resource associations to create.')
-param resourceAssociations resourceAssociationsType
+param resourceAssociations resourceAssociationType[]?
 
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the NSG resource.')
 param tags object?
@@ -89,7 +91,7 @@ module networkSecurityPerimeter_profiles 'profile/main.bicep' = [
     params: {
       networkPerimeterName: name
       name: profile.name
-      accessRules: profile.accessRules
+      accessRules: profile.?accessRules
     }
   }
 ]
@@ -183,53 +185,21 @@ output location string = networkSecurityPerimeter.location
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+import { accessRuleType } from 'profile/main.bicep'
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
-
-import { accessRulesType } from 'profile/main.bicep'
-
-type profilesType = {
+@export()
+@description('The type for a profile.')
+type profileType = {
   @description('Required. The name of the network security perimeter profile.')
   name: string
 
-  @description('Required. Whether network traffic is allowed or denied.')
-  accessRules: accessRulesType
-}[]?
+  @description('Optional. Whether network traffic is allowed or denied.')
+  accessRules: accessRuleType[]?
+}
 
-type resourceAssociationsType = {
+@export()
+@description('The type for a resource association.')
+type resourceAssociationType = {
   @description('Required. The resource identifier of the resource association.')
   privateLinkResource: string
 
@@ -238,4 +208,4 @@ type resourceAssociationsType = {
 
   @description('Optional. The access mode of the resource association.')
   accessMode: 'Learning' | 'Audit' | 'Enforced'?
-}[]?
+}
