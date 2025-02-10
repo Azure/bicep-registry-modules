@@ -51,6 +51,7 @@ The following section provides usage examples for the module, which were used to
 - [Deploying Windows VM with premium SSDv2 data disk](#example-10-deploying-windows-vm-with-premium-ssdv2-data-disk)
 - [Using disk encryption set for the VM.](#example-11-using-disk-encryption-set-for-the-vm)
 - [Adding the VM to a VMSS.](#example-12-adding-the-vm-to-a-vmss)
+- [Deploying Windows VM in a defined zone with a premium zrs data disk](#example-13-deploying-windows-vm-in-a-defined-zone-with-a-premium-zrs-data-disk)
 
 ### Example 1: _Using automanage for the VM._
 
@@ -4731,6 +4732,202 @@ param zone = 0
 param adminPassword = '<adminPassword>'
 param location = '<location>'
 param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
+```
+
+</details>
+<p>
+
+### Example 13: _Deploying Windows VM in a defined zone with a premium zrs data disk_
+
+This instance deploys the module with a premium zrs data disk.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinssdv2'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_ZRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 2
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    dataDisks: [
+      {
+        caching: 'None'
+        diskSizeGB: 1024
+        managedDisk: {
+          storageAccountType: 'Premium_ZRS'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinssdv2"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_ZRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 2
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "None",
+          "diskSizeGB": 1024,
+          "managedDisk": {
+            "storageAccountType": "Premium_ZRS"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinssdv2'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_ZRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 2
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param dataDisks = [
+  {
+    caching: 'None'
+    diskSizeGB: 1024
+    managedDisk: {
+      storageAccountType: 'Premium_ZRS'
+    }
+  }
+]
+param location = '<location>'
 ```
 
 </details>
