@@ -50,7 +50,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Settings for a Managed Identity that is assigned to the Session pool.')
-param managedIdentitySettings managedIdentitySettingType?
+param managedIdentitySettings managedIdentitySettingType[]?
 
 @description('Optional. Resource ID of the session pool\'s environment.')
 param environmentId string?
