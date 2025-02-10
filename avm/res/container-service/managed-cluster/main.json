@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "12618640856903207312"
+      "version": "0.33.93.31351",
+      "templateHash": "5916819919470014658"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -1478,6 +1478,13 @@
         "description": "Optional. Specifies whether the OMS agent is enabled."
       }
     },
+    "omsAgentUseAADAuth": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the OMS agent is using managed identity authentication."
+      }
+    },
     "monitoringWorkspaceResourceId": {
       "type": "string",
       "nullable": true,
@@ -1738,7 +1745,7 @@
           },
           "omsagent": {
             "enabled": "[and(parameters('omsAgentEnabled'), not(empty(parameters('monitoringWorkspaceResourceId'))))]",
-            "config": "[if(and(parameters('omsAgentEnabled'), not(empty(parameters('monitoringWorkspaceResourceId')))), createObject('logAnalyticsWorkspaceResourceID', parameters('monitoringWorkspaceResourceId')), null())]"
+            "config": "[if(and(parameters('omsAgentEnabled'), not(empty(parameters('monitoringWorkspaceResourceId')))), shallowMerge(createArray(createObject('logAnalyticsWorkspaceResourceID', parameters('monitoringWorkspaceResourceId')), if(parameters('omsAgentUseAADAuth'), createObject('useAADAuth', 'true'), createObject()))), null())]"
           },
           "aciConnectorLinux": {
             "enabled": "[parameters('aciConnectorLinuxEnabled')]"
@@ -1984,8 +1991,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "8370238557121472803"
+              "version": "0.33.93.31351",
+              "templateHash": "17573192747850353863"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2180,8 +2187,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "3772142304849625200"
+              "version": "0.33.93.31351",
+              "templateHash": "3323013309772683046"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
