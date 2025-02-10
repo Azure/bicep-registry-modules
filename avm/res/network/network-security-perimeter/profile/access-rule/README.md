@@ -133,4 +133,8 @@ The subscription id.
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `name` | string | The name of the deployed profile. |
+| `resourceGroupName` | string | The resource group the network security perimeter was deployed into. |
+| `resourceId` | string | The resource ID of the deployed profile. |

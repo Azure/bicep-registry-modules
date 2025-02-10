@@ -42,7 +42,7 @@ resource networkPerimeter 'Microsoft.Network/networkSecurityPerimeters@2023-08-0
   }
 }
 
-resource nsp_accessRules 'Microsoft.Network/networkSecurityPerimeters/profiles/accessRules@2023-08-01-preview' = {
+resource nsp_accessRule 'Microsoft.Network/networkSecurityPerimeters/profiles/accessRules@2023-08-01-preview' = {
   name: name
   parent: networkPerimeter::networkSecurityPerimeterProfile
   properties: {
@@ -55,3 +55,12 @@ resource nsp_accessRules 'Microsoft.Network/networkSecurityPerimeters/profiles/a
     subscriptions: subscriptions
   }
 }
+
+@description('The resource group the network security perimeter was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The resource ID of the deployed profile.')
+output resourceId string = nsp_accessRule.id
+
+@description('The name of the deployed profile.')
+output name string = nsp_accessRule.name

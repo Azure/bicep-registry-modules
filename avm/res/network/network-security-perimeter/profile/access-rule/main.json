@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "18212192177654041784"
+      "templateHash": "12994955439990027696"
     },
     "name": "Network Security Perimeter Access Rule",
     "description": "This module deploys a Network Security Perimeter Access Rule."
@@ -122,7 +122,7 @@
       "apiVersion": "2023-08-01-preview",
       "name": "[parameters('networkPerimeterName')]"
     },
-    "nsp_accessRules": {
+    "nsp_accessRule": {
       "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
       "apiVersion": "2023-08-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'), parameters('name'))]",
@@ -135,6 +135,29 @@
         "serviceTags": "[parameters('serviceTags')]",
         "subscriptions": "[parameters('subscriptions')]"
       }
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the network security perimeter was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed profile."
+      },
+      "value": "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles/accessRules', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed profile."
+      },
+      "value": "[parameters('name')]"
     }
   }
 }
