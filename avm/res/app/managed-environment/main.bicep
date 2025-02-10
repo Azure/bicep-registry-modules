@@ -269,7 +269,7 @@ output name string = managedEnvironment.name
 output resourceId string = managedEnvironment.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = managedEnvironment.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?principalId
 
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain

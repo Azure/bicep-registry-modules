@@ -109,6 +109,9 @@ param eventhubs array = []
 @description('Optional. The disaster recovery config for this namespace.')
 param disasterRecoveryConfig disasterRecoveryConfigType?
 
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
+
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
 var formattedUserAssignedIdentities = reduce(
@@ -227,7 +230,7 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.keyVersion
+                ? customerManagedKey!.?keyVersion
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
                     : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -422,6 +425,52 @@ resource eventHubNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'rootPrimaryConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootPrimaryConnectionStringName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootSecondaryConnectionStringName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootPrimaryKeyName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootPrimaryKeyName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryKeyName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootSecondaryKeyName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryKey
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The name of the eventspace.')
 output name string = eventHubNamespace.name
 
@@ -452,6 +501,12 @@ output privateEndpoints privateEndpointOutputType[] = [
     networkInterfaceResourceIds: eventHubNamespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
+
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 // =============== //
 //   Definitions   //
@@ -488,4 +543,22 @@ type disasterRecoveryConfigType = {
 
   @description('Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing.')
   partnerNamespaceResourceId: string?
+}
+
+@export()
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
+  keyVaultResourceId: string
+
+  @description('Optional. The rootPrimaryConnectionStringName secret name to create.')
+  rootPrimaryConnectionStringName: string?
+
+  @description('Optional. The rootSecondaryConnectionStringName secret name to create.')
+  rootSecondaryConnectionStringName: string?
+
+  @description('Optional. The rootPrimaryKeyName secret name to create.')
+  rootPrimaryKeyName: string?
+
+  @description('Optional. The rootSecondaryKeyName secret name to create.')
+  rootSecondaryKeyName: string?
 }

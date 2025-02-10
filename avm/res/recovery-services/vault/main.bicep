@@ -403,7 +403,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = rsv.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = rsv.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = rsv.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = rsv.location

@@ -5,36 +5,38 @@ metadata description = 'This module deploys a Backup Policy for Azure NetApp Fil
 param netAppAccountName string
 
 @description('Optional. The name of the backup policy.')
-param backupPolicyName string = 'backupPolicy'
+param name string = 'backupPolicy'
 
-@description('Required. The location of the backup policy. Required if the template is used in a standalone deployment.')
-param backupPolicyLocation string
+@description('Optional. The location of the backup policy.')
+param location string = resourceGroup().location
 
-@description('Required. The daily backups to keep.')
-param dailyBackupsToKeep int
+@description('Optional. The daily backups to keep.')
+@minValue(2)
+@maxValue(1019)
+param dailyBackupsToKeep int = 2
 
-@description('Required. The monthly backups to keep.')
-param monthlyBackupsToKeep int
+@description('Optional. The monthly backups to keep.')
+param monthlyBackupsToKeep int = 0
 
-@description('Required. The weekly backups to keep.')
-param weeklyBackupsToKeep int
+@description('Optional. The weekly backups to keep.')
+param weeklyBackupsToKeep int = 0
 
 @description('Optional. Indicates whether the backup policy is enabled.')
-param backupEnabled bool = false
+param enabled bool = true
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
   name: netAppAccountName
 }
 
-resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-01' = {
-  name: backupPolicyName
+resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-07-01' = {
+  name: name
   parent: netAppAccount
-  location: backupPolicyLocation
+  location: location
   properties: {
+    enabled: enabled
     dailyBackupsToKeep: dailyBackupsToKeep
-    enabled: backupEnabled
-    monthlyBackupsToKeep: monthlyBackupsToKeep
     weeklyBackupsToKeep: weeklyBackupsToKeep
+    monthlyBackupsToKeep: monthlyBackupsToKeep
   }
 }
 @description('The resource IDs of the backup Policy created within volume.')

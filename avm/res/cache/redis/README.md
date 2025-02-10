@@ -245,8 +245,10 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       primaryAccessKeyName: 'custom-primaryAccessKey-name'
       primaryConnectionStringName: 'custom-primaryConnectionString-name'
+      primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
       secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
       secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+      secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
     }
   }
 }
@@ -277,8 +279,10 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "primaryAccessKeyName": "custom-primaryAccessKey-name",
         "primaryConnectionStringName": "custom-primaryConnectionString-name",
+        "primaryStackExchangeRedisConnectionStringName": "custom-primaryStackExchangeRedisConnectionString-name",
         "secondaryAccessKeyName": "custom-secondaryAccessKey-name",
-        "secondaryConnectionStringName": "custom-secondaryConnectionString-name"
+        "secondaryConnectionStringName": "custom-secondaryConnectionString-name",
+        "secondaryStackExchangeRedisConnectionStringName": "custom-secondaryStackExchangeRedisConnectionString-name"
       }
     }
   }
@@ -303,8 +307,10 @@ param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   primaryAccessKeyName: 'custom-primaryAccessKey-name'
   primaryConnectionStringName: 'custom-primaryConnectionString-name'
+  primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
   secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
   secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+  secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
 }
 ```
 
@@ -2110,8 +2116,10 @@ Key vault reference and secret settings for the module's secrets export.
 | :-- | :-- | :-- |
 | [`primaryAccessKeyName`](#parameter-secretsexportconfigurationprimaryaccesskeyname) | string | The primaryAccessKey secret name to create. |
 | [`primaryConnectionStringName`](#parameter-secretsexportconfigurationprimaryconnectionstringname) | string | The primaryConnectionString secret name to create. |
+| [`primaryStackExchangeRedisConnectionStringName`](#parameter-secretsexportconfigurationprimarystackexchangeredisconnectionstringname) | string | The primaryStackExchangeRedisConnectionString secret name to create. |
 | [`secondaryAccessKeyName`](#parameter-secretsexportconfigurationsecondaryaccesskeyname) | string | The secondaryAccessKey secret name to create. |
 | [`secondaryConnectionStringName`](#parameter-secretsexportconfigurationsecondaryconnectionstringname) | string | The secondaryConnectionString secret name to create. |
+| [`secondaryStackExchangeRedisConnectionStringName`](#parameter-secretsexportconfigurationsecondarystackexchangeredisconnectionstringname) | string | The secondaryStackExchangeRedisConnectionString secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -2137,6 +2145,14 @@ The primaryConnectionString secret name to create.
 - Type: string
 - MinValue: 1
 
+### Parameter: `secretsExportConfiguration.primaryStackExchangeRedisConnectionStringName`
+
+The primaryStackExchangeRedisConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 1
+
 ### Parameter: `secretsExportConfiguration.secondaryAccessKeyName`
 
 The secondaryAccessKey secret name to create.
@@ -2148,6 +2164,14 @@ The secondaryAccessKey secret name to create.
 ### Parameter: `secretsExportConfiguration.secondaryConnectionStringName`
 
 The secondaryConnectionString secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 1
+
+### Parameter: `secretsExportConfiguration.secondaryStackExchangeRedisConnectionStringName`
+
+The secondaryStackExchangeRedisConnectionString secret name to create.
 
 - Required: No
 - Type: string
