@@ -1,6 +1,6 @@
-# HCI Azure Host Deployment Bicep Module
+# HCI Assets for deployment validation
 
-This module is designed for use in testing Azure Stack HCI scenarios using nested virtualization on a VM deployed in Azure.
+The templates & scripts in this folder are designed to support the testing of Azure Stack HCI scenarios using nested virtualization on a VM deployed in Azure.
 
 The module creates an Azure VM, then uses a series of PowerShell Managed Run Commands and Deployment Scripts to prepare the host VM and deploy the nested Azure Stack HCI VMs. To simplify the design, the host VM is also configured as an AD domain controller, DNS server, DHCP server, and RRAS router, in addition to a Hyper-v host. The deployment is zero-touch to support pipeline deployments.
 
