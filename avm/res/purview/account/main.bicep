@@ -133,7 +133,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource account 'Microsoft.Purview/accounts@2024-04-01-preview' = {
+resource account 'Microsoft.Purview/accounts@2023-05-01-preview' = {
   name: name
   location: location
   tags: tags

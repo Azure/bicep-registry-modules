@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12964539547135625213"
+      "templateHash": "7317017157870194220"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account."
@@ -777,7 +777,7 @@
     },
     "account": {
       "type": "Microsoft.Purview/accounts",
-      "apiVersion": "2024-04-01-preview",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -4670,7 +4670,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('account', '2024-04-01-preview', 'full').location]"
+      "value": "[reference('account', '2023-05-01-preview', 'full').location]"
     },
     "managedResourceGroupName": {
       "type": "string",
@@ -4706,7 +4706,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('account', '2024-04-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('account', '2023-05-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "accountPrivateEndpoints": {
       "type": "array",
