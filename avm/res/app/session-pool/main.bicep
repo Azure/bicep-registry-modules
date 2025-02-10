@@ -233,6 +233,7 @@ type sessionContainerType = {
   resources: sessionContainerResourceType
 }
 
+@export()
 @description('Optional. Environment variable definition for a container. Only used with custom containers.')
 type sessionContainerEnvType = {
   @description('Required. Environment variable name.')
@@ -255,6 +256,7 @@ type sessionContainerResourceType = {
   memory: string
 }
 
+@export()
 @description('Optional. Container registry credentials. Only used with custom containers.')
 type sessionRegistryCredentialsType = {
   @description('Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system".')
@@ -270,6 +272,7 @@ type sessionRegistryCredentialsType = {
   username: string
 }
 
+@export()
 @description('Optional. Managed Identity settings for the session pool.')
 type managedIdentitySettingType = {
   @description('Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or "system" for system-assigned identity.')

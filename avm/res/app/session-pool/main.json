@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "818593744917288640"
+      "templateHash": "11243086501777108136"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool."
@@ -94,6 +94,7 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true,
         "description": "Optional. Environment variable definition for a container. Only used with custom containers."
       }
     },
@@ -149,6 +150,7 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true,
         "description": "Optional. Container registry credentials. Only used with custom containers."
       }
     },
@@ -169,6 +171,7 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true,
         "description": "Optional. Managed Identity settings for the session pool."
       }
     },
