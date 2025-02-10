@@ -66,51 +66,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      diagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
       // Only for testing purposes
       enablePurgeProtection: false
       enableRbacAuthorization: true
-      keys: [
-        {
-          attributes: {
-            enabled: true
-            exp: 1702648632
-            nbf: 10000
-          }
-          name: 'keyName'
-          rotationPolicy: {
-            attributes: {
-              expiryTime: 'P2Y'
-            }
-            lifetimeActions: [
-              {
-                trigger: {
-                  timeBeforeExpiry: 'P2M'
-                }
-                action: {
-                  type: 'Rotate'
-                }
-              }
-              {
-                trigger: {
-                  timeBeforeExpiry: 'P30D'
-                }
-                action: {
-                  type: 'Notify'
-                }
-              }
-            ]
-          }
-          keySize: 4096
-        }
-      ]
       networkAcls: {
         bypass: 'AzureServices'
         defaultAction: 'Deny'
@@ -125,19 +83,8 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           service: 'vault'
+          resourceGroupResourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/alsehr-pe-test'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        }
-      ]
-      secrets: [
-        {
-          attributes: {
-            enabled: true
-            exp: 1702648632
-            nbf: 10000
-          }
-          contentType: 'Something'
-          name: 'secretName'
-          value: 'secretValue'
         }
       ]
       softDeleteRetentionInDays: 7
