@@ -1,6 +1,5 @@
 metadata name = 'Container App Session Pool'
 metadata description = 'This module deploys a Container App Session Pool.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container App Session Pool.')
 param name string
