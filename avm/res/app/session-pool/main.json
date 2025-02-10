@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "2783273684876442294"
+      "templateHash": "306235006837619976"
     },
     "name": "Container App Session Pool",
-    "description": "This module deploys a Container App Session Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Container App Session Pool."
   },
   "definitions": {
     "sessionContainerType": {
@@ -157,25 +156,21 @@
       }
     },
     "managedIdentitySettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "identity": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or \"system\" for system-assigned identity."
-            }
-          },
-          "lifecycle": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: \"All\", \"Init\", \"Main\", \"None\"."
-            }
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or \"system\" for system-assigned identity."
+          }
+        },
+        "lifecycle": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: \"All\", \"Init\", \"Main\", \"None\"."
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "description": "Optional. Managed Identity settings for the session pool."
       }
@@ -426,7 +421,10 @@
       }
     },
     "managedIdentitySettings": {
-      "$ref": "#/definitions/managedIdentitySettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/managedIdentitySettingType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Settings for a Managed Identity that is assigned to the Session pool."
