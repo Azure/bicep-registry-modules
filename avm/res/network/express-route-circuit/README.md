@@ -581,7 +581,8 @@ Allow classic operations. You can connect to virtual networks in the classic dep
 
 ### Parameter: `authorizationNames`
 
-List of authorization names.
+List of names for ExpressRoute Circuit Authorizations to create. To fetch the `authorizationKey` for the authorization, use the existing resource reference for `Microsoft.Network expressRouteCircuits/authorizations`
+
 
 - Required: No
 - Type: array
