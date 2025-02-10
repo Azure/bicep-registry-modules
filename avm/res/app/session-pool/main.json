@@ -6,102 +6,98 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.92.45157",
-      "templateHash": "306235006837619976"
+      "templateHash": "818593744917288640"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool."
   },
   "definitions": {
     "sessionContainerType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "args": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Container start command arguments."
-            }
+      "type": "object",
+      "properties": {
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "command": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Container start command."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container start command arguments."
+          }
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "env": {
-            "$ref": "#/definitions/environmentVarType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Container environment variables."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container start command."
+          }
+        },
+        "env": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sessionContainerEnvType"
           },
-          "image": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Container image tag."
-            }
-          },
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Custom container name."
-            }
-          },
-          "resources": {
-            "$ref": "#/definitions/sessionContainerResourcesType",
-            "metadata": {
-              "description": "Required. Container resource requirements."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container environment variables."
+          }
+        },
+        "image": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Container image tag."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Custom container name."
+          }
+        },
+        "resources": {
+          "$ref": "#/definitions/sessionContainerResourceType",
+          "metadata": {
+            "description": "Required. Container resource requirements."
           }
         }
       },
-      "nullable": true,
       "metadata": {
+        "__bicep_export!": true,
         "description": "Optional. Custom container definition."
       }
     },
-    "environmentVarType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Environment variable name."
-            }
-          },
-          "secretRef": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Required if value is not set. Name of the Container App secret from which to pull the environment variable value."
-            }
-          },
-          "value": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Required if secretRef is not set. Non-secret environment variable value."
-            }
+    "sessionContainerEnvType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Environment variable name."
+          }
+        },
+        "secretRef": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Required if value is not set. Name of the Container App secret from which to pull the environment variable value."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Required if secretRef is not set. Non-secret environment variable value."
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "description": "Optional. Environment variable definition for a container. Only used with custom containers."
       }
     },
-    "sessionContainerResourcesType": {
+    "sessionContainerResourceType": {
       "type": "object",
       "properties": {
         "cpu": {
@@ -118,6 +114,7 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true,
         "description": "Optional. Container resource requirements. Only used with custom containers."
       }
     },
@@ -334,7 +331,11 @@
       }
     },
     "containers": {
-      "$ref": "#/definitions/sessionContainerType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/sessionContainerType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Custom container definitions. Only required if containerType is CustomContainer."
       }

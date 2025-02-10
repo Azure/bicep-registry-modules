@@ -47,7 +47,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
   params: {
     // Required parameters
     containerType: 'PythonLTS'
-    name: 'crmin001'
+    name: 'aspmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +71,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
       "value": "PythonLTS"
     },
     "name": {
-      "value": "crmin001"
+      "value": "aspmin001"
     },
     // Non-required parameters
     "location": {
@@ -93,7 +93,7 @@ using 'br/public:avm/res/app/session-pool:<version>'
 
 // Required parameters
 param containerType = 'PythonLTS'
-param name = 'crmin001'
+param name = 'aspmin001'
 // Non-required parameters
 param location = '<location>'
 ```

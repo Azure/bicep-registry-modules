@@ -12,7 +12,7 @@ param location string = resourceGroup().location
 param containerType string
 
 @description('Optional. Custom container definitions. Only required if containerType is CustomContainer.')
-param containers sessionContainerType
+param containers sessionContainerType[]?
 
 @description('Optional. Required if containerType == \'CustomContainer\'. Target port in containers for traffic from ingress. Only required if containerType is CustomContainer.')
 param targetIngressPort int?
@@ -194,17 +194,24 @@ resource sessionPool_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 
 @description('The name of the session pool.')
 output name string = sessionPool.name
+
 @description('The resource ID of the deployed session pool.')
 output resourceId string = sessionPool.id
 
 @description('The name of the resource group in which the session pool was created.')
 output resourceGroupName string = resourceGroup().name
+
 @description('The management endpoint of the session pool.')
 output managementEndpoint string = sessionPool.properties.poolManagementEndpoint
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = sessionPool.?identity.?principalId ?? ''
 
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
 @description('Optional. Custom container definition.')
 type sessionContainerType = {
   @description('Optional. Container start command arguments.')
@@ -214,7 +221,7 @@ type sessionContainerType = {
   command: string[]?
 
   @description('Optional. Container environment variables.')
-  env: environmentVarType?
+  env: sessionContainerEnvType[]?
 
   @description('Required. Container image tag.')
   image: string
@@ -223,11 +230,11 @@ type sessionContainerType = {
   name: string
 
   @description('Required. Container resource requirements.')
-  resources: sessionContainerResourcesType
-}[]?
+  resources: sessionContainerResourceType
+}
 
 @description('Optional. Environment variable definition for a container. Only used with custom containers.')
-type environmentVarType = {
+type sessionContainerEnvType = {
   @description('Required. Environment variable name.')
   name: string
 
@@ -236,10 +243,11 @@ type environmentVarType = {
 
   @description('Optional. Required if secretRef is not set. Non-secret environment variable value.')
   value: string?
-}[]?
+}
 
+@export()
 @description('Optional. Container resource requirements. Only used with custom containers.')
-type sessionContainerResourcesType = {
+type sessionContainerResourceType = {
   @description('Required. Required CPU in cores, e.g. 0.5.')
   cpu: string
 
