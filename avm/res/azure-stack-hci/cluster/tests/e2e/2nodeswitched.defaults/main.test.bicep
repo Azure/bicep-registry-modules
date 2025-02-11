@@ -32,7 +32,7 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' was registered in the subscription.')
+@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
 @secure()
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
