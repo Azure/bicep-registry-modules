@@ -115,6 +115,7 @@ function Invoke-ResourceRemoval {
                 $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
                 $guid = New-Guid
                 # PIM role assignments cannot be removed before 5 minutes from being created. Waiting for 5 minutes
+                Write-Verbose 'Waiting for 5 minutes before removing PIM role assignment' -Verbose
                 Start-Sleep -Seconds 300
                 $null = New-AzRoleEligibilityScheduleRequest -Name $guid `
                     -Scope $scope `
@@ -135,6 +136,7 @@ function Invoke-ResourceRemoval {
                 $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
                 $guid = New-Guid
                 # PIM role assignments cannot be removed before 5 minutes from being created. Waiting for 5 minutes
+                Write-Verbose 'Waiting for 5 minutes before removing PIM role assignment' -Verbose
                 Start-Sleep -Seconds 300
                 $null = New-AzRoleAssignmentScheduleRequest -Name $guid `
                     -Scope $scope `
