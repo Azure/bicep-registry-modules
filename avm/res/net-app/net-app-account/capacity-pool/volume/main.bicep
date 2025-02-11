@@ -168,7 +168,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location
@@ -195,6 +195,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
                 remoteVolumeRegion: remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
                 remoteVolumeResourceId: dataProtection.?replication!.remoteVolumeResourceId
                 replicationSchedule: dataProtection.?replication!.replicationSchedule
+                remotePath: dataProtection.?replication!.?remotePath
               }
             : {}
           backup: !empty(dataProtection.?backup)
@@ -283,6 +284,18 @@ type replicationType = {
 
   @description('Required. The replication schedule for the volume.')
   replicationSchedule: ('_10minutely' | 'daily' | 'hourly')
+
+  @description('Optional. The full path to a volume that is to be migrated into ANF. Required for Migration volumes.')
+  remotePath: {
+    @description('Required. The Path to a ONTAP Host.')
+    externalHostName: string
+
+    @description('Required. The name of a server on the ONTAP Host.')
+    serverName: string
+
+    @description('Required. The name of a volume on the server.')
+    volumeName: string
+  }?
 }
 
 @description('The type for the backup properties.')

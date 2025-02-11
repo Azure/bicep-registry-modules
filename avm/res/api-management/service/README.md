@@ -16,7 +16,7 @@ This module deploys an API Management Service. The default deployment is set to 
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2023-05-01-preview/service) |
+| `Microsoft.ApiManagement/service` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service) |
 | `Microsoft.ApiManagement/service/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis) |
 | `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/policies) |
@@ -223,6 +223,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
+    enableDeveloperPortal: true
     location: '<location>'
     sku: 'Developer'
   }
@@ -252,6 +253,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
+    "enableDeveloperPortal": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -277,6 +281,7 @@ param name = 'apisdev001'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
+param enableDeveloperPortal = true
 param location = '<location>'
 param sku = 'Developer'
 ```
@@ -1027,6 +1032,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
+    enableDeveloperPortal: true
     location: '<location>'
     sku: 'BasicV2'
   }
@@ -1056,6 +1062,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
+    "enableDeveloperPortal": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -1081,6 +1090,7 @@ param name = 'apisv2s001'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
+param enableDeveloperPortal = true
 param location = '<location>'
 param sku = 'BasicV2'
 ```
@@ -1768,6 +1778,7 @@ param tags = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableGateway`](#parameter-disablegateway) | bool | Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region. |
 | [`enableClientCertificate`](#parameter-enableclientcertificate) | bool | Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway. |
+| [`enableDeveloperPortal`](#parameter-enabledeveloperportal) | bool | Enable the Developer Portal. The developer portal is not supported on the Consumption SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hostnameConfigurations`](#parameter-hostnameconfigurations) | array | Custom hostname configuration of the API Management service. |
 | [`identityProviders`](#parameter-identityproviders) | array | Identity providers. |
@@ -2062,6 +2073,14 @@ Property only valid for an API Management service deployed in multiple locations
 ### Parameter: `enableClientCertificate`
 
 Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableDeveloperPortal`
+
+Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.
 
 - Required: No
 - Type: bool
