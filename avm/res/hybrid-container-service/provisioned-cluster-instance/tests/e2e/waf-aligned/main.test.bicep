@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Deploy Aks Arc in WAF aligned configuration'
+metadata description = 'This test deploys an Aks Arc.'
+
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-hybridcontainerservice.provisionedclusterinstances-${serviceShort}-rg'

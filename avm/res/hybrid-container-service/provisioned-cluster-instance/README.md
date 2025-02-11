@@ -29,10 +29,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Deploy Aks Arc in default configuration](#example-1-deploy-aks-arc-in-default-configuration)
+- [Deploy Aks Arc in WAF aligned configuration](#example-2-deploy-aks-arc-in-waf-aligned-configuration)
 
-### Example 1: _Defaults_
+### Example 1: _Deploy Aks Arc in default configuration_
+
+This test deploys an Aks Arc.
+
 
 <details>
 
@@ -103,7 +106,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _Deploy Aks Arc in WAF aligned configuration_
+
+This test deploys an Aks Arc.
+
 
 <details>
 
