@@ -17,7 +17,8 @@ Deploy a provisioned cluster instance.
 | :-- | :-- |
 | `Microsoft.HybridContainerService/provisionedClusterInstances` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2024-01-01/provisionedClusterInstances) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Kubernetes/connectedClusters` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-12-01-preview/connectedClusters) |
+| `Microsoft.Kubernetes/connectedClusters` | [2024-07-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2018-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2018-11-30/userAssignedIdentities) |
 | `Microsoft.Resources/deploymentScripts` | [2020-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2020-10-01/deploymentScripts) |
 
 ## Usage examples
@@ -42,12 +43,10 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
   name: 'provisionedClusterInstanceDeployment'
   params: {
     // Required parameters
-    customLocationId: ''
-    extendedLocationName: ''
-    logicalNetworkId: ''
+    customLocationId: '<customLocationId>'
+    logicalNetworkId: '<logicalNetworkId>'
     name: 'hcspcidef001'
     // Non-required parameters
-    keyVaultName: ''
     location: '<location>'
   }
 }
@@ -58,7 +57,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -67,26 +66,38 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
   "parameters": {
     // Required parameters
     "customLocationId": {
-      "value": ""
-    },
-    "extendedLocationName": {
-      "value": ""
+      "value": "<customLocationId>"
     },
     "logicalNetworkId": {
-      "value": ""
+      "value": "<logicalNetworkId>"
     },
     "name": {
       "value": "hcspcidef001"
     },
     // Non-required parameters
-    "keyVaultName": {
-      "value": ""
-    },
     "location": {
       "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>'
+
+// Required parameters
+param customLocationId = '<customLocationId>'
+param logicalNetworkId = '<logicalNetworkId>'
+param name = 'hcspcidef001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -103,12 +114,10 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
   name: 'provisionedClusterInstanceDeployment'
   params: {
     // Required parameters
-    customLocationId: ''
-    extendedLocationName: ''
-    logicalNetworkId: ''
+    customLocationId: '<customLocationId>'
+    logicalNetworkId: '<logicalNetworkId>'
     name: 'hcspciwaf001'
     // Non-required parameters
-    keyVaultName: ''
     location: '<location>'
   }
 }
@@ -119,7 +128,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -128,26 +137,38 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
   "parameters": {
     // Required parameters
     "customLocationId": {
-      "value": ""
-    },
-    "extendedLocationName": {
-      "value": ""
+      "value": "<customLocationId>"
     },
     "logicalNetworkId": {
-      "value": ""
+      "value": "<logicalNetworkId>"
     },
     "name": {
       "value": "hcspciwaf001"
     },
     // Non-required parameters
-    "keyVaultName": {
-      "value": ""
-    },
     "location": {
       "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>'
+
+// Required parameters
+param customLocationId = '<customLocationId>'
+param logicalNetworkId = '<logicalNetworkId>'
+param name = 'hcspciwaf001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -160,7 +181,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customLocationId`](#parameter-customlocationid) | string | The id of the Custom location that used to create hybrid aks. |
-| [`extendedLocationName`](#parameter-extendedlocationname) | string | The extended location name. |
 | [`logicalNetworkId`](#parameter-logicalnetworkid) | string | The id of the logical network that the AKS nodes will be connected to. |
 | [`name`](#parameter-name) | string | The name of the provisioned cluster instance. |
 
@@ -187,7 +207,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
 | [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`identityType`](#parameter-identitytype) | string | The identity type for the cluster. Allowed values: "SystemAssigned", "None" |
-| [`isExported`](#parameter-isexported) | bool | Indicates whether the resource is exported. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | The Kubernetes version for the cluster. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`nfsCsiDriverEnabled`](#parameter-nfscsidriverenabled) | bool | Enable or disable NFS CSI driver |
@@ -201,13 +220,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
 ### Parameter: `customLocationId`
 
 The id of the Custom location that used to create hybrid aks.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `extendedLocationName`
-
-The extended location name.
 
 - Required: Yes
 - Type: string
@@ -288,7 +300,7 @@ Agent pool configuration.
       maxCount: 5
       maxPods: 110
       minCount: 1
-      name: '[format(\'{0}-nodepool1\', parameters(\'name\'))]'
+      name: 'nodepool1'
       nodeLabels: {}
       nodeTaints: []
       osSKU: 'CBLMariner'
@@ -368,14 +380,6 @@ The identity type for the cluster. Allowed values: "SystemAssigned", "None"
     'SystemAssigned'
   ]
   ```
-
-### Parameter: `isExported`
-
-Indicates whether the resource is exported.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `kubernetesVersion`
 
@@ -459,7 +463,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `res/kubernetes/connected-clusters` | Local reference |
+| `avm/res/kubernetes/connected-clusters` | Local reference |
 
 ## Data Collection
 
