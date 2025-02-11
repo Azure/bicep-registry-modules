@@ -135,7 +135,7 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
         ? [
             {
               name: 'AcceleratedNetworking'
-              value: isAcceleratedNetworkSupported
+              value: '${isAcceleratedNetworkSupported}'
             }
           ]
         : []),
