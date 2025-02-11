@@ -12,7 +12,7 @@ This module deploys a Log Analytics Workspace Linked Service.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedServices) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedServices) |
 
 ## Parameters
 
