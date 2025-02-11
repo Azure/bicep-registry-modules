@@ -171,6 +171,12 @@ module testDeployment '../../../main.bicep' = {
         }
       ]
       subnetMask: '255.255.255.0'
+      driftControlEnforced: true
+      smbSigningEnforced: true
+      smbClusterEncryption: true
+      sideChannelMitigationEnforced: true
+      bitlockerBootVolume: true
+      bitlockerDataVolumes: true
     }
   }
 }
