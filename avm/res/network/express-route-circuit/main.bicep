@@ -60,6 +60,9 @@ param location string = resourceGroup().location
 @description('Optional. Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true.')
 param allowClassicOperations bool = false
 
+@description('Optional. List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`.')
+param authorizationNames string[] = []
+
 @description('Optional. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null.')
 param bandwidthInGbps int = 0
 
@@ -143,6 +146,11 @@ resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2023-04-01'
   }
   properties: {
     allowClassicOperations: allowClassicOperations
+    authorizations: [
+      for authorizationName in authorizationNames: {
+        name: authorizationName
+      }
+    ]
     globalReachEnabled: globalReachEnabled
     bandwidthInGbps: bandwidthInGbps != 0 ? bandwidthInGbps : null
     expressRoutePort: !empty(expressRoutePortResourceId)
@@ -244,6 +252,9 @@ output name string = expressRouteCircuit.name
 
 @description('The service key of the express route circuit.')
 output serviceKey string = expressRouteCircuit.properties.serviceKey
+
+@description('The service provider provisioning state of the express route circuit.')
+output serviceProviderProvisioningState string = expressRouteCircuit.properties.serviceProviderProvisioningState
 
 @description('The location the resource was deployed into.')
 output location string = expressRouteCircuit.location
