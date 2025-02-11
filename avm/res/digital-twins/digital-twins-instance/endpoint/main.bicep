@@ -77,8 +77,8 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
           authenticationType: 'KeyBased'
           // Should use the commented code for simplification (allows one less user input), but this introduces a bug where all deployments not using the eventGridTopic resourceId will fail as they cannot resolve the dependency (that they're not using). Asking for the TopicEndpoints is a workaround.
           // Ref: https://github.com/Azure/bicep/issues/15443
-          // TopicEndpoint: eventGridTopic.properties.endpoint // Introduces a breaking dependency. Would be value: E.g., https://dep-dtdmax-evgt-01.eastus-1.eventgrid.azure.net/api/events
-          TopicEndpoint: properties.eventGridTopicEndpoint
+          TopicEndpoint: eventGridTopic.properties.endpoint // Introduces a breaking dependency. Would be value: E.g., https://dep-dtdmax-evgt-01.eastus-1.eventgrid.azure.net/api/events
+          // TopicEndpoint: properties.eventGridTopicEndpoint
           accessKey1: eventGridTopic.listkeys().key1
           accessKey2: eventGridTopic.listkeys().key2
         }
