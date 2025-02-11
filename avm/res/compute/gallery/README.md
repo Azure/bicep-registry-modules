@@ -19,7 +19,7 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Compute/galleries` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries) |
 | `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
+| `Microsoft.Compute/galleries/images` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/images) |
 
 ## Usage examples
 
@@ -144,6 +144,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     description: 'This is a test deployment.'
     images: [
       {
+        allowUpdateImage: true
         architecture: 'x64'
         description: 'testDescription'
         endOfLife: '2033-01-01'
@@ -169,6 +170,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         releaseNoteUri: 'https://testReleaseNoteUri.com'
       }
       {
+        allowUpdateImage: false
         hyperVGeneration: 'V2'
         identifier: {
           offer: 'WindowsServer'
@@ -377,6 +379,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "images": {
       "value": [
         {
+          "allowUpdateImage": true,
           "architecture": "x64",
           "description": "testDescription",
           "endOfLife": "2033-01-01",
@@ -402,6 +405,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "releaseNoteUri": "https://testReleaseNoteUri.com"
         },
         {
+          "allowUpdateImage": false,
           "hyperVGeneration": "V2",
           "identifier": {
             "offer": "WindowsServer",
@@ -610,6 +614,7 @@ param applications = [
 param description = 'This is a test deployment.'
 param images = [
   {
+    allowUpdateImage: true
     architecture: 'x64'
     description: 'testDescription'
     endOfLife: '2033-01-01'
@@ -635,6 +640,7 @@ param images = [
     releaseNoteUri: 'https://testReleaseNoteUri.com'
   }
   {
+    allowUpdateImage: false
     hyperVGeneration: 'V2'
     identifier: {
       offer: 'WindowsServer'
@@ -1296,6 +1302,7 @@ Images to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowUpdateImage`](#parameter-imagesallowupdateimage) | bool | Must be set to true if the gallery image features are being updated. |
 | [`architecture`](#parameter-imagesarchitecture) | string | The architecture of the image. Applicable to OS disks only. |
 | [`description`](#parameter-imagesdescription) | string | The description of this gallery image definition resource. This property is updatable. |
 | [`endOfLife`](#parameter-imagesendoflife) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
@@ -1381,6 +1388,13 @@ This property allows you to specify the type of the OS that is included in the d
     'Windows'
   ]
   ```
+
+### Parameter: `images.allowUpdateImage`
+
+Must be set to true if the gallery image features are being updated.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `images.architecture`
 

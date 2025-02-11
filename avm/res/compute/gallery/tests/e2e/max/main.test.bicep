@@ -91,6 +91,7 @@ module testDeployment '../../../main.bicep' = [
       images: [
         {
           name: '${namePrefix}-az-imgd-ws-001'
+          allowUpdateImage: true
           hyperVGeneration: 'V1'
           identifier: {
             publisher: 'MicrosoftWindowsServer'
@@ -114,6 +115,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-az-imgd-ws-002'
+          allowUpdateImage: false
           hyperVGeneration: 'V2'
           identifier: {
             publisher: 'MicrosoftWindowsServer'

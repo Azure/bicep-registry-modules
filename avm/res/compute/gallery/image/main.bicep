@@ -52,6 +52,9 @@ param isAcceleratedNetworkSupported bool?
 @sys.description('Optional. Specifiy if the image supports hibernation.')
 param isHibernateSupported bool?
 
+@sys.description('Optional. Must be set to true if the gallery image features are being updated.')
+param allowUpdateImage bool?
+
 @sys.description('Optional. The architecture of the image. Applicable to OS disks only.')
 param architecture ('x64' | 'Arm64')?
 
@@ -117,12 +120,13 @@ resource gallery 'Microsoft.Compute/galleries@2023-07-03' existing = {
   name: galleryName
 }
 
-resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
+resource image 'Microsoft.Compute/galleries/images@2024-03-03' = {
   name: name
   parent: gallery
   location: location
   tags: tags
   properties: {
+    allowUpdateImage: allowUpdateImage != null ? allowUpdateImage : null
     architecture: architecture
     description: description
     disallowed: {
@@ -134,7 +138,7 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
       (isAcceleratedNetworkSupported != null // Accelerated network is not set by default and must not be set for unsupported skus
         ? [
             {
-              name: 'AcceleratedNetworking'
+              name: 'IsAcceleratedNetworkSupported'
               value: '${isAcceleratedNetworkSupported}'
             }
           ]

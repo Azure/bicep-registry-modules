@@ -168,6 +168,7 @@ module galleries_images 'image/main.bicep' = [
       location: image.?location ?? location
       galleryName: gallery.name
       description: image.?description
+      allowUpdateImage: image.?allowUpdateImage
       osType: image.osType
       osState: image.osState
       identifier: image.identifier
@@ -225,6 +226,9 @@ type imageType = {
 
   @sys.description('Optional. The description of this gallery image definition resource. This property is updatable.')
   description: string?
+
+  @sys.description('Optional. Must be set to true if the gallery image features are being updated.')
+  allowUpdateImage: bool?
 
   @sys.description('Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image.')
   osType: ('Linux' | 'Windows')

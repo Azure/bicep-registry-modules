@@ -13,7 +13,7 @@ This module deploys an Azure Compute Gallery Image Definition.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
+| `Microsoft.Compute/galleries/images` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/images) |
 
 ## Parameters
 
@@ -36,6 +36,7 @@ This module deploys an Azure Compute Gallery Image Definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowUpdateImage`](#parameter-allowupdateimage) | bool | Must be set to true if the gallery image features are being updated. |
 | [`architecture`](#parameter-architecture) | string | The architecture of the image. Applicable to OS disks only. |
 | [`description`](#parameter-description) | string | The description of this gallery image definition resource. This property is updatable. |
 | [`disallowed`](#parameter-disallowed) | object | Describes the disallowed disk types. |
@@ -131,6 +132,13 @@ The name of the parent Azure Shared Image Gallery. Required if the template is u
 
 - Required: Yes
 - Type: string
+
+### Parameter: `allowUpdateImage`
+
+Must be set to true if the gallery image features are being updated.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `architecture`
 
