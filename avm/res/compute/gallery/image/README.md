@@ -213,7 +213,6 @@ Specify if the image supports accelerated networking.
 
 - Required: No
 - Type: bool
-- Default: `True`
 
 ### Parameter: `isHibernateSupported`
 

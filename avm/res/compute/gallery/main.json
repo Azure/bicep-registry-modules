@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8716597573060065028"
+      "version": "0.33.93.31351",
+      "templateHash": "10262602523402140606"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
@@ -757,8 +757,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7761447372947910331"
+              "version": "0.33.93.31351",
+              "templateHash": "15930204168902038752"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application."
@@ -1201,8 +1201,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13858460997059168010"
+              "version": "0.33.93.31351",
+              "templateHash": "5516871841308676858"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -1481,7 +1481,7 @@
             },
             "isAcceleratedNetworkSupported": {
               "type": "bool",
-              "defaultValue": true,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specify if the image supports accelerated networking."
               }
@@ -1596,7 +1596,7 @@
                 },
                 "endOfLifeDate": "[parameters('endOfLifeDate')]",
                 "eula": "[parameters('eula')]",
-                "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
+                "features": "[union(if(not(equals(parameters('isAcceleratedNetworkSupported'), null())), createArray(createObject('name', 'AcceleratedNetworking', 'value', parameters('isAcceleratedNetworkSupported'))), createArray()), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
                 "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(coalesce(parameters('securityType'), ''))), 'V2', 'V1'))]",
                 "identifier": {
                   "publisher": "[parameters('identifier').publisher]",

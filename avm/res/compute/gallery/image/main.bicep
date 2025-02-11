@@ -47,7 +47,7 @@ param securityType (
   | 'ConfidentialVMSupported')?
 
 @sys.description('Optional. Specify if the image supports accelerated networking.')
-param isAcceleratedNetworkSupported bool = true
+param isAcceleratedNetworkSupported bool?
 
 @sys.description('Optional. Specifiy if the image supports hibernation.')
 param isHibernateSupported bool?
@@ -131,12 +131,14 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
     endOfLifeDate: endOfLifeDate
     eula: eula
     features: union(
-      [
-        {
-          name: 'IsAcceleratedNetworkSupported'
-          value: '${isAcceleratedNetworkSupported}'
-        }
-      ],
+      (isAcceleratedNetworkSupported != null // Accelerated network is not set by default and must not be set for unsupported skus
+        ? [
+            {
+              name: 'AcceleratedNetworking'
+              value: isAcceleratedNetworkSupported
+            }
+          ]
+        : []),
       (securityType != null && securityType != 'Standard' // Standard is the default and is not set
         ? [
             {
