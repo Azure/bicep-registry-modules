@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
 param dnsPrefix string = name
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
@@ -170,6 +170,15 @@ param webApplicationRoutingEnabled bool = false
 @description('Optional. Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
 param dnsZoneResourceId string?
 
+@description('Optional. Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
+@allowed([
+  'AnnotationControlled'
+  'External'
+  'Internal'
+  'None'
+])
+param defaultIngressControllerType string?
+
 @description('Optional. Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.')
 param enableDnsZoneContributorRoleAssignment bool = true
 
@@ -328,12 +337,15 @@ param enableStorageProfileSnapshotController bool = false
 @description('Optional. The support plan for the Managed Cluster.')
 param supportPlan string = 'KubernetesOfficial'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Specifies whether the OMS agent is enabled.')
 param omsAgentEnabled bool = true
+
+@description('Optional. Specifies whether the OMS agent is using managed identity authentication.')
+param omsAgentUseAADAuth bool = false
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
 param monitoringWorkspaceResourceId string?
@@ -341,11 +353,11 @@ param monitoringWorkspaceResourceId string?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -533,7 +545,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -622,6 +634,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
               any(dnsZoneResourceId)
             ]
           : null
+        nginx: !empty(defaultIngressControllerType)
+          ? {
+              defaultIngressControllerType: any(defaultIngressControllerType)
+            }
+          : null
       }
     }
     addonProfiles: {
@@ -643,6 +660,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
         config: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
           ? {
               logAnalyticsWorkspaceResourceID: monitoringWorkspaceResourceId!
+              ...(omsAgentUseAADAuth
+                ? {
+                    useAADAuth: 'true'
+                  }
+                : {})
             }
           : null
       }
@@ -911,7 +933,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(fluxExtension)) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.5' = if (!empty(fluxExtension)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     clusterName: managedCluster.name

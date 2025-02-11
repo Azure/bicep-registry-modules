@@ -388,7 +388,7 @@ output resourceId string = dataFactory.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = dataFactory.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = dataFactory.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = dataFactory.location

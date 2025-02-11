@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7497371071073742378"
+      "version": "0.33.13.18514",
+      "templateHash": "5409964564427816888"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -701,8 +701,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8275628450081231495"
+              "version": "0.33.13.18514",
+              "templateHash": "6117646567314030149"
             },
             "name": "Static Web App Site Linked Backends",
             "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
@@ -802,8 +802,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12709536246529127181"
+              "version": "0.33.13.18514",
+              "templateHash": "7998567469554918663"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -896,8 +896,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12709536246529127181"
+              "version": "0.33.13.18514",
+              "templateHash": "7998567469554918663"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -991,8 +991,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "2208155866464160058"
+              "version": "0.33.13.18514",
+              "templateHash": "3686358111815300788"
             },
             "name": "Static Web App Site Custom Domains",
             "description": "This module deploys a Static Web App Site Custom Domain."
@@ -1065,6 +1065,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-staticSite-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
