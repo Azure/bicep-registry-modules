@@ -178,5 +178,10 @@ module testDeployment '../../../main.bicep' = {
       bitlockerBootVolume: true
       bitlockerDataVolumes: true
     }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
