@@ -27,7 +27,7 @@ var enforcedLocation = 'northeurope'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -123,9 +123,5 @@ module testDeployment '../../../main.bicep' = [
         3
       ]
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
