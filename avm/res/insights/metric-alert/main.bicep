@@ -1,6 +1,5 @@
 metadata name = 'Metric Alerts'
 metadata description = 'This module deploys a Metric Alert.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the alert.')
 param name string

@@ -1,6 +1,5 @@
 metadata name = 'Power BI Dedicated Capacities'
 metadata description = 'This module deploys a Power BI Dedicated Capacity.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the PowerBI Embedded.')
 param name string

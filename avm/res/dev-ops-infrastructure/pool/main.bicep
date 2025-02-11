@@ -1,6 +1,5 @@
 metadata name = 'Managed DevOps Pool'
 metadata description = 'This module deploys the Managed DevOps Pool resource.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============ //
 // Parameters   //

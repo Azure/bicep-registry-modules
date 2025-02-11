@@ -1,6 +1,5 @@
 metadata name = 'Service Bus Namespace Topic Authorization Rules'
 metadata description = 'This module deploys a Service Bus Namespace Topic Authorization Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the service bus namespace topic.')
 param name string

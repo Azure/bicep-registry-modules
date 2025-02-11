@@ -1,6 +1,5 @@
 metadata name = 'SQL Managed Instance Encryption Protector'
 metadata description = 'This module deploys a SQL Managed Instance Encryption Protector.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment.')
 param managedInstanceName string

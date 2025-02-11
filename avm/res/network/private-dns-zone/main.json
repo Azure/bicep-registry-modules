@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "5152250446888543349"
+      "version": "0.32.4.45862",
+      "templateHash": "2710025845349133598"
     },
     "name": "Private DNS Zones",
-    "description": "This module deploys a Private DNS zone.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Private DNS zone."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -632,6 +631,17 @@
             "metadata": {
               "description": "Optional. Resource tags."
             }
+          },
+          "resolutionPolicy": {
+            "type": "string",
+            "allowedValues": [
+              "Default",
+              "NxDomainRedirect"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resolution type of the private-dns-zone fallback machanism."
+            }
           }
         }
       },
@@ -854,12 +864,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1641889417618452692"
+              "version": "0.32.4.45862",
+              "templateHash": "12329988072380606270"
             },
             "name": "Private DNS Zone A record",
-            "description": "This module deploys a Private DNS Zone A record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone A record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1010,10 +1019,7 @@
                 "aRecords": "[parameters('aRecords')]",
                 "metadata": "[parameters('metadata')]",
                 "ttl": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+              }
             },
             "A_roleAssignments": {
               "copy": {
@@ -1107,12 +1113,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17163414995652446126"
+              "version": "0.32.4.45862",
+              "templateHash": "18144761159622341175"
             },
             "name": "Private DNS Zone AAAA record",
-            "description": "This module deploys a Private DNS Zone AAAA record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone AAAA record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1263,10 +1268,7 @@
                 "aaaaRecords": "[parameters('aaaaRecords')]",
                 "metadata": "[parameters('metadata')]",
                 "ttl": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+              }
             },
             "AAAA_roleAssignments": {
               "copy": {
@@ -1360,12 +1362,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2493714129104385633"
+              "version": "0.32.4.45862",
+              "templateHash": "8900024794567849685"
             },
             "name": "Private DNS Zone CNAME record",
-            "description": "This module deploys a Private DNS Zone CNAME record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone CNAME record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1516,10 +1517,7 @@
                 "cnameRecord": "[parameters('cnameRecord')]",
                 "metadata": "[parameters('metadata')]",
                 "ttl": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+              }
             },
             "CNAME_roleAssignments": {
               "copy": {
@@ -1613,12 +1611,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10928449924272756679"
+              "version": "0.32.4.45862",
+              "templateHash": "10186845181379684291"
             },
             "name": "Private DNS Zone MX record",
-            "description": "This module deploys a Private DNS Zone MX record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone MX record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1769,10 +1766,7 @@
                 "metadata": "[parameters('metadata')]",
                 "mxRecords": "[parameters('mxRecords')]",
                 "ttl": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+              }
             },
             "MX_roleAssignments": {
               "copy": {
@@ -1866,12 +1860,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13191587152357386110"
+              "version": "0.32.4.45862",
+              "templateHash": "12397116547796665355"
             },
             "name": "Private DNS Zone PTR record",
-            "description": "This module deploys a Private DNS Zone PTR record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone PTR record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2022,10 +2015,7 @@
                 "metadata": "[parameters('metadata')]",
                 "ptrRecords": "[parameters('ptrRecords')]",
                 "ttl": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+              }
             },
             "PTR_roleAssignments": {
               "copy": {
@@ -2119,12 +2109,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12872700379964561295"
+              "version": "0.32.4.45862",
+              "templateHash": "9828503900264294678"
             },
             "name": "Private DNS Zone SOA record",
-            "description": "This module deploys a Private DNS Zone SOA record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone SOA record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2275,10 +2264,7 @@
                 "metadata": "[parameters('metadata')]",
                 "soaRecord": "[parameters('soaRecord')]",
                 "ttl": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+              }
             },
             "SOA_roleAssignments": {
               "copy": {
@@ -2372,12 +2358,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12918383495773487180"
+              "version": "0.32.4.45862",
+              "templateHash": "9015292509771221683"
             },
             "name": "Private DNS Zone SRV record",
-            "description": "This module deploys a Private DNS Zone SRV record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone SRV record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2528,10 +2513,7 @@
                 "metadata": "[parameters('metadata')]",
                 "srvRecords": "[parameters('srvRecords')]",
                 "ttl": "[parameters('ttl')]"
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+              }
             },
             "SRV_roleAssignments": {
               "copy": {
@@ -2625,12 +2607,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "128006490354221158"
+              "version": "0.32.4.45862",
+              "templateHash": "816236401965037598"
             },
             "name": "Private DNS Zone TXT record",
-            "description": "This module deploys a Private DNS Zone TXT record.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone TXT record."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2781,10 +2762,7 @@
                 "metadata": "[parameters('metadata')]",
                 "ttl": "[parameters('ttl')]",
                 "txtRecords": "[parameters('txtRecords')]"
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+              }
             },
             "TXT_roleAssignments": {
               "copy": {
@@ -2869,6 +2847,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "resolutionPolicy": {
+            "value": "[tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'resolutionPolicy')]"
           }
         },
         "template": {
@@ -2878,12 +2859,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1713449351614683457"
+              "version": "0.32.4.45862",
+              "templateHash": "15937807282215500764"
             },
             "name": "Private DNS Zone Virtual Network Link",
-            "description": "This module deploys a Private DNS Zone Virtual Network Link.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS Zone Virtual Network Link."
           },
           "parameters": {
             "privateDnsZoneName": {
@@ -2925,6 +2905,13 @@
               "metadata": {
                 "description": "Required. Link to another virtual network resource ID."
               }
+            },
+            "resolutionPolicy": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resolution policy on the virtual network link. Only applicable for virtual network links to privatelink zones, and for A,AAAA,CNAME queries. When set to `NxDomainRedirect`, Azure DNS resolver falls back to public resolution if private dns query resolution results in non-existent domain response. `Default` is configured as the default option."
+              }
             }
           },
           "resources": {
@@ -2936,7 +2923,7 @@
             },
             "virtualNetworkLink": {
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-              "apiVersion": "2020-06-01",
+              "apiVersion": "2024-06-01",
               "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2944,11 +2931,9 @@
                 "registrationEnabled": "[parameters('registrationEnabled')]",
                 "virtualNetwork": {
                   "id": "[parameters('virtualNetworkResourceId')]"
-                }
-              },
-              "dependsOn": [
-                "privateDnsZone"
-              ]
+                },
+                "resolutionPolicy": "[parameters('resolutionPolicy')]"
+              }
             }
           },
           "outputs": {
@@ -2978,7 +2963,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('virtualNetworkLink', '2020-06-01', 'full').location]"
+              "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
             }
           }
         }

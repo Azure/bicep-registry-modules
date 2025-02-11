@@ -5,14 +5,73 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "12420339026638684809"
+      "version": "0.33.93.31351",
+      "templateHash": "2058460323623594433"
     },
     "name": "Storage Account blob Services",
-    "description": "This module deploys a Storage Account Blob Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Blob Service."
   },
   "definitions": {
+    "corsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a cors rule."
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -131,7 +190,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -192,9 +251,12 @@
     },
     "corsRules": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/corsRuleType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service."
+        "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
       }
     },
     "defaultServiceVersion": {
@@ -250,7 +312,7 @@
     },
     "restorePolicyDays": {
       "type": "int",
-      "defaultValue": 6,
+      "defaultValue": 7,
       "minValue": 1,
       "metadata": {
         "description": "Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days."
@@ -296,9 +358,7 @@
           "days": "[parameters('containerDeleteRetentionPolicyDays')]",
           "allowPermanentDelete": "[if(equals(parameters('containerDeleteRetentionPolicyEnabled'), true()), parameters('containerDeleteRetentionPolicyAllowPermanentDelete'), null())]"
         },
-        "cors": {
-          "corsRules": "[parameters('corsRules')]"
-        },
+        "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]",
         "defaultServiceVersion": "[if(not(empty(parameters('defaultServiceVersion'))), parameters('defaultServiceVersion'), null())]",
         "deleteRetentionPolicy": {
           "enabled": "[parameters('deleteRetentionPolicyEnabled')]",
@@ -412,12 +472,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "2340678191837281561"
+              "version": "0.33.93.31351",
+              "templateHash": "2991444340097371621"
             },
             "name": "Storage Account Blob Containers",
-            "description": "This module deploys a Storage Account Blob Container.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Blob Container."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -491,7 +550,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -625,10 +684,7 @@
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts/blobServices",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]",
-              "dependsOn": [
-                "storageAccount"
-              ]
+              "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]"
             },
             "storageAccount": {
               "existing": true,
@@ -648,10 +704,7 @@
                 "immutableStorageWithVersioning": "[if(equals(parameters('immutableStorageWithVersioningEnabled'), true()), createObject('enabled', parameters('immutableStorageWithVersioningEnabled')), null())]",
                 "metadata": "[parameters('metadata')]",
                 "publicAccess": "[parameters('publicAccess')]"
-              },
-              "dependsOn": [
-                "storageAccount::blobServices"
-              ]
+              }
             },
             "container_roleAssignments": {
               "copy": {
@@ -708,12 +761,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "17642721918788484059"
+                      "version": "0.33.93.31351",
+                      "templateHash": "8061556339565534458"
                     },
                     "name": "Storage Account Blob Container Immutability Policies",
-                    "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Storage Account Blob Container Immutability Policy."
                   },
                   "parameters": {
                     "storageAccountName": {
@@ -789,8 +841,7 @@
                 }
               },
               "dependsOn": [
-                "container",
-                "storageAccount"
+                "container"
               ]
             }
           },
@@ -820,8 +871,7 @@
         }
       },
       "dependsOn": [
-        "blobServices",
-        "storageAccount"
+        "blobServices"
       ]
     }
   },

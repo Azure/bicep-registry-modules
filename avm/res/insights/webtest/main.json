@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "5525260561297557547"
+      "version": "0.32.4.45862",
+      "templateHash": "13500385176780435448"
     },
     "name": "Web Tests",
-    "description": "This module deploys a Web Test.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Web Test."
   },
   "definitions": {
     "lockType": {

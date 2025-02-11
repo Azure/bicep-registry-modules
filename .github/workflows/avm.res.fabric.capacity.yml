@@ -31,8 +31,8 @@ on:
       - ".github/workflows/avm.res.fabric.capacity.yml"
       - "avm/res/fabric/capacity/**"
       - "avm/res/fabric/capacity/topic/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

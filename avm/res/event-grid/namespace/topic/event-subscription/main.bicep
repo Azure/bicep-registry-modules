@@ -1,6 +1,5 @@
 metadata name = 'Event Subscriptions'
 metadata description = 'This module deploys an Event Subscription.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string

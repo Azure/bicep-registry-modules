@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "5783764026071462654"
+      "version": "0.33.13.18514",
+      "templateHash": "13579387788541405387"
     },
     "name": "Event Grid Namespaces",
-    "description": "This module deploys an Event Grid Namespace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Grid Namespace."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -1615,12 +1614,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "13432369313513953808"
+              "version": "0.33.13.18514",
+              "templateHash": "15793214931835923034"
             },
             "name": "Eventgrid Namespace Topics",
-            "description": "This module deploys an Eventgrid Namespace Topic.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Eventgrid Namespace Topic."
           },
           "definitions": {
             "lockType": {
@@ -1817,10 +1815,7 @@
                 "eventRetentionInDays": "[parameters('eventRetentionInDays')]",
                 "inputSchema": "[parameters('inputSchema')]",
                 "publisherType": "[parameters('publisherType')]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             },
             "topic_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1901,12 +1896,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "17089589089044607764"
+                      "version": "0.33.13.18514",
+                      "templateHash": "17184382679184813652"
                     },
                     "name": "Event Subscriptions",
-                    "description": "This module deploys an Event Subscription.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Event Subscription."
                   },
                   "definitions": {
                     "roleAssignmentType": {
@@ -2059,10 +2053,7 @@
                       "existing": true,
                       "type": "Microsoft.EventGrid/namespaces/topics",
                       "apiVersion": "2023-12-15-preview",
-                      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]",
-                      "dependsOn": [
-                        "namespace"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
                     },
                     "namespace": {
                       "existing": true,
@@ -2078,10 +2069,7 @@
                         "deliveryConfiguration": "[parameters('deliveryConfiguration')]",
                         "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
                         "filtersConfiguration": "[parameters('filtersConfiguration')]"
-                      },
-                      "dependsOn": [
-                        "namespace::topic"
-                      ]
+                      }
                     },
                     "eventSubscription_roleAssignments": {
                       "copy": {
@@ -2132,7 +2120,6 @@
                 }
               },
               "dependsOn": [
-                "namespace",
                 "topic"
               ]
             }
@@ -2201,12 +2188,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10521341575239164612"
+              "version": "0.33.13.18514",
+              "templateHash": "16684000080098402376"
             },
             "name": "Eventgrid Namespace CA Certificates",
-            "description": "This module deploys an Eventgrid Namespace CA Certificate.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Eventgrid Namespace CA Certificate."
           },
           "parameters": {
             "namespaceName": {
@@ -2249,10 +2235,7 @@
               "properties": {
                 "description": "[parameters('description')]",
                 "encodedCertificate": "[parameters('encodedCertificate')]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2331,12 +2314,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "18108409387147428195"
+              "version": "0.33.13.18514",
+              "templateHash": "11246395673519136496"
             },
             "name": "Eventgrid Namespace Clients",
-            "description": "This module deploys an Eventgrid Namespace Client.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Eventgrid Namespace Client."
           },
           "parameters": {
             "namespaceName": {
@@ -2427,10 +2409,7 @@
                   "allowedThumbprints": "[if(equals(parameters('clientCertificateAuthenticationValidationSchema'), 'ThumbprintMatch'), parameters('clientCertificateAuthenticationAllowedThumbprints'), null())]"
                 },
                 "state": "[parameters('state')]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2497,12 +2476,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "16390720769511049629"
+              "version": "0.33.13.18514",
+              "templateHash": "15188233906898213813"
             },
             "name": "Eventgrid Namespace Client Groups",
-            "description": "This module deploys an Eventgrid Namespace Client Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Eventgrid Namespace Client Group."
           },
           "parameters": {
             "namespaceName": {
@@ -2545,10 +2523,7 @@
               "properties": {
                 "description": "[parameters('description')]",
                 "query": "[parameters('query')]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2618,12 +2593,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "9421201119756189566"
+              "version": "0.33.13.18514",
+              "templateHash": "16328606795351825014"
             },
             "name": "Eventgrid Namespace Topic Spaces",
-            "description": "This module deploys an Eventgrid Namespace Topic Space.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Eventgrid Namespace Topic Space."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2772,10 +2746,7 @@
               "properties": {
                 "description": "[parameters('description')]",
                 "topicTemplates": "[parameters('topicTemplates')]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             },
             "topicSpace_roleAssignments": {
               "copy": {
@@ -2870,12 +2841,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1634258312310183641"
+              "version": "0.33.13.18514",
+              "templateHash": "2140320336515533966"
             },
             "name": "Eventgrid Namespace Permissions Bindings",
-            "description": "This module deploys an Eventgrid Namespace Permission Binding.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Eventgrid Namespace Permission Binding."
           },
           "parameters": {
             "namespaceName": {
@@ -2936,10 +2906,7 @@
                 "description": "[parameters('description')]",
                 "permission": "[parameters('permission')]",
                 "topicSpaceName": "[parameters('topicSpaceName')]"
-              },
-              "dependsOn": [
-                "namespace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3005,10 +2972,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('namespace', '2023-12-15-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('namespace', '2023-12-15-preview', 'full'), 'identity'), 'principalId')]"
     },
     "topicResourceIds": {
       "type": "array",

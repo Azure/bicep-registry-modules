@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1086876492460058037"
+      "version": "0.32.4.45862",
+      "templateHash": "17484476736436996858"
     },
     "name": "ExpressRoute Circuits",
-    "description": "This module deploys an Express Route Circuit.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Express Route Circuit."
   },
   "definitions": {
     "lockType": {

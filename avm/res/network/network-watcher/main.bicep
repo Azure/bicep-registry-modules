@@ -1,6 +1,5 @@
 metadata name = 'Network Watchers'
 metadata description = 'This module deploys a Network Watcher.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Name of the Network Watcher resource (hidden).')
 @minLength(1)
@@ -75,7 +74,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource networkWatcher 'Microsoft.Network/networkWatchers@2023-04-01' = {
+resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -113,15 +112,14 @@ module networkWatcher_connectionMonitors 'connection-monitor/main.bicep' = [
   for (connectionMonitor, index) in connectionMonitors: {
     name: '${uniqueString(deployment().name, location)}-NW-ConnectionMonitor-${index}'
     params: {
-      endpoints: contains(connectionMonitor, 'endpoints') ? connectionMonitor.endpoints : []
+      tags: tags
+      endpoints: connectionMonitor.?endpoints ?? []
       name: connectionMonitor.name
       location: location
       networkWatcherName: networkWatcher.name
-      testConfigurations: contains(connectionMonitor, 'testConfigurations') ? connectionMonitor.testConfigurations : []
-      testGroups: contains(connectionMonitor, 'testGroups') ? connectionMonitor.testGroups : []
-      workspaceResourceId: contains(connectionMonitor, 'workspaceResourceId')
-        ? connectionMonitor.workspaceResourceId
-        : ''
+      testConfigurations: connectionMonitor.?testConfigurations ?? []
+      testGroups: connectionMonitor.?testGroups ?? []
+      workspaceResourceId: connectionMonitor.?workspaceResourceId ?? ''
     }
   }
 ]
@@ -130,18 +128,17 @@ module networkWatcher_flowLogs 'flow-log/main.bicep' = [
   for (flowLog, index) in flowLogs: {
     name: '${uniqueString(deployment().name, location)}-NW-FlowLog-${index}'
     params: {
-      enabled: contains(flowLog, 'enabled') ? flowLog.enabled : true
-      formatVersion: contains(flowLog, 'formatVersion') ? flowLog.formatVersion : 2
-      location: contains(flowLog, 'location') ? flowLog.location : location
-      name: contains(flowLog, 'name')
-        ? flowLog.name
-        : '${last(split(flowLog.targetResourceId, '/'))}-${split(flowLog.targetResourceId, '/')[4]}-flowlog'
+      tags: tags
+      enabled: flowLog.?enabled ?? true
+      formatVersion: flowLog.?formatVersion ?? 2
+      location: flowLog.?location ?? location
+      name: flowLog.?name ?? '${last(split(flowLog.targetResourceId, '/'))}-${split(flowLog.targetResourceId, '/')[4]}-flowlog'
       networkWatcherName: networkWatcher.name
-      retentionInDays: contains(flowLog, 'retentionInDays') ? flowLog.retentionInDays : 365
+      retentionInDays: flowLog.?retentionInDays ?? 365
       storageId: flowLog.storageId
       targetResourceId: flowLog.targetResourceId
-      trafficAnalyticsInterval: contains(flowLog, 'trafficAnalyticsInterval') ? flowLog.trafficAnalyticsInterval : 60
-      workspaceResourceId: contains(flowLog, 'workspaceResourceId') ? flowLog.workspaceResourceId : ''
+      trafficAnalyticsInterval: flowLog.?trafficAnalyticsInterval ?? 60
+      workspaceResourceId: flowLog.?workspaceResourceId ?? ''
     }
   }
 ]

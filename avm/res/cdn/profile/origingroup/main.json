@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "15886213526918072525"
+      "version": "0.33.13.18514",
+      "templateHash": "2309166106272805364"
     },
     "name": "CDN Profiles Origin Group",
-    "description": "This module deploys a CDN Profile Origin Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Origin Group."
   },
   "definitions": {
     "originGroupType": {
@@ -349,12 +348,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.34.60546",
-              "templateHash": "3615112055594041997"
+              "version": "0.33.13.18514",
+              "templateHash": "4615820934914726240"
             },
             "name": "CDN Profiles Origin",
-            "description": "This module deploys a CDN Profile Origin.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Origin."
           },
           "definitions": {
             "originType": {

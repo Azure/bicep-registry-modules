@@ -61,7 +61,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -83,8 +83,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      name: '${namePrefix}${serviceShort}002'
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -102,10 +101,6 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -178,9 +173,5 @@ module testDeployment '../../../main.bicep' = [
       enhancedSecurityMonitoring: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
       automaticClusterUpdate: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

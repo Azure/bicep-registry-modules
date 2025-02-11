@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "9211958556323045062"
+      "version": "0.32.4.45862",
+      "templateHash": "4307853570131837135"
     },
     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
-    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."
   },
   "parameters": {
     "name": {

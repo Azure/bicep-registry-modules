@@ -1,6 +1,5 @@
 metadata name = 'SQL Managed Instance Databases'
 metadata description = 'This module deploys a SQL Managed Instance Database.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the SQL managed instance database.')
 param name string

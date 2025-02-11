@@ -29,7 +29,7 @@ env:
   PSRuleOutputFilePath: "avm/res/PSRule-output.csv"
   PSRuleInputFilePath: "avm/res/PSRule-output.md"
   psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
-  psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
+  psrulePath: "utilities/pipelines/staticValidation/psrule"
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
@@ -82,8 +82,8 @@ jobs:
             Write-Output '::group::Replace tokens in relevant files'
 
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
 
             $targetPath = Join-Path $env:GITHUB_WORKSPACE '${{ env.targetPath }}'
             $psRuleFilterRegex = '${{ env.psRuleFilterRegex }}'
@@ -163,7 +163,7 @@ jobs:
             Write-Output '::group::Parse CSV content'
 
             # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Set-PSRuleGitHubOutput.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Set-PSRuleGitHubOutput.ps1')
 
             # Populate parameter input
             $ParameterInput = @{

@@ -1,0 +1,163 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "2230838564092408507"
+    },
+    "name": "Kusto Cluster Databases",
+    "description": "This module deploys a Kusto Cluster Database."
+  },
+  "definitions": {
+    "databaseReadWriteType": {
+      "type": "object",
+      "properties": {
+        "hotCachePeriod": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Te time the data should be kept in cache for fast queries in TimeSpan."
+          }
+        },
+        "keyVaultProperties": {
+          "type": "object",
+          "properties": {
+            "keyName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the key."
+              }
+            },
+            "keyVaultUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Uri of the key vault."
+              }
+            },
+            "keyVersion": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The version of the key."
+              }
+            },
+            "userIdentity": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The user identity."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The properties of the key vault."
+          }
+        },
+        "softDeletePeriod": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The time the data should be kept before it stops being accessible to queries in TimeSpan."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Conditional. The properties of the database if using read-write."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Kusto Cluster database."
+      }
+    },
+    "kustoClusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for the databases."
+      }
+    },
+    "databaseKind": {
+      "type": "string",
+      "defaultValue": "ReadWrite",
+      "allowedValues": [
+        "ReadWrite",
+        "ReadOnlyFollowing"
+      ],
+      "metadata": {
+        "description": "Optional. The object type of the databse."
+      }
+    },
+    "databaseReadWriteProperties": {
+      "$ref": "#/definitions/databaseReadWriteType",
+      "metadata": {
+        "description": "Optional. The properties of the database if using read-write. Only used if databaseKind is ReadWrite."
+      }
+    }
+  },
+  "resources": {
+    "kustoCluster": {
+      "existing": true,
+      "type": "Microsoft.Kusto/clusters",
+      "apiVersion": "2024-04-13",
+      "name": "[parameters('kustoClusterName')]"
+    },
+    "database_readOnly": {
+      "condition": "[equals(parameters('databaseKind'), 'ReadOnlyFollowing')]",
+      "type": "Microsoft.Kusto/clusters/databases",
+      "apiVersion": "2024-04-13",
+      "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "kind": "ReadOnlyFollowing"
+    },
+    "database_readWrite": {
+      "condition": "[equals(parameters('databaseKind'), 'ReadWrite')]",
+      "type": "Microsoft.Kusto/clusters/databases",
+      "apiVersion": "2024-04-13",
+      "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "kind": "ReadWrite",
+      "properties": "[coalesce(parameters('databaseReadWriteProperties'), null())]"
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Kusto Cluster database."
+      },
+      "value": "[if(equals(parameters('databaseKind'), 'ReadOnlyFollowing'), parameters('name'), parameters('name'))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Kusto Cluster database."
+      },
+      "value": "[if(equals(parameters('databaseKind'), 'ReadOnlyFollowing'), resourceId('Microsoft.Kusto/clusters/databases', parameters('kustoClusterName'), parameters('name')), resourceId('Microsoft.Kusto/clusters/databases', parameters('kustoClusterName'), parameters('name')))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group containing the Kusto Cluster database."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

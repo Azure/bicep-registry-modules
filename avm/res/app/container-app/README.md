@@ -8,13 +8,14 @@ This module deploys a Container App.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/containerApps) |
+| `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -322,6 +323,18 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    runtime: {
+      java: {
+        enableJavaAgent: true
+        enableMetrics: false
+        loggerSettings: [
+          {
+            level: 'info'
+            logger: 'test'
+          }
+        ]
+      }
+    }
     secrets: {
       secureList: [
         {
@@ -439,6 +452,20 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
+    "runtime": {
+      "value": {
+        "java": {
+          "enableJavaAgent": true,
+          "enableMetrics": false,
+          "loggerSettings": [
+            {
+              "level": "info",
+              "logger": "test"
+            }
+          ]
+        }
+      }
+    },
     "secrets": {
       "value": {
         "secureList": [
@@ -544,6 +571,18 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param runtime = {
+  java: {
+    enableJavaAgent: true
+    enableMetrics: false
+    loggerSettings: [
+      {
+        level: 'info'
+        logger: 'test'
+      }
+    ]
+  }
+}
 param secrets = {
   secureList: [
     {
@@ -954,6 +993,7 @@ param tags = {
 | [`registries`](#parameter-registries) | array | Collection of private container registry credentials for containers used by the Container app. |
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. |
 | [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
 | [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
@@ -1086,7 +1126,7 @@ List of probes for the container.
 | [`initialDelaySeconds`](#parameter-containersprobesinitialdelayseconds) | int | Number of seconds after the container has started before liveness probes are initiated. |
 | [`periodSeconds`](#parameter-containersprobesperiodseconds) | int | How often (in seconds) to perform the probe. Default to 10 seconds. |
 | [`successThreshold`](#parameter-containersprobessuccessthreshold) | int | Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. |
-| [`tcpSocket`](#parameter-containersprobestcpsocket) | object | TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported. |
+| [`tcpSocket`](#parameter-containersprobestcpsocket) | object | The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported. |
 | [`terminationGracePeriodSeconds`](#parameter-containersprobesterminationgraceperiodseconds) | int | Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour). |
 | [`timeoutSeconds`](#parameter-containersprobestimeoutseconds) | int | Number of seconds after which the probe times out. Defaults to 1 second. |
 | [`type`](#parameter-containersprobestype) | string | The type of probe. |
@@ -1097,6 +1137,8 @@ Minimum consecutive failures for the probe to be considered failed after having 
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet`
 
@@ -1104,6 +1146,8 @@ HTTPGet specifies the http request to perform.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 10
 
 **Required parameters**
 
@@ -1126,6 +1170,8 @@ Path to access on the HTTP server.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.port`
 
@@ -1133,6 +1179,8 @@ Name or number of the port to access on the container.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.host`
 
@@ -1140,6 +1188,8 @@ Host name to connect to. Defaults to the pod IP.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.httpHeaders`
 
@@ -1147,6 +1197,8 @@ HTTP headers to set in the request.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 10
 
 **Required parameters**
 
@@ -1161,6 +1213,8 @@ Name of the header.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.httpHeaders.value`
 
@@ -1168,6 +1222,8 @@ Value of the header.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.scheme`
 
@@ -1182,6 +1238,8 @@ Scheme to use for connecting to the host. Defaults to HTTP.
     'HTTPS'
   ]
   ```
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.initialDelaySeconds`
 
@@ -1189,6 +1247,8 @@ Number of seconds after the container has started before liveness probes are ini
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 60
 
 ### Parameter: `containers.probes.periodSeconds`
 
@@ -1196,6 +1256,8 @@ How often (in seconds) to perform the probe. Default to 10 seconds.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 240
 
 ### Parameter: `containers.probes.successThreshold`
 
@@ -1203,13 +1265,17 @@ Minimum consecutive successes for the probe to be considered successful after ha
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.tcpSocket`
 
-TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported.
+The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 10
 
 **Required parameters**
 
@@ -1229,6 +1295,8 @@ Number of the port to access on the container. Name must be an IANA_SVC_NAME.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 65535
 
 ### Parameter: `containers.probes.tcpSocket.host`
 
@@ -1236,6 +1304,8 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 65535
 
 ### Parameter: `containers.probes.terminationGracePeriodSeconds`
 
@@ -1243,6 +1313,8 @@ Optional duration in seconds the pod needs to terminate gracefully upon probe fa
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 10
 
 ### Parameter: `containers.probes.timeoutSeconds`
 
@@ -1250,6 +1322,8 @@ Number of seconds after which the probe times out. Defaults to 1 second.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 240
 
 ### Parameter: `containers.probes.type`
 
@@ -1265,6 +1339,8 @@ The type of probe.
     'Startup'
   ]
   ```
+- MinValue: 1
+- MaxValue: 240
 
 ### Parameter: `containers.volumeMounts`
 
@@ -1614,7 +1690,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1625,7 +1701,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -1757,6 +1833,113 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `runtime`
+
+Runtime configuration for the Container App.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dotnet`](#parameter-runtimedotnet) | object | Runtime configuration for ASP.NET Core. |
+| [`java`](#parameter-runtimejava) | object | Runtime configuration for Java. |
+
+### Parameter: `runtime.dotnet`
+
+Runtime configuration for ASP.NET Core.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoConfigureDataProtection`](#parameter-runtimedotnetautoconfiguredataprotection) | bool | Enable to auto configure the ASP.NET Core Data Protection feature. |
+
+### Parameter: `runtime.dotnet.autoConfigureDataProtection`
+
+Enable to auto configure the ASP.NET Core Data Protection feature.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java`
+
+Runtime configuration for Java.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableJavaAgent`](#parameter-runtimejavaenablejavaagent) | bool | Enable Java agent injection for the Java app. |
+| [`enableMetrics`](#parameter-runtimejavaenablemetrics) | bool | Enable JMX core metrics for the Java app. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerSettings`](#parameter-runtimejavaloggersettings) | array | Java agent logging configuration. |
+
+### Parameter: `runtime.java.enableJavaAgent`
+
+Enable Java agent injection for the Java app.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java.enableMetrics`
+
+Enable JMX core metrics for the Java app.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java.loggerSettings`
+
+Java agent logging configuration.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`level`](#parameter-runtimejavaloggersettingslevel) | string | Java agent logging level. |
+| [`logger`](#parameter-runtimejavaloggersettingslogger) | string | Name of the logger. |
+
+### Parameter: `runtime.java.loggerSettings.level`
+
+Java agent logging level.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'debug'
+    'error'
+    'info'
+    'off'
+    'trace'
+    'warn'
+  ]
+  ```
+
+### Parameter: `runtime.java.loggerSettings.logger`
+
+Name of the logger.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `scaleMaxReplicas`
 
@@ -1906,6 +2089,14 @@ Workload profile name to pin for container app execution.
 | `resourceGroupName` | string | The name of the resource group the Container App was deployed into. |
 | `resourceId` | string | The resource ID of the Container App. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 

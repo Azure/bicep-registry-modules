@@ -1,6 +1,5 @@
 metadata name = 'App Configuration Replicas'
 metadata description = 'This module deploys an App Configuration Replica.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the replica.')
 param name string
@@ -11,11 +10,11 @@ param appConfigurationName string
 @description('Required. Location of the replica.')
 param replicaLocation string
 
-resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {
+resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2024-05-01' existing = {
   name: appConfigurationName
 }
 
-resource replica 'Microsoft.AppConfiguration/configurationStores/replicas@2023-03-01' = {
+resource replica 'Microsoft.AppConfiguration/configurationStores/replicas@2024-05-01' = {
   name: name
   parent: appConfiguration
   location: replicaLocation

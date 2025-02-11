@@ -45,12 +45,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-module roleAssignment 'dependencies_rbac.bicep' = {
-  name: '${deployment().name}-MSI-roleAssignment'
-  scope: subscription()
-  params: {
-    managedIdentityPrincipalId: managedIdentity.properties.principalId
-    managedIdentityResourceId: managedIdentity.id
+resource resourceGroupContributorRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().subscriptionId, 'Contributor', managedIdentity.id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -109,12 +113,12 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
     azPowerShellVersion: '11.5' // Source: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list
     retentionInterval: 'P1D'
     arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Start-ImageTemplate.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Start-ImageTemplate.ps1')
     cleanupPreference: 'OnSuccess'
     forceUpdateTag: baseTime
   }
   dependsOn: [
-    roleAssignment
+    resourceGroupContributorRole
   ]
 }
 
@@ -133,7 +137,7 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
     azPowerShellVersion: '11.5' // Source: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list
     retentionInterval: 'P1D'
     arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\" -DestinationStorageAccountName \\"${storageAccount.name}\\" -VhdName \\"${imageTemplateNamePrefix}\\" -WaitForComplete'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Copy-VhdToStorageAccount.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Copy-VhdToStorageAccount.ps1')
     cleanupPreference: 'OnSuccess'
     forceUpdateTag: baseTime
   }

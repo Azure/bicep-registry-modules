@@ -1,6 +1,5 @@
 metadata name = 'Azure Stack HCI Cluster'
 metadata description = 'This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //
@@ -21,99 +20,18 @@ param tags object?
 @allowed([
   'Deploy'
   'Validate'
-  'None'
 ])
 param deploymentOperations string[] = ['Validate', 'Deploy']
-
-@minLength(4)
-@maxLength(8)
-@description('Required. The prefix for the resource for the deployment. This value is used in key vault and storage account names in this template, as well as for the deploymentSettings.properties.deploymentConfiguration.scaleUnits.deploymentData.namingPrefix property which requires regex pattern: ^[a-zA-Z0-9-]{1,8}$.')
-param deploymentPrefix string
-
-@description('Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2].')
-param clusterNodeNames string[]
-
-@description('Required. The domain name of the Active Directory Domain Services. Example: "contoso.com".')
-param domainFqdn string
-
-@description('Required. The ADDS OU path - ex "OU=HCI,DC=contoso,DC=com".')
-param domainOUPath string
-
-@description('Optional. Security configuration settings object; defaults to most secure posture.')
-param securityConfiguration securityConfigurationType = {
-  hvciProtection: true
-  drtmProtection: true
-  driftControlEnforced: true
-  credentialGuardEnforced: true
-  smbSigningEnforced: true
-  smbClusterEncryption: true
-  sideChannelMitigationEnforced: true
-  bitlockerBootVolume: true
-  bitlockerDataVolumes: true
-  wdacEnforced: true
-}
-
-// cluster diagnostics and telemetry configuration
-@description('Optional. The metrics data for deploying a HCI cluster.')
-param streamingDataClient bool = true
-
-@description('Optional. The location data for deploying a HCI cluster.')
-param isEuropeanUnionLocation bool = false
-
-@description('Optional. The diagnostic data for deploying a HCI cluster.')
-param episodicDataUpload bool = true
-
-// storage configuration
-@description('Optional. The storage volume configuration mode. See documentation for details.')
-@allowed([
-  'Express'
-  'InfraOnly'
-  'KeepStorage'
-])
-param storageConfigurationMode string = 'Express'
-
-// cluster network configuration details
-@description('Required. The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.')
-param subnetMask string
-
-@description('Required. The default gateway of the Management Network. Example: 192.168.0.1.')
-param defaultGateway string
-
-@description('Required. The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.')
-param startingIPAddress string
-
-@description('Required. The ending IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.')
-param endingIPAddress string
-
-@description('Required. The DNS servers accessible from the Management Network for the HCI cluster.')
-param dnsServers string[]
-
-@description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
-param networkIntents networkIntentType[]
-
-@description('Required. Specify whether the Storage Network connectivity is switched or switchless.')
-param storageConnectivitySwitchless bool
-
-@description('Required. Enable storage auto IP assignment. This should be true for most deployments except when deploying a three-node switchless cluster, in which case storage IPs should be configured before deployment and this value set to false.')
-param enableStorageAutoIp bool
-
-@description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')
-param storageNetworks storageNetworksType[]
-
-@description('Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01.')
-param customLocationName string
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster.')
-param clusterWitnessStorageAccountName string
+@description('Optional. The deployment settings of the cluster.')
+param deploymentSettings deploymentSettingsType?
 
-@description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
-param keyVaultName string
-
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Specify whether to use the shared key vault for the HCI cluster.')
 param useSharedKeyVault bool = true
@@ -127,7 +45,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -157,9 +75,7 @@ var formattedRoleAssignments = [
 ]
 
 // if deployment operations requested, validation must be performed first so we reverse sort the array
-var sortedDeploymentOperations = (!contains(deploymentOperations, 'None'))
-  ? sort(deploymentOperations, (a, b) => a > b)
-  : []
+var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymentOperations, (a, b) => a > b) : []
 
 // ============= //
 //   Resources   //
@@ -196,36 +112,44 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
   tags: tags
 }
-
 @batchSize(1)
-module deploymentSetting 'deployment-settings/main.bicep' = [
-  for deploymentOperation in sortedDeploymentOperations: {
+module deploymentSetting 'deployment-setting/main.bicep' = [
+  for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation) && !empty(deploymentSettings)) {
     name: 'deploymentSettings-${deploymentOperation}'
     params: {
       cloudId: useSharedKeyVault ? cluster.properties.cloudId : null
-      clusterName: name
-      clusterNodeNames: clusterNodeNames
-      clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
-      customLocationName: customLocationName
-      defaultGateway: defaultGateway
+      clusterName: cluster.name
       deploymentMode: deploymentOperation
-      deploymentPrefix: deploymentPrefix
-      dnsServers: dnsServers
-      domainFqdn: domainFqdn
-      domainOUPath: domainOUPath
-      enableStorageAutoIp: enableStorageAutoIp
-      endingIPAddress: endingIPAddress
-      episodicDataUpload: episodicDataUpload
-      isEuropeanUnionLocation: isEuropeanUnionLocation
-      keyVaultName: keyVaultName
-      networkIntents: networkIntents
-      securityConfiguration: securityConfiguration
-      startingIPAddress: startingIPAddress
-      storageConfigurationMode: storageConfigurationMode
-      storageConnectivitySwitchless: storageConnectivitySwitchless
-      storageNetworks: storageNetworks
-      streamingDataClient: streamingDataClient
-      subnetMask: subnetMask
+      clusterNodeNames: deploymentSettings!.clusterNodeNames
+      clusterWitnessStorageAccountName: deploymentSettings!.clusterWitnessStorageAccountName
+      customLocationName: deploymentSettings!.customLocationName
+      defaultGateway: deploymentSettings!.defaultGateway
+      deploymentPrefix: deploymentSettings!.deploymentPrefix
+      dnsServers: deploymentSettings!.dnsServers
+      domainFqdn: deploymentSettings!.domainFqdn
+      domainOUPath: deploymentSettings!.domainOUPath
+      endingIPAddress: deploymentSettings!.endingIPAddress
+      keyVaultName: deploymentSettings!.keyVaultName
+      networkIntents: deploymentSettings!.networkIntents
+      startingIPAddress: deploymentSettings!.startingIPAddress
+      storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless
+      storageNetworks: deploymentSettings!.storageNetworks
+      subnetMask: deploymentSettings!.subnetMask
+      bitlockerBootVolume: deploymentSettings!.?bitlockerBootVolume
+      bitlockerDataVolumes: deploymentSettings!.?bitlockerDataVolumes
+      credentialGuardEnforced: deploymentSettings!.?credentialGuardEnforced
+      driftControlEnforced: deploymentSettings!.?driftControlEnforced
+      drtmProtection: deploymentSettings!.?drtmProtection
+      enableStorageAutoIp: deploymentSettings!.?enableStorageAutoIp
+      episodicDataUpload: deploymentSettings!.?episodicDataUpload
+      hvciProtection: deploymentSettings!.?hvciProtection
+      isEuropeanUnionLocation: deploymentSettings!.?isRFEuropeanUnionLocation
+      sideChannelMitigationEnforced: deploymentSettings!.?sideChannelMitigationEnforced
+      smbClusterEncryption: deploymentSettings!.?smbClusterEncryption
+      smbSigningEnforced: deploymentSettings!.?smbSigningEnforced
+      storageConfigurationMode: deploymentSettings!.?storageConfigurationMode
+      streamingDataClient: deploymentSettings!.?streamingDataClient
+      wdacEnforced: deploymentSettings!.?wdacEnforced
     }
   }
 ]
@@ -379,29 +303,103 @@ type securityConfigurationType = {
   wdacEnforced: bool
 }
 
-@export()
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+type deploymentSettingsType = {
+  @minLength(4)
+  @maxLength(8)
+  @description('Required. The prefix for the resource for the deployment. This value is used in key vault and storage account names in this template, as well as for the deploymentSettings.properties.deploymentConfiguration.scaleUnits.deploymentData.namingPrefix property which requires regex pattern: ^[a-zA-Z0-9-]{1,8}$.')
+  deploymentPrefix: string
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2].')
+  clusterNodeNames: array
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('Required. The domain name of the Active Directory Domain Services. Example: "contoso.com".')
+  domainFqdn: string
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+  @description('Required. The ADDS OU path - ex "OU=HCI,DC=contoso,DC=com".')
+  domainOUPath: string
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+  @description('Optional. The Hypervisor-protected Code Integrity setting.')
+  hvciProtection: bool?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @description('Optional. The hardware-dependent Secure Boot setting.')
+  drtmProtection: bool?
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+  @description('Optional. When set to true, the security baseline is re-applied regularly.')
+  driftControlEnforced: bool?
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Optional. Enables the Credential Guard.')
+  credentialGuardEnforced: bool?
+
+  @description('Optional. When set to true, the SMB default instance requires sign in for the client and server services.')
+  smbSigningEnforced: bool?
+
+  @description('Optional. When set to true, cluster east-west traffic is encrypted.')
+  smbClusterEncryption: bool?
+
+  @description('Optional. When set to true, all the side channel mitigations are enabled.')
+  sideChannelMitigationEnforced: bool?
+
+  @description('Optional. When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent.')
+  bitlockerBootVolume: bool?
+
+  @description('Optional. When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes.')
+  bitlockerDataVolumes: bool?
+
+  @description('Optional. Limits the applications and the code that you can run on your Azure Stack HCI cluster.')
+  wdacEnforced: bool?
+
+  // cluster diagnostics and telemetry configuration
+  @description('Optional. The metrics data for deploying a HCI cluster.')
+  streamingDataClient: bool?
+
+  @description('Optional. The location data for deploying a HCI cluster.')
+  isEuropeanUnionLocation: bool?
+
+  @description('Optional. The diagnostic data for deploying a HCI cluster.')
+  episodicDataUpload: bool?
+
+  // storage configuration
+  @description('Optional. The storage volume configuration mode. See documentation for details.')
+  storageConfigurationMode: ('Express' | 'InfraOnly' | 'KeepStorage')?
+
+  // cluster network configuration details
+  @description('Required. The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.')
+  subnetMask: string
+
+  @description('Required. The default gateway of the Management Network. Example: 192.168.0.1.')
+  defaultGateway: string
+
+  @description('Required. The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.')
+  startingIPAddress: string
+
+  @description('Required. The ending IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.')
+  endingIPAddress: string
+
+  @description('Required. The DNS servers accessible from the Management Network for the HCI cluster.')
+  dnsServers: string[]
+
+  @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
+  networkIntents: array
+
+  @description('Required. Specify whether the Storage Network connectivity is switched or switchless.')
+  storageConnectivitySwitchless: bool
+
+  @description('Optional. Enable storage auto IP assignment. This should be true for most deployments except when deploying a three-node switchless cluster, in which case storage IPs should be configured before deployment and this value set to false.')
+  enableStorageAutoIp: bool?
+
+  @description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')
+  storageNetworks: array
+
+  // other cluster configuration parameters
+  @description('Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01.')
+  customLocationName: string
+
+  @description('Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster.')
+  clusterWitnessStorageAccountName: string
+
+  @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
+  keyVaultName: string
+
+  @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
+  cloudId: string?
+}

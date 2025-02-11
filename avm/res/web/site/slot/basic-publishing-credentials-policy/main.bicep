@@ -1,6 +1,5 @@
 metadata name = 'Web Site Slot Basic Publishing Credentials Policies'
 metadata description = 'This module deploys a Web Site Slot Basic Publishing Credentials Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the resource.')
 @allowed([
@@ -21,7 +20,7 @@ param slotName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-resource app 'Microsoft.Web/sites@2023-12-01' existing = {
+resource app 'Microsoft.Web/sites@2024-04-01' existing = {
   name: appName
 
   resource slot 'slots' existing = {
@@ -29,7 +28,7 @@ resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   }
 }
 
-resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies@2023-12-01' = {
+resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies@2024-04-01' = {
   #disable-next-line BCP225 // False-positive. Value is required.
   name: name
   location: location

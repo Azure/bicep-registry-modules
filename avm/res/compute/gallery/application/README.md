@@ -7,6 +7,7 @@ This module deploys an Azure Compute Gallery Application.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 
 ## Resource Types
@@ -79,6 +80,106 @@ A list of custom actions that can be performed with all of the Gallery Applicati
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-customactionsname) | string | The name of the custom action. Must be unique within the Gallery Application Version. |
+| [`script`](#parameter-customactionsscript) | string | The script to run when executing this custom action. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-customactionsdescription) | string | Description to help the users understand what this custom action does. |
+| [`parameters`](#parameter-customactionsparameters) | array | The parameters that this custom action uses. |
+
+### Parameter: `customActions.name`
+
+The name of the custom action. Must be unique within the Gallery Application Version.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customActions.script`
+
+The script to run when executing this custom action.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customActions.description`
+
+Description to help the users understand what this custom action does.
+
+- Required: No
+- Type: string
+
+### Parameter: `customActions.parameters`
+
+The parameters that this custom action uses.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-customactionsparametersname) | string | The name of the parameter. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultValue`](#parameter-customactionsparametersdefaultvalue) | string | The default value of the parameter. Only applies to string types. |
+| [`description`](#parameter-customactionsparametersdescription) | string | A description to help users understand what this parameter means. |
+| [`required`](#parameter-customactionsparametersrequired) | bool | Indicates whether this parameter must be passed when running the custom action. |
+| [`type`](#parameter-customactionsparameterstype) | string | Specifies the type of the custom action parameter. |
+
+### Parameter: `customActions.parameters.name`
+
+The name of the parameter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customActions.parameters.defaultValue`
+
+The default value of the parameter. Only applies to string types.
+
+- Required: No
+- Type: string
+
+### Parameter: `customActions.parameters.description`
+
+A description to help users understand what this parameter means.
+
+- Required: No
+- Type: string
+
+### Parameter: `customActions.parameters.required`
+
+Indicates whether this parameter must be passed when running the custom action.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customActions.parameters.type`
+
+Specifies the type of the custom action parameter.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ConfigurationDataBlob'
+    'LogOutputBlob'
+    'String'
+  ]
+  ```
 
 ### Parameter: `description`
 
@@ -242,6 +343,14 @@ Tags for all resources.
 | `name` | string | The name of the image. |
 | `resourceGroupName` | string | The resource group the image was deployed into. |
 | `resourceId` | string | The resource ID of the image. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
 
 ## Notes
 

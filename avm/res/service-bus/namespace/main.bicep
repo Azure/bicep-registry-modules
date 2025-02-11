@@ -1,6 +1,5 @@
 metadata name = 'Service Bus Namespaces'
 metadata description = 'This module deploys a Service Bus Namespace.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Service Bus Namespace.')
 @maxLength(260)
@@ -45,24 +44,24 @@ param authorizationRules authorizationRuleType[] = [
 ]
 
 @description('Optional. The migration configuration.')
-param migrationConfiguration migrationConfigurationsType?
+param migrationConfiguration migrationConfigurationType?
 
 @description('Optional. The disaster recovery configuration.')
 param disasterRecoveryConfig disasterRecoveryConfigType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -75,7 +74,7 @@ param roleAssignments roleAssignmentType[]?
 ])
 param publicNetworkAccess string = ''
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -97,9 +96,9 @@ param queues queueType[]?
 @description('Optional. The topics to create in the service bus namespace.')
 param topics topicType[]?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = true
@@ -227,7 +226,9 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
               keyVaultUri: cMKKeyVault.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
                 ? customerManagedKey!.keyVersion
-                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                : (customerManagedKey.?autoRotationEnabled ?? true)
+                    ? null
+                    : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
             }
           ]
           requireInfrastructureEncryption: requireInfrastructureEncryption
@@ -257,7 +258,7 @@ module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main
   }
 }
 
-module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration ?? {})) {
+module serviceBusNamespace_migrationConfiguration 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration ?? {})) {
   name: '${uniqueString(deployment().name, location)}-MigrationConfigurations'
   params: {
     namespaceName: serviceBusNamespace.name
@@ -374,10 +375,18 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
   }
 ]
 
-module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: !empty(privateEndpoint.?resourceGroupResourceId)
+      ? resourceGroup(
+          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
+        )
+      : resourceGroup(
+          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
+          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
+        )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -456,27 +465,55 @@ output resourceGroupName string = resourceGroup().name
 output name string = serviceBusNamespace.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = serviceBusNamespace.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = serviceBusNamespace.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = serviceBusNamespace.location
 
 @description('The private endpoints of the service bus namespace.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: serviceBusNamespace_privateEndpoints[i].outputs.name
     resourceId: serviceBusNamespace_privateEndpoints[i].outputs.resourceId
-    groupId: serviceBusNamespace_privateEndpoints[i].outputs.groupId
-    customDnsConfig: serviceBusNamespace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: serviceBusNamespace_privateEndpoints[i].outputs.networkInterfaceIds
+    groupId: serviceBusNamespace_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: serviceBusNamespace_privateEndpoints[i].outputs.customDnsConfigs
+    networkInterfaceResourceIds: serviceBusNamespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
+
+@description('The endpoint of the deployed service bus namespace.')
+output serviceBusEndpoint string = serviceBusNamespace.properties.serviceBusEndpoint
 
 // =============== //
 //   Definitions   //
 // =============== //
 
 @export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
+
+@export()
+@description('The type for a SKU.')
 type skuType = {
   @description('Required. Name of this SKU. - Basic, Standard, Premium.')
   name: ('Basic' | 'Standard' | 'Premium')
@@ -486,6 +523,7 @@ type skuType = {
 }
 
 @export()
+@description('The type for an authorization rule.')
 type authorizationRuleType = {
   @description('Required. The name of the authorization rule.')
   name: string
@@ -495,6 +533,7 @@ type authorizationRuleType = {
 }
 
 @export()
+@description('The type for a disaster recovery configuration.')
 type disasterRecoveryConfigType = {
   @description('Optional. The name of the disaster recovery config.')
   name: string?
@@ -507,7 +546,8 @@ type disasterRecoveryConfigType = {
 }
 
 @export()
-type migrationConfigurationsType = {
+@description('The type for a migration configuration')
+type migrationConfigurationType = {
   @description('Required. Name to access Standard Namespace after migration.')
   postMigrationName: string
 
@@ -516,6 +556,7 @@ type migrationConfigurationsType = {
 }
 
 @export()
+@description('The type for a network rule set.')
 type networkRuleSetType = {
   @description('Optional. This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied.')
   publicNetworkAccess: ('Disabled' | 'Enabled')?
@@ -546,6 +587,7 @@ type networkRuleSetType = {
 }
 
 @export()
+@description('The type for a queue.')
 type queueType = {
   @description('Required. The name of the queue.')
   name: string
@@ -619,6 +661,7 @@ type queueType = {
 
 import { subscriptionType } from 'topic/main.bicep'
 @export()
+@description('The type for a topic.')
 type topicType = {
   @description('Required. The name of the topic.')
   name: string

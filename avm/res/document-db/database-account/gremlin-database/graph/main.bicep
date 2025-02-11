@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Accounts Gremlin Databases Graphs'
 metadata description = 'This module deploys a DocumentDB Database Accounts Gremlin Database Graph.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the graph.')
 param name string

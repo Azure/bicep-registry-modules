@@ -1,6 +1,5 @@
 metadata name = 'Log Analytics Workspace Data Exports'
 metadata description = 'This module deploys a Log Analytics Workspace Data Export.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //

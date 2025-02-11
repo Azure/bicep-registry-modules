@@ -1,11 +1,13 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 // ------------------
 //    PARAMETERS
 // ------------------
+@description('Required. The resource names definition')
+param resourcesNames object
 
 @description('The location where the resources will be created. This needs to be the same region as the Azure Container Apps instances.')
-param location string = resourceGroup().location
+param location string
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -22,7 +24,7 @@ param helloWorldContainerAppName string = 'ca-simple-hello'
 param containerRegistryUserAssignedIdentityId string
 
 @description('The resource ID of the existing Container Apps environment in which the Container App will be deployed.')
-param containerAppsEnvironmentId string
+param containerAppsEnvironmentResourceId string
 
 @description('The container apps environment workload profile to use for the Container App.')
 param workloadProfileName string
@@ -31,14 +33,15 @@ param workloadProfileName string
 // RESOURCES
 // ------------------
 
-module sampleApplication 'br/public:avm/res/app/container-app:0.4.0' = {
+module sampleApplication 'br/public:avm/res/app/container-app:0.12.0' = {
   name: helloWorldContainerAppName
+  scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
     name: helloWorldContainerAppName
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    environmentId: containerAppsEnvironmentId
+    environmentResourceId: containerAppsEnvironmentResourceId
     managedIdentities: {
       userAssignedResourceIds: [
         containerRegistryUserAssignedIdentityId
