@@ -438,6 +438,8 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     name: '<name>'
     // Non-required parameters
     deploymentSettings: {
+      bitlockerBootVolume: true
+      bitlockerDataVolumes: true
       clusterNodeNames: '<clusterNodeNames>'
       clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
       customLocationName: 'ashc2nwaf-location'
@@ -448,6 +450,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       ]
       domainFqdn: 'hci.local'
       domainOUPath: '<domainOUPath>'
+      driftControlEnforced: true
       enableStorageAutoIp: true
       endingIPAddress: '172.20.0.7'
       keyVaultName: '<keyVaultName>'
@@ -533,6 +536,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           }
         }
       ]
+      sideChannelMitigationEnforced: true
+      smbClusterEncryption: true
+      smbSigningEnforced: true
       startingIPAddress: '172.20.0.2'
       storageConnectivitySwitchless: false
       storageNetworks: [
@@ -546,6 +552,11 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         }
       ]
       subnetMask: '255.255.255.0'
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
     }
   }
 }
@@ -570,6 +581,8 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     // Non-required parameters
     "deploymentSettings": {
       "value": {
+        "bitlockerBootVolume": true,
+        "bitlockerDataVolumes": true,
         "clusterNodeNames": "<clusterNodeNames>",
         "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
         "customLocationName": "ashc2nwaf-location",
@@ -580,6 +593,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         ],
         "domainFqdn": "hci.local",
         "domainOUPath": "<domainOUPath>",
+        "driftControlEnforced": true,
         "enableStorageAutoIp": true,
         "endingIPAddress": "172.20.0.7",
         "keyVaultName": "<keyVaultName>",
@@ -665,6 +679,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             }
           }
         ],
+        "sideChannelMitigationEnforced": true,
+        "smbClusterEncryption": true,
+        "smbSigningEnforced": true,
         "startingIPAddress": "172.20.0.2",
         "storageConnectivitySwitchless": false,
         "storageNetworks": [
@@ -678,6 +695,13 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           }
         ],
         "subnetMask": "255.255.255.0"
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
       }
     }
   }
@@ -698,6 +722,8 @@ using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
 param name = '<name>'
 // Non-required parameters
 param deploymentSettings = {
+  bitlockerBootVolume: true
+  bitlockerDataVolumes: true
   clusterNodeNames: '<clusterNodeNames>'
   clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
   customLocationName: 'ashc2nwaf-location'
@@ -708,6 +734,7 @@ param deploymentSettings = {
   ]
   domainFqdn: 'hci.local'
   domainOUPath: '<domainOUPath>'
+  driftControlEnforced: true
   enableStorageAutoIp: true
   endingIPAddress: '172.20.0.7'
   keyVaultName: '<keyVaultName>'
@@ -793,6 +820,9 @@ param deploymentSettings = {
       }
     }
   ]
+  sideChannelMitigationEnforced: true
+  smbClusterEncryption: true
+  smbSigningEnforced: true
   startingIPAddress: '172.20.0.2'
   storageConnectivitySwitchless: false
   storageNetworks: [
@@ -806,6 +836,11 @@ param deploymentSettings = {
     }
   ]
   subnetMask: '255.255.255.0'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

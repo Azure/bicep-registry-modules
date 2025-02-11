@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1266601704396368783"
+      "templateHash": "7982158538530558379"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
-    "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
   },
   "parameters": {
     "name": {
@@ -83,49 +82,49 @@
     },
     "driftControlEnforced": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. When set to true, the security baseline is re-applied regularly."
       }
     },
     "credentialGuardEnforced": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Enables the Credential Guard."
       }
     },
     "smbSigningEnforced": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. When set to true, the SMB default instance requires sign in for the client and server services."
       }
     },
     "smbClusterEncryption": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. When set to true, cluster east-west traffic is encrypted."
       }
     },
     "sideChannelMitigationEnforced": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. When set to true, all the side channel mitigations are enabled."
       }
     },
     "bitlockerBootVolume": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent."
       }
     },
     "bitlockerDataVolumes": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes."
       }
