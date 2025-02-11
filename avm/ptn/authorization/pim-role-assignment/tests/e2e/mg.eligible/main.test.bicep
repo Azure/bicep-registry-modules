@@ -39,7 +39,7 @@ module testDeployment '../../../main.bicep' = {
     }
     principalId: userPrinicipalId
     requestType: 'AdminAssign'
-    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    roleDefinitionIdOrName: 'Role Based Access Control Administrator'
     location: resourceLocation
     justification: 'AVM test'
   }
