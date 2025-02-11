@@ -403,3 +403,6 @@ type deploymentSettingsType = {
   @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
   cloudId: string?
 }
+
+@description('The name of the custom location.')
+output customLocationName string = deploymentSettings!.customLocationName
