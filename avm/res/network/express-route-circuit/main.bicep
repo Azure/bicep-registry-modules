@@ -61,7 +61,7 @@ param location string = resourceGroup().location
 param allowClassicOperations bool = false
 
 @description('Optional. List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`.')
-param authorizationNames array = []
+param authorizationNames string[] = []
 
 @description('Optional. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null.')
 param bandwidthInGbps int = 0

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17229608690925984153"
+      "templateHash": "8776591928362518786"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -348,6 +348,9 @@
     },
     "authorizationNames": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`."
