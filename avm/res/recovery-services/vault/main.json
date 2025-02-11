@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "1404292748211985740"
+      "templateHash": "16908039055526294885"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -1496,12 +1496,12 @@
         "tier": "Standard"
       },
       "properties": {
-        "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), createObject('azureMonitorAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'))), createObject('alertsForAllFailoverIssues', coalesce(tryGet(parameters('monitoringSettings').azureMonitorAlertSettings, 'alertsForAllFailoverIssues'), 'Enabled'), 'alertsForAllJobFailures', coalesce(tryGet(parameters('monitoringSettings').azureMonitorAlertSettings, 'alertsForAllJobFailures'), 'Enabled'), 'alertsForAllReplicationIssues', coalesce(tryGet(parameters('monitoringSettings').azureMonitorAlertSettings, 'alertsForAllReplicationIssues'), 'Enabled')), null()), 'classicAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'))), createObject('alertsForCriticalOperations', coalesce(tryGet(parameters('monitoringSettings').classicAlertSettings, 'alertsForCriticalOperations'), 'Enabled'), 'emailNotificationsForSiteRecovery', coalesce(tryGet(parameters('monitoringSettings').classicAlertSettings, 'emailNotificationsForSiteRecovery'), 'Enabled')), null())), null())]",
+        "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), createObject('azureMonitorAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'))), createObject('alertsForAllFailoverIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllFailoverIssues'), 'Enabled'), 'alertsForAllJobFailures', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllJobFailures'), 'Enabled'), 'alertsForAllReplicationIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllReplicationIssues'), 'Enabled')), null()), 'classicAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'))), createObject('alertsForCriticalOperations', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'alertsForCriticalOperations'), 'Enabled'), 'emailNotificationsForSiteRecovery', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'emailNotificationsForSiteRecovery'), 'Enabled')), null())), null())]",
         "securitySettings": "[parameters('securitySettings')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "redundancySettings": "[parameters('redundancySettings')]",
         "restoreSettings": "[parameters('restoreSettings')]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', 'Enabled', 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]"
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', 'Enabled', 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]"
       },
       "dependsOn": [
         "cMKKeyVault::cMKKey"
@@ -2297,10 +2297,10 @@
             "value": "[parameters('name')]"
           },
           "storageModelType": {
-            "value": "[parameters('backupStorageConfig').storageModelType]"
+            "value": "[tryGet(parameters('backupStorageConfig'), 'storageModelType')]"
           },
           "crossRegionRestoreFlag": {
-            "value": "[parameters('backupStorageConfig').crossRegionRestoreFlag]"
+            "value": "[tryGet(parameters('backupStorageConfig'), 'crossRegionRestoreFlag')]"
           }
         },
         "template": {
@@ -2953,6 +2953,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-rsv-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
