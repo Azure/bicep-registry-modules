@@ -40,17 +40,17 @@ param clusterName string
 @description('Required. The name of the VM-managed user identity to create, used for HCI Arc onboarding.')
 param userAssignedIdentityName string
 
-@description('Conditional. The name of the VNET for the HCI host Azure VM. Required if \'vnetSubnetResourceId\' is empty.')
-param virtualNetworkName string
-
 @description('Required. The name of the maintenance configuration for the Azure Stack HCI Host VM and proxy server.')
 param maintenanceConfigurationName string
+
+@description('Required. The name of the Azure VM scale set for the HCI host.')
+param HCIHostVirtualMachineScaleSetName string
 
 @description('Conditional. The name of the Network Security Group ro create.')
 param networkSecurityGroupName string
 
-@description('Required. The name of the Azure VM scale set for the HCI host.')
-param HCIHostVirtualMachineScaleSetName string
+@description('Required. The name of the virtual network to create. Used to connect the HCI Azure Host VM to an existing VNET in the same region.')
+param virtualNetworkName string
 
 @description('Required. The name of the Network Interface Card to create.')
 param networkInterfaceName string
@@ -69,7 +69,6 @@ param waitDeploymentScriptPrefixName string
 
 var clusterNodeNames = ['hcinode1', 'hcinode2']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
-
 module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
@@ -82,14 +81,14 @@ module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDep
     switchlessStorageConfig: false
     diskNamePrefix: diskNamePrefix
     HCIHostVirtualMachineScaleSetName: HCIHostVirtualMachineScaleSetName
-    networkSecurityGroupName: networkSecurityGroupName
     maintenanceConfigurationAssignmentName: maintenanceConfigurationAssignmentName
     maintenanceConfigurationName: maintenanceConfigurationName
     networkInterfaceName: networkInterfaceName
+    networkSecurityGroupName: networkSecurityGroupName
+    virtualNetworkName: virtualNetworkName
     userAssignedIdentityName: userAssignedIdentityName
     virtualMachineName: virtualMachineName
     waitDeploymentScriptPrefixName: waitDeploymentScriptPrefixName
-    virtualNetworkName: virtualNetworkName
   }
 }
 
@@ -111,7 +110,7 @@ module hciClusterPreqs '../../e2e-template-assets/azureStackHCIClusterPreqs/ashc
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     arcNodeResourceIds: [
-      for (nodeName, index) in ['hcinode1', 'hcinode2']: resourceId('Microsoft.HybridCompute/machines', nodeName)
+      for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
     ]
     clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
     keyVaultDiagnosticStorageAccountName: keyVaultDiagnosticStorageAccountName

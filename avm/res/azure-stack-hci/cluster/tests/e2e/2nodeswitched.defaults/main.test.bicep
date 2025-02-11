@@ -54,11 +54,11 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
-    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     HCIHostVirtualMachineScaleSetName: 'dep-${namePrefix}-hvmss-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
     diskNamePrefix: 'dep-${namePrefix}-disk-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
@@ -87,6 +87,8 @@ module testDeployment '../../../main.bicep' = {
       dnsServers: ['172.20.0.1']
       domainFqdn: 'hci.local'
       domainOUPath: nestedDependencies.outputs.domainOUPath
+      startingIPAddress: '172.20.0.2'
+      endingIPAddress: '172.20.0.7'
       enableStorageAutoIp: true
       keyVaultName: nestedDependencies.outputs.keyVaultName
       networkIntents: [
@@ -157,8 +159,6 @@ module testDeployment '../../../main.bicep' = {
           trafficType: ['Storage']
         }
       ]
-      startingIPAddress: '172.20.0.2'
-      endingIPAddress: '172.20.0.7'
       storageConnectivitySwitchless: false
       storageNetworks: [
         {
@@ -170,7 +170,6 @@ module testDeployment '../../../main.bicep' = {
           vlan: '712'
         }
       ]
-
       subnetMask: '255.255.255.0'
     }
   }
