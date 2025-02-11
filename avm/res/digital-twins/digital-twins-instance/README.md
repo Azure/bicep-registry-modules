@@ -125,7 +125,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         name: 'EventGridPrimary'
         properties: {
           endpointType: 'EventGrid'
-          eventGridTopicEndpoint: '<eventGridTopicEndpoint>'
           eventGridTopicResourceId: '<eventGridTopicResourceId>'
         }
       }
@@ -279,7 +278,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "name": "EventGridPrimary",
           "properties": {
             "endpointType": "EventGrid",
-            "eventGridTopicEndpoint": "<eventGridTopicEndpoint>",
             "eventGridTopicResourceId": "<eventGridTopicResourceId>"
           }
         },
@@ -439,7 +437,6 @@ param endpoints = [
     name: 'EventGridPrimary'
     properties: {
       endpointType: 'EventGrid'
-      eventGridTopicEndpoint: '<eventGridTopicEndpoint>'
       eventGridTopicResourceId: '<eventGridTopicResourceId>'
     }
   }
@@ -700,7 +697,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         name: 'EventGridPrimary'
         properties: {
           endpointType: 'EventGrid'
-          eventGridTopicEndpoint: '<eventGridTopicEndpoint>'
           eventGridTopicResourceId: '<eventGridTopicResourceId>'
         }
       }
@@ -800,7 +796,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "name": "EventGridPrimary",
           "properties": {
             "endpointType": "EventGrid",
-            "eventGridTopicEndpoint": "<eventGridTopicEndpoint>",
             "eventGridTopicResourceId": "<eventGridTopicResourceId>"
           }
         },
@@ -900,7 +895,6 @@ param endpoints = [
     name: 'EventGridPrimary'
     properties: {
       endpointType: 'EventGrid'
-      eventGridTopicEndpoint: '<eventGridTopicEndpoint>'
       eventGridTopicResourceId: '<eventGridTopicResourceId>'
     }
   }
