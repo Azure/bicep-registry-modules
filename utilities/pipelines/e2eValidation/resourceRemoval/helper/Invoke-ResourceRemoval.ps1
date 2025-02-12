@@ -117,11 +117,14 @@ function Invoke-ResourceRemoval {
                 # PIM role assignments cannot be removed before 5 minutes from being created. Waiting for 5 minutes
                 Write-Verbose 'Waiting for 5 minutes before removing PIM role assignment' -Verbose
                 Start-Sleep -Seconds 300
-                $null = New-AzRoleEligibilityScheduleRequest -Name $guid `
-                    -Scope $scope `
-                    -PrincipalId $pimRoleAssignmentPrinicpalId `
-                    -RequestType AdminRemove `
-                    -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId
+                $removalInputObject = @{
+                    Name             = $guid
+                    Scope            = $scope
+                    PrincipalId      = $pimRoleAssignmentPrinicpalId
+                    RequestType      = 'AdminRemove'
+                    RoleDefinitionId = $pimRoleAssignmentRoleDefinitionId
+                }
+                $null = New-AzRoleEligibilityScheduleRequest @removalInputObject
 
             }
             break
@@ -138,11 +141,14 @@ function Invoke-ResourceRemoval {
                 # PIM role assignments cannot be removed before 5 minutes from being created. Waiting for 5 minutes
                 Write-Verbose 'Waiting for 5 minutes before removing PIM role assignment' -Verbose
                 Start-Sleep -Seconds 300
-                $null = New-AzRoleAssignmentScheduleRequest -Name $guid `
-                    -Scope $scope `
-                    -PrincipalId $pimRoleAssignmentPrinicpalId `
-                    -RequestType AdminRemove `
-                    -RoleDefinitionId $pimRoleAssignmentRoleDefinitionId
+                $removalInputObject = @{
+                  Name             = $guid
+                  Scope            = $scope
+                  PrincipalId      = $pimRoleAssignmentPrinicpalId
+                  RequestType      = 'AdminRemove'
+                  RoleDefinitionId = $pimRoleAssignmentRoleDefinitionId
+                }
+                $null = New-AzRoleAssignmentScheduleRequest @removalInputObject
             }
             break
         }
