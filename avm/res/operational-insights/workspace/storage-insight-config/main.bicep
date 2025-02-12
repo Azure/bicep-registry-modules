@@ -23,11 +23,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing 
   name: last(split(storageAccountResourceId, '/'))!
 }
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource storageinsightconfig 'Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2020-08-01' = {
+resource storageinsightconfig 'Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2023-09-01' = {
   name: name
   parent: workspace
   tags: tags
