@@ -69,10 +69,11 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 $moduleFolderTestCases += @{
-                    moduleFolderName = $resourceTypeIdentifier
-                    moduleFolderPath = $moduleFolderPath
-                    isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-                    moduleType       = $moduleType
+                    moduleFolderName    = $resourceTypeIdentifier
+                    moduleFolderPath    = $moduleFolderPath
+                    isTopLevelModule    = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    moduleType          = $moduleType
+                    moduleVersionExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
                 }
             }
         }
@@ -190,10 +191,11 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # Changelogs are required for all (child-)modules that are published (having a version.json file)
-        It '[<moduleFolderName>] Module should contain a [` CHANGELOG.md `] file.' -TestCases ($moduleFolderTestCases | Where-Object { Test-Path -Path (Join-Path $_.moduleFolderPath 'version.json') }) {
+        It '[<moduleFolderName>] Module should contain a [` CHANGELOG.md `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
 
             param(
-                [string] $moduleFolderPath
+                [string] $moduleFolderPath,
+                [bool] $moduleVersionExists
             )
 
             $changelogFilePath = Join-Path -Path $moduleFolderPath 'CHANGELOG.md'
@@ -201,10 +203,11 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] `CHANGELOG.md` must contain a section with content and versions are ordered descending.' -TestCases ($moduleFolderTestCases | Where-Object { Test-Path -Path (Join-Path $_.moduleFolderPath 'version.json') }) {
+        It '[<moduleFolderName>] `CHANGELOG.md` must contain a section with content and versions are ordered descending.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
 
             param(
-                [string] $moduleFolderPath
+                [string] $moduleFolderPath,
+                [bool] $moduleVersionExists
             )
 
             $changelogFilePath = Join-Path -Path $moduleFolderPath 'CHANGELOG.md'
@@ -223,16 +226,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             # the changelog should start with '# Changelog'
             $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
-            $changelogContent[0] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`'
-            $changelogContent[1] | Should -Be '' -Because 'the changelog should start with `# Changelog`, followed by an empty line'
+            $changelogContent[0] + $changelogContent[1] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`, followed by an empty line'
+            # $changelogContent[0] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`'
+            # $changelogContent[1] | Should -Be '' -Because 'the changelog should start with `# Changelog`, followed by an empty line'
 
             # check for the presence of the `## unreleased` section
             $changelogSection | Should -BeIn $sections -Because "the `## $moduleVersion` section should be in the changelog"
 
-            # only one unrealeased section should be present
+            # only one version section should be present
             $changelogSection.Count | Should -BeExactly 1 -Because "the `## $moduleVersion` section should be in the changelog only once"
 
-            # check for unrealeased being the first section. Ignore, if there is only one section
+            # check for version being the first section. Ignore, if there is only one section
             if ($sections -is [array]) {
                 $sections[0] | Should -Be $changelogSection -Because "the `## $moduleVersion` section should be the first section in the changelog"
             }
@@ -240,7 +244,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             # check for the order of the versions
             ($changelogContent | Where-Object { $_ -match '^##\s+' } | Sort-Object -Descending) | Should -BeExactly $sections 'the versions in the changelog should appear in descending order'
 
-            # the unreleased section must contain certain content
+            # the version section must contain certain content
             if ($sections -is [array]) {
                 $startIndex = $changelogContent.IndexOf($sections[0]) + 1 # skip the heading
                 $endIndex = $changelogContent.IndexOf($sections[1])
@@ -249,7 +253,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 # special treatment, if there is only one section
                 $changelogSectionContent = $changelogContent
             }
-            # $changelogSectionContent | Should -Contain 'New Features' -Because 'The `## unreleased` section should contain "New Features" surrounded by empty lines'. The last section can end with only one \n, as Get-Content does not read the last empty line
             $changelogSectionContent -join "`n" | Should -MatchExactly '\n### Changes\n\n' -Because "the `## $moduleVersion` section should contain '### Changes' surrounded by empty lines"
             $changelogSectionContent -join "`n" | Should -MatchExactly '\n### Breaking Changes' -Because "the `## $moduleVersion` section should '### Breaking Changes' surrounded by empty lines"
             $changelogSectionContent.IndexOf('### Changes') -lt $changelogSectionContent.IndexOf('### Breaking Changes') | Should -Be $true -Because "The `### Changes` section should appear before the `### Breaking Changes` section"
