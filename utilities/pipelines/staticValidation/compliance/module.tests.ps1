@@ -493,13 +493,6 @@ Describe 'Module tests' -Tag 'Module' {
             }
         }
 
-        BeforeAll {
-            # Load function
-            . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
-            # load cross-references
-            $crossReferencedModuleList = Get-CrossReferencedModuleList
-        }
-
         Context 'General' {
 
             It '[<moduleFolderName>] The template file should not be empty.' -TestCases $moduleFolderTestCases {
