@@ -26,10 +26,14 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:0.2.4' = {
   scope: managementGroup
   params: {
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'TestSubscription'
+    subscriptionAliasName: 'NewSubscription'
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionDisplayName: 'TestSubscription'
-    subscriptionWorkload: 'DevTest'
+    subscriptionDisplayName: 'NewSubscription'
+    subscriptionTags: {
+      avmTest: 'true'
+    }
+    subscriptionWorkload: 'Production'
+    resourceProviders: {}
   }
 }
 
