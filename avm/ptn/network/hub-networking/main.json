@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7215123939021069638"
+      "templateHash": "14406697444955750551"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
@@ -777,7 +777,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nvn', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "name": "[format('{0}-{1}-nvn', uniqueString(deployment().name, parameters('location')), coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2444,7 +2444,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nrt', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "name": "[format('{0}-{1}-nrt', uniqueString(deployment().name, parameters('location')), coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2831,7 +2831,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableBastion]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nbh', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "name": "[format('{0}-{1}-nbh', uniqueString(deployment().name, parameters('location')), coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -4057,7 +4057,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-naf', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "name": "[format('{0}-{1}-naf', uniqueString(deployment().name, parameters('location')), coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -6502,7 +6502,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nafs', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "name": "[format('{0}-{1}-nafs', uniqueString(deployment().name, parameters('location')), coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -6577,7 +6577,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nafsa', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "name": "[format('{0}-{1}-nafsa', uniqueString(deployment().name, parameters('location')), coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
